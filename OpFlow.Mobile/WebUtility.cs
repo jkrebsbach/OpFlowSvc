@@ -13,6 +13,7 @@ namespace OpFlow.Mobile
     public abstract class WebUtility
     {
         private static HttpClient _client;
+        private static string _rootUrl = "https://opflowservice.azurewebsites.net/api";
 
         static WebUtility()
         {
@@ -20,28 +21,36 @@ namespace OpFlow.Mobile
             _client.MaxResponseContentBufferSize = 256000;
         }
 
-        public static async Task<List<Schedule>> GetSchedule()
+        public static async Task<List<Schedule>> GetSchedules()
         {
-            var response = await WebRequest();
+            var response = await WebRequest("schedule");
 
             var result = JsonConvert.DeserializeObject<List<Schedule>>(response);
 
             return result;
         }
 
-        private static async Task<string> WebRequest()
+        public static async Task<Schedule> GetSchedule(int scheduleId)
+        {
+            var response = await WebRequest(string.Format("schedule/{0}", scheduleId));
+
+            var result = JsonConvert.DeserializeObject<Schedule>(response);
+
+            return result;
+        }
+
+        private static async Task<string> WebRequest(string command)
         {
             var result = string.Empty;
 
-            var rxcui = "198440";
-            var uri = new Uri(string.Format(@"http://rxnav.nlm.nih.gov/REST/RxTerms/rxcui/{0}/allinfo", rxcui));
+            var uri = Path.Combine(_rootUrl, command);
 
             using (var response = await _client.GetAsync(uri))
             {
                 if (response.StatusCode != HttpStatusCode.OK)
                     Console.Out.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
 
-                var content = await response.Content.ReadAsStringAsync();
+                result = await response.Content.ReadAsStringAsync();
             }
 
             return result;

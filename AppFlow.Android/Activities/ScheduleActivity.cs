@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -16,18 +16,18 @@ namespace OpFlow.Android.Activities
     [Activity(Label = "ScheduleActivity")]
     public class ScheduleActivity : Activity
     {
-        protected override void OnCreate(Bundle savedInstanceState)
+        protected override async void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
             SetContentView(Resource.Layout.Schedule);
 
-            SetupScreen();
+            await SetupScreen();
         }
 
-        private void SetupScreen()
+        private async Task SetupScreen()
         {
-            var schedule = WebUtility.GetSchedule();
+            var schedule = await WebUtility.GetSchedules();
         }
     }
 }
