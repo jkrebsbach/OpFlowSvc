@@ -9,12 +9,14 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using OpFlow.Service.App_Start;
 using OpFlow.Service.Models;
+using OpFlow.Service.Providers;
 using OpFlow.Service.Results;
 
 // https://github.com/MikeWasson/LocalAccountsApp
@@ -264,8 +266,8 @@ namespace OpFlow.Service.Controllers
                 ClaimsIdentity cookieIdentity = await user.GenerateUserIdentityAsync(UserManager,
                     CookieAuthenticationDefaults.AuthenticationType);
 
-                //AuthenticationProperties properties = ApplicationOAuthProvider.CreateProperties(user.UserName);
-                //Authentication.SignIn(properties, oAuthIdentity, cookieIdentity);
+                AuthenticationProperties properties = ApplicationOAuthProvider.CreateProperties(user.UserName);
+                Authentication.SignIn(properties, oAuthIdentity, cookieIdentity);
             }
             else
             {

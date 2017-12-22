@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpFlow.Windows", "OpFlowMobile\OpFlow.Windows.csproj", "{843213BD-FBDB-43C7-8523-F6FF2293FB61}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpFlow.Windows", "OpFlow.Windows\OpFlow.Windows.csproj", "{843213BD-FBDB-43C7-8523-F6FF2293FB61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpFlow.iOS", "OpFlow_iOS\OpFlow.iOS.csproj", "{10225880-4CFC-43F2-985A-F6BF17FB0CBA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpFlow.iOS", "OpFlow.iOS\OpFlow.iOS.csproj", "{10225880-4CFC-43F2-985A-F6BF17FB0CBA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpFlow.Android", "AppFlow.Android\OpFlow.Android.csproj", "{CA960FD8-E782-43B5-A800-A8FE0D4E8E7E}"
 EndProject
