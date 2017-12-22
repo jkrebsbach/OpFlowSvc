@@ -61,11 +61,14 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="ViewController.cs" />
     <None Include="GettingStarted.Xamarin" />
     <None Include="Info.plist" />
+    <Compile Include="PhoneTranslator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
     <Content Include="Entitlements.plist" />
+    <InterfaceDefinition Include="Main.storyboard" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
