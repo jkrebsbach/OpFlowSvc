@@ -165,6 +165,8 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ScheduleController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="DataAccess\EntityReader.cs" />
+    <Compile Include="DataAccess\SqlHelper.cs" />
     <Compile Include="Filters\RequireHttpsAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

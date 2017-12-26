@@ -1,8 +1,10 @@
-﻿using Android.App;
+﻿using System;
+using Android.App;
 using Android.Content;
 using Android.Widget;
 using Android.OS;
 using OpFlow.Android.Activities;
+using OpFlow.Mobile;
 
 namespace OpFlow.Android
 {
@@ -15,7 +17,7 @@ namespace OpFlow.Android
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
-            
+
             var btnCheckIn = FindViewById<Button>(Resource.Id.btnCheckIn);
             btnCheckIn.Click += delegate
             {
@@ -29,6 +31,41 @@ namespace OpFlow.Android
                 var scheduleActivity = new Intent(this, typeof(ScheduleActivity));
                 StartActivity(scheduleActivity);
             };
+
+            var btnCases = FindViewById<Button>(Resource.Id.btnCases);
+            btnCases.Click += delegate
+            {
+                var loginActivity = new Intent(this, typeof(LoginActivity));
+                StartActivity(loginActivity);
+            };
+
+            //AuthenticateUser();
+        }
+
+        protected override void OnResume()
+        {
+            AuthenticateUser();
+
+            base.OnResume();
+        }
+
+        private void AuthenticateUser()
+        {
+            try
+            {
+                if (!WebUtility.UserAuthenticated)
+                {
+                    var loginActivity = new Intent(this, typeof(LoginActivity));
+                    StartActivity(loginActivity);
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
     }
 }

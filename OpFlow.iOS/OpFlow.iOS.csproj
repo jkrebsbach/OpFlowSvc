@@ -3,12 +3,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
-    <ProjectGuid>{10225880-4CFC-43F2-985A-F6BF17FB0CBA}</ProjectGuid>
+    <ProjectGuid>{2E2C9420-C897-47B7-B93D-D534CD63866E}</ProjectGuid>
     <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
-    <RootNamespace>OpFlow_iOS</RootNamespace>
+    <RootNamespace>OpFlow.iOS</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>OpFlow_iOS</AssemblyName>
+    <AssemblyName>OpFlow.iOS</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,7 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <MtouchArch>ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
@@ -54,41 +54,33 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <MtouchArch>ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="ViewController.cs" />
     <None Include="GettingStarted.Xamarin" />
     <None Include="Info.plist" />
-    <Compile Include="PhoneTranslator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
-    <Content Include="Entitlements.plist" />
-    <InterfaceDefinition Include="Main.storyboard" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
+    <Compile Include="ViewController.designer.cs">
+      <DependentUpon>ViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewController.cs" />
+    <InterfaceDefinition Include="Main.storyboard" />
+    <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpFlow.Data\OpFlow.Data.csproj">
-      <Project>{bb8959ed-b7f0-4f9d-aad2-83462f06d864}</Project>
-      <Name>OpFlow.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpFlow.Mobile\OpFlow.Mobile.csproj">
-      <Project>{59d876bb-9b1e-4cc6-a1c3-83319043b1a6}</Project>
-      <Name>OpFlow.Mobile</Name>
-    </ProjectReference>
+    <Content Include="Entitlements.plist" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

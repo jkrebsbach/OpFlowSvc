@@ -1,6 +1,6 @@
 ﻿using UIKit;
 
-namespace OpFlow_iOS
+namespace OpFlow.iOS
 {
     public class Application
     {

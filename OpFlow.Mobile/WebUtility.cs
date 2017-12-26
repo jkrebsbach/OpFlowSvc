@@ -18,6 +18,8 @@ namespace OpFlow.Mobile
 
         private static AuthToken _authToken;
 
+        public static bool UserAuthenticated => _authToken != null;
+
         static WebUtility()
         {
             _client = new HttpClient();
@@ -26,7 +28,7 @@ namespace OpFlow.Mobile
             _client.MaxResponseContentBufferSize = 256000;
         }
 
-        public static async Task<List<Schedule>> GetSchedules()
+        public static async Task<List<Schedule>> GetSchedules(DateTime scheduleDate)
         {
             var response = await WebRequest("api/schedule");
 
@@ -52,7 +54,7 @@ namespace OpFlow.Mobile
 
             if (_authToken == null || _authToken.ExpiresDate < DateTime.Now)
             {
-                await LoginUser();
+                throw new Exception("No authenticated user");
             }
 
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken?.AccessToken);
@@ -67,10 +69,8 @@ namespace OpFlow.Mobile
             return result;
         }
 
-        private static async Task LoginUser()
+        public static async Task LoginUser(string username, string password)
         {
-            AuthToken authToken = null;
-
             var formData = new List<KeyValuePair<string, string>>();
             formData.Add(new KeyValuePair<string, string>("grant_type", "password"));
             formData.Add(new KeyValuePair<string, string>("username", "OpFlow@OpFlow.com"));

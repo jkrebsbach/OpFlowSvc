@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:weightSum="100">
+    <TextView
+        android:password="@+id/txtError"
+        android:text=""
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="20" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="20"
+        android:weightSum="100">
+        <TextView
+            android:text="UserName"
+            android:gravity="center"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="50" />
+        <EditText
+            android:id="@+id/txtUserName"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="50" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="20"
+        android:weightSum="100">
+        <TextView
+            android:text="Password"
+            android:gravity="center"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="50" />
+        <EditText
+            android:id="@+id/txtPassword"
+            android:inputType="textPassword"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="50" />
+    </LinearLayout>
+    <Button
+        android:id="@+id/btnLogin"
+        android:text="Login"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="20" />
+</LinearLayout>

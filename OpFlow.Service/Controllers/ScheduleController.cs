@@ -16,11 +16,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetAll")]
         public IEnumerable<Schedule> Get()
         {
-            return new Schedule[]
-            {
-                new Schedule() { ScheduleID = 1, ScheduleDescription = "ABC"},
-                new Schedule() { ScheduleID = 2, ScheduleDescription = "ABC"},
-            };
+            return DataAccess.SqlHelper.GetSchedules();
         }
 
         // GET api/values/5
@@ -29,7 +25,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.NotFound)]
         public Schedule Get(int id)
         {
-            return new Schedule() { ScheduleID = id, ScheduleDescription = "ABC"};
+            var schedules = DataAccess.SqlHelper.GetSchedules();
+
+            return schedules.FirstOrDefault(s => s.SurgeryID == id);
         }
 
         // POST api/values
