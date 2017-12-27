@@ -53,7 +53,7 @@ namespace OpFlow.Android
         {
             try
             {
-                if (!WebUtility.UserAuthenticated)
+                if (!AppSettings.UserAuthenticated)
                 {
                     var loginActivity = new Intent(this, typeof(LoginActivity));
                     StartActivity(loginActivity);

@@ -58,11 +58,11 @@ namespace OpFlow.Android.Activities
         {
             RunOnUiThread(() => this._progressDialog.Show());
             
-           await WebUtility.LoginUser(username, password);
+           await AppSettings.AuthenticateUser(username, password);
 
             RunOnUiThread(() => this._progressDialog.Hide());
 
-            if (!WebUtility.UserAuthenticated)
+            if (!AppSettings.UserAuthenticated)
             {
                 _txtError.Text = "Unable to authenticate user";
             }

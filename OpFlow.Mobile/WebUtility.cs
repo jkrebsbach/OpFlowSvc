@@ -16,10 +16,6 @@ namespace OpFlow.Mobile
         private static HttpClient _client;
         private static string _rootUrl = "https://opflowservice.azurewebsites.net";
 
-        private static AuthToken _authToken;
-
-        public static bool UserAuthenticated => _authToken != null;
-
         static WebUtility()
         {
             _client = new HttpClient();
@@ -28,58 +24,45 @@ namespace OpFlow.Mobile
             _client.MaxResponseContentBufferSize = 256000;
         }
 
-        public static async Task<List<Schedule>> GetSchedules(DateTime scheduleDate)
-        {
-            var response = await WebRequest("api/schedule");
-
-            var result = JsonConvert.DeserializeObject<List<Schedule>>(response);
-
-            return result;
-        }
-
-        public static async Task<Schedule> GetSchedule(int scheduleId)
-        {
-            var response = await WebRequest(string.Format("api/schedule/{0}", scheduleId));
-
-            var result = JsonConvert.DeserializeObject<Schedule>(response);
-
-            return result;
-        }
-
-        private static async Task<string> WebRequest(string command)
+        internal static async Task<T> WebRequest<T>(string command, HttpMethod verb, List<KeyValuePair<string, string>> formData = null)
         {
             var result = string.Empty;
 
-            var uri = Path.Combine(_rootUrl, command);
-
-            if (_authToken == null || _authToken.ExpiresDate < DateTime.Now)
+            if (!AppSettings.UserAuthenticated)
             {
                 throw new Exception("No authenticated user");
             }
+            var request = new HttpRequestMessage(verb, command);
+            if (formData != null)
+                request.Content = new FormUrlEncodedContent(formData);
 
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken?.AccessToken);
-            using (var response = await _client.GetAsync(uri))
+            using (var response = await _client.SendAsync(request))
             {
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                    return default(T);
+
                 if (response.StatusCode != HttpStatusCode.OK)
                     Console.Out.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
 
                 result = await response.Content.ReadAsStringAsync();
             }
 
-            return result;
+            return JsonConvert.DeserializeObject<T>(result);
         }
 
-        public static async Task LoginUser(string username, string password)
+        internal static async Task<AuthToken> LoginUser(string username, string password)
         {
-            var formData = new List<KeyValuePair<string, string>>();
-            formData.Add(new KeyValuePair<string, string>("grant_type", "password"));
-            formData.Add(new KeyValuePair<string, string>("username", "OpFlow@OpFlow.com"));
-            formData.Add(new KeyValuePair<string, string>("password", "OpFlow1!"));
+            var formData = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("grant_type", "password"),
+                new KeyValuePair<string, string>("username", username),
+                new KeyValuePair<string, string>("password", password)
+            };
 
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Post, "/Token");
-                request.Content = new FormUrlEncodedContent(formData);
+                var request = new HttpRequestMessage(HttpMethod.Post, "/Token")
+                    { Content = new FormUrlEncodedContent(formData)};
 
                 using (var response = await _client.SendAsync(request))
                 {
@@ -88,7 +71,10 @@ namespace OpFlow.Mobile
 
                     var responseString = await response.Content.ReadAsStringAsync();
 
-                    _authToken = JsonConvert.DeserializeObject<AuthToken>(responseString);
+                    var authToken = JsonConvert.DeserializeObject<AuthToken>(responseString);
+                    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken?.AccessToken);
+
+                    return authToken;
                 }
             }
             catch (Exception e)

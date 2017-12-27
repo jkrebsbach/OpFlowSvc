@@ -61,7 +61,13 @@ namespace OpFlow.Android
 		{
 			
 			// aapt resource value: 0x7f020000
-			public const int OpFlowLogo = 2130837504;
+			public const int DarkGreenCheckMark = 2130837504;
+			
+			// aapt resource value: 0x7f020001
+			public const int OpFlowLogo = 2130837505;
+			
+			// aapt resource value: 0x7f020002
+			public const int RedExclamationPoint = 2130837506;
 			
 			static Drawable()
 			{
@@ -76,65 +82,83 @@ namespace OpFlow.Android
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f070009
-			public const int btnArticles = 2131165193;
-			
-			// aapt resource value: 0x7f070006
-			public const int btnCases = 2131165190;
-			
-			// aapt resource value: 0x7f070004
-			public const int btnCheckIn = 2131165188;
-			
-			// aapt resource value: 0x7f07000b
-			public const int btnCommunity = 2131165195;
-			
-			// aapt resource value: 0x7f07000a
-			public const int btnData = 2131165194;
-			
-			// aapt resource value: 0x7f070003
-			public const int btnLogin = 2131165187;
-			
-			// aapt resource value: 0x7f070007
-			public const int btnMetrics = 2131165191;
-			
-			// aapt resource value: 0x7f070005
-			public const int btnSchedule = 2131165189;
+			// aapt resource value: 0x7f07000f
+			public const int btnArticles = 2131165199;
 			
 			// aapt resource value: 0x7f07000c
-			public const int btnScheduleDate = 2131165196;
+			public const int btnCases = 2131165196;
 			
-			// aapt resource value: 0x7f070008
-			public const int btnToDoList = 2131165192;
-			
-			// aapt resource value: 0x7f07000d
-			public const int gvDailySchedule = 2131165197;
-			
-			// aapt resource value: 0x7f070010
-			public const int txtCode = 2131165200;
-			
-			// aapt resource value: 0x7f070000
-			public const int txtError = 2131165184;
-			
-			// aapt resource value: 0x7f070002
-			public const int txtPassword = 2131165186;
+			// aapt resource value: 0x7f07000a
+			public const int btnCheckIn = 2131165194;
 			
 			// aapt resource value: 0x7f070011
-			public const int txtPatientAge = 2131165201;
+			public const int btnCommunity = 2131165201;
 			
-			// aapt resource value: 0x7f07000e
-			public const int txtPatientName = 2131165198;
+			// aapt resource value: 0x7f070010
+			public const int btnData = 2131165200;
+			
+			// aapt resource value: 0x7f070009
+			public const int btnLogin = 2131165193;
+			
+			// aapt resource value: 0x7f07000d
+			public const int btnMetrics = 2131165197;
+			
+			// aapt resource value: 0x7f07000b
+			public const int btnSchedule = 2131165195;
 			
 			// aapt resource value: 0x7f070012
-			public const int txtPatientSex = 2131165202;
+			public const int btnScheduleDate = 2131165202;
+			
+			// aapt resource value: 0x7f070000
+			public const int btnSearch = 2131165184;
+			
+			// aapt resource value: 0x7f07000e
+			public const int btnToDoList = 2131165198;
 			
 			// aapt resource value: 0x7f070013
-			public const int txtProcedure = 2131165203;
-			
-			// aapt resource value: 0x7f07000f
-			public const int txtTime = 2131165199;
+			public const int gvDailySchedule = 2131165203;
 			
 			// aapt resource value: 0x7f070001
-			public const int txtUserName = 2131165185;
+			public const int pnlCaseDetail = 2131165185;
+			
+			// aapt resource value: 0x7f070005
+			public const int swtSurgeon = 2131165189;
+			
+			// aapt resource value: 0x7f070004
+			public const int txtCard = 2131165188;
+			
+			// aapt resource value: 0x7f070003
+			public const int txtCase = 2131165187;
+			
+			// aapt resource value: 0x7f070016
+			public const int txtCode = 2131165206;
+			
+			// aapt resource value: 0x7f070006
+			public const int txtError = 2131165190;
+			
+			// aapt resource value: 0x7f070008
+			public const int txtPassword = 2131165192;
+			
+			// aapt resource value: 0x7f070017
+			public const int txtPatientAge = 2131165207;
+			
+			// aapt resource value: 0x7f070014
+			public const int txtPatientName = 2131165204;
+			
+			// aapt resource value: 0x7f070018
+			public const int txtPatientSex = 2131165208;
+			
+			// aapt resource value: 0x7f070019
+			public const int txtProcedure = 2131165209;
+			
+			// aapt resource value: 0x7f070002
+			public const int txtSurgeon = 2131165186;
+			
+			// aapt resource value: 0x7f070015
+			public const int txtTime = 2131165205;
+			
+			// aapt resource value: 0x7f070007
+			public const int txtUserName = 2131165191;
 			
 			static Id()
 			{

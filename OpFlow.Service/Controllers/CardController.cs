@@ -10,14 +10,14 @@ using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
 {
-    [Authorize]
-    public class ScheduleController : ApiController
+    public class CardController : ApiController
     {
+
         // GET api/values
         [SwaggerOperation("GetAll")]
-        public IEnumerable<Schedule> Get()
+        public IEnumerable<Card> Get()
         {
-            return DataAccess.SecureSqlHelper.GetSchedules();
+            return DataAccess.SqlHelper.GetCards();
         }
 
         // GET api/values/5
@@ -26,12 +26,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.NotFound)]
         public HttpResponseMessage Get(int id)
         {
-            var schedules = DataAccess.SecureSqlHelper.GetSchedules();
+            var cards = DataAccess.SqlHelper.GetCards();
 
-            var result = schedules.FirstOrDefault(s => s.SurgeryID == id);
-            
+            var result = cards.FirstOrDefault(s => s.CardID == id);
+
             if (result == null)
-                return Request.CreateResponse(HttpStatusCode.NotFound, "Schedule not found");
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Card not found");
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

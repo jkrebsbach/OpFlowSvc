@@ -41,10 +41,10 @@ namespace OpFlow.Android.Activities
 
         void btnSchedule_OnClick(object sender, EventArgs eventArgs)
         {
-            DatePickerFragment frag = DatePickerFragment.NewInstance(_selectedDate, delegate (DateTime time)
+            var frag = DatePickerFragment.NewInstance(_selectedDate, async delegate (DateTime time)
             {
                 _selectedDate = time;
-                SetupScreen();
+                await SetupScreen();
             });
             frag.Show(FragmentManager, DatePickerFragment.TAG);
         }
@@ -53,7 +53,7 @@ namespace OpFlow.Android.Activities
         {
             _btnSchedule.Text = _selectedDate.ToString("M/d/yyyy");
 
-            var schedule = await WebUtility.GetSchedules(_selectedDate);
+            var schedule = await ScheduleUtil.GetSchedules(_selectedDate);
             _gvDailySchedule.Adapter = new Adapters.ScheduleGridAdapter(this, schedule);
         }
     }

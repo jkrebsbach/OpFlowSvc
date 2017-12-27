@@ -163,9 +163,14 @@
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CardController.cs" />
+    <Compile Include="Controllers\CaseController.cs" />
     <Compile Include="Controllers\ScheduleController.cs" />
+    <Compile Include="Controllers\SurgeonController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="DataAccess\DatabaseHelper.cs" />
     <Compile Include="DataAccess\EntityReader.cs" />
+    <Compile Include="DataAccess\SecureSqlHelper.cs" />
     <Compile Include="DataAccess\SqlHelper.cs" />
     <Compile Include="Filters\RequireHttpsAttribute.cs" />
     <Compile Include="Global.asax.cs">

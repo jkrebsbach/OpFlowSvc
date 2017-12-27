@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Swashbuckle.Swagger.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -6,32 +7,31 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
-using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
-    public class ScheduleController : ApiController
+    public class SurgeonController : ApiController
     {
         // GET api/values
         [SwaggerOperation("GetAll")]
-        public IEnumerable<Schedule> Get()
+        public IEnumerable<Surgeon> Get()
         {
-            return DataAccess.SecureSqlHelper.GetSchedules();
+            return DataAccess.SecureSqlHelper.GetSurgeons();
         }
 
-        // GET api/values/5
-        [SwaggerOperation("GetById")]
+        // GET api/values/jdoe
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage Get(int id)
+        [Route("api/SurgeonByUsername", Name = "SurgeonByUsername")]
+        public HttpResponseMessage GetSurgeon(string username)
         {
-            var schedules = DataAccess.SecureSqlHelper.GetSchedules();
+            var surgeons = DataAccess.SecureSqlHelper.GetSurgeons();
 
-            var result = schedules.FirstOrDefault(s => s.SurgeryID == id);
-            
+            var result = surgeons.FirstOrDefault(s => string.Equals(s.Username, username, StringComparison.CurrentCultureIgnoreCase));
+
             if (result == null)
-                return Request.CreateResponse(HttpStatusCode.NotFound, "Schedule not found");
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Surgeon not found");
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

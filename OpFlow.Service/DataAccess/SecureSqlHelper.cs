@@ -10,11 +10,11 @@ using OpFlow.Data;
 
 namespace OpFlow.Service.DataAccess
 {
-    public static class SqlHelper 
+    public static class SecureSqlHelper 
     {
         private static DataSet ExecuteCommand(string storedProcedure, DSAParameters[] dsParameters = null)
         {
-            var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString);
+            var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SecureConnection"].ConnectionString);
             var cmd = new SqlCommand(storedProcedure, conn);
 
             if (dsParameters != null)
@@ -35,11 +35,29 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        public static List<Card> GetCards()
+        public static List<Schedule> GetSchedules()
         {
-            var dsSchedules = ExecuteCommand("GET_CARDS");
+            var dsSchedules = ExecuteCommand("GET_SCHEDULE");
 
-            var result =  dsSchedules.Tables[0].DataTableToList<Card>();
+            var result = dsSchedules.Tables[0].DataTableToList<Schedule>();
+
+            return result;
+        }
+
+        public static List<Surgeon> GetSurgeons()
+        {
+            var dsSchedules = ExecuteCommand("GET_SURGEONS");
+
+            var result = dsSchedules.Tables[0].DataTableToList<Surgeon>();
+
+            return result;
+        }
+
+        public static List<Case> GetCases()
+        {
+            var dsSchedules = ExecuteCommand("GET_CASES");
+
+            var result = dsSchedules.Tables[0].DataTableToList<Case>();
 
             return result;
         }
