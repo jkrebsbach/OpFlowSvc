@@ -61,5 +61,22 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+
+        public static List<Patient> GetPatients()
+        {
+            var dsSchedules = ExecuteCommand("GET_PATIENTS");
+
+            var patients = dsSchedules.Tables[0].DataTableToList<Patient>();
+            var demos = dsSchedules.Tables[1].DataTableToList<PatientDemo>();
+
+            foreach (var demo in demos)
+            {
+                var patient = patients.FirstOrDefault(p => p.PatientID == demo.PatientID);
+
+                patient?.DemoData.Add(demo);
+            }
+
+            return patients;
+        }
     }
 }

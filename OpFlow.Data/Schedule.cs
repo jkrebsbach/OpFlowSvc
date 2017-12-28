@@ -6,6 +6,7 @@ namespace OpFlow.Data
     {
         public int SurgeryID { get; set; }
         public int PatientID { get; set; }
+        public int CaseID { get; set; }
         public string PatientFirstName { get; set; }
         public string PatientLastName { get; set; }
         public DateTime PatientBirthDate { get; set; }

@@ -12,6 +12,8 @@ namespace OpFlow.Data
         public int CardID { get; set; }
         public string ProviderLastName { get; set; }
         public string ProviderFirstName { get; set; }
+        public string PatientLastName { get; set; }
+        public string PatientFirstName { get; set; }
 
         public Card Card { get; set; }
     }

@@ -35,8 +35,8 @@ namespace OpFlow.Android
             var btnCases = FindViewById<Button>(Resource.Id.btnCases);
             btnCases.Click += delegate
             {
-                var loginActivity = new Intent(this, typeof(LoginActivity));
-                StartActivity(loginActivity);
+                var futureCaseActivity = new Intent(this, typeof(FutureCaseActivity));
+                StartActivity(futureCaseActivity);
             };
 
             //AuthenticateUser();

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -16,39 +16,52 @@ namespace OpFlow.Android.Activities
     [Activity(Label = "CheckInActivity")]
     public class CheckInActivity : Activity
     {
-        protected override void OnCreate(Bundle savedInstanceState)
+        public const string CASE_BUNDLE = "CASE";
+
+        private LinearLayout _pnlCaseDetail;
+        private TextView _txtSurgeon;
+        private TextView _txtCase;
+        private TextView _txtCard;
+
+        protected override async void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
+            
             SetContentView(Resource.Layout.CheckIn);
 
-            var pnlCaseDetail = FindViewById<LinearLayout>(Resource.Id.pnlCaseDetail);
-            var txtSurgeon = FindViewById<TextView>(Resource.Id.txtSurgeon);
-            var txtCase = FindViewById<TextView>(Resource.Id.txtCase);
-            var txtCard = FindViewById<TextView>(Resource.Id.txtCard);
+            _pnlCaseDetail = FindViewById<LinearLayout>(Resource.Id.pnlCaseDetail);
+            _txtSurgeon = FindViewById<TextView>(Resource.Id.txtSurgeon);
+            _txtCase = FindViewById<TextView>(Resource.Id.txtCase);
+            _txtCard = FindViewById<TextView>(Resource.Id.txtCard);
 
             // Hide case detail until search completes
-            pnlCaseDetail.Visibility = ViewStates.Gone;
+            _pnlCaseDetail.Visibility = ViewStates.Gone;
 
             var btnSearch = FindViewById<Button>(Resource.Id.btnSearch);
             btnSearch.Click += async delegate
             {
-                try
-                {
-                    var currentCase = await CaseUtil.GetCase(1);
-
-                    pnlCaseDetail.Visibility = ViewStates.Visible;
-
-                    txtSurgeon.Text = string.Format("{0}, {1}", currentCase.ProviderLastName,
-                        currentCase.ProviderFirstName);
-                    txtCase.Text = currentCase.Card.ProcedureName;
-                    txtCard.Text = currentCase.Card.CardName;
-                }
-                catch (Exception ex)
-                {
-                    
-                }
+                // Search event should yield a Case ID
+                await LoadCase(1);
             };
+
+            // It is possible to open this activity with a case selected
+            var caseId = Intent.GetStringExtra(CASE_BUNDLE);
+            if (!string.IsNullOrEmpty(caseId))
+            {
+                await LoadCase(int.Parse(caseId));
+            }
+        }
+
+        private async Task LoadCase(int caseId)
+        {
+            var currentCase = await CaseUtil.GetCase(caseId);
+
+            _pnlCaseDetail.Visibility = ViewStates.Visible;
+
+            _txtSurgeon.Text = string.Format("{0}, {1}", currentCase.ProviderLastName,
+                currentCase.ProviderFirstName);
+            _txtCase.Text = currentCase.Card.ProcedureName;
+            _txtCard.Text = currentCase.Card.CardName;
         }
     }
 }

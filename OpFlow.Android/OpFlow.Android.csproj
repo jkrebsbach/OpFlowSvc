@@ -57,10 +57,13 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\CaseDetailActivity.cs" />
     <Compile Include="Activities\CheckInActivity.cs" />
+    <Compile Include="Activities\FutureCaseActivity.cs" />
     <Compile Include="Activities\LoginActivity.cs" />
     <Compile Include="Activities\MainActivity.cs" />
     <Compile Include="Activities\ScheduleActivity.cs" />
+    <Compile Include="Adapters\FutureCaseListAdapter.cs" />
     <Compile Include="Adapters\ScheduleGridAdapter.cs" />
     <Compile Include="Fragments\DatePickerFragment.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
@@ -82,6 +85,21 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\ScheduleGrid.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable\RoundRectangle.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable\HighlightedRoundRectangle.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\FutureCase.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\FutureCaseListItem.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\CaseDetail.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>

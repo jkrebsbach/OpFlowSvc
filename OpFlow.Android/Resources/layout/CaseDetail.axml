@@ -18,7 +18,7 @@
         <TextView
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:text="Check In"
+            android:text="Case"
             android:gravity="center"
             android:layout_weight="33" />
         <Button
@@ -55,7 +55,7 @@
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="33"
-                android:id="@+id/txtCard" />
+                android:id="@+id/txtReferMD" />
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
@@ -63,128 +63,92 @@
             android:layout_height="0dip"
             android:layout_weight="10"
             android:weightSum="100">
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:id="@+id/txtPatientName" />
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:id="@+id/txtPatientAge" />
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:id="@+id/txtPatientBMI" />
+        </LinearLayout>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dip"
+            android:background="#FF00FF00" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="10"
+            android:weightSum="100">
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:text="Medical History" />
             <Switch
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
-                android:text="Surgeon"
-                android:id="@+id/swtSurgeon" />
+                android:id="@+id/swtMedicalHistory" />
+        </LinearLayout>
+        <EditText
+            android:id="@+id/txtMedicalHistory"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="10" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="10"
+            android:weightSum="100">
             <TextView
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
-                android:text="Switch to any room" />
+                android:text="Risk Factors" />
+            <Switch
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:id="@+id/swtRiskFactors" />
         </LinearLayout>
+        <EditText
+            android:id="@+id/txtRiskFactors"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="10" />
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dip"
             android:layout_weight="10"
             android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Circulator" />
-            <ImageView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:src="@drawable/darkGreenCheckMark"
-                android:scaleType="fitCenter" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Delay" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Work up reviewed" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Product Rep" />
-            <ImageView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:src="@drawable/redExclamationPoint"
-                android:scaleType="fitCenter" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="10 min" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Anesthesia" />
-            <ImageView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:src="@drawable/darkGreenCheckMark"
-                android:scaleType="fitCenter" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Equipment" />
-            <ImageView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:src="@drawable/redExclamationPoint"
-                android:scaleType="fitCenter" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Trays" />
-            <ImageView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:src="@drawable/darkGreenCheckMark"
-                android:scaleType="fitCenter" />
             <TextView
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
-                android:text="Room 5" />
+                android:text="Medications" />
+            <Switch
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:id="@+id/swtMedications" />
         </LinearLayout>
+        <EditText
+            android:id="@+id/txtMedications"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="10" />
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -194,20 +158,19 @@
             <TextView
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Devices" />
-            <ImageView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:src="@drawable/darkGreenCheckMark"
-                android:scaleType="fitCenter" />
-            <TextView
+                android:layout_weight="50"
+                android:text="Allergies" />
+            <Switch
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
-                android:text="Delivered to room" />
+                android:id="@+id/swtAllergies" />
         </LinearLayout>
+        <EditText
+            android:id="@+id/txtAllergies"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="10" />
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -217,19 +180,81 @@
             <TextView
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Room" />
-            <ImageView
+                android:layout_weight="50"
+                android:text="Lab Results" />
+            <Switch
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:src="@drawable/redExclamationPoint"
-                android:scaleType="fitCenter" />
+                android:layout_weight="50"
+                android:id="@+id/swtLabResults" />
+        </LinearLayout>
+        <EditText
+            android:id="@+id/txtLabResults"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="10" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="10"
+            android:weightSum="100">
             <TextView
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
-                android:text="+75 min" />
+                android:text="Past Procedure Results" />
+            <Switch
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:id="@+id/swtPastProcedureResults" />
         </LinearLayout>
+        <EditText
+            android:id="@+id/txtPastProcedureResults"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="10" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="10"
+            android:weightSum="100">
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="40"
+                android:text="Scheduled Procedures" />
+            <Switch
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:id="@+id/swtScheduledProcedures" />
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="25"
+                android:text="Flow" />
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="25"
+                android:text="Card" />
+        </LinearLayout>
+        <GridView
+            android:id="@+id/gvScheduledProcedures"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="10" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dip"
+            android:background="#FF00FF00" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="25"
+            android:text="See Recent Case Notes" />
     </LinearLayout>
 </LinearLayout>

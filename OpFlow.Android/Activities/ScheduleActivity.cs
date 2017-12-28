@@ -11,6 +11,7 @@ using Android.Views;
 using Android.Widget;
 using OpFlow.Android.Adapters;
 using OpFlow.Android.Fragments;
+using OpFlow.Data;
 using OpFlow.Mobile;
 
 namespace OpFlow.Android.Activities
@@ -21,6 +22,8 @@ namespace OpFlow.Android.Activities
         private DateTime _selectedDate;
         private Button _btnSchedule;
         private GridView _gvDailySchedule;
+
+        private List<Schedule> _schedule;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -35,8 +38,21 @@ namespace OpFlow.Android.Activities
 
             _btnSchedule.Click += btnSchedule_OnClick;
 
+            _gvDailySchedule.ItemClick += CardItemClicked;
 
             await SetupScreen();
+        }
+
+        private void CardItemClicked(object sender, AdapterView.ItemClickEventArgs eventArgs)
+        {
+            if (_schedule == null)
+                return;
+
+            var schedule = _schedule[eventArgs.Position];
+            
+            var checkInActivity = new Intent(this, typeof(CheckInActivity));
+            checkInActivity.PutExtra(CheckInActivity.CASE_BUNDLE, schedule.CaseID.ToString());
+            StartActivity(checkInActivity);
         }
 
         void btnSchedule_OnClick(object sender, EventArgs eventArgs)
@@ -53,8 +69,8 @@ namespace OpFlow.Android.Activities
         {
             _btnSchedule.Text = _selectedDate.ToString("M/d/yyyy");
 
-            var schedule = await ScheduleUtil.GetSchedules(_selectedDate);
-            _gvDailySchedule.Adapter = new Adapters.ScheduleGridAdapter(this, schedule);
+            _schedule = await ScheduleUtil.GetSchedules(_selectedDate);
+            _gvDailySchedule.Adapter = new Adapters.ScheduleGridAdapter(this, _schedule);
         }
     }
 }

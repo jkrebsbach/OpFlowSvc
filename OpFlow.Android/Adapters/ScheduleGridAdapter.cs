@@ -46,6 +46,7 @@ namespace OpFlow.Android.Adapters
 
             var schedule = _schedules[position];
 
+            var pnlLayout = gridView.FindViewById<LinearLayout>(Resource.Id.pnlLayout);
             var txtPatientName = gridView.FindViewById<TextView>(Resource.Id.txtPatientName);
             var txtTime = gridView.FindViewById<TextView>(Resource.Id.txtTime);
             var txtCode = gridView.FindViewById<TextView>(Resource.Id.txtCode);
@@ -53,13 +54,19 @@ namespace OpFlow.Android.Adapters
             var txtPatientSex = gridView.FindViewById<TextView>(Resource.Id.txtPatientSex);
             var txtProcedure = gridView.FindViewById<TextView>(Resource.Id.txtProcedure);
 
+            // If the case is out of tolerance, highlight the event
+            if (schedule.SurgeryID % 2 == 0)
+            {
+                pnlLayout.SetBackgroundResource(Resource.Drawable.HighlightedRoundRectangle);
+            }
+
             txtPatientName.Text = string.Format("{0} {1}", schedule.PatientLastName, schedule.PatientFirstName);
             txtTime.Text = schedule.ScheduleTime.ToString("H:mm tt");
             txtCode.Text = schedule.ScheduleProcedure;
             txtPatientAge.Text = "Age: " + schedule.PatientBirthDate.CalculateAge();
             txtPatientSex.Text = "Sex: " + schedule.PatientSex;
             txtProcedure.Text = schedule.ScheduleProcedure;
-
+            
             return gridView;
         }
 
