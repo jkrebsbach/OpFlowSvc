@@ -15,7 +15,7 @@ namespace OpFlow.Mobile
         private static AuthToken _authToken;
         public static Surgeon CurrentSurgeon { get; private set; }
 
-        public static bool UserAuthenticated => _authToken != null && _authToken.ExpiresDate > DateTime.Now;
+        public static bool UserAuthenticated => _authToken?.ExpiresDate != null && _authToken.ExpiresDate > DateTime.Now;
 
         public static async Task AuthenticateUser(string username, string password)
         {

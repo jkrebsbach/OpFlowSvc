@@ -60,11 +60,11 @@ namespace OpFlow.Android.Adapters
                 pnlLayout.SetBackgroundResource(Resource.Drawable.HighlightedRoundRectangle);
             }
 
-            txtPatientName.Text = string.Format("{0} {1}", schedule.PatientLastName, schedule.PatientFirstName);
+            txtPatientName.Text = string.Format("{0} {1}", schedule.Patient?.LastName, schedule.Patient?.FirstName);
             txtTime.Text = schedule.ScheduleTime.ToString(@"hh\:mm");
             txtCode.Text = schedule.ScheduleProcedure;
-            txtPatientAge.Text = "Age: " + schedule.PatientBirthDate.CalculateAge();
-            txtPatientSex.Text = "Sex: " + schedule.PatientSex;
+            txtPatientAge.Text = "Age: " + schedule.Patient?.BirthDate.CalculateAge();
+            txtPatientSex.Text = "Sex: " + schedule.Patient?.Sex;
             txtProcedure.Text = schedule.ScheduleProcedure;
             
             return gridView;

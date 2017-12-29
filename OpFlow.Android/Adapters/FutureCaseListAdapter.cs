@@ -50,7 +50,7 @@ namespace OpFlow.Android.Adapters
             var txtCaseTime = gridView.FindViewById<TextView>(Resource.Id.txtCaseTime);
             var ivStatus = gridView.FindViewById<ImageView>(Resource.Id.ivStatus);
 
-            txtPatientName.Text = currentCase.PatientLastName;
+            txtPatientName.Text = currentCase.Patient?.LastName;
             txtProcedure.Text = currentCase.ScheduleProcedure;
             txtCaseTime.Text = currentCase.ScheduleDate.ToString("M/d/yyyy") + currentCase.ScheduleTime.ToString(@"hh\:mm");
 
