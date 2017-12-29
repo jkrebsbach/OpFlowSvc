@@ -5,14 +5,24 @@ namespace OpFlow.Data
     public class Schedule
     {
         public int SurgeryID { get; set; }
+        public int SpecialtyID { get; set; }
+        public int ProviderID { get; set; }
+        public int LocationID { get; set; }
         public int PatientID { get; set; }
-        public int CaseID { get; set; }
+        public int CardID { get; set; }
+        public int BundleID { get; set; }
+        public int ProcedureID { get; set; }
+        public string ProviderName { get; set; }
+        public string SurgeonFirstName { get; set; }
+        public string SurgeonLastName { get; set; }
         public string PatientFirstName { get; set; }
         public string PatientLastName { get; set; }
         public DateTime PatientBirthDate { get; set; }
         public string PatientSex { get; set; }
         public decimal PatientBMI { get; set; }
+        public DateTime ScheduleDate { get; set; }
         public DateTime ScheduleTime { get; set; }
+        public int EstDelayMinutes { get; set; }
         public string ScheduleProcedure { get; set; }
     }
 }

@@ -12,20 +12,13 @@ namespace OpFlow.Service.Controllers
 {
     public class CaseController : ApiController
     {
-        // GET api/values
-        [SwaggerOperation("GetAll")]
-        public IEnumerable<Case> Get()
-        {
-            return DataAccess.SecureSqlHelper.GetCases();
-        }
-
         // GET api/values/5
         [SwaggerOperation("GetById")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         public HttpResponseMessage Get(int id)
         {
-            var cases = DataAccess.SecureSqlHelper.GetCases();
+            var cases = DataAccess.SqlHelper.GetCase(id, 1, 1);
 
             var result = cases.FirstOrDefault(s => s.CaseID == id);
 

@@ -12,7 +12,7 @@ namespace OpFlow.Service.DataAccess
 {
     public static class SqlHelper 
     {
-        private static DataSet ExecuteCommand(string storedProcedure, DSAParameters[] dsParameters = null)
+        private static DataSet ExecuteCommand(string storedProcedure, SqlParameter[] dsParameters = null)
         {
             var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString);
             var cmd = new SqlCommand(storedProcedure, conn);
@@ -35,13 +35,83 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        public static List<Card> GetCards()
+        public static List<Card> GetCardItems(int cardId, int providerId, int locationId)
         {
-            var dsSchedules = ExecuteCommand("GET_CARDS");
+            var parameters = new[]
+            {
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetCardItems", parameters);
 
             var result =  dsSchedules.Tables[0].DataTableToList<Card>();
 
             return result;
+        }
+
+        public static List<Surgeon> GetSurgeons(string username)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("email", username),
+            };
+            var dsSchedules = ExecuteCommand("GetSurgeon", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Surgeon>();
+
+            return result;
+        }
+
+        public static List<Schedule> GetSchedules(int userID)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("User_id", userID)
+            };
+            var dsSchedules = ExecuteCommand("GetSurgeonCases", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Schedule>();
+
+            return result;
+        }
+
+        public static List<Case> GetCase(int caseId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_id", caseId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetCase", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Case>();
+
+            return result;
+        }
+
+        public static List<Patient> GetPatient(int patientId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_id", patientId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetPatientHistory", parameters);
+
+            var patients = dsSchedules.Tables[0].DataTableToList<Patient>();
+            var demos = dsSchedules.Tables[1].DataTableToList<PatientDemo>();
+
+            foreach (var demo in demos)
+            {
+                var patient = patients.FirstOrDefault(p => p.PatientID == demo.PatientID);
+
+                patient?.DemoData.Add(demo);
+            }
+
+            return patients;
         }
     }
 }

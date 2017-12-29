@@ -13,27 +13,15 @@ namespace OpFlow.Service.Controllers
     [Authorize]
     public class ScheduleController : ApiController
     {
-        // GET api/values
-        [SwaggerOperation("GetAll")]
-        public IEnumerable<Schedule> Get()
-        {
-            return DataAccess.SecureSqlHelper.GetSchedules();
-        }
-
         // GET api/values/5
-        [SwaggerOperation("GetById")]
+        [SwaggerOperation("GetByUserId")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage Get(int id)
+        public HttpResponseMessage Get(int userId)
         {
-            var schedules = DataAccess.SecureSqlHelper.GetSchedules();
+            var schedules = DataAccess.SqlHelper.GetSchedules(userId);
 
-            var result = schedules.FirstOrDefault(s => s.SurgeryID == id);
-            
-            if (result == null)
-                return Request.CreateResponse(HttpStatusCode.NotFound, "Schedule not found");
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
 
         // POST api/values

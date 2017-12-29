@@ -39,7 +39,7 @@ namespace OpFlow.Android.Activities
             _txtPatientAge = FindViewById<TextView>(Resource.Id.txtPatientAge);
             _txtPatientBMI = FindViewById<TextView>(Resource.Id.txtPatientBMI);
 
-            var caseId = Intent.GetStringExtra(CheckInActivity.CASE_BUNDLE);
+            var caseId = Intent.GetStringExtra(CheckInActivity.CARD_BUNDLE);
             if (!string.IsNullOrEmpty(caseId))
             {
                 await LoadCase(int.Parse(caseId));
@@ -52,17 +52,16 @@ namespace OpFlow.Android.Activities
 
             _pnlCaseDetail.Visibility = ViewStates.Visible;
 
-            _txtSurgeon.Text = string.Format("{0}, {1}", currentCase.ProviderLastName,
-                currentCase.ProviderFirstName);
-            _txtCase.Text = currentCase.Card?.ProcedureName;
-            _txtReferMD.Text = currentCase.Card?.CardName;
-
+            _txtSurgeon.Text = string.Format("{0}, {1}", currentCase.SurgeonLastName,
+                currentCase.SurgeonFirstName);
+            _txtCase.Text = currentCase.Card?.ProcedureDescription;
+            _txtReferMD.Text = currentCase.Card?.CardDescription;
 
             var patient = await PatientUtil.GetPatient(currentCase.PatientID);
 
-            _txtPatientName.Text = string.Format("{0} {1}", patient.FirstName, patient.LastName);
-            _txtPatientAge.Text = patient.BirthDate.CalculateAge().ToString();
-            _txtPatientBMI.Text = patient.BMI.ToString();
+            _txtPatientName.Text = string.Format("{0} {1}", currentCase.PatientFirstName, currentCase.PatientLastName);
+            _txtPatientAge.Text = currentCase.PatientBirthDate.CalculateAge().ToString();
+            _txtPatientBMI.Text = currentCase.PatientBMI.ToString();
 
             var medicalHistory =
                 patient.DemoData.FirstOrDefault(pd => pd.DataType == PatientDemo.DataTypeEnum.MedicalHistory);

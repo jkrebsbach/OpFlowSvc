@@ -33,8 +33,7 @@ namespace OpFlow.Service.DataAccess
             lock (EntityReaderHelper.CachedSetMethodsLock)
             {
                 var setters = new List<Action<object, DataRow>>();
-                var typeConverter = new TypeConverter();
-
+                
                 var props =
                     t.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty |
                                     BindingFlags.GetProperty);

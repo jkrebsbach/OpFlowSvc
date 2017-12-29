@@ -10,13 +10,6 @@ namespace OpFlow.Mobile
 {
     public static class CaseUtil
     {
-        public static async Task<List<Case>> GetCases(DateTime scheduleDate)
-        {
-            var caseResponse = await WebUtility.WebRequest<List<Case>>("api/case", HttpMethod.Get);
-
-            return caseResponse;
-        }
-
         public static async Task<Case> GetCase(int caseId)
         {
             var command = string.Format("api/case/{0}", caseId);

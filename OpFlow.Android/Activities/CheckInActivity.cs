@@ -16,7 +16,7 @@ namespace OpFlow.Android.Activities
     [Activity(Label = "CheckInActivity")]
     public class CheckInActivity : Activity
     {
-        public const string CASE_BUNDLE = "CASE";
+        public const string CARD_BUNDLE = "CARD";
 
         private LinearLayout _pnlCaseDetail;
         private TextView _txtSurgeon;
@@ -45,7 +45,7 @@ namespace OpFlow.Android.Activities
             };
 
             // It is possible to open this activity with a case selected
-            var caseId = Intent.GetStringExtra(CASE_BUNDLE);
+            var caseId = Intent.GetStringExtra(CARD_BUNDLE);
             if (!string.IsNullOrEmpty(caseId))
             {
                 await LoadCase(int.Parse(caseId));
@@ -58,10 +58,10 @@ namespace OpFlow.Android.Activities
 
             _pnlCaseDetail.Visibility = ViewStates.Visible;
 
-            _txtSurgeon.Text = string.Format("{0}, {1}", currentCase.ProviderLastName,
-                currentCase.ProviderFirstName);
-            _txtCase.Text = currentCase.Card.ProcedureName;
-            _txtCard.Text = currentCase.Card.CardName;
+            _txtSurgeon.Text = string.Format("{0}, {1}", currentCase.SurgeonLastName,
+                currentCase.SurgeonFirstName);
+            _txtCase.Text = currentCase.Card.ProcedureDescription;
+            _txtCard.Text = currentCase.Card.CardDescription;
         }
     }
 }

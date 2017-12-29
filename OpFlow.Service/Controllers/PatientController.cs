@@ -13,27 +13,20 @@ namespace OpFlow.Service.Controllers
     [Authorize]
     public class PatientController : ApiController
     {
-        // GET api/values
-        [SwaggerOperation("GetAll")]
-        public IEnumerable<Patient> Get()
-        {
-            return DataAccess.SecureSqlHelper.GetPatients();
-        }
-
         // GET api/values/5
         [SwaggerOperation("GetById")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage Get(int id)
+        public HttpResponseMessage Get(int patientId)
         {
-            var patients = DataAccess.SecureSqlHelper.GetPatients();
+            var patients = DataAccess.SqlHelper.GetPatient(patientId, 1, 1);
 
-            var result = patients.FirstOrDefault(s => s.PatientID == id);
+            var patient = patients.FirstOrDefault();
 
-            if (result == null)
+            if (patient == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound, "Patient not found");
 
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            return Request.CreateResponse(HttpStatusCode.OK, patient);
         }
 
         // POST api/values

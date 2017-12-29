@@ -13,27 +13,15 @@ namespace OpFlow.Service.Controllers
     public class CardController : ApiController
     {
 
-        // GET api/values
-        [SwaggerOperation("GetAll")]
-        public IEnumerable<Card> Get()
-        {
-            return DataAccess.SqlHelper.GetCards();
-        }
-
         // GET api/values/5
         [SwaggerOperation("GetById")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage Get(int id)
+        public HttpResponseMessage Get(int cardId)
         {
-            var cards = DataAccess.SqlHelper.GetCards();
+            var cards = DataAccess.SqlHelper.GetCardItems(cardId, 1, 1);
 
-            var result = cards.FirstOrDefault(s => s.CardID == id);
-
-            if (result == null)
-                return Request.CreateResponse(HttpStatusCode.NotFound, "Card not found");
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            return Request.CreateResponse(HttpStatusCode.OK, cards);
         }
 
         // POST api/values

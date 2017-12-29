@@ -9,13 +9,6 @@ namespace OpFlow.Mobile
 {
     public class PatientUtil
     {
-        public static async Task<List<Patient>> GetCases()
-        {
-            var caseResponse = await WebUtility.WebRequest<List<Patient>>("api/patient", HttpMethod.Get);
-
-            return caseResponse;
-        }
-
         public static async Task<Patient> GetPatient(int patientId)
         {
             var command = string.Format("api/patient/{0}", patientId);

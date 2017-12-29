@@ -6,11 +6,10 @@ namespace OpFlow.Data
 {
     public class PatientDemo
     {
-        public int PatientDemoID { get; set; }
         public  int PatientID { get; set; }
         public DataTypeEnum DataType { get; set; }
-        public string Descrpition { get; set; }
-        public string Notes { get; set; }
+        public string DemoDescrpition { get; set; }
+        public string DemoNotes { get; set; }
 
         public enum DataTypeEnum
         {

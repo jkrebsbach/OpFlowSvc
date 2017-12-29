@@ -17,7 +17,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetAll")]
         public IEnumerable<Surgeon> Get()
         {
-            return DataAccess.SecureSqlHelper.GetSurgeons();
+            return DataAccess.SqlHelper.GetSurgeons(null);
         }
 
         // GET api/values/jdoe
@@ -26,9 +26,9 @@ namespace OpFlow.Service.Controllers
         [Route("api/SurgeonByUsername", Name = "SurgeonByUsername")]
         public HttpResponseMessage GetSurgeon(string username)
         {
-            var surgeons = DataAccess.SecureSqlHelper.GetSurgeons();
+            var surgeons = DataAccess.SqlHelper.GetSurgeons(username);
 
-            var result = surgeons.FirstOrDefault(s => string.Equals(s.Username, username, StringComparison.CurrentCultureIgnoreCase));
+            var result = surgeons.FirstOrDefault();
 
             if (result == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound, "Surgeon not found");
