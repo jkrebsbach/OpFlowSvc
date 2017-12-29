@@ -61,7 +61,7 @@ namespace OpFlow.Android.Adapters
             }
 
             txtPatientName.Text = string.Format("{0} {1}", schedule.PatientLastName, schedule.PatientFirstName);
-            txtTime.Text = schedule.ScheduleTime.ToString("H:mm tt");
+            txtTime.Text = schedule.ScheduleTime.ToString(@"hh\:mm");
             txtCode.Text = schedule.ScheduleProcedure;
             txtPatientAge.Text = "Age: " + schedule.PatientBirthDate.CalculateAge();
             txtPatientSex.Text = "Sex: " + schedule.PatientSex;

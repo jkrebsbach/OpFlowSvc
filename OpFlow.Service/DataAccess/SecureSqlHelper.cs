@@ -15,7 +15,7 @@ namespace OpFlow.Service.DataAccess
         private static DataSet ExecuteCommand(string storedProcedure, SqlParameter[] dsParameters = null)
         {
             var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SecureConnection"].ConnectionString);
-            var cmd = new SqlCommand(storedProcedure, conn);
+            var cmd = new SqlCommand(storedProcedure, conn) { CommandType = CommandType.StoredProcedure };
 
             if (dsParameters != null)
                 cmd.Parameters.AddRange(dsParameters);

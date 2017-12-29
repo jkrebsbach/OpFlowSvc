@@ -21,7 +21,7 @@ namespace OpFlow.Data
         public string PatientSex { get; set; }
         public decimal PatientBMI { get; set; }
         public DateTime ScheduleDate { get; set; }
-        public DateTime ScheduleTime { get; set; }
+        public TimeSpan ScheduleTime { get; set; }
         public int EstDelayMinutes { get; set; }
         public string ScheduleProcedure { get; set; }
     }

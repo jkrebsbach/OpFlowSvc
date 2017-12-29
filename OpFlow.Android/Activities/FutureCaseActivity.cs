@@ -27,7 +27,7 @@ namespace OpFlow.Android.Activities
 
             var lvFutureCases = FindViewById<ListView>(Resource.Id.lvFutureCases);
 
-            _schedule = await ScheduleUtil.GetSchedules(DateTime.Today);
+            _schedule = await ScheduleUtil.GetSchedule(DateTime.Now);
             lvFutureCases.Adapter = new Adapters.FutureCaseListAdapter(this, _schedule);
 
             lvFutureCases.ItemClick += FutureCaseClicked;

@@ -11,17 +11,12 @@ namespace OpFlow.Mobile
 {
     public static class ScheduleUtil
     {
-        public static async Task<List<Schedule>> GetSchedules(DateTime scheduleDate)
+        public static async Task<List<Schedule>> GetSchedule(DateTime scheduleDate)
         {
-            var response = await WebUtility.WebRequest<List<Schedule>>("api/schedule", HttpMethod.Get);
+            var userId = AppSettings.CurrentSurgeon.UserID;
 
-            return response;
-        }
-
-        public static async Task<Schedule> GetSchedule(int scheduleId)
-        {
-            var command = string.Format("api/schedule/{0}", scheduleId);
-            var response = await WebUtility.WebRequest<Schedule>(command, HttpMethod.Get);
+            var command = string.Format("api/schedule?userId={0}", userId);
+            var response = await WebUtility.WebRequest<List<Schedule>>(command, HttpMethod.Get);
 
             return response;
         }

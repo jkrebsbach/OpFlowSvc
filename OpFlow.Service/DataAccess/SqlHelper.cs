@@ -15,10 +15,9 @@ namespace OpFlow.Service.DataAccess
         private static DataSet ExecuteCommand(string storedProcedure, SqlParameter[] dsParameters = null)
         {
             var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString);
-            var cmd = new SqlCommand(storedProcedure, conn);
+            var cmd = new SqlCommand(storedProcedure, conn) {CommandType = CommandType.StoredProcedure};
 
-            if (dsParameters != null)
-                cmd.Parameters.AddRange(dsParameters);
+            cmd.Parameters.AddRange(dsParameters);
 
             conn.Open();
 
@@ -67,7 +66,7 @@ namespace OpFlow.Service.DataAccess
         {
             var parameters = new[]
             {
-                new SqlParameter("User_id", userID)
+                new SqlParameter("user_id", userID)
             };
             var dsSchedules = ExecuteCommand("GetSurgeonCases", parameters);
 

@@ -69,7 +69,7 @@ namespace OpFlow.Android.Activities
         {
             _btnSchedule.Text = _selectedDate.ToString("M/d/yyyy");
 
-            _schedule = await ScheduleUtil.GetSchedules(_selectedDate);
+            _schedule = await ScheduleUtil.GetSchedule(_selectedDate);
             _gvDailySchedule.Adapter = new Adapters.ScheduleGridAdapter(this, _schedule);
         }
     }
