@@ -15,12 +15,6 @@ namespace OpFlow.Mobile
             var command = string.Format("api/case?caseId={0}&locationId={1}&providerId={2}", caseId, locationId, providerId);
             var caseResponse = await WebUtility.WebRequest<Case>(command, HttpMethod.Get);
 
-            if (caseResponse != null)
-            {
-                command = string.Format("api/card/{0}", caseResponse.CardID);
-                caseResponse.Card = await WebUtility.WebRequest<Card>(command, HttpMethod.Get);
-            }
-
             return caseResponse;
         }
     }

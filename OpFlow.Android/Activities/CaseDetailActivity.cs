@@ -139,8 +139,8 @@ namespace OpFlow.Android.Activities
 
             _txtSurgeon.Text = string.Format("{0}, {1}", currentCase.SurgeonLastName,
                 currentCase.SurgeonFirstName);
-            _txtCase.Text = currentCase.Card?.ProcedureDescription;
-            _txtReferMD.Text = currentCase.Card?.CardDescription;
+            _txtCase.Text = currentCase.ProcedureDescription;
+            _txtReferMD.Text = currentCase.CardDescription;
 
             var patient = await PatientUtil.GetPatient(currentCase.PatientID);
 

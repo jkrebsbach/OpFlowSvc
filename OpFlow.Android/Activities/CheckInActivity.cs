@@ -61,8 +61,8 @@ namespace OpFlow.Android.Activities
 
             _txtSurgeon.Text = string.Format("{0}, {1}", currentCase.SurgeonLastName,
                 currentCase.SurgeonFirstName);
-            _txtCase.Text = currentCase.Card.ProcedureDescription;
-            _txtCard.Text = currentCase.Card.CardDescription;
+            _txtCase.Text = currentCase.ProcedureDescription;
+            _txtCard.Text = currentCase.CardDescription;
         }
     }
 }
