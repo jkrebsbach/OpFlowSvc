@@ -11,14 +11,15 @@ namespace OpFlow.Data
         public int PatientID { get; set; }
         public int CardID { get; set; }
         public int BundleID { get; set; }
+        public string BundleDescription { get; set; }
         public int ProcedureID { get; set; }
+        public string ProcedureDescription { get; set; }
         public string ProviderName { get; set; }
         public string SurgeonFirstName { get; set; }
         public string SurgeonLastName { get; set; }
         public DateTime ScheduleDate { get; set; }
         public TimeSpan ScheduleTime { get; set; }
         public int EstDelayMinutes { get; set; }
-        public string ScheduleProcedure { get; set; }
 
         public Patient Patient { get; set; }
     }

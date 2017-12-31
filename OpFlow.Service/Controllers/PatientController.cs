@@ -19,9 +19,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.NotFound)]
         public HttpResponseMessage Get(int patientId)
         {
-            var patients = DataAccess.SqlHelper.GetPatient(patientId, 1, 1);
-
-            var patient = patients.FirstOrDefault();
+            var patient = DataAccess.SecureSqlHelper.GetPatient(patientId);
 
             if (patient == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound, "Patient not found");

@@ -168,7 +168,6 @@
     <Compile Include="Controllers\PatientController.cs" />
     <Compile Include="Controllers\ScheduleController.cs" />
     <Compile Include="Controllers\SurgeonController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="DataAccess\DatabaseHelper.cs" />
     <Compile Include="DataAccess\EntityReader.cs" />
     <Compile Include="DataAccess\SecureSqlHelper.cs" />

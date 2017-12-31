@@ -72,14 +72,19 @@ namespace OpFlow.Service.DataAccess
 
             var result = dsSchedules.Tables[0].DataTableToList<Schedule>();
 
+            foreach (var schedule in result)
+            {
+                schedule.Patient = SecureSqlHelper.GetPatient(schedule.PatientID);
+            }
+
             return result;
         }
 
-        public static List<Case> GetCase(int caseId, int providerId, int locationId)
+        public static Case GetCase(int caseId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("card_id", caseId),
+                new SqlParameter("case_id", caseId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -87,30 +92,7 @@ namespace OpFlow.Service.DataAccess
 
             var result = dsSchedules.Tables[0].DataTableToList<Case>();
 
-            return result;
-        }
-
-        public static List<Patient> GetPatient(int patientId, int providerId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("card_id", patientId),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = ExecuteCommand("GetPatientHistory", parameters);
-
-            var patients = dsSchedules.Tables[0].DataTableToList<Patient>();
-            var demos = dsSchedules.Tables[1].DataTableToList<PatientDemo>();
-
-            foreach (var demo in demos)
-            {
-                var patient = patients.FirstOrDefault(p => p.PatientID == demo.PatientID);
-
-                patient?.DemoData.Add(demo);
-            }
-
-            return patients;
+            return result.FirstOrDefault();
         }
     }
 }

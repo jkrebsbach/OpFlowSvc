@@ -18,11 +18,6 @@ namespace OpFlow.Mobile
             var command = string.Format("api/schedule?userId={0}", userId);
             var response = await WebUtility.WebRequest<List<Schedule>>(command, HttpMethod.Get);
 
-            foreach (var scheduledCase in response)
-            {
-                scheduledCase.Patient = await PatientUtil.GetPatient(scheduledCase.PatientID);
-            }
-
             return response;
         }
     }

@@ -10,9 +10,9 @@ namespace OpFlow.Mobile
 {
     public static class CaseUtil
     {
-        public static async Task<Case> GetCase(int caseId)
+        public static async Task<Case> GetCase(int caseId, int locationId, int providerId)
         {
-            var command = string.Format("api/case/{0}", caseId);
+            var command = string.Format("api/case?caseId={0}&locationId={1}&providerId={2}", caseId, locationId, providerId);
             var caseResponse = await WebUtility.WebRequest<Case>(command, HttpMethod.Get);
 
             if (caseResponse != null)

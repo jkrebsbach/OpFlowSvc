@@ -28,12 +28,15 @@
             android:layout_weight="33"
             android:id="@+id/btnSearch" />
     </LinearLayout>
+  <ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="0dip"
+    android:layout_weight="85">
     <LinearLayout
         android:id="@+id/pnlCaseDetail"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="85"
+        android:layout_height="wrap_content"
         android:weightSum="100">
         <LinearLayout
             android:orientation="horizontal"
@@ -257,4 +260,5 @@
             android:layout_weight="25"
             android:text="See Recent Case Notes" />
     </LinearLayout>
+  </ScrollView>
 </LinearLayout>

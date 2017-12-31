@@ -127,6 +127,15 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f070015
 			public const int gvScheduledProcedures = 2131165205;
 			
+			// aapt resource value: 0x7f07002f
+			public const int ivAlerts = 2131165231;
+			
+			// aapt resource value: 0x7f070030
+			public const int ivDelays = 2131165232;
+			
+			// aapt resource value: 0x7f07002e
+			public const int ivPrefCard = 2131165230;
+			
 			// aapt resource value: 0x7f07001b
 			public const int ivStatus = 2131165211;
 			
@@ -175,14 +184,17 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f07001a
 			public const int txtCaseTime = 2131165210;
 			
-			// aapt resource value: 0x7f07002c
-			public const int txtCode = 2131165228;
+			// aapt resource value: 0x7f070031
+			public const int txtDelayAmt = 2131165233;
 			
 			// aapt resource value: 0x7f07001c
 			public const int txtError = 2131165212;
 			
 			// aapt resource value: 0x7f070011
 			public const int txtLabResults = 2131165201;
+			
+			// aapt resource value: 0x7f07002c
+			public const int txtLocation = 2131165228;
 			
 			// aapt resource value: 0x7f070009
 			public const int txtMedicalHistory = 2131165193;

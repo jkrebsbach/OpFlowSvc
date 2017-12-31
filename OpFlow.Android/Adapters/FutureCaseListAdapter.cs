@@ -51,7 +51,7 @@ namespace OpFlow.Android.Adapters
             var ivStatus = gridView.FindViewById<ImageView>(Resource.Id.ivStatus);
 
             txtPatientName.Text = currentCase.Patient?.LastName;
-            txtProcedure.Text = currentCase.ScheduleProcedure;
+            txtProcedure.Text = currentCase.ProcedureDescription;
             txtCaseTime.Text = currentCase.ScheduleDate.ToString("M/d/yyyy") + currentCase.ScheduleTime.ToString(@"hh\:mm");
 
             // TODO: Make this dependent on status of schedule event

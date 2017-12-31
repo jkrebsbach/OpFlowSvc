@@ -11,7 +11,7 @@ namespace OpFlow.Mobile
     {
         public static async Task<Patient> GetPatient(int patientId)
         {
-            var command = string.Format("api/patient/{0}", patientId);
+            var command = string.Format("api/patient?patientId={0}", patientId);
             var patient = await WebUtility.WebRequest<Patient>(command, HttpMethod.Get);
 
             return patient;

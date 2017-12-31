@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="30" />
         <TextView
-            android:id="@+id/txtCode"
+            android:id="@+id/txtLocation"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="30" />
@@ -47,5 +47,46 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="30" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="100">
+        <TextView
+            android:text="Pref Card:"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="20" />
+        <ImageView
+            android:id="@+id/ivPrefCard"
+            android:layout_width="0dip"
+            android:layout_height="10dip"
+            android:layout_weight="10" />
+        <TextView
+            android:text="Alerts:"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="20" />
+        <ImageView
+            android:id="@+id/ivAlerts"
+            android:layout_width="0dip"
+            android:layout_height="10dip"
+            android:layout_weight="10" />
+        <TextView
+            android:text="Delays:"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="20" />
+        <ImageView
+            android:id="@+id/ivDelays"
+            android:layout_width="0dip"
+            android:layout_height="10dip"
+            android:layout_weight="10" />
+        <TextView
+            android:id="@+id/txtDelayAmt"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="10" />
     </LinearLayout>
 </LinearLayout>

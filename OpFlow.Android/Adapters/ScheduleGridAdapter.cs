@@ -5,6 +5,7 @@ using System.Text;
 
 using Android.App;
 using Android.Content;
+using Android.Content.Res;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
@@ -49,23 +50,35 @@ namespace OpFlow.Android.Adapters
             var pnlLayout = gridView.FindViewById<LinearLayout>(Resource.Id.pnlLayout);
             var txtPatientName = gridView.FindViewById<TextView>(Resource.Id.txtPatientName);
             var txtTime = gridView.FindViewById<TextView>(Resource.Id.txtTime);
-            var txtCode = gridView.FindViewById<TextView>(Resource.Id.txtCode);
+            var txtLocation = gridView.FindViewById<TextView>(Resource.Id.txtLocation);
             var txtPatientAge = gridView.FindViewById<TextView>(Resource.Id.txtPatientAge);
             var txtPatientSex = gridView.FindViewById<TextView>(Resource.Id.txtPatientSex);
             var txtProcedure = gridView.FindViewById<TextView>(Resource.Id.txtProcedure);
+            var ivPrefCard = gridView.FindViewById<ImageView>(Resource.Id.ivPrefCard);
+            var ivAlerts = gridView.FindViewById<ImageView>(Resource.Id.ivAlerts);
+            var ivDelays = gridView.FindViewById<ImageView>(Resource.Id.ivDelays);
+            var txtDelayAmt = gridView.FindViewById<TextView>(Resource.Id.txtDelayAmt);
 
-            // If the case is out of tolerance, highlight the event
-            if (schedule.SurgeryID % 2 == 0)
+            // If there is an estimated delay, highlight the event
+            if (schedule.EstDelayMinutes > 0)
             {
                 pnlLayout.SetBackgroundResource(Resource.Drawable.HighlightedRoundRectangle);
             }
 
             txtPatientName.Text = string.Format("{0} {1}", schedule.Patient?.LastName, schedule.Patient?.FirstName);
             txtTime.Text = schedule.ScheduleTime.ToString(@"hh\:mm");
-            txtCode.Text = schedule.ScheduleProcedure;
+            txtLocation.Text = schedule.ProviderName;
             txtPatientAge.Text = "Age: " + schedule.Patient?.BirthDate.CalculateAge();
             txtPatientSex.Text = "Sex: " + schedule.Patient?.Sex;
-            txtProcedure.Text = schedule.ScheduleProcedure;
+            txtProcedure.Text = schedule.ProcedureDescription;
+
+            ivPrefCard.SetImageDrawable(_context.GetDrawable(Resource.Drawable.DarkGreenCheckMark));
+            ivAlerts.SetImageDrawable(_context.GetDrawable(Resource.Drawable.DarkGreenCheckMark));
+            ivDelays.SetImageDrawable(_context.GetDrawable(
+                schedule.EstDelayMinutes == 0 ? 
+                    Resource.Drawable.DarkGreenCheckMark : Resource.Drawable.RedExclamationPoint));
+
+            txtDelayAmt.Text = schedule.EstDelayMinutes == 0 ? "" : "+" + schedule.EstDelayMinutes;
             
             return gridView;
         }

@@ -16,7 +16,6 @@ namespace OpFlow.Android.Activities
     [Activity(Label = "CheckInActivity")]
     public class CheckInActivity : Activity
     {
-        public const string CARD_BUNDLE = "CARD";
 
         private LinearLayout _pnlCaseDetail;
         private TextView _txtSurgeon;
@@ -41,20 +40,22 @@ namespace OpFlow.Android.Activities
             btnSearch.Click += async delegate
             {
                 // Search event should yield a Case ID
-                await LoadCase(1);
+                await LoadCase(1, 1, 1);
             };
 
             // It is possible to open this activity with a case selected
-            var caseId = Intent.GetStringExtra(CARD_BUNDLE);
+            var caseId = Intent.GetStringExtra(AndroidApp.CARD_BUNDLE);
+            var locationId = Intent.GetStringExtra(AndroidApp.CARD_BUNDLE);
+            var providerId = Intent.GetStringExtra(AndroidApp.CARD_BUNDLE);
             if (!string.IsNullOrEmpty(caseId))
             {
-                await LoadCase(int.Parse(caseId));
+                await LoadCase(int.Parse(caseId), int.Parse(locationId), int.Parse(providerId));
             }
         }
 
-        private async Task LoadCase(int caseId)
+        private async Task LoadCase(int caseId, int locationId, int providerId)
         {
-            var currentCase = await CaseUtil.GetCase(caseId);
+            var currentCase = await CaseUtil.GetCase(caseId, locationId, providerId);
 
             _pnlCaseDetail.Visibility = ViewStates.Visible;
 

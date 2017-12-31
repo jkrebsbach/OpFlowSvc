@@ -65,6 +65,7 @@
     <Compile Include="Activities\ScheduleActivity.cs" />
     <Compile Include="Adapters\FutureCaseListAdapter.cs" />
     <Compile Include="Adapters\ScheduleGridAdapter.cs" />
+    <Compile Include="AndroidApp.cs" />
     <Compile Include="Fragments\DatePickerFragment.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

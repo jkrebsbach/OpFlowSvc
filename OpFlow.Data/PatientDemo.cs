@@ -7,11 +7,11 @@ namespace OpFlow.Data
     public class PatientDemo
     {
         public  int PatientID { get; set; }
-        public DataTypeEnum DataType { get; set; }
-        public string DemoDescrpition { get; set; }
+        public DemoTypeEnum DemoType { get; set; }
+        public string DemoDescription { get; set; }
         public string DemoNotes { get; set; }
 
-        public enum DataTypeEnum
+        public enum DemoTypeEnum
         {
             MedicalHistory = 1,
             RiskFactors = 2,

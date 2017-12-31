@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,22 @@ namespace OpFlow.Android.Activities
         private TextView _txtPatientAge;
         private TextView _txtPatientBMI;
 
+        private Switch _swtMedicalHistory;
+        private Switch _swtRiskFactors;
+        private Switch _swtMedications;
+        private Switch _swtAllergies;
+        private Switch _swtLabResults;
+        private Switch _swtPastProcedureResults;
+        private Switch _swtScheduledProcedures;
+
+        private EditText _txtMedicalHistory;
+        private EditText _txtRiskFactors;
+        private EditText _txtMedications;
+        private EditText _txtAllergies;
+        private EditText _txtLabResults;
+        private EditText _txtPastProcedureResults;
+        private GridView _gvScheduledProcedures;
+
         protected override async void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -39,16 +56,84 @@ namespace OpFlow.Android.Activities
             _txtPatientAge = FindViewById<TextView>(Resource.Id.txtPatientAge);
             _txtPatientBMI = FindViewById<TextView>(Resource.Id.txtPatientBMI);
 
-            var caseId = Intent.GetStringExtra(CheckInActivity.CARD_BUNDLE);
+            _swtMedicalHistory = FindViewById<Switch>(Resource.Id.swtMedicalHistory);
+            _swtRiskFactors = FindViewById<Switch>(Resource.Id.swtRiskFactors);
+            _swtMedications = FindViewById<Switch>(Resource.Id.swtMedications);
+            _swtAllergies = FindViewById<Switch>(Resource.Id.swtAllergies);
+            _swtLabResults = FindViewById<Switch>(Resource.Id.swtLabResults);
+            _swtPastProcedureResults = FindViewById<Switch>(Resource.Id.swtPastProcedureResults);
+            _swtScheduledProcedures = FindViewById<Switch>(Resource.Id.swtScheduledProcedures);
+
+            _txtMedicalHistory = FindViewById<EditText>(Resource.Id.txtMedicalHistory);
+            _txtRiskFactors = FindViewById<EditText>(Resource.Id.txtRiskFactors);
+            _txtMedications = FindViewById<EditText>(Resource.Id.txtMedications);
+            _txtAllergies = FindViewById<EditText>(Resource.Id.txtAllergies);
+            _txtLabResults = FindViewById<EditText>(Resource.Id.txtLabResults);
+            _txtPastProcedureResults = FindViewById<EditText>(Resource.Id.txtPastProcedureResults);
+            _gvScheduledProcedures = FindViewById<GridView>(Resource.Id.gvScheduledProcedures);
+
+            var caseId = Intent.GetStringExtra(AndroidApp.CARD_BUNDLE);
+            var locationId = Intent.GetStringExtra(AndroidApp.LOCATION_BUNDLE);
+            var providerId = Intent.GetStringExtra(AndroidApp.PROVIDER_BUNDLE);
             if (!string.IsNullOrEmpty(caseId))
             {
-                await LoadCase(int.Parse(caseId));
+                await LoadCase(int.Parse(caseId), int.Parse(locationId), int.Parse(providerId));
             }
+
+            _swtMedicalHistory.CheckedChange += Switch_CheckChanged;
+            _swtRiskFactors.CheckedChange += Switch_CheckChanged;
+            _swtMedications.CheckedChange += Switch_CheckChanged;
+            _swtAllergies.CheckedChange += Switch_CheckChanged;
+            _swtLabResults.CheckedChange += Switch_CheckChanged;
+            _swtPastProcedureResults.CheckedChange += Switch_CheckChanged;
+            _swtScheduledProcedures.CheckedChange += Switch_CheckChanged;
+
+            SetSwitchVisibility(_swtMedicalHistory);
+            SetSwitchVisibility(_swtRiskFactors);
+            SetSwitchVisibility(_swtMedications);
+            SetSwitchVisibility(_swtAllergies);
+            SetSwitchVisibility(_swtLabResults);
+            SetSwitchVisibility(_swtPastProcedureResults);
+            SetSwitchVisibility(_swtScheduledProcedures);
         }
 
-        private async Task LoadCase(int caseId)
+        private void Switch_CheckChanged(object sender, EventArgs e)
         {
-            var currentCase = await CaseUtil.GetCase(caseId);
+            var changedSwitch = (Switch)sender;
+
+            SetSwitchVisibility(changedSwitch);
+        }
+
+        private void SetSwitchVisibility(ICheckable changedSwitch)
+        {
+            EditText textControl = null;
+            GridView gridControl = null;
+
+            if (changedSwitch == _swtMedicalHistory)
+                textControl = _txtMedicalHistory;
+            else if (changedSwitch == _swtRiskFactors)
+                textControl = _txtRiskFactors;
+            else if (changedSwitch == _swtMedications)
+                textControl = _txtMedications;
+            else if (changedSwitch == _swtAllergies)
+                textControl = _txtAllergies;
+            else if (changedSwitch == _swtLabResults)
+                textControl = _txtLabResults;
+            else if (changedSwitch == _swtPastProcedureResults)
+                textControl = _txtPastProcedureResults;
+            else if (changedSwitch == _swtScheduledProcedures)
+                gridControl = _gvScheduledProcedures;
+
+            if (textControl != null)
+                textControl.Visibility = (changedSwitch.Checked ? ViewStates.Visible : ViewStates.Gone);
+            if (gridControl != null)
+                gridControl.Visibility = (changedSwitch.Checked ? ViewStates.Visible : ViewStates.Gone);
+
+        }
+
+        private async Task LoadCase(int caseId, int locationId, int providerId)
+        {
+            var currentCase = await CaseUtil.GetCase(caseId, locationId, providerId);
 
             _pnlCaseDetail.Visibility = ViewStates.Visible;
 
@@ -61,10 +146,38 @@ namespace OpFlow.Android.Activities
 
             _txtPatientName.Text = string.Format("{0} {1}", currentCase.PatientFirstName, currentCase.PatientLastName);
             _txtPatientAge.Text = currentCase.PatientBirthDate.CalculateAge().ToString();
-            _txtPatientBMI.Text = currentCase.PatientBMI.ToString();
+            _txtPatientBMI.Text = currentCase.PatientBMI.ToString(CultureInfo.InvariantCulture);
 
+
+            #region Patient Demo
             var medicalHistory =
-                patient.DemoData.FirstOrDefault(pd => pd.DataType == PatientDemo.DataTypeEnum.MedicalHistory);
+                patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.MedicalHistory);
+            var riskFactors =
+                patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.RiskFactors);
+            var medications =
+                patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.Medications);
+            var allergies =
+                patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.Allergies);
+            var labResults =
+                patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.LabResults);
+            var pastProcedures =
+                patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.PastProcedureResult);
+
+            _swtMedicalHistory.Checked = medicalHistory != null;
+            _swtRiskFactors.Checked = riskFactors != null;
+            _swtMedications.Checked = medications != null;
+            _swtAllergies.Checked = allergies != null;
+            _swtLabResults.Checked = labResults != null;
+            _swtPastProcedureResults.Checked = pastProcedures != null;
+            
+            _txtMedicalHistory.Text = medicalHistory?.DemoDescription ?? "";
+            _txtRiskFactors.Text = riskFactors?.DemoDescription ?? "";
+            _txtMedications.Text = medications?.DemoDescription ?? "";
+            _txtAllergies.Text = allergies?.DemoDescription ?? "";
+            _txtLabResults.Text = labResults?.DemoDescription ?? "";
+            _txtPastProcedureResults.Text = pastProcedures?.DemoDescription ?? "";
+
+            #endregion
         }
     }
 }
