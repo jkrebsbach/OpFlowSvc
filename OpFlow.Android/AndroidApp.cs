@@ -14,6 +14,7 @@ namespace OpFlow.Android
 {
     public static class AndroidApp
     {
+        public const string SURGERY_BUNDLE = "surgery";
         public const string CARD_BUNDLE = "CARD";
         public const string LOCATION_BUNDLE = "LOCATION";
         public const string PROVIDER_BUNDLE = "PROVIDER";

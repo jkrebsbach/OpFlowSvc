@@ -23,7 +23,7 @@ namespace OpFlow.Android.Activities
         private Button _btnSchedule;
         private GridView _gvDailySchedule;
 
-        private List<Schedule> _schedule;
+        private List<Surgery> _schedule;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -71,7 +71,7 @@ namespace OpFlow.Android.Activities
         {
             _btnSchedule.Text = _selectedDate.ToString("M/d/yyyy");
 
-            _schedule = await ScheduleUtil.GetSchedule(_selectedDate);
+            _schedule = await SurgeryUtil.GetSurgerySchedule(_selectedDate);
             _gvDailySchedule.Adapter = new Adapters.ScheduleGridAdapter(this, _schedule);
         }
     }

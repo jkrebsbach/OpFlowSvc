@@ -11,19 +11,38 @@ using Swashbuckle.Swagger.Annotations;
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
-    public class ScheduleController : ApiController
+    public class SurgeryController : ApiController
     {
         // GET api/values/5
-        [SwaggerOperation("GetByUserId")]
+        [SwaggerOperation("GetById")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage Get(int userId)
+        public HttpResponseMessage Get(int id)
         {
-            var schedules = DataAccess.SqlHelper.GetSchedules(userId);
+            var schedules = DataAccess.SqlHelper.GetSurgery(id);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
 
+        // GET api/values/5
+        [SwaggerOperation("GetByUserId")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        public HttpResponseMessage GetSurgeryByUser(int userId)
+        {
+            var schedules = DataAccess.SqlHelper.GetSurgeries(userId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, schedules);
+        }
+
+        [SwaggerOperation("GetSurgeryUsers")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/Surgery/{id}/users")]
+        public HttpResponseMessage GetSurgeryUsers(int id)
+        {
+            var schedules = DataAccess.SqlHelper.GetSurgeryUsers(id);
+
+            return Request.CreateResponse(HttpStatusCode.OK, schedules);
+        }
         // POST api/values
         [SwaggerOperation("Create")]
         [SwaggerResponse(HttpStatusCode.Created)]

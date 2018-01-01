@@ -10,7 +10,7 @@ namespace OpFlow.Mobile.Test
         [TestMethod]
         public async Task TestSendMessage()
         {
-            await ScheduleUtil.GetSchedule(DateTime.Today);
+            await SurgeryUtil.GetSurgerySchedule(DateTime.Today);
         }
     }
 }

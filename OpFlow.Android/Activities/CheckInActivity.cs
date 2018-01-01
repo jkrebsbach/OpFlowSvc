@@ -40,22 +40,20 @@ namespace OpFlow.Android.Activities
             btnSearch.Click += async delegate
             {
                 // Search event should yield a Case ID
-                await LoadCase(1, 1, 1);
+                await LoadCase(1);
             };
 
             // It is possible to open this activity with a case selected
-            var caseId = Intent.GetStringExtra(AndroidApp.CARD_BUNDLE);
-            var locationId = Intent.GetStringExtra(AndroidApp.CARD_BUNDLE);
-            var providerId = Intent.GetStringExtra(AndroidApp.CARD_BUNDLE);
-            if (!string.IsNullOrEmpty(caseId))
+            var surgeryId = Intent.GetStringExtra(AndroidApp.SURGERY_BUNDLE);
+            if (!string.IsNullOrEmpty(surgeryId))
             {
-                await LoadCase(int.Parse(caseId), int.Parse(locationId), int.Parse(providerId));
+                await LoadCase(int.Parse(surgeryId));
             }
         }
 
-        private async Task LoadCase(int caseId, int locationId, int providerId)
+        private async Task LoadCase(int surgeryId)
         {
-            var currentCase = await CaseUtil.GetCase(caseId, locationId, providerId);
+            var currentCase = await SurgeryUtil.GetSurgery(surgeryId);
 
             _pnlCaseDetail.Visibility = ViewStates.Visible;
 

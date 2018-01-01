@@ -165,8 +165,9 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CardController.cs" />
     <Compile Include="Controllers\CaseController.cs" />
+    <Compile Include="Controllers\FlowController.cs" />
     <Compile Include="Controllers\PatientController.cs" />
-    <Compile Include="Controllers\ScheduleController.cs" />
+    <Compile Include="Controllers\SurgeryController.cs" />
     <Compile Include="Controllers\SurgeonController.cs" />
     <Compile Include="DataAccess\DatabaseHelper.cs" />
     <Compile Include="DataAccess\EntityReader.cs" />

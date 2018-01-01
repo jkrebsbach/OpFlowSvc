@@ -12,19 +12,19 @@ namespace OpFlow.Service.Controllers
 {
     public class CaseController : ApiController
     {
-        // GET api/values/5
-        [SwaggerOperation("GetCase")]
-        [SwaggerResponse(HttpStatusCode.OK)]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage Get(int providerId, int locationId, int caseId)
-        {
-            var result = DataAccess.SqlHelper.GetCase(providerId, locationId, caseId);
+        //// GET api/values/5
+        //[SwaggerOperation("GetCase")]
+        //[SwaggerResponse(HttpStatusCode.OK)]
+        //[SwaggerResponse(HttpStatusCode.NotFound)]
+        //public HttpResponseMessage Get(int providerId, int locationId, int caseId)
+        //{
+        //    var result = DataAccess.SqlHelper.GetCase(providerId, locationId, caseId);
 
-            if (result == null)
-                return Request.CreateResponse(HttpStatusCode.NotFound, "Case not found");
+        //    if (result == null)
+        //        return Request.CreateResponse(HttpStatusCode.NotFound, "Case not found");
 
-            return Request.CreateResponse(HttpStatusCode.OK, result);
-        }
+        //    return Request.CreateResponse(HttpStatusCode.OK, result);
+        //}
 
         // POST api/values
         [SwaggerOperation("Create")]

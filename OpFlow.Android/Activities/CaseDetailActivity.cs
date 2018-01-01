@@ -72,12 +72,10 @@ namespace OpFlow.Android.Activities
             _txtPastProcedureResults = FindViewById<EditText>(Resource.Id.txtPastProcedureResults);
             _gvScheduledProcedures = FindViewById<GridView>(Resource.Id.gvScheduledProcedures);
 
-            var caseId = Intent.GetStringExtra(AndroidApp.CARD_BUNDLE);
-            var locationId = Intent.GetStringExtra(AndroidApp.LOCATION_BUNDLE);
-            var providerId = Intent.GetStringExtra(AndroidApp.PROVIDER_BUNDLE);
-            if (!string.IsNullOrEmpty(caseId))
+            var surgeryId = Intent.GetStringExtra(AndroidApp.SURGERY_BUNDLE);
+            if (!string.IsNullOrEmpty(surgeryId))
             {
-                await LoadCase(int.Parse(caseId), int.Parse(locationId), int.Parse(providerId));
+                await LoadCase(int.Parse(surgeryId));
             }
 
             _swtMedicalHistory.CheckedChange += Switch_CheckChanged;
@@ -131,9 +129,9 @@ namespace OpFlow.Android.Activities
 
         }
 
-        private async Task LoadCase(int caseId, int locationId, int providerId)
+        private async Task LoadCase(int surgeryId)
         {
-            var currentCase = await CaseUtil.GetCase(caseId, locationId, providerId);
+            var currentCase = await SurgeryUtil.GetSurgery(surgeryId);
 
             _pnlCaseDetail.Visibility = ViewStates.Visible;
 
@@ -144,9 +142,9 @@ namespace OpFlow.Android.Activities
 
             var patient = await PatientUtil.GetPatient(currentCase.PatientID);
 
-            _txtPatientName.Text = string.Format("{0} {1}", currentCase.PatientFirstName, currentCase.PatientLastName);
-            _txtPatientAge.Text = currentCase.PatientBirthDate.CalculateAge().ToString();
-            _txtPatientBMI.Text = currentCase.PatientBMI.ToString(CultureInfo.InvariantCulture);
+            _txtPatientName.Text = string.Format("{0} {1}", currentCase.Patient.FirstName, currentCase.Patient.LastName);
+            _txtPatientAge.Text = currentCase.Patient.BirthDate.CalculateAge().ToString();
+            _txtPatientBMI.Text = currentCase.Patient.BMI.ToString(CultureInfo.InvariantCulture);
 
 
             #region Patient Demo

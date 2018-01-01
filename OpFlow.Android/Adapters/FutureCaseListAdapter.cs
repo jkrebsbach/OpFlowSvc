@@ -16,9 +16,9 @@ namespace OpFlow.Android.Adapters
     public class FutureCaseListAdapter : BaseAdapter
     {
         private Context _context;
-        private List<Schedule> _cases;
+        private List<Surgery> _cases;
 
-        public FutureCaseListAdapter(Context c, List<Schedule> cases)
+        public FutureCaseListAdapter(Context c, List<Surgery> cases)
         {
             _context = c;
             _cases = cases;

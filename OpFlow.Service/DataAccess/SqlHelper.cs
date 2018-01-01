@@ -62,7 +62,25 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Schedule> GetSchedules(int userID)
+        public static Surgery GetSurgery(int id)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", id)
+            };
+            var dsSchedules = ExecuteCommand("GetSurgery", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Surgery>().FirstOrDefault();
+            
+            if (result != null)
+            {
+                result.Patient = SecureSqlHelper.GetPatient(result.PatientID);
+            }
+
+            return result;
+        }
+
+        public static List<Surgery> GetSurgeries(int userID)
         {
             var parameters = new[]
             {
@@ -70,7 +88,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = ExecuteCommand("GetSurgeonCases", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Schedule>();
+            var result = dsSchedules.Tables[0].DataTableToList<Surgery>();
 
             foreach (var schedule in result)
             {
@@ -80,19 +98,37 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static Case GetCase(int caseId, int providerId, int locationId)
+        public static List<SurgeryUser> GetSurgeryUsers(int surgeryId)
         {
             var parameters = new[]
             {
-                new SqlParameter("case_id", caseId),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
+                new SqlParameter("surgery_id", surgeryId)
             };
-            var dsSchedules = ExecuteCommand("GetCase", parameters);
+            var dsSchedules = ExecuteCommand("GetSurgeryUsers", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Case>();
+            var result = dsSchedules.Tables[0].DataTableToList<SurgeryUser>();
 
-            return result.FirstOrDefault();
+            return result;
+        }
+
+        public static Flow GetFlowByCardUser(int cardID, int userID)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_id", cardID),
+                new SqlParameter("user_id", userID)
+            };
+            var dsSchedules = ExecuteCommand("GetCaseFlow", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Flow>().FirstOrDefault();
+
+            if (result != null)
+            {
+                result.FlowSteps = dsSchedules.Tables[0].DataTableToList<FlowStep>();
+                result.FlowMetrics = dsSchedules.Tables[1].DataTableToList<FlowMetric>();
+            }
+
+            return result;
         }
     }
 }

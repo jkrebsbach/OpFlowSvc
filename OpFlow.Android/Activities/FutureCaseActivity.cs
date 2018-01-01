@@ -17,7 +17,7 @@ namespace OpFlow.Android.Activities
     [Activity(Label = "FutureCaseActivity")]
     public class FutureCaseActivity : Activity
     {
-        private List<Schedule> _schedule;
+        private List<Surgery> _schedule;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -27,7 +27,7 @@ namespace OpFlow.Android.Activities
 
             var lvFutureCases = FindViewById<ListView>(Resource.Id.lvFutureCases);
 
-            _schedule = await ScheduleUtil.GetSchedule(DateTime.Now);
+            _schedule = await SurgeryUtil.GetSurgerySchedule(DateTime.Now);
             lvFutureCases.Adapter = new Adapters.FutureCaseListAdapter(this, _schedule);
 
             lvFutureCases.ItemClick += FutureCaseClicked;

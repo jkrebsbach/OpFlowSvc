@@ -18,12 +18,12 @@ namespace OpFlow.Android.Adapters
     public class ScheduleGridAdapter : BaseAdapter
     {
         private Context _context;
-        private List<Schedule> _schedules;
+        private List<Surgery> _schedule;
 
-        public ScheduleGridAdapter(Context c, List<Schedule> schedules)
+        public ScheduleGridAdapter(Context c, List<Surgery> schedule)
         {
             _context = c;
-            _schedules = schedules;
+            _schedule = schedule;
         }
 
         public override Java.Lang.Object GetItem(int position)
@@ -33,7 +33,7 @@ namespace OpFlow.Android.Adapters
 
         public override long GetItemId(int position)
         {
-            return _schedules[position].SurgeryID;
+            return _schedule[position].SurgeryID;
         }
 
         public override View GetView(int position, View convertView, ViewGroup parent)
@@ -45,7 +45,7 @@ namespace OpFlow.Android.Adapters
                 gridView = inflater.Inflate(Resource.Layout.ScheduleGrid, parent, false);
             }
 
-            var schedule = _schedules[position];
+            var surgery = _schedule[position];
 
             var pnlLayout = gridView.FindViewById<LinearLayout>(Resource.Id.pnlLayout);
             var txtPatientName = gridView.FindViewById<TextView>(Resource.Id.txtPatientName);
@@ -60,29 +60,29 @@ namespace OpFlow.Android.Adapters
             var txtDelayAmt = gridView.FindViewById<TextView>(Resource.Id.txtDelayAmt);
 
             // If there is an estimated delay, highlight the event
-            if (schedule.EstDelayMinutes > 0)
+            if (surgery.EstDelayMinutes > 0)
             {
                 pnlLayout.SetBackgroundResource(Resource.Drawable.HighlightedRoundRectangle);
             }
 
-            txtPatientName.Text = string.Format("{0} {1}", schedule.Patient?.LastName, schedule.Patient?.FirstName);
-            txtTime.Text = schedule.ScheduleTime.ToString(@"hh\:mm");
-            txtLocation.Text = schedule.ProviderName;
-            txtPatientAge.Text = "Age: " + schedule.Patient?.BirthDate.CalculateAge();
-            txtPatientSex.Text = "Sex: " + schedule.Patient?.Sex;
-            txtProcedure.Text = schedule.ProcedureDescription;
+            txtPatientName.Text = string.Format("{0} {1}", surgery.Patient?.LastName, surgery.Patient?.FirstName);
+            txtTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
+            txtLocation.Text = surgery.ProviderName;
+            txtPatientAge.Text = "Age: " + surgery.Patient?.BirthDate.CalculateAge();
+            txtPatientSex.Text = "Sex: " + surgery.Patient?.Sex;
+            txtProcedure.Text = surgery.ProcedureDescription;
 
             ivPrefCard.SetImageDrawable(_context.GetDrawable(Resource.Drawable.DarkGreenCheckMark));
             ivAlerts.SetImageDrawable(_context.GetDrawable(Resource.Drawable.DarkGreenCheckMark));
             ivDelays.SetImageDrawable(_context.GetDrawable(
-                schedule.EstDelayMinutes == 0 ? 
+                surgery.EstDelayMinutes == 0 ? 
                     Resource.Drawable.DarkGreenCheckMark : Resource.Drawable.RedExclamationPoint));
 
-            txtDelayAmt.Text = schedule.EstDelayMinutes == 0 ? "" : "+" + schedule.EstDelayMinutes;
+            txtDelayAmt.Text = surgery.EstDelayMinutes == 0 ? "" : "+" + surgery.EstDelayMinutes;
             
             return gridView;
         }
 
-        public override int Count => _schedules.Count;
+        public override int Count => _schedule.Count;
     }
 }

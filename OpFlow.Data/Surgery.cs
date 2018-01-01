@@ -2,7 +2,7 @@
 
 namespace OpFlow.Data
 {
-    public class Schedule
+    public class Surgery
     {
         public int SurgeryID { get; set; }
         public int SpecialtyID { get; set; }
@@ -10,10 +10,12 @@ namespace OpFlow.Data
         public int LocationID { get; set; }
         public int PatientID { get; set; }
         public int CardID { get; set; }
-        public int BundleID { get; set; }
-        public string BundleDescription { get; set; }
+        public int CaseID { get; set; }
         public int ProcedureID { get; set; }
+        public int BundleID { get; set; }
         public string ProcedureDescription { get; set; }
+        public string BundleDescription { get; set; }
+        public string CardDescription { get; set; }
         public string ProviderName { get; set; }
         public string SurgeonFirstName { get; set; }
         public string SurgeonLastName { get; set; }
