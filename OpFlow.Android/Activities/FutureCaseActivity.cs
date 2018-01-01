@@ -15,15 +15,18 @@ using OpFlow.Mobile;
 namespace OpFlow.Android.Activities
 {
     [Activity(Label = "FutureCaseActivity")]
-    public class FutureCaseActivity : Activity
+    public class FutureCaseActivity : OpFlowActivityBase
     {
         private List<Surgery> _schedule;
+
+        protected override int GetLayoutResourceId()
+        {
+            return Resource.Layout.FutureCase;
+        }
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
-            SetContentView(Resource.Layout.FutureCase);
 
             var lvFutureCases = FindViewById<ListView>(Resource.Id.lvFutureCases);
 

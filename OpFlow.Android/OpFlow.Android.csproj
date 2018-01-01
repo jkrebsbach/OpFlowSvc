@@ -62,6 +62,7 @@
     <Compile Include="Activities\FutureCaseActivity.cs" />
     <Compile Include="Activities\LoginActivity.cs" />
     <Compile Include="Activities\MainActivity.cs" />
+    <Compile Include="Activities\OpFlowActivityBase.cs" />
     <Compile Include="Activities\ScheduleActivity.cs" />
     <Compile Include="Adapters\FutureCaseListAdapter.cs" />
     <Compile Include="Adapters\ScheduleGridAdapter.cs" />
@@ -103,6 +104,9 @@
     <AndroidResource Include="Resources\layout\CaseDetail.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
+    <AndroidResource Include="Resources\layout\Toolbar.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml">
@@ -136,13 +140,18 @@
     <AndroidResource Include="Resources\values\styles.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\values\colors.xml" />
+    <AndroidResource Include="Resources\values\colors.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\DarkGreenCheckMark.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\RedExclamationPoint.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\menu\option_menu.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

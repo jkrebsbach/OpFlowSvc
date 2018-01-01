@@ -14,13 +14,18 @@ using OpFlow.Mobile;
 namespace OpFlow.Android.Activities
 {
     [Activity(Label = "CheckInActivity")]
-    public class CheckInActivity : Activity
+    public class CheckInActivity : OpFlowActivityBase
     {
 
         private LinearLayout _pnlCaseDetail;
         private TextView _txtSurgeon;
         private TextView _txtCase;
         private TextView _txtCard;
+
+        protected override int GetLayoutResourceId()
+        {
+            return Resource.Layout.CheckIn;
+        }
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {

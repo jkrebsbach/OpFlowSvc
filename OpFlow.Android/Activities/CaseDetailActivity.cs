@@ -16,7 +16,7 @@ using OpFlow.Mobile;
 namespace OpFlow.Android.Activities
 {
     [Activity(Label = "CaseDetailActivity")]
-    public class CaseDetailActivity : Activity
+    public class CaseDetailActivity : OpFlowActivityBase
     {
         private LinearLayout _pnlCaseDetail;
         private TextView _txtSurgeon;
@@ -41,6 +41,11 @@ namespace OpFlow.Android.Activities
         private EditText _txtLabResults;
         private EditText _txtPastProcedureResults;
         private GridView _gvScheduledProcedures;
+
+        protected override int GetLayoutResourceId()
+        {
+            return Resource.Layout.CaseDetail;
+        }
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -95,7 +100,7 @@ namespace OpFlow.Android.Activities
             SetSwitchVisibility(_swtScheduledProcedures);
         }
 
-        private void Switch_CheckChanged(object sender, EventArgs e)
+       private void Switch_CheckChanged(object sender, EventArgs e)
         {
             var changedSwitch = (Switch)sender;
 

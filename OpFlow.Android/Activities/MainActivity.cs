@@ -3,14 +3,26 @@ using Android.App;
 using Android.Content;
 using Android.Widget;
 using Android.OS;
+using Android.Views;
 using OpFlow.Android.Activities;
 using OpFlow.Mobile;
 
 namespace OpFlow.Android
 {
     [Activity(Label = "OpFlow.Android", MainLauncher = true)]
-    public class MainActivity : Activity
+    public class MainActivity : OpFlowActivityBase
     {
+        protected override int GetLayoutResourceId()
+        {
+            return Resource.Layout.Main;
+        }
+
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Menu.option_menu, menu);
+            return true;
+        }
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -38,8 +50,6 @@ namespace OpFlow.Android
                 var futureCaseActivity = new Intent(this, typeof(FutureCaseActivity));
                 StartActivity(futureCaseActivity);
             };
-
-            //AuthenticateUser();
         }
 
         protected override void OnResume()

@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <resources>
-  <style name="OpFlowTheme" parent="android:Theme.Material.Light">
+  <style name="OpFlowTheme" parent="android:Theme.Material.Light.NoActionBar">
     <item name="android:colorPrimary">@color/opflow_blue</item>
+    <item name="android:colorBackground">@color/opflow_white</item>
   </style>
 </resources>

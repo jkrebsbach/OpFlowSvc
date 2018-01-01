@@ -17,16 +17,19 @@ using OpFlow.Mobile;
 namespace OpFlow.Android.Activities
 {
     [Activity(Label = "LoginActivity")]
-    public class LoginActivity : Activity
+    public class LoginActivity : OpFlowActivityBase
     {
         private ProgressDialog _progressDialog;
         private TextView _txtError;
 
+        protected override int GetLayoutResourceId()
+        {
+            return Resource.Layout.Login;
+        }
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
-            SetContentView(Resource.Layout.Login);
 
             _progressDialog = new ProgressDialog(this);
             _progressDialog.SetTitle("Login In Progress");

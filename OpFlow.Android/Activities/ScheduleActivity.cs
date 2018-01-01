@@ -17,7 +17,7 @@ using OpFlow.Mobile;
 namespace OpFlow.Android.Activities
 {
     [Activity(Label = "ScheduleActivity")]
-    public class ScheduleActivity : Activity
+    public class ScheduleActivity : OpFlowActivityBase
     {
         private DateTime _selectedDate;
         private Button _btnSchedule;
@@ -25,11 +25,14 @@ namespace OpFlow.Android.Activities
 
         private List<Surgery> _schedule;
 
+        protected override int GetLayoutResourceId()
+        {
+            return Resource.Layout.Schedule;
+        }
+
         protected override async void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
-            SetContentView(Resource.Layout.Schedule);
 
             _btnSchedule = FindViewById<Button>(Resource.Id.btnScheduleDate);
             _gvDailySchedule = FindViewById<GridView>(Resource.Id.gvDailySchedule);
