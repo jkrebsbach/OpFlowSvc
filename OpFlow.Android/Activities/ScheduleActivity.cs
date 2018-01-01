@@ -51,9 +51,7 @@ namespace OpFlow.Android.Activities
             var schedule = _schedule[eventArgs.Position];
             
             var checkInActivity = new Intent(this, typeof(CheckInActivity));
-            checkInActivity.PutExtra(AndroidApp.CARD_BUNDLE, schedule.CardID.ToString());
-            checkInActivity.PutExtra(AndroidApp.PROVIDER_BUNDLE, schedule.ProviderID.ToString());
-            checkInActivity.PutExtra(AndroidApp.LOCATION_BUNDLE, schedule.LocationID.ToString());
+            checkInActivity.PutExtra(AndroidApp.SURGERY_BUNDLE, schedule.SurgeryID.ToString());
             StartActivity(checkInActivity);
         }
 

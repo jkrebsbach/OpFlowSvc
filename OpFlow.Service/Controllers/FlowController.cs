@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using OpFlow.Data;
 using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
@@ -19,7 +20,11 @@ namespace OpFlow.Service.Controllers
         {
             var flow = DataAccess.SqlHelper.GetFlowByCardUser(cardId, userId);
 
-            return Request.CreateResponse(HttpStatusCode.OK, flow);
+            var result = new List<Flow>();
+            if (flow != null)
+                result.Add(flow);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
     }
 }

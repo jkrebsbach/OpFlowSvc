@@ -41,9 +41,7 @@ namespace OpFlow.Android.Activities
             var schedule = _schedule[eventArgs.Position];
 
             var caseDetailActivity = new Intent(this, typeof(CaseDetailActivity));
-            caseDetailActivity.PutExtra(AndroidApp.CARD_BUNDLE, schedule.CardID.ToString());
-            caseDetailActivity.PutExtra(AndroidApp.PROVIDER_BUNDLE, schedule.ProviderID.ToString());
-            caseDetailActivity.PutExtra(AndroidApp.LOCATION_BUNDLE, schedule.LocationID.ToString());
+            caseDetailActivity.PutExtra(AndroidApp.SURGERY_BUNDLE, schedule.SurgeryID.ToString());
             StartActivity(caseDetailActivity);
         }
     }

@@ -15,7 +15,7 @@ namespace OpFlow.Mobile
         {
             var userId = AppSettings.CurrentSurgeon.UserID;
 
-            var command = string.Format("api/schedule?userId={0}", userId);
+            var command = string.Format("api/surgery?userId={0}", userId);
             var response = await WebUtility.WebRequest<List<Surgery>>(command, HttpMethod.Get);
 
             return response;
