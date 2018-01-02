@@ -17,18 +17,9 @@ namespace OpFlow.Android
             return Resource.Layout.Main;
         }
 
-        public override bool OnCreateOptionsMenu(IMenu menu)
-        {
-            MenuInflater.Inflate(Resource.Menu.option_menu, menu);
-            return true;
-        }
-
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
-            // Set our view from the "main" layout resource
-            SetContentView(Resource.Layout.Main);
 
             var btnCheckIn = FindViewById<Button>(Resource.Id.btnCheckIn);
             btnCheckIn.Click += delegate
@@ -52,12 +43,28 @@ namespace OpFlow.Android
             };
         }
 
-        protected override void OnResume()
+        public override bool OnOptionsItemSelected(IMenuItem item)
         {
-            AuthenticateUser();
-
-            base.OnResume();
+            // Handle item selection
+            switch (item.ItemId)
+            {
+                case Resource.Id.menu_save:
+                    //newGame();
+                    return true;
+                case Resource.Id.menu_edit:
+                    //showHelp();
+                    return true;
+                default:
+                    return base.OnOptionsItemSelected(item);
+            }
         }
+
+        //protected override void OnResume()
+        //{
+        //    AuthenticateUser();
+
+        //    base.OnResume();
+        //}
 
         private void AuthenticateUser()
         {

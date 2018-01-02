@@ -44,11 +44,14 @@ namespace OpFlow.Android
 		public partial class Color
 		{
 			
-			// aapt resource value: 0x7f040001
-			public const int opflow_blue = 2130968577;
-			
 			// aapt resource value: 0x7f040000
-			public const int opflow_white = 2130968576;
+			public const int opflow_black = 2130968576;
+			
+			// aapt resource value: 0x7f040002
+			public const int opflow_blue = 2130968578;
+			
+			// aapt resource value: 0x7f040001
+			public const int opflow_white = 2130968577;
 			
 			static Color()
 			{
@@ -90,21 +93,6 @@ namespace OpFlow.Android
 		
 		public partial class Id
 		{
-			
-			// aapt resource value: 0x7f080033
-			public const int action_settings = 2131230771;
-			
-			// aapt resource value: 0x7f080034
-			public const int action_settings1 = 2131230772;
-			
-			// aapt resource value: 0x7f080035
-			public const int action_settings2 = 2131230773;
-			
-			// aapt resource value: 0x7f080036
-			public const int action_settings3 = 2131230774;
-			
-			// aapt resource value: 0x7f080037
-			public const int action_settings4 = 2131230775;
 			
 			// aapt resource value: 0x7f080026
 			public const int btnArticles = 2131230758;
@@ -159,6 +147,15 @@ namespace OpFlow.Android
 			
 			// aapt resource value: 0x7f080019
 			public const int lvFutureCases = 2131230745;
+			
+			// aapt resource value: 0x7f080033
+			public const int menu_edit = 2131230771;
+			
+			// aapt resource value: 0x7f080035
+			public const int menu_preferences = 2131230773;
+			
+			// aapt resource value: 0x7f080034
+			public const int menu_save = 2131230772;
 			
 			// aapt resource value: 0x7f080002
 			public const int pnlCaseDetail = 2131230722;

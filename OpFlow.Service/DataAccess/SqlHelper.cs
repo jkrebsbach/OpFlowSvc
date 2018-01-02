@@ -53,7 +53,7 @@ namespace OpFlow.Service.DataAccess
         {
             var dsParameters = new[]
             {
-                new SqlParameter("email", username),
+                new SqlParameter("email", (object)username ?? DBNull.Value),
             };
             var dsSchedules = ExecuteCommand("GetSurgeon", dsParameters);
 
