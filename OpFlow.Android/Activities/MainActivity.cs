@@ -5,12 +5,13 @@ using Android.Widget;
 using Android.OS;
 using Android.Views;
 using OpFlow.Android.Activities;
+using OpFlow.Android.Fragments;
 using OpFlow.Mobile;
 
 namespace OpFlow.Android
 {
     [Activity(Label = "OpFlow.Android", MainLauncher = true)]
-    public class MainActivity : OpFlowActivityBase
+    public class MainActivity : OpFlowActivityBase, IFragmentMessageListener
     {
         protected override int GetLayoutResourceId()
         {
@@ -21,42 +22,37 @@ namespace OpFlow.Android
         {
             base.OnCreate(savedInstanceState);
 
-            var btnCheckIn = FindViewById<Button>(Resource.Id.btnCheckIn);
-            btnCheckIn.Click += delegate
-            {
-                var checkInActivity = new Intent(this, typeof(CheckInActivity));
-                StartActivity(checkInActivity);
-            };
+            FragmentManager.BeginTransaction()
+                .Replace(Resource.Id.mainFragment, InitializeFragment())
+                .Commit();
 
-            var btnSchedule = FindViewById<Button>(Resource.Id.btnSchedule);
-            btnSchedule.Click += delegate
-            {
-                var scheduleActivity = new Intent(this, typeof(ScheduleActivity));
-                StartActivity(scheduleActivity);
-            };
-
-            var btnCases = FindViewById<Button>(Resource.Id.btnCases);
-            btnCases.Click += delegate
-            {
-                var futureCaseActivity = new Intent(this, typeof(FutureCaseActivity));
-                StartActivity(futureCaseActivity);
-            };
         }
 
-        public override bool OnOptionsItemSelected(IMenuItem item)
+        private Fragment InitializeFragment()
         {
-            // Handle item selection
-            switch (item.ItemId)
-            {
-                case Resource.Id.menu_save:
-                    //newGame();
-                    return true;
-                case Resource.Id.menu_edit:
-                    //showHelp();
-                    return true;
-                default:
-                    return base.OnOptionsItemSelected(item);
-            }
+            if (!AppSettings.UserAuthenticated)
+                return new LoginFragment();
+
+            //if (QAMobile.getInstance().CurrentApp == null)
+            //{
+            //    return new UserLoginFragment();
+            //}
+            //else if (QAMobile.getInstance().CurrentApp == QAMobile.ApplicationsEnum.ResawList || QAMobile.getInstance().CurrentApp == QAMobile.ApplicationsEnum.ResawCutNotChecked)
+            //{
+            //    return new ResawReportFragment();
+            //}
+            //else if (QAMobile.getInstance().CurrentApp == QAMobile.ApplicationsEnum.PostStripPatchList
+            //         || QAMobile.getInstance().CurrentApp == QAMobile.ApplicationsEnum.PostStripDailyPatching
+            //         || QAMobile.getInstance().CurrentApp == QAMobile.ApplicationsEnum.PostStripQAPatchCheck)
+            //{
+            //    return new PatchingReportFragment();
+            //}
+            //else
+            //{
+            //    return new SelectCastFragment();
+            //}
+
+            return new MainFragment();
         }
 
         //protected override void OnResume()
@@ -66,14 +62,13 @@ namespace OpFlow.Android
         //    base.OnResume();
         //}
 
-        private void AuthenticateUser()
+        private Fragment AuthenticateUser()
         {
             try
             {
                 if (!AppSettings.UserAuthenticated)
                 {
-                    var loginActivity = new Intent(this, typeof(LoginActivity));
-                    StartActivity(loginActivity);
+                    return new LoginFragment();
                 }
 
             }
@@ -83,6 +78,42 @@ namespace OpFlow.Android
                 throw;
             }
 
+            return null;
+        }
+
+        public void SendMessage(FragmentEnum fragment, object payload)
+        {
+            Fragment newFragment = null;
+            if (fragment == FragmentEnum.Login)
+            {
+                newFragment = new MainFragment();
+            }
+            else if (fragment == FragmentEnum.MainScreen)
+            {
+                newFragment = (Fragment) payload;
+            }
+            else if (fragment == FragmentEnum.FutureCases)
+            {
+                AndroidApp.SurgeryID = (int)payload;
+                newFragment = new CaseDetailFragment();
+            }
+            else if (fragment == FragmentEnum.Schedule)
+            {
+                AndroidApp.SurgeryID = (int) payload;
+                newFragment = new CheckInFragment();
+            }
+
+            if (newFragment != null)
+            {
+
+                if (!IsFinishing)
+                {
+                    FragmentManager.BeginTransaction()
+                        .Replace(Resource.Id.mainFragment, newFragment)
+                        .AddToBackStack(null)
+                        .Commit();
+                }
+            }
         }
     }
 }

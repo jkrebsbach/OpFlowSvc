@@ -57,21 +57,27 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Activities\CaseDetailActivity.cs" />
-    <Compile Include="Activities\CheckInActivity.cs" />
-    <Compile Include="Activities\FutureCaseActivity.cs" />
-    <Compile Include="Activities\LoginActivity.cs" />
+    <Compile Include="Fragments\CaseDetailFragment.cs" />
+    <Compile Include="Fragments\CheckInFragment.cs" />
+    <Compile Include="Fragments\FutureCaseFragment.cs" />
+    <Compile Include="Activities\IFragmentMessageListener.cs" />
+    <Compile Include="Fragments\LoginFragment.cs" />
     <Compile Include="Activities\MainActivity.cs" />
     <Compile Include="Activities\OpFlowActivityBase.cs" />
-    <Compile Include="Activities\ScheduleActivity.cs" />
+    <Compile Include="Fragments\ScheduleFragment.cs" />
     <Compile Include="Adapters\FutureCaseListAdapter.cs" />
     <Compile Include="Adapters\ScheduleGridAdapter.cs" />
     <Compile Include="AndroidApp.cs" />
     <Compile Include="Fragments\DatePickerFragment.cs" />
+    <Compile Include="Fragments\MainFragment.cs" />
+    <Compile Include="Fragments\OpFlowFragmentBase.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Include="Resources\layout\HomeScreen.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
     <None Include="GettingStarted.Xamarin" />
     <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />

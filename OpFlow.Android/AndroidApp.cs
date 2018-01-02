@@ -18,5 +18,15 @@ namespace OpFlow.Android
         public const string CARD_BUNDLE = "CARD";
         public const string LOCATION_BUNDLE = "LOCATION";
         public const string PROVIDER_BUNDLE = "PROVIDER";
+        
+        public static int SurgeryID;
+    }
+
+    public enum FragmentEnum
+    {
+        Login = 0,
+        MainScreen = 1,
+        FutureCases = 2,
+        Schedule = 3
     }
 }

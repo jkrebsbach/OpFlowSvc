@@ -13,10 +13,9 @@ using Android.Widget;
 using OpFlow.Data;
 using OpFlow.Mobile;
 
-namespace OpFlow.Android.Activities
+namespace OpFlow.Android.Fragments
 {
-    [Activity(Label = "CaseDetailActivity")]
-    public class CaseDetailActivity : OpFlowActivityBase
+    public class CaseDetailFragment : OpFlowFragmentBase
     {
         private LinearLayout _pnlCaseDetail;
         private TextView _txtSurgeon;
@@ -42,46 +41,41 @@ namespace OpFlow.Android.Activities
         private EditText _txtPastProcedureResults;
         private GridView _gvScheduledProcedures;
 
-        protected override int GetLayoutResourceId()
+        public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            return Resource.Layout.CaseDetail;
-        }
+            base.OnCreateView(inflater, container, savedInstanceState);
 
-        protected override async void OnCreate(Bundle savedInstanceState)
-        {
-            base.OnCreate(savedInstanceState);
+            // Make sure we aren't disposing app
+            if (container == null)
+                return null;
 
-            SetContentView(Resource.Layout.CaseDetail);
+            var rootView = inflater.Inflate(Resource.Layout.CaseDetail, container, false);
 
-            _pnlCaseDetail = FindViewById<LinearLayout>(Resource.Id.pnlCaseDetail);
-            _txtSurgeon = FindViewById<TextView>(Resource.Id.txtSurgeon);
-            _txtCase = FindViewById<TextView>(Resource.Id.txtCase);
-            _txtReferMD = FindViewById<TextView>(Resource.Id.txtReferMD);
-            _txtPatientName = FindViewById<TextView>(Resource.Id.txtPatientName);
-            _txtPatientAge = FindViewById<TextView>(Resource.Id.txtPatientAge);
-            _txtPatientBMI = FindViewById<TextView>(Resource.Id.txtPatientBMI);
+            _pnlCaseDetail = rootView.FindViewById<LinearLayout>(Resource.Id.pnlCaseDetail);
+            _txtSurgeon = rootView.FindViewById<TextView>(Resource.Id.txtSurgeon);
+            _txtCase = rootView.FindViewById<TextView>(Resource.Id.txtCase);
+            _txtReferMD = rootView.FindViewById<TextView>(Resource.Id.txtReferMD);
+            _txtPatientName = rootView.FindViewById<TextView>(Resource.Id.txtPatientName);
+            _txtPatientAge = rootView.FindViewById<TextView>(Resource.Id.txtPatientAge);
+            _txtPatientBMI = rootView.FindViewById<TextView>(Resource.Id.txtPatientBMI);
 
-            _swtMedicalHistory = FindViewById<Switch>(Resource.Id.swtMedicalHistory);
-            _swtRiskFactors = FindViewById<Switch>(Resource.Id.swtRiskFactors);
-            _swtMedications = FindViewById<Switch>(Resource.Id.swtMedications);
-            _swtAllergies = FindViewById<Switch>(Resource.Id.swtAllergies);
-            _swtLabResults = FindViewById<Switch>(Resource.Id.swtLabResults);
-            _swtPastProcedureResults = FindViewById<Switch>(Resource.Id.swtPastProcedureResults);
-            _swtScheduledProcedures = FindViewById<Switch>(Resource.Id.swtScheduledProcedures);
+            _swtMedicalHistory = rootView.FindViewById<Switch>(Resource.Id.swtMedicalHistory);
+            _swtRiskFactors = rootView.FindViewById<Switch>(Resource.Id.swtRiskFactors);
+            _swtMedications = rootView.FindViewById<Switch>(Resource.Id.swtMedications);
+            _swtAllergies = rootView.FindViewById<Switch>(Resource.Id.swtAllergies);
+            _swtLabResults = rootView.FindViewById<Switch>(Resource.Id.swtLabResults);
+            _swtPastProcedureResults = rootView.FindViewById<Switch>(Resource.Id.swtPastProcedureResults);
+            _swtScheduledProcedures = rootView.FindViewById<Switch>(Resource.Id.swtScheduledProcedures);
 
-            _txtMedicalHistory = FindViewById<EditText>(Resource.Id.txtMedicalHistory);
-            _txtRiskFactors = FindViewById<EditText>(Resource.Id.txtRiskFactors);
-            _txtMedications = FindViewById<EditText>(Resource.Id.txtMedications);
-            _txtAllergies = FindViewById<EditText>(Resource.Id.txtAllergies);
-            _txtLabResults = FindViewById<EditText>(Resource.Id.txtLabResults);
-            _txtPastProcedureResults = FindViewById<EditText>(Resource.Id.txtPastProcedureResults);
-            _gvScheduledProcedures = FindViewById<GridView>(Resource.Id.gvScheduledProcedures);
+            _txtMedicalHistory = rootView.FindViewById<EditText>(Resource.Id.txtMedicalHistory);
+            _txtRiskFactors = rootView.FindViewById<EditText>(Resource.Id.txtRiskFactors);
+            _txtMedications = rootView.FindViewById<EditText>(Resource.Id.txtMedications);
+            _txtAllergies = rootView.FindViewById<EditText>(Resource.Id.txtAllergies);
+            _txtLabResults = rootView.FindViewById<EditText>(Resource.Id.txtLabResults);
+            _txtPastProcedureResults = rootView.FindViewById<EditText>(Resource.Id.txtPastProcedureResults);
+            _gvScheduledProcedures = rootView.FindViewById<GridView>(Resource.Id.gvScheduledProcedures);
 
-            var surgeryId = Intent.GetStringExtra(AndroidApp.SURGERY_BUNDLE);
-            if (!string.IsNullOrEmpty(surgeryId))
-            {
-                await LoadCase(int.Parse(surgeryId));
-            }
+            
 
             _swtMedicalHistory.CheckedChange += Switch_CheckChanged;
             _swtRiskFactors.CheckedChange += Switch_CheckChanged;
@@ -98,9 +92,29 @@ namespace OpFlow.Android.Activities
             SetSwitchVisibility(_swtLabResults);
             SetSwitchVisibility(_swtPastProcedureResults);
             SetSwitchVisibility(_swtScheduledProcedures);
+
+            return rootView;
         }
 
-       private void Switch_CheckChanged(object sender, EventArgs e)
+        public override async void OnResume()
+        {
+            base.OnResume();
+
+            try
+            {
+                if (AndroidApp.SurgeryID > 0)
+                {
+                    await LoadCase(AndroidApp.SurgeryID);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private void Switch_CheckChanged(object sender, EventArgs e)
         {
             var changedSwitch = (Switch)sender;
 

@@ -14,10 +14,9 @@ using OpFlow.Android.Fragments;
 using OpFlow.Data;
 using OpFlow.Mobile;
 
-namespace OpFlow.Android.Activities
+namespace OpFlow.Android.Fragments
 {
-    [Activity(Label = "ScheduleActivity")]
-    public class ScheduleActivity : OpFlowActivityBase
+    public class ScheduleFragment : OpFlowFragmentBase
     {
         private DateTime _selectedDate;
         private Button _btnSchedule;
@@ -25,17 +24,18 @@ namespace OpFlow.Android.Activities
 
         private List<Surgery> _schedule;
 
-        protected override int GetLayoutResourceId()
+        public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            return Resource.Layout.Schedule;
-        }
+            base.OnCreateView(inflater, container, savedInstanceState);
 
-        protected override async void OnCreate(Bundle savedInstanceState)
-        {
-            base.OnCreate(savedInstanceState);
+            // Make sure we aren't disposing app
+            if (container == null)
+                return null;
 
-            _btnSchedule = FindViewById<Button>(Resource.Id.btnScheduleDate);
-            _gvDailySchedule = FindViewById<GridView>(Resource.Id.gvDailySchedule);
+            var rootView = inflater.Inflate(Resource.Layout.Schedule, container, false);
+
+            _btnSchedule = rootView.FindViewById<Button>(Resource.Id.btnScheduleDate);
+            _gvDailySchedule = rootView.FindViewById<GridView>(Resource.Id.gvDailySchedule);
 
             _selectedDate = DateTime.Today;
 
@@ -43,7 +43,23 @@ namespace OpFlow.Android.Activities
 
             _gvDailySchedule.ItemClick += CardItemClicked;
 
-            await SetupScreen();
+            return rootView;
+        }
+
+        public override async void OnResume()
+        {
+            base.OnResume();
+
+            try
+            {
+                await SetupScreen();
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private void CardItemClicked(object sender, AdapterView.ItemClickEventArgs eventArgs)
@@ -52,10 +68,12 @@ namespace OpFlow.Android.Activities
                 return;
 
             var schedule = _schedule[eventArgs.Position];
-            
-            var checkInActivity = new Intent(this, typeof(CheckInActivity));
-            checkInActivity.PutExtra(AndroidApp.SURGERY_BUNDLE, schedule.SurgeryID.ToString());
-            StartActivity(checkInActivity);
+
+            Listener.SendMessage(FragmentEnum.Schedule, schedule.SurgeryID);
+
+            //var checkInActivity = new Intent(this, typeof(CheckInActivity));
+            //checkInActivity.PutExtra(AndroidApp.SURGERY_BUNDLE, schedule.SurgeryID.ToString());
+            //StartActivity(checkInActivity);
         }
 
         void btnSchedule_OnClick(object sender, EventArgs eventArgs)
@@ -73,7 +91,7 @@ namespace OpFlow.Android.Activities
             _btnSchedule.Text = _selectedDate.ToString("M/d/yyyy");
 
             _schedule = await SurgeryUtil.GetSurgerySchedule(_selectedDate);
-            _gvDailySchedule.Adapter = new Adapters.ScheduleGridAdapter(this, _schedule);
+            _gvDailySchedule.Adapter = new Adapters.ScheduleGridAdapter(Activity, _schedule);
         }
     }
 }

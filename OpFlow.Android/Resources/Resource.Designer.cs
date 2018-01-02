@@ -94,53 +94,53 @@ namespace OpFlow.Android
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f080026
-			public const int btnArticles = 2131230758;
+			// aapt resource value: 0x7f080022
+			public const int btnArticles = 2131230754;
 			
-			// aapt resource value: 0x7f080023
-			public const int btnCases = 2131230755;
+			// aapt resource value: 0x7f08001f
+			public const int btnCases = 2131230751;
 			
-			// aapt resource value: 0x7f080021
-			public const int btnCheckIn = 2131230753;
-			
-			// aapt resource value: 0x7f080028
-			public const int btnCommunity = 2131230760;
-			
-			// aapt resource value: 0x7f080027
-			public const int btnData = 2131230759;
-			
-			// aapt resource value: 0x7f080020
-			public const int btnLogin = 2131230752;
+			// aapt resource value: 0x7f08001d
+			public const int btnCheckIn = 2131230749;
 			
 			// aapt resource value: 0x7f080024
-			public const int btnMetrics = 2131230756;
+			public const int btnCommunity = 2131230756;
 			
-			// aapt resource value: 0x7f080022
-			public const int btnSchedule = 2131230754;
+			// aapt resource value: 0x7f080023
+			public const int btnData = 2131230755;
 			
-			// aapt resource value: 0x7f080029
-			public const int btnScheduleDate = 2131230761;
+			// aapt resource value: 0x7f080028
+			public const int btnLogin = 2131230760;
+			
+			// aapt resource value: 0x7f080020
+			public const int btnMetrics = 2131230752;
+			
+			// aapt resource value: 0x7f08001e
+			public const int btnSchedule = 2131230750;
+			
+			// aapt resource value: 0x7f08002a
+			public const int btnScheduleDate = 2131230762;
 			
 			// aapt resource value: 0x7f080001
 			public const int btnSearch = 2131230721;
 			
-			// aapt resource value: 0x7f080025
-			public const int btnToDoList = 2131230757;
+			// aapt resource value: 0x7f080021
+			public const int btnToDoList = 2131230753;
 			
-			// aapt resource value: 0x7f08002a
-			public const int gvDailySchedule = 2131230762;
+			// aapt resource value: 0x7f08002b
+			public const int gvDailySchedule = 2131230763;
 			
 			// aapt resource value: 0x7f080016
 			public const int gvScheduledProcedures = 2131230742;
 			
-			// aapt resource value: 0x7f080030
-			public const int ivAlerts = 2131230768;
-			
 			// aapt resource value: 0x7f080031
-			public const int ivDelays = 2131230769;
+			public const int ivAlerts = 2131230769;
 			
-			// aapt resource value: 0x7f08002f
-			public const int ivPrefCard = 2131230767;
+			// aapt resource value: 0x7f080032
+			public const int ivDelays = 2131230770;
+			
+			// aapt resource value: 0x7f080030
+			public const int ivPrefCard = 2131230768;
 			
 			// aapt resource value: 0x7f08001c
 			public const int ivStatus = 2131230748;
@@ -148,20 +148,23 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f080019
 			public const int lvFutureCases = 2131230745;
 			
-			// aapt resource value: 0x7f080033
-			public const int menu_edit = 2131230771;
-			
-			// aapt resource value: 0x7f080035
-			public const int menu_preferences = 2131230773;
+			// aapt resource value: 0x7f080029
+			public const int mainFragment = 2131230761;
 			
 			// aapt resource value: 0x7f080034
-			public const int menu_save = 2131230772;
+			public const int menu_edit = 2131230772;
+			
+			// aapt resource value: 0x7f080036
+			public const int menu_preferences = 2131230774;
+			
+			// aapt resource value: 0x7f080035
+			public const int menu_save = 2131230773;
 			
 			// aapt resource value: 0x7f080002
 			public const int pnlCaseDetail = 2131230722;
 			
-			// aapt resource value: 0x7f08002b
-			public const int pnlLayout = 2131230763;
+			// aapt resource value: 0x7f08002c
+			public const int pnlLayout = 2131230764;
 			
 			// aapt resource value: 0x7f08000f
 			public const int swtAllergies = 2131230735;
@@ -202,17 +205,17 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f08001b
 			public const int txtCaseTime = 2131230747;
 			
-			// aapt resource value: 0x7f080032
-			public const int txtDelayAmt = 2131230770;
+			// aapt resource value: 0x7f080033
+			public const int txtDelayAmt = 2131230771;
 			
-			// aapt resource value: 0x7f08001d
-			public const int txtError = 2131230749;
+			// aapt resource value: 0x7f080025
+			public const int txtError = 2131230757;
 			
 			// aapt resource value: 0x7f080012
 			public const int txtLabResults = 2131230738;
 			
-			// aapt resource value: 0x7f08002d
-			public const int txtLocation = 2131230765;
+			// aapt resource value: 0x7f08002e
+			public const int txtLocation = 2131230766;
 			
 			// aapt resource value: 0x7f08000a
 			public const int txtMedicalHistory = 2131230730;
@@ -220,8 +223,8 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f08000e
 			public const int txtMedications = 2131230734;
 			
-			// aapt resource value: 0x7f08001f
-			public const int txtPassword = 2131230751;
+			// aapt resource value: 0x7f080027
+			public const int txtPassword = 2131230759;
 			
 			// aapt resource value: 0x7f080014
 			public const int txtPastProcedureResults = 2131230740;
@@ -235,8 +238,8 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f080006
 			public const int txtPatientName = 2131230726;
 			
-			// aapt resource value: 0x7f08002e
-			public const int txtPatientSex = 2131230766;
+			// aapt resource value: 0x7f08002f
+			public const int txtPatientSex = 2131230767;
 			
 			// aapt resource value: 0x7f08001a
 			public const int txtProcedure = 2131230746;
@@ -250,11 +253,11 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f080003
 			public const int txtSurgeon = 2131230723;
 			
-			// aapt resource value: 0x7f08002c
-			public const int txtTime = 2131230764;
+			// aapt resource value: 0x7f08002d
+			public const int txtTime = 2131230765;
 			
-			// aapt resource value: 0x7f08001e
-			public const int txtUserName = 2131230750;
+			// aapt resource value: 0x7f080026
+			public const int txtUserName = 2131230758;
 			
 			static Id()
 			{
@@ -282,19 +285,22 @@ namespace OpFlow.Android
 			public const int FutureCaseListItem = 2130903043;
 			
 			// aapt resource value: 0x7f030004
-			public const int Login = 2130903044;
+			public const int HomeScreen = 2130903044;
 			
 			// aapt resource value: 0x7f030005
-			public const int Main = 2130903045;
+			public const int Login = 2130903045;
 			
 			// aapt resource value: 0x7f030006
-			public const int Schedule = 2130903046;
+			public const int Main = 2130903046;
 			
 			// aapt resource value: 0x7f030007
-			public const int ScheduleGrid = 2130903047;
+			public const int Schedule = 2130903047;
 			
 			// aapt resource value: 0x7f030008
-			public const int Toolbar = 2130903048;
+			public const int ScheduleGrid = 2130903048;
+			
+			// aapt resource value: 0x7f030009
+			public const int Toolbar = 2130903049;
 			
 			static Layout()
 			{

@@ -6,9 +6,6 @@
     android:layout_height="fill_parent"
     android:gravity="center"
     android:weightSum="100">
-  <include
-    android:id="@+id/toolbar"
-    layout="@layout/toolbar" />
     <TextView
         android:password="@+id/txtError"
         android:text=""

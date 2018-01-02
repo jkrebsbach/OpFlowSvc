@@ -11,35 +11,35 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-
+using OpFlow.Android.Activities;
 using OpFlow.Mobile;
 
-namespace OpFlow.Android.Activities
+namespace OpFlow.Android.Fragments
 {
-    [Activity(Label = "LoginActivity")]
-    public class LoginActivity : OpFlowActivityBase
+    public class LoginFragment : OpFlowFragmentBase
     {
         private ProgressDialog _progressDialog;
         private TextView _txtError;
 
-        protected override int GetLayoutResourceId()
+        public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            return Resource.Layout.Login;
-        }
+            base.OnCreateView(inflater, container, savedInstanceState);
 
-        protected override void OnCreate(Bundle savedInstanceState)
-        {
-            base.OnCreate(savedInstanceState);
+            // Make sure we aren't disposing app
+            if (container == null)
+                return null;
 
-            _progressDialog = new ProgressDialog(this);
+            var rootView = inflater.Inflate(Resource.Layout.Login, container, false);
+
+            _progressDialog = new ProgressDialog(Context);
             _progressDialog.SetTitle("Login In Progress");
             _progressDialog.SetMessage("Please wait...");
 
-            var txtUsername = FindViewById<EditText>(Resource.Id.txtUserName);
-            var txtPassword = FindViewById<EditText>(Resource.Id.txtPassword);
-            _txtError = FindViewById<EditText>(Resource.Id.txtError);
+            var txtUsername = rootView.FindViewById<EditText>(Resource.Id.txtUserName);
+            var txtPassword = rootView.FindViewById<EditText>(Resource.Id.txtPassword);
+            _txtError = rootView.FindViewById<EditText>(Resource.Id.txtError);
 
-            var btnLogin = FindViewById<Button>(Resource.Id.btnLogin);
+            var btnLogin = rootView.FindViewById<Button>(Resource.Id.btnLogin);
             btnLogin.Click += async delegate
             {
                 try
@@ -55,15 +55,17 @@ namespace OpFlow.Android.Activities
                     throw;
                 }
             };
+
+            return rootView;
         }
 
         private async Task AuthenticateUser(string username, string password)
         {
-            RunOnUiThread(() => this._progressDialog.Show());
+            _progressDialog.Show();
             
-           await AppSettings.AuthenticateUser(username, password);
+            await AppSettings.AuthenticateUser(username, password);
 
-            RunOnUiThread(() => this._progressDialog.Hide());
+            _progressDialog.Hide();
 
             if (!AppSettings.UserAuthenticated)
             {
@@ -72,7 +74,7 @@ namespace OpFlow.Android.Activities
             else
             {
                 // Login successful - Navigate back to application
-                OnBackPressed();
+                Listener.SendMessage(FragmentEnum.Login, true);
             }
         }
     }
