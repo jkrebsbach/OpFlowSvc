@@ -11,5 +11,10 @@ namespace OpFlow.Data
         public int LocationID { get; set; }
         public string RoomType { get; set; }
         public string RoomDescription { get; set; }
+
+        public override string ToString()
+        {
+            return RoomDescription;
+        }
     }
 }

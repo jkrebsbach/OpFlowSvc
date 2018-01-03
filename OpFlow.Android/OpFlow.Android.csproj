@@ -58,7 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapters\CheckInOverviewAdapter.cs" />
-    <Compile Include="Adapters\RoomListAdapter.cs" />
+    <Compile Include="Adapters\SpinnerAdapter.cs" />
     <Compile Include="Fragments\CaseDetailFragment.cs" />
     <Compile Include="Fragments\CheckInFragment.cs" />
     <Compile Include="Fragments\FutureCaseFragment.cs" />

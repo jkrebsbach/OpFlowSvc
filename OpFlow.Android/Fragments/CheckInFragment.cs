@@ -10,6 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using OpFlow.Android.Adapters;
+using OpFlow.Data;
 using OpFlow.Mobile;
 
 namespace OpFlow.Android.Fragments
@@ -99,9 +100,17 @@ namespace OpFlow.Android.Fragments
             _txtCase.Text = currentCase.ProcedureDescription;
             _txtCard.Text = currentCase.CardDescription;
 
+            var roomAdapter = new SpinnerAdapter<Room>(rooms);
             
             _swtCheckIn.Text = AppSettings.CurrentUser.RoleID.ToString();
-            _spnAssignment.Adapter = new RoomListAdapter(Context, rooms);
+
+            var adapter = new ArrayAdapter<string>(
+                Activity, global::Android.Resource.Layout.SimpleSpinnerItem, roomAdapter.DropDownValues);
+            adapter.SetDropDownViewResource(global::Android.Resource.Layout.SimpleSpinnerItem);
+
+            _spnAssignment.Adapter = adapter;
+
+
             _gvSurgeryUsers.Adapter = new CheckInOverviewAdapter(Context, currentUsers);
         }
     }
