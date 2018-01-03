@@ -57,6 +57,8 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adapters\CheckInOverviewAdapter.cs" />
+    <Compile Include="Adapters\RoomListAdapter.cs" />
     <Compile Include="Fragments\CaseDetailFragment.cs" />
     <Compile Include="Fragments\CheckInFragment.cs" />
     <Compile Include="Fragments\FutureCaseFragment.cs" />
@@ -113,6 +115,12 @@
     <AndroidResource Include="Resources\layout\Toolbar.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
+    <AndroidResource Include="Resources\layout\CheckInGrid.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\CheckInOverviewGrid.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml">
@@ -158,6 +166,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\menu\option_menu.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values\integers.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\FingerprintIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

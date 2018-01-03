@@ -4,9 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="100">
-  <include
-    android:id="@+id/toolbar"
-    layout="@layout/toolbar" />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -31,12 +28,15 @@
             android:layout_weight="33"
             android:id="@+id/btnSearch" />
     </LinearLayout>
-    <LinearLayout
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="85">
+      <LinearLayout
         android:id="@+id/pnlCaseDetail"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="85"
+        android:layout_height="wrap_content"
         android:weightSum="100">
         <LinearLayout
             android:orientation="horizontal"
@@ -70,83 +70,40 @@
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
-                android:text="Surgeon"
-                android:id="@+id/swtSurgeon" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:text="Switch to any room" />
+                android:text="ROLE"
+                android:id="@+id/swtCheckIn" />
+          <Spinner
+              android:id="@+id/spnAssignment"
+              android:layout_width="0dip"
+              android:layout_height="wrap_content"
+              android:layout_weight="50" />
         </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Circulator" />
-            <ImageView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:src="@drawable/darkGreenCheckMark"
-                android:scaleType="fitCenter" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Delay" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Work up reviewed" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Product Rep" />
-            <ImageView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:src="@drawable/redExclamationPoint"
-                android:scaleType="fitCenter" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="10 min" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Anesthesia" />
-            <ImageView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:src="@drawable/darkGreenCheckMark"
-                android:scaleType="fitCenter" />
-        </LinearLayout>
+      <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="10"
+        android:weightSum="100">
+        <TextView
+          android:layout_width="0dip"
+          android:layout_height="wrap_content"
+          android:layout_weight="50" />
+        <TextView
+          android:text="Delay"
+          android:layout_width="0dip"
+          android:layout_height="wrap_content"
+          android:layout_weight="25" />
+        <TextView
+          android:text="Work up Reviewed"
+          android:layout_width="0dip"
+          android:layout_height="wrap_content"
+          android:layout_weight="25" />
+      </LinearLayout>
+      <GridView
+        android:id="@+id/gvSurgeryUsers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+        
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -234,5 +191,6 @@
                 android:layout_weight="50"
                 android:text="+75 min" />
         </LinearLayout>
-    </LinearLayout>
+      </LinearLayout>
+    </ScrollView>
 </LinearLayout>

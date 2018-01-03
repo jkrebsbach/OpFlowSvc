@@ -49,15 +49,28 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Surgeon> GetSurgeons(string username)
+        public static List<User> GetUsers(string username)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("email", (object)username ?? DBNull.Value),
             };
-            var dsSchedules = ExecuteCommand("GetSurgeon", dsParameters);
+            var dsSchedules = ExecuteCommand("GetUser", dsParameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Surgeon>();
+            var result = dsSchedules.Tables[0].DataTableToList<User>();
+
+            return result;
+        }
+
+        public static List<Room> GetRooms(int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = ExecuteCommand("GetRooms", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Room>();
 
             return result;
         }
@@ -105,6 +118,21 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgery_id", surgeryId)
             };
             var dsSchedules = ExecuteCommand("GetSurgeryUsers", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<SurgeryUser>();
+
+            return result;
+        }
+
+        public static List<SurgeryUser> GetSurgeryRoomSchedule(int roomId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("room_id", roomId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetCheckInCasesbyRoom", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<SurgeryUser>();
 

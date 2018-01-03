@@ -11,27 +11,27 @@ using OpFlow.Data;
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
-    public class SurgeonController : ApiController
+    public class UserController : ApiController
     {
         // GET api/values
         [SwaggerOperation("GetAll")]
-        public IEnumerable<Surgeon> Get()
+        public IEnumerable<User> Get()
         {
-            return DataAccess.SqlHelper.GetSurgeons(null);
+            return DataAccess.SqlHelper.GetUsers(null);
         }
 
         // GET api/values/jdoe
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("api/SurgeonByUsername", Name = "SurgeonByUsername")]
-        public HttpResponseMessage GetSurgeon(string username)
+        [Route("api/UserByUsername", Name = "UserByUsername")]
+        public HttpResponseMessage GetUser(string username)
         {
-            var surgeons = DataAccess.SqlHelper.GetSurgeons(username);
+            var users = DataAccess.SqlHelper.GetUsers(username);
 
-            var result = surgeons.FirstOrDefault();
+            var result = users.FirstOrDefault();
 
             if (result == null)
-                return Request.CreateResponse(HttpStatusCode.NotFound, "Surgeon not found");
+                return Request.CreateResponse(HttpStatusCode.NotFound, "User not found");
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

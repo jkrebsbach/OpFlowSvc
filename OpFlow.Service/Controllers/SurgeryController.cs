@@ -43,6 +43,17 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
+
+        [SwaggerOperation("GetSurgeryRoomSchedule")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/Surgery/RoomSchedule")]
+        public HttpResponseMessage GetRoomSurgerySchedule(int roomId, int providerId, int locationId)
+        {
+            var schedules = DataAccess.SqlHelper.GetSurgeryRoomSchedule(roomId, providerId, locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, schedules);
+        }
+
         // POST api/values
         [SwaggerOperation("Create")]
         [SwaggerResponse(HttpStatusCode.Created)]

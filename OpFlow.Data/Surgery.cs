@@ -13,6 +13,7 @@ namespace OpFlow.Data
         public int CaseID { get; set; }
         public int ProcedureID { get; set; }
         public int BundleID { get; set; }
+        public int RoomID { get; set; }
         public string ProcedureDescription { get; set; }
         public string BundleDescription { get; set; }
         public string CardDescription { get; set; }

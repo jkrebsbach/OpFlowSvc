@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="100">
+    <TextView
+        android:id="@+id/txtRole"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="25" />
+    <ImageView
+        android:id="@+id/ivRoleStatus"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:src="@drawable/redExclamationPoint"
+        android:layout_weight="25"
+        android:scaleType="fitCenter" />
+    <TextView
+        android:id="@+id/txtDelayStatus"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="25"
+        android:text="+75 min" />
+    <ImageView
+        android:id="@+id/ivReviewStatus"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:src="@drawable/fingerprintIcon"
+        android:layout_weight="25"
+        android:scaleType="fitCenter" />
+</LinearLayout>

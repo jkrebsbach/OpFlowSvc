@@ -70,16 +70,19 @@ namespace OpFlow.Android
 			public const int DarkGreenCheckMark = 2130837504;
 			
 			// aapt resource value: 0x7f020001
-			public const int HighlightedRoundRectangle = 2130837505;
+			public const int FingerprintIcon = 2130837505;
 			
 			// aapt resource value: 0x7f020002
-			public const int OpFlowLogo = 2130837506;
+			public const int HighlightedRoundRectangle = 2130837506;
 			
 			// aapt resource value: 0x7f020003
-			public const int RedExclamationPoint = 2130837507;
+			public const int OpFlowLogo = 2130837507;
 			
 			// aapt resource value: 0x7f020004
-			public const int RoundRectangle = 2130837508;
+			public const int RedExclamationPoint = 2130837508;
+			
+			// aapt resource value: 0x7f020005
+			public const int RoundRectangle = 2130837509;
 			
 			static Drawable()
 			{
@@ -94,170 +97,197 @@ namespace OpFlow.Android
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f080022
-			public const int btnArticles = 2131230754;
+			// aapt resource value: 0x7f09002a
+			public const int btnArticles = 2131296298;
 			
-			// aapt resource value: 0x7f08001f
-			public const int btnCases = 2131230751;
+			// aapt resource value: 0x7f090027
+			public const int btnCases = 2131296295;
 			
-			// aapt resource value: 0x7f08001d
-			public const int btnCheckIn = 2131230749;
+			// aapt resource value: 0x7f090025
+			public const int btnCheckIn = 2131296293;
 			
-			// aapt resource value: 0x7f080024
-			public const int btnCommunity = 2131230756;
+			// aapt resource value: 0x7f09002c
+			public const int btnCommunity = 2131296300;
 			
-			// aapt resource value: 0x7f080023
-			public const int btnData = 2131230755;
+			// aapt resource value: 0x7f09002b
+			public const int btnData = 2131296299;
 			
-			// aapt resource value: 0x7f080028
-			public const int btnLogin = 2131230760;
+			// aapt resource value: 0x7f090030
+			public const int btnLogin = 2131296304;
 			
-			// aapt resource value: 0x7f080020
-			public const int btnMetrics = 2131230752;
+			// aapt resource value: 0x7f090028
+			public const int btnMetrics = 2131296296;
 			
-			// aapt resource value: 0x7f08001e
-			public const int btnSchedule = 2131230750;
+			// aapt resource value: 0x7f090026
+			public const int btnSchedule = 2131296294;
 			
-			// aapt resource value: 0x7f08002a
-			public const int btnScheduleDate = 2131230762;
+			// aapt resource value: 0x7f090033
+			public const int btnScheduleDate = 2131296307;
 			
-			// aapt resource value: 0x7f080001
-			public const int btnSearch = 2131230721;
+			// aapt resource value: 0x7f090000
+			public const int btnSearch = 2131296256;
 			
-			// aapt resource value: 0x7f080021
-			public const int btnToDoList = 2131230753;
+			// aapt resource value: 0x7f090029
+			public const int btnToDoList = 2131296297;
 			
-			// aapt resource value: 0x7f08002b
-			public const int gvDailySchedule = 2131230763;
+			// aapt resource value: 0x7f090034
+			public const int gvDailySchedule = 2131296308;
 			
-			// aapt resource value: 0x7f080016
-			public const int gvScheduledProcedures = 2131230742;
+			// aapt resource value: 0x7f090015
+			public const int gvScheduledProcedures = 2131296277;
 			
-			// aapt resource value: 0x7f080031
-			public const int ivAlerts = 2131230769;
+			// aapt resource value: 0x7f090019
+			public const int gvSurgeryUsers = 2131296281;
 			
-			// aapt resource value: 0x7f080032
-			public const int ivDelays = 2131230770;
+			// aapt resource value: 0x7f09003a
+			public const int ivAlerts = 2131296314;
 			
-			// aapt resource value: 0x7f080030
-			public const int ivPrefCard = 2131230768;
+			// aapt resource value: 0x7f09001b
+			public const int ivCheckInStatus = 2131296283;
 			
-			// aapt resource value: 0x7f08001c
-			public const int ivStatus = 2131230748;
+			// aapt resource value: 0x7f09003b
+			public const int ivDelays = 2131296315;
 			
-			// aapt resource value: 0x7f080019
-			public const int lvFutureCases = 2131230745;
+			// aapt resource value: 0x7f090039
+			public const int ivPrefCard = 2131296313;
 			
-			// aapt resource value: 0x7f080029
-			public const int mainFragment = 2131230761;
+			// aapt resource value: 0x7f09001d
+			public const int ivReviewStatus = 2131296285;
 			
-			// aapt resource value: 0x7f080034
-			public const int menu_edit = 2131230772;
+			// aapt resource value: 0x7f09001f
+			public const int ivRoleStatus = 2131296287;
 			
-			// aapt resource value: 0x7f080036
-			public const int menu_preferences = 2131230774;
+			// aapt resource value: 0x7f090024
+			public const int ivStatus = 2131296292;
 			
-			// aapt resource value: 0x7f080035
-			public const int menu_save = 2131230773;
+			// aapt resource value: 0x7f090021
+			public const int lvFutureCases = 2131296289;
 			
-			// aapt resource value: 0x7f080002
-			public const int pnlCaseDetail = 2131230722;
+			// aapt resource value: 0x7f090032
+			public const int mainFragment = 2131296306;
 			
-			// aapt resource value: 0x7f08002c
-			public const int pnlLayout = 2131230764;
+			// aapt resource value: 0x7f09003d
+			public const int menu_edit = 2131296317;
 			
-			// aapt resource value: 0x7f08000f
-			public const int swtAllergies = 2131230735;
+			// aapt resource value: 0x7f09003f
+			public const int menu_preferences = 2131296319;
 			
-			// aapt resource value: 0x7f080011
-			public const int swtLabResults = 2131230737;
+			// aapt resource value: 0x7f09003e
+			public const int menu_save = 2131296318;
 			
-			// aapt resource value: 0x7f080009
-			public const int swtMedicalHistory = 2131230729;
+			// aapt resource value: 0x7f090001
+			public const int pnlCaseDetail = 2131296257;
 			
-			// aapt resource value: 0x7f08000d
-			public const int swtMedications = 2131230733;
+			// aapt resource value: 0x7f090035
+			public const int pnlLayout = 2131296309;
 			
-			// aapt resource value: 0x7f080013
-			public const int swtPastProcedureResults = 2131230739;
+			// aapt resource value: 0x7f090018
+			public const int spnAssignment = 2131296280;
 			
-			// aapt resource value: 0x7f08000b
-			public const int swtRiskFactors = 2131230731;
+			// aapt resource value: 0x7f09000e
+			public const int swtAllergies = 2131296270;
 			
-			// aapt resource value: 0x7f080015
-			public const int swtScheduledProcedures = 2131230741;
+			// aapt resource value: 0x7f090017
+			public const int swtCheckIn = 2131296279;
 			
-			// aapt resource value: 0x7f080018
-			public const int swtSurgeon = 2131230744;
+			// aapt resource value: 0x7f090010
+			public const int swtLabResults = 2131296272;
 			
-			// aapt resource value: 0x7f080000
-			public const int toolbar = 2131230720;
+			// aapt resource value: 0x7f090008
+			public const int swtMedicalHistory = 2131296264;
 			
-			// aapt resource value: 0x7f080010
-			public const int txtAllergies = 2131230736;
+			// aapt resource value: 0x7f09000c
+			public const int swtMedications = 2131296268;
 			
-			// aapt resource value: 0x7f080017
-			public const int txtCard = 2131230743;
+			// aapt resource value: 0x7f090012
+			public const int swtPastProcedureResults = 2131296274;
 			
-			// aapt resource value: 0x7f080004
-			public const int txtCase = 2131230724;
+			// aapt resource value: 0x7f09000a
+			public const int swtRiskFactors = 2131296266;
 			
-			// aapt resource value: 0x7f08001b
-			public const int txtCaseTime = 2131230747;
+			// aapt resource value: 0x7f090014
+			public const int swtScheduledProcedures = 2131296276;
 			
-			// aapt resource value: 0x7f080033
-			public const int txtDelayAmt = 2131230771;
+			// aapt resource value: 0x7f090031
+			public const int toolbar = 2131296305;
 			
-			// aapt resource value: 0x7f080025
-			public const int txtError = 2131230757;
+			// aapt resource value: 0x7f09000f
+			public const int txtAllergies = 2131296271;
 			
-			// aapt resource value: 0x7f080012
-			public const int txtLabResults = 2131230738;
+			// aapt resource value: 0x7f090016
+			public const int txtCard = 2131296278;
 			
-			// aapt resource value: 0x7f08002e
-			public const int txtLocation = 2131230766;
+			// aapt resource value: 0x7f090003
+			public const int txtCase = 2131296259;
 			
-			// aapt resource value: 0x7f08000a
-			public const int txtMedicalHistory = 2131230730;
+			// aapt resource value: 0x7f090023
+			public const int txtCaseTime = 2131296291;
 			
-			// aapt resource value: 0x7f08000e
-			public const int txtMedications = 2131230734;
+			// aapt resource value: 0x7f09001c
+			public const int txtDelay = 2131296284;
 			
-			// aapt resource value: 0x7f080027
-			public const int txtPassword = 2131230759;
+			// aapt resource value: 0x7f09003c
+			public const int txtDelayAmt = 2131296316;
 			
-			// aapt resource value: 0x7f080014
-			public const int txtPastProcedureResults = 2131230740;
+			// aapt resource value: 0x7f090020
+			public const int txtDelayStatus = 2131296288;
 			
-			// aapt resource value: 0x7f080007
-			public const int txtPatientAge = 2131230727;
+			// aapt resource value: 0x7f09002d
+			public const int txtError = 2131296301;
 			
-			// aapt resource value: 0x7f080008
-			public const int txtPatientBMI = 2131230728;
+			// aapt resource value: 0x7f090011
+			public const int txtLabResults = 2131296273;
 			
-			// aapt resource value: 0x7f080006
-			public const int txtPatientName = 2131230726;
+			// aapt resource value: 0x7f090037
+			public const int txtLocation = 2131296311;
 			
-			// aapt resource value: 0x7f08002f
-			public const int txtPatientSex = 2131230767;
+			// aapt resource value: 0x7f090009
+			public const int txtMedicalHistory = 2131296265;
 			
-			// aapt resource value: 0x7f08001a
-			public const int txtProcedure = 2131230746;
+			// aapt resource value: 0x7f09000d
+			public const int txtMedications = 2131296269;
 			
-			// aapt resource value: 0x7f080005
-			public const int txtReferMD = 2131230725;
+			// aapt resource value: 0x7f09002f
+			public const int txtPassword = 2131296303;
 			
-			// aapt resource value: 0x7f08000c
-			public const int txtRiskFactors = 2131230732;
+			// aapt resource value: 0x7f090013
+			public const int txtPastProcedureResults = 2131296275;
 			
-			// aapt resource value: 0x7f080003
-			public const int txtSurgeon = 2131230723;
+			// aapt resource value: 0x7f090006
+			public const int txtPatientAge = 2131296262;
 			
-			// aapt resource value: 0x7f08002d
-			public const int txtTime = 2131230765;
+			// aapt resource value: 0x7f090007
+			public const int txtPatientBMI = 2131296263;
 			
-			// aapt resource value: 0x7f080026
-			public const int txtUserName = 2131230758;
+			// aapt resource value: 0x7f090005
+			public const int txtPatientName = 2131296261;
+			
+			// aapt resource value: 0x7f090038
+			public const int txtPatientSex = 2131296312;
+			
+			// aapt resource value: 0x7f090022
+			public const int txtProcedure = 2131296290;
+			
+			// aapt resource value: 0x7f090004
+			public const int txtReferMD = 2131296260;
+			
+			// aapt resource value: 0x7f09000b
+			public const int txtRiskFactors = 2131296267;
+			
+			// aapt resource value: 0x7f09001e
+			public const int txtRole = 2131296286;
+			
+			// aapt resource value: 0x7f09001a
+			public const int txtRoleName = 2131296282;
+			
+			// aapt resource value: 0x7f090002
+			public const int txtSurgeon = 2131296258;
+			
+			// aapt resource value: 0x7f090036
+			public const int txtTime = 2131296310;
+			
+			// aapt resource value: 0x7f09002e
+			public const int txtUserName = 2131296302;
 			
 			static Id()
 			{
@@ -265,6 +295,22 @@ namespace OpFlow.Android
 			}
 			
 			private Id()
+			{
+			}
+		}
+		
+		public partial class Integer
+		{
+			
+			// aapt resource value: 0x7f050000
+			public const int SpinnerHeight = 2131034112;
+			
+			static Integer()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Integer()
 			{
 			}
 		}
@@ -279,28 +325,34 @@ namespace OpFlow.Android
 			public const int CheckIn = 2130903041;
 			
 			// aapt resource value: 0x7f030002
-			public const int FutureCase = 2130903042;
+			public const int CheckInGrid = 2130903042;
 			
 			// aapt resource value: 0x7f030003
-			public const int FutureCaseListItem = 2130903043;
+			public const int CheckInOverviewGrid = 2130903043;
 			
 			// aapt resource value: 0x7f030004
-			public const int HomeScreen = 2130903044;
+			public const int FutureCase = 2130903044;
 			
 			// aapt resource value: 0x7f030005
-			public const int Login = 2130903045;
+			public const int FutureCaseListItem = 2130903045;
 			
 			// aapt resource value: 0x7f030006
-			public const int Main = 2130903046;
+			public const int HomeScreen = 2130903046;
 			
 			// aapt resource value: 0x7f030007
-			public const int Schedule = 2130903047;
+			public const int Login = 2130903047;
 			
 			// aapt resource value: 0x7f030008
-			public const int ScheduleGrid = 2130903048;
+			public const int Main = 2130903048;
 			
 			// aapt resource value: 0x7f030009
-			public const int Toolbar = 2130903049;
+			public const int Schedule = 2130903049;
+			
+			// aapt resource value: 0x7f03000a
+			public const int ScheduleGrid = 2130903050;
+			
+			// aapt resource value: 0x7f03000b
+			public const int Toolbar = 2130903051;
 			
 			static Layout()
 			{
@@ -315,8 +367,8 @@ namespace OpFlow.Android
 		public partial class Menu
 		{
 			
-			// aapt resource value: 0x7f070000
-			public const int option_menu = 2131165184;
+			// aapt resource value: 0x7f080000
+			public const int option_menu = 2131230720;
 			
 			static Menu()
 			{
@@ -331,11 +383,11 @@ namespace OpFlow.Android
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f050000
-			public const int app_name = 2131034112;
+			// aapt resource value: 0x7f060000
+			public const int app_name = 2131099648;
 			
-			// aapt resource value: 0x7f050001
-			public const int empty_string = 2131034113;
+			// aapt resource value: 0x7f060001
+			public const int empty_string = 2131099649;
 			
 			static String()
 			{
@@ -350,8 +402,11 @@ namespace OpFlow.Android
 		public partial class Style
 		{
 			
-			// aapt resource value: 0x7f060000
-			public const int OpFlowTheme = 2131099648;
+			// aapt resource value: 0x7f070000
+			public const int OpFlowTheme = 2131165184;
+			
+			// aapt resource value: 0x7f070001
+			public const int ToolBarStyle = 2131165185;
 			
 			static Style()
 			{

@@ -6,4 +6,10 @@
     <item name="android:colorPrimary">@color/opflow_blue</item>
     <item name="android:colorBackground">@color/opflow_white</item>
   </style>
+  <!-- ToolBar -->
+  <style name="ToolBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
+    <item name="android:colorAccent">@color/opflow_black</item>
+    <item name="android:colorPrimary">@color/opflow_black</item>
+    <item name="android:colorPrimaryDark">@color/opflow_black</item>
+  </style>
 </resources>

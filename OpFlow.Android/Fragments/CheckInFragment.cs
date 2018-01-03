@@ -9,6 +9,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using OpFlow.Android.Adapters;
 using OpFlow.Mobile;
 
 namespace OpFlow.Android.Fragments
@@ -20,6 +21,11 @@ namespace OpFlow.Android.Fragments
         private TextView _txtSurgeon;
         private TextView _txtCase;
         private TextView _txtCard;
+
+
+        private Switch _swtCheckIn;
+        private Spinner _spnAssignment;
+        private GridView _gvSurgeryUsers;
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
@@ -35,6 +41,10 @@ namespace OpFlow.Android.Fragments
             _txtSurgeon = rootView.FindViewById<TextView>(Resource.Id.txtSurgeon);
             _txtCase = rootView.FindViewById<TextView>(Resource.Id.txtCase);
             _txtCard = rootView.FindViewById<TextView>(Resource.Id.txtCard);
+
+            _swtCheckIn = rootView.FindViewById<Switch>(Resource.Id.swtCheckIn);
+            _spnAssignment = rootView.FindViewById<Spinner>(Resource.Id.spnAssignment);
+            _gvSurgeryUsers = rootView.FindViewById<GridView>(Resource.Id.gvSurgeryUsers);
 
             // Hide case detail until search completes
             _pnlCaseDetail.Visibility = ViewStates.Gone;
@@ -74,12 +84,25 @@ namespace OpFlow.Android.Fragments
         {
             var currentCase = await SurgeryUtil.GetSurgery(surgeryId);
 
+            // Something could go wrong?...
+            if (currentCase == null)
+                return;
+
+            var currentUsers =
+                await SurgeryUtil.GetSurgeryUsers(surgeryId);
+
+            var rooms = await RoomUtil.GetRooms(currentCase.LocationID);
+
             _pnlCaseDetail.Visibility = ViewStates.Visible;
 
-            _txtSurgeon.Text = string.Format("{0}, {1}", currentCase.SurgeonLastName,
-                currentCase.SurgeonFirstName);
+            _txtSurgeon.Text = $"{currentCase.SurgeonLastName}, {currentCase.SurgeonFirstName}";
             _txtCase.Text = currentCase.ProcedureDescription;
             _txtCard.Text = currentCase.CardDescription;
+
+            
+            _swtCheckIn.Text = AppSettings.CurrentUser.RoleID.ToString();
+            _spnAssignment.Adapter = new RoomListAdapter(Context, rooms);
+            _gvSurgeryUsers.Adapter = new CheckInOverviewAdapter(Context, currentUsers);
         }
     }
 }

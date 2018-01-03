@@ -13,7 +13,7 @@ namespace OpFlow.Mobile
     {
         public static async Task<List<Surgery>> GetSurgerySchedule(DateTime scheduleDate)
         {
-            var userId = AppSettings.CurrentSurgeon.UserID;
+            var userId = AppSettings.CurrentUser.UserID;
 
             var command = string.Format("api/surgery?userId={0}", userId);
             var response = await WebUtility.WebRequest<List<Surgery>>(command, HttpMethod.Get);
@@ -24,6 +24,24 @@ namespace OpFlow.Mobile
         {
             var command = string.Format("api/surgery/{0}", surgeryId);
             var response = await WebUtility.WebRequest<Surgery>(command, HttpMethod.Get);
+
+            return response;
+        }
+
+        public static async Task<List<SurgeryUser>> GetSurgeryUsers(int surgeryId)
+        {
+            var command = string.Format("api/surgery/{0}/users", surgeryId);
+            var response = await WebUtility.WebRequest<List<SurgeryUser>>(command, HttpMethod.Get);
+
+            return response;
+        }
+
+        public static async Task<List<Surgery>> GetSurgeryRoomSchedule(int caseID, int providerID, int locationID)
+        {
+            var command = string.Format("api/surgery/RoomSchedule?caseID={0}&providerID={1}&locationID={2}", 
+                caseID, providerID, locationID);
+
+            var response = await WebUtility.WebRequest<List<Surgery>>(command, HttpMethod.Get);
 
             return response;
         }

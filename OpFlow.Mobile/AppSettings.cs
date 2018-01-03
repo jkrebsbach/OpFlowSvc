@@ -13,7 +13,7 @@ namespace OpFlow.Mobile
     public static class AppSettings
     {
         private static AuthToken _authToken;
-        public static Surgeon CurrentSurgeon { get; private set; }
+        public static User CurrentUser { get; private set; }
 
         public static bool UserAuthenticated => _authToken?.ExpiresDate != null && _authToken.ExpiresDate > DateTime.Now;
 
@@ -25,7 +25,7 @@ namespace OpFlow.Mobile
             _authToken = await WebUtility.LoginUser(username, password);
 
             if (_authToken != null)
-                CurrentSurgeon = await SurgeonUtil.GetSurgeon(username);
+                CurrentUser = await UserUtil.GetUser(username);
         }
     }
 }
