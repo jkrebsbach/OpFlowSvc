@@ -6,6 +6,7 @@ using Android.OS;
 using Android.Views;
 using OpFlow.Android.Activities;
 using OpFlow.Android.Fragments;
+using OpFlow.Data;
 using OpFlow.Mobile;
 
 namespace OpFlow.Android
@@ -94,12 +95,12 @@ namespace OpFlow.Android
             }
             else if (fragment == FragmentEnum.FutureCases)
             {
-                AndroidApp.SurgeryID = (int)payload;
+                AndroidApp.CurrentSurgery = (Surgery)payload;
                 newFragment = new CaseDetailFragment();
             }
             else if (fragment == FragmentEnum.Schedule)
             {
-                AndroidApp.SurgeryID = (int) payload;
+                AndroidApp.CurrentSurgery = (Surgery) payload;
                 newFragment = new CheckInFragment();
             }
 

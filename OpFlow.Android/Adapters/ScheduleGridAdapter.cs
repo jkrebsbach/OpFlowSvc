@@ -19,11 +19,13 @@ namespace OpFlow.Android.Adapters
     {
         private Context _context;
         private List<Surgery> _schedule;
+        private Dictionary<int, Patient> _surgeryPatients;
 
-        public ScheduleGridAdapter(Context c, List<Surgery> schedule)
+        public ScheduleGridAdapter(Context c, List<Surgery> schedule, Dictionary<int, Patient> surgeryPatients)
         {
             _context = c;
             _schedule = schedule;
+            _surgeryPatients = surgeryPatients;
         }
 
         public override Java.Lang.Object GetItem(int position)
@@ -46,6 +48,7 @@ namespace OpFlow.Android.Adapters
             }
 
             var surgery = _schedule[position];
+            var patient = _surgeryPatients[surgery.SurgeryID];
 
             var pnlLayout = gridView.FindViewById<LinearLayout>(Resource.Id.pnlLayout);
             var txtPatientName = gridView.FindViewById<TextView>(Resource.Id.txtPatientName);
@@ -65,11 +68,11 @@ namespace OpFlow.Android.Adapters
                 pnlLayout.SetBackgroundResource(Resource.Drawable.HighlightedRoundRectangle);
             }
 
-            txtPatientName.Text = string.Format("{0} {1}", surgery.Patient?.LastName, surgery.Patient?.FirstName);
+            txtPatientName.Text = string.Format("{0} {1}", patient?.LastName, patient?.FirstName);
             txtTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
             txtLocation.Text = surgery.ProviderName;
-            txtPatientAge.Text = "Age: " + surgery.Patient?.BirthDate.CalculateAge();
-            txtPatientSex.Text = "Sex: " + surgery.Patient?.Sex;
+            txtPatientAge.Text = "Age: " + patient?.BirthDate.CalculateAge();
+            txtPatientSex.Text = "Sex: " + patient?.Sex;
             txtProcedure.Text = surgery.ProcedureDescription;
 
             ivPrefCard.SetImageDrawable(_context.GetDrawable(Resource.Drawable.DarkGreenCheckMark));

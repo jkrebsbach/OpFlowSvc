@@ -23,7 +23,5 @@ namespace OpFlow.Data
         public DateTime ScheduleDate { get; set; }
         public TimeSpan ScheduleTime { get; set; }
         public int EstDelayMinutes { get; set; }
-
-        public Patient Patient { get; set; }
     }
 }

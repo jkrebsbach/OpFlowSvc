@@ -68,9 +68,10 @@ namespace OpFlow.Android.Fragments
             try
             {
                 // It is possible to open this activity with a case selected
-                if (AndroidApp.SurgeryID > 0)
+                if (AndroidApp.CurrentSurgery != null)
                 {
-                    await LoadCase(AndroidApp.SurgeryID);
+                    await LoadCase(
+                        AndroidApp.CurrentSurgery.SurgeryID);
                 }
 
             }
@@ -83,22 +84,26 @@ namespace OpFlow.Android.Fragments
 
         private async Task LoadCase(int surgeryId)
         {
-            var currentCase = await SurgeryUtil.GetSurgery(surgeryId);
+            var locationId = AppSettings.CurrentUser.LocationID;
+            var providerId = AppSettings.CurrentUser.ProviderID;
+
+            var currentSurgery = await SurgeryUtil.GetSurgery(
+                surgeryId, locationId, providerId);
 
             // Something could go wrong?...
-            if (currentCase == null)
+            if (currentSurgery == null)
                 return;
 
-            var currentUsers =
-                await SurgeryUtil.GetSurgeryUsers(surgeryId);
+            var currentUsers = await SurgeryUtil.GetSurgeryUsers(currentSurgery.CaseID,
+                providerId, locationId);
 
-            var rooms = await RoomUtil.GetRooms(currentCase.LocationID);
+            var rooms = await RoomUtil.GetRooms(currentSurgery.LocationID);
 
             _pnlCaseDetail.Visibility = ViewStates.Visible;
 
-            _txtSurgeon.Text = $"{currentCase.SurgeonLastName}, {currentCase.SurgeonFirstName}";
-            _txtCase.Text = currentCase.ProcedureDescription;
-            _txtCard.Text = currentCase.CardDescription;
+            _txtSurgeon.Text = $"{currentSurgery.SurgeonLastName}, {currentSurgery.SurgeonFirstName}";
+            _txtCase.Text = currentSurgery.ProcedureDescription;
+            _txtCard.Text = currentSurgery.CardDescription;
 
             var roomAdapter = new SpinnerAdapter<Room>(rooms);
             

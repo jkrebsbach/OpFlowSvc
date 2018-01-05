@@ -102,9 +102,9 @@ namespace OpFlow.Android.Fragments
 
             try
             {
-                if (AndroidApp.SurgeryID > 0)
+                if (AndroidApp.CurrentSurgery != null)
                 {
-                    await LoadCase(AndroidApp.SurgeryID);
+                    await LoadCase(AndroidApp.CurrentSurgery.SurgeryID);
                 }
             }
             catch (Exception e)
@@ -150,8 +150,11 @@ namespace OpFlow.Android.Fragments
 
         private async Task LoadCase(int surgeryId)
         {
-            var currentCase = await SurgeryUtil.GetSurgery(surgeryId);
+            var locationId = AppSettings.CurrentUser.LocationID;
+            var providerId = AppSettings.CurrentUser.ProviderID;
 
+            var currentCase = await SurgeryUtil.GetSurgery(surgeryId, providerId, locationId);
+            
             _pnlCaseDetail.Visibility = ViewStates.Visible;
 
             _txtSurgeon.Text = string.Format("{0}, {1}", currentCase.SurgeonLastName,
@@ -161,9 +164,9 @@ namespace OpFlow.Android.Fragments
 
             var patient = await PatientUtil.GetPatient(currentCase.PatientID);
 
-            _txtPatientName.Text = string.Format("{0} {1}", currentCase.Patient.FirstName, currentCase.Patient.LastName);
-            _txtPatientAge.Text = currentCase.Patient.BirthDate.CalculateAge().ToString();
-            _txtPatientBMI.Text = currentCase.Patient.BMI.ToString(CultureInfo.InvariantCulture);
+            _txtPatientName.Text = string.Format("{0} {1}", patient.FirstName, patient.LastName);
+            _txtPatientAge.Text = patient.BirthDate.CalculateAge().ToString();
+            _txtPatientBMI.Text = patient.BMI.ToString(CultureInfo.InvariantCulture);
 
 
             #region Patient Demo

@@ -15,7 +15,7 @@ namespace OpFlow.Service.Controllers
     {
         // GET api/values/5
         [SwaggerOperation("GetById")]
-        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.OK, Type=typeof(Patient))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         public HttpResponseMessage Get(int patientId)
         {

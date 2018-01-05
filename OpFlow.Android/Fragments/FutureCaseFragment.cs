@@ -45,8 +45,9 @@ namespace OpFlow.Android.Fragments
         private async Task SetupScreen()
         {
             _schedule = await SurgeryUtil.GetSurgerySchedule(DateTime.Now);
-            //_schedule = await SurgeryUtil.GetSurgerySchedule(DateTime.Now);
-            _lvFutureCases.Adapter = new Adapters.FutureCaseListAdapter(Activity, _schedule);
+            var schedulePatients = await SurgeryUtil.GetSurgeryPatients(_schedule);
+
+            _lvFutureCases.Adapter = new Adapters.FutureCaseListAdapter(Activity, _schedule, schedulePatients);
         }
 
         private void FutureCaseClicked(object sender, AdapterView.ItemClickEventArgs eventArgs)
@@ -56,11 +57,7 @@ namespace OpFlow.Android.Fragments
 
             var schedule = _schedule[eventArgs.Position];
 
-            Listener.SendMessage(FragmentEnum.FutureCases, schedule.SurgeryID);
-
-            //var caseDetailActivity = new Intent(this, typeof(CaseDetailActivity));
-            //caseDetailActivity.PutExtra(AndroidApp.SURGERY_BUNDLE, schedule.SurgeryID.ToString());
-            //StartActivity(caseDetailActivity);
+            Listener.SendMessage(FragmentEnum.FutureCases, schedule);
         }
     }
 }

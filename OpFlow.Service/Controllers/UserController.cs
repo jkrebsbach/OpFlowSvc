@@ -13,15 +13,8 @@ namespace OpFlow.Service.Controllers
     [Authorize]
     public class UserController : ApiController
     {
-        // GET api/values
-        [SwaggerOperation("GetAll")]
-        public IEnumerable<User> Get()
-        {
-            return DataAccess.SqlHelper.GetUsers(null);
-        }
-
         // GET api/values/jdoe
-        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.OK, Type=typeof(User))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("api/UserByUsername", Name = "UserByUsername")]
         public HttpResponseMessage GetUser(string username)
@@ -30,7 +23,7 @@ namespace OpFlow.Service.Controllers
 
             var result = users.FirstOrDefault();
 
-            if (result == null)
+            if (result == null || username == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound, "User not found");
 
             return Request.CreateResponse(HttpStatusCode.OK, result);

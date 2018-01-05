@@ -15,13 +15,79 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values/5
         [SwaggerOperation("GetById")]
-        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         public HttpResponseMessage Get(int cardId)
         {
             var cards = DataAccess.SqlHelper.GetCardItems(cardId, 1, 1);
 
             return Request.CreateResponse(HttpStatusCode.OK, cards);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetCardSurgerys")]
+        [Route("api/card/surgery")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
+        public HttpResponseMessage GetCardSurgerys(int cardId, int providerId, int locationId)
+        {
+            var result = DataAccess.SqlHelper.GetCardSurgeryItems(cardId, providerId, locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetCardSurgeryDelays")]
+        [Route("api/card/delays")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
+        public HttpResponseMessage GetCardSurgeryDelays(int surgeryId, int providerId, int locationId)
+        {
+            var result = DataAccess.SqlHelper.GetCardSurgeryDelays(surgeryId, providerId, locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetCardSurgeryOpens")]
+        [Route("api/card/opens")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
+        public HttpResponseMessage GetCardSurgeryOpens(int surgeryId, int providerId, int locationId)
+        {
+            var result = DataAccess.SqlHelper.GetCardSurgeryOpens(surgeryId, providerId, locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetCardSurgeryCloses")]
+        [Route("api/card/closes")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
+        public HttpResponseMessage GetCardSurgeryCloses(int surgeryId, int providerId, int locationId)
+        {
+            var result = DataAccess.SqlHelper.GetCardSurgeryCloses(surgeryId, providerId, locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetCardChecklist")]
+        [Route("api/card/delayItems")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
+        public HttpResponseMessage GetCardChecklist(int providerId, int locationId, int cardId)
+        {
+            var result = DataAccess.SqlHelper.GetProviderCardChecklist(providerId, locationId, cardId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [Route("api/card/users")]
+        [SwaggerOperation("GetCardUsers")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
+        public HttpResponseMessage GetCardUsers(int cardId, int providerId, int locationId, int? typeId)
+        {
+            var result = DataAccess.SqlHelper.GetProviderCardUsers(cardId, providerId, locationId, typeId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // POST api/values

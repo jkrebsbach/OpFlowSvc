@@ -9,6 +9,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using OpFlow.Data;
 
 namespace OpFlow.Android
 {
@@ -19,7 +20,7 @@ namespace OpFlow.Android
         public const string LOCATION_BUNDLE = "LOCATION";
         public const string PROVIDER_BUNDLE = "PROVIDER";
         
-        public static int SurgeryID;
+        public static Surgery CurrentSurgery;
     }
 
     public enum FragmentEnum

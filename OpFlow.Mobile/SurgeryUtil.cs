@@ -15,22 +15,37 @@ namespace OpFlow.Mobile
         {
             var userId = AppSettings.CurrentUser.UserID;
 
-            var command = string.Format("api/surgery?userId={0}", userId);
+            var command = string.Format("api/surgery/cases/{0}", userId);
             var response = await WebUtility.WebRequest<List<Surgery>>(command, HttpMethod.Get);
 
             return response;
         }
-        public static async Task<Surgery> GetSurgery(int surgeryId)
+
+        public static async Task<Dictionary<int, Patient>> GetSurgeryPatients(List<Surgery> surgeries)
         {
-            var command = string.Format("api/surgery/{0}", surgeryId);
+            var result = new Dictionary<int, Patient>();
+
+            foreach (var surgery in surgeries)
+            {
+                result[surgery.SurgeryID] = await PatientUtil.GetPatient(surgery.PatientID);
+            }
+
+            return result;
+        }
+
+        public static async Task<Surgery> GetSurgery(int surgeryId, int providerId, int locationId)
+        {
+            var command = string.Format("api/surgery?surgeryId={0}&providerId={1}&locationId={2}",
+                surgeryId, providerId, locationId);
             var response = await WebUtility.WebRequest<Surgery>(command, HttpMethod.Get);
 
             return response;
         }
 
-        public static async Task<List<SurgeryUser>> GetSurgeryUsers(int surgeryId)
+        public static async Task<List<SurgeryUser>> GetSurgeryUsers(int caseId, int providerId, int locationId)
         {
-            var command = string.Format("api/surgery/{0}/users", surgeryId);
+            var command = string.Format("api/surgery/users?caseId={0}&providerId={1}&locationId={2}", 
+                caseId, providerId, locationId);
             var response = await WebUtility.WebRequest<List<SurgeryUser>>(command, HttpMethod.Get);
 
             return response;

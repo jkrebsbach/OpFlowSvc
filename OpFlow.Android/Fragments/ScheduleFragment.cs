@@ -69,11 +69,7 @@ namespace OpFlow.Android.Fragments
 
             var schedule = _schedule[eventArgs.Position];
 
-            Listener.SendMessage(FragmentEnum.Schedule, schedule.SurgeryID);
-
-            //var checkInActivity = new Intent(this, typeof(CheckInActivity));
-            //checkInActivity.PutExtra(AndroidApp.SURGERY_BUNDLE, schedule.SurgeryID.ToString());
-            //StartActivity(checkInActivity);
+            Listener.SendMessage(FragmentEnum.Schedule, schedule);
         }
 
         void btnSchedule_OnClick(object sender, EventArgs eventArgs)
@@ -91,7 +87,9 @@ namespace OpFlow.Android.Fragments
             _btnSchedule.Text = _selectedDate.ToString("M/d/yyyy");
 
             _schedule = await SurgeryUtil.GetSurgerySchedule(_selectedDate);
-            _gvDailySchedule.Adapter = new Adapters.ScheduleGridAdapter(Activity, _schedule);
+            var schedulePatients = await SurgeryUtil.GetSurgeryPatients(_schedule);
+
+            _gvDailySchedule.Adapter = new Adapters.ScheduleGridAdapter(Activity, _schedule, schedulePatients);
         }
     }
 }
