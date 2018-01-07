@@ -259,36 +259,58 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static Flow GetFlowByCardUser(int cardID, int userID)
+        public static List<SurgeryVendorRep> GetSurgeryVendorReps(int surgeryId, int locationId, int providerId)
         {
             var parameters = new[]
             {
-                new SqlParameter("card_id", cardID),
-                new SqlParameter("user_id", userID)
-            };
-            var dsSchedules = ExecuteCommand("GetCaseFlow", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<Flow>().FirstOrDefault();
-
-            if (result != null)
-            {
-                result.FlowSteps = dsSchedules.Tables[0].DataTableToList<FlowStep>();
-                result.FlowMetrics = dsSchedules.Tables[1].DataTableToList<FlowMetric>();
-            }
-
-            return result;
-        }
-
-        public static List<FlowStep> GetFlowTimings(int flowId, int surgeryId, int providerId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("flow_id", flowId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetFlowSurgeryTimings", parameters);
+            var dsSchedules = ExecuteCommand("GetSurgeryVendorReps", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<SurgeryVendorRep>();
+
+            return result;
+        }
+
+        public static Flow GetFlow(int flowId, int cardId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetCardFlowData", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Flow>();
+
+            return result.FirstOrDefault();
+        }
+
+        public static List<FlowStep> GetFlowTimings(int flowId, int providerId, int locationId, int? surgeryId)
+        {
+            var command = surgeryId == null ? "GetFlowTimings" : "GetFlowSurgeryTimings";
+
+            var parameters = surgeryId == null
+                ? new[]
+                {
+                    new SqlParameter("flow_id", flowId),
+                    new SqlParameter("provider_id", providerId),
+                    new SqlParameter("location_id", locationId)
+                }
+                : new[]
+                {
+                    new SqlParameter("flow_id", flowId),
+                    new SqlParameter("surgery_id", surgeryId),
+                    new SqlParameter("provider_id", providerId),
+                    new SqlParameter("location_id", locationId)
+                };
+
+
+            var dsSchedules = ExecuteCommand(command, parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<FlowStep>();
 
@@ -307,6 +329,22 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetFlowComments", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<FlowStep>();
+
+            return result;
+        }
+
+        public static List<FlowMessaging> GetFlowMessaging(int flowId, int providerId, int locationId, int stepId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("step_id", stepId)
+            };
+            var dsSchedules = ExecuteCommand("GetFlowMessaging", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<FlowMessaging>();
 
             return result;
         }
@@ -339,6 +377,22 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetFlowStepNotifications", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<FlowNotification>();
+
+            return result;
+        }
+
+        public static List<FlowFeedback> GetFlowFeedback(int flowId, int stepId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("surgery_id", stepId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetFlowFeedback", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<FlowFeedback>();
 
             return result;
         }

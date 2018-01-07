@@ -12,13 +12,12 @@ namespace OpFlow.Service.Controllers
 {
     public class FlowController : ApiController
     {
-
         // GET api/values/5
-        [SwaggerOperation("GetByCardIdUserId")]
+        [SwaggerOperation("Get")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Flow))]
-        public HttpResponseMessage GetFlowByCard(int cardId, int userId)
+        public HttpResponseMessage GetFlow(int flowId, int cardId, int providerId, int locationId)
         {
-            var flow = DataAccess.SqlHelper.GetFlowByCardUser(cardId, userId);
+            var flow = DataAccess.SqlHelper.GetFlow(flowId, cardId, providerId, locationId);
 
             var result = new List<Flow>();
             if (flow != null)
@@ -31,9 +30,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetFlowTimings")]
         [Route("api/flow/timings")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowStep>))]
-        public HttpResponseMessage GetFlowTimings(int flowId, int surgeryId, int providerId, int locationId)
+        public HttpResponseMessage GetFlowTimings(int flowId, int providerId, int locationId, int? surgeryId = null)
         {
-            var result = DataAccess.SqlHelper.GetFlowTimings(flowId, surgeryId, providerId, locationId);
+            var result = DataAccess.SqlHelper.GetFlowTimings(flowId, providerId, locationId, surgeryId);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -45,6 +44,17 @@ namespace OpFlow.Service.Controllers
         public HttpResponseMessage GetFlowComments(int flowId, int surgeryId, int providerId, int locationId)
         {
             var result = DataAccess.SqlHelper.GetFlowComments(flowId, surgeryId, providerId, locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetFlowMessaging")]
+        [Route("api/flow/messaging")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowMessaging>))]
+        public HttpResponseMessage GetFlowMessaging(int flowId, int providerId, int locationId, int stepId)
+        {
+            var result = DataAccess.SqlHelper.GetFlowMessaging(flowId, providerId, locationId, stepId);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -67,6 +77,17 @@ namespace OpFlow.Service.Controllers
         public HttpResponseMessage GetFlowNotifications(int flowId, int stepId, int providerId, int locationId)
         {
             var result = DataAccess.SqlHelper.GetFlowNotifications(flowId, stepId, providerId, locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetFlowFeedback")]
+        [Route("api/flow/feedback")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowNotification>))]
+        public HttpResponseMessage GetFlowFeedback(int flowId, int stepId, int providerId, int locationId)
+        {
+            var result = DataAccess.SqlHelper.GetFlowFeedback(flowId, stepId, providerId, locationId);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

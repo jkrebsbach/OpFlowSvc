@@ -32,165 +32,164 @@
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="85">
-      <LinearLayout
-        android:id="@+id/pnlCaseDetail"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="100">
         <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/pnlCaseDetail"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
+            android:layout_height="wrap_content"
             android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="33"
-                android:id="@+id/txtSurgeon" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="33"
-                android:id="@+id/txtCase" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="33"
-                android:id="@+id/txtCard" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33"
+                    android:id="@+id/txtSurgeon" />
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33"
+                    android:id="@+id/txtCase" />
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33"
+                    android:id="@+id/txtCard" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <Switch
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:text="ROLE"
+                    android:id="@+id/swtCheckIn" />
+                <Spinner
+                    android:id="@+id/spnAssignment"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50" />
+                <TextView
+                    android:text="Delay"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="25" />
+                <TextView
+                    android:text="Work up Reviewed"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="25" />
+            </LinearLayout>
+            <GridView
+                android:id="@+id/gvSurgeryUsers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="25"
+                    android:text="Equipment" />
+                <ImageView
+                    android:layout_width="0dip"
+                    android:layout_height="10dip"
+                    android:layout_weight="25"
+                    android:src="@drawable/redExclamationPoint"
+                    android:scaleType="fitCenter" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="25"
+                    android:text="Trays" />
+                <ImageView
+                    android:layout_width="0dip"
+                    android:layout_height="10dip"
+                    android:layout_weight="25"
+                    android:src="@drawable/darkGreenCheckMark"
+                    android:scaleType="fitCenter" />
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:text="Room 5" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="25"
+                    android:text="Devices" />
+                <ImageView
+                    android:layout_width="0dip"
+                    android:layout_height="10dip"
+                    android:layout_weight="25"
+                    android:src="@drawable/darkGreenCheckMark"
+                    android:scaleType="fitCenter" />
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:text="Delivered to room" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="25"
+                    android:text="Room" />
+                <ImageView
+                    android:layout_width="0dip"
+                    android:layout_height="10dip"
+                    android:layout_weight="25"
+                    android:src="@drawable/redExclamationPoint"
+                    android:scaleType="fitCenter" />
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:text="+75 min" />
+            </LinearLayout>
         </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <Switch
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:text="ROLE"
-                android:id="@+id/swtCheckIn" />
-          <Spinner
-              android:id="@+id/spnAssignment"
-              android:layout_width="0dip"
-              android:layout_height="wrap_content"
-              android:layout_weight="50" />
-        </LinearLayout>
-      <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="10"
-        android:weightSum="100">
-        <TextView
-          android:layout_width="0dip"
-          android:layout_height="wrap_content"
-          android:layout_weight="50" />
-        <TextView
-          android:text="Delay"
-          android:layout_width="0dip"
-          android:layout_height="wrap_content"
-          android:layout_weight="25" />
-        <TextView
-          android:text="Work up Reviewed"
-          android:layout_width="0dip"
-          android:layout_height="wrap_content"
-          android:layout_weight="25" />
-      </LinearLayout>
-      <GridView
-        android:id="@+id/gvSurgeryUsers"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-        
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Equipment" />
-            <ImageView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:src="@drawable/redExclamationPoint"
-                android:scaleType="fitCenter" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Trays" />
-            <ImageView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:src="@drawable/darkGreenCheckMark"
-                android:scaleType="fitCenter" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:text="Room 5" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Devices" />
-            <ImageView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:src="@drawable/darkGreenCheckMark"
-                android:scaleType="fitCenter" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:text="Delivered to room" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Room" />
-            <ImageView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:src="@drawable/redExclamationPoint"
-                android:scaleType="fitCenter" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:text="+75 min" />
-        </LinearLayout>
-      </LinearLayout>
     </ScrollView>
 </LinearLayout>

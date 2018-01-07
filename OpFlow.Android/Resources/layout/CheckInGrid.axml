@@ -4,34 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="100">
-
-
-  <TextView
-    android:id="@+id/txtRoleName"
-    android:layout_width="0dip"
-    android:layout_height="wrap_content"
-    android:layout_weight="30" />
-
-    <ImageView
-      android:id="@+id/ivCheckInStatus"
-      android:layout_width="0dip"
-      android:layout_height="wrap_content"
-      android:layout_weight="20"
-      android:scaleType="fitCenter" />
-
     <TextView
-      android:id="@+id/txtDelay"
-      android:layout_width="0dip"
-      android:layout_height="wrap_content"
-      android:layout_weight="25" />
-
-
-
-  <ImageView
-    android:id="@+id/ivReviewStatus"
-    android:layout_width="0dip"
-    android:layout_height="wrap_content"
-    android:layout_weight="25"
-    android:scaleType="fitCenter" />
-
+        android:id="@+id/txtRoleName"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="30" />
+    <ImageView
+        android:id="@+id/ivCheckInStatus"
+        android:layout_width="10dip"
+        android:layout_height="10dip"
+        android:scaleType="fitXY" />
+    <TextView
+        android:id="@+id/txtDelay"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="25" />
+    <ImageView
+        android:id="@+id/ivReviewStatus"
+        android:layout_width="10dip"
+        android:layout_height="10dip"
+        android:scaleType="fitXY" />
 </LinearLayout>

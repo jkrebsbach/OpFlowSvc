@@ -60,7 +60,7 @@ namespace OpFlow.Android.Adapters
                 string.IsNullOrEmpty(surgeryUser.WorkupReview) ?
                 null :
                 _context.GetDrawable(Resource.Drawable.DarkGreenCheckMark));
-            
+
             return gridView;
         }
 
