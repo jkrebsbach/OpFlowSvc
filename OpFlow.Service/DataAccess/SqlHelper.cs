@@ -34,7 +34,7 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        public static List<Card> GetCardItems(int cardId, int providerId, int locationId)
+        public static List<Card> GetCardData(int cardId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -42,9 +42,9 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetCardItems", parameters);
+            var dsSchedules = ExecuteCommand("GetCardData", parameters);
 
-            var result =  dsSchedules.Tables[0].DataTableToList<Card>();
+            var result = dsSchedules.Tables[0].DataTableToList<Card>();
 
             return result;
         }
@@ -79,6 +79,36 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static List<Card> GetCardList(int userId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("user_id", userId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetCardListBySurgeon", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Card>();
+
+            return result;
+        }
+
+        public static List<Card> GetCardCountAvgClose(int cardId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetCardCountAVGClose", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Card>();
+
+            return result;
+        }
+
         public static List<Card> GetCardSurgeryOpens(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -88,6 +118,21 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = ExecuteCommand("GetCardSurgeryCountOpen", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Card>();
+
+            return result;
+        }
+
+        public static List<Card> GetCardItemPulls(int surgeryId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetCardItemPulledCount", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Card>();
 
@@ -186,11 +231,29 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Surgery> GetSurgeries(int userID)
+        public static Surgery GetCase(int caseId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("user_id", userID)
+                new SqlParameter("case_id", caseId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+
+            var dsSchedules = ExecuteCommand("GetCase", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Surgery>().FirstOrDefault();
+
+            return result;
+        }
+
+        public static List<Surgery> GetSurgeries(int userID, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("user_id", userID),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
             };
             var dsSchedules = ExecuteCommand("GetSurgeonCases", parameters);
 

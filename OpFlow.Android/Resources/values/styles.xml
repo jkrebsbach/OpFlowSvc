@@ -3,8 +3,13 @@
   <style name="OpFlowTheme" parent="android:Theme.Material.Light">
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowActionBar">false</item>
-    <item name="android:colorPrimary">@color/opflow_blue</item>
+    <item name="android:colorPrimary">@color/opflow_black</item>
     <item name="android:colorBackground">@color/opflow_white</item>
+    
+    <item name="android:actionBarStyle">@style/ActionBarTheme</item>
+  </style>
+  <style name="ActionBarTheme" parent="@android:style/Widget.Holo.Light.ActionBar">
+    <item name="android:background">@color/opflow_blue</item>
   </style>
   <!-- ToolBar -->
   <style name="ToolBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">

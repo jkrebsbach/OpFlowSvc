@@ -402,11 +402,14 @@ namespace OpFlow.Android
 		public partial class Style
 		{
 			
+			// aapt resource value: 0x7f070001
+			public const int ActionBarTheme = 2131165185;
+			
 			// aapt resource value: 0x7f070000
 			public const int OpFlowTheme = 2131165184;
 			
-			// aapt resource value: 0x7f070001
-			public const int ToolBarStyle = 2131165185;
+			// aapt resource value: 0x7f070002
+			public const int ToolBarStyle = 2131165186;
 			
 			static Style()
 			{

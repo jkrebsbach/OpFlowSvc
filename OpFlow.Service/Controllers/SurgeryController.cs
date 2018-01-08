@@ -24,12 +24,23 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/surgery?userId=5
+        [SwaggerOperation("GetCase")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Surgery))]
+        [Route("api/Surgery/case")]
+        public HttpResponseMessage GetCase(int caseId, int providerId, int locationId)
+        {
+            var schedules = DataAccess.SqlHelper.GetCase(caseId, providerId, locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, schedules);
+        }
+
+        // GET api/surgery?userId=5
         [SwaggerOperation("GetByUserId")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgery>))]
-        [Route("api/Surgery/cases/{userId}")]
-        public HttpResponseMessage GetSurgeryScheduleByUser(int userId)
+        [Route("api/Surgery/cases")]
+        public HttpResponseMessage GetSurgeryScheduleByUser(int userId, int providerId, int locationId)
         {
-            var schedules = DataAccess.SqlHelper.GetSurgeries(userId);
+            var schedules = DataAccess.SqlHelper.GetSurgeries(userId, providerId, locationId);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }

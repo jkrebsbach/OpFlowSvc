@@ -14,8 +14,10 @@ namespace OpFlow.Mobile
         public static async Task<List<Surgery>> GetSurgerySchedule(DateTime scheduleDate)
         {
             var userId = AppSettings.CurrentUser.UserID;
+            var providerId = AppSettings.CurrentUser.ProviderID;
+            var locationId = AppSettings.CurrentUser.LocationID;
 
-            var command = string.Format("api/surgery/cases/{0}", userId);
+            var command = string.Format("api/surgery/cases?userId={0}&providerId={1}&locationId={2}", userId, providerId, locationId);
             var response = await WebUtility.WebRequest<List<Surgery>>(command, HttpMethod.Get);
 
             return response;
