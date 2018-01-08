@@ -54,9 +54,14 @@ namespace OpFlow.Android.Fragments
             btnSearch.Click += async delegate
             {
                 // Search event should yield a Case ID
-                await LoadCase(1);
+                await LoadCase();
             };
 
+
+            _swtCheckIn.CheckedChange += async delegate
+            {
+                await CheckInUser();
+            };
             
             return rootView;
         }
@@ -68,10 +73,9 @@ namespace OpFlow.Android.Fragments
             try
             {
                 // It is possible to open this activity with a case selected
-                if (AndroidApp.CurrentSurgery != null)
+                if (AppSettings.CurrentSurgery != null)
                 {
-                    await LoadCase(
-                        AndroidApp.CurrentSurgery.SurgeryID);
+                    await LoadCase();
                 }
 
             }
@@ -82,10 +86,19 @@ namespace OpFlow.Android.Fragments
             }
         }
 
-        private async Task LoadCase(int surgeryId)
+        private async Task CheckInUser()
+        {
+            var user = AppSettings.CurrentUser;
+            var surgeryId = AppSettings.CurrentSurgery.SurgeryID;
+
+            await UserUtil.CheckoutUser(user, surgeryId);
+        }
+
+        private async Task LoadCase()
         {
             var locationId = AppSettings.CurrentUser.LocationID;
             var providerId = AppSettings.CurrentUser.ProviderID;
+            var surgeryId = AppSettings.CurrentSurgery.SurgeryID;
 
             var currentSurgery = await SurgeryUtil.GetSurgery(
                 surgeryId, locationId, providerId);

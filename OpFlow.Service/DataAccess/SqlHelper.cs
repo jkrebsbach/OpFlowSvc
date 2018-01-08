@@ -34,6 +34,28 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
+        private static int ExecuteNonQuery(string storedProcedure, SqlParameter[] dsParameters = null)
+        {
+            var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString);
+            var cmd = new SqlCommand(storedProcedure, conn) { CommandType = CommandType.StoredProcedure };
+
+            cmd.Parameters.AddRange(dsParameters);
+
+            conn.Open();
+
+            var result = -1;
+
+            using (var dataAdapter = new SqlDataAdapter(cmd))
+            {
+                result = cmd.ExecuteNonQuery();
+
+                cmd.Parameters.Clear();
+                conn.Close();
+
+                return result;
+            }
+        }
+
         public static List<Card> GetCardData(int cardId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -199,6 +221,45 @@ namespace OpFlow.Service.DataAccess
             var result = dsSchedules.Tables[0].DataTableToList<User>();
 
             return result;
+        }
+
+        public static int CheckInUser(User user, int surgeryId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("user_id", user.UserID),
+                new SqlParameter("provider_id", user.ProviderID),
+                new SqlParameter("location_id", user.LocationID),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("role_id", user.RoleID)
+            };
+            return ExecuteNonQuery("CheckinUserToCase", dsParameters);
+        }
+
+        public static int CheckOutUser(User user, int surgeryId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("user_id", user.UserID),
+                new SqlParameter("provider_id", user.ProviderID),
+                new SqlParameter("location_id", user.LocationID),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("role_id", user.RoleID)
+            };
+            return ExecuteNonQuery("CheckoutOfCase", dsParameters);
+        }
+
+        public static int WorkupReviewed(User user, int surgeryId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("user_id", user.UserID),
+                new SqlParameter("provider_id", user.ProviderID),
+                new SqlParameter("location_id", user.LocationID),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("role_id", user.RoleID)
+            };
+            return ExecuteNonQuery("UserSurgeryWorkupReviewed", dsParameters);
         }
 
         public static List<Room> GetRooms(int locationId)

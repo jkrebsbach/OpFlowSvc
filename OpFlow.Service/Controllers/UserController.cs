@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
@@ -16,8 +17,8 @@ namespace OpFlow.Service.Controllers
         // GET api/values/jdoe
         [SwaggerResponse(HttpStatusCode.OK, Type=typeof(User))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("api/UserByUsername", Name = "UserByUsername")]
-        public HttpResponseMessage GetUser(string username)
+        [Route("api/User", Name = "User")]
+        public HttpResponseMessage Get(string username)
         {
             var users = DataAccess.SqlHelper.GetUsers(username);
 
@@ -30,10 +31,36 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [SwaggerOperation("Create")]
+        [SwaggerOperation("CheckIn")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        public void Post([FromBody]string value)
+        [Route("api/User/Checkin", Name = "Checkin")]
+        public async Task<IHttpActionResult> CheckinUser(int surgeryId, [FromBody]User user)
         {
+            DataAccess.SqlHelper.CheckInUser(user, surgeryId);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("CheckOut")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/User/Checkout", Name = "Checkout")]
+        public async Task<IHttpActionResult> CheckoutUser(int surgeryId, [FromBody]User user)
+        {
+            DataAccess.SqlHelper.CheckOutUser(user, surgeryId);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("CheckOut")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/User/Reviewed", Name = "Reviewed")]
+        public async Task<IHttpActionResult> WorkupReviewed(int surgeryId, [FromBody]User user)
+        {
+            DataAccess.SqlHelper.WorkupReviewed(user, surgeryId);
+
+            return Ok();
         }
 
         // PUT api/values/5

@@ -95,12 +95,12 @@ namespace OpFlow.Android
             }
             else if (fragment == FragmentEnum.FutureCases)
             {
-                AndroidApp.CurrentSurgery = (Surgery)payload;
+                AppSettings.CurrentSurgery = (Surgery)payload;
                 newFragment = new CaseDetailFragment();
             }
             else if (fragment == FragmentEnum.Schedule)
             {
-                AndroidApp.CurrentSurgery = (Surgery) payload;
+                AppSettings.CurrentSurgery = (Surgery) payload;
                 newFragment = new CheckInFragment();
             }
 

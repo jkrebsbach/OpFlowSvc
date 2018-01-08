@@ -102,9 +102,9 @@ namespace OpFlow.Android.Fragments
 
             try
             {
-                if (AndroidApp.CurrentSurgery != null)
+                if (AppSettings.CurrentSurgery != null)
                 {
-                    await LoadCase(AndroidApp.CurrentSurgery.SurgeryID);
+                    await LoadCase(AppSettings.CurrentSurgery.SurgeryID);
                 }
             }
             catch (Exception e)
