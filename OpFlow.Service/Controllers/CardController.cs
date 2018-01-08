@@ -115,8 +115,8 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [Route("api/card/users")]
         [SwaggerOperation("GetCardUsers")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
-        public HttpResponseMessage GetCardUsers(int cardId, int providerId, int locationId, int? typeId)
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<User>))]
+        public HttpResponseMessage GetCardUsers(int cardId, int providerId, int locationId, int? typeId = null)
         {
             var result = DataAccess.SqlHelper.GetProviderCardUsers(cardId, providerId, locationId, typeId);
 

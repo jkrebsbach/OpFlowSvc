@@ -191,20 +191,25 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Card> GetProviderCardUsers(int cardId, int providerId, int locationId, int? typeId)
+        public static List<User> GetProviderCardUsers(int cardId, int providerId, int locationId, int? typeId)
         {
             var command = typeId == null ? "GetCardUsers" : "GetCardUsersType";
 
-            var parameters = new[]
-            {
+            var parameters = typeId == null ?
+            new[] {
                 new SqlParameter("card_id", cardId),
                 new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
-                new SqlParameter("type_id", typeId)
-            };
+                new SqlParameter("location_id", locationId)
+            } : 
+            new[] {
+                    new SqlParameter("card_id", cardId),
+                    new SqlParameter("provider_id", providerId),
+                    new SqlParameter("location_id", locationId),
+                    new SqlParameter("type_id", typeId)
+                };
             var dsSchedules = ExecuteCommand(command, parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Card>();
+            var result = dsSchedules.Tables[0].DataTableToList<User>();
 
             return result;
 

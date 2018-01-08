@@ -11,6 +11,7 @@ namespace OpFlow.Data
         public RoleEnum RoleID { get; set; }
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
+        public string Initials { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
