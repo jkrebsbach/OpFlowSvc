@@ -50,7 +50,8 @@ namespace OpFlow.Android.Adapters
             var txtDelayStatus = gridView.FindViewById<TextView>(Resource.Id.txtDelayStatus);
             var ivReviewStatus = gridView.FindViewById<ImageView>(Resource.Id.ivReviewStatus);
             
-            txtRole.Text = surgeryUser.RoleDescription;
+            txtRole.Text = surgeryUser.RoleDescription +
+                (surgeryUser.CoSurgeonOrderNbr.HasValue ? string.Format("({0})", surgeryUser.CoSurgeonOrderNbr) : "");
             ivRoleStatus.SetImageDrawable(
                 surgeryUser.CheckInTime.HasValue ?
                 _context.GetDrawable(Resource.Drawable.DarkGreenCheckMark) :

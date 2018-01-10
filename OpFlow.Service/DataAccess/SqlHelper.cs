@@ -191,7 +191,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<User> GetProviderCardUsers(int cardId, int providerId, int locationId, int? typeId)
+        public static List<SurgeryUser> GetProviderCardUsers(int cardId, int providerId, int locationId, int? typeId)
         {
             var command = typeId == null ? "GetCardUsers" : "GetCardUsersType";
 
@@ -209,7 +209,7 @@ namespace OpFlow.Service.DataAccess
                 };
             var dsSchedules = ExecuteCommand(command, parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<User>();
+            var result = dsSchedules.Tables[0].DataTableToList<SurgeryUser>();
 
             return result;
 

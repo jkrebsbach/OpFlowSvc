@@ -36,13 +36,11 @@
             android:id="@+id/pnlCaseDetail"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="100">
+            android:layout_height="wrap_content">
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10"
+                android:layout_height="wrap_content"
                 android:weightSum="100">
                 <TextView
                     android:layout_width="0dip"
@@ -63,8 +61,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10"
+                android:layout_height="wrap_content"
                 android:weightSum="100">
                 <Switch
                     android:layout_width="0dip"
@@ -81,8 +78,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10"
+                android:layout_height="wrap_content"
                 android:weightSum="100">
                 <TextView
                     android:layout_width="0dip"
@@ -99,15 +95,14 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="25" />
             </LinearLayout>
-            <GridView
-                android:id="@+id/gvSurgeryUsers"
+          <OpFlow.Android.Widgets.ScalableGridView
+              android:id="@+id/gvSurgeryUsers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10"
+                android:layout_height="wrap_content"
                 android:weightSum="100">
                 <TextView
                     android:layout_width="0dip"
@@ -124,8 +119,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10"
+                android:layout_height="wrap_content"
                 android:weightSum="100">
                 <TextView
                     android:layout_width="0dip"
@@ -147,8 +141,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10"
+                android:layout_height="wrap_content"
                 android:weightSum="100">
                 <TextView
                     android:layout_width="0dip"
@@ -170,8 +163,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10"
+                android:layout_height="wrap_content"
                 android:weightSum="100">
                 <TextView
                     android:layout_width="0dip"

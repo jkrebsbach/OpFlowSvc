@@ -108,7 +108,6 @@ namespace OpFlow.Android.Fragments
                 return;
 
             var cardUsers = await SurgeryUtil.GetCardUsers(currentSurgery.CardID, providerId, locationId);
-            var currentUsers = await SurgeryUtil.GetSurgeryUsers(currentSurgery.CaseID, providerId, locationId);
 
             var rooms = await RoomUtil.GetRooms(currentSurgery.LocationID);
 
@@ -127,9 +126,8 @@ namespace OpFlow.Android.Fragments
             adapter.SetDropDownViewResource(global::Android.Resource.Layout.SimpleSpinnerItem);
 
             _spnAssignment.Adapter = adapter;
-
-
-            _gvSurgeryUsers.Adapter = new CheckInOverviewAdapter(Context, currentUsers);
+            
+            _gvSurgeryUsers.Adapter = new CheckInOverviewAdapter(Context, cardUsers);
         }
     }
 }

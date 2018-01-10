@@ -53,11 +53,11 @@ namespace OpFlow.Mobile
             return response;
         }
 
-        public static async Task<List<User>> GetCardUsers(int cardId, int providerId, int locationId)
+        public static async Task<List<SurgeryUser>> GetCardUsers(int cardId, int providerId, int locationId)
         {
             var command = string.Format("api/card/users?cardId={0}&providerId={1}&locationId={2}",
                 cardId, providerId, locationId);
-            var response = await WebUtility.WebRequest<List<User>>(command, HttpMethod.Get);
+            var response = await WebUtility.WebRequest<List<SurgeryUser>>(command, HttpMethod.Get);
 
             return response;
         }
