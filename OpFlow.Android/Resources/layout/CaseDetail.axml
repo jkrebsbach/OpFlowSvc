@@ -13,252 +13,258 @@
         <TextView
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:text=""
-            android:layout_weight="33" />
+            android:layout_weight="40"
+            android:id="@+id/txtPatientName" />
         <TextView
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:text="Case"
-            android:gravity="center"
-            android:layout_weight="33" />
+            android:layout_weight="15"
+            android:id="@+id/txtPatientAge" />
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="15"
+            android:id="@+id/txtPatientBMI" />
         <Button
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:text="Search"
-            android:layout_weight="33"
+            android:layout_weight="30"
             android:id="@+id/btnSearch" />
     </LinearLayout>
-  <ScrollView
-    android:layout_width="fill_parent"
-    android:layout_height="0dip"
-    android:layout_weight="85">
-    <LinearLayout
-        android:id="@+id/pnlCaseDetail"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="100">
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="85">
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="33"
-                android:id="@+id/txtSurgeon" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="33"
-                android:id="@+id/txtCase" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="33"
-                android:id="@+id/txtReferMD" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:id="@+id/txtPatientName" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:id="@+id/txtPatientAge" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:id="@+id/txtPatientBMI" />
-        </LinearLayout>
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="2dip"
-            android:background="#FF00FF00" />
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:text="Medical History" />
-            <Switch
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:id="@+id/swtMedicalHistory" />
-        </LinearLayout>
-        <EditText
-            android:id="@+id/txtMedicalHistory"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10" />
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:text="Risk Factors" />
-            <Switch
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:id="@+id/swtRiskFactors" />
-        </LinearLayout>
-        <EditText
-            android:id="@+id/txtRiskFactors"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10" />
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:text="Medications" />
-            <Switch
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:id="@+id/swtMedications" />
-        </LinearLayout>
-        <EditText
-            android:id="@+id/txtMedications"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10" />
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:text="Allergies" />
-            <Switch
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:id="@+id/swtAllergies" />
-        </LinearLayout>
-        <EditText
-            android:id="@+id/txtAllergies"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10" />
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:text="Lab Results" />
-            <Switch
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:id="@+id/swtLabResults" />
-        </LinearLayout>
-        <EditText
-            android:id="@+id/txtLabResults"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10" />
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:text="Past Procedure Results" />
-            <Switch
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:id="@+id/swtPastProcedureResults" />
-        </LinearLayout>
-        <EditText
-            android:id="@+id/txtPastProcedureResults"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10" />
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10"
-            android:weightSum="100">
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="40"
-                android:text="Scheduled Procedures" />
-            <Switch
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:id="@+id/swtScheduledProcedures" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Flow" />
-            <TextView
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:text="Card" />
-        </LinearLayout>
-        <GridView
-            android:id="@+id/gvScheduledProcedures"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="10" />
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="2dip"
-            android:background="#FF00FF00" />
-        <TextView
+            android:id="@+id/pnlCaseDetail"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="25"
-            android:text="See Recent Case Notes" />
-    </LinearLayout>
-  </ScrollView>
+            android:weightSum="100">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33"
+                    android:id="@+id/txtSurgeon" />
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33"
+                    android:id="@+id/txtCase" />
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33"
+                    android:id="@+id/txtReferMD" />
+            </LinearLayout>
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dip"
+                android:background="#FF00FF00" />
+            <ExpandableListView
+                android:id="@+id/lvCaseDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:id="@+id/pnlMedicalHistory"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:text="Medical History" />
+                <ImageView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:id="@+id/ivMedicalHistory" />
+            </LinearLayout>
+            <EditText
+                android:id="@+id/txtMedicalHistory"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10" />
+            <LinearLayout
+                android:id="@+id/pnlRiskFactors"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:text="Risk Factors" />
+                <ImageView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:id="@+id/ivRiskFactors" />
+            </LinearLayout>
+            <EditText
+                android:id="@+id/txtRiskFactors"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10" />
+            <LinearLayout
+                android:id="@+id/pnlMedications"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:text="Medications" />
+                <ImageView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:id="@+id/ivMedications" />
+            </LinearLayout>
+            <EditText
+                android:id="@+id/txtMedications"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10" />
+            <LinearLayout
+                android:id="@+id/pnlAllergies"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:text="Allergies" />
+                <ImageView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:id="@+id/ivAllergies" />
+            </LinearLayout>
+            <EditText
+                android:id="@+id/txtAllergies"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10" />
+            <LinearLayout
+                android:id="@+id/pnlLabResults"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:text="Lab Results" />
+                <ImageView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:id="@+id/ivLabResults" />
+            </LinearLayout>
+            <EditText
+                android:id="@+id/txtLabResults"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10" />
+            <LinearLayout
+                android:id="@+id/pnlPastProcedureResults"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:text="Past Procedure Results" />
+                <ImageView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:id="@+id/ivPastProcedureResults" />
+            </LinearLayout>
+            <EditText
+                android:id="@+id/txtPastProcedureResults"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10" />
+            <LinearLayout
+                android:id="@+id/pnlScheduledProcedures"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:text="Scheduled Procedures" />
+                <ImageView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:id="@+id/ivScheduledProcedures" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/pnlScheduledProceduresHeaders"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10"
+                android:weightSum="100">
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:text="" />
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="25"
+                    android:text="Card" />
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="25"
+                    android:text="Card" />
+            </LinearLayout>
+            <GridView
+                android:id="@+id/gvScheduledProcedures"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="10" />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dip"
+                android:background="#FF00FF00" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="25"
+                android:text="See Recent Case Notes" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

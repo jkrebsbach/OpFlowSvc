@@ -10,6 +10,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using OpFlow.Android.Adapters;
 using OpFlow.Data;
 using OpFlow.Mobile;
 
@@ -25,13 +26,15 @@ namespace OpFlow.Android.Fragments
         private TextView _txtPatientAge;
         private TextView _txtPatientBMI;
 
-        private Switch _swtMedicalHistory;
-        private Switch _swtRiskFactors;
-        private Switch _swtMedications;
-        private Switch _swtAllergies;
-        private Switch _swtLabResults;
-        private Switch _swtPastProcedureResults;
-        private Switch _swtScheduledProcedures;
+        private ExpandableListView _lvCaseDetails;
+
+        private ImageView _ivMedicalHistory;
+        private ImageView _ivRiskFactors;
+        private ImageView _ivMedications;
+        private ImageView _ivAllergies;
+        private ImageView _ivLabResults;
+        private ImageView _ivPastProcedureResults;
+        private ImageView _ivScheduledProcedures;
 
         private EditText _txtMedicalHistory;
         private EditText _txtRiskFactors;
@@ -52,6 +55,9 @@ namespace OpFlow.Android.Fragments
             var rootView = inflater.Inflate(Resource.Layout.CaseDetail, container, false);
 
             _pnlCaseDetail = rootView.FindViewById<LinearLayout>(Resource.Id.pnlCaseDetail);
+
+            _lvCaseDetails = rootView.FindViewById<ExpandableListView>(Resource.Id.lvCaseDetails);
+
             _txtSurgeon = rootView.FindViewById<TextView>(Resource.Id.txtSurgeon);
             _txtCase = rootView.FindViewById<TextView>(Resource.Id.txtCase);
             _txtReferMD = rootView.FindViewById<TextView>(Resource.Id.txtReferMD);
@@ -59,13 +65,13 @@ namespace OpFlow.Android.Fragments
             _txtPatientAge = rootView.FindViewById<TextView>(Resource.Id.txtPatientAge);
             _txtPatientBMI = rootView.FindViewById<TextView>(Resource.Id.txtPatientBMI);
 
-            _swtMedicalHistory = rootView.FindViewById<Switch>(Resource.Id.swtMedicalHistory);
-            _swtRiskFactors = rootView.FindViewById<Switch>(Resource.Id.swtRiskFactors);
-            _swtMedications = rootView.FindViewById<Switch>(Resource.Id.swtMedications);
-            _swtAllergies = rootView.FindViewById<Switch>(Resource.Id.swtAllergies);
-            _swtLabResults = rootView.FindViewById<Switch>(Resource.Id.swtLabResults);
-            _swtPastProcedureResults = rootView.FindViewById<Switch>(Resource.Id.swtPastProcedureResults);
-            _swtScheduledProcedures = rootView.FindViewById<Switch>(Resource.Id.swtScheduledProcedures);
+            _ivMedicalHistory = rootView.FindViewById<ImageView>(Resource.Id.ivMedicalHistory);
+            _ivRiskFactors = rootView.FindViewById<ImageView>(Resource.Id.ivRiskFactors);
+            _ivMedications = rootView.FindViewById<ImageView>(Resource.Id.ivMedications);
+            _ivAllergies = rootView.FindViewById<ImageView>(Resource.Id.ivAllergies);
+            _ivLabResults = rootView.FindViewById<ImageView>(Resource.Id.ivLabResults);
+            _ivPastProcedureResults = rootView.FindViewById<ImageView>(Resource.Id.ivPastProcedureResults);
+            _ivScheduledProcedures = rootView.FindViewById<ImageView>(Resource.Id.ivScheduledProcedures);
 
             _txtMedicalHistory = rootView.FindViewById<EditText>(Resource.Id.txtMedicalHistory);
             _txtRiskFactors = rootView.FindViewById<EditText>(Resource.Id.txtRiskFactors);
@@ -74,24 +80,29 @@ namespace OpFlow.Android.Fragments
             _txtLabResults = rootView.FindViewById<EditText>(Resource.Id.txtLabResults);
             _txtPastProcedureResults = rootView.FindViewById<EditText>(Resource.Id.txtPastProcedureResults);
             _gvScheduledProcedures = rootView.FindViewById<GridView>(Resource.Id.gvScheduledProcedures);
-
             
+            var caseDetailTokens = Enum.GetValues(typeof(CaseDetailToken.CaseDetailEnum))
+                .Cast<CaseDetailToken.CaseDetailEnum>()
+                .Select(value => new CaseDetailToken(value))
+                .ToList();
 
-            _swtMedicalHistory.CheckedChange += Switch_CheckChanged;
-            _swtRiskFactors.CheckedChange += Switch_CheckChanged;
-            _swtMedications.CheckedChange += Switch_CheckChanged;
-            _swtAllergies.CheckedChange += Switch_CheckChanged;
-            _swtLabResults.CheckedChange += Switch_CheckChanged;
-            _swtPastProcedureResults.CheckedChange += Switch_CheckChanged;
-            _swtScheduledProcedures.CheckedChange += Switch_CheckChanged;
+            _lvCaseDetails.SetAdapter(new CaseDetailListAdapter(Activity, caseDetailTokens));
 
-            SetSwitchVisibility(_swtMedicalHistory);
-            SetSwitchVisibility(_swtRiskFactors);
-            SetSwitchVisibility(_swtMedications);
-            SetSwitchVisibility(_swtAllergies);
-            SetSwitchVisibility(_swtLabResults);
-            SetSwitchVisibility(_swtPastProcedureResults);
-            SetSwitchVisibility(_swtScheduledProcedures);
+            //_ivMedicalHistory.CheckedChange += Switch_CheckChanged;
+            //_ivRiskFactors.CheckedChange += Switch_CheckChanged;
+            //_ivMedications.CheckedChange += Switch_CheckChanged;
+            //_ivAllergies.CheckedChange += Switch_CheckChanged;
+            //_ivLabResults.CheckedChange += Switch_CheckChanged;
+            //_ivPastProcedureResults.CheckedChange += Switch_CheckChanged;
+            //_ivScheduledProcedures.CheckedChange += Switch_CheckChanged;
+
+            SetSwitchVisibility(_ivMedicalHistory);
+            SetSwitchVisibility(_ivRiskFactors);
+            SetSwitchVisibility(_ivMedications);
+            SetSwitchVisibility(_ivAllergies);
+            SetSwitchVisibility(_ivLabResults);
+            SetSwitchVisibility(_ivPastProcedureResults);
+            SetSwitchVisibility(_ivScheduledProcedures);
 
             return rootView;
         }
@@ -118,33 +129,33 @@ namespace OpFlow.Android.Fragments
         {
             var changedSwitch = (Switch)sender;
 
-            SetSwitchVisibility(changedSwitch);
+            SetSwitchVisibility(null);
         }
 
-        private void SetSwitchVisibility(ICheckable changedSwitch)
+        private void SetSwitchVisibility(ImageView changedSection)
         {
             EditText textControl = null;
             GridView gridControl = null;
 
-            if (changedSwitch == _swtMedicalHistory)
+            if (changedSection == _ivMedicalHistory)
                 textControl = _txtMedicalHistory;
-            else if (changedSwitch == _swtRiskFactors)
+            else if (changedSection == _ivRiskFactors)
                 textControl = _txtRiskFactors;
-            else if (changedSwitch == _swtMedications)
+            else if (changedSection == _ivMedications)
                 textControl = _txtMedications;
-            else if (changedSwitch == _swtAllergies)
+            else if (changedSection == _ivAllergies)
                 textControl = _txtAllergies;
-            else if (changedSwitch == _swtLabResults)
+            else if (changedSection == _ivLabResults)
                 textControl = _txtLabResults;
-            else if (changedSwitch == _swtPastProcedureResults)
+            else if (changedSection == _ivPastProcedureResults)
                 textControl = _txtPastProcedureResults;
-            else if (changedSwitch == _swtScheduledProcedures)
+            else if (changedSection == _ivScheduledProcedures)
                 gridControl = _gvScheduledProcedures;
 
-            if (textControl != null)
-                textControl.Visibility = (changedSwitch.Checked ? ViewStates.Visible : ViewStates.Gone);
-            if (gridControl != null)
-                gridControl.Visibility = (changedSwitch.Checked ? ViewStates.Visible : ViewStates.Gone);
+            //if (textControl != null)
+            //    textControl.Visibility = (changedSwitch.Checked ? ViewStates.Visible : ViewStates.Gone);
+            //if (gridControl != null)
+            //    gridControl.Visibility = (changedSwitch.Checked ? ViewStates.Visible : ViewStates.Gone);
 
         }
 
@@ -183,12 +194,12 @@ namespace OpFlow.Android.Fragments
             var pastProcedures =
                 patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.PastProcedureResult);
 
-            _swtMedicalHistory.Checked = medicalHistory != null;
-            _swtRiskFactors.Checked = riskFactors != null;
-            _swtMedications.Checked = medications != null;
-            _swtAllergies.Checked = allergies != null;
-            _swtLabResults.Checked = labResults != null;
-            _swtPastProcedureResults.Checked = pastProcedures != null;
+            //_swtMedicalHistory.Checked = medicalHistory != null;
+            //_swtRiskFactors.Checked = riskFactors != null;
+            //_swtMedications.Checked = medications != null;
+            //_swtAllergies.Checked = allergies != null;
+            //_swtLabResults.Checked = labResults != null;
+            //_swtPastProcedureResults.Checked = pastProcedures != null;
             
             _txtMedicalHistory.Text = medicalHistory?.DemoDescription ?? "";
             _txtRiskFactors.Text = riskFactors?.DemoDescription ?? "";

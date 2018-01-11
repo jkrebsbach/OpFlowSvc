@@ -57,6 +57,7 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adapters\CaseDetailListAdapter.cs" />
     <Compile Include="Adapters\CheckInOverviewAdapter.cs" />
     <Compile Include="Adapters\SpinnerAdapter.cs" />
     <Compile Include="Fragments\CaseDetailFragment.cs" />
@@ -120,6 +121,12 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\CheckInOverviewGrid.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\ListGroup.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\CaseDetailListItem.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
