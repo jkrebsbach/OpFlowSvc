@@ -84,6 +84,9 @@ namespace OpFlow.Android.Fragments
 
         private async Task SetupScreen()
         {
+            if (!AppSettings.UserAuthenticated)
+                return;
+
             _btnSchedule.Text = _selectedDate.ToString("M/d/yyyy");
 
             _schedule = await SurgeryUtil.GetSurgerySchedule(_selectedDate);

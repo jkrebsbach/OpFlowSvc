@@ -57,6 +57,7 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\LoginActivity.cs" />
     <Compile Include="Adapters\CaseDetailListAdapter.cs" />
     <Compile Include="Adapters\CheckInOverviewAdapter.cs" />
     <Compile Include="Adapters\SpinnerAdapter.cs" />

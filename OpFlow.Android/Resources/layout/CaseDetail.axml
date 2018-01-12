@@ -40,13 +40,11 @@
             android:id="@+id/pnlCaseDetail"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="100">
+            android:layout_height="wrap_content">
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10"
+                android:layout_height="wrap_content"
                 android:weightSum="100">
                 <TextView
                     android:layout_width="0dip"
@@ -71,191 +69,10 @@
             <ExpandableListView
                 android:id="@+id/lvCaseDetails"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <LinearLayout
-                android:id="@+id/pnlMedicalHistory"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
                 android:layout_height="0dip"
-                android:layout_weight="10"
-                android:weightSum="100">
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:text="Medical History" />
-                <ImageView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:id="@+id/ivMedicalHistory" />
-            </LinearLayout>
-            <EditText
-                android:id="@+id/txtMedicalHistory"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10" />
-            <LinearLayout
-                android:id="@+id/pnlRiskFactors"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10"
-                android:weightSum="100">
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:text="Risk Factors" />
-                <ImageView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:id="@+id/ivRiskFactors" />
-            </LinearLayout>
-            <EditText
-                android:id="@+id/txtRiskFactors"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10" />
-            <LinearLayout
-                android:id="@+id/pnlMedications"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10"
-                android:weightSum="100">
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:text="Medications" />
-                <ImageView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:id="@+id/ivMedications" />
-            </LinearLayout>
-            <EditText
-                android:id="@+id/txtMedications"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10" />
-            <LinearLayout
-                android:id="@+id/pnlAllergies"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10"
-                android:weightSum="100">
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:text="Allergies" />
-                <ImageView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:id="@+id/ivAllergies" />
-            </LinearLayout>
-            <EditText
-                android:id="@+id/txtAllergies"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10" />
-            <LinearLayout
-                android:id="@+id/pnlLabResults"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10"
-                android:weightSum="100">
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:text="Lab Results" />
-                <ImageView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:id="@+id/ivLabResults" />
-            </LinearLayout>
-            <EditText
-                android:id="@+id/txtLabResults"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10" />
-            <LinearLayout
-                android:id="@+id/pnlPastProcedureResults"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10"
-                android:weightSum="100">
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:text="Past Procedure Results" />
-                <ImageView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:id="@+id/ivPastProcedureResults" />
-            </LinearLayout>
-            <EditText
-                android:id="@+id/txtPastProcedureResults"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10" />
-            <LinearLayout
-                android:id="@+id/pnlScheduledProcedures"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10"
-                android:weightSum="100">
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:text="Scheduled Procedures" />
-                <ImageView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:id="@+id/ivScheduledProcedures" />
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/pnlScheduledProceduresHeaders"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10"
-                android:weightSum="100">
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:text="" />
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="25"
-                    android:text="Card" />
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="25"
-                    android:text="Card" />
-            </LinearLayout>
-            <GridView
-                android:id="@+id/gvScheduledProcedures"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="10" />
+              android:layout_weight="1" />
+            
+           
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="2dip"
@@ -263,7 +80,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="25"
                 android:text="See Recent Case Notes" />
         </LinearLayout>
     </ScrollView>

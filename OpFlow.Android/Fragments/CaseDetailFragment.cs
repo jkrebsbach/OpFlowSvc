@@ -28,22 +28,7 @@ namespace OpFlow.Android.Fragments
 
         private ExpandableListView _lvCaseDetails;
 
-        private ImageView _ivMedicalHistory;
-        private ImageView _ivRiskFactors;
-        private ImageView _ivMedications;
-        private ImageView _ivAllergies;
-        private ImageView _ivLabResults;
-        private ImageView _ivPastProcedureResults;
-        private ImageView _ivScheduledProcedures;
-
-        private EditText _txtMedicalHistory;
-        private EditText _txtRiskFactors;
-        private EditText _txtMedications;
-        private EditText _txtAllergies;
-        private EditText _txtLabResults;
-        private EditText _txtPastProcedureResults;
-        private GridView _gvScheduledProcedures;
-
+        
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             base.OnCreateView(inflater, container, savedInstanceState);
@@ -64,45 +49,6 @@ namespace OpFlow.Android.Fragments
             _txtPatientName = rootView.FindViewById<TextView>(Resource.Id.txtPatientName);
             _txtPatientAge = rootView.FindViewById<TextView>(Resource.Id.txtPatientAge);
             _txtPatientBMI = rootView.FindViewById<TextView>(Resource.Id.txtPatientBMI);
-
-            _ivMedicalHistory = rootView.FindViewById<ImageView>(Resource.Id.ivMedicalHistory);
-            _ivRiskFactors = rootView.FindViewById<ImageView>(Resource.Id.ivRiskFactors);
-            _ivMedications = rootView.FindViewById<ImageView>(Resource.Id.ivMedications);
-            _ivAllergies = rootView.FindViewById<ImageView>(Resource.Id.ivAllergies);
-            _ivLabResults = rootView.FindViewById<ImageView>(Resource.Id.ivLabResults);
-            _ivPastProcedureResults = rootView.FindViewById<ImageView>(Resource.Id.ivPastProcedureResults);
-            _ivScheduledProcedures = rootView.FindViewById<ImageView>(Resource.Id.ivScheduledProcedures);
-
-            _txtMedicalHistory = rootView.FindViewById<EditText>(Resource.Id.txtMedicalHistory);
-            _txtRiskFactors = rootView.FindViewById<EditText>(Resource.Id.txtRiskFactors);
-            _txtMedications = rootView.FindViewById<EditText>(Resource.Id.txtMedications);
-            _txtAllergies = rootView.FindViewById<EditText>(Resource.Id.txtAllergies);
-            _txtLabResults = rootView.FindViewById<EditText>(Resource.Id.txtLabResults);
-            _txtPastProcedureResults = rootView.FindViewById<EditText>(Resource.Id.txtPastProcedureResults);
-            _gvScheduledProcedures = rootView.FindViewById<GridView>(Resource.Id.gvScheduledProcedures);
-            
-            var caseDetailTokens = Enum.GetValues(typeof(CaseDetailToken.CaseDetailEnum))
-                .Cast<CaseDetailToken.CaseDetailEnum>()
-                .Select(value => new CaseDetailToken(value))
-                .ToList();
-
-            _lvCaseDetails.SetAdapter(new CaseDetailListAdapter(Activity, caseDetailTokens));
-
-            //_ivMedicalHistory.CheckedChange += Switch_CheckChanged;
-            //_ivRiskFactors.CheckedChange += Switch_CheckChanged;
-            //_ivMedications.CheckedChange += Switch_CheckChanged;
-            //_ivAllergies.CheckedChange += Switch_CheckChanged;
-            //_ivLabResults.CheckedChange += Switch_CheckChanged;
-            //_ivPastProcedureResults.CheckedChange += Switch_CheckChanged;
-            //_ivScheduledProcedures.CheckedChange += Switch_CheckChanged;
-
-            SetSwitchVisibility(_ivMedicalHistory);
-            SetSwitchVisibility(_ivRiskFactors);
-            SetSwitchVisibility(_ivMedications);
-            SetSwitchVisibility(_ivAllergies);
-            SetSwitchVisibility(_ivLabResults);
-            SetSwitchVisibility(_ivPastProcedureResults);
-            SetSwitchVisibility(_ivScheduledProcedures);
 
             return rootView;
         }
@@ -125,40 +71,7 @@ namespace OpFlow.Android.Fragments
             }
         }
 
-        private void Switch_CheckChanged(object sender, EventArgs e)
-        {
-            var changedSwitch = (Switch)sender;
-
-            SetSwitchVisibility(null);
-        }
-
-        private void SetSwitchVisibility(ImageView changedSection)
-        {
-            EditText textControl = null;
-            GridView gridControl = null;
-
-            if (changedSection == _ivMedicalHistory)
-                textControl = _txtMedicalHistory;
-            else if (changedSection == _ivRiskFactors)
-                textControl = _txtRiskFactors;
-            else if (changedSection == _ivMedications)
-                textControl = _txtMedications;
-            else if (changedSection == _ivAllergies)
-                textControl = _txtAllergies;
-            else if (changedSection == _ivLabResults)
-                textControl = _txtLabResults;
-            else if (changedSection == _ivPastProcedureResults)
-                textControl = _txtPastProcedureResults;
-            else if (changedSection == _ivScheduledProcedures)
-                gridControl = _gvScheduledProcedures;
-
-            //if (textControl != null)
-            //    textControl.Visibility = (changedSwitch.Checked ? ViewStates.Visible : ViewStates.Gone);
-            //if (gridControl != null)
-            //    gridControl.Visibility = (changedSwitch.Checked ? ViewStates.Visible : ViewStates.Gone);
-
-        }
-
+        
         private async Task LoadCase(int surgeryId)
         {
             var locationId = AppSettings.CurrentUser.LocationID;
@@ -180,6 +93,13 @@ namespace OpFlow.Android.Fragments
             _txtPatientBMI.Text = patient.BMI.ToString(CultureInfo.InvariantCulture);
 
 
+            var caseDetailTokens = Enum.GetValues(typeof(CaseDetailToken.CaseDetailEnum))
+                .Cast<CaseDetailToken.CaseDetailEnum>()
+                .Select(value => new CaseDetailToken(patient, value))
+                .ToList();
+
+            _lvCaseDetails.SetAdapter(new CaseDetailListAdapter(Activity, caseDetailTokens));
+
             #region Patient Demo
             var medicalHistory =
                 patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.MedicalHistory);
@@ -194,20 +114,7 @@ namespace OpFlow.Android.Fragments
             var pastProcedures =
                 patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.PastProcedureResult);
 
-            //_swtMedicalHistory.Checked = medicalHistory != null;
-            //_swtRiskFactors.Checked = riskFactors != null;
-            //_swtMedications.Checked = medications != null;
-            //_swtAllergies.Checked = allergies != null;
-            //_swtLabResults.Checked = labResults != null;
-            //_swtPastProcedureResults.Checked = pastProcedures != null;
             
-            _txtMedicalHistory.Text = medicalHistory?.DemoDescription ?? "";
-            _txtRiskFactors.Text = riskFactors?.DemoDescription ?? "";
-            _txtMedications.Text = medications?.DemoDescription ?? "";
-            _txtAllergies.Text = allergies?.DemoDescription ?? "";
-            _txtLabResults.Text = labResults?.DemoDescription ?? "";
-            _txtPastProcedureResults.Text = pastProcedures?.DemoDescription ?? "";
-
             #endregion
         }
     }

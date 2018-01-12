@@ -41,11 +41,19 @@ namespace OpFlow.Android.Adapters
         public override View GetChildView(int groupPosition, int childPosition, bool isLastChild, View convertView, ViewGroup parent)
         {
             var row = convertView ?? _context.LayoutInflater.Inflate(Resource.Layout.CaseDetailListItem, null);
+            var currGroup = _caseDetailTokens[groupPosition];
 
-            string newId = "ABC", newValue = "XYZ";
-            
-            row.FindViewById<TextView>(Resource.Id.DataId).Text = newId;
-            row.FindViewById<TextView>(Resource.Id.DataValue).Text = newValue;
+            var txtItemText = row.FindViewById<TextView>(Resource.Id.txtItemText);
+            var pnlScheduledProceduresHeaders = row.FindViewById<LinearLayout>(Resource.Id.pnlScheduledProceduresHeaders);
+            var gvScheduledProcedures = row.FindViewById<GridView>(Resource.Id.gvScheduledProcedures);
+
+            txtItemText.Text = currGroup.DetailText;
+
+            var showPnlPastProcedure = currGroup.CaseDetail == CaseDetailToken.CaseDetailEnum.PastProcedureResults;
+                
+            txtItemText.Visibility = !showPnlPastProcedure ? ViewStates.Visible : ViewStates.Gone;
+            pnlScheduledProceduresHeaders.Visibility = showPnlPastProcedure ? ViewStates.Visible : ViewStates.Gone;
+            gvScheduledProcedures.Visibility = showPnlPastProcedure ? ViewStates.Visible : ViewStates.Gone;
 
             return row;
         }
@@ -73,7 +81,7 @@ namespace OpFlow.Android.Adapters
 
         public override bool IsChildSelectable(int groupPosition, int childPosition)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public CaseDetailListAdapter(Activity context, List<CaseDetailToken> caseDetailTokens)

@@ -11,7 +11,7 @@ using OpFlow.Mobile;
 
 namespace OpFlow.Android
 {
-    [Activity(Label = "OpFlow.Android", MainLauncher = true)]
+    [Activity(Label = "OpFlow", MainLauncher = true)]
     public class MainActivity : OpFlowActivityBase, IFragmentMessageListener
     {
         protected override int GetLayoutResourceId()
@@ -26,14 +26,10 @@ namespace OpFlow.Android
             FragmentManager.BeginTransaction()
                 .Replace(Resource.Id.mainFragment, InitializeFragment())
                 .Commit();
-
         }
 
         private Fragment InitializeFragment()
         {
-            if (!AppSettings.UserAuthenticated)
-                return new LoginFragment();
-
             //if (QAMobile.getInstance().CurrentApp == null)
             //{
             //    return new UserLoginFragment();
@@ -53,15 +49,15 @@ namespace OpFlow.Android
             //    return new SelectCastFragment();
             //}
 
-            return new MainFragment();
+            return new ScheduleFragment();
         }
 
-        //protected override void OnResume()
-        //{
-        //    AuthenticateUser();
+        protected override void OnResume()
+        {
+            AuthenticateUser();
 
-        //    base.OnResume();
-        //}
+            base.OnResume();
+        }
 
         private Fragment AuthenticateUser()
         {
@@ -69,7 +65,8 @@ namespace OpFlow.Android
             {
                 if (!AppSettings.UserAuthenticated)
                 {
-                    return new LoginFragment();
+                    var loginActivity = new Intent(this, typeof(LoginActivity));
+                    StartActivity(loginActivity);
                 }
 
             }
