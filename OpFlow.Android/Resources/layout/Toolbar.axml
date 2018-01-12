@@ -7,9 +7,34 @@
     android:theme="@style/ToolBarStyle"
     android:background="@color/opflow_white"
     android:popupTheme="@android:style/ThemeOverlay.Material.Light">
-    <ImageView
-        android:src="@drawable/opflowlogo"
-        android:background="@color/opflow_white"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="100"
+        android:background="@color/opflow_white">
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="20"
+            android:background="@color/opflow_white" />
+        <ImageView
+            android:src="@drawable/ic_schedule_grey_50_18dp"
+            android:layout_width="25dip"
+            android:layout_height="25dip"
+            android:background="@color/opflow_white" />
+        <TextView
+            android:id="@+id/txtHeaderApplication"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="35"
+            android:background="@color/opflow_white" />
+        <TextView
+            android:id="@+id/txtHeaderUser"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="25"
+            android:gravity="right"
+            android:background="@color/opflow_white" />
+    </LinearLayout>
 </Toolbar>

@@ -76,13 +76,25 @@ namespace OpFlow.Android
 			public const int HighlightedRoundRectangle = 2130837506;
 			
 			// aapt resource value: 0x7f020003
-			public const int OpFlowLogo = 2130837507;
+			public const int ic_chat_grey_50_18dp = 2130837507;
 			
 			// aapt resource value: 0x7f020004
-			public const int RedExclamationPoint = 2130837508;
+			public const int ic_schedule_grey_50_18dp = 2130837508;
 			
 			// aapt resource value: 0x7f020005
-			public const int RoundRectangle = 2130837509;
+			public const int ic_search_grey_50_18dp = 2130837509;
+			
+			// aapt resource value: 0x7f020006
+			public const int ic_work_grey_50_18dp = 2130837510;
+			
+			// aapt resource value: 0x7f020007
+			public const int OpFlowLogo = 2130837511;
+			
+			// aapt resource value: 0x7f020008
+			public const int RedExclamationPoint = 2130837512;
+			
+			// aapt resource value: 0x7f020009
+			public const int RoundRectangle = 2130837513;
 			
 			static Drawable()
 			{
@@ -118,8 +130,8 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f090022
 			public const int btnData = 2131296290;
 			
-			// aapt resource value: 0x7f090029
-			public const int btnLogin = 2131296297;
+			// aapt resource value: 0x7f090028
+			public const int btnLogin = 2131296296;
 			
 			// aapt resource value: 0x7f09001f
 			public const int btnMetrics = 2131296287;
@@ -175,14 +187,26 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f09002a
 			public const int mainFragment = 2131296298;
 			
-			// aapt resource value: 0x7f090036
-			public const int menu_edit = 2131296310;
+			// aapt resource value: 0x7f09003b
+			public const int menu_cases = 2131296315;
+			
+			// aapt resource value: 0x7f090039
+			public const int menu_communicator = 2131296313;
+			
+			// aapt resource value: 0x7f09003c
+			public const int menu_edit = 2131296316;
+			
+			// aapt resource value: 0x7f09003e
+			public const int menu_preferences = 2131296318;
+			
+			// aapt resource value: 0x7f09003d
+			public const int menu_save = 2131296317;
+			
+			// aapt resource value: 0x7f09003a
+			public const int menu_schedule = 2131296314;
 			
 			// aapt resource value: 0x7f090038
-			public const int menu_preferences = 2131296312;
-			
-			// aapt resource value: 0x7f090037
-			public const int menu_save = 2131296311;
+			public const int menu_search = 2131296312;
 			
 			// aapt resource value: 0x7f09002b
 			public const int nav_toolbar = 2131296299;
@@ -202,8 +226,8 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f09000e
 			public const int swtCheckIn = 2131296270;
 			
-			// aapt resource value: 0x7f090025
-			public const int toolbar = 2131296293;
+			// aapt resource value: 0x7f090029
+			public const int toolbar = 2131296297;
 			
 			// aapt resource value: 0x7f09000d
 			public const int txtCard = 2131296269;
@@ -223,8 +247,14 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f090017
 			public const int txtDelayStatus = 2131296279;
 			
-			// aapt resource value: 0x7f090026
-			public const int txtError = 2131296294;
+			// aapt resource value: 0x7f090025
+			public const int txtError = 2131296293;
+			
+			// aapt resource value: 0x7f090036
+			public const int txtHeaderApplication = 2131296310;
+			
+			// aapt resource value: 0x7f090037
+			public const int txtHeaderUser = 2131296311;
 			
 			// aapt resource value: 0x7f09000a
 			public const int txtItemText = 2131296266;
@@ -232,8 +262,8 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f090030
 			public const int txtLocation = 2131296304;
 			
-			// aapt resource value: 0x7f090028
-			public const int txtPassword = 2131296296;
+			// aapt resource value: 0x7f090027
+			public const int txtPassword = 2131296295;
 			
 			// aapt resource value: 0x7f090001
 			public const int txtPatientAge = 2131296257;
@@ -265,8 +295,8 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f09002f
 			public const int txtTime = 2131296303;
 			
-			// aapt resource value: 0x7f090027
-			public const int txtUserName = 2131296295;
+			// aapt resource value: 0x7f090026
+			public const int txtUserName = 2131296294;
 			
 			static Id()
 			{
@@ -353,7 +383,10 @@ namespace OpFlow.Android
 		{
 			
 			// aapt resource value: 0x7f080000
-			public const int option_menu = 2131230720;
+			public const int nav_menu = 2131230720;
+			
+			// aapt resource value: 0x7f080001
+			public const int option_menu = 2131230721;
 			
 			static Menu()
 			{

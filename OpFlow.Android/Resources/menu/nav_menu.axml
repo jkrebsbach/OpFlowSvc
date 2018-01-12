@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+    android:id="@+id/menu_search"
+    android:icon="@drawable/ic_search_grey_50_18dp"
+    android:showAsAction="always|withText"
+    android:title="Search" />
+  <item
+    android:id="@+id/menu_communicator"
+    android:icon="@drawable/ic_chat_grey_50_18dp"
+    android:showAsAction="always|withText"
+    android:title="Communicator" />
+  <item
+    android:id="@+id/menu_schedule"
+    android:icon="@drawable/ic_schedule_grey_50_18dp"
+    android:showAsAction="always|withText"
+    android:title="Schedule" />
+  <item
+    android:id="@+id/menu_cases"
+    android:icon="@drawable/ic_work_grey_50_18dp"
+    android:showAsAction="always|withText"
+    android:title="Cases" />
+</menu>

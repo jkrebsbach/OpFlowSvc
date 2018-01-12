@@ -79,6 +79,39 @@ namespace OpFlow.Android
             return null;
         }
 
+        protected override void NavbarClicked(IMenuItem item)
+        {
+            Fragment newFragment = null;
+            if (item.ItemId == Resource.Id.menu_search)
+            {
+                newFragment = new CaseDetailFragment();
+            }
+            else if (item.ItemId == Resource.Id.menu_schedule)
+            {
+                newFragment = new ScheduleFragment();
+            }
+            else if (item.ItemId == Resource.Id.menu_cases)
+            {
+                newFragment = new FutureCaseFragment();
+            }
+            else if (item.ItemId == Resource.Id.menu_communicator)
+            {
+                newFragment = new FutureCaseFragment();
+            }
+
+            if (newFragment != null)
+            {
+
+                if (!IsFinishing)
+                {
+                    FragmentManager.BeginTransaction()
+                        .Replace(Resource.Id.mainFragment, newFragment)
+                        .AddToBackStack(null)
+                        .Commit();
+                }
+            }
+        }
+
         public void SendMessage(FragmentEnum fragment, object payload)
         {
             Fragment newFragment = null;

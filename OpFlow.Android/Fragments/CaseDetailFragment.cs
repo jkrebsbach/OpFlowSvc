@@ -32,6 +32,7 @@ namespace OpFlow.Android.Fragments
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             base.OnCreateView(inflater, container, savedInstanceState);
+            AppSettings.CurrentScreen = "Detail";
 
             // Make sure we aren't disposing app
             if (container == null)

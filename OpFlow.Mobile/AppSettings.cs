@@ -13,6 +13,7 @@ namespace OpFlow.Mobile
     public static class AppSettings
     {
         public static Surgery CurrentSurgery;
+        public static string CurrentScreen;
 
         private static AuthToken _authToken;
         public static User CurrentUser { get; private set; }
