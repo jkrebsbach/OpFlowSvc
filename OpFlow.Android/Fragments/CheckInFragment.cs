@@ -30,9 +30,9 @@ namespace OpFlow.Android.Fragments
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
+            AppSettings.CurrentScreen = AppSettings.FragmentEnum.CheckIn;
             base.OnCreateView(inflater, container, savedInstanceState);
-            AppSettings.CurrentScreen = "Check In";
-
+            
             // Make sure we aren't disposing app
             if (container == null)
                 return null;
@@ -110,7 +110,7 @@ namespace OpFlow.Android.Fragments
 
             var cardUsers = await SurgeryUtil.GetCardUsers(currentSurgery.CardID, providerId, locationId);
 
-            var rooms = await RoomUtil.GetRooms(currentSurgery.LocationID);
+            var rooms = await AppSettings.RoomList(currentSurgery.LocationID);
 
             _pnlCaseDetail.Visibility = ViewStates.Visible;
 

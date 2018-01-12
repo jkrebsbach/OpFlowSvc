@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace OpFlow.Mobile
 {
     public static class SurgeryUtil
     {
-        public static async Task<List<Surgery>> GetSurgerySchedule(DateTime scheduleDate)
+        public static async Task<List<Surgery>> GetSurgeryUserSchedule(DateTime scheduleDate)
         {
             var userId = AppSettings.CurrentUser.UserID;
             var providerId = AppSettings.CurrentUser.ProviderID;
@@ -23,13 +24,27 @@ namespace OpFlow.Mobile
             return response;
         }
 
+        public static async Task<List<Surgery>> GetSurgeryRoomSchedule(int roomId)
+        {
+            var providerId = AppSettings.CurrentUser.ProviderID;
+            var locationId = AppSettings.CurrentUser.LocationID;
+
+            var command = string.Format("api/Surgery/RoomSchedule?roomId={0}&providerId={1}&locationId={2}", roomId, providerId, locationId);
+            var response = await WebUtility.WebRequest<List<Surgery>>(command, HttpMethod.Get);
+
+            return response;
+        }
+
         public static async Task<Dictionary<int, Patient>> GetSurgeryPatients(List<Surgery> surgeries)
         {
             var result = new Dictionary<int, Patient>();
 
+            var patientIds = surgeries.GroupBy(s => s.PatientID).Select(g => g.Key).ToList();
+            var patients = await PatientUtil.GetPatients(patientIds);
+
             foreach (var surgery in surgeries)
             {
-                result[surgery.SurgeryID] = await PatientUtil.GetPatient(surgery.PatientID);
+                result[surgery.SurgeryID] = patients.FirstOrDefault(p => p.PatientID == surgery.PatientID);
             }
 
             return result;

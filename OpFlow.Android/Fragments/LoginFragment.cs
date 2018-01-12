@@ -74,7 +74,7 @@ namespace OpFlow.Android.Fragments
             else
             {
                 // Login successful - Navigate back to application
-                Listener.SendMessage(FragmentEnum.Login, true);
+                Listener.SendMessage(AppSettings.FragmentEnum.Login, true);
             }
         }
     }

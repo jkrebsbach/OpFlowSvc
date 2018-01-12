@@ -10,6 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using OpFlow.Android.Activities;
+using OpFlow.Mobile;
 
 namespace OpFlow.Android.Fragments
 {
@@ -25,23 +26,23 @@ namespace OpFlow.Android.Fragments
 
             var rootView = inflater.Inflate(Resource.Layout.HomeScreen, container, false);
 
-            var btnCheckIn = rootView.FindViewById<Button>(Resource.Id.btnCheckIn);
-            btnCheckIn.Click += delegate
-            {
-                Listener.SendMessage(FragmentEnum.MainScreen, new CheckInFragment());
-            };
+            //var btnCheckIn = rootView.FindViewById<Button>(Resource.Id.btnCheckIn);
+            //btnCheckIn.Click += delegate
+            //{
+            //    Listener.SendMessage(AppSettings.FragmentEnum.MainScreen, new CheckInFragment());
+            //};
 
-            var btnSchedule = rootView.FindViewById<Button>(Resource.Id.btnSchedule);
-            btnSchedule.Click += delegate
-            {
-                Listener.SendMessage(FragmentEnum.MainScreen, new ScheduleFragment());
-            };
+            //var btnSchedule = rootView.FindViewById<Button>(Resource.Id.btnSchedule);
+            //btnSchedule.Click += delegate
+            //{
+            //    Listener.SendMessage(AppSettings.FragmentEnum.MainScreen, new ScheduleFragment());
+            //};
 
-            var btnCases = rootView.FindViewById<Button>(Resource.Id.btnCases);
-            btnCases.Click += delegate
-            {
-                Listener.SendMessage(FragmentEnum.MainScreen, new FutureCaseFragment());
-            };
+            //var btnCases = rootView.FindViewById<Button>(Resource.Id.btnCases);
+            //btnCases.Click += delegate
+            //{
+            //    Listener.SendMessage(AppSettings.FragmentEnum.MainScreen, new FutureCaseFragment());
+            //};
 
             return rootView;
         }

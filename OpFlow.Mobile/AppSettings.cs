@@ -12,8 +12,42 @@ namespace OpFlow.Mobile
 {
     public static class AppSettings
     {
+        public enum FragmentEnum
+        {
+            Login = 0,
+            FutureCases = 1,
+            Schedule = 2,
+            CheckIn = 3,
+            CaseDetail = 4
+        }
+
         public static Surgery CurrentSurgery;
-        public static string CurrentScreen;
+        public static FragmentEnum CurrentScreen;
+
+        private static readonly Dictionary<int, List<Room>> _roomDictionary = new Dictionary<int, List<Room>>();
+
+        public static string CurrentScreenName
+        {
+            get
+            {
+                switch (CurrentScreen)
+                {
+                    case FragmentEnum.Login:
+                        return "Login";
+                    case FragmentEnum.FutureCases:
+                        return "Cases";
+                    case FragmentEnum.Schedule:
+                        return "Schedule";
+                    case FragmentEnum.CheckIn:
+                        return "Check In";
+                    case FragmentEnum.CaseDetail:
+                        return "Case Detail";
+                }
+
+                return "UNDEFINED";
+            }
+
+        }
 
         private static AuthToken _authToken;
         public static User CurrentUser { get; private set; }
@@ -29,6 +63,16 @@ namespace OpFlow.Mobile
 
             if (_authToken != null)
                 CurrentUser = await UserUtil.GetUser(username);
+        }
+
+        public static async Task<List<Room>> RoomList(int locationId)
+        {
+            if (!_roomDictionary.ContainsKey(locationId))
+            {
+                _roomDictionary[locationId] = await RoomUtil.GetRooms(locationId);
+            }
+
+            return _roomDictionary[locationId];
         }
     }
 }

@@ -12,7 +12,7 @@ using OpFlow.Mobile;
 namespace OpFlow.Android
 {
     [Activity(Label = "OpFlow", MainLauncher = true)]
-    public class MainActivity : OpFlowActivityBase, IFragmentMessageListener
+    public class MainActivity : OpFlowActivityBase
     {
         protected override int GetLayoutResourceId()
         {
@@ -97,41 +97,6 @@ namespace OpFlow.Android
             else if (item.ItemId == Resource.Id.menu_communicator)
             {
                 newFragment = new FutureCaseFragment();
-            }
-
-            if (newFragment != null)
-            {
-
-                if (!IsFinishing)
-                {
-                    FragmentManager.BeginTransaction()
-                        .Replace(Resource.Id.mainFragment, newFragment)
-                        .AddToBackStack(null)
-                        .Commit();
-                }
-            }
-        }
-
-        public void SendMessage(FragmentEnum fragment, object payload)
-        {
-            Fragment newFragment = null;
-            if (fragment == FragmentEnum.Login)
-            {
-                newFragment = new MainFragment();
-            }
-            else if (fragment == FragmentEnum.MainScreen)
-            {
-                newFragment = (Fragment) payload;
-            }
-            else if (fragment == FragmentEnum.FutureCases)
-            {
-                AppSettings.CurrentSurgery = (Surgery)payload;
-                newFragment = new CaseDetailFragment();
-            }
-            else if (fragment == FragmentEnum.Schedule)
-            {
-                AppSettings.CurrentSurgery = (Surgery) payload;
-                newFragment = new CheckInFragment();
             }
 
             if (newFragment != null)

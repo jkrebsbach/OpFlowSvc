@@ -373,7 +373,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<SurgeryUser> GetSurgeryRoomSchedule(int roomId, int providerId, int locationId)
+        public static List<Surgery> GetSurgeryRoomSchedule(int roomId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -383,7 +383,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = ExecuteCommand("GetCheckInCasesbyRoom", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<SurgeryUser>();
+            var result = dsSchedules.Tables[0].DataTableToList<Surgery>();
 
             return result;
         }

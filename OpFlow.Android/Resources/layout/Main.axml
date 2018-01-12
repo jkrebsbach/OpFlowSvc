@@ -16,9 +16,9 @@
         android:paddingBottom="50dip" />
     <Toolbar
         android:id="@+id/nav_toolbar"
-        android:minHeight="?android:attr/actionBarSize"
+        android:minHeight="50dip"
         android:background="?android:attr/colorAccent"
-        android:theme="@android:style/ThemeOverlay.Material.Dark.ActionBar"
+        android:theme="@style/ToolBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="-50dip" />

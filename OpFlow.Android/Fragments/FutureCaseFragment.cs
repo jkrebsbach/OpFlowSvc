@@ -21,9 +21,9 @@ namespace OpFlow.Android.Fragments
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
+            AppSettings.CurrentScreen = AppSettings.FragmentEnum.FutureCases;
             base.OnCreateView(inflater, container, savedInstanceState);
-            AppSettings.CurrentScreen = "Cases";
-
+            
             // Make sure we aren't disposing app
             if (container == null)
                 return null;
@@ -45,7 +45,7 @@ namespace OpFlow.Android.Fragments
 
         private async Task SetupScreen()
         {
-            _schedule = await SurgeryUtil.GetSurgerySchedule(DateTime.Now);
+            _schedule = await SurgeryUtil.GetSurgeryUserSchedule(DateTime.Now);
             var schedulePatients = await SurgeryUtil.GetSurgeryPatients(_schedule);
 
             _lvFutureCases.Adapter = new Adapters.FutureCaseListAdapter(Activity, _schedule, schedulePatients);
@@ -58,7 +58,7 @@ namespace OpFlow.Android.Fragments
 
             var schedule = _schedule[eventArgs.Position];
 
-            Listener.SendMessage(FragmentEnum.FutureCases, schedule);
+            Listener.SendMessage(AppSettings.FragmentEnum.FutureCases, schedule);
         }
     }
 }

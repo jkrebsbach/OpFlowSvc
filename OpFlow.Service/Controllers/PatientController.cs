@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using Newtonsoft.Json;
 using OpFlow.Data;
 using Swashbuckle.Swagger.Annotations;
 
@@ -25,6 +26,27 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound, "Patient not found");
 
             return Request.CreateResponse(HttpStatusCode.OK, patient);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetByList")]
+        [Route("api/patient/array")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<Patient>))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        public HttpResponseMessage GetArray(string patientIdArrayJson)
+        {
+            var patientIds = new List<int>();
+            var patients = new List<Patient>();
+            
+            if (patientIdArrayJson != null)
+                patientIds = JsonConvert.DeserializeObject<List<int>>(patientIdArrayJson);
+
+            if (patientIds != null)
+            {
+                patients.AddRange(patientIds.Select(DataAccess.SecureSqlHelper.GetPatient));
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, patients);
         }
 
         // POST api/values

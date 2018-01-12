@@ -25,7 +25,16 @@ namespace OpFlow.Android.Fragments
                 throw new InvalidCastException("Activity must implement IFragmentMessageListener");
             }
 
+            Listener.UpdateToolbar();
+
             return base.OnCreateView(inflater, container, savedInstanceState);
+        }
+
+        public override void OnResume()
+        {
+            Listener.UpdateToolbar();
+
+            base.OnResume();
         }
     }
 }

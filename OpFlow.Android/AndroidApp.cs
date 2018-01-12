@@ -17,12 +17,4 @@ namespace OpFlow.Android
     {
         
     }
-
-    public enum FragmentEnum
-    {
-        Login = 0,
-        MainScreen = 1,
-        FutureCases = 2,
-        Schedule = 3
-    }
 }

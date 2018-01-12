@@ -2,16 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="100">
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="30dip"
+        android:weightSum="100">
+        <Switch
+            android:id="@+id/swtSurgeon"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:checked="true"
+            android:text="Surgeon" />
+        <Spinner
+            android:id="@+id/spnRoom"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="50" />
+    </LinearLayout>
     <Button
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="15"
+        android:layout_height="30dip"
         android:id="@+id/btnScheduleDate" />
     <GridView
         android:id="@+id/gvDailySchedule"
         android:layout_width="fill_parent"
-        android:layout_height="0dip"
-        android:layout_weight="85" />
+        android:layout_height="fill_parent" />
 </LinearLayout>

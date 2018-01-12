@@ -139,8 +139,8 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f09001d
 			public const int btnSchedule = 2131296285;
 			
-			// aapt resource value: 0x7f09002c
-			public const int btnScheduleDate = 2131296300;
+			// aapt resource value: 0x7f09002e
+			public const int btnScheduleDate = 2131296302;
 			
 			// aapt resource value: 0x7f090003
 			public const int btnSearch = 2131296259;
@@ -148,8 +148,8 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f090020
 			public const int btnToDoList = 2131296288;
 			
-			// aapt resource value: 0x7f09002d
-			public const int gvDailySchedule = 2131296301;
+			// aapt resource value: 0x7f09002f
+			public const int gvDailySchedule = 2131296303;
 			
 			// aapt resource value: 0x7f09000c
 			public const int gvScheduledProcedures = 2131296268;
@@ -157,17 +157,20 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f090010
 			public const int gvSurgeryUsers = 2131296272;
 			
-			// aapt resource value: 0x7f090033
-			public const int ivAlerts = 2131296307;
+			// aapt resource value: 0x7f090035
+			public const int ivAlerts = 2131296309;
 			
 			// aapt resource value: 0x7f090012
 			public const int ivCheckInStatus = 2131296274;
 			
-			// aapt resource value: 0x7f090034
-			public const int ivDelays = 2131296308;
+			// aapt resource value: 0x7f090036
+			public const int ivDelays = 2131296310;
 			
-			// aapt resource value: 0x7f090032
-			public const int ivPrefCard = 2131296306;
+			// aapt resource value: 0x7f090038
+			public const int ivHeaderIcon = 2131296312;
+			
+			// aapt resource value: 0x7f090034
+			public const int ivPrefCard = 2131296308;
 			
 			// aapt resource value: 0x7f090014
 			public const int ivReviewStatus = 2131296276;
@@ -187,26 +190,26 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f09002a
 			public const int mainFragment = 2131296298;
 			
-			// aapt resource value: 0x7f09003b
-			public const int menu_cases = 2131296315;
-			
-			// aapt resource value: 0x7f090039
-			public const int menu_communicator = 2131296313;
+			// aapt resource value: 0x7f09003e
+			public const int menu_cases = 2131296318;
 			
 			// aapt resource value: 0x7f09003c
-			public const int menu_edit = 2131296316;
+			public const int menu_communicator = 2131296316;
 			
-			// aapt resource value: 0x7f09003e
-			public const int menu_preferences = 2131296318;
+			// aapt resource value: 0x7f09003f
+			public const int menu_edit = 2131296319;
+			
+			// aapt resource value: 0x7f090041
+			public const int menu_preferences = 2131296321;
+			
+			// aapt resource value: 0x7f090040
+			public const int menu_save = 2131296320;
 			
 			// aapt resource value: 0x7f09003d
-			public const int menu_save = 2131296317;
+			public const int menu_schedule = 2131296317;
 			
-			// aapt resource value: 0x7f09003a
-			public const int menu_schedule = 2131296314;
-			
-			// aapt resource value: 0x7f090038
-			public const int menu_search = 2131296312;
+			// aapt resource value: 0x7f09003b
+			public const int menu_search = 2131296315;
 			
 			// aapt resource value: 0x7f09002b
 			public const int nav_toolbar = 2131296299;
@@ -214,8 +217,8 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f090004
 			public const int pnlCaseDetail = 2131296260;
 			
-			// aapt resource value: 0x7f09002e
-			public const int pnlLayout = 2131296302;
+			// aapt resource value: 0x7f090030
+			public const int pnlLayout = 2131296304;
 			
 			// aapt resource value: 0x7f09000b
 			public const int pnlScheduledProceduresHeaders = 2131296267;
@@ -223,8 +226,14 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f09000f
 			public const int spnAssignment = 2131296271;
 			
+			// aapt resource value: 0x7f09002d
+			public const int spnRoom = 2131296301;
+			
 			// aapt resource value: 0x7f09000e
 			public const int swtCheckIn = 2131296270;
+			
+			// aapt resource value: 0x7f09002c
+			public const int swtSurgeon = 2131296300;
 			
 			// aapt resource value: 0x7f090029
 			public const int toolbar = 2131296297;
@@ -241,8 +250,8 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f090013
 			public const int txtDelay = 2131296275;
 			
-			// aapt resource value: 0x7f090035
-			public const int txtDelayAmt = 2131296309;
+			// aapt resource value: 0x7f090037
+			public const int txtDelayAmt = 2131296311;
 			
 			// aapt resource value: 0x7f090017
 			public const int txtDelayStatus = 2131296279;
@@ -250,17 +259,17 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f090025
 			public const int txtError = 2131296293;
 			
-			// aapt resource value: 0x7f090036
-			public const int txtHeaderApplication = 2131296310;
+			// aapt resource value: 0x7f090039
+			public const int txtHeaderApplication = 2131296313;
 			
-			// aapt resource value: 0x7f090037
-			public const int txtHeaderUser = 2131296311;
+			// aapt resource value: 0x7f09003a
+			public const int txtHeaderUser = 2131296314;
 			
 			// aapt resource value: 0x7f09000a
 			public const int txtItemText = 2131296266;
 			
-			// aapt resource value: 0x7f090030
-			public const int txtLocation = 2131296304;
+			// aapt resource value: 0x7f090032
+			public const int txtLocation = 2131296306;
 			
 			// aapt resource value: 0x7f090027
 			public const int txtPassword = 2131296295;
@@ -274,8 +283,8 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f090000
 			public const int txtPatientName = 2131296256;
 			
-			// aapt resource value: 0x7f090031
-			public const int txtPatientSex = 2131296305;
+			// aapt resource value: 0x7f090033
+			public const int txtPatientSex = 2131296307;
 			
 			// aapt resource value: 0x7f090019
 			public const int txtProcedure = 2131296281;
@@ -292,8 +301,8 @@ namespace OpFlow.Android
 			// aapt resource value: 0x7f090005
 			public const int txtSurgeon = 2131296261;
 			
-			// aapt resource value: 0x7f09002f
-			public const int txtTime = 2131296303;
+			// aapt resource value: 0x7f090031
+			public const int txtTime = 2131296305;
 			
 			// aapt resource value: 0x7f090026
 			public const int txtUserName = 2131296294;
@@ -420,14 +429,11 @@ namespace OpFlow.Android
 		public partial class Style
 		{
 			
-			// aapt resource value: 0x7f070001
-			public const int ActionBarTheme = 2131165185;
-			
 			// aapt resource value: 0x7f070000
 			public const int OpFlowTheme = 2131165184;
 			
-			// aapt resource value: 0x7f070002
-			public const int ToolBarStyle = 2131165186;
+			// aapt resource value: 0x7f070001
+			public const int ToolBarStyle = 2131165185;
 			
 			static Style()
 			{
