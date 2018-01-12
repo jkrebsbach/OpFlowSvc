@@ -97,15 +97,21 @@ namespace OpFlow.Mobile
             {
                 var authToken = await PostValues<AuthToken>("/Token", content);
 
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken?.AccessToken);
+                if (authToken.AccessToken != null)
+                {
+                    _client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", authToken?.AccessToken);
 
-                return authToken;
+                    return authToken;
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
+
+            return null;
         }
     }
 }

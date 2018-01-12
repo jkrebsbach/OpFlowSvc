@@ -56,9 +56,6 @@ namespace OpFlow.Mobile
 
         public static async Task AuthenticateUser(string username, string password)
         {
-            username = "info@opflowtech.com";
-            password = "OpFlow1!";
-
             _authToken = await WebUtility.LoginUser(username, password);
 
             if (_authToken != null)

@@ -17,6 +17,8 @@ namespace OpFlow.Android.Activities
     public class LoginActivity : Activity
     {
         private ProgressDialog _progressDialog;
+        private EditText _txtUsername;
+        private EditText _txtPassword;
         private TextView _txtError;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -28,17 +30,16 @@ namespace OpFlow.Android.Activities
             _progressDialog.SetTitle("Login In Progress");
             _progressDialog.SetMessage("Please wait...");
 
-            var txtUsername = FindViewById<EditText>(Resource.Id.txtUserName);
-            var txtPassword = FindViewById<EditText>(Resource.Id.txtPassword);
-            _txtError = FindViewById<EditText>(Resource.Id.txtError);
-
+            _txtUsername = FindViewById<EditText>(Resource.Id.txtUserName);
+            _txtPassword = FindViewById<EditText>(Resource.Id.txtPassword);
+            _txtError = FindViewById<TextView>(Resource.Id.txtError);
             var btnLogin = FindViewById<Button>(Resource.Id.btnLogin);
             btnLogin.Click += async delegate
             {
                 try
                 {
-                    var username = txtUsername.Text;
-                    var password = txtPassword.Text;
+                    var username = _txtUsername.Text;
+                    var password = _txtPassword.Text;
 
                     await AuthenticateUser(username, password);
                 }
@@ -48,6 +49,20 @@ namespace OpFlow.Android.Activities
                     throw;
                 }
             };
+
+            var task = LoadCredentials();
+            task.Wait();
+        }
+
+        private async Task LoadCredentials()
+        {
+            var credentials = await AndroidApp.GetCurrentCredential();
+            if (credentials != null)
+            {
+                _txtUsername.Text = credentials.Username;
+                _txtPassword.Text = credentials.Properties.ContainsKey("Password") ?
+                    credentials.Properties["Password"] : "";
+            }
         }
 
         private async Task AuthenticateUser(string username, string password)
@@ -64,6 +79,8 @@ namespace OpFlow.Android.Activities
             }
             else
             {
+                await AndroidApp.SetCredential(username, password);
+
                 // Login successful - Navigate back to application
                 OnBackPressed();
             }

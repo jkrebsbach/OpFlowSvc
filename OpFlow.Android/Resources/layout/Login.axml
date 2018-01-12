@@ -9,10 +9,12 @@
     <ImageView
         android:src="@drawable/opflowlogo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:padding="10dip" />
     <TextView
-        android:password="@+id/txtError"
+        android:id="@+id/txtError"
         android:text=""
+        android:textColor="#FF0000"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="0dip"

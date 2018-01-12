@@ -92,7 +92,7 @@ namespace OpFlow.Android.Fragments
             var user = AppSettings.CurrentUser;
             var surgeryId = AppSettings.CurrentSurgery.SurgeryID;
 
-            await UserUtil.CheckoutUser(user, surgeryId);
+            await UserUtil.CheckinUser(user, surgeryId);
         }
 
         private async Task LoadCase()
@@ -105,10 +105,10 @@ namespace OpFlow.Android.Fragments
                 surgeryId, locationId, providerId);
 
             // Something could go wrong?...
-            if (currentSurgery == null)
+            if (currentSurgery?.CardID == null)
                 return;
 
-            var cardUsers = await SurgeryUtil.GetCardUsers(currentSurgery.CardID, providerId, locationId);
+            var cardUsers = await SurgeryUtil.GetCardUsers(currentSurgery.CardID.Value, providerId, locationId);
 
             var rooms = await AppSettings.RoomList(currentSurgery.LocationID);
 

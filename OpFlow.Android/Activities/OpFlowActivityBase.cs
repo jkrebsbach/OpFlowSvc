@@ -66,8 +66,6 @@ namespace OpFlow.Android.Activities
             }
 
             appIcon.SetImageResource(appIconResource);
-
-            base.OnResume();
         }
 
         public void SendMessage(AppSettings.FragmentEnum fragment, object payload)
