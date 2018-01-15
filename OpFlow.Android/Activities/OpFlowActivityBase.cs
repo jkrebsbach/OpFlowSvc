@@ -45,8 +45,10 @@ namespace OpFlow.Android.Activities
             var userName = _toolbar.FindViewById<TextView>(Resource.Id.txtHeaderUser);
             var appIcon = _toolbar.FindViewById<ImageView>(Resource.Id.ivHeaderIcon);
 
+            var currentUser = AppSettings.CurrentUser;
+
             appName.Text = AppSettings.CurrentScreenName;
-            userName.Text = AppSettings.CurrentUser?.LastName;
+            userName.Text = $"{currentUser?.Title} {currentUser?.LastName}";
 
             var appIconResource = Resource.Drawable.ic_search_grey_50_18dp;
             switch (AppSettings.CurrentScreen)

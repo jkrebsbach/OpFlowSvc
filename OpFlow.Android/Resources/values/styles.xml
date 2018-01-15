@@ -14,5 +14,7 @@
     <item name="android:colorAccent">@color/opflow_blue</item>
     <item name="android:actionBarSize">30dip</item>
     <item name="android:background">?android:attr/colorAccent</item>
+    <item name="android:textSize">12sp</item>
+    <item name="android:textColor">@color/opflow_white</item>
   </style>
 </resources>
