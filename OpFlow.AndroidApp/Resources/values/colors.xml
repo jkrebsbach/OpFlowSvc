@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+  <color name="opflow_black">#000000</color>
+  <color name="opflow_white">#FFFFFF</color>
+  <color name="opflow_lightgray">#DDDDDD</color>
+  <color name="opflow_blue">#3498DB</color>
+</resources>
