@@ -23,8 +23,8 @@
         android:orientation="horizontal"
         android:weightSum="100">
         <LinearLayout
-          android:id="@+id/navSchedule"  
-          android:layout_width="0dip"
+            android:id="@+id/navSchedule"
+            android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:orientation="vertical"
             android:layout_weight="25">
@@ -32,7 +32,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="10dip"
                 android:layout_weight="25"
-                android:src="@drawable/ic_schedule_grey_50_18dp"
+                android:src="@drawable/ic_schedule_grey_800_18dp"
                 android:scaleType="fitCenter" />
             <TextView
                 android:layout_width="fill_parent"
@@ -41,7 +41,7 @@
                 android:text="Schedule" />
         </LinearLayout>
         <LinearLayout
-          android:id="@+id/navCases"
+            android:id="@+id/navCases"
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:orientation="vertical"
@@ -50,7 +50,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="10dip"
                 android:layout_weight="25"
-                android:src="@drawable/ic_work_grey_50_18dp"
+                android:src="@drawable/ic_work_grey_800_18dp"
                 android:scaleType="fitCenter" />
             <TextView
                 android:layout_width="fill_parent"
@@ -59,7 +59,7 @@
                 android:text="Cases" />
         </LinearLayout>
         <LinearLayout
-          android:id="@+id/navCommunicator"
+            android:id="@+id/navCommunicator"
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:orientation="vertical"
@@ -68,7 +68,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="10dip"
                 android:layout_weight="25"
-                android:src="@drawable/ic_chat_grey_50_18dp"
+                android:src="@drawable/ic_chat_grey_800_18dp"
                 android:scaleType="fitCenter" />
             <TextView
                 android:layout_width="fill_parent"
@@ -77,7 +77,7 @@
                 android:text="Communicator" />
         </LinearLayout>
         <LinearLayout
-          android:id="@+id/navSearch"
+            android:id="@+id/navSearch"
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:orientation="vertical"
@@ -86,7 +86,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="10dip"
                 android:layout_weight="25"
-                android:src="@drawable/ic_search_grey_50_18dp"
+                android:src="@drawable/ic_search_grey_800_18dp"
                 android:scaleType="fitCenter" />
             <TextView
                 android:layout_width="fill_parent"

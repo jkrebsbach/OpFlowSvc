@@ -16,10 +16,8 @@ using OpFlow.Mobile;
 
 namespace OpFlow.AndroidApp.Fragments
 {
-    public class ScheduleFragment : OpFlowFragmentBase
+    public class ScheduleFragment : WeekDayPickerFragment
     {
-        private DateTime _selectedDate;
-        private Button _btnSchedule;
         private GridView _gvDailySchedule;
         private Switch _swtSurgeon;
         private Spinner _spnRoom;
@@ -37,7 +35,6 @@ namespace OpFlow.AndroidApp.Fragments
 
             var rootView = inflater.Inflate(Resource.Layout.Schedule, container, false);
 
-            _btnSchedule = rootView.FindViewById<Button>(Resource.Id.btnScheduleDate);
             _gvDailySchedule = rootView.FindViewById<GridView>(Resource.Id.gvDailySchedule);
             _swtSurgeon = rootView.FindViewById<Switch>(Resource.Id.swtSurgeon);
             _spnRoom = rootView.FindViewById<Spinner>(Resource.Id.spnRoom);
@@ -45,10 +42,6 @@ namespace OpFlow.AndroidApp.Fragments
             {
                 await LoadSchedule();
             };
-
-            _selectedDate = DateTime.Today;
-
-            _btnSchedule.Click += btnSchedule_OnClick;
 
             _gvDailySchedule.ItemClick += CardItemClicked;
 
@@ -58,6 +51,8 @@ namespace OpFlow.AndroidApp.Fragments
 
                 await LoadSchedule();
             };
+
+            InitializePicker(rootView);
 
             return rootView;
         }
@@ -88,16 +83,9 @@ namespace OpFlow.AndroidApp.Fragments
             Listener.SendMessage(AppSettings.FragmentEnum.Schedule, schedule);
         }
 
-        void btnSchedule_OnClick(object sender, EventArgs eventArgs)
+        protected override async Task SelectDate()
         {
-            var frag = DatePickerFragment.NewInstance(_selectedDate, async delegate (DateTime time)
-            {
-                _selectedDate = time;
-                _btnSchedule.Text = _selectedDate.ToString("M/d/yyyy");
-
-                await LoadSchedule();
-            });
-            frag.Show(FragmentManager, DatePickerFragment.TAG);
+            await LoadSchedule();
         }
 
         private async Task SetupScreen()
@@ -105,8 +93,6 @@ namespace OpFlow.AndroidApp.Fragments
             if (!AppSettings.UserAuthenticated)
                 return;
 
-            _btnSchedule.Text = _selectedDate.ToString("M/d/yyyy");
-            
             var rooms = await AppSettings.RoomList(AppSettings.CurrentUser.LocationID);
 
             var roomAdapter = new SpinnerAdapter<Room>(rooms);
@@ -132,7 +118,7 @@ namespace OpFlow.AndroidApp.Fragments
                 if (_previousFilter != null && _previousFilter.SurgeonOnly)
                     return;
 
-                _schedule = await SurgeryUtil.GetSurgeryUserSchedule(_selectedDate);
+                _schedule = await SurgeryUtil.GetSurgeryUserSchedule(SelectedDate);
                 _previousFilter = new SurgeryFilter() {SurgeonOnly = true};
             }
             else

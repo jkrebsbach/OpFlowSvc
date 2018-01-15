@@ -21,10 +21,137 @@
             android:layout_height="wrap_content"
             android:layout_weight="50" />
     </LinearLayout>
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dip"
-        android:id="@+id/btnScheduleDate" />
+        android:layout_height="38dip"
+        android:orientation="vertical"
+        android:layout_gravity="center">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="15dip"
+            android:orientation="horizontal"
+            android:divider="@drawable/divider"
+            android:weightSum="100">
+            <ImageView
+                android:id="@+id/ivWeekBack"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:rotation="180"
+                android:layout_weight="10"
+                android:src="@drawable/ic_play_arrow_black_18dp" />
+            <TextView
+                android:id="@+id/txtCurrentWeek"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:paddingRight="15dip"
+                android:layout_weight="80"
+                android:gravity="center"
+                android:textAppearance="@style/CalendarTextview"
+                android:text="January 1995" />
+            <ImageView
+                android:id="@+id/ivWeekForward"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="10"
+                android:src="@drawable/ic_play_arrow_black_18dp" />
+        </LinearLayout>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/opflow_black" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="23dip"
+            android:orientation="horizontal"
+            android:weightSum="100">
+            <TextView
+                android:id="@+id/txtWeekSunday"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textAppearance="@style/CalendarTextview"
+                android:layout_weight="14"
+                android:text="S" />
+            <View
+                android:layout_width="1dip"
+                android:layout_height="fill_parent"
+                android:background="@color/opflow_lightgray" />
+            <TextView
+                android:id="@+id/txtWeekMonday"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textAppearance="@style/CalendarTextview"
+                android:lines="2"
+                android:layout_weight="14"
+                android:text="M" />
+            <View
+                android:layout_width="1dip"
+                android:layout_height="fill_parent"
+                android:background="@color/opflow_lightgray" />
+            <TextView
+                android:id="@+id/txtWeekTuesday"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textAppearance="@style/CalendarTextview"
+                android:lines="2"
+                android:layout_weight="14"
+                android:text="T" />
+            <View
+                android:layout_width="1dip"
+                android:layout_height="fill_parent"
+                android:background="@color/opflow_lightgray" />
+            <TextView
+                android:id="@+id/txtWeekWednesday"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textAppearance="@style/CalendarTextview"
+                android:lines="2"
+                android:layout_weight="14"
+                android:text="W" />
+            <View
+                android:layout_width="1dip"
+                android:layout_height="fill_parent"
+                android:background="@color/opflow_lightgray" />
+            <TextView
+                android:id="@+id/txtWeekThursday"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textAppearance="@style/CalendarTextview"
+                android:lines="2"
+                android:layout_weight="14"
+                android:text="T" />
+            <View
+                android:layout_width="1dip"
+                android:layout_height="fill_parent"
+                android:background="@color/opflow_lightgray" />
+            <TextView
+                android:id="@+id/txtWeekFriday"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textAppearance="@style/CalendarTextview"
+                android:lines="2"
+                android:layout_weight="14"
+                android:text="F" />
+            <View
+                android:layout_width="1dip"
+                android:layout_height="fill_parent"
+                android:background="@color/opflow_lightgray" />
+            <TextView
+                android:id="@+id/txtWeekSaturday"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textAppearance="@style/CalendarTextview"
+                android:lines="2"
+                android:layout_weight="14"
+                android:text="S" />
+        </LinearLayout>
+    </LinearLayout>
     <GridView
         android:id="@+id/gvDailySchedule"
         android:layout_width="fill_parent"
