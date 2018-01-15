@@ -52,6 +52,7 @@ namespace OpFlow.AndroidApp.Activities
                     appIconResource = Resource.Drawable.ic_work_grey_50_18dp;
                     break;
                 case AppSettings.FragmentEnum.Schedule:
+                case AppSettings.FragmentEnum.CaseNavigate:
                     appIconResource = Resource.Drawable.ic_schedule_grey_50_18dp;
                     break;
                 case AppSettings.FragmentEnum.FutureCases:
@@ -70,13 +71,24 @@ namespace OpFlow.AndroidApp.Activities
             Fragment newFragment = null;
             if (fragment == AppSettings.FragmentEnum.FutureCases)
             {
-                AppSettings.CurrentSurgery = (Surgery)payload;
                 newFragment = new CaseDetailFragment();
             }
             else if (fragment == AppSettings.FragmentEnum.Schedule)
             {
-                AppSettings.CurrentSurgery = (Surgery)payload;
-                newFragment = new CheckInFragment();
+                newFragment = new CaseNavigateFragment();
+            }
+            else if (fragment == AppSettings.FragmentEnum.CaseNavigate)
+            {
+                var targetScene = (AppSettings.FragmentEnum) payload;
+
+                if (targetScene == AppSettings.FragmentEnum.CheckIn)
+                    newFragment = new CheckInFragment();
+                if (targetScene == AppSettings.FragmentEnum.CaseDetail)
+                    newFragment = new CaseDetailFragment();
+                if (targetScene == AppSettings.FragmentEnum.Flow)
+                    newFragment = new FlowFragment();
+                if (targetScene == AppSettings.FragmentEnum.Room)
+                    newFragment = new RoomFragment();
             }
 
             if (newFragment != null)

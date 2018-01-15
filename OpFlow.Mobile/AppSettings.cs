@@ -18,10 +18,15 @@ namespace OpFlow.Mobile
             FutureCases = 1,
             Schedule = 2,
             CheckIn = 3,
-            CaseDetail = 4
+            CaseDetail = 4,
+            CaseNavigate = 5,
+            Flow = 6,
+            Room = 7
         }
 
         public static Surgery CurrentSurgery;
+        public static Patient CurrentPatient;
+
         public static FragmentEnum CurrentScreen;
 
         private static readonly Dictionary<int, List<Room>> _roomDictionary = new Dictionary<int, List<Room>>();
@@ -42,6 +47,8 @@ namespace OpFlow.Mobile
                         return "Check In";
                     case FragmentEnum.CaseDetail:
                         return "Case Detail";
+                    case FragmentEnum.CaseNavigate:
+                        return "Surgery";
                 }
 
                 return "UNDEFINED";

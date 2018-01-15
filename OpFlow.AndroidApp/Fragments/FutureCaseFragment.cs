@@ -17,6 +17,7 @@ namespace OpFlow.AndroidApp.Fragments
     public class FutureCaseFragment : OpFlowFragmentBase
     {
         private List<Surgery> _schedule;
+        private Dictionary<int, Patient> _surgeryPatients;
         private ListView _lvFutureCases;
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -46,9 +47,9 @@ namespace OpFlow.AndroidApp.Fragments
         private async Task SetupScreen()
         {
             _schedule = await SurgeryUtil.GetSurgeryUserSchedule(DateTime.Now);
-            var schedulePatients = await SurgeryUtil.GetSurgeryPatients(_schedule);
+            _surgeryPatients = await SurgeryUtil.GetSurgeryPatients(_schedule);
 
-            _lvFutureCases.Adapter = new Adapters.FutureCaseListAdapter(Activity, _schedule, schedulePatients);
+            _lvFutureCases.Adapter = new Adapters.FutureCaseListAdapter(Activity, _schedule, _surgeryPatients);
         }
 
         private void FutureCaseClicked(object sender, AdapterView.ItemClickEventArgs eventArgs)
@@ -58,6 +59,8 @@ namespace OpFlow.AndroidApp.Fragments
 
             var schedule = _schedule[eventArgs.Position];
 
+            AppSettings.CurrentSurgery = schedule;
+            AppSettings.CurrentPatient = _surgeryPatients[schedule.SurgeryID];
             Listener.SendMessage(AppSettings.FragmentEnum.FutureCases, schedule);
         }
     }

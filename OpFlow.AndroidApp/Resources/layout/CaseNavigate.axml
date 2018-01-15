@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="100">
+    <LinearLayout
+      android:id="@+id/pnlCheckIn"
+        android:layout_height="0dip"
+        android:layout_width="fill_parent"
+        android:layout_weight="15">
+        <ImageView
+            android:layout_width="30dip"
+            android:layout_height="fill_parent"
+            android:src="@drawable/ic_move_to_inbox_black_18dp" />
+        <TextView
+            android:id="@+id/txtCheckIn"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:gravity="center|left"
+            android:text="CHECK IN" />
+    </LinearLayout>
+    <LinearLayout
+      android:id="@+id/pnlCase"
+        android:layout_height="0dip"
+        android:layout_width="fill_parent"
+        android:layout_weight="15">
+        <ImageView
+            android:layout_width="30dip"
+            android:layout_height="fill_parent"
+            android:src="@drawable/ic_create_black_18dp" />
+        <TextView
+            android:id="@+id/txtCase"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:gravity="center|left"
+            android:text="CASE" />
+    </LinearLayout>
+    <LinearLayout
+      android:id="@+id/pnlCard"
+        android:layout_height="0dip"
+        android:layout_width="fill_parent"
+        android:layout_weight="15">
+        <ImageView
+            android:layout_width="30dip"
+            android:layout_height="fill_parent"
+            android:src="@drawable/ic_payment_black_18dp" />
+        <TextView
+            android:id="@+id/txtCard"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:gravity="center|left"
+            android:text="CARD"
+            android:layout_weight="15" />
+    </LinearLayout>
+    <LinearLayout
+      android:id="@+id/pnlFlow"
+        android:layout_height="0dip"
+        android:layout_width="fill_parent"
+        android:layout_weight="15">
+        <ImageView
+            android:layout_width="30dip"
+            android:layout_height="fill_parent"
+            android:src="@drawable/ic_settings_black_18dp" />
+        <TextView
+            android:id="@+id/txtFlow"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:gravity="center|left"
+            android:text="FLOW" />
+    </LinearLayout>
+    <LinearLayout
+      android:id="@+id/pnlRoom"
+        android:layout_height="0dip"
+        android:layout_width="fill_parent"
+        android:layout_weight="15">
+        <ImageView
+            android:layout_width="30dip"
+            android:layout_height="fill_parent"
+            android:src="@drawable/ic_hotel_black_18dp" />
+        <TextView
+            android:id="@+id/txtRoom"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:gravity="center|left"
+            android:text="ROOM" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:orientation="vertical"
+        android:layout_margin="5dp"
+        android:layout_weight="25"
+        android:background="@drawable/roundrectangle">
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:text="COMMUNICATOR CONTENT" />
+    </LinearLayout>
+</LinearLayout>

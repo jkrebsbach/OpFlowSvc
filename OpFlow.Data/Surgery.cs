@@ -14,9 +14,11 @@ namespace OpFlow.Data
         public int ProcedureID { get; set; }
         public int BundleID { get; set; }
         public int RoomID { get; set; }
+        public int FlowID { get; set; }
         public string ProcedureDescription { get; set; }
         public string BundleDescription { get; set; }
         public string CardDescription { get; set; }
+        public string FlowDescription { get; set; }
         public string ProviderName { get; set; }
         public string SurgeonFirstName { get; set; }
         public string SurgeonLastName { get; set; }

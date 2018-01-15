@@ -23,6 +23,7 @@ namespace OpFlow.AndroidApp.Fragments
         private Spinner _spnRoom;
 
         private List<Surgery> _schedule;
+        private Dictionary<int, Patient> _schedulePatients;
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
@@ -80,6 +81,10 @@ namespace OpFlow.AndroidApp.Fragments
             var schedule = _schedule[eventArgs.Position];
 
             _previousFilter = null;
+
+            AppSettings.CurrentSurgery = schedule;
+            AppSettings.CurrentPatient = _schedulePatients[schedule.SurgeryID];
+
             Listener.SendMessage(AppSettings.FragmentEnum.Schedule, schedule);
         }
 
@@ -135,9 +140,9 @@ namespace OpFlow.AndroidApp.Fragments
                 _previousFilter = new SurgeryFilter() { RoomId = roomId };
             }
 
-            var schedulePatients = await SurgeryUtil.GetSurgeryPatients(_schedule);
+            _schedulePatients = await SurgeryUtil.GetSurgeryPatients(_schedule);
 
-            _gvDailySchedule.Adapter = new Adapters.ScheduleGridAdapter(Activity, _schedule, schedulePatients);
+            _gvDailySchedule.Adapter = new Adapters.ScheduleGridAdapter(Activity, _schedule, _schedulePatients);
 
         }
 
