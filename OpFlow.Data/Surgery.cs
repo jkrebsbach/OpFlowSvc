@@ -19,7 +19,7 @@ namespace OpFlow.Data
         public string BundleDescription { get; set; }
         public string CardDescription { get; set; }
         public string FlowDescription { get; set; }
-        public string ProviderName { get; set; }
+        public string LocationName { get; set; }
         public string SurgeonFirstName { get; set; }
         public string SurgeonLastName { get; set; }
         public DateTime ScheduleDate { get; set; }

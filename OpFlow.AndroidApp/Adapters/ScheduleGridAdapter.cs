@@ -70,7 +70,7 @@ namespace OpFlow.AndroidApp.Adapters
 
             txtPatientName.Text = string.Format("{0} {1}", patient?.LastName, patient?.FirstName);
             txtTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
-            txtLocation.Text = surgery.ProviderName;
+            txtLocation.Text = surgery.LocationName;
             txtPatientAge.Text = "Age: " + patient?.BirthDate.CalculateAge();
             txtPatientSex.Text = "Sex: " + patient?.Sex;
             txtProcedure.Text = surgery.ProcedureDescription;
