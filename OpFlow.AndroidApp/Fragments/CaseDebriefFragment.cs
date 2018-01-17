@@ -15,8 +15,16 @@ namespace OpFlow.AndroidApp.Fragments
 {
     public class CaseDebriefFragment : CaseDetailFragment
     {
+        public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+        {
+            AppSettings.CurrentScreen = AppSettings.FragmentEnum.Debrief;
+            return base.OnCreateView(inflater, container, savedInstanceState);
+        }
+
         protected override async Task<List<CaseDetailToken>> GetDetailTokens()
         {
+            ToggleConfirm(false, "Save Feedback");
+
             var flowSteps = await FlowUtil.GetFlowInstructions(Surgery.FlowID);
 
             var caseDetailTokens = flowSteps

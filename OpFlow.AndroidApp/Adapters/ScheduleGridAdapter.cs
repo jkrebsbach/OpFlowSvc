@@ -6,6 +6,7 @@ using System.Text;
 using Android.App;
 using Android.Content;
 using Android.Content.Res;
+using Android.Graphics.Drawables;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
@@ -66,9 +67,21 @@ namespace OpFlow.AndroidApp.Adapters
             var pnlScheduledCase = gridView.FindViewById<LinearLayout>(Resource.Id.pnlScheduledCase);
             var pnlOpenCase = gridView.FindViewById<LinearLayout>(Resource.Id.pnlOpenCase);
 
-            pnlScheduledCase.Visibility = (surgery.SurgeryStatus == "A" ? ViewStates.Visible : ViewStates.Gone);
-            pnlOpenCase.Visibility = (surgery.SurgeryStatus == "O" ? ViewStates.Visible : ViewStates.Gone);
+            switch (surgery.SurgeryStatus)
+            {
+                case "A":
+                    pnlScheduledCase.Visibility = ViewStates.Visible;
+                    pnlOpenCase.Visibility = ViewStates.Gone;
 
+                    gridView.SetBackgroundResource(Resource.Drawable.RoundRectangle);
+                    break;
+                case "O":
+                    pnlScheduledCase.Visibility = ViewStates.Gone;
+                    pnlOpenCase.Visibility = ViewStates.Visible;
+
+                    gridView.SetBackgroundResource(Resource.Drawable.RoundGrayRectangle);
+                    break;
+            }
             // If there is an estimated delay, highlight the event
             if (surgery.EstDelayMinutes > 0)
             {

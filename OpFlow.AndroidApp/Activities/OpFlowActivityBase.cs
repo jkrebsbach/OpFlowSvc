@@ -48,7 +48,7 @@ namespace OpFlow.AndroidApp.Activities
             var appIconResource = Resource.Drawable.ic_search_grey_50_18dp;
             switch (AppSettings.CurrentScreen)
             {
-                case AppSettings.FragmentEnum.CaseDetail:
+                case AppSettings.FragmentEnum.Review:
                     appIconResource = Resource.Drawable.ic_work_grey_50_18dp;
                     break;
                 case AppSettings.FragmentEnum.Schedule:
@@ -98,7 +98,7 @@ namespace OpFlow.AndroidApp.Activities
 
                 if (targetScene == AppSettings.FragmentEnum.CheckIn)
                     newFragment = new CheckInFragment();
-                if (targetScene == AppSettings.FragmentEnum.CaseDetail)
+                if (targetScene == AppSettings.FragmentEnum.Debrief)
                     newFragment = new CaseDebriefFragment();
                 if (targetScene == AppSettings.FragmentEnum.Flow)
                     newFragment = new FlowFragment();

@@ -19,10 +19,25 @@ namespace OpFlow.Mobile
             FutureCases = 1,
             Schedule = 2,
             CheckIn = 3,
-            CaseDetail = 4,
-            CaseNavigate = 5,
-            Flow = 6,
-            Room = 7
+            Debrief = 4,
+            Review = 5,
+            CaseNavigate = 6,
+            Flow = 7,
+            Room = 8,
+            Patient = 9,
+            Communicator = 10,
+        }
+
+        public enum RoleEnum
+        {
+            Surgeon = 1,
+            Circulator = 2,
+            ScrubTech = 3,
+            CRNA = 4,
+            PA = 5,
+            FrontDesk = 7,
+            Schedule = 8,
+            Administration = 9
         }
 
         public static int? CurrentSurgery { get; private set; }
@@ -46,8 +61,12 @@ namespace OpFlow.Mobile
                         return "Schedule";
                     case FragmentEnum.CheckIn:
                         return "Check In";
-                    case FragmentEnum.CaseDetail:
-                        return "Case Detail";
+                    case FragmentEnum.Review:
+                        return "Review";
+                    case FragmentEnum.Debrief:
+                        return "Debrief";
+                    case FragmentEnum.Patient:
+                        return "Patient";
                     case FragmentEnum.CaseNavigate:
                         return "Surgery";
                 }

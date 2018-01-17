@@ -5,92 +5,282 @@
     android:layout_height="match_parent"
     android:weightSum="100">
     <LinearLayout
-        android:id="@+id/pnlCheckIn"
-        android:layout_height="0dip"
+        android:orientation="vertical"
+        android:layout_height="45dip"
         android:layout_width="fill_parent"
-        android:layout_weight="15">
-        <ImageView
-            android:layout_width="30dip"
-            android:layout_height="fill_parent"
-            android:src="@drawable/ic_move_to_inbox_black_18dp" />
-        <TextView
-            android:id="@+id/txtCheckIn"
-            android:layout_height="fill_parent"
+        android:background="@color/opflow_lightgray">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_height="15dip"
             android:layout_width="fill_parent"
-            android:gravity="center|left"
-            android:text="CHECK IN" />
+            android:weightSum="100">
+            <TextView
+                android:id="@+id/txtPatientName"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="30"
+                android:text="Smith, John" />
+            <TextView
+                android:id="@+id/txtStartTime"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="20"
+                android:text="7:30AM" />
+            <TextView
+                android:id="@+id/txtRoom"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="20"
+                android:text="OR 2" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_height="15dip"
+            android:layout_width="fill_parent"
+            android:weightSum="100">
+            <TextView
+                android:id="@+id/txtPatientInfo"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="30"
+                android:text="47 M" />
+            <TextView
+                android:id="@+id/txtFlowStep"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="50"
+                android:text="Flow Step" />
+            <Button
+                android:id="@+id/btnDebrief"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="20"
+                android:background="@color/opflow_highlight"
+                android:text="DEBRIEF" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_height="15dip"
+            android:layout_width="fill_parent"
+            android:weightSum="100">
+            <TextView
+                android:id="@+id/txtProcedure"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="60"
+                android:text="ARTERIOGRAM - Details" />
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/pnlCase"
-        android:layout_height="0dip"
+        android:layout_height="50dip"
         android:layout_width="fill_parent"
-        android:layout_weight="15">
-        <ImageView
-            android:layout_width="30dip"
-            android:layout_height="fill_parent"
-            android:src="@drawable/ic_create_black_18dp" />
-        <TextView
-            android:id="@+id/txtCase"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:gravity="center|left"
-            android:text="CASE" />
+        android:orientation="horizontal"
+        android:weightSum="100">
+        <LinearLayout
+            android:id="@+id/pnlPatient"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_height="50dip"
+            android:layout_width="0dip"
+            android:layout_weight="25">
+            <ImageView
+                android:layout_width="50dip"
+                android:layout_height="40dip"
+                android:src="@drawable/ic_person_black_18dp" />
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:text="Patient" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/pnlCard"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_height="50dip"
+            android:layout_width="0dip"
+            android:layout_weight="25">
+            <ImageView
+                android:layout_width="30dip"
+                android:layout_height="40dip"
+                android:src="@drawable/ic_payment_black_18dp" />
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:text="Card" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/pnlFlow"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_height="50dip"
+            android:layout_width="0dip"
+            android:layout_weight="25">
+            <ImageView
+                android:layout_width="30dip"
+                android:layout_height="40dip"
+                android:src="@drawable/infinity" />
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:text="Flow" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/pnlCommunicator"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_height="50dip"
+            android:layout_width="0dip"
+            android:layout_weight="25">
+            <ImageView
+                android:layout_width="30dip"
+                android:layout_height="40dip"
+                android:src="@drawable/ic_chat_black_18dp" />
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:text="Communicator" />
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/pnlCard"
-        android:layout_height="0dip"
-        android:layout_width="fill_parent"
-        android:layout_weight="15">
-        <ImageView
-            android:layout_width="30dip"
-            android:layout_height="fill_parent"
-            android:src="@drawable/ic_payment_black_18dp" />
+        android:layout_width="match_parent"
+        android:layout_height="20dip"
+        android:orientation="horizontal"
+        android:weightSum="100"
+        android:background="@drawable/roundrectangle">
         <TextView
-            android:id="@+id/txtCard"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_width="0dip"
+            android:layout_weight="25"
+            android:text="Surgeon:" />
+        <TextView
+            android:id="@+id/txtSurgeonName"
+            android:layout_height="wrap_content"
             android:layout_width="fill_parent"
-            android:gravity="center|left"
-            android:text="CARD"
-            android:layout_weight="15" />
+            android:gravity=""
+            android:layout_weight="75"
+            android:text="Doe, John" />
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/pnlFlow"
-        android:layout_height="0dip"
-        android:layout_width="fill_parent"
-        android:layout_weight="15">
-        <ImageView
-            android:layout_width="30dip"
-            android:layout_height="fill_parent"
-            android:src="@drawable/ic_settings_black_18dp" />
-        <TextView
-            android:id="@+id/txtFlow"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:gravity="center|left"
-            android:text="FLOW" />
+        android:layout_width="match_parent"
+        android:layout_height="20dip"
+        android:orientation="horizontal"
+        android:weightSum="100">
+        <LinearLayout
+            android:layout_width="0dip"
+            android:layout_height="20dip"
+            android:orientation="horizontal"
+            android:layout_weight="50"
+            android:weightSum="100"
+            android:background="@drawable/roundrectangle">
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="0dip"
+                android:layout_weight="25"
+                android:text="Circulator:" />
+            <TextView
+                android:id="@+id/txtCirculatorName"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity=""
+                android:layout_weight="75"
+                android:text="Doe, John" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dip"
+            android:layout_height="20dip"
+            android:orientation="horizontal"
+            android:layout_weight="50"
+            android:weightSum="100"
+            android:background="@drawable/roundrectangle">
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="0dip"
+                android:layout_weight="25"
+                android:text="Anes:" />
+            <TextView
+                android:id="@+id/txtAnesName"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity=""
+                android:layout_weight="75"
+                android:text="Doe, John" />
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/pnlRoom"
-        android:layout_height="0dip"
+        android:layout_width="match_parent"
+        android:layout_height="20dip"
+        android:orientation="horizontal"
+        android:weightSum="100">
+        <LinearLayout
+            android:layout_width="0dip"
+            android:layout_height="20dip"
+            android:orientation="horizontal"
+            android:layout_weight="50"
+            android:weightSum="100"
+            android:background="@drawable/roundrectangle">
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="0dip"
+                android:layout_weight="25"
+                android:text="Scrub:" />
+            <TextView
+                android:id="@+id/txtScrubName"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity=""
+                android:layout_weight="75"
+                android:text="Doe, John" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dip"
+            android:layout_height="20dip"
+            android:orientation="horizontal"
+            android:layout_weight="50"
+            android:weightSum="100"
+            android:background="@drawable/roundrectangle">
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="0dip"
+                android:layout_weight="25"
+                android:text="Rep:" />
+            <TextView
+                android:id="@+id/txtRepName"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity=""
+                android:layout_weight="75"
+                android:text="Doe, John" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_weight="15">
+        android:layout_height="20dip"
+        android:orientation="horizontal"
+        android:weightSum="100"
+        android:layout_marginTop="10dip">
         <ImageView
-            android:layout_width="30dip"
-            android:layout_height="fill_parent"
-            android:src="@drawable/ic_hotel_black_18dp" />
+            android:layout_height="wrap_content"
+            android:layout_width="0dip"
+            android:layout_weight="25"
+            android:src="@drawable/ic_chat_grey_800_18dp"
+            android:scaleType="fitStart" />
         <TextView
-            android:id="@+id/txtRoom"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:gravity="center|left"
-            android:text="ROOM" />
+            android:layout_height="match_parent"
+            android:layout_width="0dip"
+            android:gravity="bottom|right"
+            android:layout_weight="70"
+            android:text="Group Message(s)" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:orientation="vertical"
         android:layout_margin="5dp"
-        android:layout_weight="25"
+        android:layout_weight="50"
         android:background="@drawable/roundrectangle">
         <TextView
             android:layout_height="wrap_content"

@@ -16,8 +16,16 @@ namespace OpFlow.AndroidApp.Fragments
 {
     public class CasePatientFragment : CaseDetailFragment
     {
+        public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+        {
+            AppSettings.CurrentScreen = AppSettings.FragmentEnum.Patient;
+            return base.OnCreateView(inflater, container, savedInstanceState);
+        }
+
         protected override async Task<List<CaseDetailToken>> GetDetailTokens()
         {
+            ToggleConfirm(true, "PATIENT");
+
             var caseDetailTokens = Enum.GetValues(typeof(PatientDemo.DemoTypeEnum))
                 .Cast<PatientDemo.DemoTypeEnum>()
                 .Select(value => new CaseDetailToken(Patient, value))

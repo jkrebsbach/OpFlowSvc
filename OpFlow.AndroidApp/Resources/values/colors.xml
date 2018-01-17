@@ -4,5 +4,5 @@
   <color name="opflow_white">#FFFFFF</color>
   <color name="opflow_lightgray">#DDDDDD</color>
   <color name="opflow_blue">#3498DB</color>
-  <color name="opflow_highlight">#FFFF00</color>
+  <color name="opflow_highlight">#FFA500</color>
 </resources>

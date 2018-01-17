@@ -26,6 +26,9 @@ namespace OpFlow.AndroidApp.Fragments
         private TextView _txtPatientSex;
         private TextView _txtProcedure;
 
+        private LinearLayout _pnlConfirmButton;
+        private TextView _txtConfirmText;
+
         private ExpandableListView _lvCaseDetails;
 
         private Patient _patient;
@@ -36,7 +39,6 @@ namespace OpFlow.AndroidApp.Fragments
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            AppSettings.CurrentScreen = AppSettings.FragmentEnum.CaseDetail;
             base.OnCreateView(inflater, container, savedInstanceState);
             
             // Make sure we aren't disposing app
@@ -55,7 +57,16 @@ namespace OpFlow.AndroidApp.Fragments
             _txtPatientSex = rootView.FindViewById<TextView>(Resource.Id.txtPatientSex);
             _txtProcedure = rootView.FindViewById<TextView>(Resource.Id.txtProcedure);
 
+            _pnlConfirmButton = rootView.FindViewById<LinearLayout>(Resource.Id.pnlConfirmButton);
+            _txtConfirmText = rootView.FindViewById<TextView>(Resource.Id.txtConfirmText);
+
             return rootView;
+        }
+
+        protected void ToggleConfirm(bool hidePanel, string confirmText)
+        {
+            _pnlConfirmButton.Visibility = (hidePanel ? ViewStates.Gone : ViewStates.Visible);
+            _txtConfirmText.Text = confirmText;
         }
 
         public override async void OnResume()
