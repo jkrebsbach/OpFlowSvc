@@ -16,19 +16,24 @@ using OpFlow.Mobile;
 
 namespace OpFlow.AndroidApp.Fragments
 {
-    public class CaseDetailFragment : OpFlowFragmentBase
+    public abstract class CaseDetailFragment : OpFlowFragmentBase
     {
-        private LinearLayout _pnlCaseDetail;
-        private TextView _txtSurgeon;
-        private TextView _txtCase;
-        private TextView _txtReferMD;
+        private TextView _txtProcedureStart;
+        private TextView _txtLocation;
         private TextView _txtPatientName;
         private TextView _txtPatientAge;
         private TextView _txtPatientBMI;
+        private TextView _txtPatientSex;
+        private TextView _txtProcedure;
 
         private ExpandableListView _lvCaseDetails;
 
-        
+        private Patient _patient;
+        private Surgery _surgery;
+
+        protected Patient Patient => _patient;
+        protected Surgery Surgery => _surgery;
+
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             AppSettings.CurrentScreen = AppSettings.FragmentEnum.CaseDetail;
@@ -40,16 +45,15 @@ namespace OpFlow.AndroidApp.Fragments
 
             var rootView = inflater.Inflate(Resource.Layout.CaseDetail, container, false);
 
-            _pnlCaseDetail = rootView.FindViewById<LinearLayout>(Resource.Id.pnlCaseDetail);
-
             _lvCaseDetails = rootView.FindViewById<ExpandableListView>(Resource.Id.lvCaseDetails);
 
-            _txtSurgeon = rootView.FindViewById<TextView>(Resource.Id.txtSurgeon);
-            _txtCase = rootView.FindViewById<TextView>(Resource.Id.txtCase);
-            _txtReferMD = rootView.FindViewById<TextView>(Resource.Id.txtReferMD);
             _txtPatientName = rootView.FindViewById<TextView>(Resource.Id.txtPatientName);
+            _txtProcedureStart = rootView.FindViewById<TextView>(Resource.Id.txtProcedureStart);
+            _txtLocation = rootView.FindViewById<TextView>(Resource.Id.txtLocation);
             _txtPatientAge = rootView.FindViewById<TextView>(Resource.Id.txtPatientAge);
             _txtPatientBMI = rootView.FindViewById<TextView>(Resource.Id.txtPatientBMI);
+            _txtPatientSex = rootView.FindViewById<TextView>(Resource.Id.txtPatientSex);
+            _txtProcedure = rootView.FindViewById<TextView>(Resource.Id.txtProcedure);
 
             return rootView;
         }
@@ -62,7 +66,7 @@ namespace OpFlow.AndroidApp.Fragments
             {
                 if (AppSettings.CurrentSurgery != null)
                 {
-                    await LoadCase(AppSettings.CurrentSurgery.SurgeryID);
+                    await LoadCase(AppSettings.CurrentSurgery.Value);
                 }
             }
             catch (Exception e)
@@ -72,51 +76,47 @@ namespace OpFlow.AndroidApp.Fragments
             }
         }
 
-        
+        protected abstract List<CaseDetailToken> GetDetailTokens();
+
         private async Task LoadCase(int surgeryId)
         {
-            var locationId = AppSettings.CurrentUser.LocationID;
-            var providerId = AppSettings.CurrentUser.ProviderID;
+            try
+            {
+                _surgery = null;
+                _patient = null;
 
-            var currentCase = await SurgeryUtil.GetSurgery(surgeryId, providerId, locationId);
-            
-            _pnlCaseDetail.Visibility = ViewStates.Visible;
+                var locationId = AppSettings.CurrentUser.LocationID;
+                var providerId = AppSettings.CurrentUser.ProviderID;
 
-            _txtSurgeon.Text = string.Format("{0}, {1}", currentCase.SurgeonLastName,
-                currentCase.SurgeonFirstName);
-            _txtCase.Text = currentCase.ProcedureDescription;
-            _txtReferMD.Text = currentCase.CardDescription;
+                _surgery = await SurgeryUtil.GetSurgery(surgeryId, providerId, locationId);
 
-            var patient = await PatientUtil.GetPatient(currentCase.PatientID);
+                if (_surgery != null)
+                {
+                    _txtProcedureStart.Text = string.Format(_surgery.ScheduleTime.ToString(@"hh\:mm"));
+                    _txtProcedure.Text = _surgery.ProcedureDescription;
 
-            _txtPatientName.Text = string.Format("{0} {1}", patient.FirstName, patient.LastName);
-            _txtPatientAge.Text = patient.BirthDate.CalculateAge().ToString();
-            _txtPatientBMI.Text = patient.BMI.ToString(CultureInfo.InvariantCulture);
+                    var room = await AppSettings.GetRoom(_surgery.LocationID, _surgery.RoomID);
+                    
+                    _txtLocation.Text = room?.RoomDescription ?? "Room not found";
 
+                    _patient = await PatientUtil.GetPatient(_surgery.PatientID);
 
-            var caseDetailTokens = Enum.GetValues(typeof(CaseDetailToken.CaseDetailEnum))
-                .Cast<CaseDetailToken.CaseDetailEnum>()
-                .Select(value => new CaseDetailToken(patient, value))
-                .ToList();
-
-            _lvCaseDetails.SetAdapter(new CaseDetailListAdapter(Activity, caseDetailTokens));
-
-            #region Patient Demo
-            var medicalHistory =
-                patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.MedicalHistory);
-            var riskFactors =
-                patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.RiskFactors);
-            var medications =
-                patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.Medications);
-            var allergies =
-                patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.Allergies);
-            var labResults =
-                patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.LabResults);
-            var pastProcedures =
-                patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.PastProcedureResult);
-
-            
-            #endregion
+                    if (_patient != null)
+                    {
+                        _txtPatientName.Text = string.Format("{0} {1}", _patient.FirstName, _patient.LastName);
+                        _txtPatientAge.Text = _patient.BirthDate.CalculateAge().ToString();
+                        _txtPatientSex.Text = _patient.Sex.ToString(CultureInfo.InvariantCulture);
+                        _txtPatientBMI.Text = _patient.BMI.ToString(CultureInfo.InvariantCulture);
+                        
+                        _lvCaseDetails.SetAdapter(new CaseDetailListAdapter(Activity, GetDetailTokens()));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

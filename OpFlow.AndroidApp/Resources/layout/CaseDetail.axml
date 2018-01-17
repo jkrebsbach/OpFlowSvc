@@ -2,85 +2,68 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="100">
+    android:layout_height="match_parent">
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="15"
-        android:weightSum="100">
-        <TextView
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="40"
-            android:id="@+id/txtPatientName" />
-        <TextView
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="15"
-            android:id="@+id/txtPatientAge" />
-        <TextView
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="15"
-            android:id="@+id/txtPatientBMI" />
-        <Button
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:text="Search"
-            android:layout_weight="30"
-            android:id="@+id/btnSearch" />
-    </LinearLayout>
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="0dip"
-        android:layout_weight="85">
+        android:layout_height="30dip"
+        android:weightSum="100"
+        android:background="@color/opflow_lightgray">
         <LinearLayout
-            android:id="@+id/pnlCaseDetail"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:weightSum="100">
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="33"
-                    android:id="@+id/txtSurgeon" />
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="33"
-                    android:id="@+id/txtCase" />
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="33"
-                    android:id="@+id/txtReferMD" />
-            </LinearLayout>
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dip"
-                android:background="#FF00FF00" />
-            <ExpandableListView
-                android:id="@+id/lvCaseDetails"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-              android:layout_weight="1" />
-            
-           
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dip"
-                android:background="#FF00FF00" />
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="15dip">
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:text="See Recent Case Notes" />
+                android:layout_weight="40"
+                android:text="Smith, John"
+                android:id="@+id/txtPatientName" />
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="40"
+                android:text="7:30 AM"
+                android:id="@+id/txtProcedureStart" />
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="40"
+                android:text="OR 3"
+                android:id="@+id/txtLocation" />
         </LinearLayout>
-    </ScrollView>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="15dip">
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="15"
+                android:text="45"
+                android:id="@+id/txtPatientAge" />
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="15"
+                android:text="M"
+                android:id="@+id/txtPatientSex" />
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="15"
+                android:text="20"
+                android:id="@+id/txtPatientBMI" />
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="15"
+                android:text="ARTERIOGRAM"
+                android:id="@+id/txtProcedure" />
+        </LinearLayout>
+    </LinearLayout>
+    <ExpandableListView
+        android:id="@+id/lvCaseDetails"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent" />
 </LinearLayout>

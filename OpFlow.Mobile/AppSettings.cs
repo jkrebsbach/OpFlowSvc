@@ -25,11 +25,8 @@ namespace OpFlow.Mobile
             Room = 7
         }
 
-        public static Surgery CurrentSurgery { get; private set; }
-        public static Patient CurrentPatient { get; private set; }
-        public static Card CurrentCard { get; private set; }
-        public static Flow CurrentFlow { get; private set; }
-        public static Room CurrentRoom { get; private set; }
+        public static int? CurrentSurgery { get; private set; }
+        public static int? CurrentPatient { get; private set; }
 
         public static FragmentEnum CurrentScreen;
 
@@ -62,25 +59,8 @@ namespace OpFlow.Mobile
 
         public static async Task LoadSurgery(Surgery surgery, Patient patient)
         {
-            CurrentSurgery = surgery;
-            CurrentPatient = patient;
-
-            var cards = await CardUtil.GetCardData(surgery.CardID ?? 0);
-
-            CurrentCard = cards.FirstOrDefault();
-
-            var flow = await FlowUtil.GetFlow(surgery.FlowID, surgery.CardID ?? 0);
-            if (flow == null)
-                flow = new Flow()
-                {
-                    FlowID = -1,
-                    Description = "NO FLOW DEFINED FOR CARD"
-                };
-
-            CurrentFlow = flow;
-
-            var rooms = await RoomList(surgery.LocationID);
-            CurrentRoom = rooms.FirstOrDefault(r => r.RoomID == surgery.RoomID);
+            CurrentSurgery = surgery.SurgeryID;
+            CurrentPatient = patient.PatientID;
         }
 
         private static AuthToken _authToken;
@@ -104,6 +84,13 @@ namespace OpFlow.Mobile
             }
 
             return _roomDictionary[locationId];
+        }
+
+        public static async Task<Room> GetRoom(int locationId, int roomId)
+        {
+            var rooms = await RoomList(locationId);
+
+            return rooms.FirstOrDefault(r => r.RoomID == roomId);
         }
     }
 }

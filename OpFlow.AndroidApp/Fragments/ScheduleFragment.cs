@@ -87,18 +87,18 @@ namespace OpFlow.AndroidApp.Fragments
             if (_schedule == null)
                 return;
 
-            var schedule = _schedule[eventArgs.Position];
+            var surgery = _schedule[eventArgs.Position];
 
             _previousFilter = null;
 
             _progressDialog.SetTitle("Loading Surgery...");
             _progressDialog.Show();
             
-            await AppSettings.LoadSurgery(schedule, _schedulePatients[schedule.SurgeryID]);
+            await AppSettings.LoadSurgery(surgery, _schedulePatients[surgery.SurgeryID]);
 
             _progressDialog.Hide();
 
-            Listener.SendMessage(AppSettings.FragmentEnum.Schedule, schedule);
+            Listener.SendMessage(AppSettings.FragmentEnum.Schedule, surgery);
         }
 
         protected override async Task SelectDate()

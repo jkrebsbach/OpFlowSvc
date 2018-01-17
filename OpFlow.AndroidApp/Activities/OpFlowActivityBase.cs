@@ -71,11 +71,26 @@ namespace OpFlow.AndroidApp.Activities
             Fragment newFragment = null;
             if (fragment == AppSettings.FragmentEnum.FutureCases)
             {
-                newFragment = new CaseDetailFragment();
+                newFragment = new CaseDebriefFragment();
             }
             else if (fragment == AppSettings.FragmentEnum.Schedule)
             {
-                newFragment = new CaseNavigateFragment();
+                var surgery = (Surgery) payload;
+
+                if (AppSettings.CurrentUser.RoleID != RoleEnum.Surgeon)
+                {
+                    // Send user to "review" screen
+                    newFragment = new CaseReviewFragment();
+                }
+                else if (surgery.SurgeryStatus == "O")
+                {
+                    // Surgeon should debrief an open surgery
+                    newFragment = new CaseDebriefFragment();
+                }
+                else
+                {
+                    newFragment = new CaseNavigateFragment();
+                }
             }
             else if (fragment == AppSettings.FragmentEnum.CaseNavigate)
             {
@@ -84,7 +99,7 @@ namespace OpFlow.AndroidApp.Activities
                 if (targetScene == AppSettings.FragmentEnum.CheckIn)
                     newFragment = new CheckInFragment();
                 if (targetScene == AppSettings.FragmentEnum.CaseDetail)
-                    newFragment = new CaseDetailFragment();
+                    newFragment = new CaseDebriefFragment();
                 if (targetScene == AppSettings.FragmentEnum.Flow)
                     newFragment = new FlowFragment();
                 if (targetScene == AppSettings.FragmentEnum.Room)

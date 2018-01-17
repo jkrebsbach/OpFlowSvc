@@ -83,7 +83,7 @@ namespace OpFlow.AndroidApp.Activities
             Fragment newFragment = null;
             if (item.ItemId == Resource.Id.menu_search)
             {
-                newFragment = new CaseDetailFragment();
+                newFragment = new CaseDebriefFragment();
             }
             else if (item.ItemId == Resource.Id.menu_schedule)
             {

@@ -57,10 +57,17 @@ namespace OpFlow.AndroidApp.Adapters
             var txtPatientAge = gridView.FindViewById<TextView>(Resource.Id.txtPatientAge);
             var txtPatientSex = gridView.FindViewById<TextView>(Resource.Id.txtPatientSex);
             var txtProcedure = gridView.FindViewById<TextView>(Resource.Id.txtProcedure);
+            var txtFlowStep = gridView.FindViewById<TextView>(Resource.Id.txtFlowStep);
             var ivPrefCard = gridView.FindViewById<ImageView>(Resource.Id.ivPrefCard);
             var ivAlerts = gridView.FindViewById<ImageView>(Resource.Id.ivAlerts);
             var ivDelays = gridView.FindViewById<ImageView>(Resource.Id.ivDelays);
             var txtDelayAmt = gridView.FindViewById<TextView>(Resource.Id.txtDelayAmt);
+            
+            var pnlScheduledCase = gridView.FindViewById<LinearLayout>(Resource.Id.pnlScheduledCase);
+            var pnlOpenCase = gridView.FindViewById<LinearLayout>(Resource.Id.pnlOpenCase);
+
+            pnlScheduledCase.Visibility = (surgery.SurgeryStatus == "A" ? ViewStates.Visible : ViewStates.Gone);
+            pnlOpenCase.Visibility = (surgery.SurgeryStatus == "O" ? ViewStates.Visible : ViewStates.Gone);
 
             // If there is an estimated delay, highlight the event
             if (surgery.EstDelayMinutes > 0)
@@ -68,12 +75,14 @@ namespace OpFlow.AndroidApp.Adapters
                 pnlLayout.SetBackgroundResource(Resource.Drawable.HighlightedRoundRectangle);
             }
 
-            txtPatientName.Text = string.Format("{0} {1}", patient?.LastName, patient?.FirstName);
+            txtPatientName.Text = $"{patient?.LastName} {patient?.FirstName}";
             txtTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
             txtLocation.Text = surgery.RoomDescription;
-            txtPatientAge.Text = "Age: " + patient?.BirthDate.CalculateAge();
-            txtPatientSex.Text = "Sex: " + patient?.Sex;
+            txtPatientAge.Text = patient?.BirthDate.CalculateAge().ToString();
+            txtPatientSex.Text = patient?.Sex;
             txtProcedure.Text = surgery.ProcedureDescription;
+
+            txtFlowStep.Text = string.Format("Flow Step: {0}", surgery.FlowStepDescription);
 
             ivPrefCard.SetImageDrawable(_context.GetDrawable(Resource.Drawable.DarkGreenCheckMark));
             ivAlerts.SetImageDrawable(_context.GetDrawable(Resource.Drawable.DarkGreenCheckMark));

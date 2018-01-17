@@ -17,8 +17,10 @@
     <item name="android:textSize">12sp</item>
     <item name="android:textColor">@color/opflow_white</item>
   </style>
-  <style name="CalendarTextview" parent="android:Theme.Material.Light">
+  <style name="TextView.Header" parent="android:Widget.TextView">
     <item name="android:textSize">15sp</item>
     <item name="android:layout_gravity">center</item>
+  </style>
+  <style name="TextView.Calendar" parent="@style/TextView.Header" >
   </style>
 </resources>

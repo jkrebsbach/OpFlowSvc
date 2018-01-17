@@ -89,8 +89,11 @@
     <Compile Include="Adapters\CaseDetailListAdapter.cs" />
     <Compile Include="Adapters\CheckInOverviewAdapter.cs" />
     <Compile Include="Adapters\SpinnerAdapter.cs" />
+    <Compile Include="Fragments\CaseDebriefFragment.cs" />
     <Compile Include="Fragments\CaseDetailFragment.cs" />
     <Compile Include="Fragments\CaseNavigateFragment.cs" />
+    <Compile Include="Fragments\CasePatientFragment.cs" />
+    <Compile Include="Fragments\CaseReviewFragment.cs" />
     <Compile Include="Fragments\CheckInFragment.cs" />
     <Compile Include="Fragments\FlowFragment.cs" />
     <Compile Include="Fragments\FutureCaseFragment.cs" />

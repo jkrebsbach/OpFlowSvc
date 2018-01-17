@@ -9,6 +9,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using OpFlow.Data;
 using OpFlow.Mobile;
 
 namespace OpFlow.AndroidApp.Fragments
@@ -16,6 +17,12 @@ namespace OpFlow.AndroidApp.Fragments
     public class CaseNavigateFragment : OpFlowFragmentBase
     {
         private string _circulatorName = "Roper, CRNA";
+
+        private Patient _patient;
+        private Surgery _surgery;
+        private Flow _flow;
+        private Card _card;
+        private Room _room;
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
@@ -71,21 +78,48 @@ namespace OpFlow.AndroidApp.Fragments
             return rootView;
         }
 
+        public override async void OnResume()
+        {
+            try
+            {
+                if (_patient == null || _surgery == null)
+                {
+                    _surgery = await SurgeryUtil.GetSurgery(
+                        AppSettings.CurrentSurgery ?? -1, 
+                        AppSettings.CurrentUser.ProviderID,
+                        AppSettings.CurrentUser.LocationID);
+                    _patient = await PatientUtil.GetPatient(_surgery.PatientID);
+
+                    _flow = await FlowUtil.GetFlow(_surgery.FlowID, _surgery.CardID);
+                    _card = (await CardUtil.GetCardData(_surgery.CardID)).FirstOrDefault();
+
+                    _room = await AppSettings.GetRoom(_surgery.LocationID, _surgery.RoomID);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            base.OnResume();
+        }
+
         private string CheckInText => string.Format("{0}\nSurgeon: {1}\nCirc: {2}",
-            AppSettings.CurrentPatient.LastName,
-            AppSettings.CurrentSurgery.SurgeonLastName,
+            _patient.LastName,
+            _surgery.SurgeonLastName,
             _circulatorName);
 
         private string CaseText => "Surgeon notes about the case";
 
         private string CardText => string.Format("{0} - Card: {1}", 
-            AppSettings.CurrentCard.CardDescription,
-            AppSettings.CurrentSurgery.CardID);
+            _card.CardDescription,
+            _surgery.CardID);
 
         private string FlowText => string.Format("{0} - Flow: {1}",
-            AppSettings.CurrentFlow.Description,
-            AppSettings.CurrentSurgery.FlowID);
+            _flow.Description,
+            _surgery.FlowID);
 
-        private string RoomText => string.Format("Room ID: {0}", AppSettings.CurrentRoom.RoomDescription);
+        private string RoomText => string.Format("Room ID: {0}", _room.RoomDescription);
     }
 }

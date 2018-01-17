@@ -36,17 +36,77 @@
             android:id="@+id/txtPatientAge"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_weight="30" />
+            android:layout_weight="20" />
         <TextView
             android:id="@+id/txtPatientSex"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_weight="30" />
-        <TextView
-            android:id="@+id/txtProcedure"
+            android:layout_weight="15" />
+        <LinearLayout
+            android:id="@+id/pnlScheduledCase"
             android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="30" />
+            android:layout_height="fill_parent"
+            android:layout_weight="65"
+            android:weightSum="100"
+            android:orientation="horizontal">
+            <TextView
+                android:text="Pref Card:"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="20" />
+            <ImageView
+                android:id="@+id/ivPrefCard"
+                android:layout_width="0dip"
+                android:layout_height="10dip"
+                android:layout_weight="10" />
+            <TextView
+                android:text="Alerts:"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="20" />
+            <ImageView
+                android:id="@+id/ivAlerts"
+                android:layout_width="0dip"
+                android:layout_height="10dip"
+                android:layout_weight="10" />
+            <TextView
+                android:text="Delays:"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="20" />
+            <ImageView
+                android:id="@+id/ivDelays"
+                android:layout_width="0dip"
+                android:layout_height="10dip"
+                android:layout_weight="10" />
+            <TextView
+                android:id="@+id/txtDelayAmt"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="10" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/pnlOpenCase"
+            android:visibility="gone"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="65"
+            android:weightSum="100"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/txtFlowStep"
+                android:layout_width="0dip"
+                android:layout_height="10dip"
+                android:layout_weight="80"
+                android:text="Flow Step:" />
+            <TextView
+                android:id="@+id/btnDebrief"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="20"
+                android:text="DEBRIEF"
+                android:background="@color/opflow_highlight" />
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,39 +114,9 @@
         android:orientation="horizontal"
         android:weightSum="100">
         <TextView
-            android:text="Pref Card:"
+            android:id="@+id/txtProcedure"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_weight="20" />
-        <ImageView
-            android:id="@+id/ivPrefCard"
-            android:layout_width="0dip"
-            android:layout_height="10dip"
-            android:layout_weight="10" />
-        <TextView
-            android:text="Alerts:"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="20" />
-        <ImageView
-            android:id="@+id/ivAlerts"
-            android:layout_width="0dip"
-            android:layout_height="10dip"
-            android:layout_weight="10" />
-        <TextView
-            android:text="Delays:"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="20" />
-        <ImageView
-            android:id="@+id/ivDelays"
-            android:layout_width="0dip"
-            android:layout_height="10dip"
-            android:layout_weight="10" />
-        <TextView
-            android:id="@+id/txtDelayAmt"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="10" />
+            android:layout_weight="30" />
     </LinearLayout>
 </LinearLayout>

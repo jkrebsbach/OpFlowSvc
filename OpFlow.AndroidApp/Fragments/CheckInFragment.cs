@@ -90,7 +90,7 @@ namespace OpFlow.AndroidApp.Fragments
         private async Task CheckInUser()
         {
             var user = AppSettings.CurrentUser;
-            var surgeryId = AppSettings.CurrentSurgery.SurgeryID;
+            var surgeryId = AppSettings.CurrentSurgery ?? 0;
 
             await UserUtil.CheckinUser(user, surgeryId);
         }
@@ -99,7 +99,7 @@ namespace OpFlow.AndroidApp.Fragments
         {
             var locationId = AppSettings.CurrentUser.LocationID;
             var providerId = AppSettings.CurrentUser.ProviderID;
-            var surgeryId = AppSettings.CurrentSurgery.SurgeryID;
+            var surgeryId = AppSettings.CurrentSurgery ?? 0;
 
             var currentSurgery = await SurgeryUtil.GetSurgery(
                 surgeryId, locationId, providerId);
@@ -108,7 +108,7 @@ namespace OpFlow.AndroidApp.Fragments
             if (currentSurgery?.CardID == null)
                 return;
 
-            var cardUsers = await SurgeryUtil.GetCardUsers(currentSurgery.CardID.Value, providerId, locationId);
+            var cardUsers = await SurgeryUtil.GetCardUsers(currentSurgery.CardID, providerId, locationId);
 
             var rooms = await AppSettings.RoomList(currentSurgery.LocationID);
 
