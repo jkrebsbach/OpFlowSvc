@@ -30,7 +30,7 @@ namespace OpFlow.AndroidApp.Adapters
 
         public override long GetChildId(int groupPosition, int childPosition)
         {
-            return (long)_caseDetailTokens[groupPosition].CaseDetail;
+            return _caseDetailTokens[groupPosition].DetailId;
         }
 
         public override int GetChildrenCount(int groupPosition)
@@ -49,7 +49,8 @@ namespace OpFlow.AndroidApp.Adapters
 
             txtItemText.Text = currGroup.DetailText;
 
-            var showPnlPastProcedure = currGroup.CaseDetail == CaseDetailToken.CaseDetailEnum.PastProcedureResults;
+            //var showPnlPastProcedure = currGroup.CaseDetail == CaseDetailToken.CaseDetailEnum.PastProcedureResults;
+            var showPnlPastProcedure = false;
                 
             txtItemText.Visibility = !showPnlPastProcedure ? ViewStates.Visible : ViewStates.Gone;
             pnlScheduledProceduresHeaders.Visibility = showPnlPastProcedure ? ViewStates.Visible : ViewStates.Gone;
@@ -65,7 +66,7 @@ namespace OpFlow.AndroidApp.Adapters
 
         public override long GetGroupId(int groupPosition)
         {
-            return (long)_caseDetailTokens[groupPosition].CaseDetail;
+            return _caseDetailTokens[groupPosition].CategoryGroupId;
         }
 
         public override View GetGroupView(int groupPosition, bool isExpanded, View convertView, ViewGroup parent)
@@ -74,7 +75,7 @@ namespace OpFlow.AndroidApp.Adapters
 
             var token = _caseDetailTokens[groupPosition];
 
-            header.FindViewById<TextView>(Resource.Id.DataHeader).Text = token.CaseDetail.ToString();
+            header.FindViewById<TextView>(Resource.Id.DataHeader).Text = token.CategoryTitle;
 
             return header;
         }

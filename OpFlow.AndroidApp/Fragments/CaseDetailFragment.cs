@@ -76,7 +76,7 @@ namespace OpFlow.AndroidApp.Fragments
             }
         }
 
-        protected abstract List<CaseDetailToken> GetDetailTokens();
+        protected abstract Task<List<CaseDetailToken>> GetDetailTokens();
 
         private async Task LoadCase(int surgeryId)
         {
@@ -108,7 +108,7 @@ namespace OpFlow.AndroidApp.Fragments
                         _txtPatientSex.Text = _patient.Sex.ToString(CultureInfo.InvariantCulture);
                         _txtPatientBMI.Text = _patient.BMI.ToString(CultureInfo.InvariantCulture);
                         
-                        _lvCaseDetails.SetAdapter(new CaseDetailListAdapter(Activity, GetDetailTokens()));
+                        _lvCaseDetails.SetAdapter(new CaseDetailListAdapter(Activity, await GetDetailTokens()));
                     }
                 }
             }

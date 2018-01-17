@@ -26,6 +26,17 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetFlowInstructions")]
+        [Route("api/flow/instructions")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowStep>))]
+        public HttpResponseMessage GetFlowInstructions(int flowId, int providerId, int locationId)
+        {
+            var result = DataAccess.SqlHelper.GetFlowInstructions(flowId, providerId, locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetFlowTimings")]
         [Route("api/flow/timings")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowStep>))]

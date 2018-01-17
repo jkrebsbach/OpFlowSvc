@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:weightSum="100">
     <LinearLayout
-      android:id="@+id/pnlCheckIn"
+        android:id="@+id/pnlCheckIn"
         android:layout_height="0dip"
         android:layout_width="fill_parent"
         android:layout_weight="15">
@@ -21,7 +21,7 @@
             android:text="CHECK IN" />
     </LinearLayout>
     <LinearLayout
-      android:id="@+id/pnlCase"
+        android:id="@+id/pnlCase"
         android:layout_height="0dip"
         android:layout_width="fill_parent"
         android:layout_weight="15">
@@ -37,7 +37,7 @@
             android:text="CASE" />
     </LinearLayout>
     <LinearLayout
-      android:id="@+id/pnlCard"
+        android:id="@+id/pnlCard"
         android:layout_height="0dip"
         android:layout_width="fill_parent"
         android:layout_weight="15">
@@ -54,7 +54,7 @@
             android:layout_weight="15" />
     </LinearLayout>
     <LinearLayout
-      android:id="@+id/pnlFlow"
+        android:id="@+id/pnlFlow"
         android:layout_height="0dip"
         android:layout_width="fill_parent"
         android:layout_weight="15">
@@ -70,7 +70,7 @@
             android:text="FLOW" />
     </LinearLayout>
     <LinearLayout
-      android:id="@+id/pnlRoom"
+        android:id="@+id/pnlRoom"
         android:layout_height="0dip"
         android:layout_width="fill_parent"
         android:layout_weight="15">

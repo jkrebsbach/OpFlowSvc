@@ -9,15 +9,17 @@ namespace OpFlow.Mobile
 {
     public abstract class FlowUtil
     {
-        public static async Task<List<Flow>> GetFlowData(int cardId)
+        public static async Task<List<FlowStep>> GetFlowInstructions(int flowId)
         {
-            var userId = AppSettings.CurrentUser.UserID;
+            var providerId = AppSettings.CurrentUser.ProviderID;
+            var locationId = AppSettings.CurrentUser.LocationID;
 
-            var command = string.Format("api/flow?cardId={0}&userId={1}", cardId, userId);
-            var response = await WebUtility.WebRequest<List<Flow>>(command, HttpMethod.Get);
+            var command = string.Format("api/flow/instructions?flowId={0}&providerId={1}&locationId={2}", flowId, providerId, locationId);
+            var response = await WebUtility.WebRequest<List<FlowStep>>(command, HttpMethod.Get);
 
             return response;
         }
+
         public static async Task<Flow> GetFlow(int flowId, int cardId)
         {
             var providerId = AppSettings.CurrentUser.ProviderID;
@@ -25,7 +27,11 @@ namespace OpFlow.Mobile
 
             var command = string.Format("api/flow?flowId={0}&cardId={1}&providerId={2}&locationId={3}", 
                 flowId, cardId, providerId, locationId);
-            var response = await WebUtility.WebRequest<Flow>(command, HttpMethod.Get);
+            var response = await WebUtility.WebRequest<Flow>(command, HttpMethod.Get) ?? new Flow()
+            {
+                FlowID = -1,
+                Description = "NO FLOW DEFINED"
+            };
 
             return response;
         }

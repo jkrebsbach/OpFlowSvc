@@ -461,6 +461,23 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static List<FlowStep> GetFlowInstructions(int flowId, int providerId, int locationId)
+        {
+            var parameters = new[]
+                {
+                    new SqlParameter("flow_id", flowId),
+                    new SqlParameter("provider_id", providerId),
+                    new SqlParameter("location_id", locationId)
+                };
+
+
+            var dsSchedules = ExecuteCommand("GetFlowInstructions", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<FlowStep>();
+
+            return result;
+        }
+
         public static List<FlowStep> GetFlowComments(int flowId, int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]

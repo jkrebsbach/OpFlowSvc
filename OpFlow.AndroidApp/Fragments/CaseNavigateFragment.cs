@@ -24,6 +24,12 @@ namespace OpFlow.AndroidApp.Fragments
         private Card _card;
         private Room _room;
 
+        private TextView _txtCheckIn;
+        private TextView _txtCase;
+        private TextView _txtCard;
+        private TextView _txtFlow;
+        private TextView _txtRoom;
+
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             AppSettings.CurrentScreen = AppSettings.FragmentEnum.CaseNavigate;
@@ -63,23 +69,19 @@ namespace OpFlow.AndroidApp.Fragments
             };
 
 
-            var txtCheckIn = rootView.FindViewById<TextView>(Resource.Id.txtCheckIn);
-            var txtCase = rootView.FindViewById<TextView>(Resource.Id.txtCase);
-            var txtCard = rootView.FindViewById<TextView>(Resource.Id.txtCard);
-            var txtFlow = rootView.FindViewById<TextView>(Resource.Id.txtFlow);
-            var txtRoom = rootView.FindViewById<TextView>(Resource.Id.txtRoom);
-
-            txtCheckIn.Text = CheckInText;
-            txtCase.Text = CaseText;
-            txtCard.Text = CardText;
-            txtFlow.Text = FlowText;
-            txtRoom.Text = RoomText;
+            _txtCheckIn = rootView.FindViewById<TextView>(Resource.Id.txtCheckIn);
+            _txtCase = rootView.FindViewById<TextView>(Resource.Id.txtCase);
+            _txtCard = rootView.FindViewById<TextView>(Resource.Id.txtCard);
+            _txtFlow = rootView.FindViewById<TextView>(Resource.Id.txtFlow);
+            _txtRoom = rootView.FindViewById<TextView>(Resource.Id.txtRoom);
 
             return rootView;
         }
 
         public override async void OnResume()
         {
+            base.OnResume();
+
             try
             {
                 if (_patient == null || _surgery == null)
@@ -94,6 +96,12 @@ namespace OpFlow.AndroidApp.Fragments
                     _card = (await CardUtil.GetCardData(_surgery.CardID)).FirstOrDefault();
 
                     _room = await AppSettings.GetRoom(_surgery.LocationID, _surgery.RoomID);
+
+                    _txtCheckIn.Text = CheckInText;
+                    _txtCase.Text = CaseText;
+                    _txtCard.Text = CardText;
+                    _txtFlow.Text = FlowText;
+                    _txtRoom.Text = RoomText;
                 }
             }
             catch (Exception e)
@@ -101,8 +109,6 @@ namespace OpFlow.AndroidApp.Fragments
                 Console.WriteLine(e);
                 throw;
             }
-
-            base.OnResume();
         }
 
         private string CheckInText => string.Format("{0}\nSurgeon: {1}\nCirc: {2}",

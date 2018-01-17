@@ -8,49 +8,51 @@ namespace OpFlow.Mobile
 {
     public class CaseDetailToken
     {
-        public CaseDetailEnum CaseDetail;
+        public string CategoryTitle;
+        public int CategoryGroupId;
         public string DetailText;
+        public int DetailId;
         
-        public enum CaseDetailEnum
+        public CaseDetailToken(Patient patient, PatientDemo.DemoTypeEnum patientDemoDetail)
         {
-            MedicalHistory,
-            RiskFactors,
-            Medications,
-            Allergies,
-            LabResults,
-            PastProcedureResults,
-            ScheduledProcedures
-        }
-
-        public CaseDetailToken(Patient patient, CaseDetailEnum caseDetail)
-        {
-            CaseDetail = caseDetail;
+            CategoryTitle = patientDemoDetail.ToString();
             PatientDemo demoDetail = null;
 
-            switch (caseDetail)
+            switch (patientDemoDetail)
             {
-                case CaseDetailEnum.MedicalHistory:
+                case PatientDemo.DemoTypeEnum.MedicalHistory:
                     demoDetail = patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.MedicalHistory);
                     break;
-                case CaseDetailEnum.RiskFactors:
+                case PatientDemo.DemoTypeEnum.RiskFactors:
                     demoDetail = patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.RiskFactors);
                     break;
-                case CaseDetailEnum.Medications:
+                case PatientDemo.DemoTypeEnum.Medications:
                     demoDetail = patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.Medications);
                     break;
-                case CaseDetailEnum.Allergies:
+                case PatientDemo.DemoTypeEnum.Allergies:
                     demoDetail = patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.Allergies);
                     break;
-                case CaseDetailEnum.LabResults:
+                case PatientDemo.DemoTypeEnum.LabResults:
                     demoDetail = patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.LabResults);
                     break;
-                case CaseDetailEnum.PastProcedureResults:
+                case PatientDemo.DemoTypeEnum.PastProcedureResult:
                     demoDetail = patient.DemoData.FirstOrDefault(pd =>
                             pd.DemoType == PatientDemo.DemoTypeEnum.PastProcedureResult);
                     break;
             }
 
+            CategoryGroupId = (int) patientDemoDetail;
+            DetailId = CategoryGroupId;
             DetailText = demoDetail?.DemoDescription ?? "";
+        }
+
+        public CaseDetailToken(FlowStep flowStep)
+        {
+            CategoryTitle = flowStep.StepDescription;
+            DetailText = flowStep.StepInstruction;
+
+            CategoryGroupId = flowStep.StepID;
+            DetailId = flowStep.StepID;
         }
     }
 }

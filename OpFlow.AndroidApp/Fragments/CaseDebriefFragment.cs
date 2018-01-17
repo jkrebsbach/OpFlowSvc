@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -15,11 +15,13 @@ namespace OpFlow.AndroidApp.Fragments
 {
     public class CaseDebriefFragment : CaseDetailFragment
     {
-        protected override List<CaseDetailToken> GetDetailTokens()
+        protected override async Task<List<CaseDetailToken>> GetDetailTokens()
         {
-            var caseDetailTokens = Enum.GetValues(typeof(CaseDetailToken.CaseDetailEnum))
-                .Cast<CaseDetailToken.CaseDetailEnum>()
-                .Select(value => new CaseDetailToken(Patient, value))
+            var flowSteps = await FlowUtil.GetFlowInstructions(Surgery.FlowID);
+
+            var caseDetailTokens = flowSteps
+                .OrderBy(fs => fs.StepID)
+                .Select(value => new CaseDetailToken(value))
                 .ToList();
 
             return caseDetailTokens;
