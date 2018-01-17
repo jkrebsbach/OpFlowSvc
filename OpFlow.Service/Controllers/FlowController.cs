@@ -15,15 +15,14 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("Get")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Flow))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
         public HttpResponseMessage GetFlow(int flowId, int cardId, int providerId, int locationId)
         {
             var flow = DataAccess.SqlHelper.GetFlow(flowId, cardId, providerId, locationId);
 
-            var result = new List<Flow>();
-            if (flow != null)
-                result.Add(flow);
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            return flow == null ? 
+                Request.CreateResponse(HttpStatusCode.NotFound) : 
+                Request.CreateResponse(HttpStatusCode.OK, flow);
         }
 
         // GET api/values/5

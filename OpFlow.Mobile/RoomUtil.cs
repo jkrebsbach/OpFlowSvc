@@ -7,7 +7,7 @@ using OpFlow.Data;
 
 namespace OpFlow.Mobile
 {
-    public class RoomUtil
+    public abstract class RoomUtil
     {
         public static async Task<List<Room>> GetRooms(int locationId)
         {

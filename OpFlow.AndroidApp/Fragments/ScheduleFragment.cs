@@ -25,6 +25,8 @@ namespace OpFlow.AndroidApp.Fragments
         private List<Surgery> _schedule;
         private Dictionary<int, Patient> _schedulePatients;
 
+        private ProgressDialog _progressDialog;
+
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             AppSettings.CurrentScreen = AppSettings.FragmentEnum.Schedule;
@@ -44,7 +46,10 @@ namespace OpFlow.AndroidApp.Fragments
                 await LoadSchedule();
             };
 
-            _gvDailySchedule.ItemClick += CardItemClicked;
+            _gvDailySchedule.ItemClick += async delegate(object sender, AdapterView.ItemClickEventArgs eventArgs)
+            {
+                await CardItemClicked(sender, eventArgs);
+            };
 
             _swtSurgeon.CheckedChange += async delegate(object sender, CompoundButton.CheckedChangeEventArgs e)
             {
@@ -52,6 +57,10 @@ namespace OpFlow.AndroidApp.Fragments
 
                 await LoadSchedule();
             };
+
+            _progressDialog = new ProgressDialog(Context);
+            _progressDialog.SetMessage("Please wait...");
+
 
             InitializePicker(rootView);
 
@@ -73,7 +82,7 @@ namespace OpFlow.AndroidApp.Fragments
             }
         }
 
-        private void CardItemClicked(object sender, AdapterView.ItemClickEventArgs eventArgs)
+        private async Task CardItemClicked(object sender, AdapterView.ItemClickEventArgs eventArgs)
         {
             if (_schedule == null)
                 return;
@@ -82,8 +91,12 @@ namespace OpFlow.AndroidApp.Fragments
 
             _previousFilter = null;
 
-            AppSettings.CurrentSurgery = schedule;
-            AppSettings.CurrentPatient = _schedulePatients[schedule.SurgeryID];
+            _progressDialog.SetTitle("Loading Surgery...");
+            _progressDialog.Show();
+            
+            await AppSettings.LoadSurgery(schedule, _schedulePatients[schedule.SurgeryID]);
+
+            _progressDialog.Hide();
 
             Listener.SendMessage(AppSettings.FragmentEnum.Schedule, schedule);
         }
@@ -118,6 +131,9 @@ namespace OpFlow.AndroidApp.Fragments
 
         private async Task LoadSchedule()
         {
+            _progressDialog.SetTitle("Searching...");
+            _progressDialog.Show();
+
             if (_swtSurgeon.Checked)
             {
                 if (_previousFilter != null && _previousFilter.SurgeonOnly)
@@ -141,6 +157,8 @@ namespace OpFlow.AndroidApp.Fragments
             }
 
             _schedulePatients = await SurgeryUtil.GetSurgeryPatients(_schedule);
+
+            _progressDialog.Hide();
 
             _gvDailySchedule.Adapter = new Adapters.ScheduleGridAdapter(Activity, _schedule, _schedulePatients);
 

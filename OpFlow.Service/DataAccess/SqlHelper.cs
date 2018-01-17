@@ -313,7 +313,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Surgery> GetSurgeries(int userID, int providerId, int locationId)
+        public static List<Surgery> GetScheduledSurgeries(int userID, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -321,7 +321,22 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetSurgeonCases", parameters);
+            var dsSchedules = ExecuteCommand("GetUserScheduledCases", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Surgery>();
+
+            return result;
+        }
+
+        public static List<Surgery> GetOpenSurgeries(int userID, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("user_id", userID),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetOpenSurgeriesByUser", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Surgery>();
 

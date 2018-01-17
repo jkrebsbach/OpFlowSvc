@@ -32,7 +32,10 @@ namespace OpFlow.AndroidApp.Fragments
             var rootView = inflater.Inflate(Resource.Layout.FutureCase, container, false);
 
             _lvFutureCases = rootView.FindViewById<ListView>(Resource.Id.lvFutureCases);
-            _lvFutureCases.ItemClick += FutureCaseClicked;
+            _lvFutureCases.ItemClick += async delegate(object sender, AdapterView.ItemClickEventArgs eventArgs)
+            {
+                await FutureCaseClicked(sender, eventArgs);
+            };
 
             return rootView;
         }
@@ -52,15 +55,15 @@ namespace OpFlow.AndroidApp.Fragments
             _lvFutureCases.Adapter = new Adapters.FutureCaseListAdapter(Activity, _schedule, _surgeryPatients);
         }
 
-        private void FutureCaseClicked(object sender, AdapterView.ItemClickEventArgs eventArgs)
+        private async Task FutureCaseClicked(object sender, AdapterView.ItemClickEventArgs eventArgs)
         {
             if (_schedule == null)
                 return;
 
             var schedule = _schedule[eventArgs.Position];
 
-            AppSettings.CurrentSurgery = schedule;
-            AppSettings.CurrentPatient = _surgeryPatients[schedule.SurgeryID];
+            await AppSettings.LoadSurgery(schedule, _surgeryPatients[schedule.SurgeryID]);
+
             Listener.SendMessage(AppSettings.FragmentEnum.FutureCases, schedule);
         }
     }

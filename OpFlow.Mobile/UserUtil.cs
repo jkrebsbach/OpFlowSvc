@@ -8,7 +8,7 @@ using OpFlow.Data;
 
 namespace OpFlow.Mobile
 {
-    public static class UserUtil
+    public abstract class UserUtil
     {
         public static async Task<User> GetUser(string username)
         {

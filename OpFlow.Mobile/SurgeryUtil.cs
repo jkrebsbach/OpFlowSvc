@@ -10,7 +10,7 @@ using OpFlow.Data;
 
 namespace OpFlow.Mobile
 {
-    public static class SurgeryUtil
+    public abstract class SurgeryUtil
     {
         public static async Task<List<Surgery>> GetSurgeryUserSchedule(DateTime scheduleDate)
         {

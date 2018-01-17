@@ -40,9 +40,12 @@ namespace OpFlow.Service.Controllers
         [Route("api/Surgery/cases")]
         public HttpResponseMessage GetSurgeryScheduleByUser(int userId, int providerId, int locationId)
         {
-            var schedules = DataAccess.SqlHelper.GetSurgeries(userId, providerId, locationId);
+            var surgeries = DataAccess.SqlHelper.GetScheduledSurgeries(userId, providerId, locationId);
+            var open = DataAccess.SqlHelper.GetOpenSurgeries(userId, providerId, locationId);
 
-            return Request.CreateResponse(HttpStatusCode.OK, schedules);
+            surgeries.AddRange(open);
+
+            return Request.CreateResponse(HttpStatusCode.OK, surgeries);
         }
 
         [SwaggerOperation("GetSurgeryRoomSchedule")]

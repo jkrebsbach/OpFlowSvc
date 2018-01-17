@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -24,8 +25,11 @@ namespace OpFlow.Mobile
             Room = 7
         }
 
-        public static Surgery CurrentSurgery;
-        public static Patient CurrentPatient;
+        public static Surgery CurrentSurgery { get; private set; }
+        public static Patient CurrentPatient { get; private set; }
+        public static Card CurrentCard { get; private set; }
+        public static Flow CurrentFlow { get; private set; }
+        public static Room CurrentRoom { get; private set; }
 
         public static FragmentEnum CurrentScreen;
 
@@ -54,6 +58,29 @@ namespace OpFlow.Mobile
                 return "UNDEFINED";
             }
 
+        }
+
+        public static async Task LoadSurgery(Surgery surgery, Patient patient)
+        {
+            CurrentSurgery = surgery;
+            CurrentPatient = patient;
+
+            var cards = await CardUtil.GetCardData(surgery.CardID ?? 0);
+
+            CurrentCard = cards.FirstOrDefault();
+
+            var flow = await FlowUtil.GetFlow(surgery.FlowID, surgery.CardID ?? 0);
+            if (flow == null)
+                flow = new Flow()
+                {
+                    FlowID = -1,
+                    Description = "NO FLOW DEFINED FOR CARD"
+                };
+
+            CurrentFlow = flow;
+
+            var rooms = await RoomList(surgery.LocationID);
+            CurrentRoom = rooms.FirstOrDefault(r => r.RoomID == surgery.RoomID);
         }
 
         private static AuthToken _authToken;

@@ -8,7 +8,7 @@ using OpFlow.Data;
 
 namespace OpFlow.Mobile
 {
-    public class PatientUtil
+    public abstract class PatientUtil
     {
         public static async Task<Patient> GetPatient(int patientId)
         {

@@ -20,7 +20,7 @@ namespace OpFlow.AndroidApp.Adapters
         private Context _context;
         private List<Surgery> _schedule;
         private Dictionary<int, Patient> _surgeryPatients;
-
+     
         public ScheduleGridAdapter(Context c, List<Surgery> schedule, Dictionary<int, Patient> surgeryPatients)
         {
             _context = c;
@@ -70,7 +70,7 @@ namespace OpFlow.AndroidApp.Adapters
 
             txtPatientName.Text = string.Format("{0} {1}", patient?.LastName, patient?.FirstName);
             txtTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
-            txtLocation.Text = surgery.LocationName;
+            txtLocation.Text = surgery.RoomDescription;
             txtPatientAge.Text = "Age: " + patient?.BirthDate.CalculateAge();
             txtPatientSex.Text = "Sex: " + patient?.Sex;
             txtProcedure.Text = surgery.ProcedureDescription;

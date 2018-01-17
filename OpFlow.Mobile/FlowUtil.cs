@@ -7,7 +7,7 @@ using OpFlow.Data;
 
 namespace OpFlow.Mobile
 {
-    public class FlowUtil
+    public abstract class FlowUtil
     {
         public static async Task<List<Flow>> GetFlowData(int cardId)
         {
@@ -18,9 +18,13 @@ namespace OpFlow.Mobile
 
             return response;
         }
-        public static async Task<Flow> GetFlow(int flowId)
+        public static async Task<Flow> GetFlow(int flowId, int cardId)
         {
-            var command = string.Format("api/flow/{0}", flowId);
+            var providerId = AppSettings.CurrentUser.ProviderID;
+            var locationId = AppSettings.CurrentUser.LocationID;
+
+            var command = string.Format("api/flow?flowId={0}&cardId={1}&providerId={2}&locationId={3}", 
+                flowId, cardId, providerId, locationId);
             var response = await WebUtility.WebRequest<Flow>(command, HttpMethod.Get);
 
             return response;

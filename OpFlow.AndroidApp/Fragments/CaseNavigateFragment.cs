@@ -79,13 +79,13 @@ namespace OpFlow.AndroidApp.Fragments
         private string CaseText => "Surgeon notes about the case";
 
         private string CardText => string.Format("{0} - Card: {1}", 
-            AppSettings.CurrentSurgery.CardDescription,
+            AppSettings.CurrentCard.CardDescription,
             AppSettings.CurrentSurgery.CardID);
 
         private string FlowText => string.Format("{0} - Flow: {1}",
-            AppSettings.CurrentSurgery.FlowDescription,
+            AppSettings.CurrentFlow.Description,
             AppSettings.CurrentSurgery.FlowID);
 
-        private string RoomText => string.Format("Room ID: {0}", AppSettings.CurrentSurgery.RoomID);
+        private string RoomText => string.Format("Room ID: {0}", AppSettings.CurrentRoom.RoomDescription);
     }
 }
