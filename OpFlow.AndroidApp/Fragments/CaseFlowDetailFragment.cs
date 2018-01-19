@@ -13,17 +13,17 @@ using OpFlow.Mobile;
 
 namespace OpFlow.AndroidApp.Fragments
 {
-    public class CaseDebriefFragment : CaseDetailFragment
+    public class CaseFlowDetailFragment : CaseDetailFragment
     {
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            AppSettings.CurrentScreen = AppSettings.FragmentEnum.Debrief;
+            AppSettings.CurrentScreen = AppSettings.FragmentEnum.FlowDetail;
             return base.OnCreateView(inflater, container, savedInstanceState);
         }
 
         protected override async Task<List<CaseDetailToken>> GetDetailTokens()
         {
-            ToggleConfirm(false, "Save Feedback");
+            ToggleConfirm(false, "Update Flow Instructions");
 
             var flowSteps = await FlowUtil.GetFlowInstructions(Surgery.FlowID);
 
@@ -35,11 +35,5 @@ namespace OpFlow.AndroidApp.Fragments
             return caseDetailTokens;
         }
 
-        protected override void ButtonClicked(object sender, EventArgs e)
-        {
-            // Commit debrief message
-
-            Listener.SendMessage(AppSettings.CurrentScreen, AppSettings.FragmentEnum.CaseNavigate);
-        }
     }
 }

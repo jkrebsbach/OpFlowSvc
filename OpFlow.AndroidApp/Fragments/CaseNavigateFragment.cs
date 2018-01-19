@@ -16,8 +16,6 @@ namespace OpFlow.AndroidApp.Fragments
 {
     public class CaseNavigateFragment : OpFlowFragmentBase
     {
-        private string _circulatorName = "Roper, CRNA";
-
         private Patient _patient;
         private Surgery _surgery;
         private Flow _flow;
@@ -55,7 +53,7 @@ namespace OpFlow.AndroidApp.Fragments
             var pnlPatient = rootView.FindViewById<LinearLayout>(Resource.Id.pnlPatient);
             var pnlCard = rootView.FindViewById<LinearLayout>(Resource.Id.pnlCard);
             var pnlFlow = rootView.FindViewById<LinearLayout>(Resource.Id.pnlFlow);
-            var pnlCommunicator = rootView.FindViewById<LinearLayout>(Resource.Id.pnlCommunicator);
+            var pnlDashboard = rootView.FindViewById<LinearLayout>(Resource.Id.pnlDashboard);
             var btnDebrief = rootView.FindViewById<Button>(Resource.Id.btnDebrief);
 
             pnlPatient.Click += delegate
@@ -64,15 +62,15 @@ namespace OpFlow.AndroidApp.Fragments
             };
             pnlCard.Click += delegate
             {
-                Listener.SendMessage(AppSettings.CurrentScreen, AppSettings.FragmentEnum.Patient);
+                Listener.SendMessage(AppSettings.CurrentScreen, AppSettings.FragmentEnum.CardDetail);
             };
             pnlFlow.Click += delegate
             {
-                Listener.SendMessage(AppSettings.CurrentScreen, AppSettings.FragmentEnum.Patient);
+                Listener.SendMessage(AppSettings.CurrentScreen, AppSettings.FragmentEnum.FlowDetail);
             };
-            pnlCommunicator.Click += delegate
+            pnlDashboard.Click += delegate
             {
-                Listener.SendMessage(AppSettings.CurrentScreen, AppSettings.FragmentEnum.Communicator);
+                Listener.SendMessage(AppSettings.CurrentScreen, AppSettings.FragmentEnum.Dashboard);
             };
 
             _txtPatientName = rootView.FindViewById<TextView>(Resource.Id.txtPatientName);
@@ -107,33 +105,30 @@ namespace OpFlow.AndroidApp.Fragments
                     if (_surgery == null)
                         return;
 
-                    _patient = await PatientUtil.GetPatient(_surgery.PatientID);
+                    _flow = await FlowUtil.GetFlow(_surgery.FlowID, _surgery.CardID);
+                    _card = (await CardUtil.GetCardData(_surgery.CardID)).FirstOrDefault();
 
-                    if (_patient == null)
-                        return;
+                    _patient = await PatientUtil.GetPatient(_surgery.PatientID);
 
                     var users = await SurgeryUtil.GetSurgeryUsers(
                         _surgery.CaseID,
                         _surgery.ProviderID,
                         _surgery.LocationID);
 
-                    _flow = await FlowUtil.GetFlow(_surgery.FlowID, _surgery.CardID);
-                    _card = (await CardUtil.GetCardData(_surgery.CardID)).FirstOrDefault();
-
-                    _room = await AppSettings.GetRoom(_surgery.LocationID, _surgery.RoomID);
-
-                    _txtPatientName.Text = PatientNameText;
-                    _txtStartTime.Text = _surgery.ScheduleTime.ToString(@"hh\:mm");
-                    _txtRoom.Text = _room.RoomDescription;
-                    _txtPatientInfo.Text = PatientInfoText;
-                    _txtFlowStep.Text = FlowText;
-                    _txtProcedure.Text = _surgery.ProcedureDescription;
-
                     _txtSurgeonName.Text = GetUserName(users, AppSettings.RoleEnum.Surgeon);
                     _txtCirculatorName.Text = GetUserName(users, AppSettings.RoleEnum.Circulator);
                     _txtScrubName.Text = GetUserName(users, AppSettings.RoleEnum.ScrubTech);
                     _txtAnesName.Text = GetUserName(users, AppSettings.RoleEnum.FrontDesk);
                     _txtRepName.Text = GetUserName(users, AppSettings.RoleEnum.FrontDesk);
+
+                    _room = await AppSettings.GetRoom(_surgery.LocationID, _surgery.RoomID);
+
+                    _txtPatientName.Text = PatientNameText;
+                    _txtStartTime.Text = _surgery.ScheduleTime.ToString(@"hh\:mm");
+                    _txtRoom.Text = _room?.RoomDescription;
+                    _txtPatientInfo.Text = PatientInfoText;
+                    _txtFlowStep.Text = FlowText;
+                    _txtProcedure.Text = _surgery.ProcedureDescription;
                 }
             }
             catch (Exception e)
@@ -150,9 +145,9 @@ namespace OpFlow.AndroidApp.Fragments
             return user == null ? string.Empty : string.Format("{0}, {1} {2}", user.LastName, user.FirstName, user.Title);
         }
 
-        private string PatientNameText => string.Format("{0}, {1}", _patient.LastName, _patient.FirstName);
+        private string PatientNameText => string.Format("{0}, {1}", _patient?.LastName, _patient?.FirstName);
 
-        private string PatientInfoText => string.Format("{0} {1}", _patient.BirthDate.CalculateAge(), _patient.Sex);
+        private string PatientInfoText => string.Format("{0} {1}", _patient?.BirthDate.CalculateAge(), _patient?.Gender);
         
 
         private string FlowText => string.Format("{0} - Flow: {1}",

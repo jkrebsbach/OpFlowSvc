@@ -50,7 +50,10 @@ namespace OpFlow.Service.DataAccess
             {
                 var patient = patients.FirstOrDefault(p => p.PatientID == demo.PatientID);
 
-                patient?.DemoData.Add(demo);
+                if (patient == null)
+                    continue;
+
+                patient.DemoData.Add(demo);
             }
 
             return patients.FirstOrDefault();

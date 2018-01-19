@@ -92,7 +92,7 @@ namespace OpFlow.AndroidApp.Adapters
             txtTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
             txtLocation.Text = surgery.RoomDescription;
             txtPatientAge.Text = patient?.BirthDate.CalculateAge().ToString();
-            txtPatientSex.Text = patient?.Sex;
+            txtPatientSex.Text = patient?.Gender;
             txtProcedure.Text = surgery.ProcedureDescription;
 
             txtFlowStep.Text = string.Format("Flow Step: {0}", surgery.FlowStepDescription);

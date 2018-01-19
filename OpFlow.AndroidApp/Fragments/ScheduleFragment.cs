@@ -94,7 +94,7 @@ namespace OpFlow.AndroidApp.Fragments
             _progressDialog.SetTitle("Loading Surgery...");
             _progressDialog.Show();
             
-            await AppSettings.LoadSurgery(surgery, _schedulePatients[surgery.SurgeryID]);
+            AppSettings.LoadSurgery(surgery.SurgeryID, surgery.PatientID);
 
             _progressDialog.Hide();
 
@@ -134,13 +134,22 @@ namespace OpFlow.AndroidApp.Fragments
             _progressDialog.SetTitle("Searching...");
             _progressDialog.Show();
 
+            await ScheduleQuery();
+
+            _gvDailySchedule.Adapter = new ScheduleGridAdapter(Activity, _schedule, _schedulePatients);
+
+            _progressDialog.Hide();
+        }
+
+        private async Task ScheduleQuery()
+        {
             if (_swtSurgeon.Checked)
             {
                 if (_previousFilter != null && _previousFilter.SurgeonOnly)
                     return;
 
                 _schedule = await SurgeryUtil.GetSurgeryUserSchedule(SelectedDate);
-                _previousFilter = new SurgeryFilter() {SurgeonOnly = true};
+                _previousFilter = new SurgeryFilter() { SurgeonOnly = true };
             }
             else
             {
@@ -157,11 +166,6 @@ namespace OpFlow.AndroidApp.Fragments
             }
 
             _schedulePatients = await SurgeryUtil.GetSurgeryPatients(_schedule);
-
-            _progressDialog.Hide();
-
-            _gvDailySchedule.Adapter = new Adapters.ScheduleGridAdapter(Activity, _schedule, _schedulePatients);
-
         }
 
         private class SurgeryFilter

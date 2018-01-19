@@ -13,11 +13,11 @@ using OpFlow.Mobile;
 
 namespace OpFlow.AndroidApp.Fragments
 {
-    public class CaseDebriefFragment : CaseDetailFragment
+    public class CaseCardFragment : CaseDetailFragment
     {
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            AppSettings.CurrentScreen = AppSettings.FragmentEnum.Debrief;
+            AppSettings.CurrentScreen = AppSettings.FragmentEnum.CardDetail;
             return base.OnCreateView(inflater, container, savedInstanceState);
         }
 
@@ -33,13 +33,6 @@ namespace OpFlow.AndroidApp.Fragments
                 .ToList();
 
             return caseDetailTokens;
-        }
-
-        protected override void ButtonClicked(object sender, EventArgs e)
-        {
-            // Commit debrief message
-
-            Listener.SendMessage(AppSettings.CurrentScreen, AppSettings.FragmentEnum.CaseNavigate);
         }
     }
 }

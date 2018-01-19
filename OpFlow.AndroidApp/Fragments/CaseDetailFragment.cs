@@ -60,6 +60,8 @@ namespace OpFlow.AndroidApp.Fragments
             _pnlConfirmButton = rootView.FindViewById<LinearLayout>(Resource.Id.pnlConfirmButton);
             _txtConfirmText = rootView.FindViewById<TextView>(Resource.Id.txtConfirmText);
 
+            _pnlConfirmButton.Click += ButtonClicked;
+
             return rootView;
         }
 
@@ -68,6 +70,9 @@ namespace OpFlow.AndroidApp.Fragments
             _pnlConfirmButton.Visibility = (hidePanel ? ViewStates.Gone : ViewStates.Visible);
             _txtConfirmText.Text = confirmText;
         }
+
+        protected virtual void ButtonClicked(object sender, EventArgs e)
+        { }
 
         public override async void OnResume()
         {
@@ -116,7 +121,7 @@ namespace OpFlow.AndroidApp.Fragments
                     {
                         _txtPatientName.Text = string.Format("{0} {1}", _patient.FirstName, _patient.LastName);
                         _txtPatientAge.Text = _patient.BirthDate.CalculateAge().ToString();
-                        _txtPatientSex.Text = _patient.Sex.ToString(CultureInfo.InvariantCulture);
+                        _txtPatientSex.Text = _patient.Gender.ToString(CultureInfo.InvariantCulture);
                         _txtPatientBMI.Text = _patient.BMI.ToString(CultureInfo.InvariantCulture);
                         
                         _lvCaseDetails.SetAdapter(new CaseDetailListAdapter(Activity, await GetDetailTokens()));

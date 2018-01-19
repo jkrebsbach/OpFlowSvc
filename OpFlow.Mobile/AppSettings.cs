@@ -22,10 +22,12 @@ namespace OpFlow.Mobile
             Debrief = 4,
             Review = 5,
             CaseNavigate = 6,
-            Flow = 7,
-            Room = 8,
-            Patient = 9,
-            Communicator = 10,
+            Patient = 7,
+            CardDetail = 8,
+            FlowDetail = 9,
+            Dashboard = 10,
+            Room = 11,
+            Communicator = 12,
         }
 
         public enum RoleEnum
@@ -67,8 +69,14 @@ namespace OpFlow.Mobile
                         return "Debrief";
                     case FragmentEnum.Patient:
                         return "Patient";
+                    case FragmentEnum.CardDetail:
+                        return "Card";
+                    case FragmentEnum.FlowDetail:
+                        return "Flow";
                     case FragmentEnum.CaseNavigate:
                         return "Surgery";
+                    case FragmentEnum.Dashboard:
+                        return "Dashboard";
                 }
 
                 return "UNDEFINED";
@@ -76,10 +84,10 @@ namespace OpFlow.Mobile
 
         }
 
-        public static async Task LoadSurgery(Surgery surgery, Patient patient)
+        public static void LoadSurgery(int surgeryId, int patientId)
         {
-            CurrentSurgery = surgery.SurgeryID;
-            CurrentPatient = patient.PatientID;
+            CurrentSurgery = surgeryId;
+            CurrentPatient = patientId;
         }
 
         private static AuthToken _authToken;

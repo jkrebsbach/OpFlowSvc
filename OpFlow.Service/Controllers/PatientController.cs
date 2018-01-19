@@ -43,7 +43,12 @@ namespace OpFlow.Service.Controllers
 
             if (patientIds != null)
             {
-                patients.AddRange(patientIds.Select(DataAccess.SecureSqlHelper.GetPatient));
+                foreach (var patientId in patientIds)
+                {
+                    var patient = DataAccess.SecureSqlHelper.GetPatient(patientId);
+                    if (patient != null)
+                        patients.Add(patient);
+                }
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, patients);

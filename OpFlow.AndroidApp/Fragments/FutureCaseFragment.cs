@@ -62,7 +62,7 @@ namespace OpFlow.AndroidApp.Fragments
 
             var schedule = _schedule[eventArgs.Position];
 
-            await AppSettings.LoadSurgery(schedule, _surgeryPatients[schedule.SurgeryID]);
+            AppSettings.LoadSurgery(schedule.SurgeryID, schedule.PatientID);
 
             Listener.SendMessage(AppSettings.FragmentEnum.FutureCases, schedule);
         }

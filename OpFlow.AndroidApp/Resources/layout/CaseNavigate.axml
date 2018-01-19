@@ -128,7 +128,7 @@
                 android:text="Flow" />
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/pnlCommunicator"
+            android:id="@+id/pnlDashboard"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_height="50dip"
@@ -137,12 +137,12 @@
             <ImageView
                 android:layout_width="30dip"
                 android:layout_height="40dip"
-                android:src="@drawable/ic_chat_black_18dp" />
+                android:src="@drawable/ic_dashboard_black_18dp" />
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
                 android:gravity="center"
-                android:text="Communicator" />
+                android:text="Dashboard" />
         </LinearLayout>
     </LinearLayout>
     <LinearLayout

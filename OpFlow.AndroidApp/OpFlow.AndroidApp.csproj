@@ -89,12 +89,16 @@
     <Compile Include="Adapters\CaseDetailListAdapter.cs" />
     <Compile Include="Adapters\CheckInOverviewAdapter.cs" />
     <Compile Include="Adapters\SpinnerAdapter.cs" />
+    <Compile Include="Fragments\CaseCardFragment.cs" />
+    <Compile Include="Fragments\CaseDashboardFragment.cs" />
     <Compile Include="Fragments\CaseDebriefFragment.cs" />
     <Compile Include="Fragments\CaseDetailFragment.cs" />
+    <Compile Include="Fragments\CaseFlowDetailFragment.cs" />
     <Compile Include="Fragments\CaseNavigateFragment.cs" />
     <Compile Include="Fragments\CasePatientFragment.cs" />
     <Compile Include="Fragments\CaseReviewFragment.cs" />
     <Compile Include="Fragments\CheckInFragment.cs" />
+    <Compile Include="Fragments\CommunicatorFragment.cs" />
     <Compile Include="Fragments\FlowFragment.cs" />
     <Compile Include="Fragments\FutureCaseFragment.cs" />
     <Compile Include="Activities\IFragmentMessageListener.cs" />
@@ -175,6 +179,12 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\drawable\RoundGrayRectangle.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\CaseDashboard.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\Communicator.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
@@ -506,6 +516,36 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_check_circle_green_A700_18dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-mdpi\ic_dashboard_black_18dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-hdpi\ic_dashboard_black_18dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_dashboard_black_18dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_dashboard_black_18dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_dashboard_black_18dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-mdpi\ic_work_black_18dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-hdpi\ic_work_black_18dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_work_black_18dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_work_black_18dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_work_black_18dp.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

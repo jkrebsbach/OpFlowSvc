@@ -135,58 +135,64 @@ namespace OpFlow.AndroidApp
 			public const int ic_create_black_18dp = 2130837513;
 			
 			// aapt resource value: 0x7f02000a
-			public const int ic_home_grey_800_18dp = 2130837514;
+			public const int ic_dashboard_black_18dp = 2130837514;
 			
 			// aapt resource value: 0x7f02000b
-			public const int ic_hotel_black_18dp = 2130837515;
+			public const int ic_home_grey_800_18dp = 2130837515;
 			
 			// aapt resource value: 0x7f02000c
-			public const int ic_move_to_inbox_black_18dp = 2130837516;
+			public const int ic_hotel_black_18dp = 2130837516;
 			
 			// aapt resource value: 0x7f02000d
-			public const int ic_payment_black_18dp = 2130837517;
+			public const int ic_move_to_inbox_black_18dp = 2130837517;
 			
 			// aapt resource value: 0x7f02000e
-			public const int ic_person_black_18dp = 2130837518;
+			public const int ic_payment_black_18dp = 2130837518;
 			
 			// aapt resource value: 0x7f02000f
-			public const int ic_play_arrow_black_18dp = 2130837519;
+			public const int ic_person_black_18dp = 2130837519;
 			
 			// aapt resource value: 0x7f020010
-			public const int ic_schedule_grey_50_18dp = 2130837520;
+			public const int ic_play_arrow_black_18dp = 2130837520;
 			
 			// aapt resource value: 0x7f020011
-			public const int ic_schedule_grey_800_18dp = 2130837521;
+			public const int ic_schedule_grey_50_18dp = 2130837521;
 			
 			// aapt resource value: 0x7f020012
-			public const int ic_search_grey_50_18dp = 2130837522;
+			public const int ic_schedule_grey_800_18dp = 2130837522;
 			
 			// aapt resource value: 0x7f020013
-			public const int ic_search_grey_800_18dp = 2130837523;
+			public const int ic_search_grey_50_18dp = 2130837523;
 			
 			// aapt resource value: 0x7f020014
-			public const int ic_settings_black_18dp = 2130837524;
+			public const int ic_search_grey_800_18dp = 2130837524;
 			
 			// aapt resource value: 0x7f020015
-			public const int ic_work_grey_50_18dp = 2130837525;
+			public const int ic_settings_black_18dp = 2130837525;
 			
 			// aapt resource value: 0x7f020016
-			public const int ic_work_grey_800_18dp = 2130837526;
+			public const int ic_work_black_18dp = 2130837526;
 			
 			// aapt resource value: 0x7f020017
-			public const int infinity = 2130837527;
+			public const int ic_work_grey_50_18dp = 2130837527;
 			
 			// aapt resource value: 0x7f020018
-			public const int OpFlowLogo = 2130837528;
+			public const int ic_work_grey_800_18dp = 2130837528;
 			
 			// aapt resource value: 0x7f020019
-			public const int RedExclamationPoint = 2130837529;
+			public const int infinity = 2130837529;
 			
 			// aapt resource value: 0x7f02001a
-			public const int RoundGrayRectangle = 2130837530;
+			public const int OpFlowLogo = 2130837530;
 			
 			// aapt resource value: 0x7f02001b
-			public const int RoundRectangle = 2130837531;
+			public const int RedExclamationPoint = 2130837531;
+			
+			// aapt resource value: 0x7f02001c
+			public const int RoundGrayRectangle = 2130837532;
+			
+			// aapt resource value: 0x7f02001d
+			public const int RoundRectangle = 2130837533;
 			
 			static Drawable()
 			{
@@ -324,11 +330,11 @@ namespace OpFlow.AndroidApp
 			// aapt resource value: 0x7f0a001e
 			public const int pnlCaseDetail = 2131361822;
 			
-			// aapt resource value: 0x7f0a0017
-			public const int pnlCommunicator = 2131361815;
-			
 			// aapt resource value: 0x7f0a0009
 			public const int pnlConfirmButton = 2131361801;
+			
+			// aapt resource value: 0x7f0a0017
+			public const int pnlDashboard = 2131361815;
 			
 			// aapt resource value: 0x7f0a0016
 			public const int pnlFlow = 2131361814;
@@ -522,49 +528,55 @@ namespace OpFlow.AndroidApp
 			public const int activity_webview = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public const int CaseDetail = 2130903041;
+			public const int CaseDashboard = 2130903041;
 			
 			// aapt resource value: 0x7f030002
-			public const int CaseDetailListItem = 2130903042;
+			public const int CaseDetail = 2130903042;
 			
 			// aapt resource value: 0x7f030003
-			public const int CaseNavigate = 2130903043;
+			public const int CaseDetailListItem = 2130903043;
 			
 			// aapt resource value: 0x7f030004
-			public const int CheckIn = 2130903044;
+			public const int CaseNavigate = 2130903044;
 			
 			// aapt resource value: 0x7f030005
-			public const int CheckInGrid = 2130903045;
+			public const int CheckIn = 2130903045;
 			
 			// aapt resource value: 0x7f030006
-			public const int CheckInOverviewGrid = 2130903046;
+			public const int CheckInGrid = 2130903046;
 			
 			// aapt resource value: 0x7f030007
-			public const int FutureCase = 2130903047;
+			public const int CheckInOverviewGrid = 2130903047;
 			
 			// aapt resource value: 0x7f030008
-			public const int FutureCaseListItem = 2130903048;
+			public const int Communicator = 2130903048;
 			
 			// aapt resource value: 0x7f030009
-			public const int HomeScreen = 2130903049;
+			public const int FutureCase = 2130903049;
 			
 			// aapt resource value: 0x7f03000a
-			public const int ListGroup = 2130903050;
+			public const int FutureCaseListItem = 2130903050;
 			
 			// aapt resource value: 0x7f03000b
-			public const int Login = 2130903051;
+			public const int HomeScreen = 2130903051;
 			
 			// aapt resource value: 0x7f03000c
-			public const int Main = 2130903052;
+			public const int ListGroup = 2130903052;
 			
 			// aapt resource value: 0x7f03000d
-			public const int Schedule = 2130903053;
+			public const int Login = 2130903053;
 			
 			// aapt resource value: 0x7f03000e
-			public const int ScheduleGrid = 2130903054;
+			public const int Main = 2130903054;
 			
 			// aapt resource value: 0x7f03000f
-			public const int Toolbar = 2130903055;
+			public const int Schedule = 2130903055;
+			
+			// aapt resource value: 0x7f030010
+			public const int ScheduleGrid = 2130903056;
+			
+			// aapt resource value: 0x7f030011
+			public const int Toolbar = 2130903057;
 			
 			static Layout()
 			{

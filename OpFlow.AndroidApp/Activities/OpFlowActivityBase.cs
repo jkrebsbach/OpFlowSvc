@@ -61,6 +61,9 @@ namespace OpFlow.AndroidApp.Activities
                 case AppSettings.FragmentEnum.CheckIn:
                     appIconResource = Resource.Drawable.ic_work_grey_50_18dp;
                     break;
+                case AppSettings.FragmentEnum.Dashboard:
+                    appIconResource = Resource.Drawable.ic_dashboard_black_18dp;
+                    break;
             }
 
             appIcon.SetImageResource(appIconResource);
@@ -100,23 +103,34 @@ namespace OpFlow.AndroidApp.Activities
                     newFragment = new CheckInFragment();
                 if (targetScene == AppSettings.FragmentEnum.Debrief)
                     newFragment = new CaseDebriefFragment();
-                if (targetScene == AppSettings.FragmentEnum.Flow)
-                    newFragment = new FlowFragment();
+                if (targetScene == AppSettings.FragmentEnum.Patient)
+                    newFragment = new CasePatientFragment();
                 if (targetScene == AppSettings.FragmentEnum.Room)
                     newFragment = new RoomFragment();
+                if (targetScene == AppSettings.FragmentEnum.CardDetail)
+                    newFragment = new CaseCardFragment();
+                if (targetScene == AppSettings.FragmentEnum.FlowDetail)
+                    newFragment = new CaseFlowDetailFragment();
+                if (targetScene == AppSettings.FragmentEnum.Dashboard)
+                    newFragment = new CaseDashboardFragment();
+                if (targetScene == AppSettings.FragmentEnum.Communicator)
+                    newFragment = new CommunicatorFragment();
             }
-
-            if (newFragment != null)
+            else if (fragment == AppSettings.FragmentEnum.Debrief ||
+                fragment == AppSettings.FragmentEnum.Review)
             {
+                // Debrief should not stay in back stack
+                FragmentManager.PopBackStackImmediate();
 
-                if (!IsFinishing)
-                {
-                    FragmentManager.BeginTransaction()
-                        .Replace(Resource.Id.mainFragment, newFragment)
-                        .AddToBackStack(null)
-                        .Commit();
-                }
+                newFragment = new CaseNavigateFragment();
             }
+
+            if (newFragment == null || IsFinishing) return;
+            
+            FragmentManager.BeginTransaction()
+                .Replace(Resource.Id.mainFragment, newFragment)
+                .AddToBackStack(null)
+                .Commit();
         }
         
 
