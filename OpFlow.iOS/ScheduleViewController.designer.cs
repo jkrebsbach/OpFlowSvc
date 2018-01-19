@@ -7,11 +7,12 @@
 using Foundation;
 using System;
 using System.CodeDom.Compiler;
+using UIKit;
 
 namespace OpFlow.iOS
 {
-    [Register ("ViewController")]
-    partial class ViewController
+    [Register ("ScheduleViewController")]
+    partial class ScheduleViewController
     {
         void ReleaseDesignerOutlets ()
         {
