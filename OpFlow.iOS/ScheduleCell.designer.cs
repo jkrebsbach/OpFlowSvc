@@ -30,6 +30,10 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblProcedure { get; set; }
 
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblStartTime { get; set; }
+
         void ReleaseDesignerOutlets ()
         {
             if (lblLocation != null) {
@@ -50,6 +54,11 @@ namespace OpFlow.iOS
             if (lblProcedure != null) {
                 lblProcedure.Dispose ();
                 lblProcedure = null;
+            }
+
+            if (lblStartTime != null) {
+                lblStartTime.Dispose ();
+                lblStartTime = null;
             }
         }
     }

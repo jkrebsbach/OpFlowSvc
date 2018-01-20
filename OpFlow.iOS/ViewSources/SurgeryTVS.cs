@@ -12,10 +12,12 @@ namespace OpFlow.iOS.ViewSources
     public class SurgeryTVS : UITableViewSource
     {
         private List<Surgery> _surgeries;
+        private Dictionary<int, Patient> _surgeryPatients;
 
-        public SurgeryTVS(List<Surgery> surgeries)
+        public SurgeryTVS(List<Surgery> surgeries, Dictionary<int, Patient> surgeryPatients)
         {
             _surgeries = surgeries;
+            _surgeryPatients = surgeryPatients;
         }
 
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
@@ -23,8 +25,9 @@ namespace OpFlow.iOS.ViewSources
             var cell = tableView.DequeueReusableCell("ScheduleCell", indexPath) as ScheduleCell;
 
             var surgery = _surgeries[indexPath.Row];
+            var patient = _surgeryPatients[surgery.SurgeryID];
 
-            cell?.UpdateCell(surgery);
+            cell?.UpdateCell(surgery, patient);
 
             return cell;
         }

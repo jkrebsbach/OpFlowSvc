@@ -1,6 +1,7 @@
 using Foundation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CoreGraphics;
 using OpFlow.Data;
@@ -23,7 +24,8 @@ namespace OpFlow.iOS
         {
             NavigationItem.SetHidesBackButton(true, false);
 
-            btnPrev.Transform = CGAffineTransform.MakeRotation((float)Math.PI/2);
+            // rotate arrow 180deg / pi radians
+            btnPrev.Transform = CGAffineTransform.MakeRotation((float)Math.PI);
 
             InitializeButton(btnSunday);
             InitializeButton(btnMonday);
@@ -147,8 +149,13 @@ namespace OpFlow.iOS
         private async Task SelectDate()
         {
             var schedule = await SurgeryUtil.GetSurgeryUserSchedule(DateTime.Today);
+            var patientIds = schedule.Select(s => s.PatientID).ToList();
+            var patients = await PatientUtil.GetPatients(patientIds);
 
-            ScheduleTableView.Source = new SurgeryTVS(schedule);
+            var surgeryPatients = new Dictionary<int, Patient>();
+            schedule.ForEach(s => surgeryPatients[s.SurgeryID] = patients.FirstOrDefault(p => p.PatientID == s.PatientID));
+
+            ScheduleTableView.Source = new SurgeryTVS(schedule, surgeryPatients);
         }
     }
 }
