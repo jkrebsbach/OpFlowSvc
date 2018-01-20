@@ -24,7 +24,6 @@ namespace OpFlow.iOS
 
             var controller = Storyboard.InstantiateViewController("ScheduleViewController");
             NavigationController.PushViewController(controller, true);
-
         }
     }
 }

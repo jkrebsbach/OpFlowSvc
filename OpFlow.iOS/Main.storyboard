@@ -171,17 +171,63 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="2691" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
-                                <rect key="frame" x="20" y="274" width="42" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="2698" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
-                                <rect key="frame" x="114" y="271" width="46" height="30"/>
+                                <rect key="frame" x="13" y="220" width="46" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
+                                <state key="normal" title="Prev"/>
+                                <connections>
+                                    <action selector="btnPrevClicked:" destination="279" id="3525" eventType="touchUpInside"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="3201" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES" tag="1">
+                                <rect key="frame" x="13" y="267" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="S"/>
+                                <connections/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="3202" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES" tag="2">
+                                <rect key="frame" x="58" y="267" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="M"/>
+                                <connections/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="3203" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES" tag="3">
+                                <rect key="frame" x="103" y="267" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="T"/>
+                                <connections/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="3204" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES" tag="4">
+                                <rect key="frame" x="157" y="267" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="W"/>
+                                <connections/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="3205" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
+                                <rect key="frame" x="328" y="220" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Next"/>
+                                <connections>
+                                    <action selector="btnNextClicked:" destination="279" id="3526" eventType="touchUpInside"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="3206" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES" tag="5">
+                                <rect key="frame" x="215" y="267" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="T"/>
+                                <connections/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="3207" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES" tag="6">
+                                <rect key="frame" x="274" y="267" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="F"/>
+                                <connections/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="3208" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES" tag="7">
+                                <rect key="frame" x="348" y="267" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="S"/>
+                                <connections/>
                             </button>
                         </subviews>
                     </view>
@@ -189,6 +235,16 @@
                         <outlet property="switchSurgeon" destination="2681" id="name-outlet-2681"/>
                         <outlet property="pickerRoom" destination="2683" id="name-outlet-2683"/>
                         <outlet property="ScheduleTableView" destination="2668" id="name-outlet-2668"/>
+                        <outlet property="btnPrev" destination="2698" id="name-outlet-2698"/>
+                        <outlet property="btnNext" destination="3205" id="name-outlet-3205"/>
+                        <outlet property="btnSunday" destination="3201" id="name-outlet-3201"/>
+                        <outlet property="btnMonday" destination="3202" id="name-outlet-3202"/>
+                        <outlet property="btnTuesday" destination="3203" id="name-outlet-3203"/>
+                        <outlet property="btnWednesday" destination="3204" id="name-outlet-3204"/>
+                        <outlet property="btnThursday" destination="3206" id="name-outlet-3206"/>
+                        <outlet property="btnFriday" destination="3207" id="name-outlet-3207"/>
+                        <outlet property="btnSaturday" destination="3208" id="name-outlet-3208"/>
+                        <outlet property="lblCurrentWeek" destination="2690" id="name-outlet-2690"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="281" userLabel="First Responder" sceneMemberID="firstResponder"/>
