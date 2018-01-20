@@ -119,6 +119,9 @@
   <ItemGroup>
     <Content Include="Entitlements.plist" />
     <BundleResource Include="Resources\OpFlowLogo.png" />
+    <BundleResource Include="Resources\ic_play_arrow_black_18pt.png" />
+    <BundleResource Include="Resources\ic_play_arrow_black_18pt%402x.png" />
+    <BundleResource Include="Resources\ic_play_arrow_black_18pt%403x.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">

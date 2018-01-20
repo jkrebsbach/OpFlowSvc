@@ -2,6 +2,7 @@ using Foundation;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CoreGraphics;
 using OpFlow.Data;
 using OpFlow.iOS.ViewSources;
 using OpFlow.Mobile;
@@ -21,6 +22,8 @@ namespace OpFlow.iOS
         public override async void ViewDidLoad()
         {
             NavigationItem.SetHidesBackButton(true, false);
+
+            btnPrev.Transform = CGAffineTransform.MakeRotation((float)Math.PI/2);
 
             InitializeButton(btnSunday);
             InitializeButton(btnMonday);
