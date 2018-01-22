@@ -11,11 +11,8 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    [Register ("SchedulerViewController")]
-    partial class SchedulerViewController
+    [Register ("EmptySegue")]
+    partial class EmptySegue
     {
-        void ReleaseDesignerOutlets ()
-        {
-        }
     }
 }

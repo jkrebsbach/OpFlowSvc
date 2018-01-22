@@ -22,7 +22,7 @@ namespace OpFlow.iOS
 
             task.Wait();
 
-            var controller = Storyboard.InstantiateViewController("ScheduleViewController");
+            var controller = Storyboard.InstantiateViewController("MainViewController");
             NavigationController.PushViewController(controller, true);
         }
     }

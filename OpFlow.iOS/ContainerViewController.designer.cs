@@ -11,8 +11,8 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    [Register ("SchedulerViewController")]
-    partial class SchedulerViewController
+    [Register ("ContainerViewController")]
+    partial class ContainerViewController
     {
         void ReleaseDesignerOutlets ()
         {
