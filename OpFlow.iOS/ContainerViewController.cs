@@ -1,6 +1,7 @@
 ﻿using Foundation;
 using System;
 using System.Threading.Tasks;
+using OpFlow.iOS.Delegates;
 using UIKit;
 
 namespace OpFlow.iOS
@@ -11,8 +12,15 @@ namespace OpFlow.iOS
         private readonly NSString ScheduleSegue = (NSString)"scheduleSegue";
         private readonly NSString DetailSegue = (NSString)"detailSegue";
 
+        private INavigationDelegate _hostController;
+
         public ContainerViewController (IntPtr handle) : base (handle)
         {
+        }
+
+        public void SetupHost(INavigationDelegate hostController)
+        {
+            _hostController = hostController;
         }
 
         public TaskCompletionSource<bool> ViewChanging => _viewChanging;
@@ -32,21 +40,29 @@ namespace OpFlow.iOS
 
             return _viewChanging.Task;
         }
+
+        #region Segue Operations
+
         public override void PrepareForSegue(UIStoryboardSegue segue,
             NSObject sender)
         {
-            if ((segue.Identifier == ScheduleSegue) ||
-                (segue.Identifier == DetailSegue))
+            // validate segue
+            if ((segue.Identifier != ScheduleSegue) && 
+                (segue.Identifier != DetailSegue)) return;
+
+            if (segue.DestinationViewController is INavigationTargetDelegate targetScene)
             {
-                if (ChildViewControllers.Length > 0)
-                {
-                    SwapFromViewController(ChildViewControllers[0],
-                        segue.DestinationViewController);
-                }
-                else
-                {
-                    AddInitialViewController(segue.DestinationViewController);
-                }
+                targetScene.NavigationDelegate = _hostController;
+            }
+
+            if (ChildViewControllers.Length > 0)
+            {
+                SwapFromViewController(ChildViewControllers[0],
+                    segue.DestinationViewController);
+            }
+            else
+            {
+                AddInitialViewController(segue.DestinationViewController);
             }
         }
 
@@ -86,5 +102,7 @@ namespace OpFlow.iOS
                     _viewChanging.TrySetResult(true);
                 });
         }
+
+        #endregion
     }
 }

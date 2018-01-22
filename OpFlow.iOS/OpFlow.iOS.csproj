@@ -65,6 +65,8 @@
     <Compile Include="ContainerViewController.designer.cs">
       <DependentUpon>ContainerViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Delegates\INavigationDelegate.cs" />
+    <Compile Include="Delegates\INavigationTargetDelegate.cs" />
     <Compile Include="DetailViewController.cs" />
     <Compile Include="DetailViewController.designer.cs">
       <DependentUpon>DetailViewController.cs</DependentUpon>
@@ -75,6 +77,7 @@
     </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="ViewSources\RoomPickerModel.cs" />
     <Compile Include="ViewSources\SurgeryTVS.cs" />
     <None Include="GettingStarted.Xamarin" />
     <None Include="Info.plist" />
@@ -95,10 +98,6 @@
     <Compile Include="MainViewController.cs" />
     <Compile Include="MainViewController.designer.cs">
       <DependentUpon>MainViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SchedulerViewController.cs" />
-    <Compile Include="SchedulerViewController.designer.cs">
-      <DependentUpon>SchedulerViewController.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

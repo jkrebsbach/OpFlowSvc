@@ -1,11 +1,14 @@
 using Foundation;
 using System;
 using System.Threading.Tasks;
+using OpFlow.Data;
+using OpFlow.iOS.Delegates;
+using OpFlow.Mobile;
 using UIKit;
 
 namespace OpFlow.iOS
 {
-    public partial class MainViewController : UIViewController
+    public partial class MainViewController : UIViewController, INavigationDelegate
     {
         private ContainerViewController _containerViewController;
 
@@ -18,6 +21,7 @@ namespace OpFlow.iOS
             if (segue.Identifier == "embedContainer")
             {
                 _containerViewController = segue.DestinationViewController as ContainerViewController;
+                _containerViewController?.SetupHost(this);
             }
         }
 
@@ -25,16 +29,38 @@ namespace OpFlow.iOS
         {
             base.ViewDidLoad();
 
-            PresentContainerView();
+            PresentContainerView(AppSettings.FragmentEnum.Schedule);
         }
 
-        private async void PresentContainerView()
+        public void Navigate(AppSettings.FragmentEnum fragmentEnum)
         {
-            if (1 == 1)
+            PresentContainerView(fragmentEnum);
+        }
+
+        private async void PresentContainerView(AppSettings.FragmentEnum fragmentEnum)
+        {
+            if (fragmentEnum == AppSettings.FragmentEnum.Schedule)
+            {
+                Title = "SCHEDULE";
                 await _containerViewController.PresentScheduleViewAsync();
+            }
             else
             {
+                Title = "DETAIL";
                 await _containerViewController.PresentDetailViewAsync();
+            }
+        }
+
+        public void Navigate(AppSettings.FragmentEnum fragmentEnum, object payload)
+        {
+            switch (fragmentEnum)
+            {
+                case AppSettings.FragmentEnum.Schedule:
+                    var surgery = (Surgery) payload;
+                    AppSettings.LoadSurgery(surgery.SurgeryID, surgery.PatientID);
+                    PresentContainerView(AppSettings.FragmentEnum.CardDetail);
+                    break;
+
             }
         }
     }

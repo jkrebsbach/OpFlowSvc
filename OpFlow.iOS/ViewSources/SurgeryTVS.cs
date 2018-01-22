@@ -5,14 +5,18 @@ using System.Text;
 
 using Foundation;
 using OpFlow.Data;
+using OpFlow.iOS.Delegates;
+using OpFlow.Mobile;
 using UIKit;
 
 namespace OpFlow.iOS.ViewSources
 {
     public class SurgeryTVS : UITableViewSource
     {
-        private List<Surgery> _surgeries;
-        private Dictionary<int, Patient> _surgeryPatients;
+        private readonly List<Surgery> _surgeries;
+        private readonly Dictionary<int, Patient> _surgeryPatients;
+
+        public event EventHandler<Surgery> SurgerySelectionEvent;
 
         public SurgeryTVS(List<Surgery> surgeries, Dictionary<int, Patient> surgeryPatients)
         {
@@ -35,6 +39,13 @@ namespace OpFlow.iOS.ViewSources
         public override nint RowsInSection(UITableView tableview, nint section)
         {
             return _surgeries.Count;
+        }
+
+        public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
+        {
+            var surgery = _surgeries[indexPath.Row];
+
+            SurgerySelectionEvent?.Invoke(this, surgery);
         }
     }
 }

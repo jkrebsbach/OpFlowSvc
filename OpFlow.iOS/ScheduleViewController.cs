@@ -5,13 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using CoreGraphics;
 using OpFlow.Data;
+using OpFlow.iOS.Delegates;
 using OpFlow.iOS.ViewSources;
 using OpFlow.Mobile;
 using UIKit;
 
 namespace OpFlow.iOS
 {
-    public partial class ScheduleViewController : UIViewController, IUITableViewDelegate
+    public partial class ScheduleViewController : UIViewController, IUITableViewDelegate, INavigationTargetDelegate
     {
         private DateTime _selectedDate;
 
@@ -19,10 +20,15 @@ namespace OpFlow.iOS
         {
             _selectedDate = DateTime.Today;
         }
+
+        public INavigationDelegate NavigationDelegate { get; set; }
         
         public override async void ViewDidLoad()
         {
-            NavigationItem.SetHidesBackButton(true, false);
+            base.ViewDidLoad();
+
+            Title = "SCHEDULEVIEW";
+            SetupNavBar();
 
             ScheduleTableView.RowHeight = 120f;
             ScheduleTableView.EstimatedRowHeight = 40f;
@@ -38,8 +44,30 @@ namespace OpFlow.iOS
             InitializeButton(btnFriday);
             InitializeButton(btnSaturday);
 
+            pickerRoom.Hidden = true;
+
+            switchSurgeon.ValueChanged += async delegate
+            {
+                pickerRoom.Hidden = switchSurgeon.On;
+
+                await LoadSchedule();
+            };
+
+            var rooms = await AppSettings.RoomList(AppSettings.CurrentUser.LocationID);
+            pickerRoom.Model = new RoomPickerModel(rooms);
+
             await UpdateDateStrings();
             ScheduleTableView.ReloadData();
+        }
+
+        private void SetupNavBar()
+        {
+            foreach (var item in NavigationController.NavigationBar.Items)
+            {
+                var tmpInt = item.Title;
+            }
+
+            NavigationItem.SetHidesBackButton(true, false);
         }
 
         private void InitializeButton(UIButton button)
@@ -156,10 +184,10 @@ namespace OpFlow.iOS
             if (currentDate != null)
                 currentDate.BackgroundColor = UIColor.Yellow;
 
-            await SelectDate();
+            await LoadSchedule();
         }
 
-        private async Task SelectDate()
+        private async Task LoadSchedule()
         {
             var schedule = await SurgeryUtil.GetSurgeryUserSchedule(DateTime.Today);
             var patientIds = schedule.Select(s => s.PatientID).ToList();
@@ -168,7 +196,15 @@ namespace OpFlow.iOS
             var surgeryPatients = new Dictionary<int, Patient>();
             schedule.ForEach(s => surgeryPatients[s.SurgeryID] = patients.FirstOrDefault(p => p.PatientID == s.PatientID));
 
-            ScheduleTableView.Source = new SurgeryTVS(schedule, surgeryPatients);
+            var surgeryTableViewSource = new SurgeryTVS(schedule, surgeryPatients);
+            surgeryTableViewSource.SurgerySelectionEvent += SelectSurgery;
+
+            ScheduleTableView.Source = surgeryTableViewSource;
+        }
+
+        private void SelectSurgery(object sender, Surgery surgery)
+        {
+            NavigationDelegate?.Navigate(AppSettings.FragmentEnum.Schedule, surgery);
         }
     }
 }
