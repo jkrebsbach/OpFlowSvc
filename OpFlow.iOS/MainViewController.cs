@@ -29,6 +29,13 @@ namespace OpFlow.iOS
         {
             base.ViewDidLoad();
 
+            NavigationItem.SetHidesBackButton(true, false);
+
+            NavigationItem.RightBarButtonItem = new UIBarButtonItem()
+            {
+                Title = AppSettings.CurrentUserTitle
+            };
+
             PresentContainerView(AppSettings.FragmentEnum.Schedule);
         }
 
@@ -47,6 +54,12 @@ namespace OpFlow.iOS
             else
             {
                 Title = "DETAIL";
+
+                NavigationItem.LeftBarButtonItem = new UIBarButtonItem()
+                {
+                    Title = "Schedule"
+                };
+
                 await _containerViewController.PresentDetailViewAsync();
             }
         }
