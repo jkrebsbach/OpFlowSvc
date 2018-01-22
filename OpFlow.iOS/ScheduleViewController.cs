@@ -24,6 +24,8 @@ namespace OpFlow.iOS
         {
             NavigationItem.SetHidesBackButton(true, false);
 
+            ScheduleTableView.RowHeight = UITableView.AutomaticDimension;
+
             // rotate arrow 180deg / pi radians
             btnPrev.Transform = CGAffineTransform.MakeRotation((float)Math.PI);
 
@@ -43,6 +45,9 @@ namespace OpFlow.iOS
             button.TitleLabel.LineBreakMode = UILineBreakMode.WordWrap;
             button.TitleLabel.TextAlignment = UITextAlignment.Center;
             button.TitleLabel.Lines = 0;
+
+            button.Layer.BorderWidth = 1.0f;
+            button.Layer.BorderColor = UIColor.Black.CGColor;
 
             button.TouchUpInside += async delegate(object sender, EventArgs e)
             {
