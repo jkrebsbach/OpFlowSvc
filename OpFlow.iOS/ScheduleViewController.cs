@@ -11,7 +11,7 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    public partial class ScheduleViewController : UIViewController
+    public partial class ScheduleViewController : UIViewController, IUITableViewDelegate
     {
         private DateTime _selectedDate;
 
@@ -24,7 +24,8 @@ namespace OpFlow.iOS
         {
             NavigationItem.SetHidesBackButton(true, false);
 
-            ScheduleTableView.RowHeight = UITableView.AutomaticDimension;
+            ScheduleTableView.RowHeight = 120f;
+            ScheduleTableView.EstimatedRowHeight = 40f;
 
             // rotate arrow 180deg / pi radians
             btnPrev.Transform = CGAffineTransform.MakeRotation((float)Math.PI);
@@ -38,6 +39,7 @@ namespace OpFlow.iOS
             InitializeButton(btnSaturday);
 
             await UpdateDateStrings();
+            ScheduleTableView.ReloadData();
         }
 
         private void InitializeButton(UIButton button)
@@ -96,6 +98,12 @@ namespace OpFlow.iOS
             _selectedDate = _selectedDate.AddDays(weekDelta);
 
             await UpdateDateStrings();
+        }
+
+        [Export("tableView:heightForRowAtIndexPath:")]
+        public nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath)
+        {
+            return 150f;
         }
 
         private async Task UpdateDateStrings()
