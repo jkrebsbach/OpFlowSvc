@@ -3,12 +3,14 @@
     {
       "scale": "2x",
       "size": "20x20",
-      "idiom": "iphone"
+      "idiom": "iphone",
+      "filename": "OpFlow40.png"
     },
     {
       "scale": "3x",
       "size": "20x20",
-      "idiom": "iphone"
+      "idiom": "iphone",
+      "filename": "OpFlow60.png"
     },
     {
       "scale": "2x",
@@ -51,7 +53,8 @@
     {
       "scale": "2x",
       "size": "20x20",
-      "idiom": "ipad"
+      "idiom": "ipad",
+      "filename": "OpFlow40.png"
     },
     {
       "scale": "1x",
@@ -66,7 +69,8 @@
     {
       "scale": "1x",
       "size": "40x40",
-      "idiom": "ipad"
+      "idiom": "ipad",
+      "filename": "OpFlow40.png"
     },
     {
       "scale": "2x",
