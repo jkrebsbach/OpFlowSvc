@@ -8,7 +8,8 @@
     <RootNamespace>OpFlow.iOS</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>OpFlow.iOS</AssemblyName>
-    <NuGetPackageImportStamp></NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -95,9 +96,13 @@
     <Compile Include="Delegates\INavigationTargetDelegate.cs" />
     <Compile Include="ViewSources\RoomPickerModel.cs" />
     <Compile Include="EmptySegue.cs" />
+    <Compile Include="EmptySegue.designer.cs" >
+      <DependentUpon>EmptySegue.cs</DependentUpon>
+	</Compile>
     <Compile Include="ContainerViewController.cs" />
-    <Compile Include="ContainerViewController.designer.cs" />
-    <Compile Include="EmptySegue.designer.cs" />
+    <Compile Include="ContainerViewController.designer.cs" >
+      <DependentUpon>ContainerViewController.cs</DependentUpon>
+	</Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
@@ -140,6 +145,15 @@
     <BundleResource Include="Resources\ic_play_arrow_black_18pt.png" />
     <BundleResource Include="Resources\ic_play_arrow_black_18pt%402x.png" />
     <BundleResource Include="Resources\ic_play_arrow_black_18pt%403x.png" />
+    <BundleResource Include="Resources\ic_home_grey_800_18pt.png" />
+    <BundleResource Include="Resources\ic_home_grey_800_18pt%402x.png" />
+    <BundleResource Include="Resources\ic_home_grey_800_18pt%403x.png" />
+    <BundleResource Include="Resources\ic_schedule_grey_800_18pt.png" />
+    <BundleResource Include="Resources\ic_schedule_grey_800_18pt%402x.png" />
+    <BundleResource Include="Resources\ic_schedule_grey_800_18pt%403x.png" />
+    <BundleResource Include="Resources\ic_search_grey_800_18pt.png" />
+    <BundleResource Include="Resources\ic_search_grey_800_18pt%402x.png" />
+    <BundleResource Include="Resources\ic_search_grey_800_18pt%403x.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">
