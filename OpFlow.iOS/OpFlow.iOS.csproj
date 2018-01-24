@@ -24,6 +24,8 @@
     <MtouchArch>x86_64</MtouchArch>
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
+    <CodesignProvision>VS: com.OpFlow.iOS Development</CodesignProvision>
+    <CodesignKey>iPhone Developer: David ROwe (7EY85T9EY5)</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -34,6 +36,8 @@
     <MtouchLink>None</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
+    <CodesignProvision>VS: com.OpFlow.iOS Development</CodesignProvision>
+    <CodesignKey>iPhone Developer: David ROwe (7EY85T9EY5)</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,8 +50,9 @@
     <ConsolePause>false</ConsolePause>
     <MtouchArch>ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>iPhone Developer: David ROwe (7EY85T9EY5)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
+    <CodesignProvision>VS: com.OpFlow.iOS Development</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -58,26 +63,12 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchArch>ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>iPhone Developer: David ROwe (7EY85T9EY5)</CodesignKey>
+    <CodesignProvision>VS: com.OpFlow.iOS Development</CodesignProvision>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ContainerViewController.cs" />
-    <Compile Include="ContainerViewController.designer.cs">
-      <DependentUpon>ContainerViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Delegates\INavigationDelegate.cs" />
-    <Compile Include="Delegates\INavigationTargetDelegate.cs" />
-    <Compile Include="DetailViewController.cs" />
-    <Compile Include="DetailViewController.designer.cs">
-      <DependentUpon>DetailViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="EmptySegue.cs" />
-    <Compile Include="EmptySegue.designer.cs">
-      <DependentUpon>EmptySegue.cs</DependentUpon>
-    </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="ViewSources\RoomPickerModel.cs" />
     <Compile Include="ViewSources\SurgeryTVS.cs" />
     <None Include="GettingStarted.Xamarin" />
     <None Include="Info.plist" />
@@ -99,6 +90,11 @@
     <Compile Include="MainViewController.designer.cs">
       <DependentUpon>MainViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Delegates\INavigationDelegate.cs" />
+    <Compile Include="Delegates\INavigationTargetDelegate.cs" />
+    <Compile Include="ContainerViewController.cs" />
+    <Compile Include="ContainerViewController.designer.cs" />
+    <Compile Include="ViewSources\RoomPickerModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
@@ -141,15 +137,6 @@
     <BundleResource Include="Resources\ic_play_arrow_black_18pt.png" />
     <BundleResource Include="Resources\ic_play_arrow_black_18pt%402x.png" />
     <BundleResource Include="Resources\ic_play_arrow_black_18pt%403x.png" />
-    <BundleResource Include="Resources\ic_schedule_grey_800_18pt.png" />
-    <BundleResource Include="Resources\ic_schedule_grey_800_18pt%402x.png" />
-    <BundleResource Include="Resources\ic_schedule_grey_800_18pt%403x.png" />
-    <BundleResource Include="Resources\ic_home_grey_800_18pt.png" />
-    <BundleResource Include="Resources\ic_home_grey_800_18pt%402x.png" />
-    <BundleResource Include="Resources\ic_home_grey_800_18pt%403x.png" />
-    <BundleResource Include="Resources\ic_search_grey_800_18pt.png" />
-    <BundleResource Include="Resources\ic_search_grey_800_18pt%402x.png" />
-    <BundleResource Include="Resources\ic_search_grey_800_18pt%403x.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">

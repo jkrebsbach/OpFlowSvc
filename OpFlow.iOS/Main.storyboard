@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="701">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
@@ -435,8 +435,7 @@
     <resources>
         <image name="OpFlowLogo.png" width="310" height="92"/>
         <image name="ic_play_arrow_black_18pt.png" width="18" height="18"/>
-        <image name="ic_schedule_grey_800_18pt.png" width="18" height="18"/>
-        <image name="ic_home_grey_800_18pt.png" width="18" height="18"/>
         <image name="ic_search_grey_800_18pt.png" width="18" height="18"/>
+        <image name="OpFlowLogo" width="310" height="92"/>
     </resources>
 </document>
