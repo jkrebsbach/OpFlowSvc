@@ -13,7 +13,8 @@
     {
       "scale": "2x",
       "size": "29x29",
-      "idiom": "iphone"
+      "idiom": "iphone",
+      "filename": "OpFlow58.png"
     },
     {
       "scale": "3x",
@@ -28,12 +29,14 @@
     {
       "scale": "3x",
       "size": "40x40",
-      "idiom": "iphone"
+      "idiom": "iphone",
+      "filename": "OpFlow120.png"
     },
     {
       "scale": "2x",
       "size": "60x60",
-      "idiom": "iphone"
+      "idiom": "iphone",
+      "filename": "OpFlow120.png"
     },
     {
       "scale": "3x",
@@ -88,7 +91,8 @@
     {
       "scale": "1x",
       "size": "1024x1024",
-      "idiom": "ios-marketing"
+      "idiom": "ios-marketing",
+      "filename": "OpFlow1024.png"
     }
   ],
   "properties": {},
