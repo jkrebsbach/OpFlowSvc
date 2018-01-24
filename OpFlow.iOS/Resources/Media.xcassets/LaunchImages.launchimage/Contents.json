@@ -16,7 +16,8 @@
       "subtype": "retina4",
       "scale": "2x",
       "size": "640x1136",
-      "idiom": "iphone"
+      "idiom": "iphone",
+      "filename": "OpFlow640_1136.png"
     },
     {
       "orientation": "portrait",
