@@ -435,7 +435,6 @@
     <resources>
         <image name="OpFlowLogo.png" width="310" height="92"/>
         <image name="ic_play_arrow_black_18pt.png" width="18" height="18"/>
-        <image name="ic_search_grey_800_18pt.png" width="18" height="18"/>
         <image name="OpFlowLogo" width="310" height="92"/>
     </resources>
 </document>

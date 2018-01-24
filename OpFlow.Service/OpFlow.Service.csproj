@@ -203,7 +203,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpFlow.Data\OpFlow.Data.csproj">
-      <Project>{bb8959ed-b7f0-4f9d-aad2-83462f06d864}</Project>
+      <Project>{4EA94324-00F6-4EA2-B6E0-1908A5A385F0}</Project>
       <Name>OpFlow.Data</Name>
     </ProjectReference>
   </ItemGroup>

@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
@@ -9,8 +8,7 @@
     <RootNamespace>OpFlow.iOS</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>OpFlow.iOS</AssemblyName>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <NuGetPackageImportStamp></NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -95,9 +93,11 @@
     </Compile>
     <Compile Include="Delegates\INavigationDelegate.cs" />
     <Compile Include="Delegates\INavigationTargetDelegate.cs" />
+    <Compile Include="ViewSources\RoomPickerModel.cs" />
+    <Compile Include="EmptySegue.cs" />
     <Compile Include="ContainerViewController.cs" />
     <Compile Include="ContainerViewController.designer.cs" />
-    <Compile Include="ViewSources\RoomPickerModel.cs" />
+    <Compile Include="EmptySegue.designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
