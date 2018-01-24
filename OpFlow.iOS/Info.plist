@@ -2,8 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CFBundleIconFiles</key>
-  <string>AppIcons</string>
+	<key>CFBundleIconName</key>
+	<string>AppIcons</string>
 	<key>CFBundleExecutable</key>
 	<string></string>
 	<key>CFBundleDisplayName</key>
@@ -13,7 +13,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>1.0.2</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MinimumOSVersion</key>
