@@ -11,8 +11,8 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    [Register ("ContainerViewController")]
-    partial class ContainerViewController
+    [Register ("DetailHeaderCell")]
+    partial class DetailHeaderCell
     {
         void ReleaseDesignerOutlets ()
         {

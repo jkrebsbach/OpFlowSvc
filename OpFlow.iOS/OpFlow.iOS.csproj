@@ -116,6 +116,14 @@
     <Compile Include="OpenCaseCell.designer.cs">
       <DependentUpon>OpenCaseCell.cs</DependentUpon>
     </Compile>
+    <Compile Include="DetailHeaderCell.cs" />
+    <Compile Include="DetailHeaderCell.designer.cs">
+      <DependentUpon>DetailHeaderCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DetailContentCell.cs" />
+    <Compile Include="DetailContentCell.designer.cs">
+      <DependentUpon>DetailContentCell.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

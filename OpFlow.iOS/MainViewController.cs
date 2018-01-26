@@ -67,7 +67,7 @@ namespace OpFlow.iOS
 
                 NavigationItem.LeftBarButtonItem = SetupCustomBack("Schedule");
 
-                await _containerViewController.PresentDetailViewAsync();
+                await _containerViewController.PresentNavigateViewAsync();
             }
             else
             {

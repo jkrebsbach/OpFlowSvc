@@ -34,6 +34,14 @@ namespace OpFlow.iOS
             return _viewChanging.Task;
         }
 
+        public Task<bool> PresentNavigateViewAsync()
+        {
+            _viewChanging = new TaskCompletionSource<bool>();
+            PerformSegue(NavigateSegue, this);
+
+            return _viewChanging.Task;
+        }
+
         public Task<bool> PresentDetailViewAsync()
         {
             _viewChanging = new TaskCompletionSource<bool>();
@@ -45,7 +53,7 @@ namespace OpFlow.iOS
         public Task<bool> PresentDebriefViewAsync()
         {
             _viewChanging = new TaskCompletionSource<bool>();
-            PerformSegue(NavigateSegue, this);
+            PerformSegue(DetailSegue, this);
 
             return _viewChanging.Task;
         }
