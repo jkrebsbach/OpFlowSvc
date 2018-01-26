@@ -69,6 +69,10 @@
     <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DetailViewController.cs" />
+    <Compile Include="DetailViewController.designer.cs">
+      <DependentUpon>DetailViewController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="ViewSources\SurgeryTVS.cs" />
@@ -96,13 +100,13 @@
     <Compile Include="Delegates\INavigationTargetDelegate.cs" />
     <Compile Include="ViewSources\RoomPickerModel.cs" />
     <Compile Include="EmptySegue.cs" />
-    <Compile Include="EmptySegue.designer.cs" >
+    <Compile Include="EmptySegue.designer.cs">
       <DependentUpon>EmptySegue.cs</DependentUpon>
-	</Compile>
+    </Compile>
     <Compile Include="ContainerViewController.cs" />
-    <Compile Include="ContainerViewController.designer.cs" >
+    <Compile Include="ContainerViewController.designer.cs">
       <DependentUpon>ContainerViewController.cs</DependentUpon>
-	</Compile>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

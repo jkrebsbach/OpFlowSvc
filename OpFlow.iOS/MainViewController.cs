@@ -35,8 +35,15 @@ namespace OpFlow.iOS
             {
                 Title = AppSettings.CurrentUserTitle
             };
-
+            
             PresentContainerView(AppSettings.FragmentEnum.Schedule);
+        }
+
+        private void NavigateBack(object sender, EventArgs e)
+        {
+            // switch on current screen
+            if (1 == 1)
+                PresentContainerView(AppSettings.FragmentEnum.Schedule);
         }
 
         public void Navigate(AppSettings.FragmentEnum fragmentEnum)
@@ -49,19 +56,30 @@ namespace OpFlow.iOS
             if (fragmentEnum == AppSettings.FragmentEnum.Schedule)
             {
                 Title = "SCHEDULE";
+
+                NavigationItem.LeftBarButtonItem = null;
+
                 await _containerViewController.PresentScheduleViewAsync();
             }
             else
             {
                 Title = "DETAIL";
 
-                NavigationItem.LeftBarButtonItem = new UIBarButtonItem()
-                {
-                    Title = "Schedule"
-                };
+                NavigationItem.LeftBarButtonItem = SetupCustomBack("Schedule");
 
                 await _containerViewController.PresentDetailViewAsync();
             }
+        }
+
+        private UIBarButtonItem SetupCustomBack(string backText)
+        {
+            var backButton = new UIBarButtonItem()
+            {
+                Title = backText
+            };
+            backButton.Clicked += NavigateBack;
+
+            return backButton;
         }
 
         public void Navigate(AppSettings.FragmentEnum fragmentEnum, object payload)

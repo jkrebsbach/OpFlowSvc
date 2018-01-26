@@ -62,11 +62,6 @@ namespace OpFlow.iOS
 
         private void SetupNavBar()
         {
-            foreach (var item in NavigationController.NavigationBar.Items)
-            {
-                var tmpInt = item.Title;
-            }
-
             NavigationItem.SetHidesBackButton(true, false);
         }
 
