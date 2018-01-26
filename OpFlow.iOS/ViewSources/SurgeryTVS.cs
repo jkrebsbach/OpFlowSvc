@@ -26,10 +26,10 @@ namespace OpFlow.iOS.ViewSources
 
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
         {
-            var cell = tableView.DequeueReusableCell("ScheduleCell", indexPath) as ScheduleCell;
-
             var surgery = _surgeries[indexPath.Row];
             var patient = _surgeryPatients[surgery.SurgeryID];
+
+            var cell = tableView.DequeueReusableCell("ScheduleCell", indexPath) as ScheduleCell;
 
             cell?.UpdateCell(surgery, patient);
 

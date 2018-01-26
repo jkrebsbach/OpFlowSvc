@@ -11,9 +11,17 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    [Register ("ScheduleCell")]
-    partial class ScheduleCell
+    [Register ("OpenCaseCell")]
+    partial class OpenCaseCell
     {
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton btnDebrief { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblFlowStep { get; set; }
+
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblLocation { get; set; }
@@ -32,10 +40,24 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblStartTime { get; set; }
+        UIKit.UILabel lblSurgeryTime { get; set; }
+
+        [Action ("BtnDebrief_TouchUpInside:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void BtnDebrief_TouchUpInside (UIKit.UIButton sender);
 
         void ReleaseDesignerOutlets ()
         {
+            if (btnDebrief != null) {
+                btnDebrief.Dispose ();
+                btnDebrief = null;
+            }
+
+            if (lblFlowStep != null) {
+                lblFlowStep.Dispose ();
+                lblFlowStep = null;
+            }
+
             if (lblLocation != null) {
                 lblLocation.Dispose ();
                 lblLocation = null;
@@ -56,9 +78,9 @@ namespace OpFlow.iOS
                 lblProcedure = null;
             }
 
-            if (lblStartTime != null) {
-                lblStartTime.Dispose ();
-                lblStartTime = null;
+            if (lblSurgeryTime != null) {
+                lblSurgeryTime.Dispose ();
+                lblSurgeryTime = null;
             }
         }
     }

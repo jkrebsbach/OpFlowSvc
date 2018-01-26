@@ -107,6 +107,10 @@
     <Compile Include="ContainerViewController.designer.cs">
       <DependentUpon>ContainerViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="OpenCaseCell_.cs" />
+    <Compile Include="OpenCaseCell_.designer.cs">
+      <DependentUpon>OpenCaseCell_.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
