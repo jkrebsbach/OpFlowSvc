@@ -1,17 +1,18 @@
-﻿using Foundation;
-using OpFlow.Data;
+using Foundation;
 using System;
+using OpFlow.Data;
 using OpFlow.iOS.Delegates;
 using OpFlow.Mobile;
 using UIKit;
 
 namespace OpFlow.iOS
 {
-    public partial class ScheduleCell : ScheduleTableCell
+    public partial class OpenCaseCell :  ScheduleTableCell
     {
-        public ScheduleCell (IntPtr handle) : base (handle)
+        public OpenCaseCell (IntPtr handle) : base (handle)
         {
         }
+
 
         internal override void UpdateCell(Surgery surgery, Patient patient)
         {
@@ -20,7 +21,12 @@ namespace OpFlow.iOS
             //lblPatientName.Text = string.Format("{0}, {1}", patient?.LastName, patient?.FirstName);
             lblPatientName.Text = string.Format("{0}", patient?.Initials);
             lblProcedure.Text = surgery.ProcedureDescription;
-            lblStartTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
+            lblSurgeryTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
+        }
+
+        partial void BtnDebrief_TouchUpInside(UIButton sender)
+        {
+            throw new NotImplementedException();
         }
     }
 }

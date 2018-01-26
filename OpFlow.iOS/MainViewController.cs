@@ -61,13 +61,22 @@ namespace OpFlow.iOS
 
                 await _containerViewController.PresentScheduleViewAsync();
             }
-            else
+            else if (fragmentEnum == AppSettings.FragmentEnum.CardDetail)
             {
                 Title = "DETAIL";
 
                 NavigationItem.LeftBarButtonItem = SetupCustomBack("Schedule");
 
                 await _containerViewController.PresentDetailViewAsync();
+            }
+            else
+            {
+                Title = "DEBRIEF";
+
+                NavigationItem.LeftBarButtonItem = SetupCustomBack("Schedule");
+
+                await _containerViewController.PresentDebriefViewAsync();
+
             }
         }
 
@@ -89,7 +98,12 @@ namespace OpFlow.iOS
                 case AppSettings.FragmentEnum.Schedule:
                     var surgery = (Surgery) payload;
                     AppSettings.LoadSurgery(surgery.SurgeryID, surgery.PatientID);
-                    PresentContainerView(AppSettings.FragmentEnum.CardDetail);
+
+                    if (surgery.SurgeryStatus == "O")
+                        PresentContainerView(AppSettings.FragmentEnum.Debrief);
+                    else
+                        PresentContainerView(AppSettings.FragmentEnum.CardDetail);
+
                     break;
 
             }

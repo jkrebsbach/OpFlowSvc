@@ -69,12 +69,17 @@
     <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Delegates\ScheduleTableCell.cs" />
     <Compile Include="DetailViewController.cs" />
     <Compile Include="DetailViewController.designer.cs">
       <DependentUpon>DetailViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="NavigateViewController.cs" />
+    <Compile Include="NavigateViewController.designer.cs">
+      <DependentUpon>NavigateViewController.cs</DependentUpon>
+    </Compile>
     <Compile Include="ViewSources\SurgeryTVS.cs" />
     <None Include="GettingStarted.Xamarin" />
     <None Include="Info.plist" />
@@ -107,9 +112,9 @@
     <Compile Include="ContainerViewController.designer.cs">
       <DependentUpon>ContainerViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="OpenCaseCell_.cs" />
-    <Compile Include="OpenCaseCell_.designer.cs">
-      <DependentUpon>OpenCaseCell_.cs</DependentUpon>
+    <Compile Include="OpenCaseCell.cs" />
+    <Compile Include="OpenCaseCell.designer.cs">
+      <DependentUpon>OpenCaseCell.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +167,8 @@
     <BundleResource Include="Resources\ic_search_grey_800_18pt.png" />
     <BundleResource Include="Resources\ic_search_grey_800_18pt%402x.png" />
     <BundleResource Include="Resources\ic_search_grey_800_18pt%403x.png" />
+    <BundleResource Include="Resources\DarkGreenCheckMark.png" />
+    <BundleResource Include="Resources\RedExclamationPoint.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">

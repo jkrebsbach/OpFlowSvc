@@ -1,4 +1,4 @@
-// WARNING
+﻿// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -32,6 +32,10 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblProcedureDescription { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblStartTime { get; set; }
 
         void ReleaseDesignerOutlets ()
@@ -54,6 +58,11 @@ namespace OpFlow.iOS
             if (lblProcedure != null) {
                 lblProcedure.Dispose ();
                 lblProcedure = null;
+            }
+
+            if (lblProcedureDescription != null) {
+                lblProcedureDescription.Dispose ();
+                lblProcedureDescription = null;
             }
 
             if (lblStartTime != null) {

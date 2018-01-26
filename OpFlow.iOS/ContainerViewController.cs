@@ -11,6 +11,7 @@ namespace OpFlow.iOS
         private TaskCompletionSource<bool> _viewChanging;
         private readonly NSString ScheduleSegue = (NSString)"scheduleSegue";
         private readonly NSString DetailSegue = (NSString)"detailSegue";
+        private readonly NSString NavigateSegue = (NSString)"navigateSegue";
 
         private INavigationDelegate _hostController;
 
@@ -37,6 +38,14 @@ namespace OpFlow.iOS
         {
             _viewChanging = new TaskCompletionSource<bool>();
             PerformSegue(DetailSegue, this);
+
+            return _viewChanging.Task;
+        }
+
+        public Task<bool> PresentDebriefViewAsync()
+        {
+            _viewChanging = new TaskCompletionSource<bool>();
+            PerformSegue(NavigateSegue, this);
 
             return _viewChanging.Task;
         }

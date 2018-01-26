@@ -29,7 +29,11 @@ namespace OpFlow.iOS.ViewSources
             var surgery = _surgeries[indexPath.Row];
             var patient = _surgeryPatients[surgery.SurgeryID];
 
-            var cell = tableView.DequeueReusableCell("ScheduleCell", indexPath) as ScheduleCell;
+            ScheduleTableCell cell = null;
+            if (surgery.SurgeryStatus == "O")
+                cell = tableView.DequeueReusableCell("OpenCaseCell", indexPath) as ScheduleTableCell;
+            else
+                cell = tableView.DequeueReusableCell("ScheduleCell", indexPath) as ScheduleTableCell;
 
             cell?.UpdateCell(surgery, patient);
 

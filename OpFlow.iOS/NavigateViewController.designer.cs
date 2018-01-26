@@ -11,8 +11,8 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    [Register ("ContainerViewController")]
-    partial class ContainerViewController
+    [Register ("NavigateViewController")]
+    partial class NavigateViewController
     {
         void ReleaseDesignerOutlets ()
         {
