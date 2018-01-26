@@ -177,6 +177,16 @@
     <BundleResource Include="Resources\ic_search_grey_800_18pt%403x.png" />
     <BundleResource Include="Resources\DarkGreenCheckMark.png" />
     <BundleResource Include="Resources\RedExclamationPoint.png" />
+    <BundleResource Include="Resources\ic_person_black_18pt.png" />
+    <BundleResource Include="Resources\ic_person_black_18pt%402x.png" />
+    <BundleResource Include="Resources\ic_person_black_18pt%403x.png" />
+    <BundleResource Include="Resources\ic_payment_black_18pt.png" />
+    <BundleResource Include="Resources\ic_payment_black_18pt%402x.png" />
+    <BundleResource Include="Resources\ic_payment_black_18pt%403x.png" />
+    <BundleResource Include="Resources\ic_dashboard_black_18pt.png" />
+    <BundleResource Include="Resources\ic_dashboard_black_18pt%402x.png" />
+    <BundleResource Include="Resources\ic_dashboard_black_18pt%403x.png" />
+    <BundleResource Include="Resources\infinity.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">
