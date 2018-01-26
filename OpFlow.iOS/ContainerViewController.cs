@@ -55,10 +55,6 @@ namespace OpFlow.iOS
         public override void PrepareForSegue(UIStoryboardSegue segue,
             NSObject sender)
         {
-            // validate segue
-            if ((segue.Identifier != ScheduleSegue) && 
-                (segue.Identifier != DetailSegue)) return;
-
             if (segue.DestinationViewController is INavigationTargetDelegate targetScene)
             {
                 targetScene.NavigationDelegate = _hostController;

@@ -23,10 +23,5 @@ namespace OpFlow.iOS
             lblProcedure.Text = surgery.ProcedureDescription;
             lblSurgeryTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
         }
-
-        partial void BtnDebrief_TouchUpInside(UIButton sender)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

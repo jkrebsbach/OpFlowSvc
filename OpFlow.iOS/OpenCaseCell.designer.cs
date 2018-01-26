@@ -42,10 +42,6 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblSurgeryTime { get; set; }
 
-        [Action ("BtnDebrief_TouchUpInside:")]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        partial void BtnDebrief_TouchUpInside (UIKit.UIButton sender);
-
         void ReleaseDesignerOutlets ()
         {
             if (btnDebrief != null) {
