@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CoreAnimation;
 using CoreGraphics;
 using OpFlow.Data;
 using OpFlow.iOS.Delegates;
@@ -32,17 +33,9 @@ namespace OpFlow.iOS
 
             ScheduleTableView.RowHeight = 120f;
             ScheduleTableView.EstimatedRowHeight = 40f;
-
+            
             // rotate arrow 180deg / pi radians
             btnPrev.Transform = CGAffineTransform.MakeRotation((float)Math.PI);
-
-            InitializeButton(btnSunday);
-            InitializeButton(btnMonday);
-            InitializeButton(btnTuesday);
-            InitializeButton(btnWednesday);
-            InitializeButton(btnThursday);
-            InitializeButton(btnFriday);
-            InitializeButton(btnSaturday);
 
             pickerRoom.Hidden = true;
 
@@ -58,6 +51,14 @@ namespace OpFlow.iOS
 
             await UpdateDateStrings();
             ScheduleTableView.ReloadData();
+
+            InitializeButton(btnSunday, false);
+            InitializeButton(btnMonday, true);
+            InitializeButton(btnTuesday, true);
+            InitializeButton(btnWednesday, true);
+            InitializeButton(btnThursday, true);
+            InitializeButton(btnFriday, true);
+            InitializeButton(btnSaturday, true);
         }
 
         private void SetupNavBar()
@@ -65,14 +66,31 @@ namespace OpFlow.iOS
             NavigationItem.SetHidesBackButton(true, false);
         }
 
-        private void InitializeButton(UIButton button)
+        private void InitializeButton(UIButton button, bool showLeftBorder)
         {
             button.TitleLabel.LineBreakMode = UILineBreakMode.WordWrap;
             button.TitleLabel.TextAlignment = UITextAlignment.Center;
             button.TitleLabel.Lines = 0;
+            
+            //button.Layer.BorderWidth = 1.0f;
+            //button.Layer.BorderColor = UIColor.Black.CGColor;
 
-            button.Layer.BorderWidth = 1.0f;
-            button.Layer.BorderColor = UIColor.Black.CGColor;
+            var topBorder = new CALayer
+            {
+                Frame = new CGRect(0f, 0f, button.Frame.Width, 2.0f),
+                BackgroundColor = UIColor.Black.CGColor
+            };
+            button.Layer.AddSublayer(topBorder);
+
+            if (showLeftBorder)
+            {
+                var leftBorder = new CALayer
+                {
+                    Frame = new CGRect(0f, 0f, 1f, button.Frame.Height),
+                    BackgroundColor = UIColor.Black.CGColor
+                };
+                button.Layer.AddSublayer(leftBorder);
+            }
 
             button.TouchUpInside += async delegate(object sender, EventArgs e)
             {
@@ -185,12 +203,8 @@ namespace OpFlow.iOS
         private async Task LoadSchedule()
         {
             var schedule = await SurgeryUtil.GetSurgeryUserSchedule(DateTime.Today);
-            var patientIds = schedule.Select(s => s.PatientID).ToList();
-            var patients = await PatientUtil.GetPatients(patientIds);
-
-            var surgeryPatients = new Dictionary<int, Patient>();
-            schedule.ForEach(s => surgeryPatients[s.SurgeryID] = patients.FirstOrDefault(p => p.PatientID == s.PatientID));
-
+            var surgeryPatients = await SurgeryUtil.GetSurgeryPatients(schedule);
+            
             var surgeryTableViewSource = new SurgeryTVS(schedule, surgeryPatients);
             surgeryTableViewSource.SurgerySelectionEvent += SelectSurgery;
 

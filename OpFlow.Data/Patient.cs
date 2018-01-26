@@ -9,6 +9,7 @@ namespace OpFlow.Data
         public int PatientID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Initials { get; set; }
         public DateTime BirthDate { get; set; }
         public string Gender { get; set; }
         public decimal BMI { get; set; }

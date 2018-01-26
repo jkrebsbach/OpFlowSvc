@@ -1,4 +1,4 @@
-// WARNING
+﻿// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -14,6 +14,14 @@ namespace OpFlow.iOS
     [Register ("ScheduleCell")]
     partial class ScheduleCell
     {
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton btnDebrief { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblFlowStep { get; set; }
+
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblLocation { get; set; }
@@ -34,8 +42,22 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblStartTime { get; set; }
 
+        [Action ("BtnDebrief_TouchUpInside:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void BtnDebrief_TouchUpInside (UIKit.UIButton sender);
+
         void ReleaseDesignerOutlets ()
         {
+            if (btnDebrief != null) {
+                btnDebrief.Dispose ();
+                btnDebrief = null;
+            }
+
+            if (lblFlowStep != null) {
+                lblFlowStep.Dispose ();
+                lblFlowStep = null;
+            }
+
             if (lblLocation != null) {
                 lblLocation.Dispose ();
                 lblLocation = null;
