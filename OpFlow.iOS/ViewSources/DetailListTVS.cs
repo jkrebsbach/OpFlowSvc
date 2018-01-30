@@ -15,6 +15,8 @@ namespace OpFlow.iOS.ViewSources
         private readonly List<CaseDetailToken> _detailTokens;
         private readonly List<bool> _hiddenDetails;
 
+        public event EventHandler<List<CaseDetailToken>> DetailListConfirmedEvent;
+
         public DetailListTVS(List<CaseDetailToken> details)
         {
             _detailTokens = details;
@@ -28,6 +30,11 @@ namespace OpFlow.iOS.ViewSources
         {
             var tokenIndex = (int)(indexPath.Row / 2);
             var header = (indexPath.Row % 2 == 0);
+
+            var lastRow = (indexPath.Row == _detailTokens.Count * 2);
+
+            if (lastRow)
+                return tableView.DequeueReusableCell("DetailConfirmCell", indexPath);
 
             var token = _detailTokens[tokenIndex];
 
@@ -48,15 +55,20 @@ namespace OpFlow.iOS.ViewSources
 
         public override nint RowsInSection(UITableView tableview, nint section)
         {
-            return _detailTokens.Count * 2;
+            return _detailTokens.Count * 2 + 1;  // Include confirm cell
         }
 
         public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
         {
             var tokenIndex = (int)(indexPath.Row / 2);
-            var header = (indexPath.Row % 2 == 0);
+            var selectedCell = tableView.CellAt(indexPath);
 
-            if (header)
+            if (selectedCell is DetailConfirmCell confirmCell)
+            {
+                DetailListConfirmedEvent?.Invoke(this, _detailTokens);
+
+            }
+            else if (selectedCell is DetailHeaderCell headerCell)
             {
                 // Toggle visibility of detail
                 var hiddenDetails = !_hiddenDetails[tokenIndex];
@@ -64,7 +76,6 @@ namespace OpFlow.iOS.ViewSources
 
                 var detailIndexPath = NSIndexPath.FromRowSection(indexPath.Row + 1, indexPath.Section);
 
-                var headerCell = tableView.CellAt(indexPath) as DetailHeaderCell;
                 var detailCell = tableView.CellAt(detailIndexPath);
 
                 headerCell.AssignToggleImage(hiddenDetails);
@@ -76,10 +87,10 @@ namespace OpFlow.iOS.ViewSources
 
                 // Assign visibility to Hidden flag
                 detailCell.Hidden = hiddenDetails;
-            }
 
-            tableView.BeginUpdates();
-            tableView.EndUpdates();
+                tableView.BeginUpdates();
+                tableView.EndUpdates();
+            }
         }
 
         public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath)

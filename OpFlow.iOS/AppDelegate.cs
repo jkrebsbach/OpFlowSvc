@@ -1,4 +1,5 @@
 ﻿using Foundation;
+using OpFlow.Mobile;
 using UIKit;
 
 namespace OpFlow.iOS
@@ -43,6 +44,9 @@ namespace OpFlow.iOS
         {
             // Called as part of the transiton from background to active state.
             // Here you can undo many of the changes made on entering the background.
+
+            // Clear out any authentication credentials
+            AppSettings.SignOutUser();
         }
 
         public override void OnActivated(UIApplication application)

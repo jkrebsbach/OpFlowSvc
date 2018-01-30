@@ -2,18 +2,21 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using OpFlow.iOS.Delegates;
 using OpFlow.iOS.ViewSources;
 using OpFlow.Mobile;
 using UIKit;
 
 namespace OpFlow.iOS
 {
-    public partial class DetailViewController : UIViewController
+    public partial class DetailViewController : UIViewController, INavigationTargetDelegate
     {
         public DetailViewController (IntPtr handle) : base (handle)
         {
-            
+
         }
+
+        public INavigationDelegate NavigationDelegate { get; set; }
 
         public override async void ViewDidLoad()
         {
@@ -32,7 +35,6 @@ namespace OpFlow.iOS
 
         private async Task SetupDetails()
         {
-
             var surgery = await SurgeryUtil.GetSurgery(
                 AppSettings.CurrentSurgery ?? 0,
                 AppSettings.CurrentUser.ProviderID,
@@ -46,8 +48,15 @@ namespace OpFlow.iOS
             var tokens = await CaseDetailToken.GetCaseDetailTokens(surgery, patient);
 
             var detailTableViewSource = new DetailListTVS(tokens);
+            detailTableViewSource.DetailListConfirmedEvent += ConfirmDetails;
 
             DetailTableView.Source = detailTableViewSource;
+        }
+
+        private void ConfirmDetails(object sender, List<CaseDetailToken> tokens)
+        {
+            NavigationDelegate?.Navigate(AppSettings.FragmentEnum.CaseNavigate, tokens);
+
         }
     }
 }

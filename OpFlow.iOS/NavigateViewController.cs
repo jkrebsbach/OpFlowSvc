@@ -6,10 +6,11 @@ using OpFlow.Mobile;
 using OpFlow.Data;
 using System.Collections.Generic;
 using System.Linq;
+using OpFlow.iOS.Delegates;
 
 namespace OpFlow.iOS
 {
-    public partial class NavigateViewController : UIViewController
+    public partial class NavigateViewController : UIViewController, INavigationTargetDelegate
     {
         Surgery _surgery;
         Flow _flow;
@@ -18,6 +19,8 @@ namespace OpFlow.iOS
         public NavigateViewController (IntPtr handle) : base (handle)
         {
         }
+
+        public INavigationDelegate NavigationDelegate { get; set; }
 
         public override async void ViewDidLoad()
         {

@@ -15,6 +15,23 @@ namespace OpFlow.iOS
         public override void UpdateCell(CaseDetailToken token)
         {
             txtDetail.Text = token.DetailText;
+
+            txtDetail.ReturnKeyType = UIReturnKeyType.Done;
+
+            txtDetail.ShouldChangeText = (text, range, replacementString) =>
+            {
+                if (replacementString.Equals("\n"))
+                {
+                    txtDetail.EndEditing(true);
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            };
         }
+
+        
     }
 }

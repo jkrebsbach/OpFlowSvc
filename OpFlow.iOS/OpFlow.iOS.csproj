@@ -71,6 +71,10 @@
   <ItemGroup>
     <Compile Include="Delegates\DetailListCell.cs" />
     <Compile Include="Delegates\ScheduleTableCell.cs" />
+    <Compile Include="DetailConfirmCell.cs" />
+    <Compile Include="DetailConfirmCell.designer.cs">
+      <DependentUpon>DetailConfirmCell.cs</DependentUpon>
+    </Compile>
     <Compile Include="DetailViewController.cs" />
     <Compile Include="DetailViewController.designer.cs">
       <DependentUpon>DetailViewController.cs</DependentUpon>
@@ -191,6 +195,9 @@
     <BundleResource Include="Resources\ic_dashboard_black_18pt%402x.png" />
     <BundleResource Include="Resources\ic_dashboard_black_18pt%403x.png" />
     <BundleResource Include="Resources\infinity.png" />
+    <BundleResource Include="Resources\ic_check_circle_green_A700_18pt.png" />
+    <BundleResource Include="Resources\ic_check_circle_green_A700_18pt%402x.png" />
+    <BundleResource Include="Resources\ic_check_circle_green_A700_18pt%403x.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">

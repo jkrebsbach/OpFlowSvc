@@ -106,6 +106,15 @@ namespace OpFlow.Mobile
                 CurrentUser = await UserUtil.GetUser(username);
         }
 
+        public static void SignOutUser()
+        {
+            _authToken = null;
+            CurrentUser = null;
+
+            CurrentSurgery = null;
+            CurrentPatient = null;
+        }
+
         public static async Task<List<Room>> RoomList(int locationId)
         {
             if (!_roomDictionary.ContainsKey(locationId))

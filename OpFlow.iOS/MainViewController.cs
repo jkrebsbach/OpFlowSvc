@@ -62,9 +62,9 @@ namespace OpFlow.iOS
 
                 await _containerViewController.PresentScheduleViewAsync();
             }
-            else if (fragmentEnum == AppSettings.FragmentEnum.CardDetail)
+            else if (fragmentEnum == AppSettings.FragmentEnum.CaseNavigate)
             {
-                AppSettings.CurrentScreen = AppSettings.FragmentEnum.CardDetail;
+                AppSettings.CurrentScreen = AppSettings.FragmentEnum.CaseNavigate;
                 Title = "DETAIL";
 
                 NavigationItem.LeftBarButtonItem = SetupCustomBack("Schedule");
@@ -105,9 +105,13 @@ namespace OpFlow.iOS
                     if (surgery.SurgeryStatus == "O")
                         PresentContainerView(AppSettings.FragmentEnum.Debrief);
                     else
-                        PresentContainerView(AppSettings.FragmentEnum.CardDetail);
+                        PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
 
                     break;
+                case AppSettings.FragmentEnum.CaseNavigate:
+                    PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
+                    break;
+
 
             }
         }
