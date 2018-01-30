@@ -55,6 +55,7 @@ namespace OpFlow.iOS
         {
             if (fragmentEnum == AppSettings.FragmentEnum.Schedule)
             {
+                AppSettings.CurrentScreen = AppSettings.FragmentEnum.Schedule;
                 Title = "SCHEDULE";
 
                 NavigationItem.LeftBarButtonItem = null;
@@ -63,6 +64,7 @@ namespace OpFlow.iOS
             }
             else if (fragmentEnum == AppSettings.FragmentEnum.CardDetail)
             {
+                AppSettings.CurrentScreen = AppSettings.FragmentEnum.CardDetail;
                 Title = "DETAIL";
 
                 NavigationItem.LeftBarButtonItem = SetupCustomBack("Schedule");
@@ -71,6 +73,7 @@ namespace OpFlow.iOS
             }
             else
             {
+                AppSettings.CurrentScreen = AppSettings.FragmentEnum.Debrief;
                 Title = "DEBRIEF";
 
                 NavigationItem.LeftBarButtonItem = SetupCustomBack("Schedule");

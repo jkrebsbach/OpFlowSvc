@@ -26,12 +26,7 @@ namespace OpFlow.AndroidApp.Fragments
         {
             ToggleConfirm(true, "PATIENT");
 
-            var caseDetailTokens = Enum.GetValues(typeof(PatientDemo.DemoTypeEnum))
-                .Cast<PatientDemo.DemoTypeEnum>()
-                .Select(value => new CaseDetailToken(Patient, value))
-                .ToList();
-
-            return caseDetailTokens;
+            return CaseDetailToken.GetFlowDetails(Patient);
         }
     }
 }

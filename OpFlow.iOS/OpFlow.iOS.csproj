@@ -69,6 +69,7 @@
     <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Delegates\DetailListCell.cs" />
     <Compile Include="Delegates\ScheduleTableCell.cs" />
     <Compile Include="DetailViewController.cs" />
     <Compile Include="DetailViewController.designer.cs">
@@ -80,6 +81,7 @@
     <Compile Include="NavigateViewController.designer.cs">
       <DependentUpon>NavigateViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewSources\DetailListTVS.cs" />
     <Compile Include="ViewSources\SurgeryTVS.cs" />
     <None Include="GettingStarted.Xamarin" />
     <None Include="Info.plist" />
@@ -126,7 +128,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <InterfaceDefinition Include="Main.storyboard" />
+    <InterfaceDefinition Include="Main.storyboard">
+      <SubType>Designer</SubType>
+    </InterfaceDefinition>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
   </ItemGroup>
   <ItemGroup>

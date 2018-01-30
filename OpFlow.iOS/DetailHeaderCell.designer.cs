@@ -14,8 +14,25 @@ namespace OpFlow.iOS
     [Register ("DetailHeaderCell")]
     partial class DetailHeaderCell
     {
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIImageView ivToggleArrow { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblCategory { get; set; }
+
         void ReleaseDesignerOutlets ()
         {
+            if (ivToggleArrow != null) {
+                ivToggleArrow.Dispose ();
+                ivToggleArrow = null;
+            }
+
+            if (lblCategory != null) {
+                lblCategory.Dispose ();
+                lblCategory = null;
+            }
         }
     }
 }

@@ -25,13 +25,7 @@ namespace OpFlow.AndroidApp.Fragments
         {
             ToggleConfirm(false, "Click to Confirm");
 
-            var flowSteps = await FlowUtil.GetFlowInstructions(Surgery.FlowID);
-
-            var caseDetailTokens = flowSteps
-                .Select(value => new CaseDetailToken(value))
-                .ToList();
-
-            return caseDetailTokens;
+            return await CaseDetailToken.GetFlowDetails(Surgery.FlowID);
         }
     }
 }

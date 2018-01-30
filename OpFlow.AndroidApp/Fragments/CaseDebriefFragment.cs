@@ -25,14 +25,7 @@ namespace OpFlow.AndroidApp.Fragments
         {
             ToggleConfirm(false, "Save Feedback");
 
-            var flowSteps = await FlowUtil.GetFlowInstructions(Surgery.FlowID);
-
-            var caseDetailTokens = flowSteps
-                .OrderBy(fs => fs.StepID)
-                .Select(value => new CaseDetailToken(value))
-                .ToList();
-
-            return caseDetailTokens;
+            return await CaseDetailToken.GetFlowDetails(Surgery.FlowID);
         }
 
         protected override void ButtonClicked(object sender, EventArgs e)

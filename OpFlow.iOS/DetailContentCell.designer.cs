@@ -14,8 +14,16 @@ namespace OpFlow.iOS
     [Register ("DetailContentCell")]
     partial class DetailContentCell
     {
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UITextView txtDetail { get; set; }
+
         void ReleaseDesignerOutlets ()
         {
+            if (txtDetail != null) {
+                txtDetail.Dispose ();
+                txtDetail = null;
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using OpFlow.Data;
 
 namespace OpFlow.Mobile
@@ -12,8 +13,18 @@ namespace OpFlow.Mobile
         public int CategoryGroupId;
         public string DetailText;
         public int DetailId;
-        
-        public CaseDetailToken(Patient patient, PatientDemo.DemoTypeEnum patientDemoDetail)
+
+        public static List<CaseDetailToken> GetFlowDetails(Patient patient)
+        {
+            var caseDetailTokens = Enum.GetValues(typeof(PatientDemo.DemoTypeEnum))
+                .Cast<PatientDemo.DemoTypeEnum>()
+                .Select(value => new CaseDetailToken(patient, value))
+                .ToList();
+
+            return caseDetailTokens;
+        }
+
+        private CaseDetailToken(Patient patient, PatientDemo.DemoTypeEnum patientDemoDetail)
         {
             CategoryTitle = patientDemoDetail.ToString();
             PatientDemo demoDetail = null;
@@ -46,7 +57,37 @@ namespace OpFlow.Mobile
             DetailText = demoDetail?.DemoDescription ?? "";
         }
 
-        public CaseDetailToken(FlowStep flowStep)
+        public static async Task<List<CaseDetailToken>> GetCaseDetailTokens(
+            Surgery surgery, Patient patient)
+        {
+            List<CaseDetailToken> tokens = null;
+
+            switch (AppSettings.CurrentScreen)
+            {
+                case AppSettings.FragmentEnum.Debrief:
+                    tokens = await GetFlowDetails(surgery.FlowID);
+                    break;
+                default:
+                    tokens = GetFlowDetails(patient);
+                    break;
+            }
+
+            return tokens;
+        }
+
+        public static async Task<List<CaseDetailToken>> GetFlowDetails(int flowId)
+        {
+            var flowSteps = await FlowUtil.GetFlowInstructions(flowId);
+
+            var caseDetailTokens = flowSteps
+                .OrderBy(fs => fs.StepID)
+                .Select(value => new CaseDetailToken(value))
+                .ToList();
+
+            return caseDetailTokens;
+        }
+
+        private CaseDetailToken(FlowStep flowStep)
         {
             CategoryTitle = flowStep.StepDescription;
             DetailText = flowStep.StepInstruction;
