@@ -70,6 +70,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Delegates\DetailListCell.cs" />
+    <Compile Include="Delegates\OpFlowViewController.cs" />
     <Compile Include="Delegates\ScheduleTableCell.cs" />
     <Compile Include="DetailConfirmCell.cs" />
     <Compile Include="DetailConfirmCell.designer.cs">

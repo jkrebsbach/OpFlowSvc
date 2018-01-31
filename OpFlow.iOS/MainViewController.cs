@@ -11,6 +11,7 @@ namespace OpFlow.iOS
     public partial class MainViewController : UIViewController, INavigationDelegate
     {
         private ContainerViewController _containerViewController;
+        private NSObject _foregroundNotification;
 
         public MainViewController (IntPtr handle) : base (handle)
         {
@@ -25,9 +26,34 @@ namespace OpFlow.iOS
             }
         }
 
+        public override void ViewWillAppear(bool animated)
+        {
+            base.ViewWillAppear(animated);
+
+            if (!AppSettings.UserAuthenticated)
+            {
+                var controller = Storyboard.InstantiateViewController("LoginViewController");
+                NavigationController.PushViewController(controller, true);
+            }
+        }
+
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
+
+            _foregroundNotification = UIApplication.Notifications.ObserveWillEnterForeground((sender, EventArgs) =>
+            {
+                if (!AppSettings.UserAuthenticated)
+                {
+                    var controller = Storyboard.InstantiateViewController("LoginViewController");
+                    NavigationController.PushViewController(controller, true);
+                }
+
+                _foregroundNotification.Dispose();
+            });
+
+            if (!AppSettings.UserAuthenticated)
+                return;
 
             NavigationItem.SetHidesBackButton(true, false);
 
@@ -37,6 +63,11 @@ namespace OpFlow.iOS
             };
             
             PresentContainerView(AppSettings.FragmentEnum.Schedule);
+        }
+
+        public override void ViewDidDisappear(bool animated)
+        {
+            _foregroundNotification?.Dispose();
         }
 
         private void NavigateBack(object sender, EventArgs e)

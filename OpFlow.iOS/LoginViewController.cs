@@ -12,6 +12,13 @@ namespace OpFlow.iOS
         {
         }
 
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
+            
+            NavigationItem.SetHidesBackButton(true, false);
+        }
+
         partial void SignOnClick(UIButton sender)
         {
             var task = Task.Run(async () =>
