@@ -26,6 +26,11 @@ namespace OpFlow.iOS
         {
             base.ViewDidLoad();
 
+            vwSurgeon.Layer.BorderWidth = 1.0f;
+            vwSurgeon.Layer.BorderColor = UIColor.Black.CGColor;
+
+            vwSurgeon.LayoutMargins = new UIEdgeInsets(2, 2, 2, 2);
+
             Title = "SCHEDULEVIEW";
             await LoadSurgery();
         }
@@ -51,11 +56,11 @@ namespace OpFlow.iOS
             // If case is open, show debrief button
             lblDebrief.Hidden = (_surgery.SurgeryStatus != "O");
 
-            lblSurgeon.Text = "Surgeon: " + GetUserName(users, AppSettings.RoleEnum.Surgeon);
-            lblCirculator.Text = "Circ: " + GetUserName(users, AppSettings.RoleEnum.Circulator);
-            lblScrub.Text = "Scrub: " + GetUserName(users, AppSettings.RoleEnum.ScrubTech);
-            lblAnes.Text = "Anes: " + GetUserName(users, AppSettings.RoleEnum.FrontDesk);
-            lblRep.Text = "Rep: " + GetUserName(users, AppSettings.RoleEnum.FrontDesk);
+            lblSurgeonName.Text = GetUserName(users, AppSettings.RoleEnum.Surgeon);
+            lblCirculatorName.Text = GetUserName(users, AppSettings.RoleEnum.Circulator);
+            lblScrubName.Text = GetUserName(users, AppSettings.RoleEnum.ScrubTech);
+            lblAnesName.Text = GetUserName(users, AppSettings.RoleEnum.FrontDesk);
+            lblRepName.Text = GetUserName(users, AppSettings.RoleEnum.FrontDesk);
 
             lblPatientName.Text = PatientNameText;
             lblPatientInfo.Text = PatientInfoText;
@@ -66,7 +71,7 @@ namespace OpFlow.iOS
         {
             var user = users.FirstOrDefault(u => u.RoleID == (int)roleId);
 
-            return user == null ? string.Empty : string.Format("{0}, {1} {2}", user.LastName, user.FirstName, user.Title);
+            return user == null ? "NONE" : string.Format("{0}, {1} {2}", user.LastName, user.FirstName, user.Title);
         }
 
         private string PatientNameText => string.Format("{0}, {1}", _patient?.LastName, _patient?.FirstName);

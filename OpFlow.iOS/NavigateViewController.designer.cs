@@ -1,4 +1,4 @@
-﻿// WARNING
+// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -20,7 +20,15 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblAnesName { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblCirculator { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblCirculatorName { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -52,7 +60,15 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblRepName { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblScrub { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblScrubName { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -60,7 +76,15 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblSurgeonName { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblSurgeryTime { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIView vwSurgeon { get; set; }
 
         void ReleaseDesignerOutlets ()
         {
@@ -69,9 +93,19 @@ namespace OpFlow.iOS
                 lblAnes = null;
             }
 
+            if (lblAnesName != null) {
+                lblAnesName.Dispose ();
+                lblAnesName = null;
+            }
+
             if (lblCirculator != null) {
                 lblCirculator.Dispose ();
                 lblCirculator = null;
+            }
+
+            if (lblCirculatorName != null) {
+                lblCirculatorName.Dispose ();
+                lblCirculatorName = null;
             }
 
             if (lblDebrief != null) {
@@ -109,9 +143,19 @@ namespace OpFlow.iOS
                 lblRep = null;
             }
 
+            if (lblRepName != null) {
+                lblRepName.Dispose ();
+                lblRepName = null;
+            }
+
             if (lblScrub != null) {
                 lblScrub.Dispose ();
                 lblScrub = null;
+            }
+
+            if (lblScrubName != null) {
+                lblScrubName.Dispose ();
+                lblScrubName = null;
             }
 
             if (lblSurgeon != null) {
@@ -119,9 +163,19 @@ namespace OpFlow.iOS
                 lblSurgeon = null;
             }
 
+            if (lblSurgeonName != null) {
+                lblSurgeonName.Dispose ();
+                lblSurgeonName = null;
+            }
+
             if (lblSurgeryTime != null) {
                 lblSurgeryTime.Dispose ();
                 lblSurgeryTime = null;
+            }
+
+            if (vwSurgeon != null) {
+                vwSurgeon.Dispose ();
+                vwSurgeon = null;
             }
         }
     }
