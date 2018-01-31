@@ -32,25 +32,32 @@ namespace OpFlow.Mobile
             switch (patientDemoDetail)
             {
                 case PatientDemo.DemoTypeEnum.MedicalHistory:
-                    demoDetail = patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.MedicalHistory);
+                    demoDetail = patient?.DemoData?.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.MedicalHistory);
                     break;
                 case PatientDemo.DemoTypeEnum.RiskFactors:
-                    demoDetail = patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.RiskFactors);
+                    demoDetail = patient?.DemoData?.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.RiskFactors);
                     break;
                 case PatientDemo.DemoTypeEnum.Medications:
-                    demoDetail = patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.Medications);
+                    demoDetail = patient?.DemoData?.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.Medications);
                     break;
                 case PatientDemo.DemoTypeEnum.Allergies:
-                    demoDetail = patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.Allergies);
+                    demoDetail = patient?.DemoData?.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.Allergies);
                     break;
                 case PatientDemo.DemoTypeEnum.LabResults:
-                    demoDetail = patient.DemoData.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.LabResults);
+                    demoDetail = patient?.DemoData?.FirstOrDefault(pd => pd.DemoType == PatientDemo.DemoTypeEnum.LabResults);
                     break;
                 case PatientDemo.DemoTypeEnum.PastProcedureResult:
-                    demoDetail = patient.DemoData.FirstOrDefault(pd =>
+                    demoDetail = patient?.DemoData?.FirstOrDefault(pd =>
                             pd.DemoType == PatientDemo.DemoTypeEnum.PastProcedureResult);
                     break;
             }
+
+            if (demoDetail == null)
+                demoDetail = new PatientDemo()
+                {
+                    DemoDescription = "NO DATA FOUND",
+                };
+
 
             CategoryGroupId = (int) patientDemoDetail;
             DetailId = CategoryGroupId;
@@ -66,6 +73,9 @@ namespace OpFlow.Mobile
             {
                 case AppSettings.FragmentEnum.Debrief:
                     tokens = await GetFlowDetails(surgery.FlowID);
+                    break;
+                case AppSettings.FragmentEnum.Patient:
+                    tokens = GetFlowDetails(patient);
                     break;
                 default:
                     tokens = GetFlowDetails(patient);
