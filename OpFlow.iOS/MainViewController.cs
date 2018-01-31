@@ -77,40 +77,53 @@ namespace OpFlow.iOS
                 PresentContainerView(AppSettings.FragmentEnum.Schedule);
         }
 
-        public void Navigate(AppSettings.FragmentEnum fragmentEnum)
-        {
-            PresentContainerView(fragmentEnum);
-        }
-
         private async void PresentContainerView(AppSettings.FragmentEnum fragmentEnum)
         {
-            if (fragmentEnum == AppSettings.FragmentEnum.Schedule)
+            AppSettings.CurrentScreen = AppSettings.FragmentEnum.Schedule;
+                
+            switch (fragmentEnum)
             {
-                AppSettings.CurrentScreen = AppSettings.FragmentEnum.Schedule;
-                Title = "SCHEDULE";
+                case  AppSettings.FragmentEnum.Schedule:
+                    Title = "Schedule";
+                    NavigationItem.LeftBarButtonItem = null;
+                    await _containerViewController.PresentScheduleViewAsync();
+                    break;
+            
+                case AppSettings.FragmentEnum.CaseNavigate:
+                    Title = "Detail";
+                    NavigationItem.LeftBarButtonItem = SetupCustomBack("Schedule");
+                    await _containerViewController.PresentNavigateViewAsync();
+                    break;
+            
+                case AppSettings.FragmentEnum.Debrief:
+                    Title = "Debrief";
+                    NavigationItem.LeftBarButtonItem = SetupCustomBack("Schedule");
+                    await _containerViewController.PresentDetailViewAsync();
+                    break;
 
-                NavigationItem.LeftBarButtonItem = null;
+                case AppSettings.FragmentEnum.Patient:
+                    Title = "Patient";
+                    NavigationItem.LeftBarButtonItem = SetupCustomBack("Surgery");
+                    await _containerViewController.PresentDetailViewAsync();
+                    break;
 
-                await _containerViewController.PresentScheduleViewAsync();
-            }
-            else if (fragmentEnum == AppSettings.FragmentEnum.CaseNavigate)
-            {
-                AppSettings.CurrentScreen = AppSettings.FragmentEnum.CaseNavigate;
-                Title = "DETAIL";
+                case AppSettings.FragmentEnum.CardDetail:
+                    Title = "Card";
+                    NavigationItem.LeftBarButtonItem = SetupCustomBack("Surgery");
+                    await _containerViewController.PresentDetailViewAsync();
+                    break;
 
-                NavigationItem.LeftBarButtonItem = SetupCustomBack("Schedule");
+                case AppSettings.FragmentEnum.FlowDetail:
+                    Title = "Flow";
+                    NavigationItem.LeftBarButtonItem = SetupCustomBack("Surgery");
+                    await _containerViewController.PresentDetailViewAsync();
+                    break;
 
-                await _containerViewController.PresentNavigateViewAsync();
-            }
-            else
-            {
-                AppSettings.CurrentScreen = AppSettings.FragmentEnum.Debrief;
-                Title = "DEBRIEF";
-
-                NavigationItem.LeftBarButtonItem = SetupCustomBack("Schedule");
-
-                await _containerViewController.PresentDebriefViewAsync();
-
+                case AppSettings.FragmentEnum.Dashboard:
+                    Title = "Dashboard";
+                    NavigationItem.LeftBarButtonItem = SetupCustomBack("Surgery");
+                    await _containerViewController.PresentDetailViewAsync();
+                    break;
             }
         }
 
@@ -141,6 +154,18 @@ namespace OpFlow.iOS
                     break;
                 case AppSettings.FragmentEnum.CaseNavigate:
                     PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
+                    break;
+                case AppSettings.FragmentEnum.Patient:
+                    PresentContainerView(AppSettings.FragmentEnum.Patient);
+                    break;
+                case AppSettings.FragmentEnum.CardDetail:
+                    PresentContainerView(AppSettings.FragmentEnum.CardDetail);
+                    break;
+                case AppSettings.FragmentEnum.FlowDetail:
+                    PresentContainerView(AppSettings.FragmentEnum.FlowDetail);
+                    break;
+                case AppSettings.FragmentEnum.Dashboard:
+                    PresentContainerView(AppSettings.FragmentEnum.Dashboard);
                     break;
 
 

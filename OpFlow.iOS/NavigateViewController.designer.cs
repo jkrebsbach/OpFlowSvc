@@ -16,6 +16,18 @@ namespace OpFlow.iOS
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton btnCard { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton btnFlow { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton btnPatient { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblAnes { get; set; }
 
         [Outlet]
@@ -84,10 +96,57 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIView vwAnes { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIView vwCirculator { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIView vwRep { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIView vwScrub { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UIView vwSurgeon { get; set; }
+
+        [Action ("btnCard_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnCard_Click (UIKit.UIButton sender);
+
+        [Action ("btnDashboard_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnDashboard_Click (UIKit.UIButton sender);
+
+        [Action ("btnFlow_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnFlow_Click (UIKit.UIButton sender);
+
+        [Action ("btnPatient_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnPatient_Click (UIKit.UIButton sender);
 
         void ReleaseDesignerOutlets ()
         {
+            if (btnCard != null) {
+                btnCard.Dispose ();
+                btnCard = null;
+            }
+
+            if (btnFlow != null) {
+                btnFlow.Dispose ();
+                btnFlow = null;
+            }
+
+            if (btnPatient != null) {
+                btnPatient.Dispose ();
+                btnPatient = null;
+            }
+
             if (lblAnes != null) {
                 lblAnes.Dispose ();
                 lblAnes = null;
@@ -171,6 +230,26 @@ namespace OpFlow.iOS
             if (lblSurgeryTime != null) {
                 lblSurgeryTime.Dispose ();
                 lblSurgeryTime = null;
+            }
+
+            if (vwAnes != null) {
+                vwAnes.Dispose ();
+                vwAnes = null;
+            }
+
+            if (vwCirculator != null) {
+                vwCirculator.Dispose ();
+                vwCirculator = null;
+            }
+
+            if (vwRep != null) {
+                vwRep.Dispose ();
+                vwRep = null;
+            }
+
+            if (vwScrub != null) {
+                vwScrub.Dispose ();
+                vwScrub = null;
             }
 
             if (vwSurgeon != null) {

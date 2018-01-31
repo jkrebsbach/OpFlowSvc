@@ -12,6 +12,26 @@ namespace OpFlow.iOS
 {
     public partial class NavigateViewController : UIViewController, INavigationTargetDelegate
     {
+        partial void btnPatient_Click(UIButton sender)
+        {
+            NavigateScreen(AppSettings.FragmentEnum.Patient);
+        }
+
+        partial void btnCard_Click(UIButton sender)
+        {
+            NavigateScreen(AppSettings.FragmentEnum.CardDetail);
+        }
+
+        partial void btnFlow_Click(UIButton sender)
+        {
+            NavigateScreen(AppSettings.FragmentEnum.FlowDetail);
+        }
+
+        partial void btnDashboard_Click(UIButton sender)
+        {
+            NavigateScreen(AppSettings.FragmentEnum.Dashboard);
+        }
+
         Surgery _surgery;
         Flow _flow;
         Patient _patient;
@@ -26,15 +46,31 @@ namespace OpFlow.iOS
         {
             base.ViewDidLoad();
 
-            vwSurgeon.Layer.BorderWidth = 1.0f;
-            vwSurgeon.Layer.BorderColor = UIColor.Black.CGColor;
+            SetupTitleView(vwSurgeon);
+            SetupTitleView(vwCirculator);
+            SetupTitleView(vwAnes);
+            SetupTitleView(vwScrub);
+            SetupTitleView(vwRep);
 
-            vwSurgeon.LayoutMargins = new UIEdgeInsets(2, 2, 2, 2);
 
-            Title = "SCHEDULEVIEW";
+            Title = "SCHEDULEVIEW"; 
             await LoadSurgery();
         }
 
+
+        private void NavigateScreen(AppSettings.FragmentEnum targetScreen)
+        {
+            NavigationDelegate?.Navigate(targetScreen, null);
+        }
+
+        private void SetupTitleView(UIView view)
+        {
+
+            view.Layer.BorderWidth = 1.0f;
+            view.Layer.BorderColor = UIColor.Black.CGColor;
+
+            view.LayoutMargins = new UIEdgeInsets(2, 2, 2, 2);   
+        }
 
 
         private async Task LoadSurgery()
@@ -74,7 +110,7 @@ namespace OpFlow.iOS
             return user == null ? "NONE" : string.Format("{0}, {1} {2}", user.LastName, user.FirstName, user.Title);
         }
 
-        private string PatientNameText => string.Format("{0}, {1}", _patient?.LastName, _patient?.FirstName);
+        private string PatientNameText =>  string.IsNullOrEmpty(_patient?.Initials) ? "UNK" : _patient.Initials;
 
         private string PatientInfoText => string.Format("{0} {1}", _patient?.BirthDate.CalculateAge(), _patient?.Gender);
 

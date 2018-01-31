@@ -50,13 +50,6 @@ namespace OpFlow.iOS
             return _viewChanging.Task;
         }
 
-        public Task<bool> PresentDebriefViewAsync()
-        {
-            _viewChanging = new TaskCompletionSource<bool>();
-            PerformSegue(DetailSegue, this);
-
-            return _viewChanging.Task;
-        }
 
         #region Segue Operations
 
