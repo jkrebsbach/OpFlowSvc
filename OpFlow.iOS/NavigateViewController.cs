@@ -52,6 +52,7 @@ namespace OpFlow.iOS
             SetupTitleView(vwScrub);
             SetupTitleView(vwRep);
 
+            SetupTitleView(vwCommunicator);
 
             Title = "SCHEDULEVIEW"; 
             await LoadSurgery();

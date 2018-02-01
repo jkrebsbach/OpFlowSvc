@@ -73,8 +73,10 @@ namespace OpFlow.iOS
         private void NavigateBack(object sender, EventArgs e)
         {
             // switch on current screen
-            if (1 == 1)
+            if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.Debrief)
                 PresentContainerView(AppSettings.FragmentEnum.Schedule);
+            else
+                PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
         }
 
         private async void PresentContainerView(AppSettings.FragmentEnum fragmentEnum)

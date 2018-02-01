@@ -104,6 +104,10 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIView vwCommunicator { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UIView vwRep { get; set; }
 
         [Outlet]
@@ -240,6 +244,11 @@ namespace OpFlow.iOS
             if (vwCirculator != null) {
                 vwCirculator.Dispose ();
                 vwCirculator = null;
+            }
+
+            if (vwCommunicator != null) {
+                vwCommunicator.Dispose ();
+                vwCommunicator = null;
             }
 
             if (vwRep != null) {
