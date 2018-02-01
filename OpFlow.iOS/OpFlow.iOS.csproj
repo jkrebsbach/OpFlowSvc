@@ -199,6 +199,9 @@
     <BundleResource Include="Resources\ic_check_circle_green_A700_18pt.png" />
     <BundleResource Include="Resources\ic_check_circle_green_A700_18pt%402x.png" />
     <BundleResource Include="Resources\ic_check_circle_green_A700_18pt%403x.png" />
+    <BundleResource Include="Resources\ic_chat_black_24pt.png" />
+    <BundleResource Include="Resources\ic_chat_black_24pt%402x.png" />
+    <BundleResource Include="Resources\ic_chat_black_24pt%403x.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">
