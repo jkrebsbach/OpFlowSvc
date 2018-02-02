@@ -20,11 +20,19 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton btnCommunicator { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UIButton btnFlow { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UIButton btnPatient { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton btnSendMessage { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -96,6 +104,10 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UITextField txtCommunicator { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UIView vwAnes { get; set; }
 
         [Outlet]
@@ -141,6 +153,11 @@ namespace OpFlow.iOS
                 btnCard = null;
             }
 
+            if (btnCommunicator != null) {
+                btnCommunicator.Dispose ();
+                btnCommunicator = null;
+            }
+
             if (btnFlow != null) {
                 btnFlow.Dispose ();
                 btnFlow = null;
@@ -149,6 +166,11 @@ namespace OpFlow.iOS
             if (btnPatient != null) {
                 btnPatient.Dispose ();
                 btnPatient = null;
+            }
+
+            if (btnSendMessage != null) {
+                btnSendMessage.Dispose ();
+                btnSendMessage = null;
             }
 
             if (lblAnes != null) {
@@ -234,6 +256,11 @@ namespace OpFlow.iOS
             if (lblSurgeryTime != null) {
                 lblSurgeryTime.Dispose ();
                 lblSurgeryTime = null;
+            }
+
+            if (txtCommunicator != null) {
+                txtCommunicator.Dispose ();
+                txtCommunicator = null;
             }
 
             if (vwAnes != null) {
