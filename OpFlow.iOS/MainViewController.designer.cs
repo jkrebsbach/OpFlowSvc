@@ -1,4 +1,4 @@
-// WARNING
+﻿// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -22,14 +22,6 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UINavigationBar MainNavBar { get; set; }
 
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITabBar MainTabBar { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITabBarItem TabBarSchedule { get; set; }
-
         void ReleaseDesignerOutlets ()
         {
             if (MainContainerView != null) {
@@ -40,16 +32,6 @@ namespace OpFlow.iOS
             if (MainNavBar != null) {
                 MainNavBar.Dispose ();
                 MainNavBar = null;
-            }
-
-            if (MainTabBar != null) {
-                MainTabBar.Dispose ();
-                MainTabBar = null;
-            }
-
-            if (TabBarSchedule != null) {
-                TabBarSchedule.Dispose ();
-                TabBarSchedule = null;
             }
         }
     }

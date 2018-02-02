@@ -211,6 +211,7 @@
     <BundleResource Include="Resources\ic_schedule_48pt%402x.png" />
     <BundleResource Include="Resources\ic_schedule_48pt%403x.png" />
     <BundleResource Include="Resources\ic_schedule_48pt.png" />
+    <BundleResource Include="Resources\back.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">
@@ -255,8 +256,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\Media.xcassets\Icons.imageset\" />
     <Folder Include="Resources\Media.xcassets\Home.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Icons.imageset\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
