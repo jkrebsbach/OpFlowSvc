@@ -23,6 +23,11 @@ namespace OpFlow.iOS
             // Override point for customization after application launch.
             // If not required for your application you can safely delete this method
 
+            UINavigationBar.Appearance.SetTitleTextAttributes(new UITextAttributes() {
+                TextColor = UIColor.Black,
+                TextShadowColor = UIColor.Clear
+            }); 
+
             return true;
         }
 

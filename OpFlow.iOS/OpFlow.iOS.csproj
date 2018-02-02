@@ -202,6 +202,15 @@
     <BundleResource Include="Resources\ic_chat_black_24pt.png" />
     <BundleResource Include="Resources\ic_chat_black_24pt%402x.png" />
     <BundleResource Include="Resources\ic_chat_black_24pt%403x.png" />
+    <BundleResource Include="Resources\ic_search_48pt%402x.png" />
+    <BundleResource Include="Resources\ic_search_48pt%403x.png" />
+    <BundleResource Include="Resources\ic_search_48pt.png" />
+    <BundleResource Include="Resources\ic_home_48pt%402x.png" />
+    <BundleResource Include="Resources\ic_home_48pt%403x.png" />
+    <BundleResource Include="Resources\ic_home_48pt.png" />
+    <BundleResource Include="Resources\ic_schedule_48pt%402x.png" />
+    <BundleResource Include="Resources\ic_schedule_48pt%403x.png" />
+    <BundleResource Include="Resources\ic_schedule_48pt.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">
@@ -244,6 +253,10 @@
       <Project>{30767546-9ba4-447f-bbc8-ee0c0692dccb}</Project>
       <Name>OpFlow.Mobile</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\Media.xcassets\Icons.imageset\" />
+    <Folder Include="Resources\Media.xcassets\Home.imageset\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

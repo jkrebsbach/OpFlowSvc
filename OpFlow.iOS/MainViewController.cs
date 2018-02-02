@@ -61,7 +61,7 @@ namespace OpFlow.iOS
             {
                 Title = AppSettings.CurrentUserTitle
             };
-            
+
             PresentContainerView(AppSettings.FragmentEnum.Schedule);
         }
 

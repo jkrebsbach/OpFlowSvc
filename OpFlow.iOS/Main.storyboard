@@ -416,17 +416,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tabBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tCU-go-oYr">
-                                <rect key="frame" x="0.0" y="519" width="320" height="49"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <items>
-                                    <tabBarItem title="Schedule" image="ic_schedule_grey_800_18pt.png" selectedImage="ic_schedule_grey_800_18pt.png" id="qC7-1f-f4R"/>
-                                    <tabBarItem title="Home" image="ic_home_grey_800_18pt.png" selectedImage="ic_home_grey_800_18pt.png" id="11177"/>
-                                    <tabBarItem title="Search" image="ic_search_grey_800_18pt.png" selectedImage="ic_search_grey_800_18pt.png" id="ekG-LX-n0i"/>
-                                </items>
-                            </tabBar>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SyY-Gv-VE9">
-                                <rect key="frame" x="0.0" y="44" width="320" height="475"/>
+                                <rect key="frame" x="0.0" y="44" width="320" height="459"/>
                                 <connections>
                                     <segue destination="11601" kind="embed" identifier="embedContainer" id="11706"/>
                                 </connections>
@@ -435,7 +426,9 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                 <items>
                                     <navigationItem title="Title" id="XPW-IQ-Imz">
-                                        <barButtonItem key="rightBarButtonItem" title="Dr. Knowles" id="Vse-hb-4Lh"/>
+                                        <barButtonItem key="rightBarButtonItem" title="Dr. Knowles" id="Vse-hb-4Lh">
+                                            <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        </barButtonItem>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
@@ -443,18 +436,97 @@
                                 <rect key="frame" x="493" y="113" width="240" height="128"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </containerView>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="27660">
+                                <rect key="frame" x="0.0" y="503" width="320" height="65"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="27663">
+                                        <rect key="frame" x="0.0" y="0.0" width="106.5" height="65"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="top" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6t1-5x-1iR">
+                                                <rect key="frame" x="29.5" y="8.5" width="48" height="48"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="48" id="3xZ-IZ-GaV"/>
+                                                </constraints>
+                                                <inset key="titleEdgeInsets" minX="-70" minY="50" maxX="0.0" maxY="0.0"/>
+                                                <state key="normal" image="ic_schedule_48pt.png">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0O1-X4-gp1">
+                                                <rect key="frame" x="15.5" y="34" width="76" height="34"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                <state key="normal" title="Schedule">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="0O1-X4-gp1" secondAttribute="bottom" constant="-3" id="2XG-RK-7Ug"/>
+                                            <constraint firstItem="6t1-5x-1iR" firstAttribute="centerX" secondItem="27663" secondAttribute="centerX" id="AFT-5H-6zp"/>
+                                            <constraint firstItem="0O1-X4-gp1" firstAttribute="centerX" secondItem="27663" secondAttribute="centerX" id="ZRz-S2-sQ4"/>
+                                            <constraint firstItem="6t1-5x-1iR" firstAttribute="centerY" secondItem="27663" secondAttribute="centerY" id="hsm-j5-j3G"/>
+                                        </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="27662">
+                                        <rect key="frame" x="106.5" y="0.0" width="107" height="65"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mwy-OI-Nt4">
+                                                <rect key="frame" x="28.5" y="8.5" width="50" height="48"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="50" id="jFp-9c-E8Q"/>
+                                                </constraints>
+                                                <inset key="titleEdgeInsets" minX="-55" minY="50" maxX="0.0" maxY="0.0"/>
+                                                <state key="normal" title="Home" image="ic_home_48pt.png">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstItem="mwy-OI-Nt4" firstAttribute="centerY" secondItem="27662" secondAttribute="centerY" id="fk7-52-wDS"/>
+                                            <constraint firstItem="mwy-OI-Nt4" firstAttribute="centerX" secondItem="27662" secondAttribute="centerX" id="ham-ut-BWJ"/>
+                                        </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="27661">
+                                        <rect key="frame" x="213.5" y="0.0" width="106.5" height="65"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="806-Q4-i4v">
+                                                <rect key="frame" x="28.5" y="8.5" width="50" height="48"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="50" id="VnQ-ur-Cqd"/>
+                                                </constraints>
+                                                <inset key="titleEdgeInsets" minX="-55" minY="50" maxX="0.0" maxY="0.0"/>
+                                                <state key="normal" title="Search" image="ic_search_48pt.png">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstItem="806-Q4-i4v" firstAttribute="centerX" secondItem="27661" secondAttribute="centerX" id="Lth-Ue-hHf"/>
+                                            <constraint firstItem="806-Q4-i4v" firstAttribute="centerY" secondItem="27661" secondAttribute="centerY" id="ZKU-Ub-o6w"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="65" id="0lF-bY-kPf"/>
+                                    <constraint firstItem="27661" firstAttribute="width" secondItem="27662" secondAttribute="width" id="Dr3-7w-pXb"/>
+                                    <constraint firstItem="27663" firstAttribute="width" secondItem="27662" secondAttribute="width" id="QcU-rc-Gyk"/>
+                                </constraints>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="SyY-Gv-VE9" firstAttribute="top" secondItem="MGS-Uc-AcK" secondAttribute="bottom" id="1zc-Ez-0qc"/>
+                            <constraint firstItem="27660" firstAttribute="top" secondItem="SyY-Gv-VE9" secondAttribute="bottom" id="5cT-61-JGo"/>
                             <constraint firstAttribute="trailing" secondItem="MGS-Uc-AcK" secondAttribute="trailing" id="5po-4b-YqF"/>
-                            <constraint firstItem="lxB-Lg-bGa" firstAttribute="top" secondItem="tCU-go-oYr" secondAttribute="bottom" id="76x-0w-eHD"/>
-                            <constraint firstItem="tCU-go-oYr" firstAttribute="leading" secondItem="Ddt-lU-vfL" secondAttribute="leading" id="EAq-Uy-l8I"/>
                             <constraint firstItem="MGS-Uc-AcK" firstAttribute="leading" secondItem="Ddt-lU-vfL" secondAttribute="leading" id="NGg-cx-rXL"/>
-                            <constraint firstItem="tCU-go-oYr" firstAttribute="top" secondItem="SyY-Gv-VE9" secondAttribute="bottom" id="Nh6-hg-jol"/>
+                            <constraint firstAttribute="bottom" secondItem="27660" secondAttribute="bottom" id="S6r-OU-Giy"/>
                             <constraint firstItem="MGS-Uc-AcK" firstAttribute="top" secondItem="Ddt-lU-vfL" secondAttribute="top" id="Y6Q-om-oFk"/>
-                            <constraint firstAttribute="trailing" secondItem="tCU-go-oYr" secondAttribute="trailing" id="aVS-k1-p1Y"/>
+                            <constraint firstItem="27660" firstAttribute="leading" secondItem="Ddt-lU-vfL" secondAttribute="leading" id="YTv-UQ-U2e"/>
                             <constraint firstAttribute="trailing" secondItem="SyY-Gv-VE9" secondAttribute="trailing" id="hXf-k6-Nb0"/>
+                            <constraint firstAttribute="trailing" secondItem="27660" secondAttribute="trailing" id="vfX-bk-dTV"/>
                             <constraint firstItem="SyY-Gv-VE9" firstAttribute="leading" secondItem="Ddt-lU-vfL" secondAttribute="leading" id="x5l-eZ-sLA"/>
                         </constraints>
                     </view>
@@ -462,8 +534,6 @@
                     <connections>
                         <outlet property="MainContainerView" destination="SyY-Gv-VE9" id="name-outlet-SyY-Gv-VE9"/>
                         <outlet property="MainNavBar" destination="MGS-Uc-AcK" id="name-outlet-MGS-Uc-AcK"/>
-                        <outlet property="MainTabBar" destination="tCU-go-oYr" id="name-outlet-tCU-go-oYr"/>
-                        <outlet property="TabBarSchedule" destination="qC7-1f-f4R" id="name-outlet-qC7-1f-f4R"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ecH-HP-uZO" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -477,6 +547,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="703">
                         <rect key="frame" x="0.0" y="20" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.48055672645568848" green="0.68465441465377808" blue="0.82959103584289551" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </navigationBar>
                     <connections>
                         <segue destination="3Up-Pp-nht" kind="relationship" relationship="rootViewController" id="23196"/>
@@ -491,8 +562,8 @@
             <objects>
                 <viewController id="10348" customClass="DetailViewController" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="26882"/>
-                        <viewControllerLayoutGuide type="bottom" id="26883"/>
+                        <viewControllerLayoutGuide type="top" id="28261"/>
+                        <viewControllerLayoutGuide type="bottom" id="28262"/>
                     </layoutGuides>
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="20141">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
@@ -585,7 +656,7 @@
                         <viewControllerLayoutGuide type="bottom" id="11599"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="11602">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="475"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="459"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -1056,14 +1127,14 @@
                                                         <rect key="frame" x="17" y="8" width="24" height="24"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     </imageView>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CRNA" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="27075" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="CRNA" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="27075">
                                                         <rect key="frame" x="8" y="33" width="42" height="21"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="MK" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="27076" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="MK" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="27076">
                                                         <rect key="frame" x="8" y="88" width="42" height="21"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
@@ -1129,8 +1200,10 @@
                     </view>
                     <connections>
                         <outlet property="btnCard" destination="hb4-Xd-8Jl" id="name-outlet-hb4-Xd-8Jl"/>
+                        <outlet property="btnCommunicator" destination="is8-DW-z4U" id="name-outlet-is8-DW-z4U"/>
                         <outlet property="btnFlow" destination="Stz-Bz-nGD" id="name-outlet-Stz-Bz-nGD"/>
                         <outlet property="btnPatient" destination="LB2-Fn-3Ve" id="name-outlet-LB2-Fn-3Ve"/>
+                        <outlet property="btnSendMessage" destination="SUB-md-tEC" id="name-outlet-SUB-md-tEC"/>
                         <outlet property="lblAnes" destination="19280" id="name-outlet-19280"/>
                         <outlet property="lblAnesName" destination="24156" id="name-outlet-24156"/>
                         <outlet property="lblCirculator" destination="19279" id="name-outlet-19279"/>
@@ -1148,15 +1221,13 @@
                         <outlet property="lblSurgeon" destination="19276" id="name-outlet-19276"/>
                         <outlet property="lblSurgeonName" destination="Jlj-bZ-hzU" id="name-outlet-Jlj-bZ-hzU"/>
                         <outlet property="lblSurgeryTime" destination="17616" id="name-outlet-17616"/>
+                        <outlet property="txtCommunicator" destination="vRC-jd-vuc" id="name-outlet-vRC-jd-vuc"/>
                         <outlet property="vwAnes" destination="Mo5-LN-7SQ" id="name-outlet-Mo5-LN-7SQ"/>
                         <outlet property="vwCirculator" destination="1Gj-ZY-RLf" id="name-outlet-1Gj-ZY-RLf"/>
                         <outlet property="vwCommunicator" destination="2xI-rz-tBa" id="name-outlet-2xI-rz-tBa"/>
                         <outlet property="vwRep" destination="wio-aY-byY" id="name-outlet-wio-aY-byY"/>
                         <outlet property="vwScrub" destination="Cxg-U4-odY" id="name-outlet-Cxg-U4-odY"/>
                         <outlet property="vwSurgeon" destination="bvQ-JN-0zf" id="name-outlet-bvQ-JN-0zf"/>
-                        <outlet property="txtCommunicator" destination="vRC-jd-vuc" id="name-outlet-vRC-jd-vuc"/>
-                        <outlet property="btnSendMessage" destination="SUB-md-tEC" id="name-outlet-SUB-md-tEC"/>
-                        <outlet property="btnCommunicator" destination="is8-DW-z4U" id="name-outlet-is8-DW-z4U"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="14859" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1171,13 +1242,16 @@
         <image name="ic_chat_black_24pt.png" width="24" height="24"/>
         <image name="ic_check_circle_green_A700_18pt.png" width="18" height="18"/>
         <image name="ic_dashboard_black_18pt.png" width="18" height="18"/>
-        <image name="ic_home_grey_800_18pt.png" width="18" height="18"/>
+        <image name="ic_home_48pt.png" width="48" height="48"/>
         <image name="ic_payment_black_18pt.png" width="18" height="18"/>
         <image name="ic_person_black_18pt.png" width="18" height="18"/>
         <image name="ic_play_arrow_black_18pt.png" width="18" height="18"/>
+        <image name="ic_schedule_48pt.png" width="48" height="48"/>
+        <image name="ic_search_48pt.png" width="48" height="48"/>
+        <image name="infinity.png" width="540" height="540"/>
+        <image name="ic_home_grey_800_18pt.png" width="18" height="18"/>
         <image name="ic_schedule_grey_800_18pt.png" width="18" height="18"/>
         <image name="ic_search_grey_800_18pt.png" width="18" height="18"/>
-        <image name="infinity.png" width="540" height="540"/>
         <image name="OpFlowLogo" width="310" height="92"/>
     </resources>
 </document>
