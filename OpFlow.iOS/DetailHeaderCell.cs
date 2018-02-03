@@ -22,7 +22,7 @@ namespace OpFlow.iOS
         {
             ivToggleArrow.Transform = !hiddenDetails ?
                 CGAffineTransform.MakeRotation((float)(Math.PI / 2)) :
-                CGAffineTransform.MakeIdentity();
+                CGAffineTransform.MakeRotation((float)Math.PI);
         }
     }
 }

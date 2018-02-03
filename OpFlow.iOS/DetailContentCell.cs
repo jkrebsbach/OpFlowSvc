@@ -11,6 +11,14 @@ namespace OpFlow.iOS
         public DetailContentCell (IntPtr handle) : base (handle)
         {
         }
+        
+        public void AllowEdit(bool allowEdit)
+        {
+            txtDetail.Editable = allowEdit;
+
+            if (allowEdit)
+                txtDetail.Layer.BorderWidth = 1f;
+        }
 
         public override void UpdateCell(CaseDetailToken token)
         {

@@ -85,6 +85,19 @@ namespace OpFlow.Mobile
             return tokens;
         }
 
+        public static bool AllowEdit()
+        {
+            switch (AppSettings.CurrentScreen)
+            {
+                case AppSettings.FragmentEnum.Debrief:
+                    return true;
+                case AppSettings.FragmentEnum.Patient:
+                    return false;
+                default:
+                    return false;
+            }
+        }
+
         public static async Task<List<CaseDetailToken>> GetFlowDetails(int flowId)
         {
             var flowSteps = await FlowUtil.GetFlowInstructions(flowId);

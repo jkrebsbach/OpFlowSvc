@@ -46,8 +46,9 @@ namespace OpFlow.iOS
             var patient = await PatientUtil.GetPatient(surgery.PatientID);
 
             var tokens = await CaseDetailToken.GetCaseDetailTokens(surgery, patient);
+            var allowEdit = CaseDetailToken.AllowEdit();
 
-            var detailTableViewSource = new DetailListTVS(tokens);
+            var detailTableViewSource = new DetailListTVS(tokens, allowEdit);
             detailTableViewSource.DetailListConfirmedEvent += ConfirmDetails;
 
             DetailTableView.Source = detailTableViewSource;

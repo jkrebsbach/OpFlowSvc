@@ -14,16 +14,18 @@ namespace OpFlow.iOS.ViewSources
     {
         private readonly List<CaseDetailToken> _detailTokens;
         private readonly List<bool> _hiddenDetails;
+        private readonly bool _allowEdit;
 
         public event EventHandler<List<CaseDetailToken>> DetailListConfirmedEvent;
 
-        public DetailListTVS(List<CaseDetailToken> details)
+        public DetailListTVS(List<CaseDetailToken> details, bool allowEdit)
         {
             _detailTokens = details;
+            _allowEdit = allowEdit;
 
             _hiddenDetails = new List<bool>();
 
-            _detailTokens.ForEach(dt => _hiddenDetails.Add(true));
+            _detailTokens.ForEach(dt => _hiddenDetails.Add(false));
         }
 
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
@@ -37,15 +39,24 @@ namespace OpFlow.iOS.ViewSources
                 return tableView.DequeueReusableCell("DetailConfirmCell", indexPath);
 
             var token = _detailTokens[tokenIndex];
+            var hiddenDetails = _hiddenDetails[tokenIndex];
 
-            DetailListCell cell = null;
+            DetailListCell cell;
             if (header)
-                cell = tableView.DequeueReusableCell("DetailHeaderCell", indexPath) as DetailListCell;
+            {
+                var headerCell = tableView.DequeueReusableCell("DetailHeaderCell", indexPath) as DetailHeaderCell;
+                headerCell?.AssignToggleImage(hiddenDetails);
+
+                cell = headerCell;
+            }
             else
             {
-                cell = tableView.DequeueReusableCell("DetailContentCell", indexPath) as DetailListCell;
+                var detailCell = tableView.DequeueReusableCell("DetailContentCell", indexPath) as DetailContentCell;
+                detailCell?.AllowEdit(_allowEdit);
 
-                cell.Hidden = _hiddenDetails[tokenIndex];
+                cell = detailCell;
+                if (cell != null)
+                    cell.Hidden = hiddenDetails;
             }
 
             cell?.UpdateCell(token);
@@ -55,7 +66,12 @@ namespace OpFlow.iOS.ViewSources
 
         public override nint RowsInSection(UITableView tableview, nint section)
         {
-            return _detailTokens.Count * 2 + 1;  // Include confirm cell
+            var cellCount = _detailTokens.Count * 2;
+
+            if (_allowEdit)
+                cellCount++; // Include confirm cell
+
+            return cellCount;
         }
 
         public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
