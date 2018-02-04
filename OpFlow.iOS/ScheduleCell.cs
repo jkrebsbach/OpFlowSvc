@@ -4,6 +4,7 @@ using System;
 using OpFlow.iOS.Delegates;
 using OpFlow.Mobile;
 using UIKit;
+using OpFlow.iOS.ViewSources;
 
 namespace OpFlow.iOS
 {
@@ -13,7 +14,7 @@ namespace OpFlow.iOS
         {
         }
 
-        internal override void UpdateCell(Surgery surgery, Patient patient)
+        internal override void UpdateCell(Surgery surgery, Patient patient, SurgeryTVS surgeryTVS)
         {
             lblLocation.Text = surgery.RoomDescription;
             lblPatientInfo.Text = string.Format("{0} {1}", patient?.BirthDate.CalculateAge(), patient?.Gender);

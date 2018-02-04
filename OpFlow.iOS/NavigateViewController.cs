@@ -58,6 +58,10 @@ namespace OpFlow.iOS
             await LoadSurgery();
         }
 
+        partial void btnDebrief_Click(UIButton sender)
+        {
+            NavigateScreen(AppSettings.FragmentEnum.Debrief);
+        }
 
         private void NavigateScreen(AppSettings.FragmentEnum targetScreen)
         {
@@ -91,7 +95,7 @@ namespace OpFlow.iOS
                                                           AppSettings.CurrentUser.LocationID);
 
             // If case is open, show debrief button
-            lblDebrief.Hidden = (_surgery.SurgeryStatus != "O");
+            btnDebrief.Hidden = (_surgery.SurgeryStatus != "O");
 
             lblSurgeonName.Text = GetUserName(users, AppSettings.RoleEnum.Surgeon);
             lblCirculatorName.Text = GetUserName(users, AppSettings.RoleEnum.Circulator);

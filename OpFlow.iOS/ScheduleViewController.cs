@@ -207,6 +207,7 @@ namespace OpFlow.iOS
             
             var surgeryTableViewSource = new SurgeryTVS(schedule, surgeryPatients);
             surgeryTableViewSource.SurgerySelectionEvent += SelectSurgery;
+            surgeryTableViewSource.DebriefSelectionEvent += SelectDebrief;
 
             ScheduleTableView.Source = surgeryTableViewSource;
         }
@@ -214,6 +215,11 @@ namespace OpFlow.iOS
         private void SelectSurgery(object sender, Surgery surgery)
         {
             NavigationDelegate?.Navigate(AppSettings.FragmentEnum.Schedule, surgery);
+        }
+
+        private void SelectDebrief(object sender, Surgery surgery)
+        {
+            NavigationDelegate?.Navigate(AppSettings.FragmentEnum.Debrief, surgery);
         }
     }
 }

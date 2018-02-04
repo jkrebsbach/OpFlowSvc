@@ -1,4 +1,4 @@
-﻿// WARNING
+// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -14,6 +14,10 @@ namespace OpFlow.iOS
     [Register ("OpenCaseCell")]
     partial class OpenCaseCell
     {
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton btnDebrief { get; set; }
+
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblFlowStep { get; set; }
@@ -38,8 +42,17 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblSurgeryTime { get; set; }
 
+        [Action ("btnDebrief_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnDebrief_Click (UIKit.UIButton sender);
+
         void ReleaseDesignerOutlets ()
         {
+            if (btnDebrief != null) {
+                btnDebrief.Dispose ();
+                btnDebrief = null;
+            }
+
             if (lblFlowStep != null) {
                 lblFlowStep.Dispose ();
                 lblFlowStep = null;

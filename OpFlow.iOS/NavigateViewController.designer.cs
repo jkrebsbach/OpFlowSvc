@@ -1,4 +1,4 @@
-﻿// WARNING
+// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -21,6 +21,10 @@ namespace OpFlow.iOS
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UIButton btnCommunicator { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton btnDebrief { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -49,10 +53,6 @@ namespace OpFlow.iOS
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblCirculatorName { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblDebrief { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -138,6 +138,10 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnDashboard_Click (UIKit.UIButton sender);
 
+        [Action ("btnDebrief_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnDebrief_Click (UIKit.UIButton sender);
+
         [Action ("btnFlow_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnFlow_Click (UIKit.UIButton sender);
@@ -156,6 +160,11 @@ namespace OpFlow.iOS
             if (btnCommunicator != null) {
                 btnCommunicator.Dispose ();
                 btnCommunicator = null;
+            }
+
+            if (btnDebrief != null) {
+                btnDebrief.Dispose ();
+                btnDebrief = null;
             }
 
             if (btnFlow != null) {
@@ -191,11 +200,6 @@ namespace OpFlow.iOS
             if (lblCirculatorName != null) {
                 lblCirculatorName.Dispose ();
                 lblCirculatorName = null;
-            }
-
-            if (lblDebrief != null) {
-                lblDebrief.Dispose ();
-                lblDebrief = null;
             }
 
             if (lblFlowStep != null) {
