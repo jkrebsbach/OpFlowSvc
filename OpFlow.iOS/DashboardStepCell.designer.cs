@@ -11,24 +11,24 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    [Register ("DashboardViewController")]
-    partial class DashboardViewController
+    [Register ("DashboardStepCell")]
+    partial class DashboardStepCell
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITableView DashboardTableView { get; set; }
+        UIKit.UILabel lblDelay { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblEstDuration { get; set; }
+        UIKit.UILabel lblEnd { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblEstEnd { get; set; }
+        UIKit.UILabel lblPhase { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblExpDuration { get; set; }
+        UIKit.UILabel lblProcedure { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -36,24 +36,24 @@ namespace OpFlow.iOS
 
         void ReleaseDesignerOutlets ()
         {
-            if (DashboardTableView != null) {
-                DashboardTableView.Dispose ();
-                DashboardTableView = null;
+            if (lblDelay != null) {
+                lblDelay.Dispose ();
+                lblDelay = null;
             }
 
-            if (lblEstDuration != null) {
-                lblEstDuration.Dispose ();
-                lblEstDuration = null;
+            if (lblEnd != null) {
+                lblEnd.Dispose ();
+                lblEnd = null;
             }
 
-            if (lblEstEnd != null) {
-                lblEstEnd.Dispose ();
-                lblEstEnd = null;
+            if (lblPhase != null) {
+                lblPhase.Dispose ();
+                lblPhase = null;
             }
 
-            if (lblExpDuration != null) {
-                lblExpDuration.Dispose ();
-                lblExpDuration = null;
+            if (lblProcedure != null) {
+                lblProcedure.Dispose ();
+                lblProcedure = null;
             }
 
             if (lblStart != null) {

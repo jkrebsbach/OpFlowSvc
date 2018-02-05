@@ -14,5 +14,8 @@ namespace OpFlow.iOS
     [Register ("CardListViewController")]
     partial class CardListViewController
     {
+        void ReleaseDesignerOutlets ()
+        {
+        }
     }
 }

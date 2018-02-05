@@ -139,6 +139,11 @@
     <Compile Include="CardListViewController.designer.cs">
       <DependentUpon>CardListViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="DashboardStepCell.cs" />
+    <Compile Include="DashboardStepCell.designer.cs">
+      <DependentUpon>DashboardStepCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewSources\DashboardTVS.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">
