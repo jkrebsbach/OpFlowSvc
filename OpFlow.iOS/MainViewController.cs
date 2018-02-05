@@ -63,7 +63,7 @@ namespace OpFlow.iOS
             NavigationItem.RightBarButtonItem = new UIBarButtonItem()
             {
                 Title = AppSettings.CurrentUserTitle,
-                TintColor = UIColor.Black
+                TintColor = UIColor.White
             };
 
             PresentContainerView(AppSettings.FragmentEnum.Schedule);

@@ -1,4 +1,4 @@
-﻿// WARNING
+// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -24,11 +24,11 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UIButton btnDebrief { get; set; }
+        UIKit.UIButton btnDashboard { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UIButton btnFlow { get; set; }
+        UIKit.UIButton btnDebrief { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -162,14 +162,14 @@ namespace OpFlow.iOS
                 btnCommunicator = null;
             }
 
+            if (btnDashboard != null) {
+                btnDashboard.Dispose ();
+                btnDashboard = null;
+            }
+
             if (btnDebrief != null) {
                 btnDebrief.Dispose ();
                 btnDebrief = null;
-            }
-
-            if (btnFlow != null) {
-                btnFlow.Dispose ();
-                btnFlow = null;
             }
 
             if (btnPatient != null) {
