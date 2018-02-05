@@ -19,5 +19,15 @@ namespace OpFlow.Mobile
 
             return response;
         }
+        public static async Task<List<CardItem>> GetCardItems(int cardId)
+        {
+            var providerId = AppSettings.CurrentUser.ProviderID;
+            var locationId = AppSettings.CurrentUser.LocationID;
+
+            var command = string.Format("api/card/surgery?cardId={0}&providerId={1}&locationId={2}", cardId, providerId, locationId);
+            var response = await WebUtility.WebRequest<List<CardItem>>(command, HttpMethod.Get);
+
+            return response;
+        }
     }
 }

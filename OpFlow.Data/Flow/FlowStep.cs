@@ -10,9 +10,13 @@ namespace OpFlow.Data
         public int FlowID { get; set; }
         public int RoleID { get; set; }
         public int SurgeryID { get; set; }
+        public int StepOwnerUserID { get; set; }
         public string FlowStepStatus { get; set; }
         public string StepDescription { get; set; }
         public int StepDuration { get; set; }
         public string StepInstruction { get; set; }
+
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
     }
 }

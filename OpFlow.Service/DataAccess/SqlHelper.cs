@@ -71,7 +71,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Card> GetCardSurgeryItems(int cardId, int providerId, int locationId)
+        public static List<CardItem> GetCardSurgeryItems(int cardId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -81,7 +81,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = ExecuteCommand("GetCardSurgeryItems", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Card>();
+            var result = dsSchedules.Tables[0].DataTableToList<CardItem>();
 
             return result;
         }

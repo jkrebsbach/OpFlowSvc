@@ -77,6 +77,9 @@ namespace OpFlow.Mobile
                 case AppSettings.FragmentEnum.Patient:
                     tokens = GetFlowDetails(patient);
                     break;
+                case AppSettings.FragmentEnum.CardDetail:
+                    tokens = await GetCardItemDetails(surgery.CardID);
+                    break;
                 default:
                     tokens = GetFlowDetails(patient);
                     break;
@@ -100,7 +103,7 @@ namespace OpFlow.Mobile
 
         public static async Task<List<CaseDetailToken>> GetFlowDetails(int flowId)
         {
-            var flowSteps = await FlowUtil.GetFlowInstructions(flowId);
+            var flowSteps = await FlowUtil.GetFlowTimings(flowId);
 
             var caseDetailTokens = flowSteps
                 .OrderBy(fs => fs.StepID)
@@ -117,6 +120,27 @@ namespace OpFlow.Mobile
 
             CategoryGroupId = flowStep.StepID;
             DetailId = flowStep.StepID;
+        }
+
+        private static async Task<List<CaseDetailToken>> GetCardItemDetails(int cardId)
+        {
+            var items = await CardUtil.GetCardItems(cardId);
+
+            var caseDetailTokens = items
+                .OrderBy(fs => fs.ItemID)
+                .Select(value => new CaseDetailToken(value))
+                .ToList();
+
+            return caseDetailTokens;
+        }
+
+        private CaseDetailToken(CardItem cardItem)
+        {
+            CategoryTitle = cardItem.ItemType;
+            DetailText = cardItem.ItemDescription;
+
+            CategoryGroupId = cardItem.ItemID;
+            DetailId = cardItem.ItemID;
         }
     }
 }

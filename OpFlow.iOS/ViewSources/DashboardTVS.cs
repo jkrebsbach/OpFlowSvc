@@ -1,23 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
 using Foundation;
+using OpFlow.Data;
 using UIKit;
 
 namespace OpFlow.iOS.ViewSources
 {
     public class DashboardTVS: UITableViewSource
     {
-        public DashboardTVS()
+        private List<FlowTiming> _flowTimings;
+
+        public DashboardTVS(List<FlowTiming> flowTimings)
         {
+            _flowTimings = flowTimings;
         }
 
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
         {
-            throw new NotImplementedException();
+            var timing = _flowTimings[indexPath.Row];
+            
+            var cell = tableView.DequeueReusableCell("DashboardStepCell", indexPath) as DashboardStepCell;
+            
+            cell?.UpdateCell(timing);
+
+            return cell;
         }
 
         public override nint RowsInSection(UITableView tableview, nint section)
         {
-            throw new NotImplementedException();
+            return _flowTimings.Count;
         }
     }
 }

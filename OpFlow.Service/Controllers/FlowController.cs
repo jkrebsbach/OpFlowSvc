@@ -39,7 +39,7 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetFlowTimings")]
         [Route("api/flow/timings")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowStep>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowTiming>))]
         public HttpResponseMessage GetFlowTimings(int flowId, int providerId, int locationId, int? surgeryId = null)
         {
             var result = DataAccess.SqlHelper.GetFlowTimings(flowId, providerId, locationId, surgeryId);
