@@ -16,12 +16,16 @@ namespace OpFlow.iOS.ViewSources
         private readonly List<bool> _hiddenDetails;
         private readonly bool _allowEdit;
 
+        private string _detailCellType;
+
         public event EventHandler<List<CaseDetailToken>> DetailListConfirmedEvent;
 
         public DetailListTVS(List<CaseDetailToken> details, bool allowEdit)
         {
             _detailTokens = details;
             _allowEdit = allowEdit;
+
+            _detailCellType = (allowEdit ? "DetailEditableContentCell" : "DetailContentCell");
 
             _hiddenDetails = new List<bool>();
 
@@ -51,8 +55,7 @@ namespace OpFlow.iOS.ViewSources
             }
             else
             {
-                var detailCell = tableView.DequeueReusableCell("DetailContentCell", indexPath) as DetailContentCell;
-                detailCell?.AllowEdit(_allowEdit);
+                var detailCell = tableView.DequeueReusableCell(_detailCellType, indexPath) as DetailListCell;
 
                 cell = detailCell;
                 if (cell != null)
@@ -98,7 +101,7 @@ namespace OpFlow.iOS.ViewSources
 
                 if (detailCell == null)
                 {
-                    detailCell = tableView.DequeueReusableCell("DetailContentCell", indexPath) as DetailListCell;
+                    detailCell = tableView.DequeueReusableCell(_detailCellType, indexPath) as DetailListCell;
                 }
 
                 // Assign visibility to Hidden flag

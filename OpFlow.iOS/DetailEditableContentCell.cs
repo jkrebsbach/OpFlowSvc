@@ -1,21 +1,21 @@
 using Foundation;
 using System;
+using UIKit;
 using OpFlow.iOS.Delegates;
 using OpFlow.Mobile;
-using UIKit;
 
 namespace OpFlow.iOS
 {
-    public partial class DetailContentCell : DetailListCell
+    public partial class DetailEditableContentCell : DetailListCell
     {
-        public DetailContentCell (IntPtr handle) : base (handle)
+        public DetailEditableContentCell (IntPtr handle) : base (handle)
         {
         }
+
 
         public override void UpdateCell(CaseDetailToken token)
         {
             txtDetail.Text = token.DetailText;
-            txtDetail.Editable = false;
 
             txtDetail.ReturnKeyType = UIReturnKeyType.Done;
 
@@ -32,7 +32,5 @@ namespace OpFlow.iOS
                 }
             };
         }
-
-        
     }
 }

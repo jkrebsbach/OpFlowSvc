@@ -144,6 +144,14 @@
       <DependentUpon>DashboardStepCell.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewSources\DashboardTVS.cs" />
+    <Compile Include="EditableContentCell.cs" />
+    <Compile Include="EditableContentCell.designer.cs">
+      <DependentUpon>EditableContentCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DetailEditableContentCell.cs" />
+    <Compile Include="DetailEditableContentCell.designer.cs">
+      <DependentUpon>DetailEditableContentCell.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">
