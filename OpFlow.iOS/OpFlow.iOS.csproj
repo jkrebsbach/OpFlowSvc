@@ -212,6 +212,13 @@
     <BundleResource Include="Resources\ic_schedule_48pt%403x.png" />
     <BundleResource Include="Resources\ic_schedule_48pt.png" />
     <BundleResource Include="Resources\back.png" />
+    <BundleResource Include="Resources\ic_person_red_A700_36pt.png" />
+    <BundleResource Include="Resources\ic_person_red_A700_36pt%402x.png" />
+    <BundleResource Include="Resources\ic_person_red_A700_36pt%403x.png" />
+    <BundleResource Include="Resources\ic_dashboard_purple_A700_36pt.png" />
+    <BundleResource Include="Resources\ic_dashboard_purple_A700_36pt%402x.png" />
+    <BundleResource Include="Resources\ic_dashboard_purple_A700_36pt%403x.png" />
+    <BundleResource Include="Resources\infinity_green_72.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">
