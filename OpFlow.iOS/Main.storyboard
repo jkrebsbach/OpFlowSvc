@@ -407,7 +407,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="281" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2191.875" y="-780.63379999999995"/>
+            <point key="canvasLocation" x="2858" y="-803"/>
         </scene>
         <!--Title-->
         <scene sceneID="yeJ-s9-urD">
@@ -705,11 +705,13 @@
                         <segue destination="279" kind="custom" identifier="scheduleSegue" customClass="EmptySegue" id="11828"/>
                         <segue destination="10348" kind="custom" identifier="detailSegue" customClass="EmptySegue" id="11970"/>
                         <segue destination="14857" kind="custom" identifier="navigateSegue" customClass="EmptySegue" id="15608"/>
+                        <segue destination="30322" kind="custom" identifier="cardListSegue" customClass="EmptySegue" id="eWL-ey-ccP"/>
+                        <segue destination="30091" kind="custom" identifier="dashboardSegue" customClass="EmptySegue" id="d6F-gJ-HPr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="11603" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1347" y="-411"/>
+            <point key="canvasLocation" x="1309" y="-443"/>
         </scene>
         <!--Navigate View Controller-->
         <scene sceneID="14856">
@@ -1299,6 +1301,42 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="14859" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2086.875" y="-58.098590000000002"/>
+        </scene>
+        <!--Dashboard View Controller-->
+        <scene sceneID="30090">
+            <objects>
+                <viewController id="30091" customClass="DashboardViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="30088"/>
+                        <viewControllerLayoutGuide type="bottom" id="30089"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="30092">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="30093" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3600" y="-802"/>
+        </scene>
+        <!--Card List View Controller-->
+        <scene sceneID="30321">
+            <objects>
+                <viewController id="30322" customClass="CardListViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="30319"/>
+                        <viewControllerLayoutGuide type="bottom" id="30320"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="30323">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="30324" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2138" y="-803"/>
         </scene>
     </scenes>
     <resources>

@@ -111,79 +111,10 @@ namespace OpFlow.iOS
             return buttonItem;
         }
 
+        // Alternate implementation of custom nav bar at:
         ////https://theconfuzedsourcecode.wordpress.com/2017/03/02/creating-an-identical-custom-navigation-bar-back-button-in-xamarin-ios/
-        //private UIBarButtonItem SetupCustomBack(string backText)
-        //{
-        //    var backBtnImage = UIImage.FromBundle("back.png")
-        //        .ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 
-        //    var backButton = new UIButton(UIButtonType.Custom)
-        //    {
-        //        HorizontalAlignment =UIControlContentHorizontalAlignment.Left,
-        //        TitleEdgeInsets = new UIEdgeInsets(11.5f, 15f, 10f, 0f),
-        //        ImageEdgeInsets = new UIEdgeInsets(1f, 8f, 0f, 0f)
-        //    };
-
-        //    backButton.SetTitle(backText, UIControlState.Normal);
-        //    // use the default blue color in ios back button text
-        //    backButton.SetTitleColor(UIColor.FromRGB(0, 129, 249), UIControlState.Normal);
-        //    backButton.SetTitleColor(UIColor.LightGray, UIControlState.Highlighted);
-        //    backButton.Font = UIFont.FromName("HelveticaNeue", (nfloat)17);
-        //    backButton.SetImage(backBtnImage, UIControlState.Normal);
-        //    backButton.SizeToFit();
-
-        //    backButton.TouchDown += NavigateBack;
-            
-        //    backButton.Frame = new CGRect(0, 0, 
-        //        UIScreen.MainScreen.Bounds.Width / 4, 
-        //        NavigationController.NavigationBar.Frame.Height);
-
-        //    var btnContainer = new UIView(
-        //        new CGRect(0, 0, backButton.Frame.Width, backButton.Frame.Height));
-
-        //    btnContainer.AddSubview(backButton);
-
-
-        //    var backButtonItem = new UIBarButtonItem("", UIBarButtonItemStyle.Plain, null)
-        //    {
-        //        CustomView = backButton
-        //    };
-
-        //    return backButtonItem;
-        //}
-
-        public void Navigate(AppSettings.FragmentEnum fragmentEnum, object payload)
-        {
-            switch (fragmentEnum)
-            {
-                case AppSettings.FragmentEnum.Schedule:
-
-                    PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
-                    break;
-                case AppSettings.FragmentEnum.CaseNavigate:
-                    PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
-                    break;
-                case AppSettings.FragmentEnum.Patient:
-                    PresentContainerView(AppSettings.FragmentEnum.Patient);
-                    break;
-                case AppSettings.FragmentEnum.CardDetail:
-                    PresentContainerView(AppSettings.FragmentEnum.CardDetail);
-                    break;
-                case AppSettings.FragmentEnum.FlowDetail:
-                    PresentContainerView(AppSettings.FragmentEnum.FlowDetail);
-                    break;
-                case AppSettings.FragmentEnum.Dashboard:
-                    PresentContainerView(AppSettings.FragmentEnum.Dashboard);
-                    break;
-                case AppSettings.FragmentEnum.Debrief:
-                    PresentContainerView(AppSettings.FragmentEnum.Debrief);
-                    break;
-
-
-            }
-        }
-
-        private async void PresentContainerView(AppSettings.FragmentEnum fragmentEnum)
+        public async void PresentContainerView(AppSettings.FragmentEnum fragmentEnum)
         {
             // TODO: Rework back stack implementation to not require this...
             AppSettings.PriorScreen = AppSettings.CurrentScreen;
@@ -222,6 +153,12 @@ namespace OpFlow.iOS
                     await _containerViewController.PresentDetailViewAsync();
                     break;
 
+                case AppSettings.FragmentEnum.CardList:
+                    Title = "Card List";
+                    customBackButton = SetupCustomBack("Surgery");
+                    await _containerViewController.PresentCardListViewAsync();
+                    break;
+
                 case AppSettings.FragmentEnum.FlowDetail:
                     Title = "Flow";
                     customBackButton = SetupCustomBack("Surgery");
@@ -231,7 +168,7 @@ namespace OpFlow.iOS
                 case AppSettings.FragmentEnum.Dashboard:
                     Title = "Dashboard";
                     customBackButton = SetupCustomBack("Surgery");
-                    await _containerViewController.PresentDetailViewAsync();
+                    await _containerViewController.PresentDashboardViewAsync();
                     break;
             }
 

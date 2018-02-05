@@ -216,14 +216,14 @@ namespace OpFlow.iOS
         {
             AppSettings.LoadSurgery(surgery.SurgeryID, surgery.PatientID);
 
-            NavigationDelegate?.Navigate(AppSettings.FragmentEnum.Schedule, null);
+            NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
         }
 
         private void SelectDebrief(object sender, Surgery surgery)
         {
             AppSettings.LoadSurgery(surgery.SurgeryID, surgery.PatientID);
 
-            NavigationDelegate?.Navigate(AppSettings.FragmentEnum.Debrief, null);
+            NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.Debrief);
         }
     }
 }

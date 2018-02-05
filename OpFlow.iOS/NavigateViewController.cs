@@ -65,7 +65,7 @@ namespace OpFlow.iOS
 
         private void NavigateScreen(AppSettings.FragmentEnum targetScreen)
         {
-            NavigationDelegate?.Navigate(targetScreen, null);
+            NavigationDelegate?.PresentContainerView(targetScreen);
         }
 
         private void SetupTitleView(UIView view)

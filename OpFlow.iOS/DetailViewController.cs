@@ -58,7 +58,7 @@ namespace OpFlow.iOS
         {
             // Save changes to tokens
 
-            NavigationDelegate?.Navigate(AppSettings.PriorScreen, null);
+            NavigationDelegate?.PresentContainerView(AppSettings.PriorScreen);
         }
     }
 }

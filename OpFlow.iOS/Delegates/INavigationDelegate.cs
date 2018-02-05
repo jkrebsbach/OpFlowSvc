@@ -13,6 +13,6 @@ namespace OpFlow.iOS.Delegates
     public interface INavigationDelegate
     {
 
-        void Navigate(AppSettings.FragmentEnum fragmentEnum, object payload);
+        void PresentContainerView(AppSettings.FragmentEnum fragmentEnum);
     }
 }

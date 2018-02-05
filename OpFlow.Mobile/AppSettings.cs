@@ -28,6 +28,7 @@ namespace OpFlow.Mobile
             Dashboard = 10,
             Room = 11,
             Communicator = 12,
+            CardList = 13,
         }
 
         public enum RoleEnum
