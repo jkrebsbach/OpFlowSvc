@@ -54,10 +54,11 @@ namespace OpFlow.iOS
             DetailTableView.Source = detailTableViewSource;
         }
 
-        private void ConfirmDetails(object sender, List<CaseDetailToken> tokens)
+        private async void ConfirmDetails(object sender, List<CaseDetailToken> tokens)
         {
-            NavigationDelegate?.Navigate(AppSettings.FragmentEnum.CaseNavigate, tokens);
+            // Save changes to tokens
 
+            NavigationDelegate?.Navigate(AppSettings.PriorScreen, null);
         }
     }
 }

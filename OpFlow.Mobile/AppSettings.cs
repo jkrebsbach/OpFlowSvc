@@ -46,6 +46,7 @@ namespace OpFlow.Mobile
         public static int? CurrentPatient { get; private set; }
 
         public static FragmentEnum CurrentScreen;
+        public static FragmentEnum PriorScreen;
 
         private static readonly Dictionary<int, List<Room>> _roomDictionary = new Dictionary<int, List<Room>>();
 

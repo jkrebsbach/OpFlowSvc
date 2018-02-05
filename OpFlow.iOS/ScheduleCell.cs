@@ -16,6 +16,8 @@ namespace OpFlow.iOS
 
         internal override void UpdateCell(Surgery surgery, Patient patient, SurgeryTVS surgeryTVS)
         {
+            CustomFormatting();
+
             lblLocation.Text = surgery.RoomDescription;
             lblPatientInfo.Text = string.Format("{0} {1}", patient?.BirthDate.CalculateAge(), patient?.Gender);
             //lblPatientName.Text = string.Format("{0}, {1}", patient?.LastName, patient?.FirstName);

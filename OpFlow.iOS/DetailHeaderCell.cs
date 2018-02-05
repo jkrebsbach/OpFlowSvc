@@ -18,7 +18,7 @@ namespace OpFlow.iOS
         {
             var bottomBorder = new CALayer
             {
-                Frame = new CGRect(0f, this.Frame.Height, this.Frame.Width, 1.0f),
+                Frame = new CGRect(0f, this.Frame.Height - 1, this.Frame.Width, 1.0f),
                 BackgroundColor = UIColor.Black.CGColor
             };
             Layer.AddSublayer(bottomBorder);
