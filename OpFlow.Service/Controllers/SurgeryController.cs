@@ -38,9 +38,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetByUserId")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgery>))]
         [Route("api/Surgery/cases")]
-        public HttpResponseMessage GetSurgeryScheduleByUser(int userId, int providerId, int locationId)
+        public HttpResponseMessage GetSurgeryScheduleByUser(int userId, int providerId, int locationId, DateTime? scheduleDate = null, int? roomId = null)
         {
-            var surgeries = DataAccess.SqlHelper.GetScheduledSurgeries(userId, providerId, locationId);
+            var surgeries = DataAccess.SqlHelper.GetScheduledSurgeries(userId, providerId, locationId, scheduleDate, roomId);
             var open = DataAccess.SqlHelper.GetOpenSurgeries(userId, providerId, locationId);
 
             surgeries.AddRange(open);

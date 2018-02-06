@@ -313,13 +313,16 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Surgery> GetScheduledSurgeries(int userID, int providerId, int locationId)
+        public static List<Surgery> GetScheduledSurgeries(int userID, int providerId, int locationId,
+            DateTime? scheduleDate, int? roomId)
         {
             var parameters = new[]
             {
                 new SqlParameter("user_id", userID),
                 new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("SurgeryScheduleDate", scheduleDate ?? (object)DBNull.Value),
+                new SqlParameter("room_id", roomId ?? (object)DBNull.Value)
             };
             var dsSchedules = ExecuteCommand("GetUserScheduledCases", parameters);
 

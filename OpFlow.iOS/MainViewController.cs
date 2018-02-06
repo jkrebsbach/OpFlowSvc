@@ -18,6 +18,24 @@ namespace OpFlow.iOS
         {
         }
 
+        partial void btnHome_Click(UIKit.UIButton sender)
+        {
+            var controller = Storyboard.InstantiateViewController("HomeViewController");
+            NavigationController.PushViewController(controller, true);
+        }
+
+        partial void btnSearch_Click(UIKit.UIButton sender)
+        {
+            var controller = Storyboard.InstantiateViewController("SearchViewController");
+            NavigationController.PushViewController(controller, true);
+        }
+
+        partial void btnSchedule_Click(UIKit.UIButton sender)
+        {
+            var controller = Storyboard.InstantiateViewController("ScheduleViewController");
+            NavigationController.PushViewController(controller, true);
+        }
+
         public override void PrepareForSegue(UIStoryboardSegue segue, Foundation.NSObject sender)
         {
             if (segue.Identifier == "embedContainer")

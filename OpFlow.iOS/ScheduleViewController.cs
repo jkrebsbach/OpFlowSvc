@@ -203,6 +203,18 @@ namespace OpFlow.iOS
         private async Task LoadSchedule()
         {
             var schedule = await SurgeryUtil.GetSurgeryUserSchedule(DateTime.Today);
+
+            if (schedule == null)
+            {
+                var alertDialog =
+                    UIAlertController.Create("Error", "Unable to fetch schedule", UIAlertControllerStyle.Alert);
+                alertDialog.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, null));
+
+                PresentViewController(alertDialog, true, null);
+
+                return;
+            }
+
             var surgeryPatients = await SurgeryUtil.GetSurgeryPatients(schedule);
             
             var surgeryTableViewSource = new SurgeryTVS(schedule, surgeryPatients);

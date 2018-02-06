@@ -43,7 +43,7 @@ namespace OpFlow.Mobile
                     return default(T);
 
                 if (response.StatusCode != HttpStatusCode.OK)
-                    Console.Out.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
+                    return default(T);
 
                 result = await response.Content.ReadAsStringAsync();
             }

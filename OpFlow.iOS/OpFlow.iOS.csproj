@@ -80,11 +80,19 @@
     <Compile Include="DetailViewController.designer.cs">
       <DependentUpon>DetailViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="HomeViewController.cs" />
+    <Compile Include="HomeViewController.designer.cs">
+      <DependentUpon>HomeViewController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="NavigateViewController.cs" />
     <Compile Include="NavigateViewController.designer.cs">
       <DependentUpon>NavigateViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SearchViewController.cs" />
+    <Compile Include="SearchViewController.designer.cs">
+      <DependentUpon>SearchViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewSources\DetailListTVS.cs" />
     <Compile Include="ViewSources\SurgeryTVS.cs" />
@@ -240,6 +248,12 @@
     <BundleResource Include="Resources\ic_dashboard_purple_A700_36pt%402x.png" />
     <BundleResource Include="Resources\ic_dashboard_purple_A700_36pt%403x.png" />
     <BundleResource Include="Resources\infinity_green_72.png" />
+    <BundleResource Include="Resources\analytics_icon.png" />
+    <BundleResource Include="Resources\cards_icon.png" />
+    <BundleResource Include="Resources\case_icon.png" />
+    <BundleResource Include="Resources\community_icon.png" />
+    <BundleResource Include="Resources\schedule_icon.png" />
+    <BundleResource Include="Resources\searchcase_icon.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">
