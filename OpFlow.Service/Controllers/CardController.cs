@@ -123,6 +123,39 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
+        // GET api/values/5
+        [Route("api/card/bundledefault")]
+        [SwaggerOperation("GetBundleDefaultCardFlowRoom")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
+        public HttpResponseMessage GetBundleDefaultCardFlowRoom(int bundleId)
+        {
+            var result = DataAccess.SqlHelper.GetBundleDefaultCardFlowRoom(bundleId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [Route("api/card/proceduredefault")]
+        [SwaggerOperation("GetProcedureDefaultCardFlowRoom")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
+        public HttpResponseMessage GetProcedureDefaultCardFlowRoom(int providerId, int locationId, string cptCode)
+        {
+            var result = DataAccess.SqlHelper.GetProcedureDefaultCardFlowRoom(providerId, locationId, cptCode);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [Route("api/card/multipleproceduresdefault")]
+        [SwaggerOperation("GetMultipleProceduresDefaultCardFlowRoom")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
+        public HttpResponseMessage GetMultipleProceduresDefaultCardFlowRoom(int providerId, int locationId, int specialtyId, string cptCodes)
+        {
+            var result = DataAccess.SqlHelper.GetMultipleProceduresDefaultCardFlowRoom(providerId, locationId, specialtyId, cptCodes);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
         // POST api/values
         [SwaggerOperation("Create")]
         [SwaggerResponse(HttpStatusCode.Created)]

@@ -424,6 +424,94 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static List<CardFlowRoom> GetBundleDefaultCardFlowRoom(int bundleId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", bundleId)
+            };
+            var dsSchedules = ExecuteCommand("GetBundleDefaultCardFlowRoom", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<CardFlowRoom>();
+
+            return result;
+        }
+
+        public static List<CardFlowRoom> GetProcedureDefaultCardFlowRoom(int providerId, int locationId, string cptCode)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("cpt_code", cptCode)
+            };
+            var dsSchedules = ExecuteCommand("GetProcedureDefaultCardFlowRoom", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<CardFlowRoom>();
+
+            return result;
+        }
+
+        public static List<CardFlowRoom> GetMultipleProceduresDefaultCardFlowRoom(int providerId, int locationId, int specialtyId, string cptCodes)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("cpt_codes", cptCodes)
+            };
+            var dsSchedules = ExecuteCommand("GetMultipleProceduresDefaultCardFlowRoom", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<CardFlowRoom>();
+
+            return result;
+        }
+
+        public static List<Bundle> GetBundles(int specialtyId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetBundlesBySpecialty", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Bundle>();
+
+            return result;
+        }
+
+        public static List<Specialty> GetSpecialties(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetSpecialtyByLocation", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Specialty>();
+
+            return result;
+        }
+
+        public static List<Surgeon> GetSurgeons(int specialtyId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetSurgeonBySpecialty", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Surgeon>();
+
+            return result;
+        }
+
         public static Flow GetFlow(int flowId, int cardId, int providerId, int locationId)
         {
             var parameters = new[]

@@ -10,6 +10,7 @@ using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
 {
+    [Authorize]
     public class FlowController : ApiController
     {
         // GET api/values/5
