@@ -28,4 +28,17 @@ namespace OpFlow.Data
         public TimeSpan ScheduleTime { get; set; }
         public int? EstDelayMinutes { get; set; }
     }
+
+    public class SurgeryPost
+    {
+        public int ProviderID { get; set; }
+        public int LocationID { get; set; }
+        public int PatientID { get; set; }
+        public int UserID { get; set; }
+        public int SpecialtyID { get; set; }
+        public int BundleID { get; set; }
+        public int ProcedureID { get; set; }
+        public int CaseID { get; set; }
+        public DateTime ScheduleDate { get; set; }
+    }
 }

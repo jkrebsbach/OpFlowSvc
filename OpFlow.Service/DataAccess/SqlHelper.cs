@@ -267,6 +267,47 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UserSurgeryWorkupReviewed", dsParameters);
         }
 
+        public static int CreateSurgery(SurgeryPost surgery)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", surgery.ProviderID),
+                new SqlParameter("location_id", surgery.LocationID),
+                new SqlParameter("patient_id", surgery.PatientID),
+                new SqlParameter("user_id", surgery.UserID),
+                new SqlParameter("specialty_id", surgery.SpecialtyID),
+                new SqlParameter("bundle_id", surgery.BundleID),
+                new SqlParameter("procedure_id", surgery.ProcedureID),
+                new SqlParameter("case_id", surgery.CaseID),
+                new SqlParameter("schedule_date", surgery.ScheduleDate)
+            };
+            return ExecuteNonQuery("NewSurgery", dsParameters);
+        }
+
+        public static int CreatePatient(PatientPost patient)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("initials", patient.Initials),
+                new SqlParameter("birth_date", patient.BirthDate),
+                new SqlParameter("gender", patient.Gender)
+            };
+            return ExecuteNonQuery("NewPatient", dsParameters);
+        }
+
+        public static int CreateCase(PatientCase newCase)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", newCase.ProviderID),
+                new SqlParameter("location_id", newCase.LocationID),
+                new SqlParameter("patient_id", newCase.PatientID),
+                new SqlParameter("user_id", newCase.UserID),
+                new SqlParameter("specialty_id", newCase.SpecialtyID)
+            };
+            return ExecuteNonQuery("NewCase", dsParameters);
+        }
+
         public static List<Room> GetRooms(int locationId)
         {
             var dsParameters = new[]
@@ -334,13 +375,19 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Surgery> GetOpenSurgeries(int userID, int providerId, int locationId)
+        public static List<Surgery> GetOpenSurgeries(int? userID, int providerId, int locationId,
+            DateTime? scheduleDate, int? roomId)
         {
+            if (roomId.HasValue)
+                userID = null;
+
             var parameters = new[]
             {
-                new SqlParameter("user_id", userID),
+                new SqlParameter("user_id", userID ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("SurgeryScheduleDate", scheduleDate ?? (object)DBNull.Value),
+                new SqlParameter("room_id", roomId ?? (object)DBNull.Value)
             };
             var dsSchedules = ExecuteCommand("GetOpenSurgeriesByUser", parameters);
 

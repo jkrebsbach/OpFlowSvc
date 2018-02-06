@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using Newtonsoft.Json;
@@ -57,8 +58,11 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("Create")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        public void Post([FromBody]string value)
+        public async Task<IHttpActionResult> Post([FromBody]PatientPost patient)
         {
+            DataAccess.SqlHelper.CreatePatient(patient);
+
+            return Ok();
         }
 
         // PUT api/values/5

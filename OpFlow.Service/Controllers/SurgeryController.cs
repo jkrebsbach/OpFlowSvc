@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
@@ -41,7 +42,7 @@ namespace OpFlow.Service.Controllers
         public HttpResponseMessage GetSurgeryScheduleByUser(int userId, int providerId, int locationId, DateTime? scheduleDate = null, int? roomId = null)
         {
             var surgeries = DataAccess.SqlHelper.GetScheduledSurgeries(userId, providerId, locationId, scheduleDate, roomId);
-            var open = DataAccess.SqlHelper.GetOpenSurgeries(userId, providerId, locationId);
+            var open = DataAccess.SqlHelper.GetOpenSurgeries(userId, providerId, locationId, scheduleDate, roomId);
 
             surgeries.AddRange(open);
 
@@ -103,8 +104,11 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("Create")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        public void Post([FromBody]string value)
+        public async Task<IHttpActionResult> Post([FromBody]SurgeryPost surgery)
         {
+            DataAccess.SqlHelper.CreateSurgery(surgery);
+
+            return Ok();
         }
 
         // PUT api/values/5

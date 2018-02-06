@@ -21,4 +21,11 @@ namespace OpFlow.Data
             DemoData = new List<PatientDemo>();
         }
     }
+
+    public class PatientPost
+    {
+        public string Initials { get; set; }
+        public DateTime BirthDate { get; set; }
+        public string Gender { get; set; }
+    }
 }
