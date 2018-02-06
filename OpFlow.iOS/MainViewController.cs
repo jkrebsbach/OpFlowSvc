@@ -26,14 +26,12 @@ namespace OpFlow.iOS
 
         partial void btnSearch_Click(UIKit.UIButton sender)
         {
-            var controller = Storyboard.InstantiateViewController("SearchViewController");
-            NavigationController.PushViewController(controller, true);
+            PresentContainerView(AppSettings.FragmentEnum.SearchCases);
         }
 
         partial void btnSchedule_Click(UIKit.UIButton sender)
         {
-            var controller = Storyboard.InstantiateViewController("ScheduleViewController");
-            NavigationController.PushViewController(controller, true);
+            PresentContainerView(AppSettings.FragmentEnum.Schedule);
         }
 
         public override void PrepareForSegue(UIStoryboardSegue segue, Foundation.NSObject sender)
@@ -187,6 +185,12 @@ namespace OpFlow.iOS
                     Title = "Dashboard";
                     customBackButton = SetupCustomBack("Surgery");
                     await _containerViewController.PresentDashboardViewAsync();
+                    break;
+
+                case AppSettings.FragmentEnum.SearchCases:
+                    Title = "Search Cases";
+                    customBackButton = SetupCustomBack("Surgery");
+                    await _containerViewController.PresentSearchCaseViewAsync();
                     break;
             }
 

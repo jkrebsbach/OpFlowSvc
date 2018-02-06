@@ -1,4 +1,4 @@
-﻿// WARNING
+// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -46,25 +46,13 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UINavigationBar MainNavBar { get; set; }
 
-        [Action ("btnHome_Click")]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        partial void btnHome_Click ();
-
         [Action ("btnHome_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnHome_Click (UIKit.UIButton sender);
 
-        [Action ("btnSchedule_Click")]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        partial void btnSchedule_Click ();
-
         [Action ("btnSchedule_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnSchedule_Click (UIKit.UIButton sender);
-
-        [Action ("btnSearch_Click")]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        partial void btnSearch_Click ();
 
         [Action ("btnSearch_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]

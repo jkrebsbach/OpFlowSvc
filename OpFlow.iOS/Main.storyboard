@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="701">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
@@ -464,7 +464,7 @@
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="btnSchedule_Click:" destination="3Up-Pp-nht" id="36627" eventType="touchUpInside"/>
+                                                    <action selector="btnSchedule_Click:" destination="3Up-Pp-nht" eventType="touchUpInside" id="36627"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0O1-X4-gp1">
@@ -474,7 +474,7 @@
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="btnSchedule_Click" destination="3Up-Pp-nht" id="36906" eventType="touchUpInside"/>
+                                                    <action selector="btnSchedule_Click:" destination="3Up-Pp-nht" eventType="touchUpInside" id="38732"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -500,7 +500,7 @@
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="btnHome_Click:" destination="3Up-Pp-nht" id="36904" eventType="touchUpInside"/>
+                                                    <action selector="btnHome_Click:" destination="3Up-Pp-nht" eventType="touchUpInside" id="36904"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2y2-Bz-PRm">
@@ -510,7 +510,7 @@
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="btnHome_Click" destination="3Up-Pp-nht" id="36907" eventType="touchUpInside"/>
+                                                    <action selector="btnHome_Click:" destination="3Up-Pp-nht" eventType="touchUpInside" id="38731"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -536,7 +536,7 @@
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="btnSearch_Click:" destination="3Up-Pp-nht" id="36905" eventType="touchUpInside"/>
+                                                    <action selector="btnSearch_Click:" destination="3Up-Pp-nht" eventType="touchUpInside" id="36905"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NXg-Gd-Aip">
@@ -546,7 +546,7 @@
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="btnSearch_Click" destination="3Up-Pp-nht" id="36908" eventType="touchUpInside"/>
+                                                    <action selector="btnSearch_Click:" destination="3Up-Pp-nht" eventType="touchUpInside" id="38730"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -585,10 +585,10 @@
                         <outlet property="MainContainerView" destination="SyY-Gv-VE9" id="name-outlet-SyY-Gv-VE9"/>
                         <outlet property="MainNavBar" destination="MGS-Uc-AcK" id="name-outlet-MGS-Uc-AcK"/>
                         <outlet property="btnHome" destination="mwy-OI-Nt4" id="name-outlet-mwy-OI-Nt4"/>
-                        <outlet property="btnSearch" destination="806-Q4-i4v" id="name-outlet-806-Q4-i4v"/>
+                        <outlet property="btnHomeText" destination="2y2-Bz-PRm" id="name-outlet-2y2-Bz-PRm"/>
                         <outlet property="btnSchedule" destination="6t1-5x-1iR" id="name-outlet-6t1-5x-1iR"/>
                         <outlet property="btnScheduleText" destination="0O1-X4-gp1" id="name-outlet-0O1-X4-gp1"/>
-                        <outlet property="btnHomeText" destination="2y2-Bz-PRm" id="name-outlet-2y2-Bz-PRm"/>
+                        <outlet property="btnSearch" destination="806-Q4-i4v" id="name-outlet-806-Q4-i4v"/>
                         <outlet property="btnSearchText" destination="NXg-Gd-Aip" id="name-outlet-NXg-Gd-Aip"/>
                     </connections>
                 </viewController>
@@ -625,8 +625,8 @@
             <objects>
                 <viewController id="10348" customClass="DetailViewController" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="35554"/>
-                        <viewControllerLayoutGuide type="bottom" id="35555"/>
+                        <viewControllerLayoutGuide type="top" id="39494"/>
+                        <viewControllerLayoutGuide type="bottom" id="39495"/>
                     </layoutGuides>
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="20141">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
@@ -757,7 +757,7 @@
                         <segue destination="14857" kind="custom" identifier="navigateSegue" customClass="EmptySegue" id="15608"/>
                         <segue destination="30322" kind="custom" identifier="cardListSegue" customClass="EmptySegue" id="eWL-ey-ccP"/>
                         <segue destination="30091" kind="custom" identifier="dashboardSegue" customClass="EmptySegue" id="d6F-gJ-HPr"/>
-                        <segue id="37962" destination="37699" kind="custom" customClass="EmptySegue" identifier="searchSegue"/>
+                        <segue destination="37699" kind="custom" identifier="searchSegue" customClass="EmptySegue" id="37962"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="11603" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1563,9 +1563,10 @@
             </objects>
             <point key="canvasLocation" x="2138" y="-803"/>
         </scene>
+        <!--Home View Controller-->
         <scene sceneID="35564">
             <objects>
-                <viewController id="35565" sceneMemberID="viewController" customClass="HomeViewController">
+                <viewController storyboardIdentifier="HomeViewController" id="35565" customClass="HomeViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="35562"/>
                         <viewControllerLayoutGuide type="bottom" id="35563"/>
@@ -1573,52 +1574,83 @@
                     <view key="view" contentMode="scaleToFill" id="35566">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="OpFlowLogo.png" translatesAutoresizingMaskIntoConstraints="NO" id="35569" fixedFrame="YES">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="OpFlowLogo.png" translatesAutoresizingMaskIntoConstraints="NO" id="35569">
                                 <rect key="frame" x="62" y="69" width="235" height="92"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="35570" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
-                                <rect key="frame" x="-4942" y="-4757" width="10000" height="10000"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="35570">
+                                <rect key="frame" x="35" y="163" width="100" height="120"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="schedule_icon.png" title="Schedule"/>
+                                <state key="normal" title="Schedule" backgroundImage="schedule_icon.png">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnSchedule_Click:" destination="35565" id="39502" eventType="touchUpInside"/>
+                                </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="35571" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
-                                <rect key="frame" x="188" y="221" width="46" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="35571">
+                                <rect key="frame" x="199" y="183" width="100" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Search Cases" image="searchcase_icon.png"/>
+                                <state key="normal" title="Search Cases" backgroundImage="searchcase_icon.png">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnSearch_Click:" destination="35565" id="39503" eventType="touchUpInside"/>
+                                </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="35572" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
-                                <rect key="frame" x="29" y="302" width="46" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="35572">
+                                <rect key="frame" x="35" y="295" width="100" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="New Case" image="case_icon.png"/>
+                                <state key="normal" title="New Case" backgroundImage="case_icon.png">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnCase_Click:" destination="35565" id="39504" eventType="touchUpInside"/>
+                                </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="35573" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
-                                <rect key="frame" x="199" y="295" width="46" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="35573">
+                                <rect key="frame" x="199" y="295" width="100" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Cards" image="cards_icon.png"/>
+                                <state key="normal" title="Cards" backgroundImage="cards_icon.png">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnCard_Click:" destination="35565" id="39505" eventType="touchUpInside"/>
+                                </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="35574" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
-                                <rect key="frame" x="62" y="442" width="46" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="35574">
+                                <rect key="frame" x="35" y="396" width="100" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Analytics" image="analytics_icon.png"/>
+                                <state key="normal" title="Analytics" backgroundImage="analytics_icon.png">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnAnalytics_Click:" destination="35565" id="39506" eventType="touchUpInside"/>
+                                </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="35575" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
-                                <rect key="frame" x="207" y="422" width="46" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="35575">
+                                <rect key="frame" x="199" y="396" width="100" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Community" image="community_icon.png"/>
+                                <state key="normal" title="Community" backgroundImage="community_icon.png">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnCommunity_Click:" destination="35565" id="39507" eventType="touchUpInside"/>
+                                </connections>
                             </button>
                         </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="35567" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="422" y="-885"/>
         </scene>
+        <!--Search View Controller-->
         <scene sceneID="37698">
             <objects>
-                <viewController id="37699" sceneMemberID="viewController" customClass="SearchViewController" storyboardIdentifier="SearchViewController">
+                <viewController storyboardIdentifier="SearchViewController" id="37699" customClass="SearchViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="37696"/>
                         <viewControllerLayoutGuide type="bottom" id="37697"/>
@@ -1626,9 +1658,8 @@
                     <view key="view" contentMode="scaleToFill" id="37700">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SEARCH CASES" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="37703" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="SEARCH CASES" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="37703">
                                 <rect key="frame" x="78" y="238" width="156" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -1636,6 +1667,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="37701" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1647,6 +1679,10 @@
         <image name="DarkGreenCheckMark.png" width="320" height="320"/>
         <image name="OpFlowLogo.png" width="310" height="92"/>
         <image name="RedExclamationPoint.png" width="286" height="286"/>
+        <image name="analytics_icon.png" width="240" height="240"/>
+        <image name="cards_icon.png" width="240" height="240"/>
+        <image name="case_icon.png" width="240" height="240"/>
+        <image name="community_icon.png" width="240" height="240"/>
         <image name="ic_chat_black_24pt.png" width="24" height="24"/>
         <image name="ic_check_circle_green_A700_18pt.png" width="18" height="18"/>
         <image name="ic_dashboard_purple_A700_36pt.png" width="36" height="36"/>
@@ -1654,21 +1690,18 @@
         <image name="ic_payment_black_18pt.png" width="18" height="18"/>
         <image name="ic_person_red_A700_36pt.png" width="36" height="36"/>
         <image name="ic_play_arrow_black_18pt.png" width="18" height="18"/>
-        <image name="ic_schedule_48pt.png" width="48" height="48"/>
-        <image name="ic_search_48pt.png" width="48" height="48"/>
         <image name="infinity_green_72.png" width="72" height="72"/>
-        <image name="analytics_icon.png" width="240" height="240"/>
-        <image name="back.png" width="1600" height="1600"/>
-        <image name="cards_icon.png" width="240" height="240"/>
-        <image name="case_icon.png" width="240" height="240"/>
-        <image name="community_icon.png" width="240" height="240"/>
-        <image name="ic_dashboard_black_18pt.png" width="18" height="18"/>
-        <image name="ic_home_grey_800_18pt.png" width="18" height="18"/>
-        <image name="ic_person_black_18pt.png" width="18" height="18"/>
-        <image name="ic_schedule_grey_800_18pt.png" width="18" height="18"/>
-        <image name="ic_search_grey_800_18pt.png" width="18" height="18"/>
-        <image name="infinity.png" width="540" height="540"/>
         <image name="schedule_icon.png" width="240" height="240"/>
         <image name="searchcase_icon.png" width="240" height="240"/>
+        <image name="ic_home_grey_800_18pt.png" width="18" height="18"/>
+        <image name="ic_schedule_grey_800_18pt.png" width="18" height="18"/>
+        <image name="ic_search_grey_800_18pt.png" width="18" height="18"/>
+        <image name="ic_person_black_18pt.png" width="18" height="18"/>
+        <image name="ic_dashboard_black_18pt.png" width="18" height="18"/>
+        <image name="infinity.png" width="540" height="540"/>
+        <image name="ic_search_48pt.png" width="48" height="48"/>
+        <image name="ic_schedule_48pt.png" width="48" height="48"/>
+        <image name="back.png" width="1600" height="1600"/>
+        <image name="OpFlowLogo" width="310" height="92"/>
     </resources>
 </document>

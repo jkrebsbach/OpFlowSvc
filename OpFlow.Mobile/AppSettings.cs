@@ -16,7 +16,7 @@ namespace OpFlow.Mobile
         public enum FragmentEnum
         {
             Login = 0,
-            FutureCases = 1,
+            SearchCases = 1,
             Schedule = 2,
             CheckIn = 3,
             Debrief = 4,
@@ -59,7 +59,7 @@ namespace OpFlow.Mobile
                 {
                     case FragmentEnum.Login:
                         return "Login";
-                    case FragmentEnum.FutureCases:
+                    case FragmentEnum.SearchCases:
                         return "Cases";
                     case FragmentEnum.Schedule:
                         return "Schedule";
