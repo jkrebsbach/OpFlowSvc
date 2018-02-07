@@ -82,7 +82,7 @@ namespace OpFlow.iOS
                 TintColor = UIColor.White
             };
 
-            PresentContainerView(AppSettings.FragmentEnum.Schedule);
+            PresentContainerView(AppSettings.CurrentScreen);
         }
 
         public override void ViewDidDisappear(bool animated)
@@ -192,6 +192,13 @@ namespace OpFlow.iOS
                     customBackButton = SetupCustomBack("Surgery");
                     await _containerViewController.PresentSearchCaseViewAsync();
                     break;
+
+                case AppSettings.FragmentEnum.CreateCase:
+                    Title = "New Surgery";
+                    customBackButton = SetupCustomBack("Surgery");
+                    await _containerViewController.PresentCreateCaseViewAsync();
+                    break;
+
             }
 
 

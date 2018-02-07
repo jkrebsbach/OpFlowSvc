@@ -29,6 +29,9 @@ namespace OpFlow.iOS
 
             task.Wait();
 
+            // Navigate to schedule page after signon
+            AppSettings.CurrentScreen = AppSettings.FragmentEnum.Schedule;
+
             var controller = Storyboard.InstantiateViewController("MainViewController");
             NavigationController.PushViewController(controller, true);
         }

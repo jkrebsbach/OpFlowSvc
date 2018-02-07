@@ -15,6 +15,7 @@ namespace OpFlow.iOS
         private readonly NSString CardListSegue = (NSString)"cardListSegue";
         private readonly NSString DashboardSegue = (NSString)"dashboardSegue";
         private readonly NSString SearchSegue = (NSString)"searchSegue";
+        private readonly NSString CreateCaseSegue = (NSString)"createCaseSegue";
 
         private INavigationDelegate _hostController;
 
@@ -73,6 +74,14 @@ namespace OpFlow.iOS
         {
             _viewChanging = new TaskCompletionSource<bool>();
             PerformSegue(SearchSegue, this);
+
+            return _viewChanging.Task;
+        }
+
+        public Task<bool> PresentCreateCaseViewAsync()
+        {
+            _viewChanging = new TaskCompletionSource<bool>();
+            PerformSegue(CreateCaseSegue, this);
 
             return _viewChanging.Task;
         }

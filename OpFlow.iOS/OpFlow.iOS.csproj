@@ -160,6 +160,10 @@
     <Compile Include="DetailEditableContentCell.designer.cs">
       <DependentUpon>DetailEditableContentCell.cs</DependentUpon>
     </Compile>
+    <Compile Include="CreateCaseViewController.cs" />
+    <Compile Include="CreateCaseViewController.designer.cs">
+      <DependentUpon>CreateCaseViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">
