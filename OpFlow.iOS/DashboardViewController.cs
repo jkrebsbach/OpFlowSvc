@@ -22,8 +22,8 @@ namespace OpFlow.iOS
             {
                 await SetupDetails();
 
-                DashboardTableView.RowHeight = 20f;
-                DashboardTableView.EstimatedRowHeight = 20f;
+                DashboardTableView.RowHeight = 30f;
+                DashboardTableView.EstimatedRowHeight = 30f;
 
                 DashboardTableView.ReloadData();
             }

@@ -18,19 +18,6 @@ namespace OpFlow.iOS.Delegates
 
         protected void CustomFormatting()
         {
-            var bottomBorder = new CALayer
-            {
-                Frame = new CGRect(0f, this.Frame.Height - 1, this.Frame.Width, 1.0f),
-                BackgroundColor = UIColor.Black.CGColor
-            };
-            Layer.AddSublayer(bottomBorder);
-
-            var topBorder = new CALayer
-            {
-                Frame = new CGRect(0f, 0f, this.Frame.Width, 1.0f),
-                BackgroundColor = UIColor.Black.CGColor
-            };
-            Layer.AddSublayer(topBorder);
         }
 
         internal abstract void UpdateCell(Surgery surgery, Patient patient, SurgeryTVS surgeryTVS);

@@ -14,7 +14,7 @@ namespace OpFlow.iOS
         public void UpdateCell(FlowTiming flowTiming)
         {
             lblPhase.Text = flowTiming.StepDescription;
-            lblPhase.BackgroundColor = PhaseColor(flowTiming.StepDescription);
+            //lblPhase.BackgroundColor = PhaseColor(flowTiming.StepDescription);
 
             lblStart.Text = flowTiming.StartTime.ToString("HH:mm");
             lblEnd.Text = flowTiming.EndTime.ToString("HH:mm");
