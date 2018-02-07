@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
@@ -146,6 +147,17 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [Route("api/card/specialtyproceduredefault")]
+        [SwaggerOperation("GetSpecialtyProcedureDefaultCardFlowRoom")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
+        public HttpResponseMessage GetSpecialtyProcedureDefaultCardFlowRoom(int providerId, int locationId, string cptCode)
+        {
+            var result = DataAccess.SqlHelper.GetSpecialtyProcedureDefaultCardFlowRoom(providerId, locationId, cptCode);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [Route("api/card/multipleproceduresdefault")]
         [SwaggerOperation("GetMultipleProceduresDefaultCardFlowRoom")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
@@ -154,6 +166,40 @@ namespace OpFlow.Service.Controllers
             var result = DataAccess.SqlHelper.GetMultipleProceduresDefaultCardFlowRoom(providerId, locationId, specialtyId, cptCodes);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [Route("api/card/specialtymultipleproceduresdefault")]
+        [SwaggerOperation("GetSpecialtyMultipleProceduresDefaultCardFlowRoom")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
+        public HttpResponseMessage GetSpecialtyMultipleProceduresDefaultCardFlowRoom(int providerId, int locationId, int specialtyId, string cptCodes)
+        {
+            var result = DataAccess.SqlHelper.GetSpecialtyMultipleProceduresDefaultCardFlowRoom(providerId, locationId, specialtyId, cptCodes);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // POST api/values
+        [SwaggerOperation("AssignCard")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/card/assign", Name = "AssignCard")]
+        public async Task<IHttpActionResult> AssignToCase(int caseId, [FromBody]Card card)
+        {
+            DataAccess.SqlHelper.AssignCardToCase(card, caseId);
+
+            return Ok();
+        }
+
+        // PUT api/values
+        [SwaggerOperation("UpdateQuantity")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/card/updateQuantity", Name = "UpdateQuantity")]
+        [HttpPut]
+        public async Task<IHttpActionResult> UpdateItemQty(int cardId, [FromBody]CardQuantityEdit cardQuantity)
+        {
+            DataAccess.SqlHelper.UpdateCardQuantity(cardId, cardQuantity);
+
+            return Ok();
         }
 
         // POST api/values

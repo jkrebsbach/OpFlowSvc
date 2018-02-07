@@ -63,6 +63,17 @@ namespace OpFlow.Service.Controllers
             return Ok();
         }
 
+        // POST api/values
+        [SwaggerOperation("AssignUser")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/User/Assign", Name = "AssignUser")]
+        public async Task<IHttpActionResult> AssignToCase(int surgeryId, [FromBody]User user)
+        {
+            DataAccess.SqlHelper.AssignUserToCase(user, surgeryId);
+
+            return Ok();
+        }
+
         // PUT api/values/5
         [SwaggerOperation("Update")]
         [SwaggerResponse(HttpStatusCode.OK)]

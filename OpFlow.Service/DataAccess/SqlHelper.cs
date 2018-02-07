@@ -267,6 +267,47 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UserSurgeryWorkupReviewed", dsParameters);
         }
 
+        public static int AssignUserToCase(User user, int surgeryId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", user.ProviderID),
+                new SqlParameter("location_id", user.LocationID),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("user_id", user.UserID),
+                new SqlParameter("role_id", user.RoleID)
+            };
+            return ExecuteNonQuery("AssignUserToCase", dsParameters);
+        }
+
+        public static int AssignCardToCase(Card card, int caseId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", card.ProviderID),
+                new SqlParameter("location_id", card.LocationID),
+                new SqlParameter("surgery_id", card.SurgeryID),
+                new SqlParameter("case_id", caseId),
+                new SqlParameter("card_id", card.CardID)
+            };
+            return ExecuteNonQuery("AssignCardToCase", dsParameters);
+        }
+
+        public static int UpdateCardQuantity(int cardId, CardQuantityEdit quantity)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", quantity.ProviderID),
+                new SqlParameter("location_id", quantity.LocationID),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("item_id", quantity.ItemID),
+                new SqlParameter("open_qty", quantity.OpenQty),
+                new SqlParameter("hold_qty", quantity.HoldQty),
+                new SqlParameter("item_status", "D")
+            };
+            return ExecuteNonQuery("UpdateCardItemQty", dsParameters);
+        }
+
         public static int CreateSurgery(SurgeryPost surgery)
         {
             var dsParameters = new[]
@@ -499,6 +540,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static List<CardFlowRoom> GetSpecialtyProcedureDefaultCardFlowRoom(int providerId, int locationId, string cptCode)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("cpt_code", cptCode)
+            };
+            var dsSchedules = ExecuteCommand("GetSpecialtyProcedureDefaultCardFlowRoom", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<CardFlowRoom>();
+
+            return result;
+        }
+
         public static List<CardFlowRoom> GetMultipleProceduresDefaultCardFlowRoom(int providerId, int locationId, int specialtyId, string cptCodes)
         {
             var parameters = new[]
@@ -509,6 +565,22 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("cpt_codes", cptCodes)
             };
             var dsSchedules = ExecuteCommand("GetMultipleProceduresDefaultCardFlowRoom", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<CardFlowRoom>();
+
+            return result;
+        }
+
+        public static List<CardFlowRoom> GetSpecialtyMultipleProceduresDefaultCardFlowRoom(int providerId, int locationId, int specialtyId, string cptCodes)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("cpt_codes", cptCodes)
+            };
+            var dsSchedules = ExecuteCommand("GetSpecialtyMultipleProceduresDefaultCardFlowRoom", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<CardFlowRoom>();
 
@@ -526,6 +598,21 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetBundlesBySpecialty", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Bundle>();
+
+            return result;
+        }
+
+        public static List<Procedure> GetProcedures(int specialtyId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetProceduresBySpecialty", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Procedure>();
 
             return result;
         }
