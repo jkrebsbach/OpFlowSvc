@@ -80,6 +80,9 @@ namespace OpFlow.Mobile
                 case AppSettings.FragmentEnum.CardDetail:
                     tokens = await GetCardItemDetails(surgery.CardID);
                     break;
+                case AppSettings.FragmentEnum.FlowDetail:
+                    tokens = await GetFlowDetails(surgery.FlowID);
+                    break;
                 default:
                     tokens = GetFlowDetails(patient);
                     break;
