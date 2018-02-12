@@ -260,6 +260,8 @@
     <BundleResource Include="Resources\searchcase_icon.png" />
     <BundleResource Include="Resources\ic_plus_circle_green_A700.png" />
     <BundleResource Include="Resources\ic_delete_circle_red_A700.png" />
+    <BundleResource Include="Resources\background.jpg" />
+    <BundleResource Include="Resources\OPFlowLogo_short.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">
