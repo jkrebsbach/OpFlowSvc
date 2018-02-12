@@ -13,7 +13,7 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    public partial class ScheduleViewController : UIViewController, IUITableViewDelegate, INavigationTargetDelegate
+    public partial class ScheduleViewController : OpFlowViewController, IUITableViewDelegate, INavigationTargetDelegate
     {
         private DateTime _selectedDate;
 
@@ -206,11 +206,7 @@ namespace OpFlow.iOS
 
             if (schedule == null)
             {
-                var alertDialog =
-                    UIAlertController.Create("Error", "Unable to fetch schedule", UIAlertControllerStyle.Alert);
-                alertDialog.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, null));
-
-                PresentViewController(alertDialog, true, null);
+                ShowDialog("Error", "Unable to fetch schedule");
 
                 return;
             }

@@ -516,7 +516,7 @@ namespace OpFlow.Service.DataAccess
         {
             var parameters = new[]
             {
-                new SqlParameter("specialty_id", bundleId)
+                new SqlParameter("bundle_id", bundleId)
             };
             var dsSchedules = ExecuteCommand("GetBundleDefaultCardFlowRoom", parameters);
 
