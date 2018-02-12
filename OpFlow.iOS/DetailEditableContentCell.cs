@@ -17,6 +17,8 @@ namespace OpFlow.iOS
         {
             txtDetail.Text = token.DetailText;
 
+            txtDetail.Layer.BorderWidth = 2.0f;
+
             txtDetail.ReturnKeyType = UIReturnKeyType.Done;
 
             txtDetail.ShouldChangeText = (text, range, replacementString) =>

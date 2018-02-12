@@ -105,7 +105,10 @@ namespace OpFlow.iOS
 
             lblPatientName.Text = PatientNameText;
             lblPatientInfo.Text = PatientInfoText;
+            lblProcedure.Text = _surgery.ProcedureDescription;
             lblSurgeryTime.Text = _surgery.ScheduleTime.ToString(@"hh\:mm");
+            lblLocation.Text = _surgery.RoomDescription;
+            lblFlowStep.Text = _flow.Description;
         }
 
         private string GetUserName(List<SurgeryUser> users, AppSettings.RoleEnum roleId)

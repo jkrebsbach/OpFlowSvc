@@ -96,7 +96,7 @@ namespace OpFlow.Mobile
         private static AuthToken _authToken;
         public static User CurrentUser { get; private set; }
 
-        public static string CurrentUserTitle => string.Format("{0} {1}", CurrentUser?.LastName, CurrentUser?.Title);
+        public static string CurrentUserTitle => string.Format("{0} {1}", CurrentUser?.Title, CurrentUser?.LastName);
 
 
         public static bool UserAuthenticated => _authToken?.ExpiresDate != null && _authToken.ExpiresDate > DateTime.Now;

@@ -23,6 +23,7 @@ namespace OpFlow.iOS
             //lblPatientName.Text = string.Format("{0}, {1}", patient?.LastName, patient?.FirstName);
             lblPatientName.Text = string.Format("{0}", patient?.Initials ?? "UNK");
             lblProcedure.Text = surgery.ProcedureDescription;
+            lblProcedureDescription.Text = "";
             lblStartTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
         }
     }

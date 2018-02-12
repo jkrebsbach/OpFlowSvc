@@ -117,12 +117,17 @@ namespace OpFlow.iOS.ViewSources
             var tokenIndex = (int)(indexPath.Row / 2);
             var header = (indexPath.Row % 2 == 0);
 
-            if (!header && _hiddenDetails[tokenIndex])
+
+            if (header)
+            {
+                return 40.0f;
+            }
+            if (_hiddenDetails[tokenIndex])
             {
                 return 0.0f;
             }
 
-            return 40f;
+            return 80f;
         }
     }
 }

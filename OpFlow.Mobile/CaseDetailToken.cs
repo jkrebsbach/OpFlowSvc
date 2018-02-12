@@ -129,12 +129,23 @@ namespace OpFlow.Mobile
         {
             var items = await CardUtil.GetCardItems(cardId);
 
-            var caseDetailTokens = items
-                .OrderBy(fs => fs.ItemID)
-                .Select(value => new CaseDetailToken(value))
-                .ToList();
+            var tokens = new List<CaseDetailToken>();
 
-            return caseDetailTokens;
+            foreach (var item in items){
+                var token = tokens.FirstOrDefault(t => t.CategoryTitle == item.ItemType);
+
+                if (token == null)
+                {
+                    token = new CaseDetailToken(item);
+                    tokens.Add(token);
+                }
+                else
+                {
+                    token.DetailText += "\n" + item.ItemDescription;
+                }
+            }
+
+            return tokens;
         }
 
         private CaseDetailToken(CardItem cardItem)
