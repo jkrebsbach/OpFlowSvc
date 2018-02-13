@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OpFlow.Data
 {
-    public class Bundle
+    public class CardBundle
     {
         public int BundleID { get; set; }
         public string BundleDescription { get; set; }
