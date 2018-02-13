@@ -7,7 +7,7 @@
       "scale": "2x",
       "size": "640x960",
       "idiom": "iphone",
-      "filename": "OpFlow640_960.png"
+      "filename": "OPFlow640_960.png"
     },
     {
       "orientation": "portrait",
@@ -17,7 +17,7 @@
       "scale": "2x",
       "size": "640x1136",
       "idiom": "iphone",
-      "filename": "OpFlow640_1136.png"
+      "filename": "OPFlow640_1136.png"
     },
     {
       "orientation": "portrait",

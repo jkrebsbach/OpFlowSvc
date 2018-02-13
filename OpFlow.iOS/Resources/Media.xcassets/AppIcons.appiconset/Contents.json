@@ -4,19 +4,19 @@
       "scale": "2x",
       "size": "20x20",
       "idiom": "iphone",
-      "filename": "OpFlow40.png"
+      "filename": "OPFlow40.png"
     },
     {
       "scale": "3x",
       "size": "20x20",
       "idiom": "iphone",
-      "filename": "OpFlow60.png"
+      "filename": "OPFlow60.png"
     },
     {
       "scale": "2x",
       "size": "29x29",
       "idiom": "iphone",
-      "filename": "OpFlow58.png"
+      "filename": "OPFlow58.png"
     },
     {
       "scale": "3x",
@@ -32,13 +32,13 @@
       "scale": "3x",
       "size": "40x40",
       "idiom": "iphone",
-      "filename": "OpFlow120.png"
+      "filename": "OPFlow120.png"
     },
     {
       "scale": "2x",
       "size": "60x60",
       "idiom": "iphone",
-      "filename": "OpFlow120.png"
+      "filename": "OPFlow120.png"
     },
     {
       "scale": "3x",
@@ -54,7 +54,7 @@
       "scale": "2x",
       "size": "20x20",
       "idiom": "ipad",
-      "filename": "OpFlow40.png"
+      "filename": "OPFlow40.png"
     },
     {
       "scale": "1x",
@@ -70,7 +70,7 @@
       "scale": "1x",
       "size": "40x40",
       "idiom": "ipad",
-      "filename": "OpFlow40.png"
+      "filename": "OPFlow40.png"
     },
     {
       "scale": "2x",
@@ -96,7 +96,7 @@
       "scale": "1x",
       "size": "1024x1024",
       "idiom": "ios-marketing",
-      "filename": "infinity_AppStore.png"
+      "filename": "OPFlow1024.png"
     }
   ],
   "properties": {},

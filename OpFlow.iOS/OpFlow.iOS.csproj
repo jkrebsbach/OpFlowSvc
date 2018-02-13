@@ -262,33 +262,43 @@
     <BundleResource Include="Resources\ic_delete_circle_red_A700.png" />
     <BundleResource Include="Resources\background.jpg" />
     <BundleResource Include="Resources\OPFlowLogo_short.png" />
+    <BundleResource Include="Resources\ic_dashboard_blue_700_36pt.png" />
+    <BundleResource Include="Resources\ic_dashboard_blue_700_36pt%402x.png" />
+    <BundleResource Include="Resources\ic_dashboard_blue_700_36pt%403x.png" />
+    <BundleResource Include="Resources\ic_person_blue_700_36pt.png" />
+    <BundleResource Include="Resources\ic_person_blue_700_36pt%402x.png" />
+    <BundleResource Include="Resources\ic_person_blue_700_36pt%403x.png" />
+    <BundleResource Include="Resources\ic_credit_card_blue_700_36pt.png" />
+    <BundleResource Include="Resources\ic_credit_card_blue_700_36pt%402x.png" />
+    <BundleResource Include="Resources\ic_credit_card_blue_700_36pt%403x.png" />
+    <BundleResource Include="Resources\infinity_blue_72.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\infinity_AppStore.png">
+    <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\OPFlow1024.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\OpFlow120.png">
+    <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\OPFlow120.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\OpFlow40.png">
+    <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\OPFlow40.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\OpFlow58.png">
+    <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\OPFlow58.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\OpFlow60.png">
+    <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\OPFlow60.png">
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Resources\Media.xcassets\LaunchImages.launchimage\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Resources\Media.xcassets\LaunchImages.launchimage\OpFlow640_1136.png">
+    <ImageAsset Include="Resources\Media.xcassets\LaunchImages.launchimage\OPFlow640_1136.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Resources\Media.xcassets\LaunchImages.launchimage\OpFlow640_960.png">
+    <ImageAsset Include="Resources\Media.xcassets\LaunchImages.launchimage\OPFlow640_960.png">
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Resources\Media.xcassets\OpFlowLogo.imageset\OpFlowLogo.png">
