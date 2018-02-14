@@ -1,6 +1,7 @@
 using Foundation;
 using System;
 using UIKit;
+using OpFlow.Data;
 
 namespace OpFlow.iOS
 {
@@ -8,6 +9,11 @@ namespace OpFlow.iOS
     {
         public SurgeryCommunicatorCell (IntPtr handle) : base (handle)
         {
+        }
+
+        public void UpdateCell(Messaging message)
+        {
+            
         }
     }
 }

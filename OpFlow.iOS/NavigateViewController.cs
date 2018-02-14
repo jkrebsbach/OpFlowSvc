@@ -7,6 +7,7 @@ using OpFlow.Data;
 using System.Collections.Generic;
 using System.Linq;
 using OpFlow.iOS.Delegates;
+using OpFlow.iOS.ViewSources;
 
 namespace OpFlow.iOS
 {
@@ -45,6 +46,7 @@ namespace OpFlow.iOS
         Surgery _surgery;
         Flow _flow;
         Patient _patient;
+        List<Messaging> _messaging;
 
         public NavigateViewController (IntPtr handle) : base (handle)
         {
@@ -103,6 +105,12 @@ namespace OpFlow.iOS
             var users = await SurgeryUtil.GetSurgeryUsers(_surgery.CaseID,
                                                          AppSettings.CurrentUser.ProviderID,
                                                           AppSettings.CurrentUser.LocationID);
+
+            _messaging = await MessagingUtil.GetCaseMessaging(_surgery.CaseID);
+
+            var messagingTableViewSource = new CommunicatorTVS(_messaging);
+
+            CommunicatorTableView.Source = messagingTableViewSource;
 
             // If case is open, show debrief button
             btnDebrief.Hidden = (_surgery.SurgeryStatus != "O");

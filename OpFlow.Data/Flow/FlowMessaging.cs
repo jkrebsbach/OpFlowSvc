@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OpFlow.Data
 {
-    public class FlowMessaging
+    public class FlowMessaging : Messaging
     {
     }
 }

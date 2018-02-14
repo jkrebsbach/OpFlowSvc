@@ -172,6 +172,7 @@
     <Compile Include="SurgeryCommunicatorCell.designer.cs">
       <DependentUpon>SurgeryCommunicatorCell.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewSources\CommunicatorTVS.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">
