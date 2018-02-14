@@ -16,7 +16,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values/5
         [SwaggerOperation("Get")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Bundle>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardBundle>))]
         public HttpResponseMessage GetBundles(int specialtyId, int providerId, int locationId)
         {
             var bundles = DataAccess.SqlHelper.GetBundles(specialtyId, providerId, locationId);

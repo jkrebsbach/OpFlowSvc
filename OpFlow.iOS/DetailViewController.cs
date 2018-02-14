@@ -45,16 +45,16 @@ namespace OpFlow.iOS
 
             var patient = await PatientUtil.GetPatient(surgery.PatientID);
 
-            var tokens = await CaseDetailToken.GetCaseDetailTokens(surgery, patient);
+            var categories = await CaseDetailCategory.GetCaseDetailTokens(surgery, patient);
             var allowEdit = CaseDetailToken.AllowEdit();
 
-            var detailTableViewSource = new DetailListTVS(tokens, allowEdit);
+            var detailTableViewSource = new DetailListTVS(categories, allowEdit);
             detailTableViewSource.DetailListConfirmedEvent += ConfirmDetails;
 
             DetailTableView.Source = detailTableViewSource;
         }
 
-        private async void ConfirmDetails(object sender, List<CaseDetailToken> tokens)
+        private async void ConfirmDetails(object sender, List<DetailItem> tokens)
         {
             // Save changes to tokens
 

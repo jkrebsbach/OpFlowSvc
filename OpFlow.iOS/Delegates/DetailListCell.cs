@@ -14,7 +14,6 @@ namespace OpFlow.iOS.Delegates
         public DetailListCell(IntPtr handle) : base(handle)
         { }
 
-
         public abstract void UpdateCell(CaseDetailToken token);
     }
 }

@@ -17,7 +17,7 @@ namespace OpFlow.AndroidApp.Adapters
     public class CaseDetailListAdapter : BaseExpandableListAdapter
     {
         private readonly Activity _context;
-        private readonly List<CaseDetailToken> _caseDetailTokens;
+        private readonly List<DetailItem> _caseDetailTokens;
 
         public override int GroupCount => _caseDetailTokens.Count;
 
@@ -30,7 +30,7 @@ namespace OpFlow.AndroidApp.Adapters
 
         public override long GetChildId(int groupPosition, int childPosition)
         {
-            return _caseDetailTokens[groupPosition].DetailId;
+            return (_caseDetailTokens[groupPosition] as CaseDetailCategory).CategoryGroupId;
         }
 
         public override int GetChildrenCount(int groupPosition)
@@ -47,7 +47,7 @@ namespace OpFlow.AndroidApp.Adapters
             var pnlScheduledProceduresHeaders = row.FindViewById<LinearLayout>(Resource.Id.pnlScheduledProceduresHeaders);
             var gvScheduledProcedures = row.FindViewById<GridView>(Resource.Id.gvScheduledProcedures);
 
-            txtItemText.Text = currGroup.DetailText;
+            txtItemText.Text = (currGroup as CaseDetailCategory).CategoryTitle;
 
             //var showPnlPastProcedure = currGroup.CaseDetail == CaseDetailToken.CaseDetailEnum.PastProcedureResults;
             var showPnlPastProcedure = false;
@@ -66,7 +66,7 @@ namespace OpFlow.AndroidApp.Adapters
 
         public override long GetGroupId(int groupPosition)
         {
-            return _caseDetailTokens[groupPosition].CategoryGroupId;
+            return (_caseDetailTokens[groupPosition] as CaseDetailCategory).CategoryGroupId;
         }
 
         public override View GetGroupView(int groupPosition, bool isExpanded, View convertView, ViewGroup parent)
@@ -75,7 +75,7 @@ namespace OpFlow.AndroidApp.Adapters
 
             var token = _caseDetailTokens[groupPosition];
 
-            header.FindViewById<TextView>(Resource.Id.DataHeader).Text = token.CategoryTitle;
+            header.FindViewById<TextView>(Resource.Id.DataHeader).Text = (token as CaseDetailCategory).CategoryTitle;
 
             return header;
         }
@@ -85,7 +85,7 @@ namespace OpFlow.AndroidApp.Adapters
             return false;
         }
 
-        public CaseDetailListAdapter(Activity context, List<CaseDetailToken> caseDetailTokens)
+        public CaseDetailListAdapter(Activity context, List<DetailItem> caseDetailTokens)
         {
             _context = context;
             _caseDetailTokens = caseDetailTokens;

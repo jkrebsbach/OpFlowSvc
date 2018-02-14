@@ -8,13 +8,13 @@ using CoreAnimation;
 
 namespace OpFlow.iOS
 {
-    public partial class DetailHeaderCell : DetailListCell
+    public partial class DetailHeaderCell : UITableViewCell
     {
         public DetailHeaderCell (IntPtr handle) : base (handle)
         {
         }
 
-        public override void UpdateCell(CaseDetailToken token)
+        public void UpdateCell(CaseDetailCategory token)
         {
             var bottomBorder = new CALayer
             {

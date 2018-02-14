@@ -12,46 +12,41 @@ namespace OpFlow.iOS.ViewSources
 {
     public class DetailListTVS : UITableViewSource
     {
-        private readonly List<CaseDetailToken> _detailTokens;
-        private readonly List<bool> _hiddenDetails;
+        private readonly List<DetailItem> _detailItems;
         private readonly bool _allowEdit;
 
         private string _detailCellType;
 
-        public event EventHandler<List<CaseDetailToken>> DetailListConfirmedEvent;
+        public event EventHandler<List<DetailItem>> DetailListConfirmedEvent;
 
-        public DetailListTVS(List<CaseDetailToken> details, bool allowEdit)
+        public DetailListTVS(List<DetailItem> details, bool allowEdit)
         {
-            _detailTokens = details;
+            _detailItems = details;
             _allowEdit = allowEdit;
 
             _detailCellType = (allowEdit ? "DetailEditableContentCell" : "DetailContentCell");
-
-            _hiddenDetails = new List<bool>();
-
-            _detailTokens.ForEach(dt => _hiddenDetails.Add(false));
         }
 
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
         {
-            var tokenIndex = (int)(indexPath.Row / 2);
-            var header = (indexPath.Row % 2 == 0);
-
-            var lastRow = (indexPath.Row == _detailTokens.Count * 2);
+            var lastRow = (indexPath.Row == _detailItems.Count);
 
             if (lastRow)
                 return tableView.DequeueReusableCell("DetailConfirmCell", indexPath);
 
-            var token = _detailTokens[tokenIndex];
-            var hiddenDetails = _hiddenDetails[tokenIndex];
+            var token = _detailItems[indexPath.Row];
+            var category = (token is CaseDetailCategory detailCategory ? detailCategory : (token as CaseDetailToken).Category);
 
-            DetailListCell cell;
-            if (header)
+            var hiddenDetails = category.HiddenDetails;
+
+            UITableViewCell cell;
+            if (token is CaseDetailCategory)
             {
                 var headerCell = tableView.DequeueReusableCell("DetailHeaderCell", indexPath) as DetailHeaderCell;
                 headerCell?.AssignToggleImage(hiddenDetails);
 
                 cell = headerCell;
+                headerCell?.UpdateCell(token as CaseDetailCategory);
             }
             else
             {
@@ -60,16 +55,16 @@ namespace OpFlow.iOS.ViewSources
                 cell = detailCell;
                 if (cell != null)
                     cell.Hidden = hiddenDetails;
-            }
 
-            cell?.UpdateCell(token);
+                detailCell?.UpdateCell(token as CaseDetailToken);
+            }
 
             return cell;
         }
 
         public override nint RowsInSection(UITableView tableview, nint section)
         {
-            var cellCount = _detailTokens.Count * 2;
+            var cellCount = _detailItems.Count;
 
             if (_allowEdit)
                 cellCount++; // Include confirm cell
@@ -79,33 +74,36 @@ namespace OpFlow.iOS.ViewSources
 
         public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
         {
-            var tokenIndex = (int)(indexPath.Row / 2);
             var selectedCell = tableView.CellAt(indexPath);
 
             if (selectedCell is DetailConfirmCell confirmCell)
             {
-                DetailListConfirmedEvent?.Invoke(this, _detailTokens);
+                DetailListConfirmedEvent?.Invoke(this, _detailItems);
 
             }
             else if (selectedCell is DetailHeaderCell headerCell)
             {
-                // Toggle visibility of detail
-                var hiddenDetails = !_hiddenDetails[tokenIndex];
-                _hiddenDetails[tokenIndex] = hiddenDetails;
+                var category = _detailItems[indexPath.Row] as CaseDetailCategory;
 
-                var detailIndexPath = NSIndexPath.FromRowSection(indexPath.Row + 1, indexPath.Section);
+                // Toggle visibility of detail cells
+                category.HiddenDetails = !category.HiddenDetails;
 
-                var detailCell = tableView.CellAt(detailIndexPath);
-
-                headerCell.AssignToggleImage(hiddenDetails);
-
-                if (detailCell == null)
+                for (var index = 0; index < category.Tokens.Count; index++)
                 {
-                    detailCell = tableView.DequeueReusableCell(_detailCellType, indexPath) as DetailListCell;
-                }
+                    var detailIndexPath = NSIndexPath.FromRowSection(indexPath.Row + 1 + index, indexPath.Section);
 
-                // Assign visibility to Hidden flag
-                detailCell.Hidden = hiddenDetails;
+                    var detailCell = tableView.CellAt(detailIndexPath);
+
+                    headerCell.AssignToggleImage(category.HiddenDetails);
+
+                    if (detailCell == null)
+                    {
+                        detailCell = tableView.DequeueReusableCell(_detailCellType, indexPath) as DetailListCell;
+                    }
+
+                    // Assign visibility to Hidden flag
+                    detailCell.Hidden = category.HiddenDetails;
+                }
 
                 tableView.BeginUpdates();
                 tableView.EndUpdates();
@@ -114,20 +112,19 @@ namespace OpFlow.iOS.ViewSources
 
         public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath)
         {
-            var tokenIndex = (int)(indexPath.Row / 2);
-            var header = (indexPath.Row % 2 == 0);
+            var defaultSize = 40.0f;
 
+            if (indexPath.Row >= _detailItems.Count)
+                return defaultSize;
 
-            if (header)
+            var item = _detailItems[indexPath.Row];
+
+            if (item is CaseDetailToken token)
             {
-                return 40.0f;
+                return token.Category.HiddenDetails ? 0.0f : defaultSize * 2;
             }
-            if (_hiddenDetails[tokenIndex])
-            {
-                return 0.0f;
-            }
-
-            return 80f;
+            
+            return defaultSize;
         }
     }
 }

@@ -92,7 +92,7 @@ namespace OpFlow.AndroidApp.Fragments
             }
         }
 
-        protected abstract Task<List<CaseDetailToken>> GetDetailTokens();
+        protected abstract Task<List<DetailItem>> GetDetailTokens();
 
         private async Task LoadCase(int surgeryId)
         {

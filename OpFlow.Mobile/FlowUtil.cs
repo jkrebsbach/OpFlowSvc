@@ -21,6 +21,17 @@ namespace OpFlow.Mobile
             return response.OrderBy(r => r.StepID).ToList();
         }
 
+        public static async Task<List<FlowTiming>> GetFlowInstructions(int flowId)
+        {
+            var providerId = AppSettings.CurrentUser.ProviderID;
+            var locationId = AppSettings.CurrentUser.LocationID;
+
+            var command = string.Format("api/flow/instructions?flowId={0}&providerId={1}&locationId={2}", flowId, providerId, locationId);
+            var response = await WebUtility.WebRequest<List<FlowTiming>>(command, HttpMethod.Get);
+
+            return response.OrderBy(r => r.StepID).ToList();
+        }
+
         public static async Task<Flow> GetFlow(int flowId, int cardId)
         {
             var providerId = AppSettings.CurrentUser.ProviderID;

@@ -587,7 +587,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Bundle> GetBundles(int specialtyId, int providerId, int locationId)
+        public static List<CardBundle> GetBundles(int specialtyId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -597,7 +597,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = ExecuteCommand("GetBundlesBySpecialty", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Bundle>();
+            var result = dsSchedules.Tables[0].DataTableToList<CardBundle>();
 
             return result;
         }
