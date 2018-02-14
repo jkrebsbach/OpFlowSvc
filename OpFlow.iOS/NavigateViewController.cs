@@ -12,6 +12,16 @@ namespace OpFlow.iOS
 {
     public partial class NavigateViewController : UIViewController, INavigationTargetDelegate
     {
+        partial void btnSendMessage_Click(UIButton sender)
+        {
+            throw new NotImplementedException();
+        }
+
+        partial void btnCommunicator_Click(UIButton sender)
+        {
+            NavigateScreen(AppSettings.FragmentEnum.Communicator);
+        }
+
         partial void btnPatient_Click(UIButton sender)
         {
             NavigateScreen(AppSettings.FragmentEnum.Patient);
@@ -52,7 +62,7 @@ namespace OpFlow.iOS
             SetupTitleView(vwScrub);
             SetupTitleView(vwRep);
 
-            SetupTitleView(vwCommunicator);
+            SetupTitleView(CommunicatorTableView);
 
             Title = "SCHEDULEVIEW"; 
             await LoadSurgery();

@@ -228,6 +228,12 @@ namespace OpFlow.iOS
                     await _containerViewController.PresentCreateCaseViewAsync();
                     break;
 
+                case AppSettings.FragmentEnum.Communicator:
+                    Title = "Communicator";
+                    customBackButton = SetupCustomBack("Surgery");
+                    await _containerViewController.PresentCommunicatorViewAsync();
+                    break;
+
             }
 
 

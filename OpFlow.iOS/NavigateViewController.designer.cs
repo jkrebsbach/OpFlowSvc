@@ -40,6 +40,10 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UITableView CommunicatorTableView { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblAnes { get; set; }
 
         [Outlet]
@@ -116,10 +120,6 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UIView vwCommunicator { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UIView vwRep { get; set; }
 
         [Outlet]
@@ -133,6 +133,10 @@ namespace OpFlow.iOS
         [Action ("btnCard_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnCard_Click (UIKit.UIButton sender);
+
+        [Action ("btnCommunicator_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnCommunicator_Click (UIKit.UIButton sender);
 
         [Action ("btnDashboard_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -149,6 +153,10 @@ namespace OpFlow.iOS
         [Action ("btnPatient_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnPatient_Click (UIKit.UIButton sender);
+
+        [Action ("btnSendMessage_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnSendMessage_Click (UIKit.UIButton sender);
 
         void ReleaseDesignerOutlets ()
         {
@@ -180,6 +188,11 @@ namespace OpFlow.iOS
             if (btnSendMessage != null) {
                 btnSendMessage.Dispose ();
                 btnSendMessage = null;
+            }
+
+            if (CommunicatorTableView != null) {
+                CommunicatorTableView.Dispose ();
+                CommunicatorTableView = null;
             }
 
             if (lblAnes != null) {
@@ -275,11 +288,6 @@ namespace OpFlow.iOS
             if (vwCirculator != null) {
                 vwCirculator.Dispose ();
                 vwCirculator = null;
-            }
-
-            if (vwCommunicator != null) {
-                vwCommunicator.Dispose ();
-                vwCommunicator = null;
             }
 
             if (vwRep != null) {

@@ -164,6 +164,14 @@
     <Compile Include="CreateCaseViewController.designer.cs">
       <DependentUpon>CreateCaseViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="CommunicatorViewController.cs" />
+    <Compile Include="CommunicatorViewController.designer.cs">
+      <DependentUpon>CommunicatorViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SurgeryCommunicatorCell.cs" />
+    <Compile Include="SurgeryCommunicatorCell.designer.cs">
+      <DependentUpon>SurgeryCommunicatorCell.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">
