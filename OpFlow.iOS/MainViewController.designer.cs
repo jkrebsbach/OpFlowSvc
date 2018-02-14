@@ -46,6 +46,18 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UINavigationBar MainNavBar { get; set; }
 
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIView vwHome { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIView vwSchedule { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIView vwSearch { get; set; }
+
         [Action ("btnHome_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnHome_Click (UIKit.UIButton sender);
@@ -98,6 +110,21 @@ namespace OpFlow.iOS
             if (MainNavBar != null) {
                 MainNavBar.Dispose ();
                 MainNavBar = null;
+            }
+
+            if (vwHome != null) {
+                vwHome.Dispose ();
+                vwHome = null;
+            }
+
+            if (vwSchedule != null) {
+                vwSchedule.Dispose ();
+                vwSchedule = null;
+            }
+
+            if (vwSearch != null) {
+                vwSearch.Dispose ();
+                vwSearch = null;
             }
         }
     }

@@ -18,6 +18,7 @@ namespace OpFlow.iOS
             base.ViewDidLoad();
             
             NavigationItem.SetHidesBackButton(true, false);
+            NavigationController.NavigationBar.Hidden = true;
         }
 
         partial void SignOnClick(UIButton sender)

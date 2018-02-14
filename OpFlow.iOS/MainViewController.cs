@@ -6,6 +6,7 @@ using OpFlow.Data;
 using OpFlow.iOS.Delegates;
 using OpFlow.Mobile;
 using UIKit;
+using CoreAnimation;
 
 namespace OpFlow.iOS
 {
@@ -79,7 +80,7 @@ namespace OpFlow.iOS
             NavigationItem.RightBarButtonItem = new UIBarButtonItem()
             {
                 Title = AppSettings.CurrentUserTitle,
-                TintColor = UIColor.White
+                TintColor = UIColor.Black
             };
 
             PresentContainerView(AppSettings.CurrentScreen);
@@ -88,6 +89,34 @@ namespace OpFlow.iOS
         public override void ViewDidDisappear(bool animated)
         {
             _foregroundNotification?.Dispose();
+        }
+
+        public override void ViewDidAppear(bool animated)
+        {
+            base.ViewDidAppear(animated);
+
+            var topBorder = new CALayer
+            {
+                Frame = new CGRect(0f, 0f, vwSearch.Frame.Width, 2.0f),
+                BackgroundColor = UIColor.Black.CGColor
+            };
+            vwSearch.Layer.AddSublayer(topBorder);
+
+            topBorder = new CALayer
+            {
+                Frame = new CGRect(0f, 0f, vwHome.Frame.Width, 2.0f),
+                BackgroundColor = UIColor.Black.CGColor
+            };
+            vwHome.Layer.AddSublayer(topBorder);
+
+            topBorder = new CALayer
+            {
+                Frame = new CGRect(0f, 0f, vwSchedule.Frame.Width, 2.0f),
+                BackgroundColor = UIColor.Black.CGColor
+            };
+            vwSchedule.Layer.AddSublayer(topBorder);
+
+            NavigationController.NavigationBar.Hidden = false;
         }
 
         private void NavigateBack(object sender, EventArgs e)
