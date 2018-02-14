@@ -95,6 +95,7 @@
       <DependentUpon>SearchViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewSources\DetailListTVS.cs" />
+    <Compile Include="ViewSources\OpFlowHelperMethod.cs" />
     <Compile Include="ViewSources\SurgeryTVS.cs" />
     <None Include="GettingStarted.Xamarin" />
     <None Include="Info.plist" />

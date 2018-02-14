@@ -9,17 +9,19 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    public partial class DetailViewController : UIViewController, INavigationTargetDelegate
+    public partial class DetailViewController : OpFlowViewController, INavigationTargetDelegate
     {
         public DetailViewController (IntPtr handle) : base (handle)
         {
-
+            
         }
 
         public INavigationDelegate NavigationDelegate { get; set; }
 
         public override async void ViewDidLoad()
         {
+            base.ViewDidLoad();
+
             try
             {
                 await SetupDetails();

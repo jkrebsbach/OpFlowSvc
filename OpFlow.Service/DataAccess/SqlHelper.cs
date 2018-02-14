@@ -56,6 +56,21 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
+        public static List<Messaging> GetCaseMessaging(int caseId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("case_id", caseId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetCaseMessaging", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Messaging>();
+
+            return result;
+        }
+
         public static List<Card> GetCardData(int cardId, int providerId, int locationId)
         {
             var parameters = new[]

@@ -1,5 +1,6 @@
 using Foundation;
 using System;
+using System.Drawing;
 using System.Threading.Tasks;
 using CoreGraphics;
 using OpFlow.Data;
@@ -75,8 +76,6 @@ namespace OpFlow.iOS
 
             NavigationItem.SetHidesBackButton(true, false);
 
-            
-
             NavigationItem.RightBarButtonItem = new UIBarButtonItem()
             {
                 Title = AppSettings.CurrentUserTitle,
@@ -85,7 +84,7 @@ namespace OpFlow.iOS
 
             PresentContainerView(AppSettings.CurrentScreen);
         }
-
+        
         public override void ViewDidDisappear(bool animated)
         {
             _foregroundNotification?.Dispose();

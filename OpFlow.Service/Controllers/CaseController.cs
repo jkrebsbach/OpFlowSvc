@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -21,6 +22,17 @@ namespace OpFlow.Service.Controllers
             DataAccess.SqlHelper.CreateCase(newCase);
 
             return Ok();
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetCaseMessages")]
+        [Route("api/case/messages")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Messaging>))]
+        public HttpResponseMessage GetCaseMessaging(int caseId, int providerId, int locationId)
+        {
+            var result = DataAccess.SqlHelper.GetCaseMessaging(caseId, providerId, locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
     }
 }

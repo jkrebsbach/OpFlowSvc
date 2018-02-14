@@ -19,5 +19,17 @@ namespace OpFlow.Mobile
 
             return response.OrderBy(r => r.MessageID).ToList();
         }
+
+        public static async Task SendMessage(string message)
+        {
+            var providerId = AppSettings.CurrentUser.ProviderID;
+            var locationId = AppSettings.CurrentUser.LocationID;
+
+            //var command = string.Format("api/case/messages?caseId={0}&providerId={1}&locationId={2}", caseId, providerId, locationId);
+            //var response = await WebUtility.WebRequest<List<Messaging>>(command, HttpMethod.Get);
+
+            //return response.OrderBy(r => r.MessageID).ToList();
+
+        }
     }
 }

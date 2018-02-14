@@ -9,5 +9,6 @@ namespace OpFlow.Data
         public int LocationID { get; set; }
         public int Type { get; set; }
         public int UserID { get; set; }
+        public string UserName { get; set; }
     }
 }

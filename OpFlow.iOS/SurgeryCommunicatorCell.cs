@@ -13,7 +13,9 @@ namespace OpFlow.iOS
 
         public void UpdateCell(Messaging message)
         {
-            
+            txtCommunicator.Text = message.Message;
+
+            ivCommunicator.SetTitle(message.UserName, UIControlState.Normal);
         }
     }
 }

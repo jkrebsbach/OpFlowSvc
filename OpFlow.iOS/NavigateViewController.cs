@@ -11,11 +11,13 @@ using OpFlow.iOS.ViewSources;
 
 namespace OpFlow.iOS
 {
-    public partial class NavigateViewController : UIViewController, INavigationTargetDelegate
+    public partial class NavigateViewController : OpFlowViewController, INavigationTargetDelegate
     {
-        partial void btnSendMessage_Click(UIButton sender)
+        async partial void btnSendMessage_Click(UIButton sender)
         {
-            throw new NotImplementedException();
+            await MessagingUtil.SendMessage(txtCommunicator.Text);
+
+            txtCommunicator.Text = string.Empty;
         }
 
         partial void btnCommunicator_Click(UIButton sender)
@@ -66,6 +68,9 @@ namespace OpFlow.iOS
 
             SetupTitleView(CommunicatorTableView);
 
+            txtCommunicator.ReturnKeyType = UIReturnKeyType.Done;
+            txtCommunicator.ShouldReturn = OpFlowHelperMethod.TextFieldShouldReturn;
+
             Title = "SCHEDULEVIEW"; 
             await LoadSurgery();
         }
@@ -106,12 +111,6 @@ namespace OpFlow.iOS
                                                          AppSettings.CurrentUser.ProviderID,
                                                           AppSettings.CurrentUser.LocationID);
 
-            _messaging = await MessagingUtil.GetCaseMessaging(_surgery.CaseID);
-
-            var messagingTableViewSource = new CommunicatorTVS(_messaging);
-
-            CommunicatorTableView.Source = messagingTableViewSource;
-
             // If case is open, show debrief button
             btnDebrief.Hidden = (_surgery.SurgeryStatus != "O");
 
@@ -127,6 +126,17 @@ namespace OpFlow.iOS
             lblSurgeryTime.Text = _surgery.ScheduleTime.ToString(@"hh\:mm");
             lblLocation.Text = _surgery.RoomDescription;
             lblFlowStep.Text = _flow.Description;
+
+
+            _messaging = await MessagingUtil.GetCaseMessaging(_surgery.CaseID);
+
+            var messagingTableViewSource = new CommunicatorTVS(_messaging);
+
+            CommunicatorTableView.Source = messagingTableViewSource;
+            CommunicatorTableView.ReloadData();
+
+            var detailIndexPath = NSIndexPath.FromRowSection(_messaging.Count - 1, 0);
+            CommunicatorTableView.ScrollToRow(detailIndexPath, UITableViewScrollPosition.None, true);
         }
 
         private string GetUserName(List<SurgeryUser> users, AppSettings.RoleEnum roleId)
