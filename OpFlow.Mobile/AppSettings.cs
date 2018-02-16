@@ -96,6 +96,7 @@ namespace OpFlow.Mobile
 
         private static AuthToken _authToken;
         public static User CurrentUser { get; private set; }
+        public static MessagingGroup CurrentMessagingGroup { get; set; }
 
         public static string CurrentUserTitle => string.Format("{0} {1}", CurrentUser?.Title, CurrentUser?.LastName);
 

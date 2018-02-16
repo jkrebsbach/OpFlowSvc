@@ -38,7 +38,7 @@ namespace OpFlow.iOS
         }
         private void SelectMessageGroup(object sender, MessagingGroup messageGroup)
         {
-            //AppSettings.LoadSurgery(surgery.SurgeryID, surgery.PatientID);
+            AppSettings.CurrentMessagingGroup = messageGroup;
 
             NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CommunicationDetail);
         }

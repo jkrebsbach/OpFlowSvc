@@ -27,7 +27,9 @@ namespace OpFlow.iOS
 
         private async Task LoadMessages()
         {
-            var messages = await MessagingUtil.GetCaseMessaging(1);
+            var currentMessageGroup = AppSettings.CurrentMessagingGroup;
+
+            var messages = await MessagingUtil.GetCaseMessaging(currentMessageGroup.CaseID);
 
             var messageTableViewSource = new CommunicatorTVS(messages);
             
