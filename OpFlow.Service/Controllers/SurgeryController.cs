@@ -36,6 +36,39 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/surgery?userId=5
+        [SwaggerOperation("SearchCaseNbr")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchResult>))]
+        [Route("api/Surgery/searchCaseNbr")]
+        public HttpResponseMessage GetCaseNbr(string caseNbr, int providerId, int locationId)
+        {
+            var schedules = DataAccess.SqlHelper.GetCaseNbr(caseNbr, providerId, locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, schedules);
+        }
+
+        // GET api/surgery?userId=5
+        [SwaggerOperation("SearchSurgeonCases")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchResult>))]
+        [Route("api/Surgery/searchSurgeonCases")]
+        public HttpResponseMessage GetSurgeonCases(DateTime begDate, DateTime endDate, int providerId, int locationId)
+        {
+            var schedules = DataAccess.SqlHelper.GetSurgeonCases(begDate, endDate, providerId, locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, schedules);
+        }
+
+        // GET api/surgery?userId=5
+        [SwaggerOperation("SearchRoomCases")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchResult>))]
+        [Route("api/Surgery/searchRoomCases")]
+        public HttpResponseMessage GetRoomCases(int roomId, DateTime begDate, DateTime endDate, int providerId, int locationId)
+        {
+            var schedules = DataAccess.SqlHelper.GetRoomCases(roomId, begDate, endDate, providerId, locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, schedules);
+        }
+
+        // GET api/surgery?userId=5
         [SwaggerOperation("GetByUserId")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgery>))]
         [Route("api/Surgery/cases")]

@@ -43,4 +43,38 @@ namespace OpFlow.Data
         public int CaseID { get; set; }
         public DateTime ScheduleDate { get; set; }
     }
+
+    public class SurgerySearchResult
+    {
+        public int UserID { get; set; }
+        public int SurgeryID { get; set; }
+        public string SurgeryStatus { get; set; }
+        public int ProviderID { get; set; }
+        public int LocationID { get; set; }
+        public DateTime ScheduleDate { get; set; }
+        public DateTime ScheduleTime { get; set; }
+        public int EstDelayMinutes { get; set; }
+        public int CardID { get; set; }
+        public int BundleID { get; set; }
+        public int ProcedureID { get; set; }
+        public string BundleDescription { get; set; }
+        public string ProcedureDescription{ get; set; }
+        public int RoleID1 { get; set; }
+        public string RoleID1Name { get; set; }
+        public int RoleID2 { get; set; }
+        public string RoleID2Name { get; set; }
+        public int RoleID3 { get; set; }
+        public string RoleID3Name { get; set; }
+        public int RoleID4 { get; set; }
+        public string RoleID4Name { get; set; }
+        public int RoleID5 { get; set; }
+        public string RoleID5Name { get; set; }
+        public int RoleID6 { get; set; }
+        public string RoleID6Name { get; set; }
+        public int RoleID7 { get; set; }
+        public string RoleID7Name { get; set; }
+        public int RoleID8 { get; set; }
+        public string RoleID8Name { get; set; }
+        public string RoomDescription { get; set; }
+    }
 }
