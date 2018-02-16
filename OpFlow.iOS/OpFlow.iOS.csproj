@@ -69,6 +69,15 @@
     <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CommunicatorDetailCell.cs" />
+    <Compile Include="CommunicatorDetailCell.designer.cs">
+      <DependentUpon>CommunicatorDetailCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CommunicatorGroupCell.cs" />
+    <Compile Include="CommunicatorGroupCell.designer.cs">
+      <DependentUpon>CommunicatorGroupCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Delegates\CommunicationCell.cs" />
     <Compile Include="Delegates\DetailListCell.cs" />
     <Compile Include="Delegates\OpFlowViewController.cs" />
     <Compile Include="Delegates\ScheduleTableCell.cs" />
@@ -94,6 +103,7 @@
     <Compile Include="SearchViewController.designer.cs">
       <DependentUpon>SearchViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewSources\CommunicationGroupTVS.cs" />
     <Compile Include="ViewSources\DetailListTVS.cs" />
     <Compile Include="ViewSources\OpFlowHelperMethod.cs" />
     <Compile Include="ViewSources\SurgeryTVS.cs" />

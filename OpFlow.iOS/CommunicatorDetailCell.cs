@@ -1,14 +1,13 @@
-using Foundation;
+﻿using Foundation;
 using System;
-using UIKit;
-using OpFlow.Data;
 using OpFlow.iOS.Delegates;
+using UIKit;
 
 namespace OpFlow.iOS
 {
-    public partial class SurgeryCommunicatorCell : CommunicationCell
+    public partial class CommunicatorDetailCell : CommunicationCell
     {
-        public SurgeryCommunicatorCell (IntPtr handle) : base (handle)
+        public CommunicatorDetailCell (IntPtr handle) : base (handle)
         {
         }
 
@@ -16,6 +15,6 @@ namespace OpFlow.iOS
 
         protected override UIImageView IvCommunicator => ivCommunicator;
 
-        
+
     }
 }

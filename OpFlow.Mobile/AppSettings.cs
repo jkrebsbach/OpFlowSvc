@@ -30,6 +30,7 @@ namespace OpFlow.Mobile
             Communicator = 12,
             CardList = 13,
             CreateCase = 14,
+            CommunicationDetail = 15,
         }
 
         public enum RoleEnum

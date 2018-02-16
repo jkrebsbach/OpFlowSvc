@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="701">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
@@ -1305,43 +1305,33 @@
                                                 <rect key="frame" x="0.0" y="40" width="316" height="216"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <prototypes>
-                                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SurgeryCommunicatorCell" id="45651" customClass="SurgeryCommunicatorCell">
+                                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CommunicationCell" id="45651" customClass="SurgeryCommunicatorCell">
                                                         <rect key="frame" x="0.0" y="28" width="316" height="45"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="45651" id="45652">
                                                             <rect key="frame" x="0.0" y="0.0" width="316" height="44.5"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
-                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kFv-Ug-cm9">
-                                                                    <rect key="frame" x="5" y="0.0" width="30" height="30"/>
-                                                                    <constraints>
-                                                                        <constraint firstAttribute="width" constant="30" id="5c6-BE-fu3"/>
-                                                                        <constraint firstAttribute="height" constant="30" id="cfT-6Y-nmw"/>
-                                                                    </constraints>
-                                                                    <inset key="titleEdgeInsets" minX="0.0" minY="30" maxX="0.0" maxY="0.0"/>
-                                                                    <state key="normal" title="DD" backgroundImage="ic_chat_black_24pt.png">
-                                                                        <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                    </state>
-                                                                </button>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ggP-az-F0O">
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ggP-az-F0O" misplaced="YES">
                                                                     <rect key="frame" x="40" y="8" width="256" height="28.5"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
+                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="54341" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES" image="ic_chat_black_24pt.png">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="24" height="24"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                </imageView>
                                                             </subviews>
                                                             <constraints>
                                                                 <constraint firstItem="ggP-az-F0O" firstAttribute="top" secondItem="45652" secondAttribute="topMargin" id="4N4-Gd-5GX"/>
                                                                 <constraint firstItem="ggP-az-F0O" firstAttribute="bottom" secondItem="45652" secondAttribute="bottomMargin" id="7Vr-fk-IQa"/>
                                                                 <constraint firstAttribute="trailingMargin" secondItem="ggP-az-F0O" secondAttribute="trailing" constant="5" id="NvB-x7-eh6"/>
-                                                                <constraint firstItem="kFv-Ug-cm9" firstAttribute="top" secondItem="45652" secondAttribute="top" id="XHH-DU-als"/>
-                                                                <constraint firstItem="kFv-Ug-cm9" firstAttribute="leading" secondItem="45652" secondAttribute="leading" constant="5" id="dAS-05-meV"/>
-                                                                <constraint firstItem="ggP-az-F0O" firstAttribute="leading" secondItem="kFv-Ug-cm9" secondAttribute="trailing" constant="5" id="qaj-xs-h2V"/>
                                                             </constraints>
                                                         </tableViewCellContentView>
                                                         <connections>
-                                                            <outlet property="ivCommunicator" destination="kFv-Ug-cm9" id="name-outlet-kFv-Ug-cm9"/>
-                                                            <outlet property="txtCommunicator" destination="ggP-az-F0O" id="name-outlet-ggP-az-F0O"/>
+                                                            <outlet property="lblCommunicator" destination="ggP-az-F0O" id="name-outlet-ggP-az-F0O"/>
+                                                            <outlet property="ivCommunicator" destination="54341" id="name-outlet-54341"/>
                                                         </connections>
                                                     </tableViewCell>
                                                 </prototypes>
@@ -2645,7 +2635,7 @@
                                 <rect key="frame" x="0.0" y="80.5" width="320" height="487.5"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CommunicatorCell" rowHeight="71" id="49023" customClass="CommunicatorCell">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CommunicatorGroupCell" rowHeight="71" id="49023" customClass="CommunicatorGroupCell">
                                         <rect key="frame" x="0.0" y="28" width="320" height="71"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="49023" id="49024">
@@ -2773,6 +2763,12 @@
                     </view>
                     <connections>
                         <outlet property="CommunicatorTableView" destination="49022" id="name-outlet-49022"/>
+                        <outlet property="lblPatientName" destination="49034" id="name-outlet-49034"/>
+                        <outlet property="lblStartTime" destination="49036" id="name-outlet-49036"/>
+                        <outlet property="lblRoom" destination="49037" id="name-outlet-49037"/>
+                        <outlet property="lblPatientInfo" destination="49040" id="name-outlet-49040"/>
+                        <outlet property="lblFlowStep" destination="49042" id="name-outlet-49042"/>
+                        <outlet property="lblProcedure" destination="49048" id="name-outlet-49048"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="44751" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2795,39 +2791,33 @@
                                 <rect key="frame" x="0.0" y="20" width="320" height="488"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="51446">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="51446" customClass="CommunicatorDetailCell" reuseIdentifier="CommunicationCell">
                                         <rect key="frame" x="0.0" y="28" width="320" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="51446" id="51447">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="44.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rwu-OF-Ggd">
-                                                    <rect key="frame" x="15" y="8" width="30" height="30"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="30" id="EpG-6s-ADT"/>
-                                                        <constraint firstAttribute="height" constant="30" id="FN9-Py-zE0"/>
-                                                    </constraints>
-                                                    <inset key="titleEdgeInsets" minX="0.0" minY="30" maxX="0.0" maxY="0.0"/>
-                                                    <state key="normal" title="DD" backgroundImage="ic_chat_black_24pt.png">
-                                                        <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    </state>
-                                                </button>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mOP-E9-EEb">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mOP-E9-EEb" misplaced="YES" ambiguous="YES">
                                                     <rect key="frame" x="50" y="13" width="255" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="53870" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES" image="ic_chat_black_24pt.png">
+                                                    <rect key="frame" x="0.0" y="0.0" width="24" height="24"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <accessibility key="accessibilityConfiguration" label="DD"/>
+                                                </imageView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="mOP-E9-EEb" firstAttribute="leading" secondItem="rwu-OF-Ggd" secondAttribute="trailing" constant="5" id="NKV-N5-JDa"/>
-                                                <constraint firstItem="rwu-OF-Ggd" firstAttribute="leading" secondItem="51447" secondAttribute="leadingMargin" id="l2s-im-cxm"/>
-                                                <constraint firstItem="rwu-OF-Ggd" firstAttribute="top" secondItem="51447" secondAttribute="topMargin" id="o7n-Y9-X5g"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="mOP-E9-EEb" secondAttribute="trailing" id="tRM-84-cFN"/>
-                                                <constraint firstItem="mOP-E9-EEb" firstAttribute="centerY" secondItem="rwu-OF-Ggd" secondAttribute="centerY" id="uSh-9G-cC2"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="lblCommunicator" destination="mOP-E9-EEb" id="name-outlet-mOP-E9-EEb"/>
+                                            <outlet property="ivCommunicator" destination="53870" id="name-outlet-53870"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
@@ -2861,16 +2851,17 @@
                     <connections>
                         <outlet property="btnSendMessage" destination="51473" id="name-outlet-51473"/>
                         <outlet property="txtMessage" destination="51477" id="name-outlet-51477"/>
+                        <outlet property="CommunicatorTableView" destination="51445" id="name-outlet-51445"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="51443" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2717.75" y="-315.1408"/>
+            <point key="canvasLocation" x="3159.75" y="-175.1408"/>
         </scene>
     </scenes>
     <resources>
         <image name="DarkGreenCheckMark.png" width="320" height="320"/>
-        <image name="OpFlowLogo.png" width="915" height="261"/>
+        <image name="OpFlowLogo.png" width="1917" height="504"/>
         <image name="RedExclamationPoint.png" width="286" height="286"/>
         <image name="analytics_icon.png" width="240" height="240"/>
         <image name="background.jpg" width="4500" height="1974"/>
@@ -2903,6 +2894,5 @@
         <image name="ic_dashboard_purple_A700_36pt.png" width="36" height="36"/>
         <image name="infinity_green_72.png" width="72" height="72"/>
         <image name="OPFlowLogo_short.png" width="299" height="209"/>
-        <image name="OpFlowLogo" width="310" height="92"/>
     </resources>
 </document>

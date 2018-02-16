@@ -11,27 +11,27 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    [Register ("CommunicatorCell")]
-    partial class CommunicatorCell
+    [Register ("CommunicatorDetailCell")]
+    partial class CommunicatorDetailCell
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblMessageGroup { get; set; }
+        UIKit.UIImageView ivCommunicator { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblRecentMessage { get; set; }
+        UIKit.UILabel lblCommunicator { get; set; }
 
         void ReleaseDesignerOutlets ()
         {
-            if (lblMessageGroup != null) {
-                lblMessageGroup.Dispose ();
-                lblMessageGroup = null;
+            if (ivCommunicator != null) {
+                ivCommunicator.Dispose ();
+                ivCommunicator = null;
             }
 
-            if (lblRecentMessage != null) {
-                lblRecentMessage.Dispose ();
-                lblRecentMessage = null;
+            if (lblCommunicator != null) {
+                lblCommunicator.Dispose ();
+                lblCommunicator = null;
             }
         }
     }

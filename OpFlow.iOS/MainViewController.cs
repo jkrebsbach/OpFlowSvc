@@ -120,8 +120,11 @@ namespace OpFlow.iOS
 
         private void NavigateBack(object sender, EventArgs e)
         {
+            // TODO: Need to think through various navigation channels here....
             if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CaseNavigate)
                 PresentContainerView(AppSettings.FragmentEnum.Schedule);
+            else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.Communicator)
+                PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
             else
                 PresentContainerView(AppSettings.PriorScreen);
         }
@@ -231,6 +234,12 @@ namespace OpFlow.iOS
                     Title = "Communicator";
                     customBackButton = SetupCustomBack("Surgery");
                     await _containerViewController.PresentCommunicatorViewAsync();
+                    break;
+
+                case AppSettings.FragmentEnum.CommunicationDetail:
+                    Title = "Chat";
+                    customBackButton = SetupCustomBack("Communicator");
+                    await _containerViewController.PresentCommunicatorDetailViewAsync();
                     break;
 
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Foundation;
 using OpFlow.Data;
+using OpFlow.iOS.Delegates;
 using UIKit;
 
 namespace OpFlow.iOS.ViewSources
@@ -21,9 +22,9 @@ namespace OpFlow.iOS.ViewSources
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
         {
             var message = _messages[indexPath.Row];
-            
-            SurgeryCommunicatorCell cell = null;
-            cell = tableView.DequeueReusableCell("SurgeryCommunicatorCell", indexPath) as SurgeryCommunicatorCell;
+
+            CommunicationCell cell = null;
+            cell = tableView.DequeueReusableCell("CommunicationCell", indexPath) as CommunicationCell;
         
             cell?.UpdateCell(message);
 

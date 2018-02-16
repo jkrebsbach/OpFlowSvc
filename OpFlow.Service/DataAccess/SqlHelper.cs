@@ -56,10 +56,11 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        public static List<Messaging> GetCaseMessaging(int caseId, int providerId, int locationId)
+        public static List<Messaging> GetCaseMessaging(int userId, int caseId, int providerId, int locationId)
         {
             var parameters = new[]
             {
+                new SqlParameter("user_id", userId),
                 new SqlParameter("case_id", caseId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
@@ -67,6 +68,22 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetCaseMessaging", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Messaging>();
+
+            return result;
+        }
+
+        public static List<MessagingGroup> GetCaseMessageGroups(int userId, int caseId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("user_id", userId),
+                new SqlParameter("case_id", caseId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetCaseMessagingGroups", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<MessagingGroup>();
 
             return result;
         }

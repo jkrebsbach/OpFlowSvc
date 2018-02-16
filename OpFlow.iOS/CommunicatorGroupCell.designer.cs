@@ -11,8 +11,8 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    [Register ("CommunicatorCell")]
-    partial class CommunicatorCell
+    [Register ("CommunicatorGroupCell")]
+    partial class CommunicatorGroupCell
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]

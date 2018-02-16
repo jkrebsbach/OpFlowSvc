@@ -135,8 +135,12 @@ namespace OpFlow.iOS
             CommunicatorTableView.Source = messagingTableViewSource;
             CommunicatorTableView.ReloadData();
 
-            var detailIndexPath = NSIndexPath.FromRowSection(_messaging.Count - 1, 0);
-            CommunicatorTableView.ScrollToRow(detailIndexPath, UITableViewScrollPosition.None, true);
+            // If we have any messages, scroll to bottom of message stack
+            if (_messaging.Count > 0)
+            {
+                var detailIndexPath = NSIndexPath.FromRowSection(_messaging.Count - 1, 0);
+                CommunicatorTableView.ScrollToRow(detailIndexPath, UITableViewScrollPosition.None, true);
+            }
         }
 
         private string GetUserName(List<SurgeryUser> users, AppSettings.RoleEnum roleId)

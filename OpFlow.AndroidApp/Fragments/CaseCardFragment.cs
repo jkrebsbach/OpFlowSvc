@@ -21,7 +21,7 @@ namespace OpFlow.AndroidApp.Fragments
             return base.OnCreateView(inflater, container, savedInstanceState);
         }
 
-        protected override async Task<List<CaseDetailToken>> GetDetailTokens()
+        protected override async Task<List<DetailItem>> GetDetailTokens()
         {
             ToggleConfirm(false, "Save Feedback");
 
@@ -29,10 +29,13 @@ namespace OpFlow.AndroidApp.Fragments
 
             var caseDetailTokens = flowSteps
                 .OrderBy(fs => fs.StepID)
-                .Select(value => new CaseDetailToken(value))
+                .Select(value => new CaseDetailCategory(1, value.StepDescription))
                 .ToList();
 
-            return caseDetailTokens;
+            var result = new List<DetailItem>();
+            result.AddRange(caseDetailTokens);
+
+            return result;
         }
     }
 }
