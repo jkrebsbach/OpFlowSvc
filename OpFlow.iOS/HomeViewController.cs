@@ -54,5 +54,14 @@ namespace OpFlow.iOS
             var controller = Storyboard.InstantiateViewController("MainViewController");
             NavigationController.PushViewController(controller, true);
         }
+
+        partial void btnCommunicator_Click(UIButton sender)
+		{
+
+            AppSettings.CurrentScreen = AppSettings.FragmentEnum.Communicator;
+
+            var controller = Storyboard.InstantiateViewController("Communicator");
+            NavigationController.PushViewController(controller, true);
+        }
     }
 }

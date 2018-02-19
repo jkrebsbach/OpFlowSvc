@@ -1,4 +1,4 @@
-﻿// WARNING
+// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -18,65 +18,11 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITableView CommunicatorTableView { get; set; }
 
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblFlowStep { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblPatientInfo { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblPatientName { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblProcedure { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblRoom { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblStartTime { get; set; }
-
         void ReleaseDesignerOutlets ()
         {
             if (CommunicatorTableView != null) {
                 CommunicatorTableView.Dispose ();
                 CommunicatorTableView = null;
-            }
-
-            if (lblFlowStep != null) {
-                lblFlowStep.Dispose ();
-                lblFlowStep = null;
-            }
-
-            if (lblPatientInfo != null) {
-                lblPatientInfo.Dispose ();
-                lblPatientInfo = null;
-            }
-
-            if (lblPatientName != null) {
-                lblPatientName.Dispose ();
-                lblPatientName = null;
-            }
-
-            if (lblProcedure != null) {
-                lblProcedure.Dispose ();
-                lblProcedure = null;
-            }
-
-            if (lblRoom != null) {
-                lblRoom.Dispose ();
-                lblRoom = null;
-            }
-
-            if (lblStartTime != null) {
-                lblStartTime.Dispose ();
-                lblStartTime = null;
             }
         }
     }
