@@ -32,7 +32,9 @@ namespace OpFlow.iOS
             var messages = await MessagingUtil.GetMessages(currentMessageGroup.CaseID, currentMessageGroup.CaseGroupID, currentMessageGroup.CommunicationUserID);
 
             var messageTableViewSource = new CommunicatorTVS(messages);
-            
+
+            txtMessage.SetupDoneStyleTextField();
+
             CommunicatorTableView.Source = messageTableViewSource;
 
             CommunicatorTableView.ReloadData();

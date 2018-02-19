@@ -18,6 +18,15 @@ namespace OpFlow.iOS
 
             lblRecentMessage.Text = (messageGroup.SenderUserID == AppSettings.CurrentUser.UserID ? "You: " : " ") +
                 messageGroup.LatestMessage;
+
+            var backgroundColor = UIColor.Green;
+
+            if (messageGroup.CommunicationUserID.HasValue)
+            {
+                backgroundColor = UIColor.FromRGB(100, 149, 237);
+            }
+
+            Layer.BackgroundColor = backgroundColor.CGColor;
         }
     }
 }

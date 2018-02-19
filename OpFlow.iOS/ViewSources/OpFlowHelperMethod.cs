@@ -30,6 +30,13 @@ namespace OpFlow.iOS.ViewSources
             };
         }
 
+        public static void SetupDoneStyleTextField(this UITextField textField)
+        {
+            textField.ReturnKeyType = UIReturnKeyType.Done;
+            textField.ShouldReturn = TextFieldShouldReturn;
+
+        }
+
         public static bool TextFieldShouldReturn(UITextField tf)
         {
             tf.ResignFirstResponder();

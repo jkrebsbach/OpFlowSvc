@@ -68,8 +68,7 @@ namespace OpFlow.iOS
 
             SetupTitleView(CommunicatorTableView);
 
-            txtCommunicator.ReturnKeyType = UIReturnKeyType.Done;
-            txtCommunicator.ShouldReturn = OpFlowHelperMethod.TextFieldShouldReturn;
+            txtCommunicator.SetupDoneStyleTextField();
 
             Title = "SCHEDULEVIEW"; 
             await LoadSurgery();

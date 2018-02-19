@@ -2,6 +2,7 @@ using Foundation;
 using System;
 using UIKit;
 using OpFlow.iOS.Delegates;
+using OpFlow.iOS.ViewSources;
 using OpFlow.Mobile;
 
 namespace OpFlow.iOS
@@ -19,20 +20,7 @@ namespace OpFlow.iOS
 
             txtDetail.Layer.BorderWidth = 2.0f;
 
-            txtDetail.ReturnKeyType = UIReturnKeyType.Done;
-
-            txtDetail.ShouldChangeText = (text, range, replacementString) =>
-            {
-                if (replacementString.Equals("\n"))
-                {
-                    txtDetail.EndEditing(true);
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            };
+            txtDetail.SetupDoneStyleTextBox();
         }
     }
 }
