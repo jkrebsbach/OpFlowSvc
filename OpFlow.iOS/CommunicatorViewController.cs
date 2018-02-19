@@ -27,7 +27,7 @@ namespace OpFlow.iOS
 
         private async Task LoadMessageGroups()
         {
-            var messageGroups = await MessagingUtil.GetMessageGroups(AppSettings.CurrentSurgery ?? 0);
+            var messageGroups = await MessagingUtil.GetMessageGroups();
 
             var messageGroupTableViewSource = new CommunicationGroupTVS(messageGroups);
             messageGroupTableViewSource.MessageGroupSelectionEvent += SelectMessageGroup;

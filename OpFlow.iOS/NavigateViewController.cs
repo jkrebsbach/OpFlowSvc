@@ -125,10 +125,10 @@ namespace OpFlow.iOS
             lblProcedure.Text = _surgery.ProcedureDescription;
             lblSurgeryTime.Text = _surgery.ScheduleTime.ToString(@"hh\:mm");
             lblLocation.Text = _surgery.RoomDescription;
-            lblFlowStep.Text = _flow.Description;
+            lblFlowStep.Text = _flow.FlowDescription;
 
 
-            _messaging = await MessagingUtil.GetCaseMessaging(_surgery.CaseID);
+            _messaging = await MessagingUtil.GetMessages(_surgery.CaseID, null, null);
 
             var messagingTableViewSource = new CommunicatorTVS(_messaging);
 
@@ -156,7 +156,7 @@ namespace OpFlow.iOS
 
 
         private string FlowText => string.Format("{0} - Flow: {1}",
-            _flow.Description,
+            _flow.FlowDescription,
             _surgery.FlowID);
     }
 }

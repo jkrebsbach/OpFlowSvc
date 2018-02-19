@@ -151,7 +151,7 @@ namespace OpFlow.AndroidApp.Fragments
         
 
         private string FlowText => string.Format("{0} - Flow: {1}",
-            _flow.Description,
+            _flow.FlowDescription,
             _surgery.FlowID);
         
     }

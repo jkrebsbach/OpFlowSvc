@@ -23,33 +23,5 @@ namespace OpFlow.Service.Controllers
 
             return Ok();
         }
-
-        // GET api/values/5
-        [SwaggerOperation("GetCaseMessages")]
-        [Route("api/case/messages")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Messaging>))]
-        public HttpResponseMessage GetCaseMessaging(int caseId, int providerId, int locationId)
-        {
-            var username = HttpContext.Current.User.Identity.Name;
-            var userId = DataAccess.SqlHelper.GetUsers(username).FirstOrDefault()?.UserID ?? 0;
-
-            var result = DataAccess.SqlHelper.GetCaseMessaging(userId, caseId, providerId, locationId);
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
-        }
-
-        // GET api/values/5
-        [SwaggerOperation("GetCaseMessageGroups")]
-        [Route("api/case/messageGroups")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Messaging>))]
-        public HttpResponseMessage GetCaseMessageGroups(int caseId, int providerId, int locationId)
-        {
-            var username = HttpContext.Current.User.Identity.Name;
-            var userId = DataAccess.SqlHelper.GetUsers(username).FirstOrDefault()?.UserID ?? 0;
-
-            var result = DataAccess.SqlHelper.GetCaseMessageGroups(userId, caseId, providerId, locationId);
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
-        }
     }
 }

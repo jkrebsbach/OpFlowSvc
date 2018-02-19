@@ -7,10 +7,10 @@ namespace OpFlow.Data
         public int CaseID { get; set; }
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
-        public string Message { get; set; }
         public int Type { get; set; }
-        public int UserID { get; set; }
+        public int RecipientUserID { get; set; }
         public string UserName { get; set; }
+        public string Message { get; set; }
         public DateTimeOffset InsertTimestamp { get; set; }
     }
 }

@@ -60,7 +60,7 @@ namespace OpFlow.iOS
 
             AppSettings.CurrentScreen = AppSettings.FragmentEnum.Communicator;
 
-            var controller = Storyboard.InstantiateViewController("Communicator");
+            var controller = Storyboard.InstantiateViewController("MainViewController");
             NavigationController.PushViewController(controller, true);
         }
     }

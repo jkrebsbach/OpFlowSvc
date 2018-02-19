@@ -42,7 +42,7 @@ namespace OpFlow.Mobile
             var response = await WebUtility.WebRequest<Flow>(command, HttpMethod.Get) ?? new Flow()
             {
                 FlowID = -1,
-                Description = "NO FLOW DEFINED"
+                FlowDescription = "NO FLOW DEFINED"
             };
 
             return response;
