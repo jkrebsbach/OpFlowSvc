@@ -745,6 +745,21 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault();
         }
 
+        public static List<Flow> GetCardFlowList(int cardId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetCardFlowList", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Flow>();
+
+            return result;
+        }
+
         public static List<FlowStep> GetFlowTimings(int flowId, int providerId, int locationId, int? surgeryId)
         {
             var command = surgeryId == null ? "GetFlowTimings" : "GetFlowSurgeryTimings";

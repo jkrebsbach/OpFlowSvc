@@ -22,7 +22,7 @@ namespace OpFlow.AndroidApp.Fragments
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            AppSettings.CurrentScreen = AppSettings.FragmentEnum.FutureCases;
+            AppSettings.CurrentScreen = AppSettings.FragmentEnum.CardList;
             base.OnCreateView(inflater, container, savedInstanceState);
             
             // Make sure we aren't disposing app
@@ -64,7 +64,7 @@ namespace OpFlow.AndroidApp.Fragments
 
             AppSettings.LoadSurgery(schedule.SurgeryID, schedule.PatientID);
 
-            Listener.SendMessage(AppSettings.FragmentEnum.FutureCases, schedule);
+            Listener.SendMessage(AppSettings.FragmentEnum.CardList, schedule);
         }
     }
 }

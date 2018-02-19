@@ -300,6 +300,9 @@
     <BundleResource Include="Resources\ic_credit_card_blue_700_36pt%402x.png" />
     <BundleResource Include="Resources\ic_credit_card_blue_700_36pt%403x.png" />
     <BundleResource Include="Resources\infinity_blue_72.png" />
+    <BundleResource Include="Resources\ic_chat_blue_700_36pt.png" />
+    <BundleResource Include="Resources\ic_chat_blue_700_36pt%402x.png" />
+    <BundleResource Include="Resources\ic_chat_blue_700_36pt%403x.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">

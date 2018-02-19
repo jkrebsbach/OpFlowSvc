@@ -21,16 +21,17 @@ namespace OpFlow.AndroidApp.Fragments
             return base.OnCreateView(inflater, container, savedInstanceState);
         }
 
-        protected override async Task<List<CaseDetailToken>> GetDetailTokens()
+        protected override async Task<List<DetailItem>> GetDetailTokens()
         {
             ToggleConfirm(false, "Update Flow Instructions");
 
             var flowSteps = await FlowUtil.GetFlowInstructions(Surgery.FlowID);
+            var caseDetailTokens = await CaseDetailCategory.GetCaseDetailTokens(Surgery, Patient);
 
-            var caseDetailTokens = flowSteps
-                .OrderBy(fs => fs.StepID)
-                .Select(value => new CaseDetailToken(value))
-                .ToList();
+            //var caseDetailTokens = flowSteps
+            //    .OrderBy(fs => fs.StepID)
+            //    .Select(value => new CaseDetailToken(value))
+            //    .ToList();
 
             return caseDetailTokens;
         }

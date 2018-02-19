@@ -1318,7 +1318,7 @@
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
-                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="54341" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES" image="ic_chat_black_24pt.png">
+                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="54341" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES" image="ic_chat_blue_700_36pt.png">
                                                                     <rect key="frame" x="0.0" y="0.0" width="24" height="24"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 </imageView>
@@ -2894,5 +2894,6 @@
         <image name="ic_dashboard_purple_A700_36pt.png" width="36" height="36"/>
         <image name="infinity_green_72.png" width="72" height="72"/>
         <image name="OPFlowLogo_short.png" width="299" height="209"/>
+        <image name="ic_chat_blue_700_36pt.png" width="36" height="36"/>
     </resources>
 </document>

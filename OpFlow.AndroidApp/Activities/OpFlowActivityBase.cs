@@ -55,7 +55,7 @@ namespace OpFlow.AndroidApp.Activities
                 case AppSettings.FragmentEnum.CaseNavigate:
                     appIconResource = Resource.Drawable.ic_schedule_grey_50_18dp;
                     break;
-                case AppSettings.FragmentEnum.FutureCases:
+                case AppSettings.FragmentEnum.CardList:
                     appIconResource = Resource.Drawable.ic_work_grey_50_18dp;
                     break;
                 case AppSettings.FragmentEnum.CheckIn:
@@ -72,7 +72,7 @@ namespace OpFlow.AndroidApp.Activities
         public void SendMessage(AppSettings.FragmentEnum fragment, object payload)
         {
             Fragment newFragment = null;
-            if (fragment == AppSettings.FragmentEnum.FutureCases)
+            if (fragment == AppSettings.FragmentEnum.CardList)
             {
                 newFragment = new CaseDebriefFragment();
             }

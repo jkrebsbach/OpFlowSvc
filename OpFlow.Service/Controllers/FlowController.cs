@@ -27,6 +27,17 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetCardFlowList")]
+        [Route("api/flow/cardFlowList")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Flow>))]
+        public HttpResponseMessage GetCardFlowList(int cardId, int providerId, int locationId)
+        {
+            var flowList = DataAccess.SqlHelper.GetCardFlowList(cardId, providerId, locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, flowList);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetFlowInstructions")]
         [Route("api/flow/instructions")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowStep>))]

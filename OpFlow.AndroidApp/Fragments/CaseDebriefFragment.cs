@@ -21,11 +21,11 @@ namespace OpFlow.AndroidApp.Fragments
             return base.OnCreateView(inflater, container, savedInstanceState);
         }
 
-        protected override async Task<List<CaseDetailToken>> GetDetailTokens()
+        protected override async Task<List<DetailItem>> GetDetailTokens()
         {
             ToggleConfirm(false, "Save Feedback");
 
-            return await CaseDetailToken.GetFlowDetails(Surgery.FlowID);
+            return await CaseDetailCategory.GetCaseDetailTokens(Surgery, Patient);
         }
 
         protected override void ButtonClicked(object sender, EventArgs e)

@@ -8,13 +8,14 @@ namespace OpFlow.Data
     {
         public int FlowID { get; set; }
         public int CardID { get; set; }
-        public int UserID { get; set; }
-        public string Description { get; set; }
+        public int OwnerUserID { get; set; }
+        public int TemplateFlowID { get; set; }
+        public int TemplateRoomID { get; set; }
+        public int SpecialtyID { get; set; }
+        public string FlowDescription { get; set; }
+        public string OwnerLastName { get; set; }
         public int TotalMinutes { get; set; }
         public int AvgMinutes { get; set; }
         public int TimesUsed { get; set; }
-
-        public List<FlowStep> FlowSteps { get; set; }
-        public List<FlowMetric> FlowMetrics { get; set; }
     }
 }
