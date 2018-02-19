@@ -192,6 +192,10 @@
     <Compile Include="CommunicationDetailViewController.designer.cs">
       <DependentUpon>CommunicationDetailViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="CaseGroupEditViewController.cs" />
+    <Compile Include="CaseGroupEditViewController.designer.cs">
+      <DependentUpon>CaseGroupEditViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">
@@ -306,6 +310,7 @@
     <BundleResource Include="Resources\ic_play_arrow_green_A700_36pt.png" />
     <BundleResource Include="Resources\ic_play_arrow_green_A700_36pt%402x.png" />
     <BundleResource Include="Resources\ic_play_arrow_green_A700_36pt%403x.png" />
+    <BundleResource Include="Resources\Navigation_Compose.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">

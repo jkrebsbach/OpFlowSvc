@@ -82,6 +82,7 @@ namespace OpFlow.iOS
                 TintColor = UIColor.Black
             };
 
+
             PresentContainerView(AppSettings.CurrentScreen);
         }
         
@@ -121,6 +122,7 @@ namespace OpFlow.iOS
         private void NavigateBack(object sender, EventArgs e)
         {
             // TODO: Need to think through various navigation channels here....
+            // TODO: Some of these actions should be right button cancel...
             if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CaseNavigate)
                 PresentContainerView(AppSettings.FragmentEnum.Schedule);
             else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.Communicator)
@@ -158,6 +160,36 @@ namespace OpFlow.iOS
             return buttonItem;
         }
 
+        private UIBarButtonItem SetupCustomEdit()
+        {
+            var containView = new UIView(new CGRect(0, 0, 40, 40));
+            //var label = new UIButton(new CGRect(12, 0, 90, 40));
+
+            //label.SetTitle("ZZZ", UIControlState.Normal);
+            //label.SetTitleColor(label.TintColor, UIControlState.Normal);
+            //label.TitleLabel.TextAlignment = UITextAlignment.Left;
+
+            //containView.AddSubview(label);
+
+            var imageView = new UIButton(new CGRect(0, 0, 40, 40));
+            imageView.SetImage(UIImage.FromBundle("Navigation_Compose.png"), UIControlState.Normal);
+            imageView.ImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
+
+            containView.AddSubview(imageView);
+
+            var buttonItem = new UIBarButtonItem(containView)
+            {
+                Target = this
+            };
+
+            buttonItem.Clicked += NavBarEdit;
+            imageView.TouchDown += NavBarEdit;
+
+            return buttonItem;
+        }
+
+
+
         // Alternate implementation of custom nav bar at:
         ////https://theconfuzedsourcecode.wordpress.com/2017/03/02/creating-an-identical-custom-navigation-bar-back-button-in-xamarin-ios/
 
@@ -168,6 +200,11 @@ namespace OpFlow.iOS
             AppSettings.CurrentScreen = fragmentEnum;
 
             UIBarButtonItem customBackButton = null;
+            var rightButton = new UIBarButtonItem()
+                {
+                    Title = AppSettings.CurrentUserTitle,
+                    TintColor = UIColor.Black
+                };
 
             switch (fragmentEnum)
             {
@@ -234,18 +271,33 @@ namespace OpFlow.iOS
                     Title = "Communicator";
                     customBackButton = SetupCustomBack("Surgery");
                     await _containerViewController.PresentCommunicatorViewAsync();
+
+                    rightButton = SetupCustomEdit();
                     break;
 
                 case AppSettings.FragmentEnum.CommunicationDetail:
                     Title = "Chat";
                     customBackButton = SetupCustomBack("Communicator");
+
                     await _containerViewController.PresentCommunicatorDetailViewAsync();
+                    break;
+
+                case AppSettings.FragmentEnum.CaseGroupSetup:
+                    Title = "New Communicator Group";
+                    customBackButton = SetupCustomBack("Communicator");
+
+                    await _containerViewController.PresentCaseGroupEditViewAsync();
                     break;
 
             }
 
-
             NavigationItem.LeftBarButtonItem = customBackButton;
+            NavigationItem.RightBarButtonItems = new[] { rightButton };
+        }
+
+        private void NavBarEdit(object sender, EventArgs e)
+        {
+            PresentContainerView(AppSettings.FragmentEnum.CaseGroupSetup);
         }
     }
 }

@@ -11,11 +11,8 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    [Register ("CreateCaseViewController")]
-    partial class CreateCaseViewController
+    [Register ("CaseGroupEditViewController")]
+    partial class CaseGroupEditViewController
     {
-        void ReleaseDesignerOutlets ()
-        {
-        }
     }
 }

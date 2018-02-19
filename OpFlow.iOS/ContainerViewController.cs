@@ -18,6 +18,7 @@ namespace OpFlow.iOS
         private readonly NSString CreateCaseSegue = (NSString)"createCaseSegue";
         private readonly NSString CommunicatorSegue = (NSString)"communicatorSegue";
         private readonly NSString CommunicatorDetailSegue = (NSString)"communicatorDetailSegue";
+        private readonly NSString CaseGroupEditSegue = (NSString)"caseGroupEditSegue";
 
         private INavigationDelegate _hostController;
 
@@ -100,6 +101,14 @@ namespace OpFlow.iOS
         {
             _viewChanging = new TaskCompletionSource<bool>();
             PerformSegue(CommunicatorDetailSegue, this);
+
+            return _viewChanging.Task;
+        }
+
+        public Task<bool> PresentCaseGroupEditViewAsync()
+        {
+            _viewChanging = new TaskCompletionSource<bool>();
+            PerformSegue(CaseGroupEditSegue, this);
 
             return _viewChanging.Task;
         }
