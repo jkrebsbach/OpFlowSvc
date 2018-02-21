@@ -1,6 +1,7 @@
 using Foundation;
 using System;
 using System.Threading.Tasks;
+using OpFlow.Data;
 using OpFlow.iOS.Delegates;
 using OpFlow.iOS.ViewSources;
 using OpFlow.Mobile;
@@ -29,13 +30,23 @@ namespace OpFlow.iOS
                 NavigationDelegate.DoneEventFired += NavigationDoneFired;
         }
 
-        private void NavigationDoneFired(object sender, EventArgs e)
+        private async void NavigationDoneFired(object sender, EventArgs e)
         {
             var userData = UserSelectTableView.Source as UserSelectionTVS;
 
             var userSelections = userData?.SelectedUsers();
 
-            var caseGroup = MessagingUtil.CreateGroup(1, userSelections);
+            if ((userSelections?.Count ?? 0) == 0)
+            {
+                ShowDialog("Error", "No users selected");
+                return;
+            }
+
+            var messagingGroup = await MessagingUtil.CreateGroup(1, userSelections);
+
+            AppSettings.CurrentMessagingGroup = messagingGroup;
+
+            NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CommunicationDetail);
         }
 
         private async Task LoadUsers()

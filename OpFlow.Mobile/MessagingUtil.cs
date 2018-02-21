@@ -21,7 +21,7 @@ namespace OpFlow.Mobile
             return response.OrderBy(r => r.InsertTimestamp).ToList();
         }
 
-        public static async Task CreateGroup(int caseId, List<int> userIds)
+        public static async Task<MessagingGroup> CreateGroup(int caseId, List<int> userIds)
         {
             var providerId = AppSettings.CurrentUser.ProviderID;
             var locationId = AppSettings.CurrentUser.LocationID;
@@ -30,6 +30,12 @@ namespace OpFlow.Mobile
             //var response = await WebUtility.WebRequest<List<Messaging>>(command, HttpMethod.Get);
 
             //return response.OrderBy(r => r.MessageID).ToList();
+
+            return new MessagingGroup()
+            {
+                CaseID = 1,
+                CaseGroupID = 1
+            };
         }
 
         public static async Task SendMessage(string message)
