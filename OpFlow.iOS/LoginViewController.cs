@@ -17,8 +17,9 @@ namespace OpFlow.iOS
         {
             base.ViewDidLoad();
             
-            NavigationItem.SetHidesBackButton(true, false);
-            NavigationController.NavigationBar.Hidden = true;
+            //  sizing issues moving windows up and down - just keep it all down
+            //NavigationItem.SetHidesBackButton(true, false);
+            //NavigationController.NavigationBar.Hidden = true;
         }
 
         partial void SignOnClick(UIButton sender)

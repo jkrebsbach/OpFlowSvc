@@ -146,7 +146,7 @@ namespace OpFlow.iOS
         {
             var user = users.FirstOrDefault(u => u.RoleID == (int)roleId);
 
-            return user == null ? "NONE" : string.Format("{0}, {1} {2}", user.LastName, user.FirstName, user.Title);
+            return user == null ? "NONE" : string.Format("{0}, {1} {2}", user.LastName, user.FirstName, user.UserTitle);
         }
 
         private string PatientNameText =>  string.IsNullOrEmpty(_patient?.Initials) ? "UNK" : _patient.Initials;

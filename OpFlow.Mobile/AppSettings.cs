@@ -49,7 +49,7 @@ namespace OpFlow.Mobile
                 switch (CurrentScreen)
                 {
                     case FragmentEnum.Login:
-                        return "Login";
+                        return "";
                     case FragmentEnum.SearchCases:
                         return "Cases";
                     case FragmentEnum.Schedule:

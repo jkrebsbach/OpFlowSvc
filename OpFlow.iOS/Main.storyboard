@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="701">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
@@ -626,7 +626,6 @@
                             <constraint firstItem="SyY-Gv-VE9" firstAttribute="leading" secondItem="Ddt-lU-vfL" secondAttribute="leading" id="x5l-eZ-sLA"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Title" id="23195"/>
                     <connections>
                         <outlet property="MainContainerView" destination="SyY-Gv-VE9" id="name-outlet-SyY-Gv-VE9"/>
                         <outlet property="MainNavBar" destination="MGS-Uc-AcK" id="name-outlet-MGS-Uc-AcK"/>
@@ -2881,7 +2880,6 @@
         <image name="ic_dashboard_purple_A700_36pt.png" width="36" height="36"/>
         <image name="infinity_green_72.png" width="72" height="72"/>
         <image name="OPFlowLogo_short.png" width="299" height="209"/>
-        <image name="OpFlowLogo" width="310" height="92"/>
         <image name="Navigation_Compose.png" width="23" height="23"/>
     </resources>
 </document>
