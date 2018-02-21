@@ -35,7 +35,7 @@ namespace OpFlow.iOS
 
             var userSelections = userData?.SelectedUsers();
 
-            var caseGroup = MessagingUtil.CreateGroup(userSelections);
+            var caseGroup = MessagingUtil.CreateGroup(1, userSelections);
         }
 
         private async Task LoadUsers()
