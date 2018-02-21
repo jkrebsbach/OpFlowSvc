@@ -16,6 +16,8 @@ namespace OpFlow.iOS
         private ContainerViewController _containerViewController;
         private NSObject _foregroundNotification;
 
+        public event EventHandler DoneEventFired;
+
         public MainViewController (IntPtr handle) : base (handle)
         {
         }
@@ -160,32 +162,48 @@ namespace OpFlow.iOS
             return buttonItem;
         }
 
-        private UIBarButtonItem SetupCustomEdit()
+        private UIBarButtonItem SetupCustomEdit(CustomButtonType buttonType)
         {
-            var containView = new UIView(new CGRect(0, 0, 40, 40));
-            //var label = new UIButton(new CGRect(12, 0, 90, 40));
+            
+            UIButton uiButton;
 
-            //label.SetTitle("ZZZ", UIControlState.Normal);
-            //label.SetTitleColor(label.TintColor, UIControlState.Normal);
-            //label.TitleLabel.TextAlignment = UITextAlignment.Left;
+            switch (buttonType)
+            {
+                case CustomButtonType.Compose:
+                    uiButton = new UIButton(new CGRect(0, 0, 40, 40));
+                    uiButton.SetImage(UIImage.FromBundle("Navigation_Compose.png"), UIControlState.Normal);
+                    uiButton.ImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
+                    break;
+                default:
+                    uiButton = new UIButton(new CGRect(0, 0, 75, 40))
+                    {
+                        TintColor = UIColor.Blue
+                    };
+                    uiButton.SetTitle("Done", UIControlState.Normal);
+                    uiButton.SetTitleColor(uiButton.TintColor, UIControlState.Normal);
+                    break;
+            }
 
-            //containView.AddSubview(label);
-
-            var imageView = new UIButton(new CGRect(0, 0, 40, 40));
-            imageView.SetImage(UIImage.FromBundle("Navigation_Compose.png"), UIControlState.Normal);
-            imageView.ImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
-
-            containView.AddSubview(imageView);
+            var containView = new UIView(new CGRect(0, 0, uiButton.Frame.Width, uiButton.Frame.Height));
+            containView.AddSubview(uiButton);
 
             var buttonItem = new UIBarButtonItem(containView)
             {
                 Target = this
             };
 
+            var zzz = UINavigationBar.Appearance.TintColor;
+
             buttonItem.Clicked += NavBarEdit;
-            imageView.TouchDown += NavBarEdit;
+            uiButton.TouchDown += NavBarEdit;
 
             return buttonItem;
+        }
+
+        private enum CustomButtonType
+        {
+            Compose,
+            Done
         }
 
 
@@ -272,7 +290,7 @@ namespace OpFlow.iOS
                     customBackButton = SetupCustomBack("Surgery");
                     await _containerViewController.PresentCommunicatorViewAsync();
 
-                    rightButton = SetupCustomEdit();
+                    rightButton = SetupCustomEdit(CustomButtonType.Compose);
                     break;
 
                 case AppSettings.FragmentEnum.CommunicationDetail:
@@ -287,6 +305,8 @@ namespace OpFlow.iOS
                     customBackButton = SetupCustomBack("Communicator");
 
                     await _containerViewController.PresentCaseGroupEditViewAsync();
+
+                    rightButton = SetupCustomEdit(CustomButtonType.Done);
                     break;
 
             }
@@ -297,6 +317,12 @@ namespace OpFlow.iOS
 
         private void NavBarEdit(object sender, EventArgs e)
         {
+            if (DoneEventFired != null)
+            {
+                DoneEventFired(sender, e);
+                return;
+            }
+
             PresentContainerView(AppSettings.FragmentEnum.CaseGroupSetup);
         }
     }

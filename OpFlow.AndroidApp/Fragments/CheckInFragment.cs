@@ -108,7 +108,7 @@ namespace OpFlow.AndroidApp.Fragments
             if (currentSurgery?.CardID == null)
                 return;
 
-            var cardUsers = await SurgeryUtil.GetCardUsers(currentSurgery.CardID, providerId, locationId);
+            var cardUsers = await SurgeryUtil.GetCardUsers(currentSurgery.CardID);
 
             var rooms = await AppSettings.RoomList(currentSurgery.LocationID);
 

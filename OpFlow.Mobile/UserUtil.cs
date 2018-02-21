@@ -10,9 +10,9 @@ namespace OpFlow.Mobile
 {
     public abstract class UserUtil
     {
-        public static async Task<User> GetUser(string username)
+        public static async Task<User> GetUser()
         {
-            var command = string.Format("api/user?username={0}", username);
+            var command = "api/authorizedUser";
             
             var response = await WebUtility.WebRequest<User>(command, HttpMethod.Get);
 

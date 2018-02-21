@@ -111,15 +111,13 @@ namespace OpFlow.AndroidApp.Fragments
                     _patient = await PatientUtil.GetPatient(_surgery.PatientID);
 
                     var users = await SurgeryUtil.GetSurgeryUsers(
-                        _surgery.CaseID,
-                        _surgery.ProviderID,
-                        _surgery.LocationID);
+                        _surgery.CaseID);
 
-                    _txtSurgeonName.Text = GetUserName(users, AppSettings.RoleEnum.Surgeon);
-                    _txtCirculatorName.Text = GetUserName(users, AppSettings.RoleEnum.Circulator);
-                    _txtScrubName.Text = GetUserName(users, AppSettings.RoleEnum.ScrubTech);
-                    _txtAnesName.Text = GetUserName(users, AppSettings.RoleEnum.FrontDesk);
-                    _txtRepName.Text = GetUserName(users, AppSettings.RoleEnum.FrontDesk);
+                    _txtSurgeonName.Text = GetUserName(users, RoleEnum.Surgeon);
+                    _txtCirculatorName.Text = GetUserName(users, RoleEnum.Circulator);
+                    _txtScrubName.Text = GetUserName(users, RoleEnum.ScrubTech);
+                    _txtAnesName.Text = GetUserName(users, RoleEnum.FrontDesk);
+                    _txtRepName.Text = GetUserName(users, RoleEnum.FrontDesk);
 
                     _room = await AppSettings.GetRoom(_surgery.LocationID, _surgery.RoomID);
 
@@ -138,11 +136,11 @@ namespace OpFlow.AndroidApp.Fragments
             }
         }
 
-        private string GetUserName(List<SurgeryUser> users, AppSettings.RoleEnum roleId)
+        private string GetUserName(List<SurgeryUser> users, RoleEnum roleId)
         {
             var user = users.FirstOrDefault(u => u.RoleID == (int) roleId);
             
-            return user == null ? string.Empty : string.Format("{0}, {1} {2}", user.LastName, user.FirstName, user.Title);
+            return user == null ? string.Empty : string.Format("{0}, {1} {2}", user.LastName, user.FirstName, user.UserTitle);
         }
 
         private string PatientNameText => string.Format("{0}, {1}", _patient?.LastName, _patient?.FirstName);

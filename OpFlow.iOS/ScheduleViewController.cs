@@ -29,7 +29,7 @@ namespace OpFlow.iOS
             base.ViewDidLoad();
 
             Title = "SCHEDULEVIEW";
-            SetupNavBar();
+            NavigationItem.SetHidesBackButton(true, false);
 
             ScheduleTableView.RowHeight = 120f;
             ScheduleTableView.EstimatedRowHeight = 40f;
@@ -59,11 +59,6 @@ namespace OpFlow.iOS
             InitializeButton(btnThursday, true);
             InitializeButton(btnFriday, true);
             InitializeButton(btnSaturday, true);
-        }
-
-        private void SetupNavBar()
-        {
-            NavigationItem.SetHidesBackButton(true, false);
         }
 
         private void InitializeButton(UIButton button, bool showLeftBorder)

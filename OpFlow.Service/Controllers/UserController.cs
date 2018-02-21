@@ -18,8 +18,10 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type=typeof(User))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("api/User", Name = "User")]
-        public HttpResponseMessage Get(string username)
+        [Route("api/AuthorizedUser", Name = "AuthorizedUser")]
+        public HttpResponseMessage Get(string username = null)
         {
+            username = HttpContext.Current.User.Identity.Name;
             var users = DataAccess.SqlHelper.GetUsers(username);
 
             var result = users.FirstOrDefault();

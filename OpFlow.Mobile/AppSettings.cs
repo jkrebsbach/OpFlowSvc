@@ -97,7 +97,7 @@ namespace OpFlow.Mobile
             _authToken = await WebUtility.LoginUser(username, password);
 
             if (_authToken != null)
-                CurrentUser = await UserUtil.GetUser(username);
+                CurrentUser = await UserUtil.GetUser();
         }
 
         public static void SignOutUser()

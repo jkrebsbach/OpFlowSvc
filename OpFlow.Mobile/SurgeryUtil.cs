@@ -60,8 +60,11 @@ namespace OpFlow.Mobile
             return response;
         }
 
-        public static async Task<List<SurgeryUser>> GetSurgeryUsers(int caseId, int providerId, int locationId)
+        public static async Task<List<SurgeryUser>> GetSurgeryUsers(int caseId)
         {
+            var providerId = AppSettings.CurrentUser.ProviderID;
+            var locationId = AppSettings.CurrentUser.LocationID;
+
             var command = string.Format("api/surgery/users?caseId={0}&providerId={1}&locationId={2}", 
                 caseId, providerId, locationId);
             var response = await WebUtility.WebRequest<List<SurgeryUser>>(command, HttpMethod.Get);
@@ -69,8 +72,11 @@ namespace OpFlow.Mobile
             return response;
         }
 
-        public static async Task<List<SurgeryUser>> GetCardUsers(int cardId, int providerId, int locationId)
+        public static async Task<List<SurgeryUser>> GetCardUsers(int cardId)
         {
+            var providerId = AppSettings.CurrentUser.ProviderID;
+            var locationId = AppSettings.CurrentUser.LocationID;
+
             var command = string.Format("api/card/users?cardId={0}&providerId={1}&locationId={2}",
                 cardId, providerId, locationId);
             var response = await WebUtility.WebRequest<List<SurgeryUser>>(command, HttpMethod.Get);
@@ -78,10 +84,13 @@ namespace OpFlow.Mobile
             return response;
         }
 
-        public static async Task<List<Surgery>> GetSurgeryRoomSchedule(int caseID, int providerID, int locationID)
+        public static async Task<List<Surgery>> GetSurgeryCaseRoomSchedule(int caseID)
         {
+            var providerId = AppSettings.CurrentUser.ProviderID;
+            var locationId = AppSettings.CurrentUser.LocationID;
+
             var command = string.Format("api/surgery/RoomSchedule?caseID={0}&providerID={1}&locationID={2}", 
-                caseID, providerID, locationID);
+                caseID, providerId, locationId);
 
             var response = await WebUtility.WebRequest<List<Surgery>>(command, HttpMethod.Get);
 

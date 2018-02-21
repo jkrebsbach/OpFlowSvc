@@ -106,9 +106,7 @@ namespace OpFlow.iOS
             
             _patient = await PatientUtil.GetPatient(_surgery.PatientID);
             _flow = await FlowUtil.GetFlow(_surgery.FlowID, _surgery.CardID);
-            var users = await SurgeryUtil.GetSurgeryUsers(_surgery.CaseID,
-                                                         AppSettings.CurrentUser.ProviderID,
-                                                          AppSettings.CurrentUser.LocationID);
+            var users = await SurgeryUtil.GetSurgeryUsers(_surgery.CaseID);
 
             // If case is open, show debrief button
             btnDebrief.Hidden = (_surgery.SurgeryStatus != "O");
