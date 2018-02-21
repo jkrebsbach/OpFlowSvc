@@ -52,7 +52,7 @@ namespace OpFlow.Data
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
         public DateTime ScheduleDate { get; set; }
-        public DateTime ScheduleTime { get; set; }
+        public TimeSpan ScheduleTime { get; set; }
         public int EstDelayMinutes { get; set; }
         public int CardID { get; set; }
         public int BundleID { get; set; }
