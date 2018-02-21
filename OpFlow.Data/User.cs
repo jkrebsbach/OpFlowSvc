@@ -21,10 +21,12 @@ namespace OpFlow.Data
     public enum RoleEnum
     {
         Surgeon = 1,
-        Coordinator = 2,
-        Anesthetist = 3,
-        Specialist = 4,
-        Office = 5,
-        Billing = 6
+        Circulator = 2,
+        ScrubTech = 3,
+        CRNA = 4,
+        PA = 5,
+        FrontDesk = 7,
+        Schedule = 8,
+        Administration = 9
     }
 }

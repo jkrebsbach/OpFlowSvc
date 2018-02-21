@@ -1,4 +1,4 @@
-// WARNING
+﻿// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -14,5 +14,8 @@ namespace OpFlow.iOS
     [Register ("CaseGroupEditViewController")]
     partial class CaseGroupEditViewController
     {
+        void ReleaseDesignerOutlets ()
+        {
+        }
     }
 }

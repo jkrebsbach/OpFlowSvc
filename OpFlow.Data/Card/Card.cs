@@ -10,15 +10,30 @@ namespace OpFlow.Data
         public int LocationID { get; set; }
         public int ProviderID { get; set; }
         public int SurgeryID { get; set; }
+        public int SurgeonID { get; set; }
         public int ProcedureID { get; set; }
         public int SpecialtyID { get; set; }
+        public int OwnerUserID { get; set; }
+        public int TemplateFlowID { get; set; }
+        public int TemplateRoomID { get; set; }
+        public string SpecialtyDefaultFlag { get; set; }
+        public string LocationName { get; set; }
+        public string OwnerLastName { get; set; }
+        public string OwnerFirstName { get; set; }
         public int FlowID { get; set; }
         public int RoomConfigID { get; set; }
         public int TimesUsed { get; set; }
         public string ProcedureDescription { get; set; }
         public string FlowDescription { get; set; }
         public string CardDescription { get; set; }
+        public decimal Cost { get; set; }
         public decimal AvgMinutes { get; set; }
+
+
+        public int SecondSurgeonUserID { get; set; }
+        public string SecondSurgeonLastName { get; set; }
+        public int ThirdSurgeonUserID { get; set; }
+        public string ThirdSurgeonLastName { get; set; }
     }
 
     public class CardQuantityEdit

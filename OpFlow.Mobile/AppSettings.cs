@@ -34,18 +34,6 @@ namespace OpFlow.Mobile
             CaseGroupSetup = 16,
         }
 
-        public enum RoleEnum
-        {
-            Surgeon = 1,
-            Circulator = 2,
-            ScrubTech = 3,
-            CRNA = 4,
-            PA = 5,
-            FrontDesk = 7,
-            Schedule = 8,
-            Administration = 9
-        }
-
         public static int? CurrentSurgery { get; private set; }
         public static int? CurrentPatient { get; private set; }
 

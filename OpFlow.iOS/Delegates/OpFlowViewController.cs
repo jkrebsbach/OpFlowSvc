@@ -20,8 +20,8 @@ namespace OpFlow.iOS.Delegates
         {
             base.ViewWillAppear(animated);
 
-            keyboardUp = NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.DidShowNotification, KeyBoardUpNotification);
-            keyboardDown = NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.DidHideNotification, KeyBoardDownNotification);
+            //keyboardUp = NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.DidShowNotification, KeyBoardUpNotification);
+            //keyboardDown = NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.DidHideNotification, KeyBoardDownNotification);
         }
 
         public override void ViewDidDisappear(bool animated)

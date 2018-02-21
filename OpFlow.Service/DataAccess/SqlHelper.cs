@@ -224,7 +224,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<SurgeryUser> GetProviderCardUsers(int cardId, int providerId, int locationId, int? typeId)
+        public static List<SurgeryUser> GetCardUsers(int cardId, int providerId, int locationId, int? typeId)
         {
             var command = typeId == null ? "GetCardUsers" : "GetCardUsersType";
 

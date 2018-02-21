@@ -113,11 +113,11 @@ namespace OpFlow.iOS
             // If case is open, show debrief button
             btnDebrief.Hidden = (_surgery.SurgeryStatus != "O");
 
-            lblSurgeonName.Text = GetUserName(users, AppSettings.RoleEnum.Surgeon);
-            lblCirculatorName.Text = GetUserName(users, AppSettings.RoleEnum.Circulator);
-            lblScrubName.Text = GetUserName(users, AppSettings.RoleEnum.ScrubTech);
-            lblAnesName.Text = GetUserName(users, AppSettings.RoleEnum.FrontDesk);
-            lblRepName.Text = GetUserName(users, AppSettings.RoleEnum.FrontDesk);
+            lblSurgeonName.Text = GetUserName(users, RoleEnum.Surgeon);
+            lblCirculatorName.Text = GetUserName(users, RoleEnum.Circulator);
+            lblScrubName.Text = GetUserName(users, RoleEnum.ScrubTech);
+            lblAnesName.Text = GetUserName(users, RoleEnum.FrontDesk);
+            lblRepName.Text = GetUserName(users, RoleEnum.FrontDesk);
 
             lblPatientName.Text = PatientNameText;
             lblPatientInfo.Text = PatientInfoText;
@@ -142,7 +142,7 @@ namespace OpFlow.iOS
             }
         }
 
-        private string GetUserName(List<SurgeryUser> users, AppSettings.RoleEnum roleId)
+        private string GetUserName(List<SurgeryUser> users, RoleEnum roleId)
         {
             var user = users.FirstOrDefault(u => u.RoleID == (int)roleId);
 
