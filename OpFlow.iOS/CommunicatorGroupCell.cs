@@ -26,7 +26,8 @@ namespace OpFlow.iOS
                 backgroundColor = UIColor.FromRGB(100, 149, 237);
             }
 
-            Layer.BackgroundColor = backgroundColor.CGColor;
+            //Layer.BackgroundColor = backgroundColor.CGColor;
+            lblMessageGroup.BackgroundColor = backgroundColor;
         }
     }
 }
