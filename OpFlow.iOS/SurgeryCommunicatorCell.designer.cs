@@ -22,6 +22,10 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblCommunicator { get; set; }
 
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblInitials { get; set; }
+
         void ReleaseDesignerOutlets ()
         {
             if (ivCommunicator != null) {
@@ -32,6 +36,11 @@ namespace OpFlow.iOS
             if (lblCommunicator != null) {
                 lblCommunicator.Dispose ();
                 lblCommunicator = null;
+            }
+
+            if (lblInitials != null) {
+                lblInitials.Dispose ();
+                lblInitials = null;
             }
         }
     }

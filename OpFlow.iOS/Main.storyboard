@@ -1300,6 +1300,13 @@
                                                                         <constraint firstAttribute="width" constant="36" id="pgF-x2-ak9"/>
                                                                     </constraints>
                                                                 </imageView>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="65727" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
+                                                                    <rect key="frame" x="0.0" y="15" width="42" height="21"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                                    <nil key="textColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
                                                             </subviews>
                                                             <constraints>
                                                                 <constraint firstItem="ggP-az-F0O" firstAttribute="top" secondItem="45652" secondAttribute="topMargin" id="4N4-Gd-5GX"/>
@@ -1313,6 +1320,7 @@
                                                         <connections>
                                                             <outlet property="ivCommunicator" destination="54341" id="name-outlet-54341"/>
                                                             <outlet property="lblCommunicator" destination="ggP-az-F0O" id="name-outlet-ggP-az-F0O"/>
+                                                            <outlet property="lblInitials" destination="65727" id="name-outlet-65727"/>
                                                         </connections>
                                                     </tableViewCell>
                                                 </prototypes>
@@ -2771,6 +2779,13 @@
                                                         <constraint firstAttribute="width" constant="24" id="f0p-5h-LO4"/>
                                                     </constraints>
                                                 </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="65728" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
+                                                    <rect key="frame" x="6" y="12" width="42" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="mOP-E9-EEb" firstAttribute="leading" secondItem="53870" secondAttribute="trailing" constant="25" id="E6X-8J-SPk"/>
@@ -2784,6 +2799,7 @@
                                         <connections>
                                             <outlet property="ivCommunicator" destination="53870" id="name-outlet-53870"/>
                                             <outlet property="lblCommunicator" destination="mOP-E9-EEb" id="name-outlet-mOP-E9-EEb"/>
+                                            <outlet property="lblInitials" destination="65728" id="name-outlet-65728"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -2849,7 +2865,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="59049">
-                                                    <rect key="frame" x="15" y="12" width="151" height="21"/>
+                                                    <rect key="frame" x="75" y="12" width="151" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="66237" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
+                                                    <rect key="frame" x="15" y="12" width="42" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -2859,6 +2882,7 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="lblUserName" destination="59049" id="name-outlet-59049"/>
+                                            <outlet property="lblRole" destination="66237" id="name-outlet-66237"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

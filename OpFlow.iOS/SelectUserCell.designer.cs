@@ -16,10 +16,19 @@ namespace OpFlow.iOS
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblRole { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblUserName { get; set; }
 
         void ReleaseDesignerOutlets ()
         {
+            if (lblRole != null) {
+                lblRole.Dispose ();
+                lblRole = null;
+            }
+
             if (lblUserName != null) {
                 lblUserName.Dispose ();
                 lblUserName = null;

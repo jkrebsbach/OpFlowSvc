@@ -14,8 +14,9 @@ namespace OpFlow.iOS
 
         public void UpdateCell(User user)
         {
-            lblUserName.Text = string.Format("{0}: {1}, {2}", 
-                user.RoleID.ToString(), user.LastName, user.FirstName);
+            lblRole.Text = user.RoleID.ToString();
+            lblUserName.Text = string.Format("{0}, {1}", 
+                user.LastName, user.FirstName);
         }
     }
 }
