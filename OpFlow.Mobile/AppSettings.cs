@@ -31,7 +31,7 @@ namespace OpFlow.Mobile
             CardList = 13,
             CreateCase = 14,
             CommunicationDetail = 15,
-            CaseGroupSetup = 16,
+            NewCommunicationSetup = 16,
         }
 
         public static int? CurrentSurgery { get; private set; }

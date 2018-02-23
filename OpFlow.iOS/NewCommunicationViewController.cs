@@ -31,9 +31,6 @@ namespace OpFlow.iOS
             };
 
             await SearchUsers();
-
-            if (NavigationDelegate != null)
-                NavigationDelegate.DoneEventFired += NavigationDoneFired;
         }
 
         private async Task SearchUsers()
@@ -47,17 +44,17 @@ namespace OpFlow.iOS
 
             UserSelectTableView.ReloadData();
         }
-
-        private void NavigationDoneFired(object sender, EventArgs e)
-        {
-            // Cancel button - navigate back
-        }
+        
         private void SelectUser(object sender, User user)
         {
             AppSettings.CurrentMessagingGroup = new MessagingGroup()
             {
-                CommunicationUserID = user.UserID
+                CommunicationUserID = user.UserID,
+                CommunicationTargetName = string.Format("{0}: {1}, {2}", user.RoleID, user.LastName, user.FirstName)
             };
+
+            // back button should go to communicator home, not this screen
+            AppSettings.CurrentScreen = AppSettings.FragmentEnum.Communicator;
 
             NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CommunicationDetail);
         }

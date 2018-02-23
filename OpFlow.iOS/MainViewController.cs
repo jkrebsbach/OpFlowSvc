@@ -164,8 +164,8 @@ namespace OpFlow.iOS
 
         private UIBarButtonItem SetupCustomEdit(CustomButtonType buttonType)
         {
-            
             UIButton uiButton;
+            EventHandler navigationAction = NavBarEdit;
 
             switch (buttonType)
             {
@@ -174,11 +174,15 @@ namespace OpFlow.iOS
                     uiButton.SetImage(UIImage.FromBundle("Navigation_Compose.png"), UIControlState.Normal);
                     uiButton.ImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
                     break;
+                case CustomButtonType.Cancel:
+                    uiButton = new UIButton(new CGRect(0, 0, 75, 40));
+                    uiButton.SetTitle("Cancel", UIControlState.Normal);
+                    uiButton.SetTitleColor(uiButton.TintColor, UIControlState.Normal);
+
+                    navigationAction = NavigateBack;
+                    break;
                 default:
-                    uiButton = new UIButton(new CGRect(0, 0, 75, 40))
-                    {
-                        TintColor = UIColor.Blue
-                    };
+                    uiButton = new UIButton(new CGRect(0, 0, 75, 40));
                     uiButton.SetTitle("Done", UIControlState.Normal);
                     uiButton.SetTitleColor(uiButton.TintColor, UIControlState.Normal);
                     break;
@@ -192,10 +196,8 @@ namespace OpFlow.iOS
                 Target = this
             };
 
-            var zzz = UINavigationBar.Appearance.TintColor;
-
-            buttonItem.Clicked += NavBarEdit;
-            uiButton.TouchDown += NavBarEdit;
+            buttonItem.Clicked += navigationAction;
+            uiButton.TouchDown += navigationAction;
 
             return buttonItem;
         }
@@ -203,6 +205,7 @@ namespace OpFlow.iOS
         private enum CustomButtonType
         {
             Compose,
+            Cancel,
             Done
         }
 
@@ -294,19 +297,19 @@ namespace OpFlow.iOS
                     break;
 
                 case AppSettings.FragmentEnum.CommunicationDetail:
-                    Title = "Chat";
+                    Title = AppSettings.CurrentMessagingGroup.CommunicationTargetName;
                     customBackButton = SetupCustomBack("Communicator");
 
                     await _containerViewController.PresentCommunicatorDetailViewAsync();
                     break;
 
-                case AppSettings.FragmentEnum.CaseGroupSetup:
-                    Title = "New Communicator Group";
-                    customBackButton = SetupCustomBack("Communicator");
+                case AppSettings.FragmentEnum.NewCommunicationSetup:
+                    Title = "Select User";
+                    customBackButton = null; // Cancel action, not back
 
                     await _containerViewController.PresentCaseGroupEditViewAsync();
 
-                    rightButton = SetupCustomEdit(CustomButtonType.Done);
+                    rightButton = SetupCustomEdit(CustomButtonType.Cancel);
                     break;
 
             }
@@ -323,7 +326,7 @@ namespace OpFlow.iOS
                 return;
             }
 
-            PresentContainerView(AppSettings.FragmentEnum.CaseGroupSetup);
+            PresentContainerView(AppSettings.FragmentEnum.NewCommunicationSetup);
         }
     }
 }

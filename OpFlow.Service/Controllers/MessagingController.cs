@@ -18,11 +18,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetMessages")]
         [Route("api/message/list")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Messaging>))]
-        public HttpResponseMessage GetCaseMessaging(int providerId, int locationId, int? caseId = null, int? caseGroupId = null, int? recipientId = null)
+        public HttpResponseMessage GetCaseMessaging(int? providerId = null, int? locationId = null, int? surgeryId = null, int? caseGroupId = null, int? recipientId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetMessaging(user.UserID, caseId, caseGroupId, recipientId, providerId, locationId);
+            var result = DataAccess.SqlHelper.GetMessaging(user.UserID, surgeryId, caseGroupId, recipientId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -31,11 +31,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetMessageGroups")]
         [Route("api/message/groups")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<MessagingGroup>))]
-        public HttpResponseMessage GetCaseMessageGroups(int providerId, int locationId)
+        public HttpResponseMessage GetCaseMessageGroups(int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetMessageGroups(user.UserID, providerId, locationId);
+            var result = DataAccess.SqlHelper.GetMessageGroups(user.UserID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

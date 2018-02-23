@@ -29,7 +29,7 @@ namespace OpFlow.iOS
         {
             var currentMessageGroup = AppSettings.CurrentMessagingGroup;
 
-            var messages = await MessagingUtil.GetMessages(currentMessageGroup.CaseID, currentMessageGroup.CaseGroupID, currentMessageGroup.CommunicationUserID);
+            var messages = await MessagingUtil.GetMessages(currentMessageGroup.SurgeryID, currentMessageGroup.CaseGroupID, currentMessageGroup.CommunicationUserID);
 
             var messageTableViewSource = new CommunicatorTVS(messages);
 

@@ -4,7 +4,7 @@ namespace OpFlow.Data
     public class Messaging
     {
         public int MessageID { get; set; }
-        public int CaseID { get; set; }
+        public int SurgeryID { get; set; }
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
         public int Type { get; set; }

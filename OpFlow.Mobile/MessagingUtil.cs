@@ -9,19 +9,16 @@ namespace OpFlow.Mobile
 {
     public class MessagingUtil
     {
-        public static async Task<List<Messaging>> GetMessages(int? caseId, int? caseGroupId, int? recipientId)
+        public static async Task<List<Messaging>> GetMessages(int? surgeryId, int? caseGroupId, int? recipientId)
         {
-            var providerId = AppSettings.CurrentUser.ProviderID;
-            var locationId = AppSettings.CurrentUser.LocationID;
-
-            var command = string.Format("api/message/list?providerId={0}&locationId={1}&caseId={2}&caseGroupId={3}&recipientId={4}", 
-                providerId, locationId, caseId, caseGroupId, recipientId);
+            var command = string.Format("api/message/list?surgeryId={0}&caseGroupId={1}&recipientId={2}", 
+                surgeryId, caseGroupId, recipientId);
             var response = await WebUtility.WebRequest<List<Messaging>>(command, HttpMethod.Get);
 
             return response.OrderBy(r => r.InsertTimestamp).ToList();
         }
 
-        public static async Task<MessagingGroup> CreateGroup(int caseId, List<int> userIds)
+        public static async Task<MessagingGroup> CreateGroup(int surgeryId, List<int> userIds)
         {
             var providerId = AppSettings.CurrentUser.ProviderID;
             var locationId = AppSettings.CurrentUser.LocationID;
@@ -33,7 +30,7 @@ namespace OpFlow.Mobile
 
             return new MessagingGroup()
             {
-                CaseID = 1,
+                SurgeryID = surgeryId,
                 CaseGroupID = 1
             };
         }
@@ -51,10 +48,7 @@ namespace OpFlow.Mobile
 
         public static async Task<List<MessagingGroup>> GetMessageGroups()
         {
-            var providerId = AppSettings.CurrentUser.ProviderID;
-            var locationId = AppSettings.CurrentUser.LocationID;
-
-            var command = string.Format("api/message/groups?providerId={0}&locationId={1}", providerId, locationId);
+            var command = string.Format("api/message/groups");
             var response = await WebUtility.WebRequest<List<MessagingGroup>>(command, HttpMethod.Get);
 
             return response.OrderBy(r => r.CommunicationTargetName).ToList();

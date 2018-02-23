@@ -56,12 +56,12 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        public static List<Messaging> GetMessaging(int userId, int? caseId, int? caseGroupId, int? recipientId, int providerId, int locationId)
+        public static List<Messaging> GetMessaging(int userId, int? surgeryId, int? caseGroupId, int? recipientId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("user_id", userId),
-                new SqlParameter("case_id", caseId == null ? DBNull.Value : (object)caseId),
+                new SqlParameter("surgery_id", surgeryId == null ? DBNull.Value : (object)surgeryId),
                 new SqlParameter("case_group_id", caseGroupId == null ? DBNull.Value : (object)caseGroupId),
                 new SqlParameter("recipient_id", recipientId == null ? DBNull.Value : (object)recipientId),
                 new SqlParameter("provider_id", providerId),
