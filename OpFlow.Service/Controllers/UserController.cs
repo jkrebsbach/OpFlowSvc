@@ -12,17 +12,30 @@ using OpFlow.Data;
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
-    public class UserController : ApiController
+    public class UserController : OpFlowControllerBase
     {
         // GET api/values/jdoe
         [SwaggerResponse(HttpStatusCode.OK, Type=typeof(User))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("api/User", Name = "User")]
         [Route("api/AuthorizedUser", Name = "AuthorizedUser")]
-        public HttpResponseMessage Get(string username = null)
+        public HttpResponseMessage Get()
         {
-            username = HttpContext.Current.User.Identity.Name;
-            var users = DataAccess.SqlHelper.GetUsers(username);
+            var username = HttpContext.Current.User.Identity.Name;
+            var result = DataAccess.SqlHelper.GetUser(username);
+
+            return result == null ? Request.CreateResponse(HttpStatusCode.NotFound, "User not found") : Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/jdoe
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("api/SearchUsers", Name = "SearchUsers")]
+        public HttpResponseMessage SearchUsers(string searchText)
+        {
+            var userSecurity = GetUserSecurity();
+
+            var username = HttpContext.Current.User.Identity.Name;
+            var users = DataAccess.SqlHelper.SearchUsers(userSecurity.ProviderID, userSecurity.LocationID, username);
 
             var result = users.FirstOrDefault();
 

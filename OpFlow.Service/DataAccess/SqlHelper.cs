@@ -248,13 +248,28 @@ namespace OpFlow.Service.DataAccess
 
         }
 
-        public static List<User> GetUsers(string username)
+        public static User GetUser(string username)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("email", (object)username ?? DBNull.Value),
+                new SqlParameter("email", username),
             };
             var dsSchedules = ExecuteCommand("GetUser", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<User>().FirstOrDefault();
+
+            return result;
+        }
+
+        public static List<User> SearchUsers(int providerId, int locationId, string searchString)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("search", (object)searchString ?? DBNull.Value),
+            };
+            var dsSchedules = ExecuteCommand("SearchUsers", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<User>();
 

@@ -18,6 +18,14 @@ namespace OpFlow.Mobile
 
             return response;
         }
+        public static async Task<List<User>> GetUsers(string searchString)
+        {
+            var command = "api/user/searchUsers";
+
+            var response = await WebUtility.WebRequest<List<User>>(command, HttpMethod.Get);
+
+            return response;
+        }
 
         public static async Task<string> CheckinUser(User user, int surgeryId)
         {

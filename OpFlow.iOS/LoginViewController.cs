@@ -22,25 +22,21 @@ namespace OpFlow.iOS
             //NavigationController.NavigationBar.Hidden = true;
         }
 
-        partial void SignOnClick(UIButton sender)
+        async partial void SignOnClick(UIButton sender)
         {
-            var task = Task.Run(async () =>
+            try
             {
-                try
-                {
-                    await AppSettings.AuthenticateUser("info@opflowtech.com", "OpFlow1!");
-
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
+                ShowPleaseWait("Authenticating...");
+                await AppSettings.AuthenticateUser("info@opflowtech.com", "OpFlow1!");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
                     
-                    ShowDialog("Error", "Problems authenticating user");
-                }
+                ShowDialog("Error", "Problems authenticating user");
+            }
 
-            });
-
-            task.Wait();
+            HidePleaseWait();
 
             if (AppSettings.UserAuthenticated)
             {

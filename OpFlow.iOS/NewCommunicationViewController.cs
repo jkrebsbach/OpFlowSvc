@@ -22,11 +22,25 @@ namespace OpFlow.iOS
 
             Title = "CHAT";
 
+            searchUser.SearchButtonClicked += async (sender, e) =>
+            {
+                ShowPleaseWait("Searching...");
+                await SearchUsers();
+                HidePleaseWait();
+            };
+
             await LoadUsers();
             UserSelectTableView.ReloadData();
 
             if (NavigationDelegate != null)
                 NavigationDelegate.DoneEventFired += NavigationDoneFired;
+        }
+
+        private async Task SearchUsers()
+        {
+
+            var users = await UserUtil.GetUsers(searchUser.Text);
+
         }
 
         private void NavigationDoneFired(object sender, EventArgs e)

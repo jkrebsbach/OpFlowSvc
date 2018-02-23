@@ -130,5 +130,18 @@ namespace OpFlow.iOS.Delegates
             PresentViewController(alertDialog, true, null);
         }
 
+        public void ShowPleaseWait(string text = "Please wait")
+        {
+            var alertDialog =
+                UIAlertController.Create(null, text, UIAlertControllerStyle.Alert);
+            
+            PresentViewController(alertDialog, true, null);
+        }
+
+        public void HidePleaseWait()
+        {
+            DismissViewController(true, null);
+        }
+
     }
 }
