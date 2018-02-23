@@ -25,7 +25,7 @@ namespace OpFlow.Service.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("SecureConnection", throwIfV1Schema: false)
+            : base("AuthenticationConnection", throwIfV1Schema: false)
         {
         }
 
