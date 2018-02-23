@@ -39,5 +39,23 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
+
+        // GET api/values/5
+        [SwaggerOperation("SendMessage")]
+        [Route("api/message")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<MessagingGroup>))]
+        [SwaggerResponse(HttpStatusCode.Ambiguous)]
+        public HttpResponseMessage Put(int? surgeryId, int? communicationUserId, string message)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            if (surgeryId == null && communicationUserId == null)
+                return Request.CreateResponse(HttpStatusCode.Ambiguous);
+
+            DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
+                surgeryId, communicationUserId, message);
+
+            return Request.CreateResponse(HttpStatusCode.OK, 200);
+        }
     }
 }

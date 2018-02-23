@@ -35,15 +35,12 @@ namespace OpFlow.Mobile
             };
         }
 
-        public static async Task SendMessage(string message)
+        public static async Task SendMessage(MessagingGroup messagingGroup, string message)
         {
-            var providerId = AppSettings.CurrentUser.ProviderID;
-            var locationId = AppSettings.CurrentUser.LocationID;
+            var command = string.Format("api/message?surgeryId={0}&communicationUserID={1}&message={2}",
+                messagingGroup.SurgeryID, messagingGroup.CommunicationUserID, message);
 
-            //var command = string.Format("api/message/send?caseId={0}&providerId={1}&locationId={2}", caseId, providerId, locationId);
-            //var response = await WebUtility.WebRequest<List<Messaging>>(command, HttpMethod.Get);
-
-            //return response.OrderBy(r => r.MessageID).ToList();
+            var response = await WebUtility.WebRequest<int>(command, HttpMethod.Put);
         }
 
         public static async Task<List<MessagingGroup>> GetMessageGroups()

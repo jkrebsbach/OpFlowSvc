@@ -15,9 +15,20 @@ namespace OpFlow.iOS
     {
         async partial void btnSendMessage_Click(UIButton sender)
         {
-            await MessagingUtil.SendMessage(txtCommunicator.Text);
+            if (txtCommunicator.Text == "")
+                return;
+
+            var messageGroup = new MessagingGroup()
+            {
+                SurgeryID = AppSettings.CurrentSurgery
+            };
+
+            await MessagingUtil.SendMessage(messageGroup, txtCommunicator.Text);
+            txtCommunicator.ResignFirstResponder();
 
             txtCommunicator.Text = string.Empty;
+
+            await LoadMessages();
         }
 
         partial void btnCommunicator_Click(UIButton sender)
@@ -48,8 +59,7 @@ namespace OpFlow.iOS
         Surgery _surgery;
         Flow _flow;
         Patient _patient;
-        List<Messaging> _messaging;
-
+        
         public NavigateViewController (IntPtr handle) : base (handle)
         {
         }
@@ -124,18 +134,22 @@ namespace OpFlow.iOS
             lblLocation.Text = _surgery.RoomDescription;
             lblFlowStep.Text = _flow.FlowDescription;
 
+            await LoadMessages();
+        }
 
-            _messaging = await MessagingUtil.GetMessages(_surgery.CaseID, null, null);
+        private async Task LoadMessages()
+        {
+            var messaging = await MessagingUtil.GetMessages(_surgery.SurgeryID, null, null);
 
-            var messagingTableViewSource = new CommunicatorTVS(_messaging);
+            var messagingTableViewSource = new CommunicatorTVS(messaging);
 
             CommunicatorTableView.Source = messagingTableViewSource;
             CommunicatorTableView.ReloadData();
 
             // If we have any messages, scroll to bottom of message stack
-            if (_messaging.Count > 0)
+            if (messaging.Count > 0)
             {
-                var detailIndexPath = NSIndexPath.FromRowSection(_messaging.Count - 1, 0);
+                var detailIndexPath = NSIndexPath.FromRowSection(messaging.Count - 1, 0);
                 CommunicatorTableView.ScrollToRow(detailIndexPath, UITableViewScrollPosition.None, true);
             }
         }

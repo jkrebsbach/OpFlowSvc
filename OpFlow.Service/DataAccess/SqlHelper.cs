@@ -89,6 +89,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static void SendMessage(int userId, int providerId, int locationId,
+            int? surgeryId, int? communicationUserId, string message)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("user_id", userId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId == null ? DBNull.Value : (object)surgeryId),
+                new SqlParameter("communication_user_id", communicationUserId == null ? DBNull.Value : (object)communicationUserId),
+                new SqlParameter("message", message)
+            };
+            var result = ExecuteNonQuery("SendMessage", parameters);
+        }
+
         public static List<Card> GetCardData(int cardId, int providerId, int locationId)
         {
             var parameters = new[]

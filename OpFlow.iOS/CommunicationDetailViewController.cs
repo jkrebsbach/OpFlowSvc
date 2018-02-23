@@ -36,8 +36,27 @@ namespace OpFlow.iOS
             txtMessage.SetupDoneStyleTextField();
 
             CommunicatorTableView.Source = messageTableViewSource;
-
             CommunicatorTableView.ReloadData();
+
+            // If we have any messages, scroll to bottom of message stack
+            if (messages.Count > 0)
+            {
+                var detailIndexPath = NSIndexPath.FromRowSection(messages.Count - 1, 0);
+                CommunicatorTableView.ScrollToRow(detailIndexPath, UITableViewScrollPosition.None, true);
+            }
+        }
+
+        async partial void btnSendMessage_Click(UIKit.UIButton sender)
+        {
+            if (txtMessage.Text == "")
+                return;
+
+            await MessagingUtil.SendMessage(AppSettings.CurrentMessagingGroup, txtMessage.Text);
+            txtMessage.ResignFirstResponder();
+
+            txtMessage.Text = string.Empty;
+
+            await LoadMessages();
         }
     }
 }
