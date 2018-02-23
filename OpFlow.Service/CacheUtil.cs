@@ -6,14 +6,14 @@ using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
 
-namespace OpFlow.Service.Controllers
+namespace OpFlow.Service
 {
-    public class OpFlowControllerBase : ApiController
+    public static class CacheUtil
     {
         private static readonly MemoryCache MemCache = MemoryCache.Default;
 
 
-        internal static UserSecurity GetUserSecurity()
+        public static UserSecurity GetUserSecurity()
         {
             var username = HttpContext.Current.User.Identity.Name;
 

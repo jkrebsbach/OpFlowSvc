@@ -13,7 +13,7 @@ using Swashbuckle.Swagger.Annotations;
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
-    public class PatientController : OpFlowControllerBase
+    public class PatientController : ApiController
     {
         // GET api/values/5
         [SwaggerOperation("GetById")]
@@ -21,7 +21,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.NotFound)]
         public HttpResponseMessage Get(int patientId)
         {
-            var user = GetUserSecurity();
+            var user = CacheUtil.GetUserSecurity();
 
             var patient = DataAccess.SecureSqlHelper.GetPatient(patientId, user.DatabaseName);
 
@@ -37,7 +37,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<Patient>))]
         public HttpResponseMessage GetArray(string patientIdArrayJson)
         {
-            var user = GetUserSecurity();
+            var user = CacheUtil.GetUserSecurity();
 
             var patientIds = new List<int>();
             var patients = new List<Patient>();

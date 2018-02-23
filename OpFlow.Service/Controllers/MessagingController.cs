@@ -11,7 +11,7 @@ using Swashbuckle.Swagger.Annotations;
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
-    public class MessagingController : OpFlowControllerBase
+    public class MessagingController : ApiController
     {
 
         // GET api/values/5
@@ -20,7 +20,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Messaging>))]
         public HttpResponseMessage GetCaseMessaging(int providerId, int locationId, int? caseId = null, int? caseGroupId = null, int? recipientId = null)
         {
-            var user = GetUserSecurity();
+            var user = CacheUtil.GetUserSecurity();
 
             var result = DataAccess.SqlHelper.GetMessaging(user.UserID, caseId, caseGroupId, recipientId, providerId, locationId);
 
@@ -33,7 +33,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<MessagingGroup>))]
         public HttpResponseMessage GetCaseMessageGroups(int providerId, int locationId)
         {
-            var user = GetUserSecurity();
+            var user = CacheUtil.GetUserSecurity();
 
             var result = DataAccess.SqlHelper.GetMessageGroups(user.UserID, providerId, locationId);
 

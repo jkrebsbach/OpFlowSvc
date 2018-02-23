@@ -12,7 +12,7 @@ namespace OpFlow.Mobile
     {
         public static async Task<User> GetUser()
         {
-            var command = "api/authorizedUser";
+            var command = "api/User/authorizedUser";
             
             var response = await WebUtility.WebRequest<User>(command, HttpMethod.Get);
 
@@ -20,7 +20,7 @@ namespace OpFlow.Mobile
         }
         public static async Task<List<User>> GetUsers(string searchString)
         {
-            var command = "api/user/searchUsers";
+            var command = string.Format("api/user/searchUsers?searchText={0}", searchString);
 
             var response = await WebUtility.WebRequest<List<User>>(command, HttpMethod.Get);
 

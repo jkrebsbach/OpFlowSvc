@@ -12,21 +12,20 @@ namespace OpFlow.iOS.ViewSources
 {
     public class UserSelectionTVS : UITableViewSource
     {
-        private readonly List<UserSelectionModel> _users;
+        private readonly List<User> _users;
 
-        public UserSelectionTVS(List<SurgeryUser> users)
+        public event EventHandler<User> UserSelectionEvent;
+
+        public UserSelectionTVS(List<User> users)
         {
-            _users = new List<UserSelectionModel>();
-
-            users.ForEach(u => _users.Add(new UserSelectionModel(u)));
+            _users = users;
         }
 
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
         {
             var user = _users[indexPath.Row];
             
-            SelectUserCell cell = null;
-            cell = tableView.DequeueReusableCell("SelectUserCell", indexPath) as SelectUserCell;
+            var cell = tableView.DequeueReusableCell("SelectUserCell", indexPath) as SelectUserCell;
 
             cell?.UpdateCell(user);
 
@@ -38,24 +37,11 @@ namespace OpFlow.iOS.ViewSources
             return _users.Count;
         }
 
-        public List<int> SelectedUsers()
+        public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
         {
-            var result = new List<int>();
+            var user = _users[indexPath.Row];
 
-            _users.Where(u => u.Selected).ToList().ForEach(u => result.Add(u.User.UserID));
-
-            return result;
-        }
-
-        public class UserSelectionModel
-        {
-            public SurgeryUser User { get; }
-            public bool Selected { get; set; }
-
-            public UserSelectionModel(SurgeryUser user)
-            {
-                User = user;
-            }
+            UserSelectionEvent?.Invoke(this, user);
         }
     }
 }

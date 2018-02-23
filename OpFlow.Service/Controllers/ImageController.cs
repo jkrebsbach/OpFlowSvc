@@ -12,7 +12,7 @@ using Swashbuckle.Swagger.Annotations;
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
-    public class ImageController : OpFlowControllerBase
+    public class ImageController : ApiController
     {
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
         [SwaggerOperation("GetImage")]
@@ -20,7 +20,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.NotFound)]
         public async Task<HttpResponseMessage> GetSurgery(int surgeryId, int cardId, int flowId)
         {
-            var user = GetUserSecurity();
+            var user = CacheUtil.GetUserSecurity();
 
             var binary = await DataAccess.BlobStorageHelper.GetBlobBytes(user.ProviderID, surgeryId, cardId, flowId);
             
@@ -39,7 +39,7 @@ namespace OpFlow.Service.Controllers
             if (value == null || value.Length == 0)
                 return StatusCode(HttpStatusCode.Ambiguous);
 
-            var user = GetUserSecurity();
+            var user = CacheUtil.GetUserSecurity();
 
             await DataAccess.BlobStorageHelper.PutBlobBytes(user.ProviderID, surgeryId, cardId, flowId, value);
 

@@ -3,6 +3,7 @@ using System;
 using UIKit;
 using OpFlow.iOS.Delegates;
 using System.Threading.Tasks;
+using OpFlow.Data;
 using OpFlow.Mobile;
 using OpFlow.iOS.ViewSources;
 
@@ -29,8 +30,7 @@ namespace OpFlow.iOS
                 HidePleaseWait();
             };
 
-            await LoadUsers();
-            UserSelectTableView.ReloadData();
+            await SearchUsers();
 
             if (NavigationDelegate != null)
                 NavigationDelegate.DoneEventFired += NavigationDoneFired;
@@ -40,20 +40,26 @@ namespace OpFlow.iOS
         {
 
             var users = await UserUtil.GetUsers(searchUser.Text);
+            var userSelectTableViewSource = new UserSelectionTVS(users);
+            userSelectTableViewSource.UserSelectionEvent += SelectUser;
 
+            UserSelectTableView.Source = userSelectTableViewSource;
+
+            UserSelectTableView.ReloadData();
         }
 
         private void NavigationDoneFired(object sender, EventArgs e)
         {
             // Cancel button - navigate back
         }
-
-        private async Task LoadUsers()
+        private void SelectUser(object sender, User user)
         {
-            var users = await SurgeryUtil.GetSurgeryUsers(1);
-            var userSelectTableViewSource = new UserSelectionTVS(users);
+            AppSettings.CurrentMessagingGroup = new MessagingGroup()
+            {
+                CommunicationUserID = user.UserID
+            };
 
-            UserSelectTableView.Source = userSelectTableViewSource;
+            NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CommunicationDetail);
         }
     }
 }

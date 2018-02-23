@@ -7,17 +7,19 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.Services.Protocols;
 using OpFlow.Data;
 
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
-    public class UserController : OpFlowControllerBase
+    public class UserController : ApiController
     {
         // GET api/values/jdoe
         [SwaggerResponse(HttpStatusCode.OK, Type=typeof(User))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("api/AuthorizedUser", Name = "AuthorizedUser")]
+        [Route("api/AuthorizedUser", Name = "AuthorizedUser_ZZ")]
+        [Route("api/User/AuthorizedUser", Name = "AuthorizedUser")]
         public HttpResponseMessage Get()
         {
             var username = HttpContext.Current.User.Identity.Name;
@@ -27,22 +29,15 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/jdoe
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("api/SearchUsers", Name = "SearchUsers")]
-        public HttpResponseMessage SearchUsers(string searchText)
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<User>))]
+        [Route("api/User/SearchUsers", Name = "SearchUsers")]
+        public HttpResponseMessage GetUsers(string searchText)
         {
-            var userSecurity = GetUserSecurity();
+            var userSecurity = CacheUtil.GetUserSecurity();
 
-            var username = HttpContext.Current.User.Identity.Name;
-            var users = DataAccess.SqlHelper.SearchUsers(userSecurity.ProviderID, userSecurity.LocationID, username);
+            var users = DataAccess.SqlHelper.SearchUsers(userSecurity.ProviderID, userSecurity.LocationID, searchText);
 
-            var result = users.FirstOrDefault();
-
-            if (result == null || username == null)
-                return Request.CreateResponse(HttpStatusCode.NotFound, "User not found");
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            return Request.CreateResponse(HttpStatusCode.OK, users);
         }
 
         // POST api/values
