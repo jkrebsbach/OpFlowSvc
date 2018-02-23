@@ -10,7 +10,6 @@ namespace OpFlow.iOS.Delegates
     {
         protected abstract UILabel LblCommunicator { get; }
         protected abstract UILabel LblInitials { get; }
-        protected abstract UIImageView IvCommunicator { get; }
 
         public CommunicationCell(IntPtr handle) : base(handle)
         {
@@ -22,7 +21,7 @@ namespace OpFlow.iOS.Delegates
             LblCommunicator.Text = message.Message;
             LblInitials.Text = message.UserName;
 
-            IvCommunicator.AccessibilityLabel = message.UserName;
+            LblInitials.BackgroundColor = UIColor.FromRGB(100, 149, 237);
         }
     }
 }

@@ -14,8 +14,6 @@ namespace OpFlow.iOS
         protected override UILabel LblCommunicator => lblCommunicator;
         protected override UILabel LblInitials => lblInitials;
 
-        protected override UIImageView IvCommunicator => ivCommunicator;
-
 
     }
 }
