@@ -12,9 +12,14 @@ namespace OpFlow.Service.DataAccess
 {
     public static class SecureSqlHelper 
     {
-        private static DataSet ExecuteCommand(string storedProcedure, SqlParameter[] dsParameters = null)
+        private static DataSet ExecuteCommand(string storedProcedure, string secureDatabase, SqlParameter[] dsParameters = null)
         {
-            var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SecureConnection"].ConnectionString);
+            var secureConnString =
+                string.Format(ConfigurationManager.ConnectionStrings["SecureConnection"].ConnectionString,
+                    secureDatabase);
+
+            var conn = new SqlConnection(secureConnString);
+
             var cmd = new SqlCommand(storedProcedure, conn) { CommandType = CommandType.StoredProcedure };
 
             if (dsParameters != null)
@@ -35,13 +40,13 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        public static Patient GetPatient(int patientId)
+        public static Patient GetPatient(int patientId, string databaseName)
         {
             var parameters = new[]
             {
                 new SqlParameter("patient_id", patientId)
             };
-            var dsSchedules = ExecuteCommand("GetPatient", parameters);
+            var dsSchedules = ExecuteCommand("GetPatient", databaseName, parameters);
 
             var patients = dsSchedules.Tables[0].DataTableToList<Patient>();
             var demos = dsSchedules.Tables[1].DataTableToList<PatientDemo>();

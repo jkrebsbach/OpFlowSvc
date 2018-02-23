@@ -261,6 +261,19 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static UserSecurity GetSecureUser(string username)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("email", username),
+            };
+            var dsSchedules = ExecuteCommand("GetUserSecurity", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<UserSecurity>();
+
+            return result.FirstOrDefault();
+        }
+
         public static int CheckInUser(User user, int surgeryId)
         {
             var dsParameters = new[]

@@ -11,7 +11,7 @@ using Swashbuckle.Swagger.Annotations;
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
-    public class MessagingController : ApiController
+    public class MessagingController : OpFlowControllerBase
     {
 
         // GET api/values/5
@@ -20,10 +20,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Messaging>))]
         public HttpResponseMessage GetCaseMessaging(int providerId, int locationId, int? caseId = null, int? caseGroupId = null, int? recipientId = null)
         {
-            var username = HttpContext.Current.User.Identity.Name;
-            var userId = DataAccess.SqlHelper.GetUsers(username).FirstOrDefault()?.UserID ?? 0;
+            var user = GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetMessaging(userId, caseId, caseGroupId, recipientId, providerId, locationId);
+            var result = DataAccess.SqlHelper.GetMessaging(user.UserID, caseId, caseGroupId, recipientId, providerId, locationId);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -34,10 +33,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<MessagingGroup>))]
         public HttpResponseMessage GetCaseMessageGroups(int providerId, int locationId)
         {
-            var username = HttpContext.Current.User.Identity.Name;
-            var userId = DataAccess.SqlHelper.GetUsers(username).FirstOrDefault()?.UserID ?? 0;
+            var user = GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetMessageGroups(userId, providerId, locationId);
+            var result = DataAccess.SqlHelper.GetMessageGroups(user.UserID, providerId, locationId);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
