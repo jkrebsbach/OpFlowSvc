@@ -1,4 +1,4 @@
-﻿// WARNING
+// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -18,24 +18,11 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblUserName { get; set; }
 
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UISwitch swtIncludeUser { get; set; }
-
-        [Action ("swtSelected_Changed:")]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        partial void swtSelected_Changed (UIKit.UISwitch sender);
-
         void ReleaseDesignerOutlets ()
         {
             if (lblUserName != null) {
                 lblUserName.Dispose ();
                 lblUserName = null;
-            }
-
-            if (swtIncludeUser != null) {
-                swtIncludeUser.Dispose ();
-                swtIncludeUser = null;
             }
         }
     }

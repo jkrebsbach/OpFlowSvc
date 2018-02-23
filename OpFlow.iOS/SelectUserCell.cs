@@ -18,13 +18,6 @@ namespace OpFlow.iOS
         {
             _model = model;
             lblUserName.Text = model.User.LastName + ", " + model.User.FirstName;
-
-            swtIncludeUser.On = model.Selected;
-        }
-
-        partial void swtSelected_Changed(UIKit.UISwitch sender)
-        {
-            _model.Selected = sender.On;
         }
     }
 }
