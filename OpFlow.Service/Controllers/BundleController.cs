@@ -17,9 +17,11 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("Get")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardBundle>))]
-        public HttpResponseMessage GetBundles(int specialtyId, int providerId, int locationId)
+        public HttpResponseMessage GetBundles(int specialtyId, int? providerId = null, int? locationId = null)
         {
-            var bundles = DataAccess.SqlHelper.GetBundles(specialtyId, providerId, locationId);
+            var user = CacheUtil.GetUserSecurity();
+
+            var bundles = DataAccess.SqlHelper.GetBundles(specialtyId, user.ProviderID, user.LocationID);
 
             return bundles == null ?
                 Request.CreateResponse(HttpStatusCode.NotFound) :

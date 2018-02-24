@@ -16,9 +16,11 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("Get")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgeon>))]
-        public HttpResponseMessage GetSurgeonsBySpecialty(int specialtyId, int providerId, int locationId)
+        public HttpResponseMessage GetSurgeonsBySpecialty(int specialtyId, int? providerId = null, int? locationId = null)
         {
-            var surgeons = DataAccess.SqlHelper.GetSurgeons(specialtyId, providerId, locationId);
+            var user = CacheUtil.GetUserSecurity();
+
+            var surgeons = DataAccess.SqlHelper.GetSurgeons(specialtyId, user.ProviderID, user.LocationID);
 
             return surgeons == null ?
                 Request.CreateResponse(HttpStatusCode.NotFound) :

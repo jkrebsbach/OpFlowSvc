@@ -18,9 +18,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetById")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage Get(int cardId, int providerId, int locationId)
+        public HttpResponseMessage Get(int cardId, int? providerId = null, int? locationId = null)
         {
-            var cards = DataAccess.SqlHelper.GetCardData(cardId, providerId, locationId);
+            var user = CacheUtil.GetUserSecurity();
+
+            var cards = DataAccess.SqlHelper.GetCardData(cardId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, cards);
         }
@@ -29,9 +31,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCardSurgerys")]
         [Route("api/card/surgery")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardItem>))]
-        public HttpResponseMessage GetCardSurgerys(int cardId, int providerId, int locationId)
+        public HttpResponseMessage GetCardSurgerys(int cardId, int? providerId = null, int? locationId = null)
         {
-            var result = DataAccess.SqlHelper.GetCardSurgeryItems(cardId, providerId, locationId);
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetCardSurgeryItems(cardId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -40,9 +44,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCardSurgeryDelays")]
         [Route("api/card/delays")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
-        public HttpResponseMessage GetCardSurgeryDelays(int surgeryId, int providerId, int locationId)
+        public HttpResponseMessage GetCardSurgeryDelays(int surgeryId, int? providerId = null, int? locationId = null)
         {
-            var result = DataAccess.SqlHelper.GetCardSurgeryDelays(surgeryId, providerId, locationId);
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetCardSurgeryDelays(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -51,9 +57,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCardList")]
         [Route("api/card/list")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
-        public HttpResponseMessage GetCardList(int userId, int providerId, int locationId)
+        public HttpResponseMessage GetCardList(int? userId = null, int? providerId = null, int? locationId = null)
         {
-            var result = DataAccess.SqlHelper.GetCardList(userId, providerId, locationId);
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetCardList(user.UserID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -62,9 +70,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCardCountAvgClose")]
         [Route("api/card/avgClose")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
-        public HttpResponseMessage GetCardCountAvgClose(int cardId, int providerId, int locationId)
+        public HttpResponseMessage GetCardCountAvgClose(int cardId, int? providerId = null, int? locationId = null)
         {
-            var result = DataAccess.SqlHelper.GetCardCountAvgClose(cardId, providerId, locationId);
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetCardCountAvgClose(cardId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -73,9 +83,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCardSurgeryOpens")]
         [Route("api/card/opens")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
-        public HttpResponseMessage GetCardSurgeryOpens(int surgeryId, int providerId, int locationId)
+        public HttpResponseMessage GetCardSurgeryOpens(int surgeryId, int? providerId = null, int? locationId = null)
         {
-            var result = DataAccess.SqlHelper.GetCardSurgeryOpens(surgeryId, providerId, locationId);
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetCardSurgeryOpens(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -84,9 +96,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCardItemPulls")]
         [Route("api/card/pulled")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardItem>))]
-        public HttpResponseMessage GetCardItemPulls(int surgeryId, int providerId, int locationId)
+        public HttpResponseMessage GetCardItemPulls(int surgeryId, int? providerId = null, int? locationId = null)
         {
-            var result = DataAccess.SqlHelper.GetCardItemPulls(surgeryId, providerId, locationId);
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetCardItemPulls(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -95,9 +109,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCardSurgeryCloses")]
         [Route("api/card/closes")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardItem>))]
-        public HttpResponseMessage GetCardSurgeryCloses(int surgeryId, int providerId, int locationId)
+        public HttpResponseMessage GetCardSurgeryCloses(int surgeryId, int? providerId = null, int? locationId = null)
         {
-            var result = DataAccess.SqlHelper.GetCardSurgeryCloses(surgeryId, providerId, locationId);
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetCardSurgeryCloses(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -106,9 +122,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCardChecklist")]
         [Route("api/card/checklist")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
-        public HttpResponseMessage GetCardChecklist(int providerId, int locationId, int cardId)
+        public HttpResponseMessage GetCardChecklist(int cardId, int? providerId = null, int? locationId = null)
         {
-            var result = DataAccess.SqlHelper.GetProviderCardChecklist(providerId, locationId, cardId);
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetProviderCardChecklist(user.ProviderID, user.LocationID, cardId);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -117,9 +135,11 @@ namespace OpFlow.Service.Controllers
         [Route("api/card/users")]
         [SwaggerOperation("GetCardUsers")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardUser>))]
-        public HttpResponseMessage GetCardUsers(int cardId, int providerId, int locationId, int? typeId = null)
+        public HttpResponseMessage GetCardUsers(int cardId, int? providerId = null, int? locationId = null, int? typeId = null)
         {
-            var result = DataAccess.SqlHelper.GetCardUsers(cardId, providerId, locationId, typeId);
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetCardUsers(cardId, user.ProviderID, user.LocationID, typeId);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -139,9 +159,11 @@ namespace OpFlow.Service.Controllers
         [Route("api/card/proceduredefault")]
         [SwaggerOperation("GetProcedureDefaultCardFlowRoom")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
-        public HttpResponseMessage GetProcedureDefaultCardFlowRoom(int providerId, int locationId, string cptCode)
+        public HttpResponseMessage GetProcedureDefaultCardFlowRoom(string cptCode, int? providerId = null, int? locationId = null)
         {
-            var result = DataAccess.SqlHelper.GetProcedureDefaultCardFlowRoom(providerId, locationId, cptCode);
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetProcedureDefaultCardFlowRoom(user.ProviderID, user.LocationID, cptCode);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -150,9 +172,11 @@ namespace OpFlow.Service.Controllers
         [Route("api/card/specialtyproceduredefault")]
         [SwaggerOperation("GetSpecialtyProcedureDefaultCardFlowRoom")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
-        public HttpResponseMessage GetSpecialtyProcedureDefaultCardFlowRoom(int providerId, int locationId, string cptCode)
+        public HttpResponseMessage GetSpecialtyProcedureDefaultCardFlowRoom(string cptCode, int? providerId = null, int? locationId = null)
         {
-            var result = DataAccess.SqlHelper.GetSpecialtyProcedureDefaultCardFlowRoom(providerId, locationId, cptCode);
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetSpecialtyProcedureDefaultCardFlowRoom(user.ProviderID, user.LocationID, cptCode);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -161,9 +185,11 @@ namespace OpFlow.Service.Controllers
         [Route("api/card/multipleproceduresdefault")]
         [SwaggerOperation("GetMultipleProceduresDefaultCardFlowRoom")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
-        public HttpResponseMessage GetMultipleProceduresDefaultCardFlowRoom(int providerId, int locationId, int specialtyId, string cptCodes)
+        public HttpResponseMessage GetMultipleProceduresDefaultCardFlowRoom(int specialtyId, string cptCodes, int? providerId = null, int? locationId = null)
         {
-            var result = DataAccess.SqlHelper.GetMultipleProceduresDefaultCardFlowRoom(providerId, locationId, specialtyId, cptCodes);
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetMultipleProceduresDefaultCardFlowRoom(user.ProviderID, user.LocationID, specialtyId, cptCodes);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -172,9 +198,11 @@ namespace OpFlow.Service.Controllers
         [Route("api/card/specialtymultipleproceduresdefault")]
         [SwaggerOperation("GetSpecialtyMultipleProceduresDefaultCardFlowRoom")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
-        public HttpResponseMessage GetSpecialtyMultipleProceduresDefaultCardFlowRoom(int providerId, int locationId, int specialtyId, string cptCodes)
+        public HttpResponseMessage GetSpecialtyMultipleProceduresDefaultCardFlowRoom(int specialtyId, string cptCodes, int? providerId = null, int? locationId = null)
         {
-            var result = DataAccess.SqlHelper.GetSpecialtyMultipleProceduresDefaultCardFlowRoom(providerId, locationId, specialtyId, cptCodes);
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetSpecialtyMultipleProceduresDefaultCardFlowRoom(user.ProviderID, user.LocationID, specialtyId, cptCodes);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

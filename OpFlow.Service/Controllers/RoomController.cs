@@ -13,9 +13,11 @@ namespace OpFlow.Service.Controllers
     {
         // GET api/values
         [SwaggerOperation("GetByLocationId")]
-        public IEnumerable<Room> Get(int locationId)
+        public IEnumerable<Room> Get(int? locationId = null)
         {
-            return DataAccess.SqlHelper.GetRooms(locationId);
+            var user = CacheUtil.GetUserSecurity();
+
+            return DataAccess.SqlHelper.GetRooms(user.LocationID);
         }
     }
 }
