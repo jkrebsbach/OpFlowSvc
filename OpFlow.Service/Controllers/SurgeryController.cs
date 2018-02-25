@@ -56,11 +56,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("SearchSurgeonCases")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchResult>))]
         [Route("api/Surgery/searchSurgeonCases")]
-        public HttpResponseMessage GetSurgeonCases(DateTime begDate, DateTime endDate, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetSurgeonCases(int surgeonUserId, DateTime begDate, DateTime endDate, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var schedules = DataAccess.SqlHelper.GetSurgeonCases(begDate, endDate, user.ProviderID, user.LocationID);
+            var schedules = DataAccess.SqlHelper.GetSurgeonCases(surgeonUserId, begDate, endDate, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }

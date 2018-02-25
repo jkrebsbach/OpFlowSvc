@@ -487,10 +487,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<SurgerySearchResult> GetSurgeonCases(DateTime begDate, DateTime endDate, int providerId, int locationId)
+        public static List<SurgerySearchResult> GetSurgeonCases(int userId, DateTime begDate, DateTime endDate, int providerId, int locationId)
         {
             var parameters = new[]
             {
+                new SqlParameter("user_id", userId),
                 new SqlParameter("beg_date", begDate),
                 new SqlParameter("end_date", endDate),
                 new SqlParameter("provider_id", providerId),
