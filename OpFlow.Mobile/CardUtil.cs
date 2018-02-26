@@ -11,21 +11,29 @@ namespace OpFlow.Mobile
     {
         public static async Task<List<Card>> GetCardData(int cardId)
         {
-            var providerId = AppSettings.CurrentUser.ProviderID;
-            var locationId = AppSettings.CurrentUser.LocationID;
-
-            var command = string.Format("api/card?cardId={0}&providerId={1}&locationId={2}", cardId, providerId, locationId);
+            var command = string.Format("api/card?cardId={0}", cardId);
             var response = await WebUtility.WebRequest<List<Card>>(command, HttpMethod.Get);
 
             return response;
         }
         public static async Task<List<CardItem>> GetCardItems(int cardId)
         {
-            var providerId = AppSettings.CurrentUser.ProviderID;
-            var locationId = AppSettings.CurrentUser.LocationID;
-
-            var command = string.Format("api/card/surgery?cardId={0}&providerId={1}&locationId={2}", cardId, providerId, locationId);
+            var command = string.Format("api/card/surgery?cardId={0}", cardId);
             var response = await WebUtility.WebRequest<List<CardItem>>(command, HttpMethod.Get);
+
+            return response;
+        }
+        public static async Task<CardFlowRoom> GetBundleDefault(int bundleId)
+        {
+            var command = string.Format("api/card/bundledefault?bundleId={0}", bundleId);
+            var response = await WebUtility.WebRequest<CardFlowRoom>(command, HttpMethod.Get);
+
+            return response;
+        }
+        public static async Task<CardFlowRoom> GetProcedureDefault(string cptCode)
+        {
+            var command = string.Format("api/card/proceduredefault?cptCode={0}", cptCode);
+            var response = await WebUtility.WebRequest<CardFlowRoom>(command, HttpMethod.Get);
 
             return response;
         }

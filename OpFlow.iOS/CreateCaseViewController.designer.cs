@@ -1,4 +1,4 @@
-// WARNING
+﻿// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -58,6 +58,22 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField txtSurgeon { get; set; }
 
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UITextField txtSurgeryDateTime { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UITextField txtSurgeryTime { get; set; }
+
+        [Action ("btnDone_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnDone_Click (UIKit.UIButton sender);
+
+        [Action ("btnNew_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnNew_Click (UIKit.UIButton sender);
+
         void ReleaseDesignerOutlets ()
         {
             if (txtBundle != null) {
@@ -113,6 +129,16 @@ namespace OpFlow.iOS
             if (txtSurgeon != null) {
                 txtSurgeon.Dispose ();
                 txtSurgeon = null;
+            }
+
+            if (txtSurgeryDateTime != null) {
+                txtSurgeryDateTime.Dispose ();
+                txtSurgeryDateTime = null;
+            }
+
+            if (txtSurgeryTime != null) {
+                txtSurgeryTime.Dispose ();
+                txtSurgeryTime = null;
             }
         }
     }

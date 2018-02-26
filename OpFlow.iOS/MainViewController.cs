@@ -24,8 +24,7 @@ namespace OpFlow.iOS
 
         partial void btnHome_Click(UIKit.UIButton sender)
         {
-            var controller = Storyboard.InstantiateViewController("HomeViewController");
-            NavigationController.PushViewController(controller, true);
+            NavigateHome();
         }
 
         partial void btnSearch_Click(UIKit.UIButton sender)
@@ -36,6 +35,12 @@ namespace OpFlow.iOS
         partial void btnSchedule_Click(UIKit.UIButton sender)
         {
             PresentContainerView(AppSettings.FragmentEnum.Schedule);
+        }
+
+        private void NavigateHome()
+        {
+            var controller = Storyboard.InstantiateViewController("HomeViewController");
+            NavigationController.PushViewController(controller, true);
         }
 
         public override void PrepareForSegue(UIStoryboardSegue segue, Foundation.NSObject sender)
@@ -129,6 +134,10 @@ namespace OpFlow.iOS
                 PresentContainerView(AppSettings.FragmentEnum.Schedule);
             else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.Communicator)
                 PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
+            else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CreateCase)
+                NavigateHome();
+            else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.SearchCases)
+                NavigateHome();
             else
                 PresentContainerView(AppSettings.PriorScreen);
         }
@@ -278,14 +287,19 @@ namespace OpFlow.iOS
 
                 case AppSettings.FragmentEnum.SearchCases:
                     Title = "Search Cases";
-                    customBackButton = SetupCustomBack("Surgery");
+                    customBackButton = null; // Cancel action, not back
                     await _containerViewController.PresentSearchCaseViewAsync();
+
+                    rightButton = SetupCustomEdit(CustomButtonType.Cancel);
+
                     break;
 
                 case AppSettings.FragmentEnum.CreateCase:
                     Title = "New Surgery";
-                    customBackButton = SetupCustomBack("Surgery");
+                    customBackButton = null; // Cancel action, not back
                     await _containerViewController.PresentCreateCaseViewAsync();
+
+                    rightButton = SetupCustomEdit(CustomButtonType.Cancel);
                     break;
 
                 case AppSettings.FragmentEnum.Communicator:

@@ -17,7 +17,6 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetById")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
         public HttpResponseMessage Get(int cardId, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
@@ -147,49 +146,62 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [Route("api/card/bundledefault")]
         [SwaggerOperation("GetBundleDefaultCardFlowRoom")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardFlowRoom))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
         public HttpResponseMessage GetBundleDefaultCardFlowRoom(int bundleId)
         {
-            var result = DataAccess.SqlHelper.GetBundleDefaultCardFlowRoom(bundleId);
+            var result = DataAccess.SqlHelper.GetBundleDefaultCardFlowRoom(bundleId).FirstOrDefault();
 
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            return result == null ?
+                Request.CreateResponse(HttpStatusCode.NotFound) :
+                Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // GET api/values/5
         [Route("api/card/proceduredefault")]
         [SwaggerOperation("GetProcedureDefaultCardFlowRoom")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardFlowRoom))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
         public HttpResponseMessage GetProcedureDefaultCardFlowRoom(string cptCode, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetProcedureDefaultCardFlowRoom(user.ProviderID, user.LocationID, cptCode);
+            var result = DataAccess.SqlHelper.GetProcedureDefaultCardFlowRoom(user.ProviderID, user.LocationID, cptCode).FirstOrDefault();
 
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            return result == null ?
+                Request.CreateResponse(HttpStatusCode.NotFound) :
+                Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // GET api/values/5
         [Route("api/card/specialtyproceduredefault")]
         [SwaggerOperation("GetSpecialtyProcedureDefaultCardFlowRoom")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardFlowRoom))]
         public HttpResponseMessage GetSpecialtyProcedureDefaultCardFlowRoom(string cptCode, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
             var result = DataAccess.SqlHelper.GetSpecialtyProcedureDefaultCardFlowRoom(user.ProviderID, user.LocationID, cptCode);
 
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            return Request.CreateResponse(HttpStatusCode.OK, result.FirstOrDefault());
         }
 
         // GET api/values/5
         [Route("api/card/multipleproceduresdefault")]
         [SwaggerOperation("GetMultipleProceduresDefaultCardFlowRoom")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
-        public HttpResponseMessage GetMultipleProceduresDefaultCardFlowRoom(int specialtyId, string cptCodes, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetMultipleProceduresDefaultCardFlowRoom(List<string> cptCodes, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetMultipleProceduresDefaultCardFlowRoom(user.ProviderID, user.LocationID, specialtyId, cptCodes);
+            var result = new List<CardFlowRoom>();
+
+            foreach (var cptCode in cptCodes)
+            {
+                var procedures = DataAccess.SqlHelper.GetProcedureDefaultCardFlowRoom(user.ProviderID, user.LocationID, cptCode);
+
+                result.AddRange(procedures);
+            }
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

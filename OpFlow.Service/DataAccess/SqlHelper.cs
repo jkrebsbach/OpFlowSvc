@@ -676,7 +676,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("cpt_code", cptCode)
             };
-            var dsSchedules = ExecuteCommand("GetSpecialtyProcedureDefaultCardFlowRoom", parameters);
+            var dsSchedules = ExecuteCommand("GetProcedureDefaultCardFlowRoom", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<CardFlowRoom>();
 

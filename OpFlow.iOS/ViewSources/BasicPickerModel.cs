@@ -35,16 +35,25 @@ namespace OpFlow.iOS.ViewSources
             return _entities[(int)row].ToString();
         }
 
+        private IBindableEntity GetEntity(nint row)
+        {
+            if (_entities == null || _entities.Count <= (int) row)
+                return null;
+
+            return _entities[(int)row];
+            
+        }
+
         public override void Selected(UIPickerView pickerView, nint row, nint component)
         {
-            var selection = _entities[(int)row];
+            var selection = GetEntity(row);
 
             RowSelected?.Invoke(this, selection);
         }
 
         public IBindableEntity CurrentSelection(nint row)
         {
-            var selection = _entities[(int) row];
+            var selection = GetEntity(row);
 
             return selection;
         }
