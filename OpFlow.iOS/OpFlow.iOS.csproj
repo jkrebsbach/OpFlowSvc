@@ -79,6 +79,7 @@
     </Compile>
     <Compile Include="Delegates\CommunicationCell.cs" />
     <Compile Include="Delegates\DetailListCell.cs" />
+    <Compile Include="Delegates\OpFlowTextPicker.cs" />
     <Compile Include="Delegates\OpFlowViewController.cs" />
     <Compile Include="Delegates\ScheduleTableCell.cs" />
     <Compile Include="DetailConfirmCell.cs" />

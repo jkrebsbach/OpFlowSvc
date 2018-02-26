@@ -41,5 +41,12 @@ namespace OpFlow.iOS.ViewSources
 
             RowSelected?.Invoke(this, selection);
         }
+
+        public IBindableEntity CurrentSelection(nint row)
+        {
+            var selection = _entities[(int) row];
+
+            return selection;
+        }
     }
 }

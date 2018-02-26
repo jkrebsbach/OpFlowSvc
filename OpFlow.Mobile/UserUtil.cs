@@ -26,6 +26,14 @@ namespace OpFlow.Mobile
 
             return response;
         }
+        public static async Task<List<Surgeon>> GetSurgeons(int specialtyId)
+        {
+            var command = string.Format("api/surgeon?specialtyId={0}", specialtyId);
+
+            var response = await WebUtility.WebRequest<List<Surgeon>>(command, HttpMethod.Get);
+
+            return response;
+        }
 
         public static async Task<string> CheckinUser(User user, int surgeryId)
         {

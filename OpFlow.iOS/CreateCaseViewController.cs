@@ -14,8 +14,9 @@ namespace OpFlow.iOS
 {
     public partial class CreateCaseViewController : OpFlowViewController
     {
-        private UIPickerView _genderPicker;
-        private UIPickerView _specialtyPicker;
+        private OpFlowTextPicker _genderPicker;
+        private OpFlowTextPicker _specialtyPicker;
+        private OpFlowTextPicker _surgeonPicker;
 
         public CreateCaseViewController (IntPtr handle) : base (handle)
         {
@@ -29,45 +30,31 @@ namespace OpFlow.iOS
             SetupDoneStyleTextField(txtInitials, true);
             SetupDoneStyleTextField(txtPatientId, true);
 
+            SetupDoneStyleTextField(txtGender, true);
+            SetupDoneStyleTextField(txtSpecialty, true);
+
+            txtSpecialty.ValueChanged += UpdateSpecialty;
+            txtSurgeon.Enabled = false;
+
             await LoadDropdowns();
         }
 
-        private void GenderPickerRowSelected(object sender, IBindableEntity e)
+        private async void UpdateSpecialty(object sender, EventArgs e)
         {
-            txtGender.Text = e.ToString();
+            var specialtyId = _specialtyPicker.GetCurrentId();
 
-            txtGender.ResignFirstResponder();
-        }
+            var surgeons = await UserUtil.GetSurgeons(specialtyId);
+            _surgeonPicker = new OpFlowTextPicker(txtSurgeon, surgeons.Cast<IBindableEntity>().ToList());
 
-        private void SpecialtyPickerRowSelected(object sender, IBindableEntity e)
-        {
-            txtSpecialty.Text = e.ToString();
-
-            txtSpecialty.ResignFirstResponder();
         }
 
         private async Task LoadDropdowns()
         {
             var genders = await LookupUtil.GetGenders();
-
-            var genderPickerModel = new BasicPickerModel(genders.Cast<IBindableEntity>().ToList());
-            genderPickerModel.RowSelected += GenderPickerRowSelected;
-
-            _genderPicker = new UIPickerView();
-            _genderPicker.Model = genderPickerModel;
-            
-            txtGender.InputView = _genderPicker;
-
+            _genderPicker = new OpFlowTextPicker(txtGender, genders.Cast<IBindableEntity>().ToList());
 
             var specialties = await LookupUtil.GetSpecialties();
-
-            var specialtyPickerModel = new BasicPickerModel(specialties.Cast<IBindableEntity>().ToList());
-            specialtyPickerModel.RowSelected += SpecialtyPickerRowSelected;
-
-            _specialtyPicker = new UIPickerView();
-            _specialtyPicker.Model = specialtyPickerModel;
-
-            txtSpecialty.InputView = _specialtyPicker;
+            _specialtyPicker = new OpFlowTextPicker(txtSpecialty, specialties.Cast<IBindableEntity>().ToList());
         }
     }
 }
