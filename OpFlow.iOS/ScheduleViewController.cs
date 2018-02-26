@@ -21,8 +21,6 @@ namespace OpFlow.iOS
         {
             _selectedDate = DateTime.Today;
         }
-
-        public INavigationDelegate NavigationDelegate { get; set; }
         
         public override async void ViewDidLoad()
         {
@@ -47,7 +45,7 @@ namespace OpFlow.iOS
             };
 
             var rooms = await AppSettings.RoomList(AppSettings.CurrentUser.LocationID);
-            pickerRoom.Model = new RoomPickerModel(rooms);
+            pickerRoom.Model = new BasicPickerModel(rooms.Cast<IBindableEntity>().ToList());
 
             await UpdateDateStrings();
             ScheduleTableView.ReloadData();

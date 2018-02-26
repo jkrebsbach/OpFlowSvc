@@ -7,7 +7,7 @@ using OpFlow.Data;
 
 namespace OpFlow.Mobile
 {
-    public class MessagingUtil
+    public static class MessagingUtil
     {
         public static async Task<List<Messaging>> GetMessages(int? surgeryId, int? caseGroupId, int? recipientId)
         {

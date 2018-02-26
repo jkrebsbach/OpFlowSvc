@@ -107,6 +107,7 @@
     <Compile Include="SelectUserCell.designer.cs">
       <DependentUpon>SelectUserCell.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewSources\BasicPickerModel.cs" />
     <Compile Include="ViewSources\CommunicationGroupTVS.cs" />
     <Compile Include="ViewSources\DetailListTVS.cs" />
     <Compile Include="ViewSources\OpFlowHelperMethod.cs" />

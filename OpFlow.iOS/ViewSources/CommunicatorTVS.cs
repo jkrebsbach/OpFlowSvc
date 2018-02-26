@@ -11,9 +11,6 @@ namespace OpFlow.iOS.ViewSources
     {
         private readonly List<Messaging> _messages;
 
-        public event EventHandler<Messaging> SurgerySelectionEvent;
-        public event EventHandler<Messaging> DebriefSelectionEvent;
-
         public CommunicatorTVS(List<Messaging> messages)
         {
             _messages = messages;

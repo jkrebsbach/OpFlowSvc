@@ -9,17 +9,17 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    public partial class CommunicationDetailViewController : OpFlowViewController, INavigationTargetDelegate
+    public partial class CommunicationDetailViewController : OpFlowViewController
     {
         public CommunicationDetailViewController (IntPtr handle) : base (handle)
         {
         }
 
-        public INavigationDelegate NavigationDelegate { get; set; }
-
         public override async void ViewDidLoad()
         {
             base.ViewDidLoad();
+
+            SetupDoneStyleTextField(txtMessage);
 
             //Title = "SCHEDULEVIEW";
             await LoadMessages();
@@ -32,8 +32,6 @@ namespace OpFlow.iOS
             var messages = await MessagingUtil.GetMessages(currentMessageGroup.SurgeryID, currentMessageGroup.CaseGroupID, currentMessageGroup.CommunicationUserID);
 
             var messageTableViewSource = new CommunicatorTVS(messages);
-
-            txtMessage.SetupDoneStyleTextField();
 
             CommunicatorTableView.Source = messageTableViewSource;
             CommunicatorTableView.ReloadData();

@@ -8,7 +8,7 @@ using UIKit;
 
 namespace OpFlow.iOS.Delegates
 {
-    public abstract class OpFlowViewController : UIViewController
+    public abstract class OpFlowViewController : UIViewController, INavigationTargetDelegate
     {
         private NSObject keyboardUp = null;
         private NSObject keyboardDown = null;
@@ -16,6 +16,9 @@ namespace OpFlow.iOS.Delegates
         protected OpFlowViewController(IntPtr handle) : base(handle)
         {
         }
+
+        public INavigationDelegate NavigationDelegate { get; set; }
+
         public override void ViewWillAppear(bool animated)
         {
             base.ViewWillAppear(animated);
@@ -143,5 +146,50 @@ namespace OpFlow.iOS.Delegates
             DismissViewController(true, null);
         }
 
+
+        public void SetupDoneStyleTextBox(UITextView textView)
+        {
+            textView.Editable = false;
+
+            textView.ReturnKeyType = UIReturnKeyType.Done;
+
+            textView.ShouldChangeText = (text, range, replacementString) =>
+            {
+                if (replacementString.Equals("\n"))
+                {
+                    textView.EndEditing(true);
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            };
+        }
+
+        public void SetupDoneStyleTextField(UITextField textField, bool hasMore = false)
+        {
+            textField.ReturnKeyType = hasMore ? UIReturnKeyType.Next : UIReturnKeyType.Done;
+            textField.ShouldReturn = TextFieldShouldReturn;
+
+        }
+
+        public bool TextFieldShouldReturn(UITextField tf)
+        {
+            var nextTag = tf.Tag + 1;
+
+            var nextResponder = View.ViewWithTag(nextTag);
+            if (nextResponder != null)
+            {
+                nextResponder.BecomeFirstResponder();
+            }
+            else
+            {
+                // No next responder - we're done
+                tf.ResignFirstResponder();
+            }
+
+            return false; // No line breaks
+        }
     }
 }

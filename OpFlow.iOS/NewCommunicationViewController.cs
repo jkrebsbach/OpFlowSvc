@@ -15,8 +15,6 @@ namespace OpFlow.iOS
         {
         }
 
-        public INavigationDelegate NavigationDelegate { get; set; }
-
         public override async void ViewDidLoad()
         {
             base.ViewDidLoad();
