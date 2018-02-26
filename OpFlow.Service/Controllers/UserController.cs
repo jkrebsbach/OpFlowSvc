@@ -12,13 +12,18 @@ using OpFlow.Data;
 
 namespace OpFlow.Service.Controllers
 {
+    /// <summary>
+    /// Interact with Users entities
+    /// </summary>
     [Authorize]
     public class UserController : ApiController
     {
-        // GET api/values/jdoe
+        /// <summary>
+        /// Return user entity for currently authenticated user
+        /// </summary>
+        /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type=typeof(User))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("api/AuthorizedUser", Name = "AuthorizedUser_ZZ")]
         [Route("api/User/AuthorizedUser", Name = "AuthorizedUser")]
         public HttpResponseMessage Get()
         {
@@ -28,14 +33,18 @@ namespace OpFlow.Service.Controllers
             return result == null ? Request.CreateResponse(HttpStatusCode.NotFound, "User not found") : Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
-        // GET api/values/jdoe
+        /// <summary>
+        /// Search users
+        /// </summary>
+        /// <param name="nameSearchText">Will filter based on first/last name string match</param>
+        /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<User>))]
         [Route("api/User/SearchUsers", Name = "SearchUsers")]
-        public HttpResponseMessage GetUsers(string searchText)
+        public HttpResponseMessage GetUsers(string nameSearchText)
         {
             var userSecurity = CacheUtil.GetUserSecurity();
 
-            var users = DataAccess.SqlHelper.SearchUsers(userSecurity.ProviderID, userSecurity.LocationID, searchText);
+            var users = DataAccess.SqlHelper.SearchUsers(userSecurity.ProviderID, userSecurity.LocationID, nameSearchText);
 
             return Request.CreateResponse(HttpStatusCode.OK, users);
         }
@@ -64,6 +73,7 @@ namespace OpFlow.Service.Controllers
 
         // POST api/values
         [SwaggerOperation("CheckOut")]
+        
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/User/Reviewed", Name = "Reviewed")]
         public async Task<IHttpActionResult> WorkupReviewed(int surgeryId, [FromBody]User user)
