@@ -779,11 +779,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Surgeon> GetSurgeons(int specialtyId, int providerId, int locationId)
+        public static List<Surgeon> GetSurgeons(int? specialtyId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

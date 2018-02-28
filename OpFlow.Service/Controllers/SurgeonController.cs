@@ -16,7 +16,7 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("Get")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgeon>))]
-        public HttpResponseMessage GetSurgeonsBySpecialty(int specialtyId, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetSurgeons(int? specialtyId = null, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 

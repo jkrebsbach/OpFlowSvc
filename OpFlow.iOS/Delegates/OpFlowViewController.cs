@@ -42,8 +42,8 @@ namespace OpFlow.iOS.Delegates
         private void KeyBoardUpNotification(NSNotification notification)
         {
             // some keyboards fire multiple events
-            if (moveViewUp)
-                return;
+            //if (moveViewUp)
+            //    return;
 
             // get the keyboard size
             var r = UIKeyboard.BoundsFromNotification(notification);
@@ -52,7 +52,6 @@ namespace OpFlow.iOS.Delegates
             // Bottom of the controller = initial position + height + offset      
             activeView = RecurseSubviews(this.View);
 
-            moveViewUp = false;
             if (activeView == null)
                 return; // This message is for a different view container...
 
@@ -69,15 +68,14 @@ namespace OpFlow.iOS.Delegates
             // Calculate how far we need to scroll
             scrollAmount = (r.Height - (View.Frame.Size.Height - bottom));
 
+            var navBarHeight = NavigationController?.NavigationBar?.Frame.Height ?? 0;
+            scrollAmount -= navBarHeight;
+
             // Perform the scrolling
             if (scrollAmount > 0)
             {
                 moveViewUp = true;
                 ScrollTheView(moveViewUp);
-            }
-            else
-            {
-                moveViewUp = false;
             }
         }
 
@@ -116,7 +114,8 @@ namespace OpFlow.iOS.Delegates
             }
             else
             {
-                frame.Y += scrollAmount;
+                //frame.Y += scrollAmount;
+                frame.Y = 0;
                 scrollAmount = 0;
             }
 

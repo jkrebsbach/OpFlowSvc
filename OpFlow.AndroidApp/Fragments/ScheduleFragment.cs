@@ -161,7 +161,7 @@ namespace OpFlow.AndroidApp.Fragments
                     (_previousFilter != null && _previousFilter.RoomId == roomId))
                     return;
 
-                _schedule = await SurgeryUtil.GetSurgeryRoomSchedule(roomId);
+                _schedule = await SurgeryUtil.GetSurgeryUserSchedule(DateTime.Today, roomId);
                 _previousFilter = new SurgeryFilter() { RoomId = roomId };
             }
 

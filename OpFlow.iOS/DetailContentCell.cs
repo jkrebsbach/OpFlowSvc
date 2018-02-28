@@ -16,7 +16,6 @@ namespace OpFlow.iOS
         public override void UpdateCell(CaseDetailToken token)
         {
             txtDetail.Text = token.DetailText;
-            txtDetail.SetupDoneStyleTextBox();
         }
 
         

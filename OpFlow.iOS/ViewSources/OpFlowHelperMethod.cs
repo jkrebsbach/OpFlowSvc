@@ -12,10 +12,7 @@ namespace OpFlow.iOS.ViewSources
     {
         public static void SetupDoneStyleTextBox(this UITextView textView)
         {
-            textView.Editable = false;
-
             textView.ReturnKeyType = UIReturnKeyType.Done;
-
             textView.ShouldChangeText = (text, range, replacementString) =>
             {
                 if (replacementString.Equals("\n"))
