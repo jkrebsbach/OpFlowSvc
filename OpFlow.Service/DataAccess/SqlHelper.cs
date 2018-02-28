@@ -471,6 +471,26 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static List<SurgerySearchResult> SearchCases(string caseNbr, int? surgeonUserId, int? roomId, DateTime? begDate, DateTime? endDate, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("case_nbr", caseNbr ?? (object)DBNull.Value),
+                new SqlParameter("user_id", surgeonUserId ?? (object)DBNull.Value),
+                new SqlParameter("room_id", roomId ?? (object)DBNull.Value),
+                new SqlParameter("beg_date", begDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+
+            var dsSchedules = ExecuteCommand("SearchCases", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<SurgerySearchResult>();
+
+            return result;
+        }
+
         public static List<SurgerySearchResult> GetCaseNbr(string caseNbr, int providerId, int locationId)
         {
             var parameters = new[]

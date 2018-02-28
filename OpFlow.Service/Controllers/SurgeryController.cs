@@ -40,6 +40,25 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/surgery?userId=5
+        [SwaggerOperation("SearchCases")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchResult>))]
+        [SwaggerResponse(HttpStatusCode.Ambiguous)]
+        [Route("api/Surgery/searchCases")]
+        public HttpResponseMessage GetCases(string caseNbr = null, int? surgeonUserId = null, int? roomId = null, 
+            DateTime? begDate = null, DateTime? endDate = null, int? providerId = null, int? locationId = null)
+        {
+            if (caseNbr == null && surgeonUserId == null && roomId == null)
+                return Request.CreateResponse(HttpStatusCode.Ambiguous);
+
+            var user = CacheUtil.GetUserSecurity();
+
+            var schedules = DataAccess.SqlHelper.SearchCases(caseNbr, surgeonUserId, roomId,
+                begDate, endDate, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, schedules);
+        }
+
+        // GET api/surgery?userId=5
         [SwaggerOperation("SearchCaseNbr")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchResult>))]
         [Route("api/Surgery/searchCaseNbr")]
@@ -79,10 +98,10 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/surgery?userId=5
-        [SwaggerOperation("GetByUserId")]
+        [SwaggerOperation("GetSchedule")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgery>))]
         [Route("api/Surgery/cases")]
-        public HttpResponseMessage GetSurgeryScheduleByUser(int? userId = null, int? providerId = null, int? locationId = null, DateTime? scheduleDate = null, int? roomId = null)
+        public HttpResponseMessage GetSurgerySchedule(DateTime? scheduleDate = null, int? roomId = null, int ? userId = null, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 

@@ -105,6 +105,7 @@
     <Compile Include="NavigateViewController.designer.cs">
       <DependentUpon>NavigateViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="NSDateExtensions.cs" />
     <Compile Include="SearchViewController.cs" />
     <Compile Include="SearchViewController.designer.cs">
       <DependentUpon>SearchViewController.cs</DependentUpon>
@@ -117,6 +118,7 @@
     <Compile Include="ViewSources\CommunicationGroupTVS.cs" />
     <Compile Include="ViewSources\DetailListTVS.cs" />
     <Compile Include="ViewSources\OpFlowHelperMethod.cs" />
+    <Compile Include="ViewSources\SearchCaseTVS.cs" />
     <Compile Include="ViewSources\SurgeryTVS.cs" />
     <Compile Include="ViewSources\UserSelectionTVS.cs" />
     <None Include="GettingStarted.Xamarin" />
@@ -141,7 +143,6 @@
     </Compile>
     <Compile Include="Delegates\INavigationDelegate.cs" />
     <Compile Include="Delegates\INavigationTargetDelegate.cs" />
-    <Compile Include="ViewSources\RoomPickerModel.cs" />
     <Compile Include="EmptySegue.cs" />
     <Compile Include="EmptySegue.designer.cs">
       <DependentUpon>EmptySegue.cs</DependentUpon>

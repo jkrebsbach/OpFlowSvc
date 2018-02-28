@@ -12,26 +12,48 @@ namespace OpFlow.Mobile
 {
     public abstract class SurgeryUtil
     {
-        public static async Task<List<Surgery>> GetSurgeryUserSchedule(DateTime scheduleDate)
+        public static async Task<List<Surgery>> GetSurgeryUserSchedule(DateTime scheduleDate, int? roomId = null)
         {
             var userId = AppSettings.CurrentUser.UserID;
-            var providerId = AppSettings.CurrentUser.ProviderID;
-            var locationId = AppSettings.CurrentUser.LocationID;
 
-            var command = string.Format("api/surgery/cases?userId={0}&providerId={1}&locationId={2}", userId, providerId, locationId);
+            var command = $"api/surgery/cases?userId={userId}";
+            if (roomId.HasValue)
+                command += $"&roomId={roomId}";
             
             var response = await WebUtility.WebRequest<List<Surgery>>(command, HttpMethod.Get);
 
             return response;
         }
-
-        public static async Task<List<Surgery>> GetSurgeryRoomSchedule(int roomId)
+        public static async Task<List<SurgerySearchResult>> SearchCases(string caseNbr, int? surgeonUserId, int? roomId,
+            DateTime? surgeryDate)
         {
-            var providerId = AppSettings.CurrentUser.ProviderID;
-            var locationId = AppSettings.CurrentUser.LocationID;
+            var command = $"api/surgery/searchCases?";
+            var strDelim = string.Empty;
 
-            var command = string.Format("api/Surgery/RoomSchedule?roomId={0}&providerId={1}&locationId={2}", roomId, providerId, locationId);
-            var response = await WebUtility.WebRequest<List<Surgery>>(command, HttpMethod.Get);
+            if (caseNbr != null)
+            {
+                command += $"{strDelim}caseNbr={caseNbr}";
+                strDelim = "&";
+            }
+            if (roomId.HasValue)
+            {
+                command += $"{strDelim}roomId={roomId}";
+                strDelim = "&";
+            }
+            if (surgeonUserId.HasValue)
+            {
+                command += $"{strDelim}surgeonUserId={surgeonUserId}";
+                strDelim = "&";
+            }
+            if (surgeryDate.HasValue)
+            {
+                var strSurgeryDate = surgeryDate.Value.ToString("MM-dd-yyyy");
+
+                command += $"{strDelim}begDate={strSurgeryDate}&endDate={strSurgeryDate}";
+                strDelim = "&";
+            }
+
+            var response = await WebUtility.WebRequest<List<SurgerySearchResult>>(command, HttpMethod.Get);
 
             return response;
         }
