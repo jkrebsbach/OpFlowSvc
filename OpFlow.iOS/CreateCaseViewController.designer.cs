@@ -62,10 +62,6 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField txtSurgeryDateTime { get; set; }
 
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITextField txtSurgeryTime { get; set; }
-
         [Action ("btnDone_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnDone_Click (UIKit.UIButton sender);
@@ -134,11 +130,6 @@ namespace OpFlow.iOS
             if (txtSurgeryDateTime != null) {
                 txtSurgeryDateTime.Dispose ();
                 txtSurgeryDateTime = null;
-            }
-
-            if (txtSurgeryTime != null) {
-                txtSurgeryTime.Dispose ();
-                txtSurgeryTime = null;
             }
         }
     }

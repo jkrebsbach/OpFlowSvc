@@ -22,7 +22,15 @@ namespace OpFlow.iOS.Delegates
         private void DoneAction()
         {
             var formatter = new NSDateFormatter();
-            formatter.DateFormat = "MMM d HH:mm tt";
+            switch (Mode)
+            {
+                case UIDatePickerMode.DateAndTime:
+                    formatter.DateFormat = "MMM d HH:mm tt";
+                    break;
+                default:
+                    formatter.DateFormat = "M/d";
+                    break;
+            }
             
             _associatedField.Text = formatter.ToString(Date);
             _associatedField.ResignFirstResponder();

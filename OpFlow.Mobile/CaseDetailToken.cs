@@ -88,19 +88,17 @@ namespace OpFlow.Mobile
 
         private static async Task<List<CaseDetailCategory>> GetFlowDebrief(int flowId)
         {
-            var flowInstructions = await FlowUtil.GetFlowInstructions(flowId);
+            var flowSteps = await FlowUtil.GetFlowTimings(flowId);
 
-            var caseDetailCategories = flowInstructions
+            var caseDetailCategories = flowSteps
                 .OrderBy(fs => fs.StepID)
                 .GroupBy(x => new { x.StepID, x.StepDescription })
                 .Select(value => new CaseDetailCategory(value.Key.StepID, value.Key.StepDescription))
                 .ToList();
 
-            foreach (var flowInstruction in flowInstructions)
+            foreach (var category in caseDetailCategories)
             {
-                var category = caseDetailCategories.First(c => c.CategoryGroupId == flowInstruction.StepID);
-
-                category.Tokens.Add(new CaseDetailToken(0, flowInstruction.StepInstruction, flowInstruction.RoleDescription, category));
+                category.Tokens.Add(new CaseDetailToken(0, string.Empty, category.CategoryTitle, category));
             }
             return caseDetailCategories;
         }

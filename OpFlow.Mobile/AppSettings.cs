@@ -113,7 +113,7 @@ namespace OpFlow.Mobile
         {
             if (!_roomDictionary.ContainsKey(locationId))
             {
-                _roomDictionary[locationId] = await RoomUtil.GetRooms(locationId);
+                _roomDictionary[locationId] = await LookupUtil.GetRooms();
             }
 
             return _roomDictionary[locationId];
