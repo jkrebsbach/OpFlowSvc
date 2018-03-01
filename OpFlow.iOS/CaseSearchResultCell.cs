@@ -2,6 +2,7 @@
 using System;
 using OpFlow.Data;
 using UIKit;
+using OpFlow.iOS.ViewSources;
 
 namespace OpFlow.iOS
 {
@@ -11,10 +12,15 @@ namespace OpFlow.iOS
         {
         }
 
-        public void UpdateCell(SurgerySearchResult surgery)
+        public void UpdateCell(SearchCaseTVS.SurgerySearchModel model)
         {
+            var surgery = model.Surgery;
+            
             lblCaseProcedure.Text = $"{surgery.ProcedureDescription} {surgery.ScheduleDate:M/d} {surgery.ScheduleTime:hh\\:mm}";
             lblCaseOverview.Text = $"Room:{surgery.RoomDescription} Team: MK, DR, BW";
+
+
+            switchSelectCase.On = model.Selected;
         }
     }
 }

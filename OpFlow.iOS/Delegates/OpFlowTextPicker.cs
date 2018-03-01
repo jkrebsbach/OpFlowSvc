@@ -31,19 +31,25 @@ namespace OpFlow.iOS.Delegates
             var selection = (Model as BasicPickerModel)?.CurrentSelection(
                 SelectedRowInComponent(0));
 
-            _associatedField.Text = selection?.ToString();
-            _associatedField.ResignFirstResponder();
-
-
-            ValueChanged?.Invoke(this, null);
+            UpdateSelection(selection);
         }
 
         private void PickerRowSelected(object sender, IBindableEntity e)
         {
-            _associatedField.Text = e.ToString();
+            UpdateSelection(e);
+        }
+
+        private void UpdateSelection(IBindableEntity selection)
+        {
+            var text = selection?.ToString();
+            if (selection?.GetID() == 0)
+                text = string.Empty;
+
+            _associatedField.Text = text;
             _associatedField.ResignFirstResponder();
 
-            ValueChanged?.Invoke(sender, null);
+
+            ValueChanged?.Invoke(this, null);
         }
 
         public OpFlowTextPicker(UITextField associatedField, List<IBindableEntity> entities) 

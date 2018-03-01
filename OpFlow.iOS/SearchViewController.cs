@@ -7,12 +7,14 @@ using OpFlow.iOS.Delegates;
 using OpFlow.iOS.ViewSources;
 using OpFlow.Mobile;
 using UIKit;
+using System.Collections.Generic;
 
 namespace OpFlow.iOS
 {
     public partial class SearchViewController : OpFlowViewController
     {
         private OpFlowTextPicker _roomPicker;
+        private OpFlowTextPicker _specialtyPicker;
         private OpFlowTextPicker _surgeonPicker;
 
         private OpFlowTextDatePicker _surgeryDate;
@@ -25,15 +27,18 @@ namespace OpFlow.iOS
         {
             base.ViewDidLoad();
 
-            SetupDoneStyleTextField(txtCase, true);
-            SetupDoneStyleTextField(txtPatient, true);
+            SetupDoneStyleTextField(txtCase, false);
+            SetupDoneStyleTextField(txtPatient, false);
 
             _surgeryDate = new OpFlowTextDatePicker(txtDate)
             {
                 Mode = UIDatePickerMode.Date
             };
 
-            txtCase.ValueChanged += SearchCases;
+            txtCase.AddTarget((sender, e) =>
+            {
+                SearchCases(sender, e);
+            }, UIControlEvent.EditingDidEnd);
 
             await LoadDropdowns();
         }
@@ -57,13 +62,11 @@ namespace OpFlow.iOS
             if (txtDate.Text != "")
                 surgeryDate = _surgeryDate.Date.ToDateTime().Date;
 
-            if (caseNbr == null && surgeonId == null && roomId == null)
+            var surgeries = new List<SurgerySearchResult>();
+            if (caseNbr != null || surgeonId != null || roomId != null)
             {
-                ShowDialog("Provide filters", "Please provide search criteria");
-                return;
+                surgeries = await SurgeryUtil.SearchCases(caseNbr, surgeonId, roomId, surgeryDate);
             }
-
-            var surgeries = await SurgeryUtil.SearchCases(caseNbr, surgeonId, roomId, surgeryDate);
 
             var surgeryTableViewSource = new SearchCaseTVS(surgeries);
 
@@ -71,15 +74,48 @@ namespace OpFlow.iOS
             CaseSearchTableView.ReloadData();
         }
 
+        partial void switchSelectAll_Click(UISwitch sender)
+        {
+            var tableSource = CaseSearchTableView.Source as SearchCaseTVS;
+
+            tableSource?.SelectAll(switchSelectAll.On);
+            CaseSearchTableView.ReloadData();
+        }
+
         private async Task LoadDropdowns()
         {
             var rooms = await AppSettings.RoomList(0);
+
+            rooms.Insert(0, new Room()
+            {
+                RoomID = 0,
+                RoomDescription = "[Blank]"
+            });
             _roomPicker = new OpFlowTextPicker(txtRoom, rooms.Cast<IBindableEntity>().ToList());
 
             var specialties = await LookupUtil.GetSpecialties();
-            _surgeonPicker = new OpFlowTextPicker(txtSurgeon, specialties.Cast<IBindableEntity>().ToList());
+            specialties.Insert(0, new Specialty()
+            {
+                SpecialtyID = 0,
+                SpecialtyDescription = "[Blank]"
+            });
+            _specialtyPicker = new OpFlowTextPicker(txtSpecialty, specialties.Cast<IBindableEntity>().ToList());
 
             _roomPicker.ValueChanged += SearchCases;
+            _specialtyPicker.ValueChanged += SpecialtySelected;
+        }
+
+        private async void SpecialtySelected(object sender, EventArgs e)
+        {
+            var specialtyId = _specialtyPicker.GetCurrentId();
+
+            var surgeons = new List<Surgeon>();
+
+            if (specialtyId > 0)
+                surgeons = await UserUtil.GetSurgeons(specialtyId);
+            
+            _surgeonPicker = new OpFlowTextPicker(txtSurgeon, surgeons.Cast<IBindableEntity>().ToList());
+
             _surgeonPicker.ValueChanged += SearchCases;
         }
     }

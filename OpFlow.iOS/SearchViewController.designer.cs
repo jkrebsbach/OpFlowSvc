@@ -1,4 +1,4 @@
-﻿// WARNING
+// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -17,6 +17,10 @@ namespace OpFlow.iOS
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITableView CaseSearchTableView { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UISwitch switchSelectAll { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -48,13 +52,26 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UITextField txtSpecialty { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField txtSurgeon { get; set; }
+
+        [Action ("switchSelectAll_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void switchSelectAll_Click (UIKit.UISwitch sender);
 
         void ReleaseDesignerOutlets ()
         {
             if (CaseSearchTableView != null) {
                 CaseSearchTableView.Dispose ();
                 CaseSearchTableView = null;
+            }
+
+            if (switchSelectAll != null) {
+                switchSelectAll.Dispose ();
+                switchSelectAll = null;
             }
 
             if (txtCase != null) {
@@ -90,6 +107,11 @@ namespace OpFlow.iOS
             if (txtRoom != null) {
                 txtRoom.Dispose ();
                 txtRoom = null;
+            }
+
+            if (txtSpecialty != null) {
+                txtSpecialty.Dispose ();
+                txtSpecialty = null;
             }
 
             if (txtSurgeon != null) {
