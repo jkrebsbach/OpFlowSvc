@@ -285,6 +285,12 @@ namespace OpFlow.iOS
                     await _containerViewController.PresentDashboardViewAsync();
                     break;
 
+                case AppSettings.FragmentEnum.Room:
+                    Title = "Room";
+                    customBackButton = SetupCustomBack("Surgery");
+                    await _containerViewController.PresentDetailViewAsync();
+                    break;
+
                 case AppSettings.FragmentEnum.SearchCases:
                     Title = "Search Cases";
                     customBackButton = null; // Cancel action, not back

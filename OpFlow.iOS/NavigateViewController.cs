@@ -88,6 +88,11 @@ namespace OpFlow.iOS
             NavigateScreen(AppSettings.FragmentEnum.Dashboard);
         }
 
+        partial void btnRoom_Click(UIButton sender)
+        {
+            NavigateScreen(AppSettings.FragmentEnum.Room);
+        }
+
         partial void btnDebrief_Click(UIButton sender)
         {
             NavigateScreen(AppSettings.FragmentEnum.Debrief);

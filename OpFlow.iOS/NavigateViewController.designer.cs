@@ -154,6 +154,14 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnPatient_Click (UIKit.UIButton sender);
 
+        [Action ("btnRoom_Click")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnRoom_Click ();
+
+        [Action ("btnRoom_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnRoom_Click (UIKit.UIButton sender);
+
         [Action ("btnSendMessage_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnSendMessage_Click (UIKit.UIButton sender);
