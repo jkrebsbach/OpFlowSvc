@@ -38,8 +38,23 @@ namespace OpFlow.Mobile
         public static async Task<List<Room>> GetRooms()
         {
             var command = string.Format("api/room");
-
             var response = await WebUtility.WebRequest<List<Room>>(command, HttpMethod.Get);
+
+            return response;
+        }
+
+        public static async Task<List<RoomType>> GetRoomTypes()
+        {
+            var command = string.Format("api/room/types");
+            var response = await WebUtility.WebRequest<List<RoomType>>(command, HttpMethod.Get);
+
+            return response;
+        }
+
+        public static async Task<List<RoomSetup>> GetRoomSetups()
+        {
+            var command = string.Format("api/room/setups");
+            var response = await WebUtility.WebRequest<List<RoomSetup>>(command, HttpMethod.Get);
 
             return response;
         }

@@ -9,7 +9,7 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    public partial class DetailViewController : OpFlowViewController, INavigationTargetDelegate
+    public partial class DetailViewController : OpFlowViewController
     {
         public DetailViewController (IntPtr handle) : base (handle)
         {

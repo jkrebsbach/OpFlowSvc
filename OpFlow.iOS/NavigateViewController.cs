@@ -11,7 +11,7 @@ using OpFlow.iOS.ViewSources;
 
 namespace OpFlow.iOS
 {
-    public partial class NavigateViewController : OpFlowViewController, INavigationTargetDelegate
+    public partial class NavigateViewController : OpFlowViewController
     {
 
         Surgery _surgery;

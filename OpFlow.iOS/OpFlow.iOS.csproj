@@ -118,6 +118,7 @@
     <Compile Include="ViewSources\CommunicationGroupTVS.cs" />
     <Compile Include="ViewSources\DetailListTVS.cs" />
     <Compile Include="ViewSources\OpFlowHelperMethod.cs" />
+    <Compile Include="ViewSources\RoomSetupSearchTVS.cs" />
     <Compile Include="ViewSources\SearchCaseTVS.cs" />
     <Compile Include="ViewSources\SurgeryTVS.cs" />
     <Compile Include="ViewSources\UserSelectionTVS.cs" />

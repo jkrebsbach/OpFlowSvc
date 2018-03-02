@@ -13,7 +13,7 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    public partial class ScheduleViewController : OpFlowViewController, IUITableViewDelegate, INavigationTargetDelegate
+    public partial class ScheduleViewController : OpFlowViewController, IUITableViewDelegate
     {
         private DateTime _selectedDate;
 

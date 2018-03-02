@@ -16,7 +16,7 @@ namespace OpFlow.AndroidApp.Fragments
 {
     public class FutureCaseFragment : OpFlowFragmentBase
     {
-        private List<Surgery> _schedule;
+        private List<SurgerySchedule> _schedule;
         private Dictionary<int, Patient> _surgeryPatients;
         private ListView _lvFutureCases;
 
@@ -50,7 +50,7 @@ namespace OpFlow.AndroidApp.Fragments
         private async Task SetupScreen()
         {
             _schedule = await SurgeryUtil.GetSurgeryUserSchedule(DateTime.Now);
-            _surgeryPatients = await SurgeryUtil.GetSurgeryPatients(_schedule);
+            _surgeryPatients = await SurgeryUtil.GetSurgeryPatients(_schedule.Cast<Surgery>().ToList());
 
             _lvFutureCases.Adapter = new Adapters.FutureCaseListAdapter(Activity, _schedule, _surgeryPatients);
         }

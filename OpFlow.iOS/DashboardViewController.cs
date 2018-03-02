@@ -8,13 +8,11 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    public partial class DashboardViewController : UIViewController, INavigationTargetDelegate
+    public partial class DashboardViewController : OpFlowViewController
     {
         public DashboardViewController (IntPtr handle) : base (handle)
         {
         }
-
-        public INavigationDelegate NavigationDelegate { get; set; }
 
         public override async void ViewDidLoad()
         {

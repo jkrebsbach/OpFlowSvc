@@ -1,4 +1,4 @@
-// WARNING
+﻿// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -153,10 +153,6 @@ namespace OpFlow.iOS
         [Action ("btnPatient_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnPatient_Click (UIKit.UIButton sender);
-
-        [Action ("btnRoom_Click")]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        partial void btnRoom_Click ();
 
         [Action ("btnRoom_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]

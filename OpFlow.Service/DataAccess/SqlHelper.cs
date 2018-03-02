@@ -438,6 +438,33 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static List<RoomType> GetRoomTypes(int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = ExecuteCommand("GetRoomTypes", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<RoomType>();
+
+            return result;
+        }
+
+        public static List<RoomSetup> GetRoomSetups(int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = ExecuteCommand("GetRoomSetups", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<RoomSetup>();
+
+            return result;
+        }
+
         public static Surgery GetSurgery(int surgeryId, int providerId, int locationId, string bundleFlag)
         {
             var parameters = new[]

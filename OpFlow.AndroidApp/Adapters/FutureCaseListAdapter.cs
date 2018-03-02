@@ -16,10 +16,10 @@ namespace OpFlow.AndroidApp.Adapters
     public class FutureCaseListAdapter : BaseAdapter
     {
         private Context _context;
-        private List<Surgery> _cases;
+        private List<SurgerySchedule> _cases;
         private Dictionary<int, Patient> _surgeryPatients;
 
-        public FutureCaseListAdapter(Context c, List<Surgery> cases, Dictionary<int, Patient> surgeryPatients)
+        public FutureCaseListAdapter(Context c, List<SurgerySchedule> cases, Dictionary<int, Patient> surgeryPatients)
         {
             _context = c;
             _cases = cases;

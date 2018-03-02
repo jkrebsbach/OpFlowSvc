@@ -9,7 +9,7 @@ using OpFlow.iOS.ViewSources;
 
 namespace OpFlow.iOS
 {
-    public partial class NewCommunicationViewController : OpFlowViewController, INavigationTargetDelegate
+    public partial class NewCommunicationViewController : OpFlowViewController
     {
         public NewCommunicationViewController (IntPtr handle) : base (handle)
         {

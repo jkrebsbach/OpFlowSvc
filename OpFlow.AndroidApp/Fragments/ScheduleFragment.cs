@@ -165,7 +165,7 @@ namespace OpFlow.AndroidApp.Fragments
                 _previousFilter = new SurgeryFilter() { RoomId = roomId };
             }
 
-            _schedulePatients = await SurgeryUtil.GetSurgeryPatients(_schedule);
+            _schedulePatients = await SurgeryUtil.GetSurgeryPatients(_schedule.Cast<Surgery>().ToList());
         }
 
         private class SurgeryFilter

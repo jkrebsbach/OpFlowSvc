@@ -1,5 +1,6 @@
 using Foundation;
 using System;
+using OpFlow.Data;
 using UIKit;
 
 namespace OpFlow.iOS
@@ -8,6 +9,13 @@ namespace OpFlow.iOS
     {
         public RoomSearchResultCell (IntPtr handle) : base (handle)
         {
+        }
+
+        public void UpdateCell(RoomSetup roomSetup)
+        {
+            lblDescription.Text = roomSetup.SetupName;
+            lblPosition.Text = roomSetup.PatientPosition;
+            lblSurgeonPosition.Text = roomSetup.SurgeonPosition;
         }
     }
 }

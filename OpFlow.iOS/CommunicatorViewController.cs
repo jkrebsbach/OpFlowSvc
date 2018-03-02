@@ -9,7 +9,7 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    public partial class CommunicatorViewController : OpFlowViewController, INavigationTargetDelegate
+    public partial class CommunicatorViewController : OpFlowViewController
     {
         public CommunicatorViewController (IntPtr handle) : base (handle)
         {
