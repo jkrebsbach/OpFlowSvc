@@ -209,6 +209,14 @@
     <Compile Include="NewCommunicationViewController.designer.cs">
       <DependentUpon>NewCommunicationViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="RoomSetupViewController.cs" />
+    <Compile Include="RoomSetupViewController.designer.cs">
+      <DependentUpon>RoomSetupViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RoomSearchResultCell.cs" />
+    <Compile Include="RoomSearchResultCell.designer.cs">
+      <DependentUpon>RoomSearchResultCell.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">

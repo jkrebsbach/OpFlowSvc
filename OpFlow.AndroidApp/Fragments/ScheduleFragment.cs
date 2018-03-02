@@ -22,7 +22,7 @@ namespace OpFlow.AndroidApp.Fragments
         private Switch _swtSurgeon;
         private Spinner _spnRoom;
 
-        private List<Surgery> _schedule;
+        private List<SurgerySchedule> _schedule;
         private Dictionary<int, Patient> _schedulePatients;
 
         private ProgressDialog _progressDialog;

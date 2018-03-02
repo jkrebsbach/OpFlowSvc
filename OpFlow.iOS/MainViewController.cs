@@ -288,7 +288,7 @@ namespace OpFlow.iOS
                 case AppSettings.FragmentEnum.Room:
                     Title = "Room";
                     customBackButton = SetupCustomBack("Surgery");
-                    await _containerViewController.PresentDetailViewAsync();
+                    await _containerViewController.PresentRoomSetupViewAsync();
                     break;
 
                 case AppSettings.FragmentEnum.SearchCases:

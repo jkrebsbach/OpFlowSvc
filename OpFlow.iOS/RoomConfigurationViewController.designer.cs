@@ -11,11 +11,8 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    [Register ("CardListViewController")]
-    partial class CardListViewController
+    [Register ("RoomConfigurationViewController")]
+    partial class RoomConfigurationViewController
     {
-        void ReleaseDesignerOutlets ()
-        {
-        }
     }
 }
