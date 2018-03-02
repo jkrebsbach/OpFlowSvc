@@ -922,7 +922,7 @@ namespace OpFlow.Service.DataAccess
             var parameters = new[]
             {
                 new SqlParameter("flow_id", flowId),
-                new SqlParameter("surgery_id", stepId),
+                new SqlParameter("step_id", stepId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -938,7 +938,7 @@ namespace OpFlow.Service.DataAccess
             var parameters = new[]
             {
                 new SqlParameter("flow_id", flowId),
-                new SqlParameter("surgery_id", stepId),
+                new SqlParameter("step_id", stepId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

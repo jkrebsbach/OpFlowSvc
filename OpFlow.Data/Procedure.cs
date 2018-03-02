@@ -7,5 +7,6 @@ namespace OpFlow.Data
     public class Procedure
     {
         public int ProcedureID { get; set; }
+        public string ProcedureSpecialty { get; set; }
     }
 }

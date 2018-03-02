@@ -122,7 +122,7 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetFlowFeedback")]
         [Route("api/flow/feedback")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowNotification>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowFeedback>))]
         public HttpResponseMessage GetFlowFeedback(int flowId, int stepId, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
