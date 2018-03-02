@@ -204,7 +204,7 @@ namespace OpFlow.iOS
                 return;
             }
 
-            var surgeryPatients = await SurgeryUtil.GetSurgeryPatients(schedule);
+            var surgeryPatients = await SurgeryUtil.GetSurgeryPatients(schedule.Cast<Surgery>().ToList());
             
             var surgeryTableViewSource = new SurgeryTVS(schedule, surgeryPatients);
             surgeryTableViewSource.SurgerySelectionEvent += SelectSurgery;

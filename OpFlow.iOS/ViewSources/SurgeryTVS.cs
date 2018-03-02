@@ -13,13 +13,13 @@ namespace OpFlow.iOS.ViewSources
 {
     public class SurgeryTVS : UITableViewSource
     {
-        private readonly List<Surgery> _surgeries;
+        private readonly List<SurgerySchedule> _surgeries;
         private readonly Dictionary<int, Patient> _surgeryPatients;
 
         public event EventHandler<Surgery> SurgerySelectionEvent;
         public event EventHandler<Surgery> DebriefSelectionEvent;
 
-        public SurgeryTVS(List<Surgery> surgeries, Dictionary<int, Patient> surgeryPatients)
+        public SurgeryTVS(List<SurgerySchedule> surgeries, Dictionary<int, Patient> surgeryPatients)
         {
             _surgeries = surgeries;
             _surgeryPatients = surgeryPatients;

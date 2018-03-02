@@ -23,7 +23,7 @@ namespace OpFlow.iOS
             _surgeryTvs?.NavigationButtonEvent(_surgery);
         }
 
-        internal override void UpdateCell(Surgery surgery, Patient patient, SurgeryTVS surgeryTVS)
+        internal override void UpdateCell(SurgerySchedule surgery, Patient patient, SurgeryTVS surgeryTVS)
         {
             CustomFormatting();
 

@@ -12,7 +12,7 @@ namespace OpFlow.Mobile
 {
     public abstract class SurgeryUtil
     {
-        public static async Task<List<Surgery>> GetSurgeryUserSchedule(DateTime scheduleDate, int? roomId = null)
+        public static async Task<List<SurgerySchedule>> GetSurgeryUserSchedule(DateTime scheduleDate, int? roomId = null)
         {
             var userId = AppSettings.CurrentUser.UserID;
 
@@ -20,7 +20,7 @@ namespace OpFlow.Mobile
             if (roomId.HasValue)
                 command += $"&roomId={roomId}";
             
-            var response = await WebUtility.WebRequest<List<Surgery>>(command, HttpMethod.Get);
+            var response = await WebUtility.WebRequest<List<SurgerySchedule>>(command, HttpMethod.Get);
 
             return response;
         }

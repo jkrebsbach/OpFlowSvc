@@ -16,6 +16,10 @@ namespace OpFlow.iOS
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblDuration { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblLocation { get; set; }
 
         [Outlet]
@@ -28,18 +32,27 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblProcedure { get; set; }
+        UIKit.UILabel lblPreferenceCard { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblProcedureDescription { get; set; }
+        UIKit.UILabel lblProcedure { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblStartTime { get; set; }
 
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblSurgeryTeam { get; set; }
+
         void ReleaseDesignerOutlets ()
         {
+            if (lblDuration != null) {
+                lblDuration.Dispose ();
+                lblDuration = null;
+            }
+
             if (lblLocation != null) {
                 lblLocation.Dispose ();
                 lblLocation = null;
@@ -55,19 +68,24 @@ namespace OpFlow.iOS
                 lblPatientName = null;
             }
 
+            if (lblPreferenceCard != null) {
+                lblPreferenceCard.Dispose ();
+                lblPreferenceCard = null;
+            }
+
             if (lblProcedure != null) {
                 lblProcedure.Dispose ();
                 lblProcedure = null;
             }
 
-            if (lblProcedureDescription != null) {
-                lblProcedureDescription.Dispose ();
-                lblProcedureDescription = null;
-            }
-
             if (lblStartTime != null) {
                 lblStartTime.Dispose ();
                 lblStartTime = null;
+            }
+
+            if (lblSurgeryTeam != null) {
+                lblSurgeryTeam.Dispose ();
+                lblSurgeryTeam = null;
             }
         }
     }

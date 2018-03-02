@@ -20,6 +20,6 @@ namespace OpFlow.iOS.Delegates
         {
         }
 
-        internal abstract void UpdateCell(Surgery surgery, Patient patient, SurgeryTVS surgeryTVS);
+        internal abstract void UpdateCell(SurgerySchedule surgery, Patient patient, SurgeryTVS surgeryTVS);
     }
 }
