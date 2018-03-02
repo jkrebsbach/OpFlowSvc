@@ -99,17 +99,23 @@ namespace OpFlow.Service.Controllers
 
         // GET api/surgery?userId=5
         [SwaggerOperation("GetSchedule")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgery>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySchedule>))]
         [Route("api/Surgery/cases")]
         public HttpResponseMessage GetSurgerySchedule(DateTime? scheduleDate = null, int? roomId = null, int ? userId = null, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var surgeries = DataAccess.SqlHelper.GetScheduledSurgeries(userId, user.ProviderID, user.LocationID, scheduleDate, roomId);
-            var open = DataAccess.SqlHelper.GetOpenSurgeries(userId, user.ProviderID, user.LocationID, scheduleDate, roomId);
+            var surgeries = DataAccess.SqlHelper.GetScheduledSurgeries(user.UserID, user.ProviderID, user.LocationID, scheduleDate, roomId);
+            var open = DataAccess.SqlHelper.GetOpenSurgeries(user.UserID, user.ProviderID, user.LocationID, scheduleDate, roomId);
 
             surgeries.AddRange(open);
 
+            foreach (var surgery in surgeries)
+            {
+                surgery.SurgeryUsers =
+                    DataAccess.SqlHelper.GetSurgeryUsers(surgery.CaseID, user.ProviderID, user.LocationID);
+            }
+            
             return Request.CreateResponse(HttpStatusCode.OK, surgeries);
         }
 

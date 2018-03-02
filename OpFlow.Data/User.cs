@@ -35,6 +35,8 @@ namespace OpFlow.Data
         PA = 5,
         FrontDesk = 7,
         Schedule = 8,
-        Administration = 9
+        Administration = 9,
+        Representative = 10,
+        Anesthesiologist = 11,
     }
 }

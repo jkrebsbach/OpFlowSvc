@@ -543,7 +543,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Surgery> GetScheduledSurgeries(int? userID, int providerId, int locationId,
+        public static List<SurgerySchedule> GetScheduledSurgeries(int? userID, int providerId, int locationId,
             DateTime? scheduleDate, int? roomId)
         {
             if (roomId.HasValue)
@@ -559,12 +559,12 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = ExecuteCommand("GetUserScheduledCases", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Surgery>();
+            var result = dsSchedules.Tables[0].DataTableToList<SurgerySchedule>();
 
             return result;
         }
 
-        public static List<Surgery> GetOpenSurgeries(int? userID, int providerId, int locationId,
+        public static List<SurgerySchedule> GetOpenSurgeries(int? userID, int providerId, int locationId,
             DateTime? scheduleDate, int? roomId)
         {
             if (roomId.HasValue)
@@ -580,7 +580,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = ExecuteCommand("GetOpenSurgeriesByUser", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Surgery>();
+            var result = dsSchedules.Tables[0].DataTableToList<SurgerySchedule>();
 
             return result;
         }

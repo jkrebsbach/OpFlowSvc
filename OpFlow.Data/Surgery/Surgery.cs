@@ -30,11 +30,12 @@ namespace OpFlow.Data
         public DateTime ScheduleDate { get; set; }
         public TimeSpan ScheduleTime { get; set; }
         public int? EstDelayMinutes { get; set; }
+        public int? TotalMinutes { get; set; }
     }
 
     public class SurgerySchedule : Surgery
     {
-        public List<User> SurgeryUsers { get; set; }
+        public List<SurgeryUser> SurgeryUsers { get; set; }
     }
 
     public class SurgeryPost

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using OpFlow.Data;
+using OpFlow.iOS.ViewSources;
 using UIKit;
 
 namespace OpFlow.iOS.Delegates
@@ -21,7 +22,8 @@ namespace OpFlow.iOS.Delegates
             LblCommunicator.Text = message.Message;
             LblInitials.Text = message.UserName;
 
-            LblInitials.BackgroundColor = UIColor.FromRGB(100, 149, 237);
+            LblInitials.BackgroundColor = message.SenderRoleID.RoleBackgroundColorMapping();
+            LblInitials.TextColor = message.SenderRoleID.RoleTextColorMapping();
         }
     }
 }

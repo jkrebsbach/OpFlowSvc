@@ -13,6 +13,38 @@ namespace OpFlow.iOS
 {
     public partial class NavigateViewController : OpFlowViewController, INavigationTargetDelegate
     {
+
+        Surgery _surgery;
+        Flow _flow;
+        Patient _patient;
+        
+        public NavigateViewController (IntPtr handle) : base (handle)
+        {
+        }
+
+        public override async void ViewDidLoad()
+        {
+            base.ViewDidLoad();
+
+            lblSurgeon.TextColor = RoleEnum.Surgeon.RoleBackgroundColorMapping();
+            lblAnes.TextColor = RoleEnum.Anesthesiologist.RoleBackgroundColorMapping();
+            lblCirculator.TextColor = RoleEnum.Circulator.RoleBackgroundColorMapping();
+            lblScrub.TextColor = RoleEnum.ScrubTech.RoleBackgroundColorMapping();
+            lblRep.TextColor = RoleEnum.Representative.RoleBackgroundColorMapping();
+
+            SetupTitleView(vwSurgeon);
+            SetupTitleView(vwCirculator);
+            SetupTitleView(vwAnes);
+            SetupTitleView(vwScrub);
+            SetupTitleView(vwRep);
+
+            SetupTitleView(CommunicatorTableView);
+
+            SetupDoneStyleTextField(txtCommunicator);
+
+            Title = "SCHEDULEVIEW"; 
+            await LoadSurgery();
+        }
         async partial void btnSendMessage_Click(UIButton sender)
         {
             if (txtCommunicator.Text == "")
@@ -54,32 +86,6 @@ namespace OpFlow.iOS
         partial void btnDashboard_Click(UIButton sender)
         {
             NavigateScreen(AppSettings.FragmentEnum.Dashboard);
-        }
-
-        Surgery _surgery;
-        Flow _flow;
-        Patient _patient;
-        
-        public NavigateViewController (IntPtr handle) : base (handle)
-        {
-        }
-
-        public override async void ViewDidLoad()
-        {
-            base.ViewDidLoad();
-
-            SetupTitleView(vwSurgeon);
-            SetupTitleView(vwCirculator);
-            SetupTitleView(vwAnes);
-            SetupTitleView(vwScrub);
-            SetupTitleView(vwRep);
-
-            SetupTitleView(CommunicatorTableView);
-
-            SetupDoneStyleTextField(txtCommunicator);
-
-            Title = "SCHEDULEVIEW"; 
-            await LoadSurgery();
         }
 
         partial void btnDebrief_Click(UIButton sender)

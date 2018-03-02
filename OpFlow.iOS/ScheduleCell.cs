@@ -6,6 +6,7 @@ using OpFlow.Mobile;
 using UIKit;
 using OpFlow.iOS.ViewSources;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpFlow.iOS
 {
@@ -20,20 +21,22 @@ namespace OpFlow.iOS
             CustomFormatting();
 
             lblLocation.Text = surgery.RoomDescription;
-            lblPatientInfo.Text = string.Format("{0} {1}", patient?.BirthDate.CalculateAge(), patient?.Gender);
+            lblPatientInfo.Text = $"{patient?.BirthDate.CalculateAge()} {patient?.Gender}";
 
-            lblPatientName.Text = string.Format("{0}", patient?.Initials ?? "UNK");
+            lblPatientName.Text = $"{patient?.Initials ?? "UNK"}";
             lblProcedure.Text = surgery.ProcedureDescription;
             lblSurgeryTeam.Text = CalculateSurgeryTeam(surgery.SurgeryUsers);
             lblStartTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
 
             lblPreferenceCard.Text = surgery.CardDescription ?? "Unassigned";
-            lblDuration.Text = "Duration: UNK";
+            lblDuration.Text = "Duration: " + (surgery.TotalMinutes?.ToString() ?? "UNK");
         }
 
-        private string CalculateSurgeryTeam(List<User> surgeryUsers)
+        private string CalculateSurgeryTeam(List<SurgeryUser> surgeryUsers)
         {
-            return "DD, ZZ, AA";
+            var result = string.Join(", ", surgeryUsers.Select(s => s.LastName));
+
+            return result;
         }
     }
 }

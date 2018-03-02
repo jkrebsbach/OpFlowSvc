@@ -9,6 +9,8 @@ namespace OpFlow.Data
         public int LocationID { get; set; }
         public int Type { get; set; }
         public int RecipientUserID { get; set; }
+
+        public RoleEnum SenderRoleID { get; set; }
         public string UserName { get; set; }
         public string Message { get; set; }
         public DateTimeOffset InsertTimestamp { get; set; }
