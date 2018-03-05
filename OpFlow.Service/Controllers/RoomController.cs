@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
@@ -40,6 +41,45 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
 
             return DataAccess.SqlHelper.GetRoomSetups(user.ProviderID, user.LocationID);
+        }
+
+        // POST api/values
+        [SwaggerOperation("AssignRoomCase")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/room/assignCase", Name = "AssignRoomCase")]
+        public async Task<IHttpActionResult> AssignRoomToCase(int caseId, int surgeryId, [FromBody]Room room)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AssignRoomToCase(room, caseId, surgeryId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("AssignRoomSetup")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/room/assignSetupCase", Name = "AssignRoomSetupCase")]
+        public async Task<IHttpActionResult> AssignRoomSetupToCase(int caseId, int surgeryId, [FromBody]RoomSetup room)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AssignRoomSetupToCase(room, caseId, surgeryId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("AssignRoomSetupCard")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/room/assignSetupCard", Name = "AssignRoomSetupCard")]
+        public async Task<IHttpActionResult> AssignRoomSetupToCard(int cardId, [FromBody]RoomSetup room)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AssignRoomSetupToCard(room, cardId, user.ProviderID, user.LocationID);
+
+            return Ok();
         }
     }
 }

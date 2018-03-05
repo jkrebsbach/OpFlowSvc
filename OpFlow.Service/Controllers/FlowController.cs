@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
@@ -130,6 +131,32 @@ namespace OpFlow.Service.Controllers
             var result = DataAccess.SqlHelper.GetFlowFeedback(flowId, stepId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // POST api/values
+        [SwaggerOperation("AssignFlow")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/flow/assignCase", Name = "AssignFlowCase")]
+        public async Task<IHttpActionResult> AssignToCase(int caseId, int surgeryId, [FromBody]Flow flow)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AssignFlowToCase(flow, caseId, surgeryId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("AssignFlow")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/flow/assignCard", Name = "AssignFlowCard")]
+        public async Task<IHttpActionResult> AssignToCard(int cardId, [FromBody]Flow flow)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AssignFlowToCard(flow, cardId, user.ProviderID, user.LocationID);
+
+            return Ok();
         }
     }
 }

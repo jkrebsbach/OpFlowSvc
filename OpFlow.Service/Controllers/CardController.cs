@@ -223,9 +223,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("AssignCard")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/card/assign", Name = "AssignCard")]
-        public async Task<IHttpActionResult> AssignToCase(int caseId, [FromBody]Card card)
+        public async Task<IHttpActionResult> AssignToCase(int caseId, int surgeryId, [FromBody]Card card)
         {
-            DataAccess.SqlHelper.AssignCardToCase(card, caseId);
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AssignCardToCase(card, caseId, surgeryId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
