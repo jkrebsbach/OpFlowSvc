@@ -222,6 +222,14 @@
     <Compile Include="RoomSearchResultCell.designer.cs">
       <DependentUpon>RoomSearchResultCell.cs</DependentUpon>
     </Compile>
+    <Compile Include="SelectFlowCell.cs" />
+    <Compile Include="SelectFlowCell.designer.cs">
+      <DependentUpon>SelectFlowCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CardTableCell.cs" />
+    <Compile Include="CardTableCell.designer.cs">
+      <DependentUpon>CardTableCell.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">

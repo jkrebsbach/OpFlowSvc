@@ -1,4 +1,4 @@
-﻿// WARNING
+// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -14,8 +14,16 @@ namespace OpFlow.iOS
     [Register ("FlowListViewController")]
     partial class FlowListViewController
     {
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UITableView FlowSelectionTableView { get; set; }
+
         void ReleaseDesignerOutlets ()
         {
+            if (FlowSelectionTableView != null) {
+                FlowSelectionTableView.Dispose ();
+                FlowSelectionTableView = null;
+            }
         }
     }
 }

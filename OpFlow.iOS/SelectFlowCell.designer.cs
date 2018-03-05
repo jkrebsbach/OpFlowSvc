@@ -11,18 +11,18 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    [Register ("CommunicatorViewController")]
-    partial class CommunicatorViewController
+    [Register ("SelectFlowCell")]
+    partial class SelectFlowCell
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITableView CommunicatorTableView { get; set; }
+        UIKit.UILabel lblFlowDescription { get; set; }
 
         void ReleaseDesignerOutlets ()
         {
-            if (CommunicatorTableView != null) {
-                CommunicatorTableView.Dispose ();
-                CommunicatorTableView = null;
+            if (lblFlowDescription != null) {
+                lblFlowDescription.Dispose ();
+                lblFlowDescription = null;
             }
         }
     }
