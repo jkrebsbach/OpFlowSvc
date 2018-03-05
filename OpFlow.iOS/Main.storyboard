@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="701">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
@@ -782,7 +782,7 @@
                         <segue destination="51441" kind="custom" identifier="communicatorDetailSegue" customClass="EmptySegue" id="52682"/>
                         <segue destination="57795" kind="custom" identifier="newCommunicationSegue" customClass="EmptySegue" id="57817"/>
                         <segue destination="91561" kind="custom" identifier="roomSetupSegue" customClass="EmptySegue" id="93084"/>
-                        <segue destination="97548" kind="custom" identifier="flowListSegue" customClass="EmptySegue" id="98415"/>
+                        <segue destination="97548" kind="custom" identifier="assignmentListSegue" customClass="EmptySegue" id="98415"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="11603" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -3053,7 +3053,7 @@
         <!--Flow List View Controller-->
         <scene sceneID="97547">
             <objects>
-                <viewController id="97548" customClass="FlowListViewController" sceneMemberID="viewController">
+                <viewController id="97548" customClass="AssignmentListViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="97545"/>
                         <viewControllerLayoutGuide type="bottom" id="97546"/>
@@ -3067,11 +3067,11 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="detailDisclosureButton" indentationWidth="10" reuseIdentifier="SelectFlowCell" id="99924" customClass="SelectFlowCell">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="SelectFlowCell" id="99924" customClass="SelectFlowCell">
                                         <rect key="frame" x="0.0" y="28" width="240" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="99924" id="99925">
-                                            <rect key="frame" x="0.0" y="0.0" width="173" height="44.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="207" height="44.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="101216">
@@ -3087,13 +3087,33 @@
                                             <outlet property="lblFlowDescription" destination="101216" id="name-outlet-101216"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="107686" customClass="SelectCardCell" accessoryType="disclosureIndicator">
+                                        <rect key="frame" x="0.0" y="73" width="240" height="45"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="107686" id="107687">
+                                            <rect key="frame" x="0.0" y="0.0" width="207" height="44.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="108330" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
+                                                    <rect key="frame" x="25" y="12" width="42" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="lblCardDetail" destination="108330" id="name-outlet-108330"/>
+                                        </connections>
+                                    </tableViewCell>
                                 </prototypes>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <outlet property="FlowSelectionTableView" destination="99923" id="name-outlet-99923"/>
+                        <outlet property="AssignmentSelectionTableView" destination="99923" id="name-outlet-99923"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="97550" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -3140,6 +3160,5 @@
         <image name="ic_delete_circle_red_A700.png" width="54" height="54"/>
         <image name="OPFlowLogo_short.png" width="299" height="209"/>
         <image name="Navigation_Compose.png" width="125" height="125"/>
-        <image name="OpFlowLogo" width="310" height="92"/>
     </resources>
 </document>

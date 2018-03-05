@@ -122,7 +122,10 @@ namespace OpFlow.iOS
 
             if (_surgery == null)
                 return;
-            
+
+            AppSettings.CurrentCard = _surgery.CardID;
+            AppSettings.CurrentProcedure = _surgery.ProcedureID;
+
             _patient = await PatientUtil.GetPatient(_surgery.PatientID);
             _flow = await FlowUtil.GetFlow(_surgery.FlowID, _surgery.CardID);
             var users = await SurgeryUtil.GetSurgeryUsers(_surgery.CaseID);

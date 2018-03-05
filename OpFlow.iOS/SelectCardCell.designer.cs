@@ -11,11 +11,19 @@ using UIKit;
 
 namespace OpFlow.iOS
 {
-    [Register ("ContainerViewController")]
-    partial class ContainerViewController
+    [Register ("SelectCardCell")]
+    partial class SelectCardCell
     {
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblCardDetail { get; set; }
+
         void ReleaseDesignerOutlets ()
         {
+            if (lblCardDetail != null) {
+                lblCardDetail.Dispose ();
+                lblCardDetail = null;
+            }
         }
     }
 }

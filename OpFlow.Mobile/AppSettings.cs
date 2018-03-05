@@ -29,10 +29,11 @@ namespace OpFlow.Mobile
             Room = 11,
             Communicator = 12,
             CardList = 13,
-            FlowList = 14,
-            CreateCase = 15,
-            CommunicationDetail = 16,
-            NewCommunicationSetup = 17,
+            CardAssignment = 14,
+            FlowAssignment = 15,
+            CreateCase = 16,
+            CommunicationDetail = 17,
+            NewCommunicationSetup = 18,
         }
 
         public static int? CurrentSurgery { get; private set; }
@@ -87,6 +88,8 @@ namespace OpFlow.Mobile
         private static AuthToken _authToken;
         public static User CurrentUser { get; private set; }
         public static MessagingGroup CurrentMessagingGroup { get; set; }
+        public static int? CurrentCard { get; set; }
+        public static int? CurrentProcedure { get; set; }
 
         public static string CurrentUserTitle => string.Format("{0} {1}", CurrentUser?.Title, CurrentUser?.LastName);
 

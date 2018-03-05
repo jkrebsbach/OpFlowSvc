@@ -69,6 +69,10 @@
     <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AssignmentListViewController.cs" />
+    <Compile Include="AssignmentListViewController.designer.cs">
+      <DependentUpon>AssignmentListViewController.cs</DependentUpon>
+    </Compile>
     <Compile Include="CaseSearchResultCell.cs" />
     <Compile Include="CaseSearchResultCell.designer.cs">
       <DependentUpon>CaseSearchResultCell.cs</DependentUpon>
@@ -83,6 +87,7 @@
     </Compile>
     <Compile Include="Delegates\CommunicationCell.cs" />
     <Compile Include="Delegates\DetailListCell.cs" />
+    <Compile Include="Delegates\BindableTableViewCell.cs" />
     <Compile Include="Delegates\OpFlowTextDatePicker.cs" />
     <Compile Include="Delegates\OpFlowTextPicker.cs" />
     <Compile Include="Delegates\OpFlowViewController.cs" />
@@ -94,10 +99,6 @@
     <Compile Include="DetailViewController.cs" />
     <Compile Include="DetailViewController.designer.cs">
       <DependentUpon>DetailViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FlowListViewController.cs" />
-    <Compile Include="FlowListViewController.designer.cs">
-      <DependentUpon>FlowListViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="HomeViewController.cs" />
     <Compile Include="HomeViewController.designer.cs">
@@ -114,10 +115,15 @@
     <Compile Include="SearchViewController.designer.cs">
       <DependentUpon>SearchViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="SelectCardCell.cs" />
+    <Compile Include="SelectCardCell.designer.cs">
+      <DependentUpon>SelectCardCell.cs</DependentUpon>
+    </Compile>
     <Compile Include="SelectUserCell.cs" />
     <Compile Include="SelectUserCell.designer.cs">
       <DependentUpon>SelectUserCell.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewSources\AssignmentSelectionTVS.cs" />
     <Compile Include="ViewSources\BasicPickerModel.cs" />
     <Compile Include="ViewSources\CommunicationGroupTVS.cs" />
     <Compile Include="ViewSources\DetailListTVS.cs" />

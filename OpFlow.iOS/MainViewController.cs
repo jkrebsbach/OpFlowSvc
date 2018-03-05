@@ -132,6 +132,8 @@ namespace OpFlow.iOS
             // TODO: Some of these actions should be right button cancel...
             if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CaseNavigate)
                 PresentContainerView(AppSettings.FragmentEnum.Schedule);
+            else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CardList)
+                NavigateHome();
             else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.Communicator)
                 PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
             else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CardDetail)
@@ -276,7 +278,7 @@ namespace OpFlow.iOS
 
                 case AppSettings.FragmentEnum.CardList:
                     Title = "Card List";
-                    customBackButton = SetupCustomBack("Card");
+                    customBackButton = SetupCustomBack("Home");
                     await _containerViewController.PresentCardListViewAsync();
                     break;
 
@@ -288,10 +290,16 @@ namespace OpFlow.iOS
                     rightButton = SetupCustomEdit(CustomButtonType.Compose);
                     break;
 
-                case AppSettings.FragmentEnum.FlowList:
+                case AppSettings.FragmentEnum.CardAssignment:
+                    Title = "Card List";
+                    customBackButton = SetupCustomBack("Card");
+                    await _containerViewController.PresentAssignmentListViewAsync();
+                    break;
+
+                case AppSettings.FragmentEnum.FlowAssignment:
                     Title = "Flow List";
                     customBackButton = SetupCustomBack("Flow");
-                    await _containerViewController.PresentFlowListViewAsync();
+                    await _containerViewController.PresentAssignmentListViewAsync();
                     break;
 
                 case AppSettings.FragmentEnum.Dashboard:
@@ -364,10 +372,10 @@ namespace OpFlow.iOS
             switch (AppSettings.CurrentScreen)
             {
                 case AppSettings.FragmentEnum.CardDetail:
-                    PresentContainerView(AppSettings.FragmentEnum.CardList);
+                    PresentContainerView(AppSettings.FragmentEnum.CardAssignment);
                     break;
                 case AppSettings.FragmentEnum.FlowDetail:
-                    PresentContainerView(AppSettings.FragmentEnum.FlowList);
+                    PresentContainerView(AppSettings.FragmentEnum.FlowAssignment);
                     break;
                 default:
                     PresentContainerView(AppSettings.FragmentEnum.NewCommunicationSetup);

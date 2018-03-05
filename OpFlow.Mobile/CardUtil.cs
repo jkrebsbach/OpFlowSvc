@@ -30,6 +30,12 @@ namespace OpFlow.Mobile
 
             return response;
         }
+
+        public static async Task<List<Card>> GetCardsForProcedure(int procedureId)
+        {
+            return new List<Card>();
+        }
+
         public static async Task<CardFlowRoom> GetProcedureDefault(string cptCode)
         {
             var command = string.Format("api/card/proceduredefault?cptCode={0}", cptCode);

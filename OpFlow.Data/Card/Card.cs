@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OpFlow.Data
 {
-    public class Card
+    public class Card : IBindableEntity
     {
         public int CardID { get; set; }
         public int LocationID { get; set; }
@@ -34,6 +34,16 @@ namespace OpFlow.Data
         public string SecondSurgeonLastName { get; set; }
         public int ThirdSurgeonUserID { get; set; }
         public string ThirdSurgeonLastName { get; set; }
+
+        public int GetID()
+        {
+            return CardID;
+        }
+
+        public override string ToString()
+        {
+            return CardDescription;
+        }
     }
 
     public class CardQuantityEdit

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OpFlow.Data
 {
-    public class Flow
+    public class Flow : IBindableEntity
     {
         public int FlowID { get; set; }
         public int CardID { get; set; }
@@ -17,5 +17,15 @@ namespace OpFlow.Data
         public int TotalMinutes { get; set; }
         public int AvgMinutes { get; set; }
         public int TimesUsed { get; set; }
+
+        public int GetID()
+        {
+            return FlowID;
+        }
+
+        public override string ToString()
+        {
+            return FlowDescription;
+        }
     }
 }

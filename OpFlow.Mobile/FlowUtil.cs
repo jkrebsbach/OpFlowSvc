@@ -37,5 +37,10 @@ namespace OpFlow.Mobile
 
             return response;
         }
+
+        public static async Task<List<Flow>> GetProcedureFlows(int procedureId)
+        {
+            return new List<Flow>();
+        }
     }
 }
