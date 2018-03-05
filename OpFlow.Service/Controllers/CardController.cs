@@ -56,11 +56,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCardList")]
         [Route("api/card/list")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
-        public HttpResponseMessage GetCardList(int? userId = null, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetCardList(int? userId = null, int? procedureId = null, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetCardList(user.UserID, user.ProviderID, user.LocationID);
+            var result = DataAccess.SqlHelper.GetCardList(userId, procedureId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

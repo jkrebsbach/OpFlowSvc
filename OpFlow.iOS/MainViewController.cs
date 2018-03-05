@@ -292,14 +292,20 @@ namespace OpFlow.iOS
 
                 case AppSettings.FragmentEnum.CardAssignment:
                     Title = "Card List";
-                    customBackButton = SetupCustomBack("Card");
+                    customBackButton = null;
                     await _containerViewController.PresentAssignmentListViewAsync();
+
+                    rightButton = SetupCustomEdit(CustomButtonType.Cancel);
+
                     break;
 
                 case AppSettings.FragmentEnum.FlowAssignment:
                     Title = "Flow List";
-                    customBackButton = SetupCustomBack("Flow");
+                    customBackButton = null;
                     await _containerViewController.PresentAssignmentListViewAsync();
+
+                    rightButton = SetupCustomEdit(CustomButtonType.Cancel);
+
                     break;
 
                 case AppSettings.FragmentEnum.Dashboard:

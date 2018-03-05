@@ -149,15 +149,16 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Card> GetCardList(int userId, int providerId, int locationId)
+        public static List<Card> GetCardList(int? userId, int? procedureId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("user_id", userId),
+                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetCardListBySurgeon", parameters);
+            var dsSchedules = ExecuteCommand("GetCardListbyProcedure", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Card>();
 

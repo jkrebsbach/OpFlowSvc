@@ -9,6 +9,13 @@ namespace OpFlow.Mobile
 {
     public abstract class CardUtil
     {
+        public static async Task<List<Card>> GetCards(int procedureId)
+        {
+            var command = string.Format("api/card/list?procedureId={0}", procedureId);
+            var response = await WebUtility.WebRequest<List<Card>>(command, HttpMethod.Get);
+
+            return response;
+        }
         public static async Task<List<Card>> GetCardData(int cardId)
         {
             var command = string.Format("api/card?cardId={0}", cardId);
@@ -29,11 +36,6 @@ namespace OpFlow.Mobile
             var response = await WebUtility.WebRequest<CardFlowRoom>(command, HttpMethod.Get);
 
             return response;
-        }
-
-        public static async Task<List<Card>> GetCardsForProcedure(int procedureId)
-        {
-            return new List<Card>();
         }
 
         public static async Task<CardFlowRoom> GetProcedureDefault(string cptCode)

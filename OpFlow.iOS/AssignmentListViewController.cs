@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OpFlow.Data;
+using OpFlow.iOS.Delegates;
 using OpFlow.iOS.ViewSources;
 using OpFlow.Mobile;
 using UIKit;
 
 namespace OpFlow.iOS
 {
-    public partial class AssignmentListViewController : UIViewController
+    public partial class AssignmentListViewController : OpFlowViewController
     {
         public AssignmentListViewController (IntPtr handle) : base (handle)
         {
@@ -25,23 +26,54 @@ namespace OpFlow.iOS
 
         private async Task LoadAssignmentOptions()
         {
-            var options = new List<IBindableEntity>();
+            List<IBindableEntity> options;
+            int currentId;
 
             if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.FlowAssignment)
             {
-                var flows = await FlowUtil.GetProcedureFlows(AppSettings.CurrentCard ?? 0);
+                currentId = AppSettings.CurrentCard ?? 0;
+
+                var flows = await FlowUtil.GetCardFlows(currentId);
                 options = flows.Cast<IBindableEntity>().ToList();
             }
             else
             {
-                var cards = await CardUtil.GetCardsForProcedure(AppSettings.CurrentProcedure ?? 0);
+                currentId = AppSettings.CurrentProcedure ?? 0;
+
+                var cards = await CardUtil.GetCards(currentId);
                 options = cards.Cast<IBindableEntity>().ToList();
             }
 
             var assignmentTVS = new AssignmentSelectionTVS(options);
 
             AssignmentSelectionTableView.Source = assignmentTVS;
+
+            var selectedItem = options.FirstOrDefault(o => o.GetID() == currentId);
+            if (selectedItem != null)
+            {
+                var selectionIndex = options.IndexOf(selectedItem);
+
+                AssignmentSelectionTableView.SelectRow(NSIndexPath.FromRowSection(selectionIndex, 0), true, UITableViewScrollPosition.Bottom);
+            }
+
             AssignmentSelectionTableView.ReloadData();
+
+            assignmentTVS.EntitySelectionEvent += SelectEntity;
+        }
+
+        private async void SelectEntity(object sender, IBindableEntity entity)
+        {
+            if (entity is Flow)
+            {
+                await SurgeryUtil.AssignFlow(AppSettings.CurrentSurgery ?? -1, entity.GetID());
+                NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.FlowDetail);
+            }
+            else
+            {
+                await SurgeryUtil.AssignCard(AppSettings.CurrentSurgery ?? -1, entity.GetID());
+                NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CardDetail);
+            }
+
         }
     }
 }

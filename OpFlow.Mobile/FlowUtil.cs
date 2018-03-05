@@ -38,9 +38,12 @@ namespace OpFlow.Mobile
             return response;
         }
 
-        public static async Task<List<Flow>> GetProcedureFlows(int procedureId)
+        public static async Task<List<Flow>> GetCardFlows(int cardId)
         {
-            return new List<Flow>();
+            var command = string.Format("api/flow/cardFlowList?cardId={0}", cardId);
+            var response = await WebUtility.WebRequest<List<Flow>>(command, HttpMethod.Get);
+
+            return response;
         }
     }
 }

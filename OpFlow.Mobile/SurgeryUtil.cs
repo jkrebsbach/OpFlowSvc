@@ -73,6 +73,24 @@ namespace OpFlow.Mobile
             return result;
         }
 
+        public static async Task<string> AssignCard(int surgeryId, int cardId)
+        {
+            var command = string.Format("api/surgery/assignCard?surgeryId={0}&cardId={1}", surgeryId, cardId);
+
+            var response = await WebUtility.PostBodyRequest<string>(command, 0);
+
+            return response;
+        }
+
+        public static async Task<string> AssignFlow(int surgeryId, int flowId)
+        {
+            var command = string.Format("api/surgery/assignFlow?surgeryId={0}&flowId={1}", surgeryId, flowId);
+
+            var response = await WebUtility.PostBodyRequest<string>(command, 0);
+
+            return response;
+        }
+
         public static async Task<Surgery> GetSurgery(int surgeryId, int providerId, int locationId)
         {
             var command = string.Format("api/surgery?surgeryId={0}&providerId={1}&locationId={2}",

@@ -14,6 +14,8 @@ namespace OpFlow.iOS.ViewSources
     {
         private readonly List<IBindableEntity> _entities;
 
+        public event EventHandler<IBindableEntity> EntitySelectionEvent;
+
         public AssignmentSelectionTVS(List<IBindableEntity> entities)
         {
             _entities = entities;
@@ -24,8 +26,8 @@ namespace OpFlow.iOS.ViewSources
 
             var reuseIdentifier = entity is Card ? "SelectCardCell" : "SelectFlowCell";
 
-
             var cell = tableView.DequeueReusableCell(reuseIdentifier, indexPath) as BindableTableViewCell;
+            cell.SelectionStyle = UITableViewCellSelectionStyle.Blue;
 
             cell?.UpdateCell(entity);
 
@@ -37,6 +39,11 @@ namespace OpFlow.iOS.ViewSources
             return _entities.Count;
         }
 
+        public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
+        {
+            var entity = _entities[indexPath.Row];
 
+            EntitySelectionEvent?.Invoke(this, entity);
+        }
     }
 }
