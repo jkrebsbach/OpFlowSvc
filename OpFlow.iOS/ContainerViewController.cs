@@ -13,6 +13,7 @@ namespace OpFlow.iOS
         private readonly NSString DetailSegue = (NSString)"detailSegue";
         private readonly NSString NavigateSegue = (NSString)"navigateSegue";
         private readonly NSString CardListSegue = (NSString)"cardListSegue";
+        private readonly NSString FlowListSegue = (NSString)"flowListSegue";
         private readonly NSString DashboardSegue = (NSString)"dashboardSegue";
         private readonly NSString RoomSetupSegue = (NSString)"roomSetupSegue";
         private readonly NSString SearchSegue = (NSString)"searchSegue";
@@ -62,6 +63,14 @@ namespace OpFlow.iOS
         {
             _viewChanging = new TaskCompletionSource<bool>();
             PerformSegue(CardListSegue, this);
+
+            return _viewChanging.Task;
+        }
+
+        public Task<bool> PresentFlowListViewAsync()
+        {
+            _viewChanging = new TaskCompletionSource<bool>();
+            PerformSegue(FlowListSegue, this);
 
             return _viewChanging.Task;
         }

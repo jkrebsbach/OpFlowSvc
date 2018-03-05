@@ -95,6 +95,10 @@
     <Compile Include="DetailViewController.designer.cs">
       <DependentUpon>DetailViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="FlowListViewController.cs" />
+    <Compile Include="FlowListViewController.designer.cs">
+      <DependentUpon>FlowListViewController.cs</DependentUpon>
+    </Compile>
     <Compile Include="HomeViewController.cs" />
     <Compile Include="HomeViewController.designer.cs">
       <DependentUpon>HomeViewController.cs</DependentUpon>

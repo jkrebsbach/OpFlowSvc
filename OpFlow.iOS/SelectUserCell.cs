@@ -17,6 +17,8 @@ namespace OpFlow.iOS
             lblRole.Text = user.RoleID.ToString();
             lblUserName.Text = string.Format("{0}, {1}", 
                 user.LastName, user.FirstName);
+
+            lblRole.TextColor = user.RoleID.RoleTextColorMapping();
         }
     }
 }

@@ -134,6 +134,10 @@ namespace OpFlow.iOS
                 PresentContainerView(AppSettings.FragmentEnum.Schedule);
             else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.Communicator)
                 PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
+            if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CardDetail)
+                PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
+            if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.FlowDetail)
+                PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
             else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CreateCase)
                 NavigateHome();
             else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.SearchCases)
@@ -265,11 +269,13 @@ namespace OpFlow.iOS
                     Title = "Card";
                     customBackButton = SetupCustomBack("Surgery");
                     await _containerViewController.PresentDetailViewAsync();
+
+                    rightButton = SetupCustomEdit(CustomButtonType.Compose);
                     break;
 
                 case AppSettings.FragmentEnum.CardList:
                     Title = "Card List";
-                    customBackButton = SetupCustomBack("Surgery");
+                    customBackButton = SetupCustomBack("Card");
                     await _containerViewController.PresentCardListViewAsync();
                     break;
 
@@ -277,6 +283,14 @@ namespace OpFlow.iOS
                     Title = "Flow";
                     customBackButton = SetupCustomBack("Surgery");
                     await _containerViewController.PresentDetailViewAsync();
+                    
+                    rightButton = SetupCustomEdit(CustomButtonType.Compose);
+                    break;
+
+                case AppSettings.FragmentEnum.FlowList:
+                    Title = "Flow List";
+                    customBackButton = SetupCustomBack("Flow");
+                    await _containerViewController.PresentFlowListViewAsync();
                     break;
 
                 case AppSettings.FragmentEnum.Dashboard:
@@ -346,7 +360,18 @@ namespace OpFlow.iOS
                 return;
             }
 
-            PresentContainerView(AppSettings.FragmentEnum.NewCommunicationSetup);
+            switch (AppSettings.CurrentScreen)
+            {
+                case AppSettings.FragmentEnum.CardDetail:
+                    PresentContainerView(AppSettings.FragmentEnum.CardList);
+                    break;
+                case AppSettings.FragmentEnum.FlowDetail:
+                    PresentContainerView(AppSettings.FragmentEnum.FlowList);
+                    break;
+                default:
+                    PresentContainerView(AppSettings.FragmentEnum.NewCommunicationSetup);
+                    break;
+            }
         }
     }
 }

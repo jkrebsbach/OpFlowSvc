@@ -20,7 +20,7 @@ namespace OpFlow.Mobile
         }
         public static async Task<List<User>> GetUsers(string searchString)
         {
-            var command = string.Format("api/user/searchUsers?searchText={0}", searchString);
+            var command = string.Format("api/user/searchUsers?nameSearchText={0}", searchString);
 
             var response = await WebUtility.WebRequest<List<User>>(command, HttpMethod.Get);
 

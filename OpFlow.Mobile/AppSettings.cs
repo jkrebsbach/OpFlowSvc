@@ -29,9 +29,10 @@ namespace OpFlow.Mobile
             Room = 11,
             Communicator = 12,
             CardList = 13,
-            CreateCase = 14,
-            CommunicationDetail = 15,
-            NewCommunicationSetup = 16,
+            FlowList = 14,
+            CreateCase = 15,
+            CommunicationDetail = 16,
+            NewCommunicationSetup = 17,
         }
 
         public static int? CurrentSurgery { get; private set; }
