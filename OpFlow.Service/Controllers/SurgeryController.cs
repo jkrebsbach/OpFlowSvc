@@ -182,6 +182,58 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [SwaggerOperation("AssignCard")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/assignCard", Name = "AssignCard")]
+        public async Task<IHttpActionResult> AssignToCard(int surgeryId, int cardId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AssignCardToCase(cardId, surgeryId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("AssignRoomCase")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/assignRoom", Name = "AssignRoomCase")]
+        public async Task<IHttpActionResult> AssignRoomToCase(int surgeryId, int roomId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AssignRoomToCase(roomId, surgeryId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("AssignRoomSetup")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/assignRoomSetup", Name = "AssignRoomSetupCase")]
+        public async Task<IHttpActionResult> AssignRoomSetupToCase(int surgeryId, int roomSetupId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AssignRoomSetupToCase(roomSetupId, surgeryId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("AssignFlow")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/assignFlow", Name = "AssignFlowCase")]
+        public async Task<IHttpActionResult> AssignToFlowCase(int surgeryId, int flowId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AssignFlowToCase(flowId, surgeryId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
         [SwaggerOperation("Create")]
         [SwaggerResponse(HttpStatusCode.Created)]
         public async Task<IHttpActionResult> Post([FromBody]SurgeryPost surgery)

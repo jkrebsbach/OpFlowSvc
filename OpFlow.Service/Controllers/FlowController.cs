@@ -132,31 +132,5 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
-
-        // POST api/values
-        [SwaggerOperation("AssignFlow")]
-        [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/flow/assignCase", Name = "AssignFlowCase")]
-        public async Task<IHttpActionResult> AssignToCase(int caseId, int surgeryId, [FromBody]Flow flow)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            DataAccess.SqlHelper.AssignFlowToCase(flow, caseId, surgeryId, user.ProviderID, user.LocationID);
-
-            return Ok();
-        }
-
-        // POST api/values
-        [SwaggerOperation("AssignFlow")]
-        [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/flow/assignCard", Name = "AssignFlowCard")]
-        public async Task<IHttpActionResult> AssignToCard(int cardId, [FromBody]Flow flow)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            DataAccess.SqlHelper.AssignFlowToCard(flow, cardId, user.ProviderID, user.LocationID);
-
-            return Ok();
-        }
     }
 }

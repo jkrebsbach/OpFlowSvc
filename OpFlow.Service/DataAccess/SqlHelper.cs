@@ -356,78 +356,74 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("AssignUserToCase", dsParameters);
         }
 
-        public static int AssignCardToCase(Card card, int caseId, int surgeryId, int providerId, int locationId)
+        public static int AssignCardToCase(int cardId, int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("case_id", caseId),
-                new SqlParameter("card_id", card.CardID)
+                new SqlParameter("card_id", cardId)
             };
             return ExecuteNonQuery("AssignCardToCase", dsParameters);
         }
 
-        public static int AssignFlowToCase(Flow flow, int caseId, int surgeryId, int providerId, int locationId)
+        public static int AssignFlowToCase(int flowId, int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("case_id", caseId),
-                new SqlParameter("flow_id", flow.FlowID)
+                new SqlParameter("flow_id", flowId)
             };
             return ExecuteNonQuery("AssignFlowToCase", dsParameters);
         }
 
-        public static int AssignRoomToCase(Room room, int caseId, int surgeryId, int providerId, int locationId)
+        public static int AssignRoomToCase(int roomId, int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("case_id", caseId),
-                new SqlParameter("room_id", room.RoomID)
+                new SqlParameter("room_id", roomId)
             };
             return ExecuteNonQuery("AssignRoomToCase", dsParameters);
         }
 
-        public static int AssignRoomSetupToCase(RoomSetup roomSetup, int caseId, int surgeryId, int providerId, int locationId)
+        public static int AssignRoomSetupToCase(int roomSetupId, int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("case_id", caseId),
-                new SqlParameter("room_setup_id", roomSetup)
+                new SqlParameter("room_setup_id", roomSetupId)
             };
             return ExecuteNonQuery("AssignRoomSetupToCase", dsParameters);
         }
 
-        public static int AssignFlowToCard(Flow flow, int cardId, int providerId, int locationId)
+        public static int AssignFlowToCard(int flowId, int cardId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("card_id", cardId),
-                new SqlParameter("flow_id", flow.FlowID)
+                new SqlParameter("flow_id", flowId)
             };
             return ExecuteNonQuery("AssignFlowToCard", dsParameters);
         }
 
-        public static int AssignRoomSetupToCard(RoomSetup roomSetup, int cardId, int providerId, int locationId)
+        public static int AssignRoomSetupToCard(int roomSetupId, int cardId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("card_id", cardId),
-                new SqlParameter("room_setup_id", roomSetup)
+                new SqlParameter("room_setup_id", roomSetupId)
             };
             return ExecuteNonQuery("AssignRoomSetupToCard", dsParameters);
         }

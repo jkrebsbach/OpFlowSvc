@@ -219,19 +219,6 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
-        // POST api/values
-        [SwaggerOperation("AssignCard")]
-        [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/card/assign", Name = "AssignCard")]
-        public async Task<IHttpActionResult> AssignToCase(int caseId, int surgeryId, [FromBody]Card card)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            DataAccess.SqlHelper.AssignCardToCase(card, caseId, surgeryId, user.ProviderID, user.LocationID);
-
-            return Ok();
-        }
-
         // PUT api/values
         [SwaggerOperation("UpdateQuantity")]
         [SwaggerResponse(HttpStatusCode.Created)]
@@ -240,6 +227,32 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> UpdateItemQty(int cardId, [FromBody]CardQuantityEdit cardQuantity)
         {
             DataAccess.SqlHelper.UpdateCardQuantity(cardId, cardQuantity);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("AssignFlow")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/card/assignFlow", Name = "AssignFlowCard")]
+        public async Task<IHttpActionResult> AssignToCard(int cardId, int flowId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AssignFlowToCard(flowId, cardId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("AssignRoomSetupCard")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/card/assignRoomSetup", Name = "AssignRoomSetupCard")]
+        public async Task<IHttpActionResult> AssignRoomSetupToCard(int cardId, int roomSetupId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AssignRoomSetupToCard(roomSetupId, cardId, user.ProviderID, user.LocationID);
 
             return Ok();
         }

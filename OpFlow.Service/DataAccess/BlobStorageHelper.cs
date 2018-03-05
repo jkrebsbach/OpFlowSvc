@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace OpFlow.Service.DataAccess
 {
@@ -17,18 +18,41 @@ namespace OpFlow.Service.DataAccess
         private static CloudStorageAccount StorageAccount => _storageAccount ?? (_storageAccount = CloudStorageAccount.Parse(
             ConfigurationManager.ConnectionStrings["BlobStorageConnection"].ConnectionString));
 
-        public static async Task<byte[]> GetBlobBytes(int providerId, int surgeryId, int cardId, int flowId)
-        {
-            var blobClient = StorageAccount.CreateCloudBlobClient();
-            var container = blobClient.GetContainerReference(CONTAINER_NAME);
 
-            var filename = string.Format($"{providerId}_{surgeryId}_{cardId}_{flowId}");
+        public static async Task<List<string>> ListBlobs(int providerId, int cardId, int flowId, int stepId, int roleId)
+        {
+            var folder = Folder(providerId, cardId, flowId, stepId, roleId);
+            
+            BlobContinuationToken continuationToken = null;
+            var results = new List<IListBlobItem>();
+            do
+            {
+                var response = await Container.ListBlobsSegmentedAsync(folder, continuationToken);
+                continuationToken = response.ContinuationToken;
+                results.AddRange(response.Results);
+            }
+            while (continuationToken != null);
+
+
+            var filenames = new List<string>();
+            foreach (var response in results)
+            {
+                filenames.Add(response.Uri.ToString());
+            }
+
+            return filenames;
+        }
+
+        public static async Task<byte[]> GetBlobBytes(int providerId, int cardId, int flowId, int stepId, int roleId, string filename)
+        {
+            var folder = Folder(providerId, cardId, flowId, stepId, roleId);
+            var filepath = Path.Combine(folder, filename);
 
             var memStream = new MemoryStream();
 
             try
             {
-                var blockBlob = await container.GetBlobReferenceFromServerAsync(filename);
+                var blockBlob = await Container.GetBlobReferenceFromServerAsync(filepath);
                 blockBlob.DownloadToStream(memStream);
             }
             catch (StorageException se)
@@ -45,18 +69,54 @@ namespace OpFlow.Service.DataAccess
             return memStream.ToArray();
         }
 
-        public static async Task PutBlobBytes(int providerId, int surgeryId, int cardId, int flowId, byte[] bytes)
+        public static async Task PutBlobBytes(int providerId, int cardId, int flowId, int stepId, int roleId, string filename, byte[] bytes)
         {
+            var folder = Folder(providerId, cardId, flowId, stepId, roleId);
+            var filepath = Path.Combine(folder, filename);
+
+            var blockBlob = await Container.GetBlobReferenceFromServerAsync(filepath);
+
             var memStream = new MemoryStream(bytes);
-
-            var blobClient = StorageAccount.CreateCloudBlobClient();
-            var container = blobClient.GetContainerReference(CONTAINER_NAME);
-
-            var filename = string.Format($"{providerId}_{surgeryId}_{cardId}_{flowId}");
-
-            var blockBlob = await container.GetBlobReferenceFromServerAsync(filename);
-
             await blockBlob.UploadFromStreamAsync(memStream);
+        }
+
+        public static async Task DeleteBlob(int providerId, int cardId, int flowId, int stepId, int roleId, string filename)
+        {
+            var folder = Folder(providerId, cardId, flowId, stepId, roleId);
+            var filepath = Path.Combine(folder, filename);
+
+            try
+            {
+                var blockBlob = await Container.GetBlobReferenceFromServerAsync(filepath);
+                await blockBlob.DeleteAsync();
+            }
+            catch (StorageException se)
+            {
+                // If already deleted, or no matching file, take no action
+                if (se.Message.Contains("404") || se.Message.Contains("Not Found"))
+                {
+                    return;
+                }
+
+                throw;
+            }
+        }
+
+        private static CloudBlobContainer Container 
+        {
+            get
+            {
+                var blobClient = StorageAccount.CreateCloudBlobClient();
+                return blobClient.GetContainerReference(CONTAINER_NAME);
+            }
+        }
+    
+
+        private static string Folder(int providerId, int cardId, int flowId, int stepId, int roleId)
+        {
+            var folder = string.Format($"{providerId}_{cardId}_{flowId}_{stepId}_{roleId}");
+
+            return folder;
         }
     }
 }
