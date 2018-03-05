@@ -31,22 +31,24 @@ namespace OpFlow.iOS
 
             if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.FlowAssignment)
             {
-                currentId = AppSettings.CurrentCard ?? 0;
+                currentId = AppSettings.CurrentFlow ?? -1;
 
-                var flows = await FlowUtil.GetCardFlows(currentId);
+                var flows = await FlowUtil.GetCardFlows(AppSettings.CurrentCard ?? 0);
                 options = flows.Cast<IBindableEntity>().ToList();
             }
             else
             {
-                currentId = AppSettings.CurrentProcedure ?? 0;
+                currentId = AppSettings.CurrentCard ?? -1;
 
-                var cards = await CardUtil.GetCards(currentId);
+                var cards = await CardUtil.GetCards(AppSettings.CurrentProcedure ?? 0);
                 options = cards.Cast<IBindableEntity>().ToList();
             }
 
             var assignmentTVS = new AssignmentSelectionTVS(options);
 
             AssignmentSelectionTableView.Source = assignmentTVS;
+
+            AssignmentSelectionTableView.ReloadData();
 
             var selectedItem = options.FirstOrDefault(o => o.GetID() == currentId);
             if (selectedItem != null)
@@ -56,8 +58,6 @@ namespace OpFlow.iOS
                 AssignmentSelectionTableView.SelectRow(NSIndexPath.FromRowSection(selectionIndex, 0), true, UITableViewScrollPosition.Bottom);
             }
 
-            AssignmentSelectionTableView.ReloadData();
-
             assignmentTVS.EntitySelectionEvent += SelectEntity;
         }
 
@@ -66,11 +66,15 @@ namespace OpFlow.iOS
             if (entity is Flow)
             {
                 await SurgeryUtil.AssignFlow(AppSettings.CurrentSurgery ?? -1, entity.GetID());
+                AppSettings.CurrentFlow = entity.GetID();
+
                 NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.FlowDetail);
             }
             else
             {
                 await SurgeryUtil.AssignCard(AppSettings.CurrentSurgery ?? -1, entity.GetID());
+                AppSettings.CurrentCard = entity.GetID();
+
                 NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CardDetail);
             }
 

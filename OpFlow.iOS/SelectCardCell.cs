@@ -15,8 +15,11 @@ namespace OpFlow.iOS
         public override void UpdateCell(IBindableEntity entity)
         {
             var card = entity as Card;
+            if (card == null)
+                return;
 
-            lblCardDetail.Text = card?.CardDescription;
+            lblCardDetail.Text = card.CardDescription;
+            lblCardSummary.Text = $"Avg Time:{card.AvgMinutes} Cost: ${card.Cost}";
         }
     }
 }

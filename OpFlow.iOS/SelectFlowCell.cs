@@ -15,8 +15,10 @@ namespace OpFlow.iOS
         public override void UpdateCell(IBindableEntity entity)
         {
             var flow = entity as Flow;
+            if (flow == null)
+                return;
 
-            lblFlowDescription.Text = flow?.FlowDescription;
+            lblFlowDescription.Text = $"{flow?.FlowDescription} (Avg Time: ${flow?.AvgMinutes})";
         }
     }
 }
