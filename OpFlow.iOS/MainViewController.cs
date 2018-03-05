@@ -134,9 +134,9 @@ namespace OpFlow.iOS
                 PresentContainerView(AppSettings.FragmentEnum.Schedule);
             else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.Communicator)
                 PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
-            if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CardDetail)
+            else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CardDetail)
                 PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
-            if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.FlowDetail)
+            else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.FlowDetail)
                 PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
             else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CreateCase)
                 NavigateHome();
@@ -168,9 +168,10 @@ namespace OpFlow.iOS
                 Target = this
             };
 
-            buttonItem.Clicked += NavigateBack;
-            label.TouchDown += NavigateBack;
-            imageView.TouchDown += NavigateBack;
+            label.TouchUpInside += NavigateBack;
+            imageView.TouchUpInside += NavigateBack;
+            //label.TouchDown += NavigateBack;
+            //imageView.TouchDown += NavigateBack;
 
             return buttonItem;
         }
