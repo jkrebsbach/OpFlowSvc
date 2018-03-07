@@ -1,4 +1,4 @@
-﻿// WARNING
+// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -20,7 +20,7 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITextField txtRoom { get; set; }
+        UIKit.UITextField txtPosition { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -33,9 +33,9 @@ namespace OpFlow.iOS
                 RoomSearchTableView = null;
             }
 
-            if (txtRoom != null) {
-                txtRoom.Dispose ();
-                txtRoom = null;
+            if (txtPosition != null) {
+                txtPosition.Dispose ();
+                txtPosition = null;
             }
 
             if (txtRoomType != null) {

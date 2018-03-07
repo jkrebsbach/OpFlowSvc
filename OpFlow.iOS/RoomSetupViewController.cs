@@ -16,7 +16,7 @@ namespace OpFlow.iOS
         private List<RoomSetup> _roomSetups;
 
         private OpFlowTextPicker _roomTypePicker;
-        private OpFlowTextPicker _roomPicker;
+        private OpFlowTextPicker _positionPicker;
 
         private int _roomTypeId;
 
@@ -27,8 +27,6 @@ namespace OpFlow.iOS
         public override async void ViewDidLoad()
         {
             base.ViewDidLoad();
-
-            txtRoom.Enabled = false;
 
             await LoadDropdowns();
             _roomSetups = await LookupUtil.GetRoomSetups();
@@ -49,15 +47,13 @@ namespace OpFlow.iOS
             if (roomTypeId <= 0 || _roomTypeId == roomTypeId) return;
 
             // Reset room whenever the room type changes
-            txtRoom.Enabled = true;
-            txtRoom.Text = "";
 
             _roomTypeId = roomTypeId;
 
             var rooms = await LookupUtil.GetRooms();
             rooms = rooms.Where(r => r.RoomTypeID == roomTypeId).ToList();
 
-            _roomPicker = new OpFlowTextPicker(txtRoom, rooms.Cast<IBindableEntity>().ToList());
+            _positionPicker = new OpFlowTextPicker(txtPosition, rooms.Cast<IBindableEntity>().ToList());
 
             var roomSetups = _roomSetups.Where(rs => rs.RoomTypeID == roomTypeId).ToList();
             var roomTableViewSource = new RoomSetupSearchTVS(roomSetups);

@@ -13,9 +13,8 @@ namespace OpFlow.iOS
 
         public void UpdateCell(RoomSetup roomSetup)
         {
-            lblDescription.Text = roomSetup.SetupName;
-            lblPosition.Text = roomSetup.PatientPosition;
-            lblSurgeonPosition.Text = roomSetup.SurgeonPosition;
+            lblDetails.Text = $"{roomSetup.SetupName} - {roomSetup.PatientPosition}";
+            lblSummary.Text = roomSetup.SurgeonPosition;
         }
     }
 }
