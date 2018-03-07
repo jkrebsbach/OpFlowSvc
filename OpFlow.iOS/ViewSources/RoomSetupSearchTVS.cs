@@ -41,5 +41,12 @@ namespace OpFlow.iOS.ViewSources
 
             EntitySelectionEvent?.Invoke(this, entity);
         }
+
+        public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath)
+        {
+            var defaultSize = 50.0f;
+
+            return defaultSize;
+        }
     }
 }

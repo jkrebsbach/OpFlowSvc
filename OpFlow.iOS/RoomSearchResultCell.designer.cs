@@ -16,7 +16,11 @@ namespace OpFlow.iOS
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblDetails { get; set; }
+        UIKit.UILabel lblInstruments { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblOverview { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -24,9 +28,14 @@ namespace OpFlow.iOS
 
         void ReleaseDesignerOutlets ()
         {
-            if (lblDetails != null) {
-                lblDetails.Dispose ();
-                lblDetails = null;
+            if (lblInstruments != null) {
+                lblInstruments.Dispose ();
+                lblInstruments = null;
+            }
+
+            if (lblOverview != null) {
+                lblOverview.Dispose ();
+                lblOverview = null;
             }
 
             if (lblSummary != null) {

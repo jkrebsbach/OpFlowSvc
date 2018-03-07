@@ -67,14 +67,14 @@ namespace OpFlow.iOS
             var roomSetup = roomSetups.FirstOrDefault(rs => rs.RoomSetupID == AppSettings.CurrentRoomSetup);
             if (roomSetup != null)
             {
-                var selectionIndex = roomSetup.IndexOf(roomSetup);
+                var selectionIndex = roomSetups.IndexOf(roomSetup);
                 RoomSearchTableView.SelectRow(NSIndexPath.FromRowSection(selectionIndex, 0), true, UITableViewScrollPosition.Bottom);
             }
 
             roomTableViewSource.EntitySelectionEvent += SelectRoomSetup;
         }
 
-        protected void SelectRoomSetup(Object sender, IBindableEntity roomSetup)
+        protected async void SelectRoomSetup(Object sender, IBindableEntity roomSetup)
         {
             await SurgeryUtil.AssignRoomSetup(AppSettings.CurrentSurgery ?? -1, roomSetup.GetID());
             AppSettings.CurrentRoomSetup = roomSetup.GetID();
