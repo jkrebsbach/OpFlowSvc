@@ -22,10 +22,6 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblCaseProcedure { get; set; }
 
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UISwitch switchSelectCase { get; set; }
-
         void ReleaseDesignerOutlets ()
         {
             if (lblCaseOverview != null) {
@@ -36,11 +32,6 @@ namespace OpFlow.iOS
             if (lblCaseProcedure != null) {
                 lblCaseProcedure.Dispose ();
                 lblCaseProcedure = null;
-            }
-
-            if (switchSelectCase != null) {
-                switchSelectCase.Dispose ();
-                switchSelectCase = null;
             }
         }
     }

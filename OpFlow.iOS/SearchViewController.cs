@@ -81,14 +81,16 @@ namespace OpFlow.iOS
 
             CaseSearchTableView.Source = surgeryTableViewSource;
             CaseSearchTableView.ReloadData();
+
+            surgeryTableViewSource.EntitySelectionEvent += SelectCase;
         }
 
-        partial void switchSelectAll_Click(UISwitch sender)
+        protected void SelectCase(Object sender, SurgerySearchResult surgery)
         {
-            var tableSource = CaseSearchTableView.Source as SearchCaseTVS;
+            AppSettings.LoadSurgery(surgery.SurgeryID, surgery.PatientID);
 
-            tableSource?.SelectAll(switchSelectAll.On);
-            CaseSearchTableView.ReloadData();
+            NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
+            
         }
 
         private async Task LoadDropdowns()

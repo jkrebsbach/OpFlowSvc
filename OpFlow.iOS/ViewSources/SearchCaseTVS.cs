@@ -12,6 +12,7 @@ namespace OpFlow.iOS.ViewSources
     public class SearchCaseTVS : UITableViewSource
     {
         private readonly List<SurgerySearchModel> _surgeries;
+        public event EventHandler<SurgerySearchResult> EntitySelectionEvent;
 
         public SearchCaseTVS(List<SurgerySearchResult> surgeries)
         {
@@ -52,6 +53,13 @@ namespace OpFlow.iOS.ViewSources
             {
                 Surgery = surgery;
             }
+        }
+
+        public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
+        {
+            var entity = _surgeries[indexPath.Row];
+
+            EntitySelectionEvent?.Invoke(this, entity.Surgery);
         }
     }
 }

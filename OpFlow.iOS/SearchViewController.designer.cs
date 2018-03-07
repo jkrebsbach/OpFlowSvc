@@ -20,10 +20,6 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UISwitch switchSelectAll { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField txtBeginDate { get; set; }
 
         [Outlet]
@@ -62,20 +58,11 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField txtSurgeon { get; set; }
 
-        [Action ("switchSelectAll_Click:")]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        partial void switchSelectAll_Click (UIKit.UISwitch sender);
-
         void ReleaseDesignerOutlets ()
         {
             if (CaseSearchTableView != null) {
                 CaseSearchTableView.Dispose ();
                 CaseSearchTableView = null;
-            }
-
-            if (switchSelectAll != null) {
-                switchSelectAll.Dispose ();
-                switchSelectAll = null;
             }
 
             if (txtBeginDate != null) {

@@ -59,6 +59,7 @@ namespace OpFlow.Data
         public string SurgeryStatus { get; set; }
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
+        public int PatientID { get; set; }
         public DateTime ScheduleDate { get; set; }
         public TimeSpan ScheduleTime { get; set; }
         public int EstDelayMinutes { get; set; }
@@ -66,7 +67,7 @@ namespace OpFlow.Data
         public int BundleID { get; set; }
         public int ProcedureID { get; set; }
         public string BundleDescription { get; set; }
-        public string ProcedureDescription{ get; set; }
+        public string ProcedureDescription { get; set; }
         public int RoleID1 { get; set; }
         public string RoleID1Name { get; set; }
         public int RoleID2 { get; set; }
@@ -84,5 +85,26 @@ namespace OpFlow.Data
         public int RoleID8 { get; set; }
         public string RoleID8Name { get; set; }
         public string RoomDescription { get; set; }
+
+        public string SurgeryTeam()
+        {
+            var names = new List<string>();
+            ParseName(names, RoleID1Name);
+            ParseName(names, RoleID2Name);
+            ParseName(names, RoleID3Name);
+            ParseName(names, RoleID4Name);
+            ParseName(names, RoleID5Name);
+            ParseName(names, RoleID6Name);
+            ParseName(names, RoleID7Name);
+            ParseName(names, RoleID8Name);
+
+            return string.Join(", ", names);
+        }
+
+        private void ParseName(List<string> names, string token)
+        {
+            if (!string.IsNullOrEmpty(token))
+                names.Add(token);
+        }
     }
 }
