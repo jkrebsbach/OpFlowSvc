@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace OpFlow.Data
@@ -42,6 +43,7 @@ namespace OpFlow.Data
 
     public class RoomSetup
     {
+        public string PatientAccess { get; set; }
         public int RoomSetupID { get; set; }
         public int RoomTypeID { get; set; }
         public int OwnerUserID { get; set; }
@@ -55,7 +57,14 @@ namespace OpFlow.Data
         public List<RoomSetupStaffPosition> StaffPositions { get; set; }
         public List<RoomSetupEquipment> SetupEquipment { get; set; }
 
-        public RoomSetup()
+		public string EquipmentList()
+        {
+            var result = SetupEquipment.Join(",", SetupEquipment.Select(se => se.ItemDescription));
+
+            return result;
+        }
+
+		public RoomSetup()
         {
             SetupEquipment = new List<RoomSetupEquipment>();
         }

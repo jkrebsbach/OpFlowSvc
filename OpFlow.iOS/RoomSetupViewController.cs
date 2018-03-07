@@ -41,9 +41,10 @@ namespace OpFlow.iOS
             _positionPicker = new OpFlowTextPicker(txtPosition, positions.Cast<IBindableEntity>().ToList());
 
             _roomTypePicker.ValueChanged += UpdateRoomType;
+            _positionPicker.ValueChanged += UpdateRoomType;
         }
 
-        private async void UpdateRoomType(object sender, EventArgs e)
+        private void UpdateRoomType(object sender, EventArgs e)
         {
             var roomTypeId = _roomTypePicker.GetCurrentId();
             var position = _positionPicker.GetCurrentId();

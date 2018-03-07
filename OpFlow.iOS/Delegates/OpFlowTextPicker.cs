@@ -12,6 +12,7 @@ namespace OpFlow.iOS.Delegates
     public class OpFlowTextPicker : UIPickerView
     {
         private readonly UITextField _associatedField;
+        private IBindableEntity _selection;
 
         public UITextField AssociatedField => _associatedField;
 
@@ -19,10 +20,7 @@ namespace OpFlow.iOS.Delegates
 
         public int GetCurrentId()
         {
-            var selection = (Model as BasicPickerModel)?.CurrentSelection(
-                SelectedRowInComponent(0));
-
-            return selection?.GetID() ?? 0;
+            return _selection?.GetID() ?? 0;
         }
 
         [Export("DoneAction")]
@@ -41,6 +39,8 @@ namespace OpFlow.iOS.Delegates
 
         private void UpdateSelection(IBindableEntity selection)
         {
+            _selection = selection;
+
             var text = selection?.ToString();
             if (selection?.GetID() == 0)
                 text = string.Empty;
