@@ -59,7 +59,7 @@ namespace OpFlow.Data
 
 		public string EquipmentList()
         {
-            var result = SetupEquipment.Join(",", SetupEquipment.Select(se => se.ItemDescription));
+            var result = string.Join(",", SetupEquipment.Select(se => se.ItemDescription));
 
             return result;
         }
