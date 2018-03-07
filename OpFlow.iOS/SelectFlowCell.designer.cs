@@ -1,4 +1,4 @@
-// WARNING
+﻿// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -18,11 +18,20 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblFlowDescription { get; set; }
 
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblFlowSummary { get; set; }
+
         void ReleaseDesignerOutlets ()
         {
             if (lblFlowDescription != null) {
                 lblFlowDescription.Dispose ();
                 lblFlowDescription = null;
+            }
+
+            if (lblFlowSummary != null) {
+                lblFlowSummary.Dispose ();
+                lblFlowSummary = null;
             }
         }
     }

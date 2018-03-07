@@ -354,6 +354,9 @@
     <BundleResource Include="Resources\ic_hotel_blue_700_36pt.png" />
     <BundleResource Include="Resources\ic_hotel_blue_700_36pt%402x.png" />
     <BundleResource Include="Resources\ic_hotel_blue_700_36pt%403x.png" />
+    <BundleResource Include="Resources\ic_loop_blue_dark_36pt.png" />
+    <BundleResource Include="Resources\ic_loop_blue_dark_36pt%402x.png" />
+    <BundleResource Include="Resources\ic_loop_blue_dark_36pt%403x.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">

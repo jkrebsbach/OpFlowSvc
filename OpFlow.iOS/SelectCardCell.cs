@@ -18,8 +18,8 @@ namespace OpFlow.iOS
             if (card == null)
                 return;
 
-            lblCardDetail.Text = card.CardDescription;
-            lblCardSummary.Text = $"Avg Time:{card.AvgMinutes} Cost: ${card.Cost}";
+            lblCardDetail.Text = $"{card.CardDescription} - {card.OwnerLastName}";
+            lblCardSummary.Text = $"Avg Time:{card.AvgMinutes} Cost: ${card.Cost} Used:{card.TimesUsed}";
         }
     }
 }

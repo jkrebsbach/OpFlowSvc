@@ -18,7 +18,8 @@ namespace OpFlow.iOS
             if (flow == null)
                 return;
 
-            lblFlowDescription.Text = $"{flow?.FlowDescription} (Avg Time: ${flow?.AvgMinutes})";
+            lblFlowDescription.Text = $"{flow?.FlowDescription} - {flow?.OwnerLastName}";
+            lblFlowSummary.Text = $"Avg Time: {flow?.AvgMinutes} Used: {flow?.TimesUsed}";
         }
     }
 }

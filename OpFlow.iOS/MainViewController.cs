@@ -197,11 +197,18 @@ namespace OpFlow.iOS
 
                     navigationAction = NavigateBack;
                     break;
-                default:
+                case CustomButtonType.Done:
                     uiButton = new UIButton(new CGRect(0, 0, 75, 40));
                     uiButton.SetTitle("Done", UIControlState.Normal);
                     uiButton.SetTitleColor(uiButton.TintColor, UIControlState.Normal);
                     break;
+                case CustomButtonType.Update:
+                    uiButton = new UIButton(new CGRect(0, 0, 75, 40));
+                    uiButton.SetImage(UIImage.FromBundle("ic_loop_blue_dark_36pt.png"), UIControlState.Normal);
+                    uiButton.ImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
+                    break;
+                default:
+                    throw new NotImplementedException("Nav Button type not implemented");
             }
 
             var containView = new UIView(new CGRect(0, 0, uiButton.Frame.Width, uiButton.Frame.Height));
@@ -222,7 +229,8 @@ namespace OpFlow.iOS
         {
             Compose,
             Cancel,
-            Done
+            Done,
+            Update
         }
 
 
@@ -273,7 +281,7 @@ namespace OpFlow.iOS
                     customBackButton = SetupCustomBack("Surgery");
                     await _containerViewController.PresentDetailViewAsync();
 
-                    rightButton = SetupCustomEdit(CustomButtonType.Compose);
+                    rightButton = SetupCustomEdit(CustomButtonType.Update);
                     break;
 
                 case AppSettings.FragmentEnum.CardList:
@@ -287,7 +295,7 @@ namespace OpFlow.iOS
                     customBackButton = SetupCustomBack("Surgery");
                     await _containerViewController.PresentDetailViewAsync();
                     
-                    rightButton = SetupCustomEdit(CustomButtonType.Compose);
+                    rightButton = SetupCustomEdit(CustomButtonType.Update);
                     break;
 
                 case AppSettings.FragmentEnum.CardAssignment:
