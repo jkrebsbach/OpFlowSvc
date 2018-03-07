@@ -28,6 +28,13 @@ namespace OpFlow.Mobile
 
             return genders;
         }
+        public static async Task<List<PatientPosition>> GetPatientPositions()
+        {
+            var command = string.Format("api/room/patientPositions");
+            var response = await WebUtility.WebRequest<List<PatientPosition>>(command, HttpMethod.Get);
+
+            return response;
+        }
         public static async Task<List<CardBundle>> GetBundles(int specialtyId)
         {
             var command = string.Format("api/bundle?specialtyId={0}", specialtyId);

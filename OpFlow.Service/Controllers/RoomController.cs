@@ -40,7 +40,19 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            return DataAccess.SqlHelper.GetRoomSetups(user.ProviderID, user.LocationID);
+            var setups = DataAccess.SqlHelper.GetRoomSetups(user.ProviderID, user.LocationID);
+
+            return setups;
+        }
+        // GET api/values
+        [SwaggerOperation("GetPatientPositions")]
+        [Route("api/room/patientPositions")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<PatientPosition>))]
+        public IEnumerable<PatientPosition> GetPatientPositions()
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            return DataAccess.SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
         }
     }
 }

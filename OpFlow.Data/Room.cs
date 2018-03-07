@@ -53,6 +53,12 @@ namespace OpFlow.Data
         public string Comments { get; set; }
 
         public List<RoomSetupStaffPosition> StaffPositions { get; set; }
+        public List<RoomSetupEquipment> SetupEquipment { get; set; }
+
+        public RoomSetup()
+        {
+            SetupEquipment = new List<RoomSetupEquipment>();
+        }
     }
 
     public class RoomSetupStaffPosition
@@ -60,5 +66,13 @@ namespace OpFlow.Data
         public int StaffRoleID { get; set; }
         public string StaffPosition { get; set; }
     }
-    
+
+    public class RoomSetupEquipment
+    {
+        public int RoomSetupID { get; set; }
+        public int RoomSetupEquipmentID { get; set; }
+        public int ItemID { get; set; }
+        public string ItemDescription { get; set; }
+        public string EquipmentPosition { get; set; }
+    }
 }

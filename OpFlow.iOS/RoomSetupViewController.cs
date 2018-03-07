@@ -37,25 +37,24 @@ namespace OpFlow.iOS
             var roomTypes = await LookupUtil.GetRoomTypes();
             _roomTypePicker = new OpFlowTextPicker(txtRoomType, roomTypes.Cast<IBindableEntity>().ToList());
 
+            var positions = await LookupUtil.GetPatientPositions();
+            _positionPicker = new OpFlowTextPicker(txtPosition, positions.Cast<IBindableEntity>().ToList());
+
             _roomTypePicker.ValueChanged += UpdateRoomType;
         }
 
         private async void UpdateRoomType(object sender, EventArgs e)
         {
             var roomTypeId = _roomTypePicker.GetCurrentId();
-
-            if (roomTypeId <= 0 || _roomTypeId == roomTypeId) return;
+            var position = _positionPicker.GetCurrentId();
 
             // Reset room whenever the room type changes
-
+            if (roomTypeId <= 0 || _roomTypeId == roomTypeId) return;
             _roomTypeId = roomTypeId;
 
-            var rooms = await LookupUtil.GetRooms();
-            rooms = rooms.Where(r => r.RoomTypeID == roomTypeId).ToList();
-
-            _positionPicker = new OpFlowTextPicker(txtPosition, rooms.Cast<IBindableEntity>().ToList());
-
-            var roomSetups = _roomSetups.Where(rs => rs.RoomTypeID == roomTypeId).ToList();
+            // If a patient position is selected, apply filter
+            var roomSetups = _roomSetups.Where(rs => rs.RoomTypeID == roomTypeId && 
+                (position <= 0 || rs.PatientPosition.ToUpper() == txtPosition.Text.ToUpper())).ToList();
             var roomTableViewSource = new RoomSetupSearchTVS(roomSetups);
 
             RoomSearchTableView.Source = roomTableViewSource;

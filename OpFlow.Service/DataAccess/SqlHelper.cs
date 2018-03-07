@@ -520,7 +520,27 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = ExecuteCommand("GetRoomSetups", dsParameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<RoomSetup>();
+            var setups = dsSchedules.Tables[0].DataTableToList<RoomSetup>();
+            var setupItems = dsSchedules.Tables[1].DataTableToList<RoomSetupEquipment>();
+
+            foreach (var setupItem in setupItems)
+            {
+                var setup = setups.FirstOrDefault(s => s.RoomSetupID == setupItem.RoomSetupID);
+                setup?.SetupEquipment.Add(setupItem);
+            }
+            return setups;
+        }
+
+        public static List<PatientPosition> GetPatientPositions(int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = ExecuteCommand("GetPatientPositions", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<PatientPosition>();
 
             return result;
         }
