@@ -18,7 +18,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Get")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Flow))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage GetFlow(int flowId, int cardId, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetFlow(int flowId, int? cardId = null, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 

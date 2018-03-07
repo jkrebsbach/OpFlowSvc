@@ -890,12 +890,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static Flow GetFlow(int flowId, int cardId, int providerId, int locationId)
+        public static Flow GetFlow(int flowId, int? cardId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("flow_id", flowId),
-                new SqlParameter("card_id", cardId),
+                new SqlParameter("card_id", cardId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
