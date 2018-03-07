@@ -461,17 +461,6 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("NewSurgery", dsParameters);
         }
 
-        public static int CreatePatient(PatientPost patient)
-        {
-            var dsParameters = new[]
-            {
-                new SqlParameter("initials", patient.Initials),
-                new SqlParameter("birth_date", patient.BirthDate),
-                new SqlParameter("gender", patient.Gender)
-            };
-            return ExecuteNonQuery("NewPatient", dsParameters);
-        }
-
         public static int CreateCase(PatientCase newCase)
         {
             var dsParameters = new[]

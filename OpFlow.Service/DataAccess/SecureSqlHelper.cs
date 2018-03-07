@@ -40,6 +40,33 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
+        private static int ExecuteNonQuery(string storedProcedure, string secureDatabase, SqlParameter[] dsParameters = null)
+        {
+            var secureConnString =
+                string.Format(ConfigurationManager.ConnectionStrings["SecureConnection"].ConnectionString,
+                    secureDatabase);
+
+            var conn = new SqlConnection(secureConnString);
+
+            var cmd = new SqlCommand(storedProcedure, conn) { CommandType = CommandType.StoredProcedure };
+
+            cmd.Parameters.AddRange(dsParameters);
+
+            conn.Open();
+
+            var result = -1;
+
+            using (var dataAdapter = new SqlDataAdapter(cmd))
+            {
+                result = cmd.ExecuteNonQuery();
+
+                cmd.Parameters.Clear();
+                conn.Close();
+
+                return result;
+            }
+        }
+
         public static Patient GetPatient(int patientId, string databaseName)
         {
             var parameters = new[]
@@ -62,6 +89,17 @@ namespace OpFlow.Service.DataAccess
             }
 
             return patients.FirstOrDefault();
+        }
+
+        public static int CreatePatient(PatientPost patient, string databaseName)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("initials", patient.Initials),
+                new SqlParameter("birth_date", patient.BirthDate),
+                new SqlParameter("gender", patient.Gender)
+            };
+            return ExecuteNonQuery("NewPatient", databaseName, dsParameters);
         }
     }
 }
