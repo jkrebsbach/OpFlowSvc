@@ -15,6 +15,7 @@ namespace OpFlow.Data
         public int ProcedureID { get; set; }
         public int BundleID { get; set; }
         public int RoomID { get; set; }
+        public int RoomSetupID { get; set; }
         public int FlowID { get; set; }
         public int UserID { get; set; }
         public int UserRoleID { get; set; }

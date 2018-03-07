@@ -41,7 +41,7 @@ namespace OpFlow.Data
         }
     }
 
-    public class RoomSetup
+    public class RoomSetup : IBindableEntity
     {
         public string PatientAccess { get; set; }
         public int RoomSetupID { get; set; }
@@ -68,6 +68,16 @@ namespace OpFlow.Data
 		public RoomSetup()
         {
             SetupEquipment = new List<RoomSetupEquipment>();
+        }
+
+        public int GetID()
+        {
+            return RoomSetupID;
+        }
+
+        public override string ToString()
+        {
+            return RoomTypeDescription;
         }
     }
 

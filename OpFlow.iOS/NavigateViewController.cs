@@ -126,6 +126,7 @@ namespace OpFlow.iOS
             AppSettings.CurrentCard = _surgery.CardID;
             AppSettings.CurrentProcedure = _surgery.ProcedureID;
             AppSettings.CurrentFlow = _surgery.FlowID;
+            AppSettings.CurrentRoomSetup = _surgery.RoomSetupID;
 
             _patient = await PatientUtil.GetPatient(_surgery.PatientID);
             _flow = await FlowUtil.GetFlow(_surgery.FlowID, _surgery.CardID);

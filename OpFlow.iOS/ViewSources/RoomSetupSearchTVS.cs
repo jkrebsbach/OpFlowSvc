@@ -13,6 +13,8 @@ namespace OpFlow.iOS.ViewSources
     {
         private readonly List<RoomSetup> _roomSetups;
 
+        public event EventHandler<IBindableEntity> EntitySelectionEvent;
+
         public RoomSetupSearchTVS(List<RoomSetup> roomSetups)
         {
             _roomSetups = roomSetups;
@@ -31,6 +33,13 @@ namespace OpFlow.iOS.ViewSources
         public override nint RowsInSection(UITableView tableview, nint section)
         {
             return _roomSetups.Count;
+        }
+
+        public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
+        {
+            var entity = _roomSetups[indexPath.Row];
+
+            EntitySelectionEvent?.Invoke(this, entity);
         }
     }
 }

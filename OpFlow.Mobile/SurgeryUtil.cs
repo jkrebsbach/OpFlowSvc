@@ -91,6 +91,15 @@ namespace OpFlow.Mobile
             return response;
         }
 
+        public static async Task<string> AssignRoomSetup(int surgeryId, int roomSetupId)
+        {
+            var command = string.Format("api/surgery/assignRoomSetup?surgeryId={0}&roomSetupId={1}", surgeryId, roomSetupId);
+
+            var response = await WebUtility.PostBodyRequest<string>(command, 0);
+
+            return response;
+        }
+
         public static async Task<Surgery> GetSurgery(int surgeryId, int providerId, int locationId)
         {
             var command = string.Format("api/surgery?surgeryId={0}&providerId={1}&locationId={2}",

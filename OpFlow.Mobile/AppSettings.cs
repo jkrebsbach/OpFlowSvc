@@ -91,6 +91,7 @@ namespace OpFlow.Mobile
         public static int? CurrentCard { get; set; }
         public static int? CurrentProcedure { get; set; }
         public static int? CurrentFlow { get; set; }
+        public static int? CurrentRoomSetup { get; set; }
 
         public static string CurrentUserTitle => string.Format("{0} {1}", CurrentUser?.Title, CurrentUser?.LastName);
 
