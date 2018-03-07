@@ -17,7 +17,8 @@ namespace OpFlow.iOS
         private OpFlowTextPicker _specialtyPicker;
         private OpFlowTextPicker _surgeonPicker;
 
-        private OpFlowTextDatePicker _surgeryDate;
+        private OpFlowTextDatePicker _beginDate;
+        private OpFlowTextDatePicker _endDate;
 
         public SearchViewController (IntPtr handle) : base (handle)
         {
@@ -30,7 +31,11 @@ namespace OpFlow.iOS
             SetupDoneStyleTextField(txtCase, false);
             SetupDoneStyleTextField(txtPatient, false);
 
-            _surgeryDate = new OpFlowTextDatePicker(txtDate)
+            _beginDate = new OpFlowTextDatePicker(txtBeginDate)
+            {
+                Mode = UIDatePickerMode.Date
+            };
+            _endDate = new OpFlowTextDatePicker(txtEndDate)
             {
                 Mode = UIDatePickerMode.Date
             };
@@ -48,7 +53,8 @@ namespace OpFlow.iOS
             int? surgeonId = null;
             int? roomId = null;
             string caseNbr = null;
-            DateTime? surgeryDate = null;
+            DateTime? beginDate = null;
+            DateTime? endDate = null;
 
             if (txtCase.Text != "")
                 caseNbr = txtCase.Text;
@@ -59,13 +65,16 @@ namespace OpFlow.iOS
             if (txtRoom.Text != "")
                 roomId = _roomPicker.GetCurrentId();
 
-            if (txtDate.Text != "")
-                surgeryDate = _surgeryDate.Date.ToDateTime().Date;
+            if (txtBeginDate.Text != "")
+                beginDate = _beginDate.Date.ToDateTime().Date;
+            
+            if (txtEndDate.Text != "")
+                endDate = _endDate.Date.ToDateTime().Date;
 
             var surgeries = new List<SurgerySearchResult>();
             if (caseNbr != null || surgeonId != null || roomId != null)
             {
-                surgeries = await SurgeryUtil.SearchCases(caseNbr, surgeonId, roomId, surgeryDate);
+                surgeries = await SurgeryUtil.SearchCases(caseNbr, surgeonId, roomId, beginDate, endDate);
             }
 
             var surgeryTableViewSource = new SearchCaseTVS(surgeries);

@@ -24,6 +24,10 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UITextField txtBeginDate { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField txtCase { get; set; }
 
         [Outlet]
@@ -32,7 +36,7 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITextField txtDate { get; set; }
+        UIKit.UITextField txtEndDate { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -74,6 +78,11 @@ namespace OpFlow.iOS
                 switchSelectAll = null;
             }
 
+            if (txtBeginDate != null) {
+                txtBeginDate.Dispose ();
+                txtBeginDate = null;
+            }
+
             if (txtCase != null) {
                 txtCase.Dispose ();
                 txtCase = null;
@@ -84,9 +93,9 @@ namespace OpFlow.iOS
                 txtCRNA = null;
             }
 
-            if (txtDate != null) {
-                txtDate.Dispose ();
-                txtDate = null;
+            if (txtEndDate != null) {
+                txtEndDate.Dispose ();
+                txtEndDate = null;
             }
 
             if (txtPA != null) {

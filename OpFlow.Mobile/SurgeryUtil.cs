@@ -25,7 +25,7 @@ namespace OpFlow.Mobile
             return response;
         }
         public static async Task<List<SurgerySearchResult>> SearchCases(string caseNbr, int? surgeonUserId, int? roomId,
-            DateTime? surgeryDate)
+            DateTime? beginDate, DateTime? endDate)
         {
             var command = $"api/surgery/searchCases?";
             var strDelim = string.Empty;
@@ -45,11 +45,12 @@ namespace OpFlow.Mobile
                 command += $"{strDelim}surgeonUserId={surgeonUserId}";
                 strDelim = "&";
             }
-            if (surgeryDate.HasValue)
+            if (beginDate.HasValue && endDate.HasValue)
             {
-                var strSurgeryDate = surgeryDate.Value.ToString("MM-dd-yyyy");
+                var strBeginDate = beginDate.Value.ToString("MM-dd-yyyy");
+                var strEndDate = endDate.Value.ToString("MM-dd-yyyy");
 
-                command += $"{strDelim}begDate={strSurgeryDate}&endDate={strSurgeryDate}";
+                command += $"{strDelim}begDate={strBeginDate}&endDate={strEndDate}";
                 strDelim = "&";
             }
 
