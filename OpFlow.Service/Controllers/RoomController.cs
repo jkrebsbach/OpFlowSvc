@@ -16,11 +16,15 @@ namespace OpFlow.Service.Controllers
         // GET api/values
         [SwaggerOperation("GetByLocationId")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Room>))]
-        public IEnumerable<Room> Get(int? locationId = null)
+        public IEnumerable<Room> Get(int? roomId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            return DataAccess.SqlHelper.GetRooms(user.LocationID);
+            var rooms = DataAccess.SqlHelper.GetRooms(user.LocationID);
+            if (roomId.HasValue)
+                rooms = rooms.Where(r => r.RoomID == roomId).ToList();
+
+            return rooms;
         }
         // GET api/values
         [SwaggerOperation("GetTypes")]
