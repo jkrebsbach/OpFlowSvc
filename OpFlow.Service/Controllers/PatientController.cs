@@ -35,7 +35,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetByList")]
         [Route("api/patient/array")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<Patient>))]
-        public HttpResponseMessage GetArray(string patientIdArrayJson)
+        public async Task<HttpResponseMessage> GetArray(string patientIdArrayJson)
         {
             var user = CacheUtil.GetUserSecurity();
 
@@ -49,7 +49,7 @@ namespace OpFlow.Service.Controllers
             {
                 foreach (var patientId in patientIds)
                 {
-                    var patient = DataAccess.SecureSqlHelper.GetPatient(patientId, user.DatabaseName);
+                    var patient = await DataAccess.SecureSqlHelper.GetPatient(patientId, user.DatabaseName);
                     if (patient != null)
                         patients.Add(patient);
                 }
@@ -61,13 +61,14 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("Create")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        public async Task<IHttpActionResult> Post([FromBody]PatientPost patient)
+        public async Task<HttpResponseMessage> Post([FromBody]PatientPost patient)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SecureSqlHelper.CreatePatient(patient, user.DatabaseName);
+            var patientId = await DataAccess.SecureSqlHelper.CreatePatient(patient.PatientAcctNbr, patient.Initials,
+                patient.BirthDate, patient.Gender, user.DatabaseName);
 
-            return Ok();
+            return Request.CreateResponse(HttpStatusCode.Created, patientId);
         }
 
         // PUT api/values/5

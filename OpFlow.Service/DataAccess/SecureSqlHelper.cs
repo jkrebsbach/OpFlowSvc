@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using System.Web;
 using OpFlow.Data;
 
@@ -12,7 +13,7 @@ namespace OpFlow.Service.DataAccess
 {
     public static class SecureSqlHelper 
     {
-        private static DataSet ExecuteCommand(string storedProcedure, string secureDatabase, SqlParameter[] dsParameters = null)
+        private static async Task<DataSet> ExecuteCommandAsync(string storedProcedure, string secureDatabase, SqlParameter[] dsParameters = null)
         {
             var secureConnString =
                 string.Format(ConfigurationManager.ConnectionStrings["SecureConnection"].ConnectionString,
@@ -25,11 +26,11 @@ namespace OpFlow.Service.DataAccess
             if (dsParameters != null)
                 cmd.Parameters.AddRange(dsParameters);
 
-            conn.Open();
+            await conn.OpenAsync();
 
             using (var dataAdapter = new SqlDataAdapter(cmd))
             {
-                DataSet ds = new DataSet();
+                var ds = new DataSet();
 
                 dataAdapter.Fill(ds);
 
@@ -40,7 +41,7 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        private static int ExecuteNonQuery(string storedProcedure, string secureDatabase, SqlParameter[] dsParameters = null)
+        private static async Task<int> ExecuteNonQuery(string storedProcedure, string secureDatabase, SqlParameter[] dsParameters = null)
         {
             var secureConnString =
                 string.Format(ConfigurationManager.ConnectionStrings["SecureConnection"].ConnectionString,
@@ -52,28 +53,23 @@ namespace OpFlow.Service.DataAccess
 
             cmd.Parameters.AddRange(dsParameters);
 
-            conn.Open();
+            await conn.OpenAsync();
 
-            var result = -1;
+            var result = cmd.ExecuteNonQuery();
 
-            using (var dataAdapter = new SqlDataAdapter(cmd))
-            {
-                result = cmd.ExecuteNonQuery();
+            cmd.Parameters.Clear();
+            conn.Close();
 
-                cmd.Parameters.Clear();
-                conn.Close();
-
-                return result;
-            }
+            return result;
         }
 
-        public static Patient GetPatient(int patientId, string databaseName)
+        public static async Task<Patient> GetPatient(int patientId, string databaseName)
         {
             var parameters = new[]
             {
                 new SqlParameter("patient_id", patientId)
             };
-            var dsSchedules = ExecuteCommand("GetPatient", databaseName, parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetPatient", databaseName, parameters);
 
             var patients = dsSchedules.Tables[0].DataTableToList<Patient>();
             var demos = dsSchedules.Tables[1].DataTableToList<PatientDemo>();
@@ -82,24 +78,26 @@ namespace OpFlow.Service.DataAccess
             {
                 var patient = patients.FirstOrDefault(p => p.PatientID == demo.PatientID);
 
-                if (patient == null)
-                    continue;
-
-                patient.DemoData.Add(demo);
+                patient?.DemoData.Add(demo);
             }
 
             return patients.FirstOrDefault();
         }
 
-        public static int CreatePatient(PatientPost patient, string databaseName)
+        public static async Task<int> CreatePatient(string ptAcctNbr, string initials, DateTime birthDate, string gender, string databaseName)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("initials", patient.Initials),
-                new SqlParameter("birth_date", patient.BirthDate),
-                new SqlParameter("gender", patient.Gender)
+                new SqlParameter("pt_acct_nbr", ptAcctNbr),
+                new SqlParameter("initials", initials),
+                new SqlParameter("birth_date", birthDate),
+                new SqlParameter("gender", gender)
             };
-            return ExecuteNonQuery("NewPatient", databaseName, dsParameters);
+            var insert = await ExecuteCommandAsync("NewPatient", databaseName, dsParameters);
+
+            var result = insert.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.FirstOrDefault()?.Identifier ?? -1;
         }
     }
 }

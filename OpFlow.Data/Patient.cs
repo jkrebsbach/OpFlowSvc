@@ -7,6 +7,7 @@ namespace OpFlow.Data
     public class Patient
     {
         public int PatientID { get; set; }
+        public string PatientAcctNbr { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Initials { get; set; }
@@ -24,6 +25,7 @@ namespace OpFlow.Data
 
     public class PatientPost
     {
+        public string PatientAcctNbr { get; set; }
         public string Initials { get; set; }
         public DateTime BirthDate { get; set; }
         public string Gender { get; set; }

@@ -41,14 +41,15 @@ namespace OpFlow.Data
 
     public class SurgeryPost
     {
-        public int ProviderID { get; set; }
-        public int LocationID { get; set; }
-        public int PatientID { get; set; }
+        public string CaseNbr { get; set; }
+        public string PtAcctNbr { get; set; }
+        public DateTime PtDOB { get; set; }
+        public string PtInitials { get; set; }
+        public string PtGender { get; set; }
         public int UserID { get; set; }
         public int SpecialtyID { get; set; }
-        public int BundleID { get; set; }
-        public int ProcedureID { get; set; }
-        public int CaseID { get; set; }
+        public int? BundleID { get; set; }
+        public int? ProcedureID { get; set; }
         public DateTime ScheduleDate { get; set; }
     }
 

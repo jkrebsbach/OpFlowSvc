@@ -444,34 +444,43 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UpdateCardItemQty", dsParameters);
         }
 
-        public static int CreateSurgery(SurgeryPost surgery)
+        public static int CreateSurgery(SurgeryPost surgery, int providerId, int locationId, int patientId, int caseId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", surgery.ProviderID),
-                new SqlParameter("location_id", surgery.LocationID),
-                new SqlParameter("patient_id", surgery.PatientID),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("patient_id", patientId),
                 new SqlParameter("user_id", surgery.UserID),
                 new SqlParameter("specialty_id", surgery.SpecialtyID),
-                new SqlParameter("bundle_id", surgery.BundleID),
-                new SqlParameter("procedure_id", surgery.ProcedureID),
-                new SqlParameter("case_id", surgery.CaseID),
+                new SqlParameter("bundle_id", surgery.BundleID ?? (object)DBNull.Value),
+                new SqlParameter("procedure_id", surgery.ProcedureID ?? (object)DBNull.Value),
+                new SqlParameter("case_id", caseId),
                 new SqlParameter("schedule_date", surgery.ScheduleDate)
             };
-            return ExecuteNonQuery("NewSurgery", dsParameters);
+            var insert = ExecuteCommand("NewSurgery", dsParameters);
+
+            var result = insert.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public static int CreateCase(PatientCase newCase)
+        public static int CreateCase(int patientId, int userId, int specialtyId, int providerId, int locationId, string caseNbr)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", newCase.ProviderID),
-                new SqlParameter("location_id", newCase.LocationID),
-                new SqlParameter("patient_id", newCase.PatientID),
-                new SqlParameter("user_id", newCase.UserID),
-                new SqlParameter("specialty_id", newCase.SpecialtyID)
+                new SqlParameter("patient_id", patientId),
+                new SqlParameter("user_id", userId),
+                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("case_nbr", caseNbr)
             };
-            return ExecuteNonQuery("NewCase", dsParameters);
+            var insert = ExecuteCommand("NewCase", dsParameters);
+
+            var result = insert.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
         public static List<Room> GetRooms(int locationId)

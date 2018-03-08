@@ -15,7 +15,6 @@ namespace OpFlow.iOS
     {
 
         Surgery _surgery;
-        Flow _flow;
         Patient _patient;
         
         public NavigateViewController (IntPtr handle) : base (handle)
@@ -76,11 +75,21 @@ namespace OpFlow.iOS
 
         partial void btnCard_Click(UIButton sender)
         {
+            if (_surgery.CardID <= 0)
+            {
+                NavigateScreen(AppSettings.FragmentEnum.CardAssignment);
+                return;
+            }
             NavigateScreen(AppSettings.FragmentEnum.CardDetail);
         }
 
         partial void btnFlow_Click(UIButton sender)
         {
+            if (_surgery.FlowID <= 0)
+            {
+                NavigateScreen(AppSettings.FragmentEnum.FlowAssignment);
+                return;
+            }
             NavigateScreen(AppSettings.FragmentEnum.FlowDetail);
         }
 
@@ -130,7 +139,6 @@ namespace OpFlow.iOS
             AppSettings.CurrentRoomSetup = _surgery.RoomSetupID;
 
             _patient = await PatientUtil.GetPatient(_surgery.PatientID);
-            _flow = await FlowUtil.GetFlow(_surgery.FlowID, _surgery.CardID);
             var users = await SurgeryUtil.GetSurgeryUsers(_surgery.CaseID);
 
             // If case is open, show debrief button
@@ -147,7 +155,7 @@ namespace OpFlow.iOS
             lblProcedure.Text = _surgery.ProcedureDescription;
             lblSurgeryTime.Text = _surgery.ScheduleTime.ToString(@"hh\:mm");
             lblLocation.Text = _surgery.RoomDescription;
-            lblFlowStep.Text = _flow.FlowDescription;
+            lblFlowStep.Text = _surgery.FlowDescription;
 
             await LoadMessages();
         }
@@ -179,10 +187,5 @@ namespace OpFlow.iOS
         private string PatientNameText =>  string.IsNullOrEmpty(_patient?.Initials) ? "UNK" : _patient.Initials;
 
         private string PatientInfoText => string.Format("{0} {1}", _patient?.BirthDate.CalculateAge(), _patient?.Gender);
-
-
-        private string FlowText => string.Format("{0} - Flow: {1}",
-            _flow.FlowDescription,
-            _surgery.FlowID);
     }
 }

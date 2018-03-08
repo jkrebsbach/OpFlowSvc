@@ -20,7 +20,7 @@ namespace OpFlow.iOS
             base.ViewDidLoad();
 
             //Title = "SCHEDULEVIEW";
-            await LoadMessageGroups();
+            await ExecuteAsyncWebRequest(LoadMessageGroups());
         }
 
         private async Task LoadMessageGroups()

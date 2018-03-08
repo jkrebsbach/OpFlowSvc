@@ -17,11 +17,14 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("Create")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        public async Task<IHttpActionResult> Post([FromBody]PatientCase newCase)
+        public async Task<HttpResponseMessage> Post([FromBody]PatientCase newCase)
         {
-            DataAccess.SqlHelper.CreateCase(newCase);
+            var user = CacheUtil.GetUserSecurity();
 
-            return Ok();
+            var caseId = DataAccess.SqlHelper.CreateCase(newCase.PatientID, user.UserID, newCase.SpecialtyID,
+                user.ProviderID, user.LocationID, newCase.CaseNbr);
+
+            return Request.CreateResponse(HttpStatusCode.Created, caseId);
         }
     }
 }

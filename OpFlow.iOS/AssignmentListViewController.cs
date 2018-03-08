@@ -21,7 +21,7 @@ namespace OpFlow.iOS
         {
             base.ViewDidLoad();
 
-            await LoadAssignmentOptions();
+            await ExecuteAsyncWebRequest(LoadAssignmentOptions());
         }
 
         private async Task LoadAssignmentOptions()
@@ -58,10 +58,15 @@ namespace OpFlow.iOS
                 AssignmentSelectionTableView.SelectRow(NSIndexPath.FromRowSection(selectionIndex, 0), true, UITableViewScrollPosition.Bottom);
             }
 
-            assignmentTVS.EntitySelectionEvent += SelectEntity;
+            assignmentTVS.EntitySelectionEvent += FiltersChanged;
         }
 
-        private async void SelectEntity(object sender, IBindableEntity entity)
+        private async void FiltersChanged(object sender, IBindableEntity entity)
+        {
+            await ExecuteAsyncWebRequest(SelectEntity(entity));
+        }
+
+        private async Task SelectEntity(IBindableEntity entity)
         {
             if (entity is Flow)
             {
@@ -77,7 +82,6 @@ namespace OpFlow.iOS
 
                 NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CardDetail);
             }
-
         }
     }
 }

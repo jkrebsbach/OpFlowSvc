@@ -34,13 +34,13 @@ namespace OpFlow.iOS.Delegates
             if (keyboardDown != null) NSNotificationCenter.DefaultCenter.RemoveObserver(keyboardDown);
         }
 
-        protected async Task ExecuteAsyncWebRequest(Task webTask)
+        protected async Task ExecuteAsyncWebRequest(Task webTask, string message = "Thinking...")
         {
             UIAlertController pleaseWait = null;
 
             try
             {
-                pleaseWait = ShowPleaseWait("Thinking...");
+                pleaseWait = ShowPleaseWait(message);
                 await webTask;
             }
             catch (Exception e)
@@ -57,18 +57,16 @@ namespace OpFlow.iOS.Delegates
 
                 HidePleaseWait(pleaseWait);
             }
-
-            pleaseWait = null;
         }
 
-        protected async Task<T> ExecuteAsyncWebRequest<T>(Task<T> webTask)
+        protected async Task<T> ExecuteAsyncWebRequest<T>(Task<T> webTask, string message = "Thinking...")
         {
             var result = default(T);
             UIAlertController pleaseWait = null;
 
             try
             {
-                pleaseWait = ShowPleaseWait("Thinking...");
+                pleaseWait = ShowPleaseWait(message);
                 result = await webTask;
             }
             catch (Exception e)
@@ -85,8 +83,6 @@ namespace OpFlow.iOS.Delegates
 
                 HidePleaseWait(pleaseWait);
             }
-
-            pleaseWait = null;
             return result;
         }
 

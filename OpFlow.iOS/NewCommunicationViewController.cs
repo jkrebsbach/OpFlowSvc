@@ -23,9 +23,7 @@ namespace OpFlow.iOS
 
             searchUser.SearchButtonClicked += async (sender, e) =>
             {
-                var pleaseWait = ShowPleaseWait("Searching...");
                 await SearchUsers();
-                HidePleaseWait(pleaseWait);
             };
 
             await SearchUsers();
@@ -33,7 +31,11 @@ namespace OpFlow.iOS
 
         private async Task SearchUsers()
         {
+            await ExecuteAsyncWebRequest(SearchUsersWrapper());
+        }
 
+        private async Task SearchUsersWrapper()
+        {
             var users = await UserUtil.GetUsers(searchUser.Text);
             var userSelectTableViewSource = new UserSelectionTVS(users);
             userSelectTableViewSource.UserSelectionEvent += SelectUser;

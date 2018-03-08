@@ -238,7 +238,14 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created)]
         public async Task<IHttpActionResult> Post([FromBody]SurgeryPost surgery)
         {
-            DataAccess.SqlHelper.CreateSurgery(surgery);
+            var user = CacheUtil.GetUserSecurity();
+            var patientId = await DataAccess.SecureSqlHelper.CreatePatient(surgery.PtAcctNbr, surgery.PtInitials,
+                surgery.PtDOB, surgery.PtGender, user.DatabaseName);
+
+            var caseId = DataAccess.SqlHelper.CreateCase(patientId, user.UserID, surgery.SpecialtyID, user.ProviderID,
+                user.LocationID, surgery.CaseNbr);
+
+            DataAccess.SqlHelper.CreateSurgery(surgery, user.ProviderID, user.LocationID, patientId, caseId);
 
             return Ok();
         }
