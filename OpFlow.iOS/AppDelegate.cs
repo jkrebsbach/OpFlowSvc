@@ -13,7 +13,7 @@ namespace OpFlow.iOS
     public class AppDelegate : UIApplicationDelegate
     {
         // class-level declarations
-        private Timer _inactivityTimer;
+        private DateTime _lockoutTime;
         private readonly TimeSpan _inactivitySpan = new TimeSpan(0, 0, 0, 5);
 
         public override UIWindow Window
@@ -44,13 +44,7 @@ namespace OpFlow.iOS
             // If your application supports background exection this method is called instead of WillTerminate when the user quits.
 
             // If application is in background for longer than allowable time, sign out user
-            _inactivityTimer = new Timer {Interval = _inactivitySpan.TotalMilliseconds};
-            _inactivityTimer.Elapsed += (sender, e) =>
-            {
-                AppSettings.SignOutUser();
-            };
-
-            _inactivityTimer.Enabled = true;
+            _lockoutTime = DateTime.Now.Add(_inactivitySpan);
         }
 
         public override void WillEnterForeground(UIApplication application)
@@ -58,7 +52,10 @@ namespace OpFlow.iOS
             // Called as part of the transiton from background to active state.
             // Here you can undo many of the changes made on entering the background.
 
-            _inactivityTimer?.Stop();
+            if (_lockoutTime < DateTime.Now)
+                AppSettings.SignOutUser();
+
+            _lockoutTime = DateTime.MaxValue;
         }
 
         public override void OnActivated(UIApplication application)

@@ -73,9 +73,9 @@ namespace OpFlow.iOS
                 {
                     var controller = Storyboard.InstantiateViewController("LoginViewController");
                     NavigationController.PushViewController(controller, true);
-                }
 
-                _foregroundNotification.Dispose();
+                    _foregroundNotification.Dispose();
+                }
             });
 
             if (!AppSettings.UserAuthenticated)
