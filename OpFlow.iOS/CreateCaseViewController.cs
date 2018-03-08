@@ -19,6 +19,7 @@ namespace OpFlow.iOS
         private OpFlowTextPicker _surgeonPicker;
         private OpFlowTextPicker _bundlePicker;
 
+        private OpFlowTextDatePicker _patientDob;
         private OpFlowTextDatePicker _surgeryDateTime;
 
         public CreateCaseViewController (IntPtr handle) : base (handle)
@@ -39,15 +40,41 @@ namespace OpFlow.iOS
 
             SetupDoneStyleTextField(txtCptCode, true);
 
-            txtSurgeon.Enabled = false;
-            txtBundle.Enabled = false;
-
+            
             txtCptCode.ValueChanged += UpdateProcedure;
             
             _surgeryDateTime = new OpFlowTextDatePicker(txtSurgeryDateTime)
             {
                 Mode = UIDatePickerMode.DateAndTime
             };
+            _patientDob = new OpFlowTextDatePicker(txtPatientDOB)
+            {
+                Mode = UIDatePickerMode.Date
+            };
+
+            await SetupScreen();
+        }
+
+        private async Task SetupScreen()
+        {
+            txtSurgeon.Enabled = false;
+            txtBundle.Enabled = false;
+
+            txtCaseNbr.Text = string.Empty;
+            txtPatientId.Text = string.Empty;
+            txtPatientDOB.Text = string.Empty;
+            txtInitials.Text = string.Empty;
+            txtGender.Text = string.Empty;
+
+            txtSpecialty.Text = string.Empty;
+            txtSurgeon.Text = string.Empty;
+            txtBundle.Text = string.Empty;
+            txtCptCode.Text = string.Empty;
+            txtDefaultCard.Text = string.Empty;
+            txtDefaultFlow.Text = string.Empty;
+            txtDefaultRoom.Text = string.Empty;
+
+            txtSurgeryDateTime.Text = DateTime.Today.Add(new TimeSpan(7, 0, 0)).ToString("MMM d HH:mm tt");
 
             await LoadDropdowns();
         }
@@ -60,10 +87,10 @@ namespace OpFlow.iOS
             txtSurgeon.Enabled = true;
             txtBundle.Enabled = true;
 
-            var surgeons = await UserUtil.GetSurgeons(specialtyId);
+            var surgeons = await UserUtil.GetSurgeons(specialtyId ?? 0);
             _surgeonPicker = new OpFlowTextPicker(txtSurgeon, surgeons.Cast<IBindableEntity>().ToList());
 
-            var bundles = await LookupUtil.GetBundles(specialtyId);
+            var bundles = await LookupUtil.GetBundles(specialtyId ?? 0);
             _bundlePicker = new OpFlowTextPicker(txtBundle, bundles.Cast<IBindableEntity>().ToList());
 
             _bundlePicker.ValueChanged += UpdateBundle;
@@ -115,12 +142,72 @@ namespace OpFlow.iOS
 
         async partial void btnDone_Click(UIKit.UIButton sender)
         {
-            ShowDialog("DONE", "Done clicked");
+            var currentData = CurrentData;
+            if (currentData == null)
+                return;
+
+            var surgeryId = await SurgeryUtil.CreateSurgery(currentData);
+
+            AppSettings.LoadSurgery(surgeryId, -1);
+
+            NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.Schedule);
         }
 
         async partial void btnNew_Click(UIKit.UIButton sender)
         {
-            ShowDialog("NEW", "New clicked");
+            var currentData = CurrentData;
+            if (currentData == null)
+                return;
+
+            await SurgeryUtil.CreateSurgery(currentData);
+            ShowDialog("NEW", "Surgery created successfully");
+
+            await SetupScreen();
+        }
+
+        private SurgeryPost CurrentData
+        {
+            get
+            {
+                string errorMessage = null;
+
+                if ((_specialtyPicker?.GetCurrentId() ?? 0) <= 0)
+                    errorMessage = "No specialty selected";
+                if ((_surgeonPicker?.GetCurrentId() ?? 0) <= 0)
+                    errorMessage = "No surgeon selected";
+                if (txtCaseNbr.Text == string.Empty)
+                    errorMessage = "No Case # provided";
+                if (txtPatientId.Text == string.Empty)
+                    errorMessage = "No Patient ID provided";
+                if (txtInitials.Text == string.Empty)
+                    errorMessage = "No Patient Initials provided";
+                if (txtGender.Text == string.Empty)
+                    errorMessage = "No Patient Gender provided";
+                if (txtPatientDOB.Text == string.Empty)
+                    errorMessage = "No Patient DOB provided";
+
+                if (errorMessage != null)
+                {
+                    ShowDialog("ERROR", errorMessage);
+                    return null;
+                }
+
+                var surgeryPost = new SurgeryPost()
+                {
+                     CaseNbr = txtCaseNbr.Text,
+                    PtAcctNbr = txtPatientId.Text,
+                    PtDOB = DateTime.Parse(txtPatientDOB.Text),
+                    PtInitials = txtInitials.Text,
+                    PtGender = txtGender.Text,
+                    SpecialtyID = _specialtyPicker?.GetCurrentId() ?? 0,
+                    SurgeonUserID = _surgeonPicker?.GetCurrentId() ?? 0,
+                    BundleID = _bundlePicker?.GetCurrentId(),
+                    CptCode = txtCptCode.Text,
+                    ScheduleDate = DateTime.Parse(txtSurgeryDateTime.Text)
+                };
+
+                return surgeryPost;
+            }
         }
     }
 }

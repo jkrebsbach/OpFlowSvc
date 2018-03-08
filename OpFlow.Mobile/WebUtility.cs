@@ -69,7 +69,8 @@ namespace OpFlow.Mobile
 
                 using (var response = await _client.SendAsync(request))
                 {
-                    if (response.StatusCode != HttpStatusCode.OK)
+                    if (response.StatusCode != HttpStatusCode.OK &&
+                        response.StatusCode != HttpStatusCode.Created)
                         Console.Out.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
 
                     var responseString = await response.Content.ReadAsStringAsync();

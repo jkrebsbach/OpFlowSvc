@@ -10,6 +10,7 @@ namespace OpFlow.Data
         public int CptCount { get; set; }
         public int ProcedureCount { get; set; }
         public int CardID { get; set; }
+        public int ProcedureID { get; set; }
         public int TemplateFlowID { get; set; }
         public int TemplateRoomID { get; set; }
 

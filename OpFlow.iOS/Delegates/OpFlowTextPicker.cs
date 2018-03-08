@@ -18,9 +18,9 @@ namespace OpFlow.iOS.Delegates
 
         public EventHandler ValueChanged;
 
-        public int GetCurrentId()
+        public int? GetCurrentId()
         {
-            return _selection?.GetID() ?? 0;
+            return _selection?.GetID();
         }
 
         [Export("DoneAction")]

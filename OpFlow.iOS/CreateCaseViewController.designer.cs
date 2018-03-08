@@ -1,4 +1,4 @@
-// WARNING
+﻿// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -45,6 +45,10 @@ namespace OpFlow.iOS
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField txtInitials { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UITextField txtPatientDOB { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -110,6 +114,11 @@ namespace OpFlow.iOS
             if (txtInitials != null) {
                 txtInitials.Dispose ();
                 txtInitials = null;
+            }
+
+            if (txtPatientDOB != null) {
+                txtPatientDOB.Dispose ();
+                txtPatientDOB = null;
             }
 
             if (txtPatientId != null) {

@@ -1,4 +1,4 @@
-// WARNING
+﻿// WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
@@ -28,23 +28,11 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITextField txtCRNA { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField txtEndDate { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITextField txtPA { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField txtPatient { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITextField txtRep { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -75,29 +63,14 @@ namespace OpFlow.iOS
                 txtCase = null;
             }
 
-            if (txtCRNA != null) {
-                txtCRNA.Dispose ();
-                txtCRNA = null;
-            }
-
             if (txtEndDate != null) {
                 txtEndDate.Dispose ();
                 txtEndDate = null;
             }
 
-            if (txtPA != null) {
-                txtPA.Dispose ();
-                txtPA = null;
-            }
-
             if (txtPatient != null) {
                 txtPatient.Dispose ();
                 txtPatient = null;
-            }
-
-            if (txtRep != null) {
-                txtRep.Dispose ();
-                txtRep = null;
             }
 
             if (txtRoom != null) {

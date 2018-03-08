@@ -130,7 +130,7 @@ namespace OpFlow.iOS
             var surgeons = new List<Surgeon>();
 
             if (specialtyId > 0)
-                surgeons = await UserUtil.GetSurgeons(specialtyId);
+                surgeons = await UserUtil.GetSurgeons(specialtyId ?? 0);
             
             _surgeonPicker = new OpFlowTextPicker(txtSurgeon, surgeons.Cast<IBindableEntity>().ToList());
 

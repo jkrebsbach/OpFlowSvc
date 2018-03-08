@@ -444,19 +444,25 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UpdateCardItemQty", dsParameters);
         }
 
-        public static int CreateSurgery(SurgeryPost surgery, int providerId, int locationId, int patientId, int caseId)
+        public static int CreateSurgery(SurgeryPost surgery, int providerId, int locationId, int patientId, int caseId,
+            int? procedureId, int? defaultCardId, int? defaultFlowId, int? defaultRoomId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("patient_id", patientId),
-                new SqlParameter("user_id", surgery.UserID),
+                new SqlParameter("user_id", surgery.SurgeonUserID),
                 new SqlParameter("specialty_id", surgery.SpecialtyID),
                 new SqlParameter("bundle_id", surgery.BundleID ?? (object)DBNull.Value),
-                new SqlParameter("procedure_id", surgery.ProcedureID ?? (object)DBNull.Value),
+                new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("case_id", caseId),
-                new SqlParameter("schedule_date", surgery.ScheduleDate)
+                new SqlParameter("schedule_date", surgery.ScheduleDate),
+                new SqlParameter("schedule_time", surgery.ScheduleDate),
+                new SqlParameter("default_card_id", defaultCardId ?? (object)DBNull.Value),
+                new SqlParameter("default_flow_id", defaultFlowId ?? (object)DBNull.Value),
+                new SqlParameter("default_room_id", defaultRoomId ?? (object)DBNull.Value),
+                new SqlParameter("cpt_codes", surgery.CptCode)
             };
             var insert = ExecuteCommand("NewSurgery", dsParameters);
 

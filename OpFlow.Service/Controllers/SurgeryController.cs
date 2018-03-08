@@ -236,7 +236,7 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("Create")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        public async Task<IHttpActionResult> Post([FromBody]SurgeryPost surgery)
+        public async Task<HttpResponseMessage> Post([FromBody]SurgeryPost surgery)
         {
             var user = CacheUtil.GetUserSecurity();
             var patientId = await DataAccess.SecureSqlHelper.CreatePatient(surgery.PtAcctNbr, surgery.PtInitials,
@@ -245,9 +245,14 @@ namespace OpFlow.Service.Controllers
             var caseId = DataAccess.SqlHelper.CreateCase(patientId, user.UserID, surgery.SpecialtyID, user.ProviderID,
                 user.LocationID, surgery.CaseNbr);
 
-            DataAccess.SqlHelper.CreateSurgery(surgery, user.ProviderID, user.LocationID, patientId, caseId);
+            var cardFlowRoom = surgery.BundleID.HasValue ? 
+                DataAccess.SqlHelper.GetBundleDefaultCardFlowRoom(surgery.BundleID.Value).FirstOrDefault() : 
+                DataAccess.SqlHelper.GetProcedureDefaultCardFlowRoom(user.ProviderID, user.LocationID, surgery.CptCode).FirstOrDefault();
 
-            return Ok();
+            var surgeryId = DataAccess.SqlHelper.CreateSurgery(surgery, user.ProviderID, user.LocationID, patientId, caseId,
+                cardFlowRoom?.ProcedureID, cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomID);
+
+            return Request.CreateResponse(HttpStatusCode.Created, surgeryId);
         }
 
         // PUT api/values/5

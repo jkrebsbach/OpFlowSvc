@@ -59,6 +59,15 @@ namespace OpFlow.Mobile
             return response;
         }
 
+        public static async Task<int> CreateSurgery(SurgeryPost surgery)
+        {
+            var command = $"api/surgery";
+
+            var response = await WebUtility.PostBodyRequest<int>(command, surgery);
+
+            return response;
+        }
+
         public static async Task<Dictionary<int, Patient>> GetSurgeryPatients(List<Surgery> surgeries)
         {
             var result = new Dictionary<int, Patient>();
