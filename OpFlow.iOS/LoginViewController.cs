@@ -24,9 +24,10 @@ namespace OpFlow.iOS
 
         async partial void SignOnClick(UIButton sender)
         {
+            UIAlertController pleaseWait = null;
             try
             {
-                ShowPleaseWait("Authenticating...");
+                pleaseWait = ShowPleaseWait("Authenticating...");
                 await AppSettings.AuthenticateUser("info@opflowtech.com", "OpFlow1!");
             }
             catch (Exception e)
@@ -36,7 +37,8 @@ namespace OpFlow.iOS
                 ShowDialog("Error", "Problems authenticating user");
             }
 
-            HidePleaseWait();
+            if (pleaseWait != null)
+                 HidePleaseWait(pleaseWait);
 
             if (AppSettings.UserAuthenticated)
             {

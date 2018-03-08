@@ -36,9 +36,11 @@ namespace OpFlow.iOS.Delegates
 
         protected async Task ExecuteAsyncWebRequest(Task webTask)
         {
+            UIAlertController pleaseWait = null;
+
             try
             {
-                ShowPleaseWait("Thinking...");
+                pleaseWait = ShowPleaseWait("Thinking...");
                 await webTask;
             }
             catch (Exception e)
@@ -48,16 +50,25 @@ namespace OpFlow.iOS.Delegates
                 ShowDialog("Error", "Problems communicating with server");
             }
 
-            HidePleaseWait();
+            if (pleaseWait != null)
+            {
+                if (!pleaseWait.IsViewLoaded)
+                    await Task.Delay(500);
+
+                HidePleaseWait(pleaseWait);
+            }
+
+            pleaseWait = null;
         }
 
         protected async Task<T> ExecuteAsyncWebRequest<T>(Task<T> webTask)
         {
             var result = default(T);
+            UIAlertController pleaseWait = null;
 
             try
             {
-                ShowPleaseWait("Thinking...");
+                pleaseWait = ShowPleaseWait("Thinking...");
                 result = await webTask;
             }
             catch (Exception e)
@@ -67,8 +78,15 @@ namespace OpFlow.iOS.Delegates
                 ShowDialog("Error", "Problems communicating with server");
             }
 
-            HidePleaseWait();
+            if (pleaseWait != null)
+            {
+                if (!pleaseWait.IsViewLoaded)
+                    await Task.Delay(500);
 
+                HidePleaseWait(pleaseWait);
+            }
+
+            pleaseWait = null;
             return result;
         }
 
@@ -162,26 +180,33 @@ namespace OpFlow.iOS.Delegates
             UIView.CommitAnimations();
         }
 
-        public void ShowDialog(string title, string message)
+        public UIAlertController ShowDialog(string title, string message)
         {
             var alertDialog =
                 UIAlertController.Create(title, message, UIAlertControllerStyle.Alert);
             alertDialog.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, null));
 
             PresentViewController(alertDialog, true, null);
+            return alertDialog;
         }
 
-        public void ShowPleaseWait(string text = "Please wait")
+        public UIAlertController ShowPleaseWait(string text = "Please wait")
         {
             var alertDialog =
                 UIAlertController.Create(null, text, UIAlertControllerStyle.Alert);
             
             PresentViewController(alertDialog, true, null);
+            return alertDialog;
         }
 
-        public void HidePleaseWait()
+        public void HidePleaseWait(UIAlertController alertDialog)
         {
-            DismissViewController(true, null);
+            InvokeOnMainThread(() =>
+            {
+
+
+                alertDialog.DismissViewController(true, null);
+            });
         }
 
 

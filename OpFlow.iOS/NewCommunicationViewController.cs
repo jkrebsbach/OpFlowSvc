@@ -23,9 +23,9 @@ namespace OpFlow.iOS
 
             searchUser.SearchButtonClicked += async (sender, e) =>
             {
-                ShowPleaseWait("Searching...");
+                var pleaseWait = ShowPleaseWait("Searching...");
                 await SearchUsers();
-                HidePleaseWait();
+                HidePleaseWait(pleaseWait);
             };
 
             await SearchUsers();

@@ -195,9 +195,12 @@ namespace OpFlow.iOS
 
         private async Task LoadSchedule()
         {
-            var schedule = await ExecuteAsyncWebRequest(SurgeryUtil.GetSurgeryUserSchedule(DateTime.Today));
+            await ExecuteAsyncWebRequest(LoadScheduleWrapper());
+        }
 
-            //var schedule = await SurgeryUtil.GetSurgeryUserSchedule(DateTime.Today);
+        private async Task LoadScheduleWrapper()
+        {
+            var schedule = await SurgeryUtil.GetSurgeryUserSchedule(DateTime.Today);
 
             if (schedule == null)
             {
@@ -206,8 +209,7 @@ namespace OpFlow.iOS
                 return;
             }
 
-            var surgeryPatients = await ExecuteAsyncWebRequest(SurgeryUtil.GetSurgeryPatients(schedule.Cast<Surgery>().ToList()));
-            //var surgeryPatients = await SurgeryUtil.GetSurgeryPatients(schedule.Cast<Surgery>().ToList());
+            var surgeryPatients = await SurgeryUtil.GetSurgeryPatients(schedule.Cast<Surgery>().ToList());
             
             var surgeryTableViewSource = new SurgeryTVS(schedule, surgeryPatients);
             surgeryTableViewSource.SurgerySelectionEvent += SelectSurgery;
