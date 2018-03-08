@@ -40,15 +40,17 @@ namespace OpFlow.iOS
                 Mode = UIDatePickerMode.Date
             };
 
-            txtCase.AddTarget((sender, e) =>
-            {
-                SearchCases(sender, e);
-            }, UIControlEvent.EditingDidEnd);
+            txtCase.AddTarget(ParametersChanged, UIControlEvent.EditingDidEnd);
 
-            await LoadDropdowns();
+            await ExecuteAsyncWebRequest(LoadDropdowns());
         }
 
-        public async void SearchCases(object sender, EventArgs e)
+        public async void ParametersChanged(object sender, EventArgs e)
+        {
+            await ExecuteAsyncWebRequest(SearchCases());
+        }
+
+        private async Task SearchCases()
         {
             int? surgeonId = null;
             int? roomId = null;
@@ -67,7 +69,7 @@ namespace OpFlow.iOS
 
             if (txtBeginDate.Text != "")
                 beginDate = _beginDate.Date.ToDateTime().Date;
-            
+
             if (txtEndDate.Text != "")
                 endDate = _endDate.Date.ToDateTime().Date;
 
@@ -112,12 +114,17 @@ namespace OpFlow.iOS
             });
             _specialtyPicker = new OpFlowTextPicker(txtSpecialty, specialties.Cast<IBindableEntity>().ToList());
 
-            _roomPicker.ValueChanged += SearchCases;
-            _specialtyPicker.ValueChanged += SpecialtySelected;
+            _roomPicker.ValueChanged += ParametersChanged;
+            _specialtyPicker.ValueChanged += SpecialtyChanged;
         }
 
-        private async void SpecialtySelected(object sender, EventArgs e)
+        private async void SpecialtyChanged(object sender, EventArgs e)
         {
+            await ExecuteAsyncWebRequest(LoadSurgeons());
+        }
+
+        private async Task LoadSurgeons()
+        { 
             var specialtyId = _specialtyPicker.GetCurrentId();
 
             var surgeons = new List<Surgeon>();
@@ -127,7 +134,7 @@ namespace OpFlow.iOS
             
             _surgeonPicker = new OpFlowTextPicker(txtSurgeon, surgeons.Cast<IBindableEntity>().ToList());
 
-            _surgeonPicker.ValueChanged += SearchCases;
+            _surgeonPicker.ValueChanged += ParametersChanged;
         }
     }
 }

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Threading.Tasks;
 using Foundation;
+using OpFlow.Data;
 using UIKit;
 
 namespace OpFlow.iOS.Delegates
@@ -31,6 +32,44 @@ namespace OpFlow.iOS.Delegates
         {
             if (keyboardUp != null) NSNotificationCenter.DefaultCenter.RemoveObserver(keyboardUp);
             if (keyboardDown != null) NSNotificationCenter.DefaultCenter.RemoveObserver(keyboardDown);
+        }
+
+        protected async Task ExecuteAsyncWebRequest(Task webTask)
+        {
+            try
+            {
+                ShowPleaseWait("Thinking...");
+                await webTask;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+
+                ShowDialog("Error", "Problems communicating with server");
+            }
+
+            HidePleaseWait();
+        }
+
+        protected async Task<T> ExecuteAsyncWebRequest<T>(Task<T> webTask)
+        {
+            var result = default(T);
+
+            try
+            {
+                ShowPleaseWait("Thinking...");
+                result = await webTask;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+
+                ShowDialog("Error", "Problems communicating with server");
+            }
+
+            HidePleaseWait();
+
+            return result;
         }
 
         // http://www.gooorack.com/2013/08/28/xamarin-moving-the-view-on-keyboard-show/

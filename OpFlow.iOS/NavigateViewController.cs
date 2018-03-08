@@ -42,8 +42,9 @@ namespace OpFlow.iOS
 
             SetupDoneStyleTextField(txtCommunicator);
 
-            Title = "SCHEDULEVIEW"; 
-            await LoadSurgery();
+            Title = "SCHEDULEVIEW";
+            await ExecuteAsyncWebRequest(LoadSurgery());
+            //await LoadSurgery();
         }
         async partial void btnSendMessage_Click(UIButton sender)
         {

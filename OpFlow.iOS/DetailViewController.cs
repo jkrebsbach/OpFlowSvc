@@ -22,7 +22,8 @@ namespace OpFlow.iOS
 
             try
             {
-                await SetupDetails();
+                await ExecuteAsyncWebRequest(SetupDetails());
+                //await SetupDetails();
 
                 DetailTableView.ReloadData();
             }
