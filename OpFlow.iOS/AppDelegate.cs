@@ -1,4 +1,6 @@
-﻿using Foundation;
+﻿using System;
+using System.Timers;
+using Foundation;
 using OpFlow.Mobile;
 using UIKit;
 
@@ -11,6 +13,8 @@ namespace OpFlow.iOS
     public class AppDelegate : UIApplicationDelegate
     {
         // class-level declarations
+        private Timer _inactivityTimer;
+        private readonly TimeSpan _inactivitySpan = new TimeSpan(0, 0, 0, 5);
 
         public override UIWindow Window
         {
@@ -38,6 +42,15 @@ namespace OpFlow.iOS
         {
             // Use this method to release shared resources, save user data, invalidate timers and store the application state.
             // If your application supports background exection this method is called instead of WillTerminate when the user quits.
+
+            // If application is in background for longer than allowable time, sign out user
+            _inactivityTimer = new Timer {Interval = _inactivitySpan.TotalMilliseconds};
+            _inactivityTimer.Elapsed += (sender, e) =>
+            {
+                AppSettings.SignOutUser();
+            };
+
+            _inactivityTimer.Enabled = true;
         }
 
         public override void WillEnterForeground(UIApplication application)
@@ -45,8 +58,7 @@ namespace OpFlow.iOS
             // Called as part of the transiton from background to active state.
             // Here you can undo many of the changes made on entering the background.
 
-            // Clear out any authentication credentials
-            AppSettings.SignOutUser();
+            _inactivityTimer?.Stop();
         }
 
         public override void OnActivated(UIApplication application)

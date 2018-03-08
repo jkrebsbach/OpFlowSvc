@@ -95,13 +95,12 @@ namespace OpFlow.Mobile
 
         public static string CurrentUserTitle => string.Format("{0} {1}", CurrentUser?.Title, CurrentUser?.LastName);
 
-
-        public static bool UserAuthenticated => _authToken?.ExpiresDate != null && _authToken.ExpiresDate > DateTime.Now;
-
+        public static bool UserAuthenticated => _authToken != null && _authToken.ExpiresDate > DateTime.Now;
+        
         public static async Task AuthenticateUser(string username, string password)
         {
             _authToken = await WebUtility.LoginUser(username, password);
-
+            
             if (_authToken != null)
                 CurrentUser = await UserUtil.GetUser();
         }

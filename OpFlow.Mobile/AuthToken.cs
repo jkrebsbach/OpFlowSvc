@@ -21,8 +21,8 @@ namespace OpFlow.Mobile
         [JsonProperty(".expires")]
         public string Expires { get; set; }
 
-        public DateTime? IssuedDate => Issued == null ? null : (DateTime?)DateTime.Parse(Issued);
+        public DateTime IssuedDate => Issued == null ? DateTime.MinValue : DateTime.Parse(Issued);
 
-        public DateTime? ExpiresDate => Expires == null ? null : (DateTime?)DateTime.Parse(Expires);
+        public DateTime ExpiresDate => Expires == null ? DateTime.MinValue : DateTime.Parse(Expires);
     }
 }

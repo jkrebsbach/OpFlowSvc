@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -31,7 +32,7 @@ namespace OpFlow.Mobile
 
             if (!AppSettings.UserAuthenticated)
             {
-                throw new Exception("No authenticated user");
+                throw new AuthenticationException("No authenticated user");
             }
             var request = new HttpRequestMessage(verb, command);
             if (formData != null)
