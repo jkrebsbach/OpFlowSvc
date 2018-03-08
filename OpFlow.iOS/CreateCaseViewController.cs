@@ -150,7 +150,7 @@ namespace OpFlow.iOS
 
             AppSettings.LoadSurgery(surgeryId, -1);
 
-            NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.Schedule);
+            NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
         }
 
         async partial void btnNew_Click(UIKit.UIButton sender)
