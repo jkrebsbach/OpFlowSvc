@@ -16,6 +16,7 @@ namespace OpFlow.iOS
     public partial class ScheduleViewController : OpFlowViewController, IUITableViewDelegate
     {
         private DateTime _selectedDate;
+        private BasicPickerModel _roomPicker;
 
         public ScheduleViewController(IntPtr handle) : base(handle)
         {
@@ -45,7 +46,8 @@ namespace OpFlow.iOS
             };
 
             var rooms = await AppSettings.RoomList(AppSettings.CurrentUser.LocationID);
-            pickerRoom.Model = new BasicPickerModel(rooms.Cast<IBindableEntity>().ToList());
+            _roomPicker = new BasicPickerModel(rooms.Cast<IBindableEntity>().ToList());
+            pickerRoom.Model = _roomPicker;
 
             await UpdateDateStrings();
             ScheduleTableView.ReloadData();
@@ -200,7 +202,12 @@ namespace OpFlow.iOS
 
         private async Task LoadScheduleWrapper()
         {
-            var schedule = await SurgeryUtil.GetSurgeryUserSchedule(DateTime.Today);
+            int? roomId = null;
+            // If not limited to user, search by room
+            if (!switchSurgeon.On)
+                roomId = _roomPicker.CurrentSelection(pickerRoom.SelectedRowInComponent(0)).GetID();
+
+            var schedule = await SurgeryUtil.GetSurgeryUserSchedule(_selectedDate, roomId);
 
             if (schedule == null)
             {

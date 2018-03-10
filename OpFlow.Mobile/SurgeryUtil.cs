@@ -16,7 +16,7 @@ namespace OpFlow.Mobile
         {
             var userId = AppSettings.CurrentUser.UserID;
 
-            var command = $"api/surgery/cases?userId={userId}";
+            var command = $"api/surgery/cases?userId={userId}&scheduleDate={scheduleDate:yyyy-MM-dd}";
             if (roomId.HasValue)
                 command += $"&roomId={roomId}";
             
