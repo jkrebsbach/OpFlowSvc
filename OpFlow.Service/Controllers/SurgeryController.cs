@@ -113,7 +113,7 @@ namespace OpFlow.Service.Controllers
             foreach (var surgery in surgeries)
             {
                 surgery.SurgeryUsers =
-                    DataAccess.SqlHelper.GetSurgeryUsers(surgery.CaseID, user.ProviderID, user.LocationID);
+                    DataAccess.SqlHelper.GetSurgeryUsers(surgery.CaseID ?? 0, user.ProviderID, user.LocationID);
             }
             
             return Request.CreateResponse(HttpStatusCode.OK, surgeries);

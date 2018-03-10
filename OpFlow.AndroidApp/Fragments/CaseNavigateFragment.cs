@@ -105,13 +105,13 @@ namespace OpFlow.AndroidApp.Fragments
                     if (_surgery == null)
                         return;
 
-                    _flow = await FlowUtil.GetFlow(_surgery.FlowID, _surgery.CardID);
+                    _flow = await FlowUtil.GetFlow(_surgery.FlowID ?? 0, _surgery.CardID);
                     _card = (await CardUtil.GetCardData(_surgery.CardID)).FirstOrDefault();
 
                     _patient = await PatientUtil.GetPatient(_surgery.PatientID);
 
                     var users = await SurgeryUtil.GetSurgeryUsers(
-                        _surgery.CaseID);
+                        _surgery.CaseID ?? 0);
 
                     _txtSurgeonName.Text = GetUserName(users, RoleEnum.Surgeon);
                     _txtCirculatorName.Text = GetUserName(users, RoleEnum.Circulator);
@@ -119,7 +119,7 @@ namespace OpFlow.AndroidApp.Fragments
                     _txtAnesName.Text = GetUserName(users, RoleEnum.FrontDesk);
                     _txtRepName.Text = GetUserName(users, RoleEnum.FrontDesk);
 
-                    _room = await AppSettings.GetRoom(_surgery.LocationID, _surgery.RoomID);
+                    _room = await AppSettings.GetRoom(_surgery.LocationID, _surgery.RoomID ?? 0);
 
                     _txtPatientName.Text = PatientNameText;
                     _txtStartTime.Text = _surgery.ScheduleTime.ToString(@"hh\:mm");

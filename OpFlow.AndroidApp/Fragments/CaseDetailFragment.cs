@@ -111,7 +111,7 @@ namespace OpFlow.AndroidApp.Fragments
                     _txtProcedureStart.Text = string.Format(_surgery.ScheduleTime.ToString(@"hh\:mm"));
                     _txtProcedure.Text = _surgery.ProcedureDescription;
 
-                    var room = await AppSettings.GetRoom(_surgery.LocationID, _surgery.RoomID);
+                    var room = await AppSettings.GetRoom(_surgery.LocationID, _surgery.RoomID ?? 0);
                     
                     _txtLocation.Text = room?.RoomDescription ?? "Room not found";
 

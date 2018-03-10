@@ -11,12 +11,12 @@ namespace OpFlow.Data
         public int LocationID { get; set; }
         public int PatientID { get; set; }
         public int CardID { get; set; }
-        public int CaseID { get; set; }
-        public int ProcedureID { get; set; }
-        public int BundleID { get; set; }
-        public int RoomID { get; set; }
-        public int RoomSetupID { get; set; }
-        public int FlowID { get; set; }
+        public int? CaseID { get; set; }
+        public int? ProcedureID { get; set; }
+        public int? BundleID { get; set; }
+        public int? RoomID { get; set; }
+        public int? RoomSetupID { get; set; }
+        public int? FlowID { get; set; }
         public int UserID { get; set; }
         public int UserRoleID { get; set; }
         public string SurgeryStatus { get; set; }
