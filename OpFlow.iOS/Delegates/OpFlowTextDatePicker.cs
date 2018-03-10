@@ -31,7 +31,7 @@ namespace OpFlow.iOS.Delegates
                     formatter.DateFormat = "HH:mm tt";
                     break;
                 default:
-                    formatter.DateFormat = "M/d";
+                    formatter.DateFormat = "M/d/yyyy";
                     break;
             }
             

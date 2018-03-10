@@ -80,7 +80,7 @@ namespace OpFlow.iOS
             txtDefaultFlow.Text = string.Empty;
             txtDefaultRoom.Text = string.Empty;
 
-            txtSurgeryDate.Text = DateTime.Today.ToString("MM/dd");
+            txtSurgeryDate.Text = DateTime.Today.ToString("M/d/yyyy");
             txtSurgeryTime.Text = DateTime.Today.Add(new TimeSpan(7, 0, 0)).ToString("HH:mm");
 
             await LoadDropdowns();
@@ -153,7 +153,18 @@ namespace OpFlow.iOS
             if (currentData == null)
                 return;
 
-            var surgeryId = await ExecuteAsyncWebRequest(() => SurgeryUtil.CreateSurgery(currentData));
+            int? surgeryId = null;
+            try
+            {
+                surgeryId = await ExecuteAsyncWebRequest(() => SurgeryUtil.CreateSurgery(currentData));
+  
+            }
+            catch(Exception ex)
+            {
+                var tmpInt = 0;
+            }
+
+            //var surgeryId = await ExecuteAsyncWebRequest(() => SurgeryUtil.CreateSurgery(currentData));
 
             if (surgeryId > 0)
             {
