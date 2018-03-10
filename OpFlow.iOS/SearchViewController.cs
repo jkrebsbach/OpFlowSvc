@@ -40,14 +40,17 @@ namespace OpFlow.iOS
                 Mode = UIDatePickerMode.Date
             };
 
+            _beginDate.DateChanged += ParametersChanged;
+            _endDate.DateChanged += ParametersChanged;
+
             txtCase.AddTarget(ParametersChanged, UIControlEvent.EditingDidEnd);
 
-            await ExecuteAsyncWebRequest(LoadDropdowns());
+            await ExecuteAsyncWebRequest(LoadDropdowns);
         }
 
         public async void ParametersChanged(object sender, EventArgs e)
         {
-            await ExecuteAsyncWebRequest(SearchCases());
+            await ExecuteAsyncWebRequest(SearchCases);
         }
 
         private async Task SearchCases()
@@ -74,7 +77,7 @@ namespace OpFlow.iOS
                 endDate = _endDate.Date.ToDateTime().Date;
 
             var surgeries = new List<SurgerySearchResult>();
-            if (caseNbr != null || surgeonId != null || roomId != null)
+            if (caseNbr != null || surgeonId != null || roomId != null || beginDate != null || endDate != null)
             {
                 surgeries = await SurgeryUtil.SearchCases(caseNbr, surgeonId, roomId, beginDate, endDate);
             }
@@ -89,8 +92,7 @@ namespace OpFlow.iOS
 
         protected void SelectCase(Object sender, SurgerySearchResult surgery)
         {
-            AppSettings.LoadSurgery(surgery.SurgeryID, surgery.PatientID);
-
+            AppSettings.LoadSurgery(surgery.SurgeryID);
             NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
             
         }
@@ -120,7 +122,7 @@ namespace OpFlow.iOS
 
         private async void SpecialtyChanged(object sender, EventArgs e)
         {
-            await ExecuteAsyncWebRequest(LoadSurgeons());
+            await ExecuteAsyncWebRequest(LoadSurgeons);
         }
 
         private async Task LoadSurgeons()

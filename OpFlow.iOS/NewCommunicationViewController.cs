@@ -31,7 +31,7 @@ namespace OpFlow.iOS
 
         private async Task SearchUsers()
         {
-            await ExecuteAsyncWebRequest(SearchUsersWrapper());
+            await ExecuteAsyncWebRequest(SearchUsersWrapper);
         }
 
         private async Task SearchUsersWrapper()

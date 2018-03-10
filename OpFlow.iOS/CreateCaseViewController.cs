@@ -20,7 +20,8 @@ namespace OpFlow.iOS
         private OpFlowTextPicker _bundlePicker;
 
         private OpFlowTextDatePicker _patientDob;
-        private OpFlowTextDatePicker _surgeryDateTime;
+        private OpFlowTextDatePicker _surgeryDate;
+        private OpFlowTextDatePicker _surgeryTime;
 
         public CreateCaseViewController (IntPtr handle) : base (handle)
         {
@@ -43,9 +44,14 @@ namespace OpFlow.iOS
             
             txtCptCode.ValueChanged += UpdateProcedure;
             
-            _surgeryDateTime = new OpFlowTextDatePicker(txtSurgeryDateTime)
+            _surgeryDate = new OpFlowTextDatePicker(txtSurgeryDate)
             {
-                Mode = UIDatePickerMode.DateAndTime
+                Mode = UIDatePickerMode.Date
+            };
+            _surgeryTime = new OpFlowTextDatePicker(txtSurgeryTime)
+            {
+                Locale = new NSLocale("NL"),
+                Mode = UIDatePickerMode.Time
             };
             _patientDob = new OpFlowTextDatePicker(txtPatientDOB)
             {
@@ -74,7 +80,8 @@ namespace OpFlow.iOS
             txtDefaultFlow.Text = string.Empty;
             txtDefaultRoom.Text = string.Empty;
 
-            txtSurgeryDateTime.Text = DateTime.Today.Add(new TimeSpan(7, 0, 0)).ToString("MMM d HH:mm tt");
+            txtSurgeryDate.Text = DateTime.Today.ToString("MM/dd");
+            txtSurgeryTime.Text = DateTime.Today.Add(new TimeSpan(7, 0, 0)).ToString("HH:mm");
 
             await LoadDropdowns();
         }
@@ -146,11 +153,13 @@ namespace OpFlow.iOS
             if (currentData == null)
                 return;
 
-            var surgeryId = await SurgeryUtil.CreateSurgery(currentData);
+            var surgeryId = await ExecuteAsyncWebRequest(() => SurgeryUtil.CreateSurgery(currentData));
 
-            AppSettings.LoadSurgery(surgeryId, -1);
-
-            NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
+            if (surgeryId > 0)
+            {
+                AppSettings.LoadSurgery(surgeryId.Value);
+                NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
+            }
         }
 
         async partial void btnNew_Click(UIKit.UIButton sender)
@@ -159,10 +168,14 @@ namespace OpFlow.iOS
             if (currentData == null)
                 return;
 
-            await SurgeryUtil.CreateSurgery(currentData);
-            ShowDialog("NEW", "Surgery created successfully");
+            var surgeryId = await ExecuteAsyncWebRequest(() => SurgeryUtil.CreateSurgery(currentData));
 
-            await SetupScreen();
+            if (surgeryId > 0)
+            {
+                ShowDialog("NEW", "Surgery created successfully");
+
+                await SetupScreen();
+            }
         }
 
         private SurgeryPost CurrentData
@@ -192,6 +205,10 @@ namespace OpFlow.iOS
                     return null;
                 }
 
+                var scheduleDateTime = txtSurgeryDate.Text + " " + txtSurgeryTime.Text;
+                var scheduleDate = DateTime.Today;
+                DateTime.TryParse(scheduleDateTime, out scheduleDate);
+
                 var surgeryPost = new SurgeryPost()
                 {
                      CaseNbr = txtCaseNbr.Text,
@@ -203,7 +220,7 @@ namespace OpFlow.iOS
                     SurgeonUserID = _surgeonPicker?.GetCurrentId() ?? 0,
                     BundleID = _bundlePicker?.GetCurrentId(),
                     CptCode = txtCptCode.Text,
-                    ScheduleDate = DateTime.Parse(txtSurgeryDateTime.Text)
+                    ScheduleDate = scheduleDate
                 };
 
                 return surgeryPost;

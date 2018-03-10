@@ -42,7 +42,7 @@ namespace OpFlow.iOS
             SetupDoneStyleTextField(txtCommunicator);
 
             Title = "SCHEDULEVIEW";
-            await ExecuteAsyncWebRequest(LoadSurgery());
+            await ExecuteAsyncWebRequest(LoadSurgery);
             //await LoadSurgery();
         }
         async partial void btnSendMessage_Click(UIButton sender)
@@ -133,10 +133,7 @@ namespace OpFlow.iOS
             if (_surgery == null)
                 return;
 
-            AppSettings.CurrentCard = _surgery.CardID;
-            AppSettings.CurrentProcedure = _surgery.ProcedureID;
-            AppSettings.CurrentFlow = _surgery.FlowID;
-            AppSettings.CurrentRoomSetup = _surgery.RoomSetupID;
+            AppSettings.LoadSurgeryAttributes(_surgery);
 
             _patient = await PatientUtil.GetPatient(_surgery.PatientID);
             var users = await SurgeryUtil.GetSurgeryUsers(_surgery.CaseID);

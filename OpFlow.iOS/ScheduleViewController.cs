@@ -49,8 +49,12 @@ namespace OpFlow.iOS
             _roomPicker = new BasicPickerModel(rooms.Cast<IBindableEntity>().ToList());
             pickerRoom.Model = _roomPicker;
 
+            _roomPicker.RowSelected += async delegate
+            {
+                await LoadSchedule();
+            };
+
             await UpdateDateStrings();
-            ScheduleTableView.ReloadData();
 
             InitializeButton(btnSunday, false);
             InitializeButton(btnMonday, true);
@@ -197,7 +201,7 @@ namespace OpFlow.iOS
 
         private async Task LoadSchedule()
         {
-            await ExecuteAsyncWebRequest(LoadScheduleWrapper());
+            await ExecuteAsyncWebRequest(LoadScheduleWrapper);
         }
 
         private async Task LoadScheduleWrapper()
@@ -223,18 +227,19 @@ namespace OpFlow.iOS
             surgeryTableViewSource.DebriefSelectionEvent += SelectDebrief;
 
             ScheduleTableView.Source = surgeryTableViewSource;
+            ScheduleTableView.ReloadData();
         }
 
         private void SelectSurgery(object sender, Surgery surgery)
         {
-            AppSettings.LoadSurgery(surgery.SurgeryID, surgery.PatientID);
+            AppSettings.LoadSurgery(surgery.SurgeryID);
 
             NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
         }
 
         private void SelectDebrief(object sender, Surgery surgery)
         {
-            AppSettings.LoadSurgery(surgery.SurgeryID, surgery.PatientID);
+            AppSettings.LoadSurgery(surgery.SurgeryID);
 
             NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.Debrief);
         }

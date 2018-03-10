@@ -36,8 +36,7 @@ namespace OpFlow.Mobile
             NewCommunicationSetup = 18,
         }
 
-        public static int? CurrentSurgery { get; private set; }
-        public static int? CurrentPatient { get; private set; }
+        public static int? CurrentSurgery { get; set; }
 
         public static FragmentEnum CurrentScreen;
         public static FragmentEnum PriorScreen;
@@ -79,19 +78,29 @@ namespace OpFlow.Mobile
 
         }
 
-        public static void LoadSurgery(int surgeryId, int patientId)
+        public static void LoadSurgery(int surgeryId)
         {
             CurrentSurgery = surgeryId;
-            CurrentPatient = patientId;
+        }
+
+        public static void LoadSurgeryAttributes(Surgery surgery){
+            CurrentPatient = surgery.PatientID;
+            CurrentCard = surgery.CardID;
+            CurrentProcedure = surgery.ProcedureID;
+            CurrentFlow = surgery.FlowID;
+            CurrentRoomSetup = surgery.RoomSetupID;
+            CurrentPatient = surgery.PatientID;
         }
 
         private static AuthToken _authToken;
         public static User CurrentUser { get; private set; }
         public static MessagingGroup CurrentMessagingGroup { get; set; }
+
         public static int? CurrentCard { get; set; }
         public static int? CurrentProcedure { get; set; }
         public static int? CurrentFlow { get; set; }
         public static int? CurrentRoomSetup { get; set; }
+        public static int? CurrentPatient { get; set; }
 
         public static string CurrentUserTitle => string.Format("{0} {1}", CurrentUser?.Title, CurrentUser?.LastName);
 

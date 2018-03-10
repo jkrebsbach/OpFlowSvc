@@ -45,12 +45,18 @@ namespace OpFlow.Mobile
                 command += $"{strDelim}surgeonUserId={surgeonUserId}";
                 strDelim = "&";
             }
-            if (beginDate.HasValue && endDate.HasValue)
+            if (beginDate.HasValue)
             {
-                var strBeginDate = beginDate.Value.ToString("MM-dd-yyyy");
-                var strEndDate = endDate.Value.ToString("MM-dd-yyyy");
+                var strBeginDate = beginDate.Value.ToString("yyyy-MM-dd");
 
-                command += $"{strDelim}begDate={strBeginDate}&endDate={strEndDate}";
+                command += $"{strDelim}begDate={strBeginDate}";
+                strDelim = "&";
+            }
+            if (endDate.HasValue)
+            {
+                var strEndDate = endDate.Value.ToString("yyyy-MM-dd");
+
+                command += $"{strDelim}endDate={strEndDate}";
                 strDelim = "&";
             }
 
@@ -59,7 +65,7 @@ namespace OpFlow.Mobile
             return response;
         }
 
-        public static async Task<int> CreateSurgery(SurgeryPost surgery)
+        public static async Task<int?> CreateSurgery(SurgeryPost surgery)
         {
             var command = $"api/surgery";
 
@@ -71,6 +77,9 @@ namespace OpFlow.Mobile
         public static async Task<Dictionary<int, Patient>> GetSurgeryPatients(List<Surgery> surgeries)
         {
             var result = new Dictionary<int, Patient>();
+
+            if (surgeries == null || surgeries.Count == 0)
+                return result;
 
             var patientIds = surgeries.GroupBy(s => s.PatientID).Select(g => g.Key).ToList();
             var patients = await PatientUtil.GetPatients(patientIds);

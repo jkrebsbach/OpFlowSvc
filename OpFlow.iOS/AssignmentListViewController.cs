@@ -21,7 +21,7 @@ namespace OpFlow.iOS
         {
             base.ViewDidLoad();
 
-            await ExecuteAsyncWebRequest(LoadAssignmentOptions());
+            await ExecuteAsyncWebRequest(LoadAssignmentOptions);
         }
 
         private async Task LoadAssignmentOptions()
@@ -63,7 +63,7 @@ namespace OpFlow.iOS
 
         private async void FiltersChanged(object sender, IBindableEntity entity)
         {
-            await ExecuteAsyncWebRequest(SelectEntity(entity));
+            await ExecuteAsyncWebRequest(() => SelectEntity(entity));
         }
 
         private async Task SelectEntity(IBindableEntity entity)

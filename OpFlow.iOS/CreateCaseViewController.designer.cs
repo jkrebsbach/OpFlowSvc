@@ -64,7 +64,11 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITextField txtSurgeryDateTime { get; set; }
+        UIKit.UITextField txtSurgeryDate { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UITextField txtSurgeryTime { get; set; }
 
         [Action ("btnDone_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -136,9 +140,14 @@ namespace OpFlow.iOS
                 txtSurgeon = null;
             }
 
-            if (txtSurgeryDateTime != null) {
-                txtSurgeryDateTime.Dispose ();
-                txtSurgeryDateTime = null;
+            if (txtSurgeryDate != null) {
+                txtSurgeryDate.Dispose ();
+                txtSurgeryDate = null;
+            }
+
+            if (txtSurgeryTime != null) {
+                txtSurgeryTime.Dispose ();
+                txtSurgeryTime = null;
             }
         }
     }

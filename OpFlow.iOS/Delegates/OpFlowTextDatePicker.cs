@@ -15,7 +15,7 @@ namespace OpFlow.iOS.Delegates
 
         public UITextField AssociatedField => _associatedField;
 
-        public EventHandler ValueChanged;
+        public EventHandler DateChanged;
 
 
         [Export("DoneAction")]
@@ -27,6 +27,9 @@ namespace OpFlow.iOS.Delegates
                 case UIDatePickerMode.DateAndTime:
                     formatter.DateFormat = "MMM d HH:mm tt";
                     break;
+                case UIDatePickerMode.Time:
+                    formatter.DateFormat = "HH:mm tt";
+                    break;
                 default:
                     formatter.DateFormat = "M/d";
                     break;
@@ -35,7 +38,7 @@ namespace OpFlow.iOS.Delegates
             _associatedField.Text = formatter.ToString(Date);
             _associatedField.ResignFirstResponder();
 
-            ValueChanged?.Invoke(this, null);
+            DateChanged?.Invoke(this, null);
         }
 
         public OpFlowTextDatePicker(UITextField associatedField)

@@ -24,7 +24,7 @@ namespace OpFlow.iOS
 
         async partial void SignOnClick(UIButton sender)
         {
-            await ExecuteAsyncWebRequest(SignOn(), "Authenticating...");
+            await ExecuteAsyncWebRequest(SignOn, "Authenticating...");
         }
 
         private async Task SignOn()

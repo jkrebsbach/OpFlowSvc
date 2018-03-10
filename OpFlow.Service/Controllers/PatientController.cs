@@ -19,11 +19,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetById")]
         [SwaggerResponse(HttpStatusCode.OK, Type=typeof(Patient))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage Get(int patientId)
+        public async Task<HttpResponseMessage> Get(int patientId)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var patient = DataAccess.SecureSqlHelper.GetPatient(patientId, user.DatabaseName);
+            var patient = await DataAccess.SecureSqlHelper.GetPatient(patientId, user.DatabaseName);
 
             if (patient == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound, "Patient not found");

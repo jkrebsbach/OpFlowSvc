@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string></string>
 	<key>CFBundleDisplayName</key>
-	<string>OpFlow.iOS</string>
+	<string>OpFlow</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.OpFlow.iOS</string>
 	<key>CFBundleShortVersionString</key>
@@ -36,7 +36,7 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>CFBundleName</key>
-	<string>OpFlow.iOS</string>
+	<string>OpFlow</string>
 	<key>XSAppIconAssets</key>
 	<string>Resources/Media.xcassets/AppIcons.appiconset</string>
 	<key>XSLaunchImageAssets</key>

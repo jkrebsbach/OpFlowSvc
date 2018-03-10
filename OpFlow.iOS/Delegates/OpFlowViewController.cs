@@ -34,14 +34,14 @@ namespace OpFlow.iOS.Delegates
             if (keyboardDown != null) NSNotificationCenter.DefaultCenter.RemoveObserver(keyboardDown);
         }
 
-        protected async Task ExecuteAsyncWebRequest(Task webTask, string message = "Thinking...")
+        protected async Task ExecuteAsyncWebRequest(Func<Task> webTask, string message = "Thinking...")
         {
             UIAlertController pleaseWait = null;
 
             try
             {
                 pleaseWait = ShowPleaseWait(message);
-                await webTask;
+                await webTask();
             }
             catch (Exception e)
             {
@@ -59,21 +59,22 @@ namespace OpFlow.iOS.Delegates
             }
         }
 
-        protected async Task<T> ExecuteAsyncWebRequest<T>(Task<T> webTask, string message = "Thinking...")
+        protected async Task<T> ExecuteAsyncWebRequest<T>(Func<Task<T>> webTask, string message = "Thinking...")
         {
             var result = default(T);
             UIAlertController pleaseWait = null;
 
+            var problems = false;
+
             try
             {
                 pleaseWait = ShowPleaseWait(message);
-                result = await webTask;
+                result = await webTask();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-
-                ShowDialog("Error", "Problems communicating with server");
+                problems = true;
             }
 
             if (pleaseWait != null)
@@ -83,6 +84,10 @@ namespace OpFlow.iOS.Delegates
 
                 HidePleaseWait(pleaseWait);
             }
+
+            if (problems)
+                ShowDialog("Error", "Problems communicating with server");
+
             return result;
         }
 
