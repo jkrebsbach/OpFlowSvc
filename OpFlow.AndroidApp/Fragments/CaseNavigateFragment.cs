@@ -105,13 +105,12 @@ namespace OpFlow.AndroidApp.Fragments
                     if (_surgery == null)
                         return;
 
-                    _flow = await FlowUtil.GetFlow(_surgery.FlowID ?? 0, _surgery.CardID);
-                    _card = (await CardUtil.GetCardData(_surgery.CardID)).FirstOrDefault();
+                    _flow = await FlowUtil.GetFlow(_surgery.FlowID ?? 0, _surgery.CardID ?? 0);
+                    _card = (await CardUtil.GetCardData(_surgery.CardID ?? 0)).FirstOrDefault();
 
                     _patient = await PatientUtil.GetPatient(_surgery.PatientID);
 
-                    var users = await SurgeryUtil.GetSurgeryUsers(
-                        _surgery.CaseID ?? 0);
+                    var users = await SurgeryUtil.GetSurgeryUsers(_surgery.CaseID);
 
                     _txtSurgeonName.Text = GetUserName(users, RoleEnum.Surgeon);
                     _txtCirculatorName.Text = GetUserName(users, RoleEnum.Circulator);
