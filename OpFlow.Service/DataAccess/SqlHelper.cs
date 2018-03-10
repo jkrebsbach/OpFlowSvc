@@ -277,12 +277,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<User> SearchUsers(int providerId, int locationId, string searchString)
+        public static List<User> SearchUsers(string searchString, int? roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
+                new SqlParameter("role_id", roleId ?? (object)DBNull.Value),
                 new SqlParameter("search", (object)searchString ?? DBNull.Value),
             };
             var dsSchedules = ExecuteCommand("SearchUsers", dsParameters);
