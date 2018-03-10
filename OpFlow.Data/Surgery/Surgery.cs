@@ -10,8 +10,8 @@ namespace OpFlow.Data
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
         public int PatientID { get; set; }
-        public int CardID { get; set; }
-        public int? CaseID { get; set; }
+        public int? CardID { get; set; }
+        public int CaseID { get; set; }
         public int? ProcedureID { get; set; }
         public int? BundleID { get; set; }
         public int? RoomID { get; set; }
