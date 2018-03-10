@@ -75,7 +75,7 @@ namespace OpFlow.iOS
 
         partial void btnCard_Click(UIButton sender)
         {
-            if (_surgery.CardID <= 0)
+            if (_surgery.CardID == null)
             {
                 NavigateScreen(AppSettings.FragmentEnum.CardAssignment);
                 return;
@@ -85,7 +85,7 @@ namespace OpFlow.iOS
 
         partial void btnFlow_Click(UIButton sender)
         {
-            if (_surgery.FlowID <= 0)
+            if (_surgery.FlowID == null)
             {
                 NavigateScreen(AppSettings.FragmentEnum.FlowAssignment);
                 return;
@@ -136,6 +136,7 @@ namespace OpFlow.iOS
             AppSettings.LoadSurgeryAttributes(_surgery);
 
             _patient = await PatientUtil.GetPatient(_surgery.PatientID);
+
             var users = await SurgeryUtil.GetSurgeryUsers(_surgery.CaseID);
 
             // If case is open, show debrief button

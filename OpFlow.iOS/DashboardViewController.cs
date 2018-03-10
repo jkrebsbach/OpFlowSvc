@@ -42,7 +42,7 @@ namespace OpFlow.iOS
             if (surgery == null)
                 return;
 
-            var flowTimings = await FlowUtil.GetFlowTimings(surgery.FlowID);
+            var flowTimings = await FlowUtil.GetFlowTimings(surgery.FlowID ?? 0);
 
             var flowTimingTableViewSource = new DashboardTVS(flowTimings);
             

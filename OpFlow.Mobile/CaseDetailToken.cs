@@ -40,16 +40,16 @@ namespace OpFlow.Mobile
             switch (AppSettings.CurrentScreen)
             {
                 case AppSettings.FragmentEnum.Debrief:
-                    categories = await GetFlowDebrief(surgery.FlowID);
+                    categories = await GetFlowDebrief(surgery.FlowID ?? 0);
                     break;
                 case AppSettings.FragmentEnum.Patient:
                     categories = GetPatientDetails(patient);
                     break;
                 case AppSettings.FragmentEnum.CardDetail:
-                    categories = await GetCardItemDetails(surgery.CardID);
+                    categories = await GetCardItemDetails(surgery.CardID ?? 0);
                     break;
                 case AppSettings.FragmentEnum.FlowDetail:
-                    categories = await GetFlowDetails(surgery.FlowID);
+                    categories = await GetFlowDetails(surgery.FlowID ?? 0);
                     break;
                 default:
                     categories = GetPatientDetails(patient);
