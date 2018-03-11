@@ -66,7 +66,7 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
 
             var patientId = await DataAccess.SecureSqlHelper.CreatePatient(patient.PatientAcctNbr, patient.Initials,
-                patient.BirthDate, patient.Gender, user.DatabaseName);
+                patient.BirthDate, patient.Gender, patient.FirstName, patient.LastName, patient.BMI, user.DatabaseName);
 
             return Request.CreateResponse(HttpStatusCode.Created, patientId);
         }

@@ -46,8 +46,12 @@ namespace OpFlow.Data
         public DateTime PtDOB { get; set; }
         public string PtInitials { get; set; }
         public string PtGender { get; set; }
+        public string PtFirstName { get; set; }
+        public string PtLastName { get; set; }
+        public decimal PtBMI { get; set; }
         public int SpecialtyID { get; set; }
         public int SurgeonUserID { get; set; }
+        public int? RoomID { get; set; }
         public int? BundleID { get; set; }
         public string CptCode { get; set; }
         public DateTime ScheduleDate { get; set; }

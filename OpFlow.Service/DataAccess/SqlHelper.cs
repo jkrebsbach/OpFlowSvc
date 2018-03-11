@@ -445,7 +445,7 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UpdateCardItemQty", dsParameters);
         }
 
-        public static int CreateSurgery(SurgeryPost surgery, int providerId, int locationId, int patientId, int caseId,
+        public static int CreateSurgery(SurgeryPost surgery, int providerId, int locationId, int patientId, int caseId, 
             int? procedureId, int? defaultCardId, int? defaultFlowId, int? defaultRoomId)
         {
             var dsParameters = new[]
@@ -458,6 +458,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("bundle_id", surgery.BundleID ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("case_id", caseId),
+                new SqlParameter("room_id", surgery.RoomID),
                 new SqlParameter("schedule_date", surgery.ScheduleDate),
                 new SqlParameter("schedule_time", surgery.ScheduleDate),
                 new SqlParameter("default_card_id", defaultCardId ?? (object)DBNull.Value),
