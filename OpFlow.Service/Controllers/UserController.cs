@@ -40,7 +40,7 @@ namespace OpFlow.Service.Controllers
         /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<User>))]
         [Route("api/User/SearchUsers", Name = "SearchUsers")]
-        public HttpResponseMessage GetUsers(string nameSearchText, int? roleId = null)
+        public HttpResponseMessage GetUsers(string nameSearchText = null, int? roleId = null)
         {
             var userSecurity = CacheUtil.GetUserSecurity();
 
