@@ -19,6 +19,7 @@ namespace OpFlow.Data
         public int? FlowID { get; set; }
         public int UserID { get; set; }
         public int UserRoleID { get; set; }
+        public string CaseNumber { get; set; }
         public string SurgeryStatus { get; set; }
         public string ProcedureDescription { get; set; }
         public string BundleDescription { get; set; }
@@ -27,11 +28,18 @@ namespace OpFlow.Data
         public string RoomDescription { get; set; }
         public string SurgeonFirstName { get; set; }
         public string SurgeonLastName { get; set; }
+        public string PatientPosition { get; set; }
         public string FlowStepDescription { get; set; }
+        public string RoomSetupDescription { get; set; }
         public DateTime ScheduleDate { get; set; }
         public TimeSpan ScheduleTime { get; set; }
         public int? EstDelayMinutes { get; set; }
         public int? TotalMinutes { get; set; }
+    }
+
+    public class PatientSurgery : Surgery
+    {
+        public Patient Patient { get; set; }
     }
 
     public class SurgerySchedule : Surgery
@@ -55,6 +63,13 @@ namespace OpFlow.Data
         public int? BundleID { get; set; }
         public string CptCode { get; set; }
         public DateTime ScheduleDate { get; set; }
+    }
+
+    public class SurgeryCountPost
+    {
+        public int SurgeryID { get; set; }
+        public int ItemID { get; set; }
+        public int Quantity { get; set; }
     }
 
     public class SurgerySearchResult
@@ -112,4 +127,31 @@ namespace OpFlow.Data
                 names.Add(token);
         }
     }
+
+    public class SurgeryUtilizationCount
+    {
+        public List<SurgeryItemCount> SurgeryItemCounts { get; set; }
+        public List<SurgeryInstrumentCount> SurgeryInstrumentCounts { get; set; }
+    }
+
+    public class SurgeryItemCount
+    {
+        public int SurgeryID { get; set; }
+        public int ItemID { get; set; }
+        public int QuantityWasted { get; set; }
+        public string ItemDescription { get; set; }
+    }
+
+    public class SurgeryInstrumentCount
+    {
+        public int SurgeryID { get; set; }
+        public int TrayItemID { get; set; }
+        public int? ItemID { get; set; }
+        public int InstrumentID { get; set; }
+        public int TrayQuantity { get; set; }
+        public int QuantityUsed { get; set; }
+        public string TrayName { get; set; }
+        public string InstrumentDescription { get; set; }
+    }
+
 }

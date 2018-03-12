@@ -34,7 +34,7 @@ namespace OpFlow.Data
         CRNA = 4,
         PA = 5,
         FrontDesk = 7,
-        Schedule = 8,
+        Scheduler = 8,
         Administration = 9,
         Representative = 10,
         Anesthesiologist = 11,

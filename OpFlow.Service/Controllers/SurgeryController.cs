@@ -16,14 +16,16 @@ namespace OpFlow.Service.Controllers
     {
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
         [SwaggerOperation("GetSurgery")]
-        [SwaggerResponse(HttpStatusCode.OK, Type=typeof(Surgery))]
-        public HttpResponseMessage GetSurgery(int surgeryId, int? providerId = null, int? locationId = null, string bundleFlag = null)
+        [SwaggerResponse(HttpStatusCode.OK, Type=typeof(PatientSurgery))]
+        public async Task<HttpResponseMessage> GetSurgery(int surgeryId, int? providerId = null, int? locationId = null, string bundleFlag = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var schedules = DataAccess.SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID, bundleFlag);
+            var patientSurgery = DataAccess.SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID, bundleFlag);
+            patientSurgery.Patient =
+                await DataAccess.SecureSqlHelper.GetPatient(patientSurgery.PatientID, user.DatabaseName);
 
-            return Request.CreateResponse(HttpStatusCode.OK, schedules);
+            return Request.CreateResponse(HttpStatusCode.OK, patientSurgery);
         }
 
         // GET api/surgery?userId=5
@@ -181,6 +183,23 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
 
+        [SwaggerOperation("GetUtilizationCounts")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(SurgeryUtilizationCount))]
+        [Route("api/Surgery/UtilizationCounts")]
+        public HttpResponseMessage GetSurgeryUtilizationCounts(int surgeryId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var surgeryUtilization = new SurgeryUtilizationCount()
+            {
+                SurgeryItemCounts = DataAccess.SqlHelper.GetSurgeryItemCounts(surgeryId, user.ProviderID, user.LocationID),
+                SurgeryInstrumentCounts =
+                    DataAccess.SqlHelper.GetSurgeryInstrumentCounts(surgeryId, user.ProviderID, user.LocationID)
+            };
+
+            return Request.CreateResponse(HttpStatusCode.OK, surgeryUtilization);
+        }
+
         // POST api/values
         [SwaggerOperation("AssignCard")]
         [SwaggerResponse(HttpStatusCode.Created)]
@@ -253,6 +272,16 @@ namespace OpFlow.Service.Controllers
                 cardFlowRoom?.ProcedureID, cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomID);
 
             return Request.CreateResponse(HttpStatusCode.Created, surgeryId);
+        }
+
+        // POST api/values
+        [SwaggerOperation("UpdateSurgeryCounts")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [HttpPost]
+        [Route("api/surgery/updateCounts", Name = "UpdateSurgeryCounts")]
+        public async Task<HttpResponseMessage> UpdateSurgeryCounts([FromBody]SurgeryCountPost counts)
+        {
+             return Request.CreateResponse(HttpStatusCode.Created, 0);
         }
 
         // PUT api/values/5

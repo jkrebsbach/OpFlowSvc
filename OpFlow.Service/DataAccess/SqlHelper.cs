@@ -551,7 +551,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static Surgery GetSurgery(int surgeryId, int providerId, int locationId, string bundleFlag)
+        public static PatientSurgery GetSurgery(int surgeryId, int providerId, int locationId, string bundleFlag)
         {
             var parameters = new[]
             {
@@ -563,7 +563,7 @@ namespace OpFlow.Service.DataAccess
             var command = (bundleFlag == "Y" ? "GetSurgeryBundle" : "GetSurgeryProcedure");
             var dsSchedules = ExecuteCommand(command, parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Surgery>().FirstOrDefault();
+            var result = dsSchedules.Tables[0].DataTableToList<PatientSurgery>().FirstOrDefault();
 
             return result;
         }
@@ -773,6 +773,36 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static List<SurgeryItemCount> GetSurgeryItemCounts(int surgeryId, int locationId, int providerId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetSurgeryItemCounts", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<SurgeryItemCount>();
+
+            return result;
+        }
+
+        public static List<SurgeryInstrumentCount> GetSurgeryInstrumentCounts(int surgeryId, int locationId, int providerId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetSurgeryInstrumentCounts", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<SurgeryInstrumentCount>();
+
+            return result;
+        }
+
         public static List<CardFlowRoom> GetBundleDefaultCardFlowRoom(int bundleId)
         {
             var parameters = new[]
@@ -938,34 +968,42 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<FlowStep> GetFlowTimings(int flowId, int providerId, int locationId, int? surgeryId)
+        public static List<FlowStepTiming> GetFlowTimings(int flowId, int providerId, int locationId)
         {
-            var command = surgeryId == null ? "GetFlowTimings" : "GetFlowSurgeryTimings";
-
-            var parameters = surgeryId == null
-                ? new[]
+            var parameters = new[]
                 {
                     new SqlParameter("flow_id", flowId),
-                    new SqlParameter("provider_id", providerId),
-                    new SqlParameter("location_id", locationId)
-                }
-                : new[]
-                {
-                    new SqlParameter("flow_id", flowId),
-                    new SqlParameter("surgery_id", surgeryId),
                     new SqlParameter("provider_id", providerId),
                     new SqlParameter("location_id", locationId)
                 };
 
 
-            var dsSchedules = ExecuteCommand(command, parameters);
+            var dsSchedules = ExecuteCommand("GetFlowTimings", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<FlowStep>();
+            var result = dsSchedules.Tables[0].DataTableToList<FlowStepTiming>();
 
             return result;
         }
 
-        public static List<FlowStep> GetFlowInstructions(int flowId, int providerId, int locationId)
+        public static List<FlowStepSurgeryTiming> GetFlowSurgeryTimings(int flowId, int surgeryId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+
+
+            var dsSchedules = ExecuteCommand("GetFlowSurgeryTimings", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<FlowStepSurgeryTiming>();
+
+            return result;
+        }
+
+        public static List<FlowInstruction> GetFlowInstructions(int flowId, int providerId, int locationId)
         {
             var parameters = new[]
                 {
@@ -977,7 +1015,7 @@ namespace OpFlow.Service.DataAccess
 
             var dsSchedules = ExecuteCommand("GetFlowInstructions", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<FlowStep>();
+            var result = dsSchedules.Tables[0].DataTableToList<FlowInstruction>();
 
             return result;
         }

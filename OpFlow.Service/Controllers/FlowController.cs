@@ -45,7 +45,7 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetFlowInstructions")]
         [Route("api/flow/instructions")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowStep>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowInstruction>))]
         public HttpResponseMessage GetFlowInstructions(int flowId, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
@@ -58,12 +58,25 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetFlowTimings")]
         [Route("api/flow/timings")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowTiming>))]
-        public HttpResponseMessage GetFlowTimings(int flowId, int? providerId = null, int? locationId = null, int? surgeryId = null)
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowStepTiming>))]
+        public HttpResponseMessage GetFlowTimings(int flowId, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID, surgeryId);
+            var result = DataAccess.SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetFlowSurgeryTimings")]
+        [Route("api/flow/surgerytimings")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowStepSurgeryTiming>))]
+        public HttpResponseMessage GetFlowSurgeryTimings(int flowId, int surgeryId, int? providerId = null, int? locationId = null)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetFlowSurgeryTimings(flowId, surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

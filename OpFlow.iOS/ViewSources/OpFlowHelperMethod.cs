@@ -40,7 +40,7 @@ namespace OpFlow.iOS.ViewSources
                     return UIColor.Black;
                 case RoleEnum.Anesthesiologist:
                     return UIColor.Orange;
-                case RoleEnum.Schedule:
+                case RoleEnum.Scheduler:
                     return UIColor.Red;
                 case RoleEnum.Representative:
                     return UIColor.Red;

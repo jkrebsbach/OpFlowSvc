@@ -27,10 +27,10 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("GetCardSurgerys")]
-        [Route("api/card/surgery")]
+        [SwaggerOperation("GetCardSurgeryItems")]
+        [Route("api/card/surgeryitems")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardItem>))]
-        public HttpResponseMessage GetCardSurgerys(int cardId, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetCardSurgeryItems(int cardId, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
