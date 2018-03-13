@@ -11,6 +11,7 @@ using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
 {
+    [Authorize]
     public class CardController : ApiController
     {
 

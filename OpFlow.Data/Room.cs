@@ -57,8 +57,9 @@ namespace OpFlow.Data
 
         public List<RoomSetupStaffPosition> StaffPositions { get; set; }
         public List<RoomSetupEquipment> SetupEquipment { get; set; }
+        public List<RoomSetupItem> SetupItems { get; set; }
 
-		public string EquipmentList()
+        public string EquipmentList()
         {
             var result = string.Join(",", SetupEquipment.Select(se => se.ItemDescription));
 
@@ -68,6 +69,7 @@ namespace OpFlow.Data
 		public RoomSetup()
         {
             SetupEquipment = new List<RoomSetupEquipment>();
+            SetupItems = new List<RoomSetupItem>();
         }
 
         public int GetID()
@@ -89,10 +91,20 @@ namespace OpFlow.Data
 
     public class RoomSetupEquipment
     {
-        public int RoomSetupID { get; set; }
         public int RoomSetupEquipmentID { get; set; }
+        public int RoomSetupID { get; set; }
         public int ItemID { get; set; }
         public string ItemDescription { get; set; }
         public string EquipmentPosition { get; set; }
+    }
+
+    public class RoomSetupItem
+    {
+        public int RoomSetupItemID { get; set; }
+        public int RoomSetupID { get; set; }
+        public int ItemID { get; set; }
+        public string ItemDescription { get; set; }
+        public int ItemQuantity { get; set; }
+        public decimal ItemCost { get; set; }
     }
 }

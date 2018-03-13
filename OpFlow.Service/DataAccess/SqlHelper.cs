@@ -104,6 +104,21 @@ namespace OpFlow.Service.DataAccess
             var result = ExecuteNonQuery("SendMessage", parameters);
         }
 
+        public static List<ItemMaster> GetItems(string itemType, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("item_type", itemType ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetItems", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
+
+            return result;
+        }
+
         public static List<Card> GetCardData(int cardId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -527,13 +542,21 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetRoomSetups", dsParameters);
 
             var setups = dsSchedules.Tables[0].DataTableToList<RoomSetup>();
-            var setupItems = dsSchedules.Tables[1].DataTableToList<RoomSetupEquipment>();
+            var setupEquipments = dsSchedules.Tables[1].DataTableToList<RoomSetupEquipment>();
+            var setupItems = dsSchedules.Tables[1].DataTableToList<RoomSetupItem>();
 
-            foreach (var setupItem in setupItems)
+            foreach (var setupItem in setupEquipments)
             {
                 var setup = setups.FirstOrDefault(s => s.RoomSetupID == setupItem.RoomSetupID);
                 setup?.SetupEquipment.Add(setupItem);
             }
+
+            foreach (var setupItem in setupItems)
+            {
+                var setup = setups.FirstOrDefault(s => s.RoomSetupID == setupItem.RoomSetupID);
+                setup?.SetupItems.Add(setupItem);
+            }
+
             return setups;
         }
 
@@ -547,6 +570,32 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetPatientPositions", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<PatientPosition>();
+
+            return result;
+        }
+
+        public static int DeleteRoomSetupEquipment(int roomSetupEquipmentId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("room_setup_equipment_id", roomSetupEquipmentId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = ExecuteNonQuery("DeleteRoomSetupEquipment", dsParameters);
+
+            return result;
+        }
+
+        public static int DeleteRoomSetupItem(int roomSetupItemId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("room_setup_item_id", roomSetupItemId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = ExecuteNonQuery("DeleteRoomSetupItem", dsParameters);
 
             return result;
         }
