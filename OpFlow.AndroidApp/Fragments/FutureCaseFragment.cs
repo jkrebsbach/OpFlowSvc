@@ -62,7 +62,7 @@ namespace OpFlow.AndroidApp.Fragments
 
             var schedule = _schedule[eventArgs.Position];
 
-            AppSettings.LoadSurgery(schedule.SurgeryID, schedule.PatientID);
+            AppSettings.LoadSurgery(schedule.SurgeryID);
 
             Listener.SendMessage(AppSettings.FragmentEnum.CardList, schedule);
         }

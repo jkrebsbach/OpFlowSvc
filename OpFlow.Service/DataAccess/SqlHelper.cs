@@ -104,17 +104,82 @@ namespace OpFlow.Service.DataAccess
             var result = ExecuteNonQuery("SendMessage", parameters);
         }
 
-        public static List<ItemMaster> GetItems(string itemType, int providerId, int locationId)
+        public static List<ItemMaster> GetItems(string itemType, int? trayId, bool? countNeeded, int providerId, int locationId)
         {
+            if (trayId.HasValue)
+            {
+                var tray = trayId.Value;
+
+                return new List<ItemMaster>()
+                {
+                    new ItemMaster()
+                    {
+                        ItemDescription = "Driver Assembly Cann",
+                        CatalogID = "Acumed-HD-3016",
+                        ItemID = tray * 20 + 1
+                    },
+                    new ItemMaster()
+                    {
+                        ItemDescription = "Driver Acutrak Plus T-handle",
+                        CatalogID = "Acumed-TH-3000",
+                        ItemID = tray * 20 + 2
+                    },
+                    new ItemMaster()
+                    {
+                        ItemDescription = "Trocar Acutrak Plus",
+                        CatalogID = "Acumed-AP-0402",
+                        ItemID = tray * 20 + 3
+                    },
+                    new ItemMaster()
+                    {
+                        ItemDescription = "Drill Guide Acutrak",
+                        CatalogID = "Acumed-MS-2000",
+                        ItemID = tray * 20 + 4
+                    },
+                    new ItemMaster()
+                    {
+                        ItemDescription = "Screw Sizer Acutrak Plus",
+                        CatalogID = "Acumed-AP-0200",
+                        ItemID = tray * 20 + 5
+                    },
+                    new ItemMaster()
+                    {
+                        ItemDescription = "Drill Acutrak Plus",
+                        CatalogID = "Acumed-AP-0100",
+                        ItemID = tray * 20 + 6
+                    }
+                };
+            }
+
             var parameters = new[]
             {
                 new SqlParameter("item_type", itemType ?? (object)DBNull.Value),
+                new SqlParameter("count_needed", countNeeded ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = ExecuteCommand("GetItems", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
+
+            return result;
+        }
+
+        public static List<ItemTray> GetItemTrays(int providerId, int locationId)
+        {
+            var result = new List<ItemTray>()
+            {
+                new ItemTray()
+                {
+                    TrayID = 1,
+                    TrayName = "Acumed Driver"
+                },
+                new ItemTray()
+                {
+                    TrayID = 2,
+                    TrayName = "Mayo vascular Major"
+                }
+            };
 
             return result;
         }
@@ -486,6 +551,32 @@ namespace OpFlow.Service.DataAccess
             var result = insert.Tables[0].DataTableToList<InsertionResult>();
 
             return result.FirstOrDefault()?.Identifier ?? -1;
+        }
+
+        public static int StartSurgery(int surgeryId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId)
+            };
+            var update = ExecuteNonQuery("StartSurgery", dsParameters);
+
+            return update;
+        }
+
+        public static int SurgeryMoveNextStep(int surgeryId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId)
+            };
+            var update = ExecuteNonQuery("UpdateSurgeryFlowTimings", dsParameters);
+
+            return update;
         }
 
         public static int CreateCase(int patientId, int userId, int specialtyId, int providerId, int locationId, string caseNbr)

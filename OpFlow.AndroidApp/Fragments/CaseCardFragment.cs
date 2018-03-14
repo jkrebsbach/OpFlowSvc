@@ -25,7 +25,7 @@ namespace OpFlow.AndroidApp.Fragments
         {
             ToggleConfirm(false, "Save Feedback");
 
-            var flowSteps = await FlowUtil.GetFlowInstructions(Surgery.FlowID);
+            var flowSteps = await FlowUtil.GetFlowInstructions(Surgery.FlowID ?? 0);
 
             var caseDetailTokens = flowSteps
                 .OrderBy(fs => fs.StepID)

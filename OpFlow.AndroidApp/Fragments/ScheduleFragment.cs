@@ -94,7 +94,7 @@ namespace OpFlow.AndroidApp.Fragments
             _progressDialog.SetTitle("Loading Surgery...");
             _progressDialog.Show();
             
-            AppSettings.LoadSurgery(surgery.SurgeryID, surgery.PatientID);
+            AppSettings.LoadSurgery(surgery.SurgeryID);
 
             _progressDialog.Hide();
 

@@ -25,7 +25,7 @@ namespace OpFlow.AndroidApp.Fragments
         {
             ToggleConfirm(false, "Update Flow Instructions");
 
-            var flowSteps = await FlowUtil.GetFlowInstructions(Surgery.FlowID);
+            var flowSteps = await FlowUtil.GetFlowInstructions(Surgery.FlowID ?? 0);
             var caseDetailTokens = await CaseDetailCategory.GetCaseDetailTokens(Surgery, Patient);
 
             //var caseDetailTokens = flowSteps

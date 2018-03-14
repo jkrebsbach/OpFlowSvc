@@ -16,11 +16,24 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("Get")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
-        public HttpResponseMessage Get(string itemType = null, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage Get(string itemType = null, int? trayId = null, bool? countNeeded = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var items = DataAccess.SqlHelper.GetItems(itemType, user.ProviderID, user.LocationID);
+            var items = DataAccess.SqlHelper.GetItems(itemType, trayId, countNeeded, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, items);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetTrays")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemTray>))]
+        [Route("api/item/trays")]
+        public HttpResponseMessage GetTrays()
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var items = DataAccess.SqlHelper.GetItemTrays(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, items);
         }

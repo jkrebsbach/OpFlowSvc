@@ -8,9 +8,9 @@ namespace OpFlow.iOS.ViewSources
 {
     public class DashboardTVS: UITableViewSource
     {
-        private List<FlowTiming> _flowTimings;
+        private List<FlowStepTiming> _flowTimings;
 
-        public DashboardTVS(List<FlowTiming> flowTimings)
+        public DashboardTVS(List<FlowStepTiming> flowTimings)
         {
             _flowTimings = flowTimings;
         }

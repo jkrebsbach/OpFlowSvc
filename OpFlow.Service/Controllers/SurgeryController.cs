@@ -276,12 +276,40 @@ namespace OpFlow.Service.Controllers
 
         // POST api/values
         [SwaggerOperation("UpdateSurgeryCounts")]
-        [SwaggerResponse(HttpStatusCode.Created)]
+        [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
         [Route("api/surgery/updateCounts", Name = "UpdateSurgeryCounts")]
         public async Task<HttpResponseMessage> UpdateSurgeryCounts([FromBody]SurgeryCountPost counts)
         {
-             return Request.CreateResponse(HttpStatusCode.Created, 0);
+             return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
+        // POST api/values
+        [SwaggerOperation("StartSurgery")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        [Route("api/surgery/start", Name = "StartSurgery")]
+        public async Task<HttpResponseMessage> StartSurgery(int surgeryId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+            var success = DataAccess.SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID);
+
+            success = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, success);
+        }
+
+        // POST api/values
+        [SwaggerOperation("MoveNextStep")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [HttpPost]
+        [Route("api/surgery/nextStep", Name = "MoveNextStep")]
+        public async Task<HttpResponseMessage> MoveNextStep(int surgeryId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+            var success = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.Created, success);
         }
 
         // PUT api/values/5

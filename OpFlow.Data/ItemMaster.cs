@@ -7,7 +7,7 @@ namespace OpFlow.Data
     public class ItemMaster
     {
         public int ItemID { get; set; }
-        public int CatalogID { get; set; }
+        public string CatalogID { get; set; }
         public int EHR_ID { get; set; }
         public string UnitOfMeasure { get; set; }
         public string ItemType { get; set; }
@@ -15,5 +15,11 @@ namespace OpFlow.Data
         public decimal UnitCost { get; set; }
         public decimal BillableUnitCost { get; set; }
         public int VendorID { get; set; }
+    }
+
+    public class ItemTray
+    {
+        public int TrayID { get; set; }
+        public string TrayName { get; set; }
     }
 }

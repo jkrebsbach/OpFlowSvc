@@ -33,7 +33,7 @@ namespace OpFlow.AndroidApp.Adapters
 
         public override long GetItemId(int position)
         {
-            return _cases[position].CardID;
+            return _cases[position].CardID ?? 0;
         }
 
         public override View GetView(int position, View convertView, ViewGroup parent)
