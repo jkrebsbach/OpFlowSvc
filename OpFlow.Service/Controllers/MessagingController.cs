@@ -45,7 +45,7 @@ namespace OpFlow.Service.Controllers
         [Route("api/message")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<MessagingGroup>))]
         [SwaggerResponse(HttpStatusCode.Ambiguous)]
-        public HttpResponseMessage Put(int? surgeryId, int? communicationUserId, string message)
+        public HttpResponseMessage Put([FromBody]MessagePost messagePost, int? surgeryId = null, int? communicationUserId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
@@ -53,7 +53,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.Ambiguous);
 
             DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
-                surgeryId, communicationUserId, message);
+                surgeryId, communicationUserId, messagePost?.Message);
 
             return Request.CreateResponse(HttpStatusCode.OK, 200);
         }
