@@ -1125,11 +1125,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<FlowStepSurgeryTiming> GetFlowSurgeryTimings(int flowId, int surgeryId, int providerId, int locationId)
+        public static List<FlowStepSurgeryTiming> GetFlowSurgeryTimings(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("flow_id", flowId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)

@@ -14,8 +14,8 @@ namespace OpFlow.Data
         public string StepDescription { get; set; }
         public int StepDuration { get; set; }
 
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
     }
 
     public class FlowStepTiming : FlowStep
