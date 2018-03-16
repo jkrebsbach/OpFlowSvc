@@ -19,10 +19,8 @@ namespace OpFlow.Service.DataAccess
             ConfigurationManager.ConnectionStrings["BlobStorageConnection"].ConnectionString));
 
 
-        public static async Task<List<string>> ListBlobs(int providerId, int cardId, int flowId, int stepId, int roleId)
+        public static async Task<List<string>> ListBlobs(string folder)
         {
-            var folder = Folder(providerId, cardId, flowId, stepId, roleId);
-            
             BlobContinuationToken continuationToken = null;
             var results = new List<IListBlobItem>();
             do
@@ -43,9 +41,8 @@ namespace OpFlow.Service.DataAccess
             return filenames;
         }
 
-        public static async Task<byte[]> GetBlobBytes(int providerId, int cardId, int flowId, int stepId, int roleId, string filename)
+        public static async Task<byte[]> GetBlobBytes(string folder, string filename)
         {
-            var folder = Folder(providerId, cardId, flowId, stepId, roleId);
             var filepath = Path.Combine(folder, filename);
 
             var memStream = new MemoryStream();
@@ -69,12 +66,11 @@ namespace OpFlow.Service.DataAccess
             return memStream.ToArray();
         }
 
-        public static async Task PutBlobBytes(int providerId, int cardId, int flowId, int stepId, int roleId, string filename, byte[] bytes)
+        public static async Task PutBlobBytes(string folder, string filename, byte[] bytes)
         {
-            var folder = Folder(providerId, cardId, flowId, stepId, roleId);
             var filepath = Path.Combine(folder, filename);
 
-            var blockBlob = await Container.GetBlobReferenceFromServerAsync(filepath);
+            var blockBlob = Container.GetBlockBlobReference(filepath);
 
             var memStream = new MemoryStream(bytes);
             await blockBlob.UploadFromStreamAsync(memStream);
@@ -112,7 +108,7 @@ namespace OpFlow.Service.DataAccess
         }
     
 
-        private static string Folder(int providerId, int cardId, int flowId, int stepId, int roleId)
+        public static string Folder(int providerId, int cardId, int flowId, int stepId, int roleId)
         {
             var folder = string.Format($"{providerId}_{cardId}_{flowId}_{stepId}_{roleId}");
 

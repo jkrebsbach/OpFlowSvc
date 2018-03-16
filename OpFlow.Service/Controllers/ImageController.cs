@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -22,11 +23,12 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var binary = await DataAccess.BlobStorageHelper.ListBlobs(user.ProviderID, cardId, flowId, stepId, roleId);
+            var folder = DataAccess.BlobStorageHelper.Folder(user.ProviderID, cardId, flowId, stepId, roleId);
+            var fileList = await DataAccess.BlobStorageHelper.ListBlobs(folder);
 
-            return binary == null ?
+            return fileList == null ?
                 Request.CreateResponse(HttpStatusCode.NotFound) :
-                Request.CreateResponse(HttpStatusCode.OK, binary);
+                Request.CreateResponse(HttpStatusCode.OK, fileList);
         }
 
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
@@ -37,11 +39,44 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var binary = await DataAccess.BlobStorageHelper.GetBlobBytes(user.ProviderID, cardId, flowId, stepId, roleId, fileName);
+            var folder = DataAccess.BlobStorageHelper.Folder(user.ProviderID, cardId, flowId, stepId, roleId);
+            var binary = await DataAccess.BlobStorageHelper.GetBlobBytes(folder, fileName);
             
             return binary == null ? 
                 Request.CreateResponse(HttpStatusCode.NotFound) :
-                Request.CreateResponse(HttpStatusCode.OK, binary);
+                ImageResponse(binary);
+        }
+
+        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
+        [SwaggerOperation("GetPatientPositionImage")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(byte[]))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("api/image/patientPosition", Name = "GetPatientPositionImage")]
+        public async Task<HttpResponseMessage> GetPatientPositionImage(int patientPositionId)
+        {
+            var folder = "PatientPosition";
+            var binary = await DataAccess.BlobStorageHelper.GetBlobBytes(folder, patientPositionId.ToString());
+
+            return binary == null ?
+                Request.CreateResponse(HttpStatusCode.NotFound) :
+                ImageResponse(binary);
+        }
+
+
+        // PUT api/values/5
+        [SwaggerOperation("UpdatePatientPositionImage")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        [Route("api/image/patientPosition", Name = "UpdatePatientPositionImage")]
+        public async Task<IHttpActionResult> PutPatientPositionImage(int patientPositionId, [FromBody]ImagePost value)
+        {
+            if ((value?.Payload?.Length ?? 0) == 0)
+                return StatusCode(HttpStatusCode.Ambiguous);
+
+            var folder = "PatientPosition";
+            await DataAccess.BlobStorageHelper.PutBlobBytes(folder, patientPositionId.ToString(), value?.Payload);
+
+            return Ok();
         }
 
 
@@ -49,14 +84,15 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Update")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.Ambiguous)]
-        public async Task<IHttpActionResult> Put(int cardId, int flowId, int stepId, int roleId, string fileName, [FromBody]byte[] value)
+        public async Task<IHttpActionResult> Put(int cardId, int flowId, int stepId, int roleId, string fileName, [FromBody]ImagePost value)
         {
-            if (value == null || value.Length == 0)
+            if ((value?.Payload?.Length ?? 0) == 0)
                 return StatusCode(HttpStatusCode.Ambiguous);
 
             var user = CacheUtil.GetUserSecurity();
 
-            await DataAccess.BlobStorageHelper.PutBlobBytes(user.ProviderID, cardId, flowId, stepId, roleId, fileName, value);
+            var folder = DataAccess.BlobStorageHelper.Folder(user.ProviderID, cardId, flowId, stepId, roleId);
+            await DataAccess.BlobStorageHelper.PutBlobBytes(folder, fileName, value?.Payload);
 
             return Ok();
         }
@@ -73,6 +109,21 @@ namespace OpFlow.Service.Controllers
             await DataAccess.BlobStorageHelper.DeleteBlob(user.ProviderID, cardId, flowId, stepId, roleId, filename);
 
             return Ok();
+        }
+
+        private HttpResponseMessage ImageResponse(byte[] payloadBytes)
+        {
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new ByteArrayContent(payloadBytes)
+            };
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            return result;
+        }
+
+        public class ImagePost
+        {
+            public byte[] Payload { get; set; }
         }
     }
 }
