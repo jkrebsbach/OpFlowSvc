@@ -165,23 +165,17 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<ItemTray> GetItemTrays(int providerId, int locationId)
+        public static List<ItemMaster> GetTrayItems(int trayId, int providerId, int locationId)
         {
-            var result = new List<ItemTray>()
+            var parameters = new[]
             {
-                new ItemTray()
-                {
-                    TrayID = 1,
-                    TrayName = "Acumed Driver"
-                },
-                new ItemTray()
-                {
-                    TrayID = 2,
-                    TrayName = "Mayo vascular Major"
-                }
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("tray_item_id", trayId)
             };
+            var dsItems = ExecuteCommand("GetTrayItems", parameters);
 
-            return result;
+            return dsItems.Tables[0].DataTableToList<ItemMaster>();
         }
 
         public static List<Card> GetCardData(int cardId, int providerId, int locationId)
