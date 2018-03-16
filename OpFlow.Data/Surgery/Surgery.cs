@@ -35,6 +35,9 @@ namespace OpFlow.Data
         public TimeSpan ScheduleTime { get; set; }
         public int? EstDelayMinutes { get; set; }
         public int? TotalMinutes { get; set; }
+
+
+        public DateTime ScheduleDateTime => ScheduleDate.Add(ScheduleTime);
     }
 
     public class PatientSurgery : Surgery
