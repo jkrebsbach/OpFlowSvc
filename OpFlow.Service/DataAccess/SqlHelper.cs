@@ -617,18 +617,20 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<RoomSetup> GetRoomSetups(int providerId, int locationId)
+        public static List<RoomSetup> GetRoomSetups(int? roomSetupId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
+                new SqlParameter("room_setup_id", roomSetupId ?? (object)DBNull.Value),
             };
             var dsSchedules = ExecuteCommand("GetRoomSetups", dsParameters);
 
             var setups = dsSchedules.Tables[0].DataTableToList<RoomSetup>();
             var setupEquipments = dsSchedules.Tables[1].DataTableToList<RoomSetupEquipment>();
             var setupItems = dsSchedules.Tables[1].DataTableToList<RoomSetupItem>();
+            var staffPositions = dsSchedules.Tables[2].DataTableToList<RoomSetupStaffPosition>();
 
             foreach (var setupItem in setupEquipments)
             {
@@ -640,6 +642,12 @@ namespace OpFlow.Service.DataAccess
             {
                 var setup = setups.FirstOrDefault(s => s.RoomSetupID == setupItem.RoomSetupID);
                 setup?.SetupItems.Add(setupItem);
+            }
+
+            foreach (var staffPosition in staffPositions)
+            {
+                var setup = setups.FirstOrDefault(s => s.RoomSetupID == staffPosition.RoomSetupID);
+                setup?.StaffPositions.Add(staffPosition);
             }
 
             return setups;
@@ -659,6 +667,220 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static int UpdateRoomSetup(int roomSetupId, int providerId, int locationId, RoomSetup roomSetup)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var update = ExecuteNonQuery("UpdateRoomSetup", dsParameters);
+            var currentRoomSetup = GetRoomSetups(roomSetupId, providerId, locationId).FirstOrDefault();
+
+
+            foreach (var roomSetupEquipment in roomSetup.SetupEquipment)
+            {
+                var currentEquipment = currentRoomSetup?.SetupEquipment?.FirstOrDefault(se =>
+                    se.RoomSetupEquipmentID == roomSetupEquipment.RoomSetupEquipmentID);
+
+                if (currentEquipment != null)
+                    UpdateRoomSetupEquipment(roomSetupEquipment, providerId, locationId);
+                else
+                {
+                    roomSetupEquipment.RoomSetupEquipmentID =
+                        InsertRoomSetupEquipment(roomSetupId, roomSetupEquipment, providerId, locationId);
+                }
+            }
+            foreach (var roomSetupItem in roomSetup.SetupItems)
+            {
+                var currentItem = currentRoomSetup?.SetupItems?.FirstOrDefault(se =>
+                    se.RoomSetupItemID == roomSetupItem.RoomSetupItemID);
+
+                if (currentItem != null)
+                    UpdateRoomSetupItem(roomSetupItem, providerId, locationId);
+                else
+                {
+                    roomSetupItem.RoomSetupItemID =
+                        InsertRoomSetupItem(roomSetupId, roomSetupItem, providerId, locationId);
+                }
+            }
+            foreach (var roomSetupStaffPosition in roomSetup.StaffPositions)
+            {
+                var currentStaffPosition = currentRoomSetup?.StaffPositions?.FirstOrDefault(se =>
+                    se.StaffPosition == roomSetupStaffPosition.StaffPosition);
+
+                if (currentStaffPosition != null)
+                    UpdateRoomSetupStaffPosition(roomSetupStaffPosition, providerId, locationId);
+                else
+                {
+                    InsertRoomSetupStaffPosition(roomSetupId, roomSetupStaffPosition, providerId, locationId);
+                }
+            }
+
+            if (currentRoomSetup != null)
+            {
+                foreach (var currentSetupEquipment in currentRoomSetup?.SetupEquipment)
+                {
+                    var sentEquipment = roomSetup.SetupEquipment.FirstOrDefault(se =>
+                        se.RoomSetupEquipmentID == currentSetupEquipment.RoomSetupEquipmentID);
+
+                    if (sentEquipment == null)
+                        DeleteRoomSetupEquipment(currentSetupEquipment.RoomSetupEquipmentID, providerId, locationId);
+                }
+
+                foreach (var currentSetupEquipment in currentRoomSetup?.SetupItems)
+                {
+                    var sentItem = roomSetup.SetupItems.FirstOrDefault(se =>
+                        se.RoomSetupItemID == currentSetupEquipment.RoomSetupItemID);
+
+                    if (sentItem == null)
+                        DeleteRoomSetupItem(currentSetupEquipment.RoomSetupItemID, providerId, locationId);
+                }
+
+                foreach (var currentStaffPosition in currentRoomSetup?.StaffPositions)
+                {
+                    var sentItem = roomSetup.StaffPositions.FirstOrDefault(se =>
+                        se.StaffPosition == currentStaffPosition.StaffPosition);
+
+                    if (sentItem == null)
+                        DeleteRoomSetupStaffPosition(currentStaffPosition, providerId, locationId);
+                }
+            }
+
+            return roomSetupId;
+        }
+
+        public static int CreateRoomSetup(RoomSetup roomSetup, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var insert = ExecuteCommand("NewRoomSetup", dsParameters);
+
+            var result = insert.Tables[0].DataTableToList<InsertionResult>();
+
+            var roomSetupId = result.FirstOrDefault()?.Identifier ?? -1;
+
+            foreach (var roomSetupEquipment in roomSetup.SetupEquipment)
+            {
+                roomSetupEquipment.RoomSetupEquipmentID =
+                    InsertRoomSetupEquipment(roomSetupId, roomSetupEquipment, providerId, locationId);
+            }
+            foreach (var roomSetupItem in roomSetup.SetupItems)
+            {
+                roomSetupItem.RoomSetupItemID =
+                    InsertRoomSetupItem(roomSetupId, roomSetupItem, providerId, locationId);
+            }
+            foreach (var staffPosition in roomSetup.StaffPositions)
+            {
+                InsertRoomSetupStaffPosition(roomSetupId, staffPosition, providerId, locationId);
+            }
+
+            return roomSetupId;
+        }
+
+
+        public static int InsertRoomSetupEquipment(int roomSetupId, RoomSetupEquipment roomSetupEquipment, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("room_setup_id", roomSetupId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("item_id", roomSetupEquipment.ItemID),
+                new SqlParameter("equipment_position", roomSetupEquipment.EquipmentPosition)
+            };
+            var insert = ExecuteCommand("InsertRoomSetupEquipment", dsParameters);
+
+            var result = insert.Tables[0].DataTableToList<InsertionResult>();
+
+            var roomSetupEquipmentId = result.FirstOrDefault()?.Identifier ?? -1;
+
+            return roomSetupEquipmentId;
+        }
+
+        public static int InsertRoomSetupItem(int roomSetupId, RoomSetupItem roomSetupItem, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("room_setup_id", roomSetupId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("item_id", roomSetupItem.ItemID),
+                new SqlParameter("quantity", roomSetupItem.ItemQuantity),
+                new SqlParameter("cost", roomSetupItem.ItemCost)
+            };
+            var insert = ExecuteCommand("InsertRoomSetupItem", dsParameters);
+
+            var result = insert.Tables[0].DataTableToList<InsertionResult>();
+
+            var roomSetupItemId = result.FirstOrDefault()?.Identifier ?? -1;
+
+            return roomSetupItemId;
+        }
+
+        public static int InsertRoomSetupStaffPosition(int roomSetupId, RoomSetupStaffPosition roomSetupStaffPosition, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("room_setup_id", roomSetupId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("staff_position", roomSetupStaffPosition.StaffPosition),
+                new SqlParameter("staff_role_id", roomSetupStaffPosition.StaffRoleID)
+            };
+            var result = ExecuteNonQuery("InsertRoomSetupStaffPosition", dsParameters);
+
+            return result;
+        }
+        public static int UpdateRoomSetupEquipment(RoomSetupEquipment roomSetupEquipment, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("room_setup_equipment_id", roomSetupEquipment.RoomSetupEquipmentID),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("item_id", roomSetupEquipment.ItemID),
+                new SqlParameter("equipment_position", roomSetupEquipment.EquipmentPosition)
+            };
+
+            var result = ExecuteNonQuery("UpdateRoomSetupEquipment", dsParameters);
+
+            return result;
+        }
+
+        public static int UpdateRoomSetupItem(RoomSetupItem roomSetupItem, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("room_setup_item_id", roomSetupItem.RoomSetupItemID),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("item_id", roomSetupItem.ItemID),
+                new SqlParameter("quantity", roomSetupItem.ItemQuantity),
+                new SqlParameter("cost", roomSetupItem.ItemCost)
+            };
+            var result = ExecuteNonQuery("UpdateRoomSetupItem", dsParameters);
+
+            return result;
+        }
+
+        public static int UpdateRoomSetupStaffPosition(RoomSetupStaffPosition roomSetupStaffPosition, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("room_setup_id", roomSetupStaffPosition),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("staff_position", roomSetupStaffPosition.StaffPosition),
+                new SqlParameter("staff_role_id", roomSetupStaffPosition.StaffRoleID)
+            };
+            var result = ExecuteNonQuery("UpdateRoomsetupStaffPosition", dsParameters);
+
+            return result;
+        }
         public static int DeleteRoomSetupEquipment(int roomSetupEquipmentId, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -679,6 +901,20 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("room_setup_item_id", roomSetupItemId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
+            };
+            var result = ExecuteNonQuery("DeleteRoomSetupItem", dsParameters);
+
+            return result;
+        }
+
+        public static int DeleteRoomSetupStaffPosition(RoomSetupStaffPosition roomSetupStaffPosition, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("room_setup_item_id", roomSetupStaffPosition.RoomSetupID),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("staff_position", roomSetupStaffPosition.StaffPosition)
             };
             var result = ExecuteNonQuery("DeleteRoomSetupItem", dsParameters);
 
@@ -877,11 +1113,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Surgery> GetSurgeryRoomSchedule(int roomId, int providerId, int locationId)
+        public static List<Surgery> GetSurgeryRoomSchedule(int roomId, DateTime? scheduleDate, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("room_id", roomId),
+                new SqlParameter("schedule_date", scheduleDate ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

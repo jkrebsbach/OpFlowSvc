@@ -45,7 +45,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var setups = DataAccess.SqlHelper.GetRoomSetups(user.ProviderID, user.LocationID);
+            var setups = DataAccess.SqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID);
 
             if (roomSetupId != null)
                 setups = setups.Where(s => s.RoomSetupID == roomSetupId).ToList();
@@ -65,53 +65,28 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [SwaggerOperation("UpdateRoomSetupEquipment")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
-        [HttpPost]
-        [Route("api/surgery/updateRoomSetupEquipment", Name = "UpdateRoomSetupEquipment")]
-        public async Task<HttpResponseMessage> UpdateRoomSetupEquipment([FromBody]RoomSetupEquipment equipment)
-        {
-            return Request.CreateResponse(HttpStatusCode.Created, 0);
-        }
-
-        // POST api/values
-        [SwaggerOperation("UpdateRoomSetupItem")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
-        [HttpPost]
-        [Route("api/room/updateRoomSetupItem", Name = "UpdateRoomSetupItem")]
-        public async Task<HttpResponseMessage> UpdateRoomSetupItem([FromBody]RoomSetupItem item)
-        {
-            return Request.CreateResponse(HttpStatusCode.Created, 0);
-        }
-
-        // DELETE api/values/5
-        [SwaggerOperation("DeleteRoomSetupEquipment")]
-        [Route("api/room/deleteRoomSetupEquipment", Name = "DeleteRoomSetupEquipment")]
-        [SwaggerResponse(HttpStatusCode.OK)]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage DeleteRoomSetupEquipment(int roomSetupEquipmentId)
+        [SwaggerOperation("Create")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        public HttpResponseMessage Post([FromBody]RoomSetup roomSetup)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.DeleteRoomSetupEquipment(roomSetupEquipmentId, user.ProviderID, user.LocationID);
+            var roomSetupId = DataAccess.SqlHelper.CreateRoomSetup(roomSetup, user.ProviderID, user.LocationID);
 
-            return Request.CreateResponse(HttpStatusCode.OK, 0);
+            return Request.CreateResponse(HttpStatusCode.OK, roomSetupId);
         }
 
-        // DELETE api/values/5
-        [SwaggerOperation("DeleteRoomSetupItem")]
-        [Route("api/room/deleteRoomSetupItem", Name = "DeleteRoomSetupItem")]
+        // PUT api/values/5
+        [SwaggerOperation("Update")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage DeleteRoomSetupItem(int roomSetupItemId)
+        public HttpResponseMessage Put(int id, [FromBody]RoomSetup roomSetup)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.DeleteRoomSetupItem(roomSetupItemId, user.ProviderID, user.LocationID);
+            DataAccess.SqlHelper.UpdateRoomSetup(id, user.ProviderID, user.LocationID, roomSetup);
 
-            return Request.CreateResponse(HttpStatusCode.OK, 0);
+            return Request.CreateResponse(HttpStatusCode.OK, id);
         }
     }
 }

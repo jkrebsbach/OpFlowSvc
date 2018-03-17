@@ -43,14 +43,14 @@ namespace OpFlow.Data
 
     public class RoomSetup : IBindableEntity
     {
-        public string PatientAccess { get; set; }
         public int RoomSetupID { get; set; }
         public int RoomTypeID { get; set; }
+        public int PatientPositionID { get; set; }
         public string RoomTypeDescription { get; set; }
         public int OwnerUserID { get; set; }
         public string SetupName { get; set; }
         public string PatientPosition { get; set; }
-        public string SurgeonPosition { get; set; }
+        public string PatientAccess { get; set; }
 
         public int BedOrientation { get; set; }
         public string Comments { get; set; }
@@ -70,6 +70,7 @@ namespace OpFlow.Data
         {
             SetupEquipment = new List<RoomSetupEquipment>();
             SetupItems = new List<RoomSetupItem>();
+            StaffPositions = new List<RoomSetupStaffPosition>();
         }
 
         public int GetID()
@@ -85,6 +86,7 @@ namespace OpFlow.Data
 
     public class RoomSetupStaffPosition
     {
+        public int RoomSetupID { get; set; }
         public int StaffRoleID { get; set; }
         public string StaffPosition { get; set; }
     }
