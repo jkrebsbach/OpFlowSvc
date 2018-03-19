@@ -193,7 +193,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<CardItem> GetCardSurgeryItems(int cardId, int providerId, int locationId)
+        public static List<CardItem> GetCardItems(int cardId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -201,9 +201,24 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetCardSurgeryItems", parameters);
+            var dsSchedules = ExecuteCommand("GetCardItems", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<CardItem>();
+
+            return result;
+        }
+
+        public static List<CardItemCount> GetSurgeryCardItemCounts(int surgeryId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetSurgeryCardItemCounts", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<CardItemCount>();
 
             return result;
         }
@@ -545,6 +560,24 @@ namespace OpFlow.Service.DataAccess
             var result = insert.Tables[0].DataTableToList<InsertionResult>();
 
             return result.FirstOrDefault()?.Identifier ?? -1;
+        }
+
+        public static int UpdateSurgeryCount(int surgeryId, int itemId, bool pass1, bool pass2, bool pass3, int usage, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("item_id", itemId),
+                new SqlParameter("pass_1", pass1),
+                new SqlParameter("pass_2", pass2),
+                new SqlParameter("pass_3", pass3),
+                new SqlParameter("usage", usage)
+            };
+            var update = ExecuteNonQuery("UpdateSurgeryCount", dsParameters);
+
+            return update;
         }
 
         public static int StartSurgery(int surgeryId, int providerId, int locationId)
@@ -1145,36 +1178,6 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetSurgeryVendorReps", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<SurgeryVendorRep>();
-
-            return result;
-        }
-
-        public static List<SurgeryItemCount> GetSurgeryItemCounts(int surgeryId, int locationId, int providerId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = ExecuteCommand("GetSurgeryItemCounts", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<SurgeryItemCount>();
-
-            return result;
-        }
-
-        public static List<SurgeryInstrumentCount> GetSurgeryInstrumentCounts(int surgeryId, int locationId, int providerId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = ExecuteCommand("GetSurgeryInstrumentCounts", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<SurgeryInstrumentCount>();
 
             return result;
         }

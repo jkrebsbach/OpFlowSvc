@@ -183,21 +183,35 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
 
-        [SwaggerOperation("GetUtilizationCounts")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(SurgeryUtilizationCount))]
-        [Route("api/Surgery/UtilizationCounts")]
-        public HttpResponseMessage GetSurgeryUtilizationCounts(int surgeryId)
+        // GET api/values/5
+        [SwaggerOperation("GetCardItemCounts")]
+        [Route("api/surgery/cardItemCounts")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardItemCountResult))]
+        public HttpResponseMessage GetSurgeryCardItemCounts(int surgeryId)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var surgeryUtilization = new SurgeryUtilizationCount()
-            {
-                SurgeryItemCounts = DataAccess.SqlHelper.GetSurgeryItemCounts(surgeryId, user.ProviderID, user.LocationID),
-                SurgeryInstrumentCounts =
-                    DataAccess.SqlHelper.GetSurgeryInstrumentCounts(surgeryId, user.ProviderID, user.LocationID)
-            };
+            var itemCounts = DataAccess.SqlHelper.GetSurgeryCardItemCounts(surgeryId, user.ProviderID, user.LocationID)
+                .GroupBy(ic => ic.ItemType);
 
-            return Request.CreateResponse(HttpStatusCode.OK, surgeryUtilization);
+            var result = new CardItemCountResult();
+
+            foreach (var countType in itemCounts)
+            {
+                if (countType.Key == "SUPPLY")
+                    result.Supplies = itemCounts.First(ic => ic.Key == "SUPPLY").ToList();
+                else if (countType.Key == "INSTRUMENT")
+                    result.Instruments = itemCounts.First(ic => ic.Key == "INSTRUMENT").ToList();
+                else
+                {
+                    var trayItems = countType.ToList();
+
+                    result.Trays[trayItems.FirstOrDefault()?.TrayID ?? 0] = countType.ToList();
+
+                }
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // POST api/values
@@ -279,8 +293,14 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
         [Route("api/surgery/updateCounts", Name = "UpdateSurgeryCounts")]
-        public async Task<HttpResponseMessage> UpdateSurgeryCounts([FromBody]SurgeryCountPost counts)
+        public async Task<HttpResponseMessage> UpdateSurgeryCounts(int surgeryId, [FromBody]SurgeryCountPost countModel)
         {
+            var user = CacheUtil.GetUserSecurity();
+
+            foreach (var count in countModel.Counts)
+            {
+                DataAccess.SqlHelper.UpdateSurgeryCount(surgeryId, count.ItemID, count.Pass1, count.Pass2, count.Pass3, count.Usage, user.ProviderID, user.LocationID);
+            }
              return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
 

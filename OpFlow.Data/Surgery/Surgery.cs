@@ -70,9 +70,15 @@ namespace OpFlow.Data
 
     public class SurgeryCountPost
     {
-        public int SurgeryID { get; set; }
+        public List<SurgeryCountItemPost> Counts { get; set; }
+    }
+    public class SurgeryCountItemPost
+    {
         public int ItemID { get; set; }
-        public int Quantity { get; set; }
+        public bool Pass1 { get; set; }
+        public bool Pass2 { get; set; }
+        public bool Pass3 { get; set; }
+        public int Usage { get; set; }
     }
 
     public class SurgerySearchResult

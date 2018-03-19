@@ -28,14 +28,14 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("GetCardSurgeryItems")]
-        [Route("api/card/surgeryitems")]
+        [SwaggerOperation("GetCardItems")]
+        [Route("api/card/carditems")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardItem>))]
-        public HttpResponseMessage GetCardSurgeryItems(int cardId, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetCardItems(int cardId, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetCardSurgeryItems(cardId, user.ProviderID, user.LocationID);
+            var result = DataAccess.SqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
