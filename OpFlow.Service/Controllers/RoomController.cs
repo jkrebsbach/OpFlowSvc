@@ -79,16 +79,16 @@ namespace OpFlow.Service.Controllers
 
         // PUT api/roomSetup/values/5
         [SwaggerOperation("Update")]
-        [Route("api/room/roomSetup")]
+        [Route("api/room/roomSetup/{roomsetupId}")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage Put(int id, [FromBody]RoomSetup roomSetup)
+        public HttpResponseMessage Put(int roomsetupId, [FromBody]RoomSetup roomSetup)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.UpdateRoomSetup(id, user.ProviderID, user.LocationID, roomSetup);
+            DataAccess.SqlHelper.UpdateRoomSetup(roomsetupId, user.ProviderID, user.LocationID, roomSetup);
 
-            return Request.CreateResponse(HttpStatusCode.OK, id);
+            return Request.CreateResponse(HttpStatusCode.OK, roomsetupId);
         }
     }
 }

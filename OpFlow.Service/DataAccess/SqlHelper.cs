@@ -671,8 +671,12 @@ namespace OpFlow.Service.DataAccess
         {
             var dsParameters = new[]
             {
+                new SqlParameter("room_setup_id", roomSetupId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
+                new SqlParameter("patient_position_id", roomSetup.PatientPositionID),
+                new SqlParameter("room_type_id", roomSetup.RoomTypeID),
+                new SqlParameter("bed_orientation", roomSetup.BedOrientation),
             };
             var update = ExecuteNonQuery("UpdateRoomSetup", dsParameters);
             var currentRoomSetup = GetRoomSetups(roomSetupId, providerId, locationId).FirstOrDefault();
@@ -756,6 +760,9 @@ namespace OpFlow.Service.DataAccess
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
+                new SqlParameter("patient_position_id", roomSetup.PatientPositionID),
+                new SqlParameter("room_type_id", roomSetup.RoomTypeID),
+                new SqlParameter("bed_orientation", roomSetup.BedOrientation)
             };
             var insert = ExecuteCommand("NewRoomSetup", dsParameters);
 
@@ -809,8 +816,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("item_id", roomSetupItem.ItemID),
-                new SqlParameter("quantity", roomSetupItem.ItemQuantity),
-                new SqlParameter("cost", roomSetupItem.ItemCost)
+                new SqlParameter("quantity", roomSetupItem.ItemQuantity)
             };
             var insert = ExecuteCommand("InsertRoomSetupItem", dsParameters);
 
@@ -859,8 +865,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("item_id", roomSetupItem.ItemID),
-                new SqlParameter("quantity", roomSetupItem.ItemQuantity),
-                new SqlParameter("cost", roomSetupItem.ItemCost)
+                new SqlParameter("quantity", roomSetupItem.ItemQuantity)
             };
             var result = ExecuteNonQuery("UpdateRoomSetupItem", dsParameters);
 
@@ -871,7 +876,7 @@ namespace OpFlow.Service.DataAccess
         {
             var dsParameters = new[]
             {
-                new SqlParameter("room_setup_id", roomSetupStaffPosition),
+                new SqlParameter("room_setup_id", roomSetupStaffPosition.RoomSetupID),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("staff_position", roomSetupStaffPosition.StaffPosition),
