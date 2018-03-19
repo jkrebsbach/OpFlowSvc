@@ -419,15 +419,15 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UserSurgeryWorkupReviewed", dsParameters);
         }
 
-        public static int AssignUserToCase(User user, int surgeryId)
+        public static int AssignUserToCase(int userId, int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", user.ProviderID),
-                new SqlParameter("location_id", user.LocationID),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("user_id", user.UserID),
-                new SqlParameter("role_id", user.RoleID)
+                new SqlParameter("user_id", userId),
+                new SqlParameter("role_id", DBNull.Value)
             };
             return ExecuteNonQuery("AssignUserToCase", dsParameters);
         }
@@ -629,8 +629,8 @@ namespace OpFlow.Service.DataAccess
 
             var setups = dsSchedules.Tables[0].DataTableToList<RoomSetup>();
             var setupEquipments = dsSchedules.Tables[1].DataTableToList<RoomSetupEquipment>();
-            var setupItems = dsSchedules.Tables[1].DataTableToList<RoomSetupItem>();
-            var staffPositions = dsSchedules.Tables[2].DataTableToList<RoomSetupStaffPosition>();
+            var setupItems = dsSchedules.Tables[2].DataTableToList<RoomSetupItem>();
+            var staffPositions = dsSchedules.Tables[3].DataTableToList<RoomSetupStaffPosition>();
 
             foreach (var setupItem in setupEquipments)
             {

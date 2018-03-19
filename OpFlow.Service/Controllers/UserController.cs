@@ -87,9 +87,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("AssignUser")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/User/Assign", Name = "AssignUser")]
-        public async Task<IHttpActionResult> AssignToCase(int surgeryId, [FromBody]User user)
+        public async Task<IHttpActionResult> AssignToCase(int surgeryId, int userId)
         {
-            DataAccess.SqlHelper.AssignUserToCase(user, surgeryId);
+            var userSecurity = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AssignUserToCase(userId, surgeryId, userSecurity.ProviderID, userSecurity.LocationID);
 
             return Ok();
         }

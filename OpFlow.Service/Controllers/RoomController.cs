@@ -64,8 +64,9 @@ namespace OpFlow.Service.Controllers
             return DataAccess.SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
         }
 
-        // POST api/values
+        // POST api/roomSetup/values
         [SwaggerOperation("Create")]
+        [Route("api/room/roomSetup")]
         [SwaggerResponse(HttpStatusCode.Created)]
         public HttpResponseMessage Post([FromBody]RoomSetup roomSetup)
         {
@@ -76,8 +77,9 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, roomSetupId);
         }
 
-        // PUT api/values/5
+        // PUT api/roomSetup/values/5
         [SwaggerOperation("Update")]
+        [Route("api/room/roomSetup")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         public HttpResponseMessage Put(int id, [FromBody]RoomSetup roomSetup)

@@ -48,6 +48,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
+        [AllowAnonymous]
         [SwaggerOperation("GetPatientPositionImage")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(byte[]))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
