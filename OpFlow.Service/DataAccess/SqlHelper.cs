@@ -419,7 +419,7 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UserSurgeryWorkupReviewed", dsParameters);
         }
 
-        public static int AssignUserToCase(int userId, int surgeryId, int providerId, int locationId)
+        public static int AssignUserToCase(int userId, int surgeryId, bool active, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -427,7 +427,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("user_id", userId),
-                new SqlParameter("role_id", DBNull.Value)
+                new SqlParameter("active_flag", active)
             };
             return ExecuteNonQuery("AssignUserToCase", dsParameters);
         }
@@ -916,7 +916,7 @@ namespace OpFlow.Service.DataAccess
         {
             var dsParameters = new[]
             {
-                new SqlParameter("room_setup_item_id", roomSetupStaffPosition.RoomSetupID),
+                new SqlParameter("room_setup_id", roomSetupStaffPosition.RoomSetupID),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("staff_position", roomSetupStaffPosition.StaffPosition)
