@@ -11,7 +11,7 @@ namespace OpFlow.Data
         public int CardID { get; set; }
         public int UserID { get; set; }
         public int RoleID { get; set; }
-        public int? CoSurgeonOrderNbr { get; set; }
+        public int? OrderNbr { get; set; }
         public string RoleDescription { get; set; }
         public string LocationName { get; set; }
         public DateTime? CheckInDate { get; set; }

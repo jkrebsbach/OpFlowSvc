@@ -8,7 +8,15 @@ namespace OpFlow.Data
     {
         public int ProcedureID { get; set; }
         public int SpecialtyID { get; set; }
+        public string CPTCode { get; set; }
         public string ProcedureDescription { get; set; }
         public string ProcedureSpecialty { get; set; }
+        public string SpecialtyDescription { get; set; }
+    }
+
+    public class BundleProcedure : Procedure
+    {
+        public int BundleID { get; set; }
+        public string BundleDescription { get; set; }
     }
 }

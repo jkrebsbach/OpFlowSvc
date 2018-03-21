@@ -434,7 +434,7 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UserSurgeryWorkupReviewed", dsParameters);
         }
 
-        public static int AssignUserToCase(int userId, int surgeryId, bool active, int providerId, int locationId)
+        public static int AssignUserToCase(int userId, int surgeryId, bool active, int? orderNbr, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -442,6 +442,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("user_id", userId),
+                new SqlParameter("order_nbr", orderNbr ?? (object)DBNull.Value),
                 new SqlParameter("active_flag", active)
             };
             return ExecuteNonQuery("AssignUserToCase", dsParameters);
@@ -1268,6 +1269,21 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetBundlesBySpecialty", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<CardBundle>();
+
+            return result;
+        }
+
+        public static List<BundleProcedure> GetBundleProcedures(int bundleId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("bundle_id", bundleId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetBundleProcedures", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<BundleProcedure>();
 
             return result;
         }

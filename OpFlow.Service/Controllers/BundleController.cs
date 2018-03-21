@@ -23,9 +23,20 @@ namespace OpFlow.Service.Controllers
 
             var bundles = DataAccess.SqlHelper.GetBundles(specialtyId, user.ProviderID, user.LocationID);
 
-            return bundles == null ?
-                Request.CreateResponse(HttpStatusCode.NotFound) :
-                Request.CreateResponse(HttpStatusCode.OK, bundles);
+            return Request.CreateResponse(HttpStatusCode.OK, bundles);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("Get")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<BundleProcedure>))]
+        [Route("api/bundle/procedures")]
+        public HttpResponseMessage GetBundleProcedures(int bundleId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var procedures = DataAccess.SqlHelper.GetBundleProcedures(bundleId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, procedures);
         }
     }
 }
