@@ -22,7 +22,7 @@ namespace OpFlow.Service.Test
                 foreach (int image in images.Keys)
                 {
                     var positionBinary = File.ReadAllBytes($@"C:\temp\OpFlow\{images[image]}.png");
-                    var payload = new ImageController.ImagePost()
+                    var payload = new ImageController.FilePost()
                     {
                         Payload = positionBinary
                     };

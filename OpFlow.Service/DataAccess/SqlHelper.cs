@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Web;
 using OpFlow.Data;
+using OpFlow.Data.Administration;
 
 namespace OpFlow.Service.DataAccess
 {
@@ -34,10 +35,10 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        private static int ExecuteNonQuery(string storedProcedure, SqlParameter[] dsParameters = null)
+        private static int ExecuteNonQuery(string storedProcedure, SqlParameter[] dsParameters = null, CommandType commandType = CommandType.StoredProcedure)
         {
             var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString);
-            var cmd = new SqlCommand(storedProcedure, conn) { CommandType = CommandType.StoredProcedure };
+            var cmd = new SqlCommand(storedProcedure, conn) { CommandType = commandType };
 
             cmd.Parameters.AddRange(dsParameters);
 
@@ -54,6 +55,50 @@ namespace OpFlow.Service.DataAccess
 
                 return result;
             }
+        }
+
+        public static List<ImportType> GetImportTypes(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetImportList", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ImportType>();
+
+            return result;
+        }
+
+        public static List<ImportDefinition> GetImportDefinition(int importTypeId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("import_id", importTypeId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetImportDefinition", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ImportDefinition>();
+
+            return result;
+        }
+
+        public static List<ImportLog> GetImportLog(int importTypeId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("import_id", importTypeId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetImportLog", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ImportLog>();
+
+            return result;
         }
 
         public static List<Messaging> GetMessaging(int userId, int? surgeryId, int? caseGroupId, int? recipientId, int providerId, int locationId)
@@ -1492,6 +1537,97 @@ namespace OpFlow.Service.DataAccess
             var result = dsSchedules.Tables[0].DataTableToList<FlowFeedback>();
 
             return result;
+        }
+
+        public static void InsertStagingData(int providerId, int locationId, IImportData sourceData)
+        {
+            if (sourceData is ItemImport instrument)
+            {
+                var parameters = new[]
+                {
+                    new SqlParameter("provider_id", providerId),
+                    new SqlParameter("location_id", locationId),
+                    new SqlParameter("customer", instrument.Customer),
+                    new SqlParameter("tray_id", instrument.TrayID),
+                    new SqlParameter("tray_name", instrument.TrayName),
+                    new SqlParameter("instrument_name", instrument.InstrumentName),
+                    new SqlParameter("quantity", instrument.Quantity),
+                    new SqlParameter("manufacturer", instrument.Manufacturer)
+                };
+
+                var insertion = ExecuteNonQuery(@"INSERT stag_instrument (provider_id, location_id, customer, tray_id, tray_name, instrument_name, quantity, manufacturer)
+                VALUES (@provider_id, @location_id, @customer, @tray_id, @tray_name, @instrument_name, @quantity, @manufacturer)", parameters, CommandType.Text);
+            }
+            else if (sourceData is TrayImport tray)
+            {
+                var parameters = new[]
+                {
+                    new SqlParameter("provider_id", providerId),
+                    new SqlParameter("location_id", locationId),
+                    new SqlParameter("customer", tray.Customer),
+                    new SqlParameter("tray_id", tray.TrayID),
+                    new SqlParameter("tray_name", tray.TrayName),
+                    new SqlParameter("instrument_name", tray.InstrumentName),
+                    new SqlParameter("quantity", tray.Quantity),
+                    new SqlParameter("manufacturer", tray.Manufacturer)
+                };
+
+                var insertion = ExecuteNonQuery(@"INSERT stag_tray (provider_id, location_id, customer, tray_id, tray_name, instrument_name, quantity, manufacturer)
+                VALUES (@provider_id, @location_id, @customer, @tray_id, @tray_name, @instrument_name, @quantity, @manufacturer)", parameters, CommandType.Text);
+            }
+            else if(sourceData is ScheduleImport schedule)
+            {
+                var parameters = new[]
+                {
+                    new SqlParameter("provider_id", providerId),
+                    new SqlParameter("location_id", locationId),
+                    new SqlParameter("patient_id", schedule.PatientID),
+                    new SqlParameter("case_id", schedule.CaseID),
+                    new SqlParameter("first_name", schedule.FirstName),
+                    new SqlParameter("last_name", schedule.LastName),
+                    new SqlParameter("date_of_birth", schedule.DateOfBirth),
+                    new SqlParameter("gender", schedule.Gender),
+                    new SqlParameter("[BMI]," , schedule.BMI),
+                    new SqlParameter("[Medical_History]", schedule.MedicalHistory),
+                    new SqlParameter("[risk_factors]", schedule.RiskFactors),
+                    new SqlParameter("[medications]", schedule.Medications),
+                    new SqlParameter("[allergies]", schedule.Allergies),
+                    new SqlParameter("[notes]", schedule.Notes),
+                    new SqlParameter("[schedule_date]", schedule.ScheduleDate),
+                    new SqlParameter("[schedule_time]", schedule.ScheduleTime),
+                    new SqlParameter("[location]", schedule.Location),
+                    new SqlParameter("[room]", schedule.Room),
+                    new SqlParameter("[procedure]", schedule.Procedure),
+                    new SqlParameter("[procedure_card]", schedule.ProcedureCard),
+                    new SqlParameter("[surgeon]", schedule.Surgeon),
+                    new SqlParameter("[circulator]", schedule.Circulator),
+                    new SqlParameter("[anes]", schedule.Anes),
+                    new SqlParameter("[tech]", schedule.Tech)
+                };
+
+                var insertion = ExecuteNonQuery(@"INSERT[dbo].[stag_schedule]([provider_id],[location_id],[patient_id],[case_id],[first_name]
+                        ,[last_name],[date_of_birth],[gender],[BMI],[Medical_History],[risk_factors],[medications],[allergies]
+                        ,[notes],[schedule_date],[schedule_time],[location],[room],[procedure],[procedure_card],[surgeon],[circulator],[anes],[tech]) 
+                    VALUES (@[provider_id],[location_id],[patient_id],[case_id],[first_name],[last_name],[date_of_birth]
+                    ,[gender],[BMI],[Medical_History],[risk_factors],[medications],[allergies],[notes],[schedule_date],[schedule_time],[location]
+                    ,[room],[procedure],[procedure_card],[surgeon],[circulator],[anes],[tech])", parameters, CommandType.Text);
+
+            }
+        }
+
+        public static void InsertImportLog(int providerId, int locationId, int importTypeId, int userId, int recordCount, string filename)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("import_id", importTypeId),
+                new SqlParameter("user_id", userId),
+                new SqlParameter("load_date", DateTime.Now),
+                new SqlParameter("record_count", recordCount),
+                new SqlParameter("file_name", filename)
+            };
+            var insertion = ExecuteNonQuery("InsertImportLog", parameters);
         }
     }
 }

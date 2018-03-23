@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
+using OpFlow.Service.Models;
 using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
@@ -69,13 +70,19 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
         [Route("api/image/patientPosition", Name = "UpdatePatientPositionImage")]
-        public async Task<IHttpActionResult> PutPatientPositionImage(int patientPositionId, [FromBody]ImagePost value)
+        public async Task<IHttpActionResult> PutPatientPositionImage(int patientPositionId)
         {
-            if ((value?.Payload?.Length ?? 0) == 0)
-                return StatusCode(HttpStatusCode.Ambiguous);
+            var provider = new MultipartMemoryStreamProvider();
+            await Request.Content.ReadAsMultipartAsync(provider);
+
+            // extract file name and file contents
+            var fileNameParam = provider.Contents[0].Headers.ContentDisposition.Parameters
+                .FirstOrDefault(p => p.Name.ToLower() == "filename");
+            var fileName = fileNameParam?.Value.Trim('"') ?? "";
+            var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
 
             var folder = "PatientPosition";
-            await DataAccess.BlobStorageHelper.PutBlobBytes(folder, patientPositionId.ToString(), value?.Payload);
+            await DataAccess.BlobStorageHelper.PutBlobBytes(folder, patientPositionId.ToString(), fileContents);
 
             return Ok();
         }
@@ -84,15 +91,21 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Update")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.Ambiguous)]
-        public async Task<IHttpActionResult> Put(int cardId, int flowId, int stepId, int roleId, string fileName, [FromBody]ImagePost value)
+        public async Task<IHttpActionResult> Put(int cardId, int flowId, int stepId, int roleId)
         {
-            if ((value?.Payload?.Length ?? 0) == 0)
-                return StatusCode(HttpStatusCode.Ambiguous);
-
             var user = CacheUtil.GetUserSecurity();
 
+            var provider = new MultipartMemoryStreamProvider();
+            await Request.Content.ReadAsMultipartAsync(provider);
+
+            // extract file name and file contents
+            var fileNameParam = provider.Contents[0].Headers.ContentDisposition.Parameters
+                .FirstOrDefault(p => p.Name.ToLower() == "filename");
+            var fileName = fileNameParam?.Value.Trim('"') ?? "";
+            var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
+
             var folder = DataAccess.BlobStorageHelper.Folder(user.ProviderID, cardId, flowId, stepId, roleId);
-            await DataAccess.BlobStorageHelper.PutBlobBytes(folder, fileName, value?.Payload);
+            await DataAccess.BlobStorageHelper.PutBlobBytes(folder, fileName, fileContents);
 
             return Ok();
         }
@@ -121,9 +134,6 @@ namespace OpFlow.Service.Controllers
             return result;
         }
 
-        public class ImagePost
-        {
-            public byte[] Payload { get; set; }
-        }
+
     }
 }

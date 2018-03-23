@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using Microsoft.Owin.Security.OAuth;
 
 namespace OpFlow.Service
@@ -26,6 +27,10 @@ namespace OpFlow.Service
 
             // Enforce HTTPS
             config.Filters.Add(new Filters.RequireHttpsAttribute());
+
+            // Use below lines to allow localhost testing
+            //var cors = new EnableCorsAttribute("*", "*", "*");
+            //config.EnableCors(cors);
         }
     }
 }
