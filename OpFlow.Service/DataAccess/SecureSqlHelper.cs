@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 using OpFlow.Data;
+using OpFlow.Data.Administration;
 
 namespace OpFlow.Service.DataAccess
 {
@@ -102,6 +103,34 @@ namespace OpFlow.Service.DataAccess
             var result = insert.Tables[0].DataTableToList<InsertionResult>();
 
             return result.FirstOrDefault()?.Identifier ?? -1;
+        }
+        public static async Task<int?> InsertStagingData(IImportData sourceData, string databaseName)
+        {
+            if (sourceData is ScheduleImport schedule)
+            {
+                var parameters = new[]
+                {
+                    new SqlParameter("pt_acct_nbr", schedule.PatientID),
+                    new SqlParameter("first_name", schedule.FirstName),
+                    new SqlParameter("last_name", schedule.LastName),
+                    new SqlParameter("birth_date", schedule.DateOfBirth),
+                    new SqlParameter("[BMI]," , schedule.BMI),
+                    new SqlParameter("gender", schedule.Gender),
+                    new SqlParameter("[Medical_History]", schedule.MedicalHistory),
+                    new SqlParameter("[risk_factors]", schedule.RiskFactors),
+                    new SqlParameter("[medications]", schedule.Medications),
+                    new SqlParameter("[allergies]", schedule.Allergies),
+                    new SqlParameter("[notes]", schedule.Notes)
+                };
+
+                var insert = await ExecuteCommandAsync(@"NewPatient_Staging", databaseName, parameters);
+
+                var result = insert.Tables[0].DataTableToList<InsertionResult>();
+
+                return result.FirstOrDefault()?.Identifier ?? -1;
+            }
+
+            return null;
         }
     }
 }

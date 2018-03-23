@@ -1539,20 +1539,22 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static void InsertStagingData(int providerId, int locationId, IImportData sourceData)
+        public static void InsertStagingData(int providerId, int locationId, int? secureId, IImportData sourceData)
         {
-            if (sourceData is ItemImport instrument)
+            if (sourceData is ItemImport item)
             {
                 var parameters = new[]
                 {
                     new SqlParameter("provider_id", providerId),
                     new SqlParameter("location_id", locationId),
-                    new SqlParameter("customer", instrument.Customer),
-                    new SqlParameter("tray_id", instrument.TrayID),
-                    new SqlParameter("tray_name", instrument.TrayName),
-                    new SqlParameter("instrument_name", instrument.InstrumentName),
-                    new SqlParameter("quantity", instrument.Quantity),
-                    new SqlParameter("manufacturer", instrument.Manufacturer)
+                    new SqlParameter("item_id", item.ItemID),
+                    new SqlParameter("catalog", item.Catalog),
+                    new SqlParameter("emr_id", item.EMRID),
+                    new SqlParameter("type", item.Type),
+                    new SqlParameter("category", item.Category),
+                    new SqlParameter("description", item.Description),
+                    new SqlParameter("unit_of_measure", item.UnitOfMeasure),
+                    new SqlParameter("cost", item.Cost)
                 };
 
                 var insertion = ExecuteNonQuery(@"INSERT stag_instrument (provider_id, location_id, customer, tray_id, tray_name, instrument_name, quantity, manufacturer)
@@ -1581,18 +1583,8 @@ namespace OpFlow.Service.DataAccess
                 {
                     new SqlParameter("provider_id", providerId),
                     new SqlParameter("location_id", locationId),
-                    new SqlParameter("patient_id", schedule.PatientID),
+                    new SqlParameter("patient_id", secureId),
                     new SqlParameter("case_id", schedule.CaseID),
-                    new SqlParameter("first_name", schedule.FirstName),
-                    new SqlParameter("last_name", schedule.LastName),
-                    new SqlParameter("date_of_birth", schedule.DateOfBirth),
-                    new SqlParameter("gender", schedule.Gender),
-                    new SqlParameter("[BMI]," , schedule.BMI),
-                    new SqlParameter("[Medical_History]", schedule.MedicalHistory),
-                    new SqlParameter("[risk_factors]", schedule.RiskFactors),
-                    new SqlParameter("[medications]", schedule.Medications),
-                    new SqlParameter("[allergies]", schedule.Allergies),
-                    new SqlParameter("[notes]", schedule.Notes),
                     new SqlParameter("[schedule_date]", schedule.ScheduleDate),
                     new SqlParameter("[schedule_time]", schedule.ScheduleTime),
                     new SqlParameter("[location]", schedule.Location),
@@ -1605,13 +1597,11 @@ namespace OpFlow.Service.DataAccess
                     new SqlParameter("[tech]", schedule.Tech)
                 };
 
-                var insertion = ExecuteNonQuery(@"INSERT[dbo].[stag_schedule]([provider_id],[location_id],[patient_id],[case_id],[first_name]
-                        ,[last_name],[date_of_birth],[gender],[BMI],[Medical_History],[risk_factors],[medications],[allergies]
-                        ,[notes],[schedule_date],[schedule_time],[location],[room],[procedure],[procedure_card],[surgeon],[circulator],[anes],[tech]) 
-                    VALUES (@[provider_id],[location_id],[patient_id],[case_id],[first_name],[last_name],[date_of_birth]
-                    ,[gender],[BMI],[Medical_History],[risk_factors],[medications],[allergies],[notes],[schedule_date],[schedule_time],[location]
-                    ,[room],[procedure],[procedure_card],[surgeon],[circulator],[anes],[tech])", parameters, CommandType.Text);
-
+                var insertion = ExecuteNonQuery(@"INSERT[dbo].[stag_schedule]([provider_id],[location_id],[patient_id],[case_id],
+                        [schedule_date],[schedule_time],[location],[room],[procedure],[procedure_card],[surgeon],[circulator],[anes],[tech]) 
+                    VALUES (@provider_id,@location_id,@patient_id,@case_id,
+                    @schedule_date,@schedule_time,@location,
+                    @room,@procedure,@procedure_card,@surgeon,@circulator,@anes,@tech)", parameters, CommandType.Text);
             }
         }
 

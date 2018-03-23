@@ -74,7 +74,11 @@ namespace OpFlow.Service.Controllers
                 if (records != null)
                 {
                     foreach (var record in records)
-                        SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, record);
+                    {
+
+                        var secureId = SecureSqlHelper.InsertStagingData(record, user.DatabaseName);
+                        SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record);
+                    }
 
                     SqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, records.Count, fileName);
                 }
