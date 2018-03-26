@@ -1601,6 +1601,33 @@ namespace OpFlow.Service.DataAccess
                     bin, item_nbr, description, manu_name, mfg_nbr, par_level, uom, item_cost, inventory_value)
                 VALUES (@provider_id, @location_id, @location, @location_name, @from_loc, @bin_seq,
                     @bin, @item_nbr, @description, @manu_name, @mfg_nbr, @par_level, @uom, @item_cost, @inventory_value)", parameters, CommandType.Text);
+
+            }
+            else if (sourceData is CardImport card)
+            {
+                var parameters = new[]
+                {
+                    new SqlParameter("provider_id", providerId),
+                    new SqlParameter("location_id", locationId),
+                    new SqlParameter("location", card.Location),
+                    new SqlParameter("surgeon", card.Surgeon),
+                    new SqlParameter("preference_card_name", card.PreferenceCardName),
+                    new SqlParameter("type", card.Type),
+                    new SqlParameter("lawson_id", card.LawsonID),
+                    new SqlParameter("catalog_nbr", card.CatalogNbr),
+                    new SqlParameter("supply_description", card.SupplyDescription),
+                    new SqlParameter("manufacturer", card.Manufacturer),
+                    new SqlParameter("open_amt", card.OpenAmt),
+                    new SqlParameter("prn_required", card.PrnRequired),
+                    new SqlParameter("cost_per_unit_ot", card.CostPerUnitOt),
+                    new SqlParameter("dosage", card.Dosage),
+                    new SqlParameter("unit", card.Unit)
+                };
+
+                var insertion = ExecuteNonQuery(@"INSERT stag_card (provider_id, location_id, location, surgeon, preference_card_name, type,
+                    lawson_id, catalog_nbr, supply_description, manufacturer, open_amt, prn_required, cost_per_unit_ot, dosage, unit)
+                        VALUES (@provider_id, @location_id, @location, @surgeon, @preference_card_name, @type,
+                    @lawson_id, @catalog_nbr, @supply_description, @manufacturer, @open_amt, @prn_required, @cost_per_unit_ot, @dosage, @unit)", parameters, CommandType.Text);
             }
             else if (sourceData is TrayImport tray)
             {
