@@ -16,6 +16,7 @@ namespace OpFlow.Data
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Title { get; set; }
+        public string CellPhone { get; set; }
     }
 
     public class UserSecurity

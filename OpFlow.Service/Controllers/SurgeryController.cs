@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
+using OpFlow.Service.Models;
 using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
@@ -228,19 +229,6 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [SwaggerOperation("AssignRoomCase")]
-        [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/surgery/assignRoom", Name = "AssignRoomCase")]
-        public async Task<IHttpActionResult> AssignRoomToCase(int surgeryId, int roomId)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            DataAccess.SqlHelper.AssignRoomToCase(roomId, surgeryId, user.ProviderID, user.LocationID);
-
-            return Ok();
-        }
-
-        // POST api/values
         [SwaggerOperation("AssignRoomSetup")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/surgery/assignRoomSetup", Name = "AssignRoomSetupCase")]
@@ -328,6 +316,26 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
             var success = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.Created, success);
+        }
+
+        // POST api/values
+        [SwaggerOperation("EditSurgeryProperties")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [HttpPost]
+        [Route("api/surgery/editProperties", Name = "EditSurgeryProperties")]
+        public async Task<HttpResponseMessage> EditSurgeryProperties(int surgeryId, [FromBody]SurgeryEditPost surgeryEditPost)
+        {
+            var user = CacheUtil.GetUserSecurity();
+            var success = DataAccess.SqlHelper.SurgeryEditProperties(surgeryId,
+                surgeryEditPost.RoomID, surgeryEditPost.ScheduleDateTime, user.ProviderID, user.LocationID);
+
+            if (surgeryEditPost.NotificationUser.HasValue)
+            {
+                var notificationUser = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, surgeryEditPost.NotificationUser.Value);
+                NotificationSystem.NotifyUser(notificationUser.CellPhone);
+            }
 
             return Request.CreateResponse(HttpStatusCode.Created, success);
         }

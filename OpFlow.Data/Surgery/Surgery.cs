@@ -72,6 +72,13 @@ namespace OpFlow.Data
     {
         public List<SurgeryCountItemPost> Counts { get; set; }
     }
+
+    public class SurgeryEditPost
+    {
+        public int RoomID { get; set; }
+        public DateTime ScheduleDateTime { get; set; }
+        public int? NotificationUser { get; set; }
+    }
     public class SurgeryCountItemPost
     {
         public int ItemID { get; set; }

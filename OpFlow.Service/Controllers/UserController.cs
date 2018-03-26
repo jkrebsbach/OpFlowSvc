@@ -27,8 +27,10 @@ namespace OpFlow.Service.Controllers
         [Route("api/User/AuthorizedUser", Name = "AuthorizedUser")]
         public HttpResponseMessage Get()
         {
+            var user = CacheUtil.GetUserSecurity();
             var username = HttpContext.Current.User.Identity.Name;
-            var result = DataAccess.SqlHelper.GetUser(username);
+
+            var result = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, username, null);
 
             return result == null ? Request.CreateResponse(HttpStatusCode.NotFound, "User not found") : Request.CreateResponse(HttpStatusCode.OK, result);
         }

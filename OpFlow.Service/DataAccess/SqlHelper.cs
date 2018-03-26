@@ -411,11 +411,14 @@ namespace OpFlow.Service.DataAccess
 
         }
 
-        public static User GetUser(string username)
+        public static User GetUser(int providerId, int locationId, string username, int? userId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("email", username),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("email", username ?? (object)DBNull.Value),
+                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
             };
             var dsSchedules = ExecuteCommand("GetUser", dsParameters);
 
@@ -528,18 +531,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("flow_id", flowId)
             };
             return ExecuteNonQuery("AssignFlowToCase", dsParameters);
-        }
-
-        public static int AssignRoomToCase(int roomId, int surgeryId, int providerId, int locationId)
-        {
-            var dsParameters = new[]
-            {
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
-                new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("room_id", roomId)
-            };
-            return ExecuteNonQuery("AssignRoomToCase", dsParameters);
         }
 
         public static int AssignRoomSetupToCase(int roomSetupId, int surgeryId, int providerId, int locationId)
@@ -661,6 +652,22 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgery_id", surgeryId)
             };
             var update = ExecuteNonQuery("UpdateSurgeryFlowTimings", dsParameters);
+
+            return update;
+        }
+
+        public static int SurgeryEditProperties(int surgeryId, int roomId, DateTime surgeryScheduleDate, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("room_id", roomId),
+                new SqlParameter("schedule_date", surgeryScheduleDate.Date),
+                new SqlParameter("schedule_time", surgeryScheduleDate.TimeOfDay)
+            };
+            var update = ExecuteNonQuery("UpdateSurgeryProperties", dsParameters);
 
             return update;
         }
@@ -1560,18 +1567,25 @@ namespace OpFlow.Service.DataAccess
                 {
                     new SqlParameter("provider_id", providerId),
                     new SqlParameter("location_id", locationId),
-                    new SqlParameter("item_id", item.ItemID),
-                    new SqlParameter("catalog", item.Catalog),
-                    new SqlParameter("emr_id", item.EMRID),
-                    new SqlParameter("type", item.Type),
-                    new SqlParameter("category", item.Category),
-                    new SqlParameter("description", item.Description),
-                    new SqlParameter("unit_of_measure", item.UnitOfMeasure),
-                    new SqlParameter("cost", item.Cost)
+                    new SqlParameter("location", item.Location),
+                    new SqlParameter("location_name", item.LocationName),
+                    new SqlParameter("from_loc", item.FromLoc),
+                    new SqlParameter("bin_seq", item.BinSeq),
+                    new SqlParameter("bin", item.Bin),
+                    new SqlParameter("item_nbr", item.ItemNbr),
+                    new SqlParameter("description", item.Desc),
+                    new SqlParameter("manu_name", item.ManuName),
+                    new SqlParameter("mfg_nbr", item.MfgNbr),
+                    new SqlParameter("par_level", item.ParLevel),
+                    new SqlParameter("uom", item.UOM),
+                    new SqlParameter("item_cost", item.ItemCost),
+                    new SqlParameter("inventory_value", item.InventoryValue)
                 };
 
-                var insertion = ExecuteNonQuery(@"INSERT stag_instrument (provider_id, location_id, customer, tray_id, tray_name, instrument_name, quantity, manufacturer)
-                VALUES (@provider_id, @location_id, @customer, @tray_id, @tray_name, @instrument_name, @quantity, @manufacturer)", parameters, CommandType.Text);
+                var insertion = ExecuteNonQuery(@"INSERT stag_item (provider_id, location_id, location, location_name, from_loc, bin_seq, 
+                    bin, item_nbr, description, manu_name, mfg_nbr, par_level, uom, item_cost, inventory_value)
+                VALUES (@provider_id, @location_id, @location, @location_name, @from_loc, @bin_seq,
+                    @bin, @item_nbr, @description, @manu_name, @mfg_nbr, @par_level, @uom, @item_cost, @inventory_value)", parameters, CommandType.Text);
             }
             else if (sourceData is TrayImport tray)
             {

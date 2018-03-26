@@ -61,15 +61,19 @@ namespace OpFlow.Service.Models
                         case 2:
                             result.Add(new ItemImport
                             {
-                                ItemID = _csv.GetField(0),
-                                Catalog = _csv.GetField(1),
-                                EMRID = _csv.GetField(2),
-                                Type = _csv.GetField(3),
-                                Category = int.Parse(_csv.GetField(4)),
-                                Description = _csv.GetField(5),
-                                UnitOfMeasure = _csv.GetField(6),
-                                Manufacturer = _csv.GetField(7),
-                                Cost = _csv.GetField(8)
+                                Location = _csv.GetField(0),
+                                LocationName = _csv.GetField(1),
+                                FromLoc = _csv.GetField(2),
+                                BinSeq = _csv.GetField(3),
+                                Bin = _csv.GetField(4),
+                                ItemNbr = _csv.GetField(5),
+                                Desc = _csv.GetField(6),
+                                ManuName = _csv.GetField(7),
+                                MfgNbr = _csv.GetField(8),
+                                ParLevel = _csv.GetField(9),
+                                UOM = _csv.GetField(10),
+                                ItemCost = _csv.GetField(11),
+                                InventoryValue = _csv.GetField(12)
                             });
                             break;
                         case 3:
