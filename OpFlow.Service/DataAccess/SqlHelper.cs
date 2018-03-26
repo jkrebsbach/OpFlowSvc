@@ -656,6 +656,22 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
+        public static int SurgeryToggleDelay(int surgeryId, int providerId, int locationId, DateTime? startTime, DateTime? endTime, int? delayReasonId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("delay_start_time", startTime ?? (object)DBNull.Value),
+                new SqlParameter("delay_end_time", endTime?? (object)DBNull.Value),
+                new SqlParameter("delay_reason_id", delayReasonId ?? (object)DBNull.Value)
+            };
+            var update = ExecuteNonQuery("UpdateSurgeryDelays", dsParameters);
+
+            return update;
+        }
+
         public static int SurgeryEditProperties(int surgeryId, int roomId, DateTime surgeryScheduleDate, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -1187,17 +1203,16 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Surgery> GetSurgeryDelays(int surgeryId, int providerId, int locationId)
+        public static List<SurgeryDelayReason> GetSurgeryDelayReasons(int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetSurgeryDelays", parameters);
+            var dsSchedules = ExecuteCommand("GetSurgeryDelayReasons", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Surgery>();
+            var result = dsSchedules.Tables[0].DataTableToList<SurgeryDelayReason>();
 
             return result;
         }

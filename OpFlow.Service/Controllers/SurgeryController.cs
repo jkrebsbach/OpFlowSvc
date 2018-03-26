@@ -148,16 +148,16 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/surgery?userId=5
-        [SwaggerOperation("GetDelays")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgery>))]
-        [Route("api/Surgery/delays")]
-        public HttpResponseMessage GetSurgeryDelays(int surgeryId, int? providerId = null, int? locationId = null)
+        [SwaggerOperation("GetDelayReasons")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryDelayReason>))]
+        [Route("api/Surgery/delayReasons")]
+        public HttpResponseMessage GetSurgeryDelayReasons()
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var schedules = DataAccess.SqlHelper.GetSurgeryDelays(surgeryId, user.ProviderID, user.LocationID);
+            var reasons = DataAccess.SqlHelper.GetSurgeryDelayReasons(user.ProviderID, user.LocationID);
 
-            return Request.CreateResponse(HttpStatusCode.OK, schedules);
+            return Request.CreateResponse(HttpStatusCode.OK, reasons);
         }
 
         [SwaggerOperation("GetSurgeryUsers")]
@@ -316,6 +316,24 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
             var success = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.Created, success);
+        }
+
+        // POST api/values
+        [SwaggerOperation("ToggleDelay")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.Ambiguous)]
+        [HttpPost]
+        [Route("api/surgery/toggleDelay", Name = "ToggleDelay")]
+        public async Task<HttpResponseMessage> ToggleSurgeryDelay(int surgeryId, [FromBody]SurgeryDelayPost surgeryDelay)
+        {
+            if (surgeryDelay.StartTime == null && surgeryDelay.EndTime == null)
+                return Request.CreateResponse(HttpStatusCode.Ambiguous);
+
+            var user = CacheUtil.GetUserSecurity();
+            var success = DataAccess.SqlHelper.SurgeryToggleDelay(surgeryId, user.ProviderID, user.LocationID, 
+                surgeryDelay.StartTime, surgeryDelay.EndTime, surgeryDelay.DelayReasonID);
 
             return Request.CreateResponse(HttpStatusCode.Created, success);
         }

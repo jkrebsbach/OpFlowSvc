@@ -33,11 +33,13 @@ namespace OpFlow.Data
         public string RoomSetupDescription { get; set; }
         public DateTime ScheduleDate { get; set; }
         public TimeSpan ScheduleTime { get; set; }
+        public TimeSpan? DelayStartTime { get; set; }
         public int? EstDelayMinutes { get; set; }
         public int? TotalMinutes { get; set; }
 
 
         public DateTime ScheduleDateTime => ScheduleDate.Add(ScheduleTime);
+        public DateTime? DelayStartDateTime => DelayStartTime.HasValue ? ScheduleDate.Add(DelayStartTime.Value) : (DateTime?)null;
     }
 
     public class PatientSurgery : Surgery
@@ -86,6 +88,19 @@ namespace OpFlow.Data
         public bool Pass2 { get; set; }
         public bool Pass3 { get; set; }
         public int Usage { get; set; }
+    }
+
+    public class SurgeryDelayReason
+    {
+        public int ReasonID { get; set; }
+        public string ReasonDescription { get; set; }
+    }
+
+    public class SurgeryDelayPost
+    {
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
+        public int? DelayReasonID { get; set; }
     }
 
     public class SurgerySearchResult
