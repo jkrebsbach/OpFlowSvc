@@ -334,10 +334,11 @@ namespace OpFlow.Service.Controllers
             if (surgeryEditPost.NotificationUser.HasValue)
             {
                 var notificationUser = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, surgeryEditPost.NotificationUser.Value);
-                NotificationSystem.NotifyUser(notificationUser.CellPhone);
+                if (notificationUser?.CellPhone != null)
+                    NotificationSystem.NotifyUser(notificationUser.CellPhone);
             }
 
-            return Request.CreateResponse(HttpStatusCode.Created, success);
+            return Request.CreateResponse(HttpStatusCode.OK, success);
         }
 
         // PUT api/values/5
