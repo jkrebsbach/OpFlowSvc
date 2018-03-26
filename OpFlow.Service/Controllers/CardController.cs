@@ -236,13 +236,13 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("AssignFlow")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/card/assignFlow", Name = "AssignFlowCard")]
-        public async Task<IHttpActionResult> AssignToCard(int cardId, int flowId)
+        public HttpResponseMessage AssignToCard(int cardId, int flowId)
         {
             var user = CacheUtil.GetUserSecurity();
 
             DataAccess.SqlHelper.AssignFlowToCard(flowId, cardId, user.ProviderID, user.LocationID);
 
-            return Ok();
+            return Request.CreateResponse(HttpStatusCode.OK, 418);
         }
 
         // POST api/values

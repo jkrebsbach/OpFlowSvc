@@ -149,6 +149,19 @@ namespace OpFlow.Service.DataAccess
             var result = ExecuteNonQuery("SendMessage", parameters);
         }
 
+        public static void AcknowledgeMessage(int userId, int providerId, int locationId, int messageId, bool hideMessages)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("user_id", userId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("message_id", messageId),
+                new SqlParameter("hide_messages", hideMessages)
+            };
+            var result = ExecuteNonQuery("InsertMessageAcknowledgement", parameters);
+        }
+
         public static List<ItemMaster> GetItems(string itemType, int? trayId, bool? countNeeded, int providerId, int locationId)
         {
             if (trayId.HasValue)

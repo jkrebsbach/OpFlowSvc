@@ -61,12 +61,15 @@ namespace OpFlow.Service.Models
                         case 2:
                             result.Add(new ItemImport
                             {
-                                Customer = _csv.GetField(0),
-                                TrayID = _csv.GetField(1),
-                                TrayName = _csv.GetField(2),
-                                InstrumentName = _csv.GetField(3),
-                                Quantity = int.Parse(_csv.GetField(4)),
-                                Manufacturer = _csv.GetField(5)
+                                ItemID = _csv.GetField(0),
+                                Catalog = _csv.GetField(1),
+                                EMRID = _csv.GetField(2),
+                                Type = _csv.GetField(3),
+                                Category = int.Parse(_csv.GetField(4)),
+                                Description = _csv.GetField(5),
+                                UnitOfMeasure = _csv.GetField(6),
+                                Manufacturer = _csv.GetField(7),
+                                Cost = _csv.GetField(8)
                             });
                             break;
                         case 3:

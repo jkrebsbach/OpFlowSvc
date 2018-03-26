@@ -76,7 +76,7 @@ namespace OpFlow.Service.Controllers
                     foreach (var record in records)
                     {
 
-                        var secureId = SecureSqlHelper.InsertStagingData(record, user.DatabaseName);
+                        var secureId = await SecureSqlHelper.InsertStagingData(record, user.DatabaseName);
                         SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record);
                     }
 

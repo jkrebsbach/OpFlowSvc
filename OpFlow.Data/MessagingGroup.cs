@@ -10,6 +10,8 @@ namespace OpFlow.Data
         public int? CaseGroupID { get; set; }
         public int? CommunicationUserID { get; set; }
         public string CommunicationTargetName { get; set; }
+        public int? RoomID { get; set; }
+        public string RoomName { get; set; }
         public int SenderUserID { get; set; }
         public string LatestMessage { get; set; }
         public DateTimeOffset LatestInsertTimestamp { get; set; }

@@ -59,5 +59,20 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, 200);
         }
+
+        // GET api/values/5
+        [SwaggerOperation("AcknowledgeMessage")]
+        [Route("api/message/acknowledgeMessage")]
+        [HttpPut]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<MessagingGroup>))]
+        [SwaggerResponse(HttpStatusCode.Ambiguous)]
+        public HttpResponseMessage AcknowledgeMessage(int messageId, bool hideMessages = false)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AcknowledgeMessage(user.UserID, user.ProviderID, user.LocationID, messageId, hideMessages);
+
+            return Request.CreateResponse(HttpStatusCode.OK, 200);
+        }
     }
 }
