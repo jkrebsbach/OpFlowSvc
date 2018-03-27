@@ -20,6 +20,8 @@ namespace OpFlow.Service.Test
             var fileName = @"C:\temp\test.csv";
             var importTypeId = 5;
 
+            var user = SqlHelper.GetSecureUser("info@opflowtech.com");
+
             try
             {
                 var fileContents = File.ReadAllBytes(fileName);
