@@ -7,6 +7,7 @@ namespace OpFlow.Data
     public class MessagingGroup
     {
         public int? SurgeryID { get; set; }
+        public int? PatientID { get; set; }
         public int? CaseGroupID { get; set; }
         public int? CommunicationUserID { get; set; }
         public string CommunicationTargetName { get; set; }

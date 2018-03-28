@@ -72,7 +72,8 @@ namespace OpFlow.Data
 
     public class SurgeryCountPost
     {
-        public List<SurgeryCountItemPost> Counts { get; set; }
+        public List<SurgeryCountItemPost> ItemCounts { get; set; }
+        public List<SurgeryCountItemPost> InstrumentCounts { get; set; }
     }
 
     public class SurgeryEditPost

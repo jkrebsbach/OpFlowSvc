@@ -285,11 +285,16 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            foreach (var count in countModel.Counts)
+            foreach (var count in countModel.ItemCounts)
             {
                 DataAccess.SqlHelper.UpdateSurgeryCount(surgeryId, count.ItemID, count.Pass1, count.Pass2, count.Pass3, count.Usage, user.ProviderID, user.LocationID);
             }
-             return Request.CreateResponse(HttpStatusCode.OK, 0);
+            foreach (var count in countModel.InstrumentCounts)
+            {
+                DataAccess.SqlHelper.UpdateSurgeryInstrumentCount(surgeryId, count.ItemID, count.Pass1, count.Pass2, count.Pass3, count.Usage, user.ProviderID, user.LocationID);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
 
         // POST api/values

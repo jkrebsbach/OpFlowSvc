@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
@@ -33,13 +34,20 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetMessageGroups")]
         [Route("api/message/groups")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<MessagingGroup>))]
-        public HttpResponseMessage GetCaseMessageGroups(int? userId = null)
+        public async Task<HttpResponseMessage> GetCaseMessageGroups(int? userId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetMessageGroups(userId ?? user.UserID, user.ProviderID, user.LocationID);
+            var groups = DataAccess.SqlHelper.GetMessageGroups(userId ?? user.UserID, user.ProviderID, user.LocationID);
 
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            foreach (var group in groups.Where(g => g.PatientID.HasValue))
+            {
+                var patient = await DataAccess.SecureSqlHelper.GetPatient(group.PatientID.Value, user.DatabaseName);
+
+                group.CommunicationTargetName = $"{patient.LastName} {group.CommunicationTargetName}";
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, groups);
         }
 
         // GET api/values/5
