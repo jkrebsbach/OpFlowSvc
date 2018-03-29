@@ -7,6 +7,7 @@ namespace OpFlow.Data
     public class PatientPosition : IBindableEntity
     {
         public int PatientPositionID { get; set; }
+        public string PositionName { get; set; }
         public string PositionDescription { get; set; }
 
         public int GetID()
@@ -16,7 +17,7 @@ namespace OpFlow.Data
 
         public override string ToString()
         {
-            return PositionDescription;
+            return PositionName;
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Web;
 using OpFlow.Data;
 using OpFlow.Data.Administration;
+using OpFlow.Data.Debrief;
 
 namespace OpFlow.Service.DataAccess
 {
@@ -795,6 +796,35 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetPatientPositions", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<PatientPosition>();
+
+            return result;
+        }
+
+        public static List<SmartPhrase> GetSmartPhrases(int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = ExecuteCommand("GetPhrases", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<SmartPhrase>();
+
+            return result;
+        }
+
+        public static List<FlowPhrase> GetFlowPhrases(int providerId, int locationId, int flowId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("flow_id", flowId)
+            };
+            var dsSchedules = ExecuteCommand("GetFlowPhrases", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<FlowPhrase>();
 
             return result;
         }

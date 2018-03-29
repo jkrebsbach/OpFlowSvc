@@ -215,6 +215,54 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
+
+
+        // GET api/values/5
+        [SwaggerOperation("GetDebriefScreen")]
+        [Route("api/surgery/debriefScreen")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Data.Debrief.DebriefResult))]
+        public HttpResponseMessage GetDebriefScreen(int flowId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var positions = DataAccess.SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
+            var smartPhrases = DataAccess.SqlHelper.GetSmartPhrases(user.ProviderID, user.LocationID);
+            var flowPhrases = DataAccess.SqlHelper.GetFlowPhrases(user.ProviderID, user.LocationID, flowId);
+            var categories = new List<Data.Debrief.DebriefCategory>()
+            {
+                new Data.Debrief.DebriefCategory()
+                {
+                    CategoryName = "Prep"
+                },
+                new Data.Debrief.DebriefCategory()
+                {
+                    CategoryName = "Draping"
+                },
+                new Data.Debrief.DebriefCategory()
+                {
+                    CategoryName = "Foley"
+                },
+                new Data.Debrief.DebriefCategory()
+                {
+                    CategoryName = "Nursing"
+                },
+                new Data.Debrief.DebriefCategory()
+                {
+                    CategoryName = "Counts"
+                },
+            };
+
+            var result = new Data.Debrief.DebriefResult()
+            {
+                PatientPositions = positions,
+                SmartPhrases = smartPhrases,
+                FlowPhrase = flowPhrases,
+                Categories = categories
+            };
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
         // POST api/values
         [SwaggerOperation("AssignCard")]
         [SwaggerResponse(HttpStatusCode.Created)]
