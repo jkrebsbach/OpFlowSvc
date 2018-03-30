@@ -72,7 +72,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetFlowSurgeryTimings")]
         [Route("api/flow/surgerytimings")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowStepSurgeryTiming>))]
-        public HttpResponseMessage GetFlowSurgeryTimings(int surgeryId, int? flowId = null, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetFlowSurgeryTimings(int surgeryId, int? flowId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
@@ -85,7 +85,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetFlowComments")]
         [Route("api/flow/comments")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowStep>))]
-        public HttpResponseMessage GetFlowComments(int flowId, int surgeryId, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetFlowComments(int flowId, int surgeryId)
         {
             var user = CacheUtil.GetUserSecurity();
 
@@ -98,7 +98,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetFlowMessaging")]
         [Route("api/flow/messaging")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowMessaging>))]
-        public HttpResponseMessage GetFlowMessaging(int flowId, int stepId, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetFlowMessaging(int flowId, int stepId)
         {
             var user = CacheUtil.GetUserSecurity();
 
@@ -111,7 +111,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetFlowContent")]
         [Route("api/flow/content")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowContent>))]
-        public HttpResponseMessage GetFlowContent(int flowId, int surgeryId, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetFlowContent(int flowId, int surgeryId)
         {
             var user = CacheUtil.GetUserSecurity();
 
@@ -124,7 +124,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetFlowNotifications")]
         [Route("api/flow/notifications")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowNotification>))]
-        public HttpResponseMessage GetFlowNotifications(int flowId, int stepId, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetFlowNotifications(int flowId, int stepId)
         {
             var user = CacheUtil.GetUserSecurity();
 
@@ -137,11 +137,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetFlowFeedback")]
         [Route("api/flow/feedback")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowFeedback>))]
-        public HttpResponseMessage GetFlowFeedback(int flowId, int stepId, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetFlowFeedback(int flowId)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetFlowFeedback(flowId, stepId, user.ProviderID, user.LocationID);
+            var result = DataAccess.SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

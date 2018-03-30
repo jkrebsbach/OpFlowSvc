@@ -36,6 +36,7 @@ namespace OpFlow.Data
         public TimeSpan? DelayStartTime { get; set; }
         public int? EstDelayMinutes { get; set; }
         public int? TotalMinutes { get; set; }
+        public string CaseNotes { get; set; }
 
 
         public DateTime ScheduleDateTime => ScheduleDate.Add(ScheduleTime);

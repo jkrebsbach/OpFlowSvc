@@ -510,6 +510,107 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("AssignUserToCase", dsParameters);
         }
 
+        public static int NewSmartPhrase(string category, string phrase, int userId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("category", category),
+                new SqlParameter("user_id", userId),
+                new SqlParameter("phrase", phrase)
+            };
+            return ExecuteNonQuery("InsertPhrase", dsParameters);
+        }
+
+        public static int AddFlowFeedback(int flowId, string feedback, int userId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("user_id", userId),
+                new SqlParameter("feedback", feedback)
+            };
+            return ExecuteNonQuery("InsertFlowFeedback", dsParameters);
+        }
+
+        public static int UpdateDebrief(int surgeryId, int flowId, List<FlowPhrase> revisedPhrases, int userId, int providerId, int locationId)
+        {
+            var currentPhrases = GetFlowPhrases(providerId, locationId, flowId, surgeryId);
+            SqlParameter[] dsParameters;
+
+            foreach (var revisedPhrase in revisedPhrases)
+            {
+                var currentPhrase = currentPhrases.FirstOrDefault(c => c.SmartPhraseID == revisedPhrase.SmartPhraseID);
+
+                if (revisedPhrase.PhraseActive)
+                {
+                    if (revisedPhrase.PhraseActive && !currentPhrase.PhraseActive)
+                    {
+                        // insert phrase
+                        dsParameters = new[]
+                        {
+                            new SqlParameter("provider_id", providerId),
+                            new SqlParameter("location_id", locationId),
+                            new SqlParameter("flow_id", flowId),
+                            new SqlParameter("step_id", revisedPhrase.FlowStepID),
+                            new SqlParameter("role_id", revisedPhrase.RoleID),
+                            new SqlParameter("smart_phrase_id", revisedPhrase.SmartPhraseID)
+                        };
+                        ExecuteNonQuery("InsertFlowPhrase", dsParameters);
+                    }
+                    else if (revisedPhrase.FlowStepID != currentPhrase.FlowStepID ||
+                        revisedPhrase.RoleID != currentPhrase.RoleID)
+                    {
+                        // Update step & role if needed
+                        dsParameters = new[]
+                        {
+                            new SqlParameter("provider_id", providerId),
+                            new SqlParameter("location_id", locationId),
+                            new SqlParameter("flow_id", flowId),
+                            new SqlParameter("step_id", revisedPhrase.FlowStepID),
+                            new SqlParameter("role_id", revisedPhrase.RoleID),
+                            new SqlParameter("smart_phrase_id", revisedPhrase.SmartPhraseID)
+                        };
+                        ExecuteNonQuery("UpdateFlowPhrase", dsParameters);
+                    }
+
+
+                    // Preserve flow phrase surgery comment
+                    dsParameters = new[]
+                    {
+                        new SqlParameter("provider_id", providerId),
+                        new SqlParameter("location_id", locationId),
+                        new SqlParameter("surgery_id", surgeryId),
+                        new SqlParameter("smart_phrase_id", revisedPhrase.SmartPhraseID),
+                        new SqlParameter("comment", revisedPhrase.PhraseComment ?? (object)DBNull.Value)
+                    };
+                    ExecuteNonQuery("UpdateFlowPhraseComment", dsParameters);
+                }
+                else
+                {
+                    if (currentPhrase.PhraseActive)
+                    {
+                        // delete phrase
+
+                        dsParameters = new[]
+                        {
+                            new SqlParameter("provider_id", providerId),
+                            new SqlParameter("location_id", locationId),
+                            new SqlParameter("flow_id", flowId),
+                            new SqlParameter("smart_phrase_id", currentPhrase.SmartPhraseID)
+                        };
+                        ExecuteNonQuery("DeleteFlowPhrase", dsParameters);
+                    }
+                }
+                
+            }
+
+            return 0;
+        }
+
         public static int AssignCardToCase(int cardId, int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -814,13 +915,14 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<FlowPhrase> GetFlowPhrases(int providerId, int locationId, int flowId)
+        public static List<FlowPhrase> GetFlowPhrases(int providerId, int locationId, int flowId, int surgeryId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("flow_id", flowId)
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("surgery_id", surgeryId)
             };
             var dsSchedules = ExecuteCommand("GetFlowPhrases", dsParameters);
 
@@ -1605,12 +1707,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<FlowFeedback> GetFlowFeedback(int flowId, int stepId, int providerId, int locationId)
+        public static List<FlowFeedback> GetFlowFeedback(int flowId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("flow_id", flowId),
-                new SqlParameter("step_id", stepId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
