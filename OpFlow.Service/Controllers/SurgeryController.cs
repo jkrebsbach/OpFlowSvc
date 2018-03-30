@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
+using OpFlow.Data.Debrief;
 using OpFlow.Service.Models;
 using Swashbuckle.Swagger.Annotations;
 
@@ -220,47 +221,99 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetDebriefScreen")]
         [Route("api/surgery/debriefScreen")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Data.Debrief.DebriefResult))]
-        public HttpResponseMessage GetDebriefScreen(int flowId)
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(DebriefResult))]
+        public HttpResponseMessage GetDebriefScreen(int surgeryId, int flowId)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var positions = DataAccess.SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
+            var roomSetups = DataAccess.SqlHelper.GetRoomSetups(null, user.ProviderID, user.LocationID);
             var smartPhrases = DataAccess.SqlHelper.GetSmartPhrases(user.ProviderID, user.LocationID);
-            var flowPhrases = DataAccess.SqlHelper.GetFlowPhrases(user.ProviderID, user.LocationID, flowId);
-            var categories = new List<Data.Debrief.DebriefCategory>()
+            var flowPhrases = DataAccess.SqlHelper.GetFlowPhrases(user.ProviderID, user.LocationID, flowId, surgeryId);
+            var flowFeedback = DataAccess.SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
+
+            var categories = new List<DebriefCategory>()
             {
-                new Data.Debrief.DebriefCategory()
+                new DebriefCategory()
                 {
                     CategoryName = "Prep"
                 },
-                new Data.Debrief.DebriefCategory()
+                new DebriefCategory()
                 {
                     CategoryName = "Draping"
                 },
-                new Data.Debrief.DebriefCategory()
+                new DebriefCategory()
                 {
                     CategoryName = "Foley"
                 },
-                new Data.Debrief.DebriefCategory()
+                new DebriefCategory()
                 {
                     CategoryName = "Nursing"
                 },
-                new Data.Debrief.DebriefCategory()
+                new DebriefCategory()
                 {
                     CategoryName = "Counts"
                 },
             };
 
-            var result = new Data.Debrief.DebriefResult()
+            foreach (var flowPhrase in flowPhrases)
             {
-                PatientPositions = positions,
+                var category = categories.FirstOrDefault(c => c.CategoryName == flowPhrase.Category);
+
+                category?.FlowPhrases.Add(flowPhrase);
+            }
+
+            var result = new DebriefResult()
+            {
+                RoomSetups = roomSetups,
                 SmartPhrases = smartPhrases,
-                FlowPhrase = flowPhrases,
-                Categories = categories
+                Categories = categories,
+                FlowFeedback = flowFeedback
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // POST api/values
+        [SwaggerOperation("NewSmartPhrase")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/smartPhrase", Name = "NewSmartPhrase")]
+        [HttpPost]
+        public async Task<IHttpActionResult> NewSmartPhrase([FromBody]SmartPhrasePost smartPhrase)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.NewSmartPhrase(smartPhrase.Category, smartPhrase.Phrase, user.UserID, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("AddFlowFeedback")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/flowFeedback", Name = "AddFlowFeedback")]
+        [HttpPost]
+        public async Task<IHttpActionResult> AddFlowFeedback(int flowId, [FromBody]FlowFeedbackPost flowFeedback)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AddFlowFeedback(flowId, flowFeedback.Feedback, user.UserID, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("UpdateDebrief")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/debrief", Name = "UpdateDebrief")]
+        [HttpPost]
+        public async Task<IHttpActionResult> UpdateDebrief(int surgeryId, int flowId, [FromBody]DebriefUpdatePost debriefUpdate)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.UpdateDebrief(surgeryId, flowId, debriefUpdate?.SelectedPhrases,
+                user.UserID, user.ProviderID, user.LocationID);
+
+            return Ok();
         }
 
         // POST api/values

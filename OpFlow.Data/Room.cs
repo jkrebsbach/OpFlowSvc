@@ -50,6 +50,7 @@ namespace OpFlow.Data
         public int OwnerUserID { get; set; }
         public string SetupName { get; set; }
         public string PatientPosition { get; set; }
+        public string PositionDescription { get; set; }
         public string PatientAccess { get; set; }
 
         public int BedOrientation { get; set; }
