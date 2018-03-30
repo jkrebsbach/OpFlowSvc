@@ -222,52 +222,28 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetDebriefScreen")]
         [Route("api/surgery/debriefScreen")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(DebriefResult))]
-        public HttpResponseMessage GetDebriefScreen(int surgeryId, int flowId)
+        public HttpResponseMessage GetDebriefScreen(int flowId)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var roomSetups = DataAccess.SqlHelper.GetRoomSetups(null, user.ProviderID, user.LocationID);
-            var smartPhrases = DataAccess.SqlHelper.GetSmartPhrases(user.ProviderID, user.LocationID);
-            var flowPhrases = DataAccess.SqlHelper.GetFlowPhrases(user.ProviderID, user.LocationID, flowId, surgeryId);
+            var categories = DataAccess.SqlHelper.GetSmartPhraseCategories(user.ProviderID, user.LocationID);
+            var flowPhrases = DataAccess.SqlHelper.GetFlowPhrases(user.ProviderID, user.LocationID, flowId);
             var flowFeedback = DataAccess.SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
+            var surgeonNotes = DataAccess.SqlHelper.GetSurgeonNotes(flowId, user.ProviderID, user.LocationID);
 
-            var categories = new List<DebriefCategory>()
-            {
-                new DebriefCategory()
-                {
-                    CategoryName = "Prep"
-                },
-                new DebriefCategory()
-                {
-                    CategoryName = "Draping"
-                },
-                new DebriefCategory()
-                {
-                    CategoryName = "Foley"
-                },
-                new DebriefCategory()
-                {
-                    CategoryName = "Nursing"
-                },
-                new DebriefCategory()
-                {
-                    CategoryName = "Counts"
-                },
-            };
 
             foreach (var flowPhrase in flowPhrases)
             {
-                var category = categories.FirstOrDefault(c => c.CategoryName == flowPhrase.Category);
+                var category = categories.FirstOrDefault(c => c.CategoryID == flowPhrase.CategoryID);
 
                 category?.FlowPhrases.Add(flowPhrase);
             }
 
             var result = new DebriefResult()
             {
-                RoomSetups = roomSetups,
-                SmartPhrases = smartPhrases,
                 Categories = categories,
-                FlowFeedback = flowFeedback
+                FlowFeedback = flowFeedback,
+                SurgeonNotes = surgeonNotes
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -310,8 +286,8 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.UpdateDebrief(surgeryId, flowId, debriefUpdate?.SelectedPhrases,
-                user.UserID, user.ProviderID, user.LocationID);
+            DataAccess.SqlHelper.UpdateDebrief(flowId, debriefUpdate?.SelectedPhrases, user.ProviderID, user.LocationID);
+            DataAccess.SqlHelper.UpdateCaseNotes(surgeryId, debriefUpdate?.CaseNotes, user.ProviderID, user.LocationID);
 
             return Ok();
         }

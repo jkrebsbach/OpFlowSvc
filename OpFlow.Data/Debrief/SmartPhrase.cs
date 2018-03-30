@@ -8,8 +8,7 @@ namespace OpFlow.Data.Debrief
     {
         public int SmartPhraseID { get; set; }
         public int SpecialtyID { get; set; }
-        public string Category { get; set; }
+        public int CategoryID { get; set; }
         public string Phrase { get; set; }
-        public string SmartPhraseStep { get; set; }
     }
 }
