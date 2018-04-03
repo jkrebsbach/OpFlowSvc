@@ -403,6 +403,19 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [SwaggerOperation("FinishSurgery")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        [Route("api/surgery/finish", Name = "FinishSurgery")]
+        public async Task<HttpResponseMessage> FinishSurgery(int surgeryId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+            var success = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, success);
+        }
+
+        // POST api/values
         [SwaggerOperation("ToggleDelay")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.Ambiguous)]

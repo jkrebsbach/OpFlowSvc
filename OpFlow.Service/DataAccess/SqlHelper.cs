@@ -974,6 +974,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("patient_position_id", roomSetup.PatientPositionID),
+                new SqlParameter("patient_extremity_position_id", roomSetup.PatientExtremityPositionID),
                 new SqlParameter("room_type_id", roomSetup.RoomTypeID),
                 new SqlParameter("bed_orientation", roomSetup.BedOrientation),
             };
@@ -1060,6 +1061,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("patient_position_id", roomSetup.PatientPositionID),
+                new SqlParameter("patient_extremity_position_id", roomSetup.PatientExtremityPositionID),
                 new SqlParameter("room_type_id", roomSetup.RoomTypeID),
                 new SqlParameter("bed_orientation", roomSetup.BedOrientation)
             };

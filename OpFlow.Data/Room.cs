@@ -46,6 +46,7 @@ namespace OpFlow.Data
         public int RoomSetupID { get; set; }
         public int RoomTypeID { get; set; }
         public int PatientPositionID { get; set; }
+        public int PatientExtremityPositionID { get; set; }
         public string RoomTypeDescription { get; set; }
         public int OwnerUserID { get; set; }
         public string SetupName { get; set; }
