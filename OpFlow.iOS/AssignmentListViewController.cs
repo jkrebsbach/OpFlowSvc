@@ -21,7 +21,23 @@ namespace OpFlow.iOS
         {
             base.ViewDidLoad();
 
-            await ExecuteAsyncWebRequest(LoadAssignmentOptions);
+            if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.FlowAssignment && AppSettings.CurrentCard == null)
+            {
+                new UIAlertView("Error", "No card assigned to surgery", null, "OK", null)
+                    .Show();
+                return;
+            }
+            else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CardAssignment && AppSettings.CurrentProcedure == null)
+            {
+                new UIAlertView("Error", "No procedure assigned to surgery", null, "OK", null)
+                    .Show();
+                return;
+            }
+            else
+            {
+                await ExecuteAsyncWebRequest(LoadAssignmentOptions);
+                
+            }
         }
 
         private async Task LoadAssignmentOptions()
