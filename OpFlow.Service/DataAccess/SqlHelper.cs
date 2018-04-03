@@ -510,17 +510,33 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("AssignUserToCase", dsParameters);
         }
 
-        public static int NewSmartPhrase(string category, string phrase, int userId, int providerId, int locationId)
+        public static int NewSmartPhrase(string phrase, int categoryId, int stepId, int roleId, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("category", category),
+                new SqlParameter("category_id", categoryId),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("role_id", roleId),
                 new SqlParameter("user_id", userId),
                 new SqlParameter("phrase", phrase)
             };
             return ExecuteNonQuery("InsertPhrase", dsParameters);
+        }
+
+        public static int NewSurgeonNote(string phrase, int flowId, int stepId, int roleId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("role_id", roleId),
+                new SqlParameter("phrase", phrase)
+            };
+            return ExecuteNonQuery("InsertFlowSurgeonNote", dsParameters);
         }
 
         public static int AddFlowFeedback(int flowId, string feedback, int userId, int providerId, int locationId)

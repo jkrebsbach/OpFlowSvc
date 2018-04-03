@@ -258,7 +258,23 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.NewSmartPhrase(smartPhrase.Category, smartPhrase.Phrase, user.UserID, user.ProviderID, user.LocationID);
+            DataAccess.SqlHelper.NewSmartPhrase(smartPhrase.Phrase, smartPhrase.CategoryID, smartPhrase.StepID, smartPhrase.RoleID,
+                user.UserID, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("NewSurgeonNote")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/surgeonNote", Name = "NewSurgeonNotee")]
+        [HttpPost]
+        public async Task<IHttpActionResult> NewSurgeonNote([FromBody]SurgeonNotePost smartPhrase)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.NewSurgeonNote(smartPhrase.Phrase, smartPhrase.FlowID, smartPhrase.StepID, smartPhrase.RoleID,
+                user.ProviderID, user.LocationID);
 
             return Ok();
         }
