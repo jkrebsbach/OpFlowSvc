@@ -44,6 +44,11 @@ namespace OpFlow.iOS
             }
         }
 
+        async partial void btnRefresh_Click(UIButton sender)
+        {
+            await ExecuteAsyncWebRequest(LoadMessages);
+        }
+
         async partial void btnSendMessage_Click(UIKit.UIButton sender)
         {
             await ExecuteAsyncWebRequest(SendMessage);

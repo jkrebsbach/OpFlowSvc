@@ -13,7 +13,7 @@ namespace OpFlow.iOS
 {
     public partial class NavigateViewController : OpFlowViewController
     {
-
+        
         Surgery _surgery;
         Patient _patient;
         
@@ -45,6 +45,12 @@ namespace OpFlow.iOS
             await ExecuteAsyncWebRequest(LoadSurgery);
             //await LoadSurgery();
         }
+
+        async partial void btnRefresh_Click(UIButton sender)
+        {
+            await ExecuteAsyncWebRequest(LoadMessages);
+        }
+
         async partial void btnSendMessage_Click(UIButton sender)
         {
             if (txtCommunicator.Text == "")

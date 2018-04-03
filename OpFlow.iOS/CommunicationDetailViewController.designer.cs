@@ -16,6 +16,10 @@ namespace OpFlow.iOS
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton btnRefresh { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UIButton btnSendMessage { get; set; }
 
         [Outlet]
@@ -26,12 +30,21 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField txtMessage { get; set; }
 
+        [Action ("btnRefresh_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnRefresh_Click (UIKit.UIButton sender);
+
         [Action ("btnSendMessage_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnSendMessage_Click (UIKit.UIButton sender);
 
         void ReleaseDesignerOutlets ()
         {
+            if (btnRefresh != null) {
+                btnRefresh.Dispose ();
+                btnRefresh = null;
+            }
+
             if (btnSendMessage != null) {
                 btnSendMessage.Dispose ();
                 btnSendMessage = null;
