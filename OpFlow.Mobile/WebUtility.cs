@@ -52,19 +52,20 @@ namespace OpFlow.Mobile
             return JsonConvert.DeserializeObject<T>(result);
         }
 
-        internal static async Task<T> PostBodyRequest<T>(string command, object bodyData)
+        internal static async Task<T> SendBodyRequest<T>(string command, object bodyData, 
+                         HttpMethod httpMethod)
         {
             var json = JsonConvert.SerializeObject(bodyData);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            return await PostValues<T>(command, content);
+            return await TransmitValues<T>(command, content, httpMethod);
         }
 
-        private static async Task<T> PostValues<T>(string command, HttpContent content)
+        private static async Task<T> TransmitValues<T>(string command, HttpContent content, HttpMethod httpMethod)
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Post, command)
+                var request = new HttpRequestMessage(httpMethod, command)
                     { Content = content };
 
                 using (var response = await _client.SendAsync(request))
@@ -97,7 +98,7 @@ namespace OpFlow.Mobile
 
             try
             {
-                var authToken = await PostValues<AuthToken>("/Token", content);
+                var authToken = await TransmitValues<AuthToken>("/Token", content, HttpMethod.Post);
 
                 if (authToken.AccessToken != null)
                 {

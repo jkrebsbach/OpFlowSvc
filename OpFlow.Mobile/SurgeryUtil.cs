@@ -69,7 +69,7 @@ namespace OpFlow.Mobile
         {
             var command = $"api/surgery";
 
-            var response = await WebUtility.PostBodyRequest<int>(command, surgery);
+            var response = await WebUtility.SendBodyRequest<int>(command, surgery, HttpMethod.Post);
 
             return response;
         }
@@ -96,7 +96,7 @@ namespace OpFlow.Mobile
         {
             var command = string.Format("api/surgery/assignCard?surgeryId={0}&cardId={1}", surgeryId, cardId);
 
-            var response = await WebUtility.PostBodyRequest<string>(command, 0);
+            var response = await WebUtility.SendBodyRequest<string>(command, 0, HttpMethod.Post);
 
             return response;
         }
@@ -105,7 +105,7 @@ namespace OpFlow.Mobile
         {
             var command = string.Format("api/surgery/assignFlow?surgeryId={0}&flowId={1}", surgeryId, flowId);
 
-            var response = await WebUtility.PostBodyRequest<string>(command, 0);
+            var response = await WebUtility.SendBodyRequest<string>(command, 0, HttpMethod.Post);
 
             return response;
         }
@@ -114,7 +114,7 @@ namespace OpFlow.Mobile
         {
             var command = string.Format("api/surgery/assignRoomSetup?surgeryId={0}&roomSetupId={1}", surgeryId, roomSetupId);
 
-            var response = await WebUtility.PostBodyRequest<string>(command, 0);
+            var response = await WebUtility.SendBodyRequest<string>(command, 0, HttpMethod.Post);
 
             return response;
         }

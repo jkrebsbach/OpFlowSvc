@@ -37,10 +37,14 @@ namespace OpFlow.Mobile
 
         public static async Task SendMessage(MessagingGroup messagingGroup, string message)
         {
-            var command = string.Format("api/message?surgeryId={0}&communicationUserID={1}&message={2}",
-                messagingGroup.SurgeryID, messagingGroup.CommunicationUserID, message);
+            var command = string.Format("api/message?surgeryId={0}&communicationUserID={1}",
+                messagingGroup.SurgeryID, messagingGroup.CommunicationUserID);
 
-            var response = await WebUtility.WebRequest<int>(command, HttpMethod.Put);
+            var messagePost = new MessagePost()
+            {
+                Message = message
+            };
+            var response = await WebUtility.SendBodyRequest<int>(command, messagePost, HttpMethod.Put);
         }
 
         public static async Task<List<MessagingGroup>> GetMessageGroups()
