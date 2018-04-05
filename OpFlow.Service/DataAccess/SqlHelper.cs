@@ -1291,9 +1291,16 @@ namespace OpFlow.Service.DataAccess
 
             var dsSchedules = ExecuteCommand("SearchCases", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<SurgerySearchResult>();
+            var surgeries = dsSchedules.Tables[0].DataTableToList<SurgerySearchResult>();
+            var surgeryUsers = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
 
-            return result;
+            foreach (var surgeryUser in surgeryUsers)
+            {
+                var surgery = surgeries.FirstOrDefault(s => s.SurgeryID == surgeryUser.SurgeryID);
+                surgery?.SurgeryUsers?.Add(surgeryUser);
+            }
+
+            return surgeries;
         }
 
         public static List<SurgerySearchResult> GetCaseNbr(string caseNbr, int providerId, int locationId)
