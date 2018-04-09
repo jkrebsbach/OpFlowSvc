@@ -525,6 +525,18 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("InsertPhrase", dsParameters);
         }
 
+        public static int EditSmartPhrase(int smartPhraseId, string phrase, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("smart_phrase_id", smartPhraseId),
+                new SqlParameter("phrase", phrase)
+            };
+            return ExecuteNonQuery("UpdateSmartPhrase", dsParameters);
+        }
+
         public static int NewSurgeonNote(string phrase, int flowId, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -537,6 +549,28 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("phrase", phrase)
             };
             return ExecuteNonQuery("InsertFlowSurgeonNote", dsParameters);
+        }
+
+        public static int DeleteSmartPhrase(int smartPhraseId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("smart_phrase_id", smartPhraseId)
+            };
+            return ExecuteNonQuery("DeleteSmartPhrase", dsParameters);
+        }
+
+        public static int DeleteSurgeonNote(int surgeonNoteId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgeon_note_id", surgeonNoteId)
+            };
+            return ExecuteNonQuery("DeleteSurgeonNote", dsParameters);
         }
 
         public static int AddFlowFeedback(int flowId, string feedback, int userId, int providerId, int locationId)
@@ -967,7 +1001,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<FlowSurgeonNote> GetSurgeonNotes(int providerId, int locationId, int flowId)
+        public static List<FlowSurgeonNote> GetSurgeonNotes(int flowId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1686,7 +1720,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<FlowInstruction> GetFlowInstructions(int flowId, int providerId, int locationId)
+        public static List<FlowStepInstructionResult> GetFlowInstructions(int flowId, int providerId, int locationId)
         {
             var parameters = new[]
                 {
@@ -1698,7 +1732,29 @@ namespace OpFlow.Service.DataAccess
 
             var dsSchedules = ExecuteCommand("GetFlowInstructions", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<FlowInstruction>();
+            var instructions = dsSchedules.Tables[0].DataTableToList<FlowInstruction>();
+            var result = new List<FlowStepInstructionResult>();
+
+            foreach (var stepInstruction in instructions.GroupBy(i => i.StepID))
+            {
+                var flowStepInstruction = new FlowStepInstructionResult()
+                {
+                    StepID = stepInstruction.Key
+                };
+
+                foreach (var roleInstruction in stepInstruction.GroupBy(i => i.RoleID))
+                {
+                    var flowRoleInstruction = new FlowRoleInstruction()
+                    {
+                        RoleID = roleInstruction.Key
+                    };
+
+                    flowRoleInstruction.FlowInstructions.AddRange(roleInstruction.ToList());
+                    flowStepInstruction.FlowRoleInstructions.Add(flowRoleInstruction);
+                }
+
+                result.Add(flowStepInstruction);
+            }
 
             return result;
         }

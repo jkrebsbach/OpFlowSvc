@@ -14,6 +14,8 @@ namespace OpFlow.Data
         public string StepDescription { get; set; }
         public int StepDuration { get; set; }
 
+        public Dictionary<int, List<FlowInstruction>> RoleInstructions { get; set; }
+
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
     }

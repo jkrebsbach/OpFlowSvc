@@ -45,7 +45,7 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetFlowInstructions")]
         [Route("api/flow/instructions")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowInstruction>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowStepInstructionResult>))]
         public HttpResponseMessage GetFlowInstructions(int flowId, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
