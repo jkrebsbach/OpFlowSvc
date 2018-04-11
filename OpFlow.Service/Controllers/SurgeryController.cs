@@ -488,7 +488,7 @@ namespace OpFlow.Service.Controllers
             var notifications = DataAccess.SqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.ProviderID, user.LocationID);
 
             var startNotification = notifications.FirstOrDefault(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
-            var endNotification = notifications.FirstOrDefault(n => n.StepID != flowStep.StepID - 1 && n.NotificationType == 2);
+            var endNotification = notifications.FirstOrDefault(n => n.StepID == flowStep.StepID - 1 && n.NotificationType == 2);
 
             SendNotification(startNotification);
             SendNotification(endNotification);
