@@ -34,11 +34,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetMessageGroups")]
         [Route("api/message/groups")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<MessagingGroup>))]
-        public async Task<HttpResponseMessage> GetCaseMessageGroups(int? userId = null)
+        public async Task<HttpResponseMessage> GetCaseMessageGroups(int? userId = null, DateTime? surgeryDate = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var groups = DataAccess.SqlHelper.GetMessageGroups(userId ?? user.UserID, user.ProviderID, user.LocationID);
+            var groups = DataAccess.SqlHelper.GetMessageGroups(userId ?? user.UserID, surgeryDate, user.ProviderID, user.LocationID);
 
             foreach (var group in groups.Where(g => g.PatientID.HasValue))
             {

@@ -107,9 +107,9 @@ namespace OpFlow.Service.DataAccess
             var parameters = new[]
             {
                 new SqlParameter("user_id", userId),
-                new SqlParameter("surgery_id", surgeryId == null ? DBNull.Value : (object)surgeryId),
-                new SqlParameter("case_group_id", caseGroupId == null ? DBNull.Value : (object)caseGroupId),
-                new SqlParameter("recipient_id", recipientId == null ? DBNull.Value : (object)recipientId),
+                new SqlParameter("surgery_id", surgeryId ?? (object)DBNull.Value),
+                new SqlParameter("case_group_id", caseGroupId ?? (object)DBNull.Value),
+                new SqlParameter("recipient_id", recipientId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -120,11 +120,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<MessagingGroup> GetMessageGroups(int userId, int providerId, int locationId)
+        public static List<MessagingGroup> GetMessageGroups(int userId, DateTime? surgeryDate, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("user_id", userId),
+                new SqlParameter("surgery_date", surgeryDate?.Date ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -143,8 +144,8 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("user_id", userId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("surgery_id", surgeryId == null ? DBNull.Value : (object)surgeryId),
-                new SqlParameter("communication_user_id", communicationUserId == null ? DBNull.Value : (object)communicationUserId),
+                new SqlParameter("surgery_id", surgeryId ?? (object)DBNull.Value),
+                new SqlParameter("communication_user_id", communicationUserId ?? (object)DBNull.Value),
                 new SqlParameter("message", message)
             };
             var result = ExecuteNonQuery("SendMessage", parameters);
