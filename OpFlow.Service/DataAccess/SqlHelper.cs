@@ -822,7 +822,15 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
-        public static int SurgeryMoveNextStep(int surgeryId, int providerId, int locationId, DateTime startTime)
+        /// <summary>
+        /// Advance surgery to next step
+        /// </summary>
+        /// <param name="surgeryId"></param>
+        /// <param name="providerId"></param>
+        /// <param name="locationId"></param>
+        /// <param name="startTime"></param>
+        /// <returns>Current flow step after advancing</returns>
+        public static FlowStep SurgeryMoveNextStep(int surgeryId, int providerId, int locationId, DateTime startTime)
         {
             var dsParameters = new[]
             {
@@ -831,9 +839,12 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("step_time", startTime)
             };
-            var update = ExecuteNonQuery("UpdateSurgeryFlowTimings", dsParameters);
 
-            return update;
+            var update = ExecuteCommand("UpdateSurgeryFlowTimings", dsParameters);
+            var flowSteps = update.Tables[0].DataTableToList<FlowStep>();
+            var flowStep = flowSteps.FirstOrDefault();
+
+            return flowStep;
         }
 
         public static int SurgeryToggleDelay(int surgeryId, int providerId, int locationId, DateTime? startTime, DateTime? endTime, int? delayReasonId)
@@ -1811,12 +1822,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<FlowNotification> GetFlowNotifications(int flowId, int stepId, int providerId, int locationId)
+        public static List<FlowNotification> GetFlowNotifications(int flowId, int? stepId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("flow_id", flowId),
-                new SqlParameter("step_id", stepId),
+                new SqlParameter("step_id", stepId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

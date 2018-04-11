@@ -28,4 +28,14 @@ namespace OpFlow.Data
             return FlowDescription;
         }
     }
+
+    public class FlowDetail
+    {
+        public Flow Flow { get; set; }
+        public List<FlowFeedback> Feedback { get; set; }
+        public List<FlowNotification> Notifications { get; set; }
+        public List<FlowStepInstructionResult> Instructions { get; set; }
+        public List<FlowContent> Content { get; set; }
+    }
+
 }

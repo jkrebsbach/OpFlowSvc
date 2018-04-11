@@ -443,7 +443,8 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
             var success = DataAccess.SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, startTime);
 
-            success = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, startTime);
+            var flowStep = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, startTime);
+            FlowStepNotifications(flowStep);
 
             return Request.CreateResponse(HttpStatusCode.OK, success);
         }
@@ -456,9 +457,11 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> MoveNextStep(int surgeryId, DateTime stepTime)
         {
             var user = CacheUtil.GetUserSecurity();
-            var success = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
 
-            return Request.CreateResponse(HttpStatusCode.Created, success);
+            var flowStep = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
+            FlowStepNotifications(flowStep);
+
+            return Request.CreateResponse(HttpStatusCode.Created, flowStep);
         }
 
         // POST api/values
@@ -469,9 +472,41 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> FinishSurgery(int surgeryId, DateTime finishTime)
         {
             var user = CacheUtil.GetUserSecurity();
-            var success = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, finishTime);
 
-            return Request.CreateResponse(HttpStatusCode.OK, success);
+            var flowStep = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, finishTime);
+            FlowStepNotifications(flowStep);
+
+            return Request.CreateResponse(HttpStatusCode.OK, flowStep);
+        }
+
+        private static void FlowStepNotifications(FlowStep flowStep)
+        {
+            var user = CacheUtil.GetUserSecurity();
+            if (flowStep == null)
+                return;
+
+            var notifications = DataAccess.SqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.ProviderID, user.LocationID);
+
+            var startNotification = notifications.FirstOrDefault(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
+            var endNotification = notifications.FirstOrDefault(n => n.StepID != flowStep.StepID - 1 && n.NotificationType == 2);
+
+            SendNotification(startNotification);
+            SendNotification(endNotification);
+        }
+
+        private static void SendNotification(FlowNotification flowNotification)
+        {
+            var user = CacheUtil.GetUserSecurity();
+            if (flowNotification == null)
+                return;
+
+            NotificationSystem.NotifyUser(flowNotification.CellPhone, flowNotification.FlowMessage);
+
+            if (flowNotification.MessagingUserID != null)
+            {
+                DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID, null, flowNotification.MessagingUserID, flowNotification.FlowMessage);
+
+            }
         }
 
         // POST api/values
@@ -505,9 +540,11 @@ namespace OpFlow.Service.Controllers
 
             if (surgeryEditPost.NotificationUser.HasValue)
             {
+                var message = $"Surgery schedule modified - please review schedule";
+
                 var notificationUser = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, surgeryEditPost.NotificationUser.Value);
                 if (notificationUser?.CellPhone != null)
-                    NotificationSystem.NotifyUser(notificationUser.CellPhone);
+                    NotificationSystem.NotifyUser(notificationUser.CellPhone, message);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, success);

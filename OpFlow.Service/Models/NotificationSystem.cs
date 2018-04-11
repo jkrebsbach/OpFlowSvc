@@ -9,8 +9,11 @@ namespace OpFlow.Service.Models
 {
     public abstract class NotificationSystem
     {
-        public static string NotifyUser(string cellPhone)
+        public static string NotifyUser(string cellPhone, string message)
         {
+            if (cellPhone == null || message == null)
+                return null;
+
             string result = null;
 
             var numbers = new List<string>()
@@ -20,13 +23,13 @@ namespace OpFlow.Service.Models
 
             using (var client = new WebClient())
             {
-                numbers.ForEach(num => result = SendMessage(client, num));
+                numbers.ForEach(num => result = SendMessage(client, num, message));
             }
 
             return result;
         }
 
-        private static string SendMessage(WebClient client, string phoneNumber)
+        private static string SendMessage(WebClient client, string phoneNumber, string payload)
         {
             if (string.IsNullOrEmpty(phoneNumber))
                 return $"INVALID PHONENUMBER - {phoneNumber}";
@@ -44,8 +47,6 @@ namespace OpFlow.Service.Models
             var apiUrl = ConfigurationManager.AppSettings["NexmoApiUrl"];
             var apiKey = ConfigurationManager.AppSettings["NexmoApiKey"];
             var apiSecret = ConfigurationManager.AppSettings["NexmoApiSecret"];
-
-            var payload = $"Surgery schedule modified - please review schedule";
 
             var urlTarget = $"{apiUrl}?api_key={apiKey}&api_secret={apiSecret}&to={phoneNumber}&from=12016728961&text={payload}";
 

@@ -108,6 +108,32 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetFlowDetails")]
+        [Route("api/flow/details")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowFeedback>))]
+        public HttpResponseMessage GetFlowDetails(int flowId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var flow = DataAccess.SqlHelper.GetFlow(flowId, null, user.ProviderID, user.LocationID);
+            var feedback = DataAccess.SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
+            var notifications = DataAccess.SqlHelper.GetFlowNotifications(flowId, null, user.ProviderID, user.LocationID);
+            var instructions = DataAccess.SqlHelper.GetFlowInstructions(flowId, user.ProviderID, user.LocationID);
+            var content = DataAccess.SqlHelper.GetFlowContent(flowId, 1, user.ProviderID, user.LocationID);
+
+            var flowDetail = new FlowDetail()
+            {
+                Flow = flow,
+                Feedback = feedback,
+                Notifications = notifications,
+                Instructions = instructions,
+                Content = content
+            };
+
+            return Request.CreateResponse(HttpStatusCode.OK, flowDetail);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetFlowContent")]
         [Route("api/flow/content")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowContent>))]
