@@ -230,7 +230,7 @@ namespace OpFlow.Service.Controllers
             var flowPhrases = DataAccess.SqlHelper.GetFlowPhrases(user.ProviderID, user.LocationID, flowId);
             var flowFeedback = DataAccess.SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
             var surgeonNotes = DataAccess.SqlHelper.GetSurgeonNotes(flowId, user.ProviderID, user.LocationID);
-
+            var flowSteps = DataAccess.SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
 
             foreach (var flowPhrase in flowPhrases)
             {
@@ -243,7 +243,8 @@ namespace OpFlow.Service.Controllers
             {
                 Categories = categories,
                 FlowFeedback = flowFeedback,
-                SurgeonNotes = surgeonNotes
+                SurgeonNotes = surgeonNotes,
+                FlowSteps = flowSteps
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
