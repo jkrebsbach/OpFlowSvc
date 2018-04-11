@@ -428,13 +428,14 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<User> SearchUsers(string searchString, int? roleId, int providerId, int locationId)
+        public static List<User> SearchUsers(string searchString, int? roleId, int? specialtyId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("role_id", roleId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("search", (object)searchString ?? DBNull.Value),
             };
             var dsSchedules = ExecuteCommand("SearchUsers", dsParameters);
@@ -806,26 +807,28 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
-        public static int StartSurgery(int surgeryId, int providerId, int locationId)
+        public static int StartSurgery(int surgeryId, int providerId, int locationId, DateTime startTime)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("surgery_id", surgeryId)
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("start_time", startTime)
             };
             var update = ExecuteNonQuery("StartSurgery", dsParameters);
 
             return update;
         }
 
-        public static int SurgeryMoveNextStep(int surgeryId, int providerId, int locationId)
+        public static int SurgeryMoveNextStep(int surgeryId, int providerId, int locationId, DateTime startTime)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("surgery_id", surgeryId)
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("step_time", startTime)
             };
             var update = ExecuteNonQuery("UpdateSurgeryFlowTimings", dsParameters);
 

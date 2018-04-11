@@ -21,6 +21,8 @@ namespace OpFlow.Service
                 return MemCache[username] as UserSecurity;
 
             var secureUser = DataAccess.SqlHelper.GetSecureUser(username);
+            if (secureUser == null)
+                throw new Exception("Unable to locate authenticated user");
 
             MemCache.Add(username, secureUser, DateTimeOffset.UtcNow.AddHours(1));
             return secureUser;

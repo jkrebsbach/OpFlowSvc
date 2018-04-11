@@ -34,6 +34,8 @@ namespace OpFlow.Data
         public string RoomSetupDescription { get; set; }
         public DateTime ScheduleDate { get; set; }
         public TimeSpan ScheduleTime { get; set; }
+        public DateTime? ActualStartDate { get; set; }
+        public TimeSpan? ActualStartTime { get; set; }
         public TimeSpan? DelayStartTime { get; set; }
         public int? EstDelayMinutes { get; set; }
         public int? TotalMinutes { get; set; }
@@ -41,6 +43,7 @@ namespace OpFlow.Data
 
 
         public DateTime ScheduleDateTime => ScheduleDate.Add(ScheduleTime);
+        public DateTime? ActualStartDateTime => ActualStartTime.HasValue ? ActualStartDate?.Add(ActualStartTime.Value) : null;
         public DateTime? DelayStartDateTime => DelayStartTime.HasValue ? ScheduleDate.Add(DelayStartTime.Value) : (DateTime?)null;
     }
 

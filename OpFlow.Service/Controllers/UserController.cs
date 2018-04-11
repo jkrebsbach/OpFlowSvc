@@ -42,11 +42,11 @@ namespace OpFlow.Service.Controllers
         /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<User>))]
         [Route("api/User/SearchUsers", Name = "SearchUsers")]
-        public HttpResponseMessage GetUsers(string nameSearchText = null, int? roleId = null)
+        public HttpResponseMessage GetUsers(string nameSearchText = null, int? roleId = null, int? specialtyId = null)
         {
             var userSecurity = CacheUtil.GetUserSecurity();
 
-            var users = DataAccess.SqlHelper.SearchUsers(nameSearchText, roleId, userSecurity.ProviderID, userSecurity.LocationID);
+            var users = DataAccess.SqlHelper.SearchUsers(nameSearchText, roleId, specialtyId, userSecurity.ProviderID, userSecurity.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, users);
         }

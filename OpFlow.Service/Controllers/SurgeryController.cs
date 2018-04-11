@@ -438,12 +438,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
         [Route("api/surgery/start", Name = "StartSurgery")]
-        public async Task<HttpResponseMessage> StartSurgery(int surgeryId)
+        public async Task<HttpResponseMessage> StartSurgery(int surgeryId, DateTime startTime)
         {
             var user = CacheUtil.GetUserSecurity();
-            var success = DataAccess.SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID);
+            var success = DataAccess.SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, startTime);
 
-            success = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID);
+            success = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, startTime);
 
             return Request.CreateResponse(HttpStatusCode.OK, success);
         }
@@ -453,10 +453,10 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created)]
         [HttpPost]
         [Route("api/surgery/nextStep", Name = "MoveNextStep")]
-        public async Task<HttpResponseMessage> MoveNextStep(int surgeryId)
+        public async Task<HttpResponseMessage> MoveNextStep(int surgeryId, DateTime stepTime)
         {
             var user = CacheUtil.GetUserSecurity();
-            var success = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID);
+            var success = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
 
             return Request.CreateResponse(HttpStatusCode.Created, success);
         }
@@ -466,10 +466,10 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
         [Route("api/surgery/finish", Name = "FinishSurgery")]
-        public async Task<HttpResponseMessage> FinishSurgery(int surgeryId)
+        public async Task<HttpResponseMessage> FinishSurgery(int surgeryId, DateTime finishTime)
         {
             var user = CacheUtil.GetUserSecurity();
-            var success = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID);
+            var success = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, finishTime);
 
             return Request.CreateResponse(HttpStatusCode.OK, success);
         }
