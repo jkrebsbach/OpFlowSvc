@@ -32,6 +32,7 @@ namespace OpFlow.Data
     public class FlowDetail
     {
         public Flow Flow { get; set; }
+        public List<FlowStepTiming> Steps { get; set; }
         public List<FlowFeedback> Feedback { get; set; }
         public List<FlowNotification> Notifications { get; set; }
         public List<FlowStepInstructionResult> Instructions { get; set; }
