@@ -29,7 +29,7 @@ namespace OpFlow.iOS
 
         private async Task SignOn()
         {
-            await AppSettings.AuthenticateUser("info@opflowtech.com", "OpFlow1!");
+            await AppSettings.AuthenticateUser("ben@opflowtech.com", "OpFlow1!");
 
             if (AppSettings.UserAuthenticated)
             {

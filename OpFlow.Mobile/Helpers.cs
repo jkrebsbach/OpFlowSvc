@@ -8,8 +8,12 @@ namespace OpFlow.Mobile
     {
         public static int CalculateAge(this DateTime birthDate)
         {
-            var now = DateTime.Now;
-            var years = new DateTime(DateTime.Now.Subtract(birthDate).Ticks).Year - 1;
+            var ageTicks = DateTime.Now.Subtract(birthDate).Ticks;
+
+            if (ageTicks <= 0)
+                return 0;
+            
+            var years = new DateTime(ageTicks).Year - 1;
 
             return years;
         }

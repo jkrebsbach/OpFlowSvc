@@ -8,8 +8,7 @@
     <RootNamespace>OpFlow.iOS</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>OpFlow.iOS</AssemblyName>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <NuGetPackageImportStamp></NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -104,7 +103,6 @@
     <Compile Include="HomeViewController.designer.cs">
       <DependentUpon>HomeViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="NavigateViewController.cs" />
     <Compile Include="NavigateViewController.designer.cs">
@@ -191,6 +189,7 @@
     <Compile Include="EditableContentCell.designer.cs">
       <DependentUpon>EditableContentCell.cs</DependentUpon>
     </Compile>
+    <Compile Include="Main.cs" />
     <Compile Include="DetailEditableContentCell.cs" />
     <Compile Include="DetailEditableContentCell.designer.cs">
       <DependentUpon>DetailEditableContentCell.cs</DependentUpon>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="701">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="701">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -34,7 +34,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="info@opflowtech.com" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="204">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="ben@opflowtech.com" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="204">
                                 <rect key="frame" x="143" y="117" width="154" height="31"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -631,8 +631,8 @@
             <objects>
                 <viewController id="10348" customClass="DetailViewController" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="119160"/>
-                        <viewControllerLayoutGuide type="bottom" id="119161"/>
+                        <viewControllerLayoutGuide type="top" id="119169"/>
+                        <viewControllerLayoutGuide type="bottom" id="119170"/>
                     </layoutGuides>
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="20141">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
@@ -1309,7 +1309,7 @@
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AA" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="65727">
-                                                                    <rect key="frame" x="15" y="9.5" width="30" height="25"/>
+                                                                    <rect key="frame" x="15" y="10" width="30" height="25"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="width" constant="30" id="cio-cQ-aKT"/>
                                                                         <constraint firstAttribute="height" constant="25" id="h9x-lD-8nc"/>
@@ -1354,7 +1354,7 @@
                                                 </constraints>
                                                 <state key="normal" title="Button" image="ic_loop_blue_dark_36pt.png"/>
                                                 <connections>
-                                                    <action selector="btnRefresh_Click:" destination="14857" id="119168" eventType="touchUpInside"/>
+                                                    <action selector="btnRefresh_Click:" destination="14857" eventType="touchUpInside" id="119168"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -1402,6 +1402,7 @@
                         <outlet property="btnDashboard" destination="Stz-Bz-nGD" id="name-outlet-Stz-Bz-nGD"/>
                         <outlet property="btnDebrief" destination="flM-Af-hAF" id="name-outlet-flM-Af-hAF"/>
                         <outlet property="btnPatient" destination="LB2-Fn-3Ve" id="name-outlet-LB2-Fn-3Ve"/>
+                        <outlet property="btnRefresh" destination="J8T-4q-zcq" id="name-outlet-J8T-4q-zcq"/>
                         <outlet property="btnSendMessage" destination="SUB-md-tEC" id="name-outlet-SUB-md-tEC"/>
                         <outlet property="lblAnes" destination="19280" id="name-outlet-19280"/>
                         <outlet property="lblAnesName" destination="24156" id="name-outlet-24156"/>
@@ -1425,7 +1426,6 @@
                         <outlet property="vwRep" destination="wio-aY-byY" id="name-outlet-wio-aY-byY"/>
                         <outlet property="vwScrub" destination="Cxg-U4-odY" id="name-outlet-Cxg-U4-odY"/>
                         <outlet property="vwSurgeon" destination="bvQ-JN-0zf" id="name-outlet-bvQ-JN-0zf"/>
-                        <outlet property="btnRefresh" destination="J8T-4q-zcq" id="name-outlet-J8T-4q-zcq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="14859" userLabel="First Responder" sceneMemberID="firstResponder"/>
