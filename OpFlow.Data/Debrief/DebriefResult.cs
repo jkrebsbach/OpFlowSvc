@@ -6,6 +6,7 @@ namespace OpFlow.Data.Debrief
 {
     public class DebriefResult
     {
+        public Flow Flow { get; set; }
         public List<SmartPhraseCategory> Categories { get; set; }
         public List<FlowFeedback> FlowFeedback { get; set; }
         public List<FlowSurgeonNote> SurgeonNotes { get; set; }

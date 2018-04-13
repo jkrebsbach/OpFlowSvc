@@ -239,6 +239,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
+            var flow = DataAccess.SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
             var categories = DataAccess.SqlHelper.GetSmartPhraseCategories(user.ProviderID, user.LocationID);
             var flowPhrases = DataAccess.SqlHelper.GetFlowPhrases(flowId, user.ProviderID, user.LocationID);
             var flowFeedback = DataAccess.SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
@@ -258,6 +259,7 @@ namespace OpFlow.Service.Controllers
 
             var result = new DebriefResult()
             {
+                Flow = flow,
                 Categories = categories,
                 FlowFeedback = flowFeedback,
                 SurgeonNotes = surgeonNotes,

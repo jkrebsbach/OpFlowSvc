@@ -23,7 +23,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var flow = DataAccess.SqlHelper.GetFlow(flowId, cardId, user.ProviderID, user.LocationID);
+            var flow = DataAccess.SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
 
             return flow == null ? 
                 Request.CreateResponse(HttpStatusCode.NotFound) : 
@@ -264,7 +264,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var flow = DataAccess.SqlHelper.GetFlow(flowId, null, user.ProviderID, user.LocationID);
+            var flow = DataAccess.SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
             var feedback = DataAccess.SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
             var notifications = DataAccess.SqlHelper.GetFlowNotifications(flowId, null, user.ProviderID, user.LocationID);
             var instructions = DataAccess.SqlHelper.GetFlowInstructions(flowId, user.ProviderID, user.LocationID);
