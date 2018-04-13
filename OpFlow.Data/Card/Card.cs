@@ -30,11 +30,6 @@ namespace OpFlow.Data
         public decimal AvgMinutes { get; set; }
 
 
-        public int SecondSurgeonUserID { get; set; }
-        public string SecondSurgeonLastName { get; set; }
-        public int ThirdSurgeonUserID { get; set; }
-        public string ThirdSurgeonLastName { get; set; }
-
         public int GetID()
         {
             return CardID;
@@ -44,6 +39,12 @@ namespace OpFlow.Data
         {
             return CardDescription;
         }
+    }
+
+    public class SurgeryCard : Card
+    {
+        public bool CurrentCard { get; set; }    
+        public decimal CurrentCostDelta { get; set; }
     }
 
     public class CardQuantityEdit

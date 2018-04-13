@@ -17,6 +17,7 @@ namespace OpFlow.Data
         public int TotalMinutes { get; set; }
         public int AvgMinutes { get; set; }
         public int TimesUsed { get; set; }
+        public decimal Cost { get; set; }
 
         public int GetID()
         {
