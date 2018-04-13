@@ -49,5 +49,31 @@ namespace OpFlow.Service.Test
                 throw;
             }
         }
+        [TestMethod]
+        public async Task TestImportFlowImage()
+        {
+            try
+            {
+
+                var fileName = @"C:\temp\sample_image.jpg";
+                var importTypeId = 5;
+                var flowImageId = 0;
+
+                var fileContents = File.ReadAllBytes(fileName);
+
+                var user = SqlHelper.GetSecureUser("ben@opflowtech.com");
+
+                flowImageId = SqlHelper.NewFlowImage(1, 1, 1, 1, 1);
+                    
+                var folder = DataAccess.BlobStorageHelper.Folder(user.ProviderID, 1, 0, 0, 0);
+                await DataAccess.BlobStorageHelper.PutBlobBytes(folder, flowImageId.ToString(), fileContents);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
     }
 }

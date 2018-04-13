@@ -50,6 +50,22 @@ namespace OpFlow.Service.Controllers
 
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
         [AllowAnonymous]
+        [SwaggerOperation("GetFlowImage")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(byte[]))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("api/image/flowImage", Name = "GetFlowImage")]
+        public async Task<HttpResponseMessage> GetFlowImage(int flowId, int flowImageId)
+        {
+            var folder = DataAccess.BlobStorageHelper.Folder(flowId, 0, 0, 0, 0);
+            var binary = await DataAccess.BlobStorageHelper.GetBlobBytes(folder, flowImageId.ToString());
+
+            return binary == null ?
+                Request.CreateResponse(HttpStatusCode.NotFound) :
+                ImageResponse(binary);
+        }
+
+        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
+        [AllowAnonymous]
         [SwaggerOperation("GetPatientPositionImage")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(byte[]))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
@@ -119,7 +135,8 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            await DataAccess.BlobStorageHelper.DeleteBlob(user.ProviderID, cardId, flowId, stepId, roleId, filename);
+            var folder = DataAccess.BlobStorageHelper.Folder(user.ProviderID, cardId, flowId, stepId, roleId);
+            await DataAccess.BlobStorageHelper.DeleteBlob(folder, filename);
 
             return Ok();
         }

@@ -20,6 +20,13 @@ namespace OpFlow.Data.Debrief
         public int StepID { get; set; }
     }
 
+    public class FlowImagePost
+    {
+        public int FlowID { get; set; }
+        public int RoleID { get; set; }
+        public int StepID { get; set; }
+    }
+
     public class FlowFeedbackPost
     {
         public string Feedback { get; set; }

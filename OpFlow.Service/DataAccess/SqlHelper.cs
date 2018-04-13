@@ -560,6 +560,17 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UpdateSmartPhrase", dsParameters);
         }
 
+        public static int DeleteSmartPhrase(int smartPhraseId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("smart_phrase_id", smartPhraseId)
+            };
+            return ExecuteNonQuery("DeleteSmartPhrase", dsParameters);
+        }
+
         public static int NewSurgeonNote(string phrase, int flowId, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -574,17 +585,6 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("InsertFlowSurgeonNote", dsParameters);
         }
 
-        public static int DeleteSmartPhrase(int smartPhraseId, int providerId, int locationId)
-        {
-            var dsParameters = new[]
-            {
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
-                new SqlParameter("smart_phrase_id", smartPhraseId)
-            };
-            return ExecuteNonQuery("DeleteSmartPhrase", dsParameters);
-        }
-
         public static int DeleteSurgeonNote(int surgeonNoteId, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -594,6 +594,46 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgeon_note_id", surgeonNoteId)
             };
             return ExecuteNonQuery("DeleteSurgeonNote", dsParameters);
+        }
+
+        public static int NewFlowImage(int flowId, int stepId, int roleId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("role_id", roleId)
+            };
+            var insert = ExecuteCommand("InsertFlowImage", dsParameters);
+            var result = insert.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.First().Identifier;
+        }
+
+        public static int EditFlowImage(int flowImageId, int stepId, int roleId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("flow_image_id", flowImageId),
+                new SqlParameter("flow_step_id", stepId),
+                new SqlParameter("role_id", roleId)
+            };
+            return ExecuteNonQuery("EditFlowImage", dsParameters);
+        }
+
+        public static int DeleteFlowImage(int flowImageId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("flow_image_id", flowImageId)
+            };
+            return ExecuteNonQuery("DeleteFlowImage", dsParameters);
         }
 
         public static int AddFlowFeedback(int flowId, string feedback, int userId, int providerId, int locationId)
@@ -611,7 +651,7 @@ namespace OpFlow.Service.DataAccess
 
         public static int UpdateDebrief(int flowId, List<FlowPhrase> revisedPhrases, int providerId, int locationId)
         {
-            var currentPhrases = GetFlowPhrases(providerId, locationId, flowId);
+            var currentPhrases = GetFlowPhrases(flowId, providerId, locationId);
 
             foreach (var revisedPhrase in revisedPhrases)
             {
@@ -1022,17 +1062,32 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<FlowPhrase> GetFlowPhrases(int providerId, int locationId, int flowId)
+        public static List<FlowPhrase> GetFlowPhrases(int flowId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
+                new SqlParameter("flow_id", flowId),
                 new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
-                new SqlParameter("flow_id", flowId)
+                new SqlParameter("location_id", locationId)
             };
             var dsSchedules = ExecuteCommand("GetFlowPhrases", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<FlowPhrase>();
+
+            return result;
+        }
+
+        public static List<FlowImage> GetFlowImages(int flowId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetFlowImages", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<FlowImage>();
 
             return result;
         }

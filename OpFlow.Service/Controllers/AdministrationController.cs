@@ -47,12 +47,11 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
-        // GET api/values/5
-        [SwaggerOperation("PostImportFile")]
+        [SwaggerOperation("PutImportFile")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [HttpPost]
+        [HttpPut]
         [Route("api/administration/importFile")]
-        public async Task<HttpResponseMessage> PostImportFile(int importTypeId)
+        public async Task<HttpResponseMessage> PutImportFile(int importTypeId)
         {
             try
             {

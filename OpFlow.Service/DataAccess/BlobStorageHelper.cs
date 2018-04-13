@@ -76,9 +76,8 @@ namespace OpFlow.Service.DataAccess
             await blockBlob.UploadFromStreamAsync(memStream);
         }
 
-        public static async Task DeleteBlob(int providerId, int cardId, int flowId, int stepId, int roleId, string filename)
+        public static async Task DeleteBlob(string folder, string filename)
         {
-            var folder = Folder(providerId, cardId, flowId, stepId, roleId);
             var filepath = Path.Combine(folder, filename);
 
             try

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
+using OpFlow.Data.Debrief;
 using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
@@ -27,6 +28,154 @@ namespace OpFlow.Service.Controllers
             return flow == null ? 
                 Request.CreateResponse(HttpStatusCode.NotFound) : 
                 Request.CreateResponse(HttpStatusCode.OK, flow);
+        }
+
+        // POST api/values
+        [SwaggerOperation("NewSmartPhrase")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/smartPhrase", Name = "z_NewSmartPhrase")]
+        [Route("api/flow/smartPhrase", Name = "NewSmartPhrase")]
+        [HttpPut]
+        public async Task<IHttpActionResult> NewSmartPhrase([FromBody]SmartPhrasePost smartPhrase)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.NewSmartPhrase(smartPhrase.Phrase, smartPhrase.CategoryID, smartPhrase.StepID, smartPhrase.RoleID,
+                user.UserID, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("EditSmartPhrase")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/surgery/smartPhrase", Name = "z_EditSmartPhrase")]
+        [Route("api/flow/smartPhrase", Name = "EditSmartPhrase")]
+        [HttpPost]
+        public async Task<IHttpActionResult> EditSmartPhrase(int smartPhraseId, [FromBody]SmartPhrasePost smartPhrase)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.EditSmartPhrase(smartPhraseId, smartPhrase.Phrase, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("DeleteSmartPhrase")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/surgery/smartPhrase", Name = "z_DeleteSmartPhrase")]
+        [Route("api/flow/smartPhrase", Name = "DeleteSmartPhrase")]
+        [HttpDelete]
+        public async Task<IHttpActionResult> DeleteSmartPhrase(int smartPhraseId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.DeleteSmartPhrase(smartPhraseId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("NewSurgeonNote")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/surgeonNote", Name = "z_NewSurgeonNote")]
+        [Route("api/flow/surgeonNote", Name = "NewSurgeonNote")]
+        [HttpPut]
+        public async Task<IHttpActionResult> NewSurgeonNote([FromBody]SurgeonNotePost smartPhrase)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.NewSurgeonNote(smartPhrase.Phrase, smartPhrase.FlowID, smartPhrase.StepID, smartPhrase.RoleID,
+                user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("DeleteSurgeonNote")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/surgery/surgeonNote", Name = "z_DeleteSurgeonNote")]
+        [Route("api/flow/surgeonNote", Name = "DeleteSurgeonNote")]
+        [HttpDelete]
+        public async Task<IHttpActionResult> DeleteSurgeonNote(int surgeonNoteId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.DeleteSurgeonNote(surgeonNoteId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("NewFlowImage")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/flow/flowImage", Name = "NewFlowImage")]
+        [HttpPut]
+        [AllowAnonymous]
+        public async Task<IHttpActionResult> NewFlowImage(int flowId, int stepId, int roleId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var provider = new MultipartMemoryStreamProvider();
+            await Request.Content.ReadAsMultipartAsync(provider);
+
+            var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
+
+            var flowImageId = DataAccess.SqlHelper.NewFlowImage(flowId, stepId, roleId,
+                user.ProviderID, user.LocationID);
+
+            var folder = DataAccess.BlobStorageHelper.Folder(flowId, 0, 0, 0, 0);
+            await DataAccess.BlobStorageHelper.PutBlobBytes(folder, flowImageId.ToString(), fileContents);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("EditFlowImage")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/flow/flowImage", Name = "EditFlowImage")]
+        [HttpPost]
+        public async Task<IHttpActionResult> EditFlowImage(int flowImageId, [FromBody]FlowImagePost flowImage)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.EditFlowImage(flowImageId, flowImage.StepID, flowImage.RoleID, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("DeleteFlowImage")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/flow/flowImage", Name = "DeleteFlowImage")]
+        [HttpDelete]
+        public async Task<IHttpActionResult> DeleteFlowImage(int flowImageId, int flowId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.DeleteFlowImage(flowImageId, user.ProviderID, user.LocationID);
+
+            var folder = DataAccess.BlobStorageHelper.Folder(flowId, 0, 0, 0, 0);
+            await DataAccess.BlobStorageHelper.DeleteBlob(folder, flowImageId.ToString());
+
+            return Ok();
+        }
+
+
+        // POST api/values
+        [SwaggerOperation("AddFlowFeedback")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/flowFeedback", Name = "z_AddFlowFeedback")]
+        [Route("api/flow/flowFeedback", Name = "AddFlowFeedback")]
+        [HttpPost]
+        public async Task<IHttpActionResult> AddFlowFeedback(int flowId, [FromBody]FlowFeedbackPost flowFeedback)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AddFlowFeedback(flowId, flowFeedback.Feedback, user.UserID, user.ProviderID, user.LocationID);
+
+            return Ok();
         }
 
         // GET api/values/5

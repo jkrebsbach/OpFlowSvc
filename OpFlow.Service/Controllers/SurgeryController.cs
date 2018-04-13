@@ -235,15 +235,19 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetDebriefScreen")]
         [Route("api/surgery/debriefScreen")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(DebriefResult))]
-        public HttpResponseMessage GetDebriefScreen(int flowId)
+        public HttpResponseMessage GetDebriefScreen(int flowId, int? surgeryId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
             var categories = DataAccess.SqlHelper.GetSmartPhraseCategories(user.ProviderID, user.LocationID);
-            var flowPhrases = DataAccess.SqlHelper.GetFlowPhrases(user.ProviderID, user.LocationID, flowId);
+            var flowPhrases = DataAccess.SqlHelper.GetFlowPhrases(flowId, user.ProviderID, user.LocationID);
             var flowFeedback = DataAccess.SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
             var surgeonNotes = DataAccess.SqlHelper.GetSurgeonNotes(flowId, user.ProviderID, user.LocationID);
             var flowSteps = DataAccess.SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
+            var messages =
+                DataAccess.SqlHelper.GetMessaging(user.UserID, surgeryId, null, null, user.ProviderID, user.LocationID);
+
+            var flowImages = DataAccess.SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
 
             foreach (var flowPhrase in flowPhrases)
             {
@@ -257,97 +261,12 @@ namespace OpFlow.Service.Controllers
                 Categories = categories,
                 FlowFeedback = flowFeedback,
                 SurgeonNotes = surgeonNotes,
-                FlowSteps = flowSteps
+                FlowSteps = flowSteps,
+                Messages = messages,
+                FlowImages = flowImages
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
-        }
-
-        // POST api/values
-        [SwaggerOperation("NewSmartPhrase")]
-        [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/surgery/smartPhrase", Name = "NewSmartPhrase")]
-        [HttpPut]
-        public async Task<IHttpActionResult> NewSmartPhrase([FromBody]SmartPhrasePost smartPhrase)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            DataAccess.SqlHelper.NewSmartPhrase(smartPhrase.Phrase, smartPhrase.CategoryID, smartPhrase.StepID, smartPhrase.RoleID,
-                user.UserID, user.ProviderID, user.LocationID);
-
-            return Ok();
-        }
-
-        // POST api/values
-        [SwaggerOperation("EditSmartPhrase")]
-        [SwaggerResponse(HttpStatusCode.OK)]
-        [Route("api/surgery/smartPhrase", Name = "EditSmartPhrase")]
-        [HttpPost]
-        public async Task<IHttpActionResult> EditSmartPhrase(int smartPhraseId, [FromBody]SmartPhrasePost smartPhrase)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            DataAccess.SqlHelper.EditSmartPhrase(smartPhraseId, smartPhrase.Phrase, user.ProviderID, user.LocationID);
-
-            return Ok();
-        }
-
-        // POST api/values
-        [SwaggerOperation("DeleteSmartPhrase")]
-        [SwaggerResponse(HttpStatusCode.OK)]
-        [Route("api/surgery/smartPhrase", Name = "DeleteSmartPhrase")]
-        [HttpDelete]
-        public async Task<IHttpActionResult> DeleteSmartPhrase(int smartPhraseId)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            DataAccess.SqlHelper.DeleteSmartPhrase(smartPhraseId, user.ProviderID, user.LocationID);
-
-            return Ok();
-        }
-
-        // POST api/values
-        [SwaggerOperation("NewSurgeonNote")]
-        [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/surgery/surgeonNote", Name = "NewSurgeonNote")]
-        [HttpPut]
-        public async Task<IHttpActionResult> NewSurgeonNote([FromBody]SurgeonNotePost smartPhrase)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            DataAccess.SqlHelper.NewSurgeonNote(smartPhrase.Phrase, smartPhrase.FlowID, smartPhrase.StepID, smartPhrase.RoleID,
-                user.ProviderID, user.LocationID);
-
-            return Ok();
-        }
-
-        // POST api/values
-        [SwaggerOperation("DeleteSurgeonNote")]
-        [SwaggerResponse(HttpStatusCode.OK)]
-        [Route("api/surgery/surgeonNote", Name = "DeleteSurgeonNote")]
-        [HttpDelete]
-        public async Task<IHttpActionResult> DeleteSurgeonNote(int surgeonNoteId)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            DataAccess.SqlHelper.DeleteSurgeonNote(surgeonNoteId, user.ProviderID, user.LocationID);
-
-            return Ok();
-        }
-
-
-        // POST api/values
-        [SwaggerOperation("AddFlowFeedback")]
-        [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/surgery/flowFeedback", Name = "AddFlowFeedback")]
-        [HttpPost]
-        public async Task<IHttpActionResult> AddFlowFeedback(int flowId, [FromBody]FlowFeedbackPost flowFeedback)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            DataAccess.SqlHelper.AddFlowFeedback(flowId, flowFeedback.Feedback, user.UserID, user.ProviderID, user.LocationID);
-
-            return Ok();
         }
 
         // POST api/values
