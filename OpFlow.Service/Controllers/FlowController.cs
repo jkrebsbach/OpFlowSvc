@@ -270,12 +270,14 @@ namespace OpFlow.Service.Controllers
             var instructions = DataAccess.SqlHelper.GetFlowInstructions(flowId, user.ProviderID, user.LocationID);
             var content = DataAccess.SqlHelper.GetFlowContent(flowId, 1, user.ProviderID, user.LocationID);
             var timings = DataAccess.SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
+            var images = DataAccess.SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
 
             foreach (var timing in timings)
             {
                 timing.RoleInstructions = instructions.FirstOrDefault(i => i.StepID == timing.StepID)?.FlowRoleInstructions;
-
                 timing.StepNotifications = notifications.Where(n => n.StepID == timing.StepID).ToList();
+
+                timing.FlowImages = images.Where(n => n.FlowStepID == timing.StepID).ToList();
             }
 
             var flowDetail = new FlowDetail()

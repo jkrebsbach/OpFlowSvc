@@ -16,6 +16,7 @@ namespace OpFlow.Data
 
         public List<FlowRoleInstruction> RoleInstructions { get; set; }
         public List<FlowNotification> StepNotifications { get; set; }
+        public List<FlowImage> FlowImages { get; set; }
 
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
