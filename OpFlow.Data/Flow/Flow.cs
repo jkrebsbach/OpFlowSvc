@@ -14,11 +14,15 @@ namespace OpFlow.Data
         public int SpecialtyID { get; set; }
         public string FlowDescription { get; set; }
         public string OwnerLastName { get; set; }
+        public string OwnerFirstName { get; set; }
         public int TotalMinutes { get; set; }
         public int AvgMinutes { get; set; }
         public int TimesUsed { get; set; }
-        public decimal Cost { get; set; }
+        public decimal TimeCost { get; set; }
+        public decimal CardCost { get; set; }
         public decimal LocationCost { get; set; }
+
+        public decimal TotalCost => TimeCost + CardCost;
 
         public int GetID()
         {
@@ -29,6 +33,12 @@ namespace OpFlow.Data
         {
             return FlowDescription;
         }
+    }
+
+    public class SurgeryFlow : Flow
+    {
+        public bool CurrentFlow { get; set; }
+        public decimal CurrentCostDelta { get; set; }
     }
 
     public class FlowDetail

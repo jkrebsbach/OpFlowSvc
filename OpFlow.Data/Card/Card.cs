@@ -27,7 +27,6 @@ namespace OpFlow.Data
         public string FlowDescription { get; set; }
         public string CardDescription { get; set; }
         public decimal Cost { get; set; }
-        public decimal AvgMinutes { get; set; }
 
 
         public int GetID()

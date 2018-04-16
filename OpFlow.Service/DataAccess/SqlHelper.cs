@@ -335,6 +335,27 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static List<SurgeryFlow> GetSurgeryFlowList(int surgeryId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetSurgeryFlowList", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<SurgeryFlow>();
+
+            var currentCard = result.FirstOrDefault(r => r.CurrentFlow);
+            if (currentCard != null)
+            {
+                result.ForEach(r => r.CurrentCostDelta = (currentCard.TimeCost - r.TimeCost));
+            }
+
+            return result;
+        }
+
         public static List<Card> GetCardCountAvgClose(int cardId, int providerId, int locationId)
         {
             var parameters = new[]
