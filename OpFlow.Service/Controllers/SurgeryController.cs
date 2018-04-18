@@ -248,13 +248,15 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetDebriefScreen")]
         [Route("api/surgery/debriefScreen")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(DebriefResult))]
-        public HttpResponseMessage GetDebriefScreen(int flowId, int? surgeryId = null)
+        public HttpResponseMessage GetDebriefScreen(int flowId, int surgeryId)
         {
             var user = CacheUtil.GetUserSecurity();
 
             var flow = DataAccess.SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
             var categories = DataAccess.SqlHelper.GetSmartPhraseCategories(user.ProviderID, user.LocationID);
             var flowPhrases = DataAccess.SqlHelper.GetFlowPhrases(flowId, user.ProviderID, user.LocationID);
+            var surgeryPhrases = DataAccess.SqlHelper.GetSurgeryPhrases(surgeryId, user.ProviderID, user.LocationID);
+            var smartPhrases = DataAccess.SqlHelper.GetSmartPhrases(user.UserID, user.ProviderID, user.LocationID);
             var flowFeedback = DataAccess.SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
             var surgeonNotes = DataAccess.SqlHelper.GetSurgeonNotes(flowId, user.ProviderID, user.LocationID);
             var flowSteps = DataAccess.SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
@@ -263,17 +265,13 @@ namespace OpFlow.Service.Controllers
 
             var flowImages = DataAccess.SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
 
-            foreach (var flowPhrase in flowPhrases)
-            {
-                var category = categories.FirstOrDefault(c => c.CategoryID == flowPhrase.CategoryID);
-
-                category?.FlowPhrases.Add(flowPhrase);
-            }
-
             var result = new DebriefResult()
             {
                 Flow = flow,
-                Categories = categories,
+                PhraseCategories = categories,
+                FlowPhrases = flowPhrases,
+                SurgeryPhrases = surgeryPhrases,
+                SmartPhrases = smartPhrases,
                 FlowFeedback = flowFeedback,
                 SurgeonNotes = surgeonNotes,
                 FlowSteps = flowSteps,

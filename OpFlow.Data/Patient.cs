@@ -15,6 +15,21 @@ namespace OpFlow.Data
         public string Gender { get; set; }
         public decimal BMI { get; set; }
 
+        public int PatientAge
+        {
+            get
+            {
+                var ageTicks = DateTime.Now.Subtract(BirthDate).Ticks;
+
+                if (ageTicks <= 0)
+                    return 0;
+
+                var years = new DateTime(ageTicks).Year - 1;
+
+                return years;
+            }
+        }
+
         public List<PatientDemo> DemoData { get; set; }
 
         public Patient()

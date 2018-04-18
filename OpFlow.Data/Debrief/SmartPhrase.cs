@@ -10,5 +10,6 @@ namespace OpFlow.Data.Debrief
         public int SpecialtyID { get; set; }
         public int CategoryID { get; set; }
         public string Phrase { get; set; }
+        public string CategoryName { get; set; }
     }
 }

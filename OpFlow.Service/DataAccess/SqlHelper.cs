@@ -672,72 +672,73 @@ namespace OpFlow.Service.DataAccess
 
         public static int UpdateDebrief(int flowId, List<FlowPhrase> revisedPhrases, int providerId, int locationId)
         {
-            var currentPhrases = GetFlowPhrases(flowId, providerId, locationId);
+            throw new NotImplementedException("");
+            //var currentPhrases = GetFlowPhrases(flowId, providerId, locationId);
 
-            foreach (var revisedPhrase in revisedPhrases)
-            {
-                SqlParameter[] dsParameters;
+            //foreach (var revisedPhrase in revisedPhrases)
+            //{
+            //    SqlParameter[] dsParameters;
 
-                if (revisedPhrase.PhraseComment == string.Empty)
-                    revisedPhrase.PhraseComment = null;
+            //    if (revisedPhrase.PhraseComment == string.Empty)
+            //        revisedPhrase.PhraseComment = null;
 
-                var currentPhrase = currentPhrases.First(c => c.SmartPhraseID == revisedPhrase.SmartPhraseID);
+            //    var currentPhrase = currentPhrases.First(c => c.SmartPhraseID == revisedPhrase.SmartPhraseID);
 
-                if (revisedPhrase.PhraseActive)
-                {
-                    if (revisedPhrase.PhraseActive && !currentPhrase.PhraseActive)
-                    {
-                        // insert phrase
-                        dsParameters = new[]
-                        {
-                            new SqlParameter("provider_id", providerId),
-                            new SqlParameter("location_id", locationId),
-                            new SqlParameter("flow_id", flowId),
-                            new SqlParameter("step_id", revisedPhrase.FlowStepID),
-                            new SqlParameter("role_id", revisedPhrase.RoleID),
-                            new SqlParameter("smart_phrase_id", revisedPhrase.SmartPhraseID),
-                            new SqlParameter("comment", revisedPhrase.PhraseComment ?? (object)DBNull.Value)
-                        };
-                        ExecuteNonQuery("InsertFlowPhrase", dsParameters);
-                    }
-                    else if (revisedPhrase.FlowStepID != currentPhrase.FlowStepID ||
-                        revisedPhrase.RoleID != currentPhrase.RoleID ||
-                        revisedPhrase.PhraseComment != currentPhrase.PhraseComment)
-                    {
-                        // Update step & role if needed
-                        dsParameters = new[]
-                        {
-                            new SqlParameter("provider_id", providerId),
-                            new SqlParameter("location_id", locationId),
-                            new SqlParameter("flow_id", flowId),
-                            new SqlParameter("step_id", revisedPhrase.FlowStepID),
-                            new SqlParameter("role_id", revisedPhrase.RoleID),
-                            new SqlParameter("smart_phrase_id", revisedPhrase.SmartPhraseID),
-                            new SqlParameter("comment", revisedPhrase.PhraseComment ?? (object)DBNull.Value)
-                        };
-                        ExecuteNonQuery("UpdateFlowPhrase", dsParameters);
-                    }
-                }
-                else
-                {
-                    if (currentPhrase.PhraseActive)
-                    {
-                        // delete phrase
+            //    if (revisedPhrase.PhraseActive)
+            //    {
+            //        if (revisedPhrase.PhraseActive && !currentPhrase.PhraseActive)
+            //        {
+            //            // insert phrase
+            //            dsParameters = new[]
+            //            {
+            //                new SqlParameter("provider_id", providerId),
+            //                new SqlParameter("location_id", locationId),
+            //                new SqlParameter("flow_id", flowId),
+            //                new SqlParameter("step_id", revisedPhrase.FlowStepID),
+            //                new SqlParameter("role_id", revisedPhrase.RoleID),
+            //                new SqlParameter("smart_phrase_id", revisedPhrase.SmartPhraseID),
+            //                new SqlParameter("comment", revisedPhrase.PhraseComment ?? (object)DBNull.Value)
+            //            };
+            //            ExecuteNonQuery("InsertFlowPhrase", dsParameters);
+            //        }
+            //        else if (revisedPhrase.FlowStepID != currentPhrase.FlowStepID ||
+            //            revisedPhrase.RoleID != currentPhrase.RoleID ||
+            //            revisedPhrase.PhraseComment != currentPhrase.PhraseComment)
+            //        {
+            //            // Update step & role if needed
+            //            dsParameters = new[]
+            //            {
+            //                new SqlParameter("provider_id", providerId),
+            //                new SqlParameter("location_id", locationId),
+            //                new SqlParameter("flow_id", flowId),
+            //                new SqlParameter("step_id", revisedPhrase.FlowStepID),
+            //                new SqlParameter("role_id", revisedPhrase.RoleID),
+            //                new SqlParameter("smart_phrase_id", revisedPhrase.SmartPhraseID),
+            //                new SqlParameter("comment", revisedPhrase.PhraseComment ?? (object)DBNull.Value)
+            //            };
+            //            ExecuteNonQuery("UpdateFlowPhrase", dsParameters);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (currentPhrase.PhraseActive)
+            //        {
+            //            // delete phrase
 
-                        dsParameters = new[]
-                        {
-                            new SqlParameter("provider_id", providerId),
-                            new SqlParameter("location_id", locationId),
-                            new SqlParameter("flow_id", flowId),
-                            new SqlParameter("smart_phrase_id", currentPhrase.SmartPhraseID)
-                        };
-                        ExecuteNonQuery("DeleteFlowPhrase", dsParameters);
-                    }
-                }
+            //            dsParameters = new[]
+            //            {
+            //                new SqlParameter("provider_id", providerId),
+            //                new SqlParameter("location_id", locationId),
+            //                new SqlParameter("flow_id", flowId),
+            //                new SqlParameter("smart_phrase_id", currentPhrase.SmartPhraseID)
+            //            };
+            //            ExecuteNonQuery("DeleteFlowPhrase", dsParameters);
+            //        }
+            //    }
                 
-            }
+            //}
 
-            return 0;
+            //return 0;
         }
 
         public static int UpdateCaseNotes(int surgeryId, string caseNotes, int providerId, int locationId)
@@ -1120,12 +1121,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<SmartPhrase> GetSmartPhrases(int providerId, int locationId)
+        public static List<SmartPhrase> GetSmartPhrases(int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
+                new SqlParameter("user_id", userId),
                 new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
+                new SqlParameter("location_id", locationId)
             };
             var dsSchedules = ExecuteCommand("GetPhrases", dsParameters);
 
@@ -1159,6 +1161,21 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetFlowPhrases", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<FlowPhrase>();
+
+            return result;
+        }
+
+        public static List<SurgeryPhrase> GetSurgeryPhrases(int surgeryId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetSurgeryPhrases", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<SurgeryPhrase>();
 
             return result;
         }
