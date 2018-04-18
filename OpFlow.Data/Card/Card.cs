@@ -54,4 +54,19 @@ namespace OpFlow.Data
         public int OpenQty { get; set; }
         public int HoldQty { get; set; }
     }
+
+    public class CardPost
+    {
+        public string Description { get; set; }
+        public int OwnerUserID { get; set; }
+        public int? ProcedureID { get; set; }
+        public int? BundleID { get; set; }
+        public string BundleFlag { get; set; }
+        public string DefaultFlag { get; set; }
+        public string SpecialtyDefaultFlag { get; set; }
+        public int? TemplateFlowID { get; set; }
+        public int? TemplateRoomID { get; set; }
+        public int? SecondSurgeonUserID { get; set; }
+        public int? ThirdSurgeonUserID { get; set; }
+    }
 }

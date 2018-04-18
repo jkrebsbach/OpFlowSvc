@@ -260,25 +260,44 @@ namespace OpFlow.Service.Controllers
 
         // POST api/values
         [SwaggerOperation("Create")]
-        [SwaggerResponse(HttpStatusCode.Created)]
-        public void Post([FromBody]string value)
+        [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
+        public async Task<HttpResponseMessage> Post([FromBody]CardPost value)
         {
+            var user = CacheUtil.GetUserSecurity();
+
+            var cardId = DataAccess.SqlHelper.InsertCard(value.Description, value.OwnerUserID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomID,
+                value.BundleID, value.BundleFlag, value.DefaultFlag, value.SpecialtyDefaultFlag, value.SecondSurgeonUserID, value.ThirdSurgeonUserID,
+                user.UserID, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.Created, cardId);
         }
 
         // PUT api/values/5
         [SwaggerOperation("Update")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public void Put(int id, [FromBody]string value)
+        public async Task<IHttpActionResult> Put(int id, [FromBody]CardPost value)
         {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.UpdateCard(id, value.Description, value.OwnerUserID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomID,
+                value.BundleID, value.BundleFlag, value.DefaultFlag, value.SpecialtyDefaultFlag, value.SecondSurgeonUserID, value.ThirdSurgeonUserID,
+                user.UserID, user.ProviderID, user.LocationID);
+
+            return Ok();
         }
 
         // DELETE api/values/5
         [SwaggerOperation("Delete")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public void Delete(int id)
+        public async Task<IHttpActionResult> Delete(int id)
         {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.DeleteCard(id, user.ProviderID, user.LocationID);
+
+            return Ok();
         }
     }
 }

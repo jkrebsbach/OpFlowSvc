@@ -812,6 +812,71 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("AssignRoomSetupToCard", dsParameters);
         }
 
+        public static int InsertCard(string description, int ownerUserId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
+            string defaultFlag, string specialtyDefaultFlag, int? secondSurgeonUserId, int? thirdSurgeonUserId, int userId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("description", description ?? (object)DBNull.Value),
+                new SqlParameter("owner_user_id", ownerUserId),
+                new SqlParameter("user_id", userId),
+                new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
+                new SqlParameter("template_flow_id", templateFlowId ?? (object)DBNull.Value),
+                new SqlParameter("template_room_id", templateRoomId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", DBNull.Value),
+                new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
+                new SqlParameter("bundle_flag", bundleFlag ?? (object)DBNull.Value),
+                new SqlParameter("default_flag", defaultFlag ?? (object)DBNull.Value),
+                new SqlParameter("specialty_default_flag", specialtyDefaultFlag ?? (object)DBNull.Value),
+                new SqlParameter("second_surgeon_user_id", secondSurgeonUserId ?? (object)DBNull.Value),
+                new SqlParameter("second_surgeon_last_name", DBNull.Value),
+                new SqlParameter("third_surgeon_user_id", thirdSurgeonUserId ?? (object)DBNull.Value),
+                new SqlParameter("third_surgeon_last_name", DBNull.Value)
+            };
+            var insert = ExecuteCommand("NewCard", dsParameters);
+            var result = insert.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.First().Identifier;
+        }
+
+        public static int UpdateCard(int cardId, string description, int ownerUserId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
+            string defaultFlag, string specialtyDefaultFlag, int? secondSurgeonUserId, int? thirdSurgeonUserId, int userId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("description", description ?? (object)DBNull.Value),
+                new SqlParameter("owner_user_id", ownerUserId),
+                new SqlParameter("user_id", userId),
+                new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
+                new SqlParameter("template_flow_id", templateFlowId ?? (object)DBNull.Value),
+                new SqlParameter("template_room_id", templateRoomId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", DBNull.Value),
+                new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
+                new SqlParameter("bundle_flag", bundleFlag ?? (object)DBNull.Value),
+                new SqlParameter("default_flag", defaultFlag ?? (object)DBNull.Value),
+                new SqlParameter("specialty_default_flag", specialtyDefaultFlag ?? (object)DBNull.Value),
+                new SqlParameter("second_surgeon_user_id", secondSurgeonUserId ?? (object)DBNull.Value),
+                new SqlParameter("second_surgeon_last_name", DBNull.Value),
+                new SqlParameter("third_surgeon_user_id", thirdSurgeonUserId ?? (object)DBNull.Value),
+                new SqlParameter("third_surgeon_last_name", DBNull.Value)
+            };
+            return ExecuteNonQuery("UpdateCard", dsParameters);
+        }
+
+        public static int DeleteCard(int cardId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("card_id", cardId)
+            };
+            return ExecuteNonQuery("DeleteCard", dsParameters);
+        }
+
         public static int UpdateCardQuantity(int cardId, CardQuantityEdit quantity)
         {
             var dsParameters = new[]
@@ -1948,6 +2013,51 @@ namespace OpFlow.Service.DataAccess
             var result = dsSchedules.Tables[0].DataTableToList<FlowFeedback>();
 
             return result;
+        }
+
+        public static int NewFlow(int cardId, int roomSetupId, string description, int userId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("user_id", userId),
+                new SqlParameter("room_setup_id", roomSetupId),
+                new SqlParameter("description", description)
+            };
+            var dsSchedules = ExecuteCommand("NewFlow", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<InsertionResult>().First().Identifier;
+
+            return result;
+        }
+
+        public static int UpdateFlow(int flowId, int cardId, int roomSetupId, string description, int userId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("user_id", userId),
+                new SqlParameter("room_setup_id", roomSetupId),
+                new SqlParameter("description", description)
+            };
+
+            return ExecuteNonQuery("UpdateFlow", parameters);
+        }
+
+        public static int DeleteFlow(int flowId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            return ExecuteNonQuery("DeleteFlow", parameters);
         }
 
         public static void InsertStagingData(int providerId, int locationId, int? secureId, IImportData sourceData)

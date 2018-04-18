@@ -51,4 +51,10 @@ namespace OpFlow.Data
         public List<FlowContent> Content { get; set; }
     }
 
+    public class FlowPost
+    {
+        public int CardID { get; set; }
+        public int RoomSetupID { get; set; }
+        public string Description { get; set; }
+    }
 }

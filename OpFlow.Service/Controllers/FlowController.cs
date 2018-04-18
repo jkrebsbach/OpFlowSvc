@@ -33,7 +33,6 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("NewSmartPhrase")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/surgery/smartPhrase", Name = "z_NewSmartPhrase")]
         [Route("api/flow/smartPhrase", Name = "NewSmartPhrase")]
         [HttpPut]
         public async Task<IHttpActionResult> NewSmartPhrase([FromBody]SmartPhrasePost smartPhrase)
@@ -49,7 +48,6 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("EditSmartPhrase")]
         [SwaggerResponse(HttpStatusCode.OK)]
-        [Route("api/surgery/smartPhrase", Name = "z_EditSmartPhrase")]
         [Route("api/flow/smartPhrase", Name = "EditSmartPhrase")]
         [HttpPost]
         public async Task<IHttpActionResult> EditSmartPhrase(int smartPhraseId, [FromBody]SmartPhrasePost smartPhrase)
@@ -64,7 +62,6 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("DeleteSmartPhrase")]
         [SwaggerResponse(HttpStatusCode.OK)]
-        [Route("api/surgery/smartPhrase", Name = "z_DeleteSmartPhrase")]
         [Route("api/flow/smartPhrase", Name = "DeleteSmartPhrase")]
         [HttpDelete]
         public async Task<IHttpActionResult> DeleteSmartPhrase(int smartPhraseId)
@@ -79,7 +76,6 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("NewSurgeonNote")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/surgery/surgeonNote", Name = "z_NewSurgeonNote")]
         [Route("api/flow/surgeonNote", Name = "NewSurgeonNote")]
         [HttpPut]
         public async Task<IHttpActionResult> NewSurgeonNote([FromBody]SurgeonNotePost smartPhrase)
@@ -95,7 +91,6 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("DeleteSurgeonNote")]
         [SwaggerResponse(HttpStatusCode.OK)]
-        [Route("api/surgery/surgeonNote", Name = "z_DeleteSurgeonNote")]
         [Route("api/flow/surgeonNote", Name = "DeleteSurgeonNote")]
         [HttpDelete]
         public async Task<IHttpActionResult> DeleteSurgeonNote(int surgeonNoteId)
@@ -166,7 +161,6 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("AddFlowFeedback")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/surgery/flowFeedback", Name = "z_AddFlowFeedback")]
         [Route("api/flow/flowFeedback", Name = "AddFlowFeedback")]
         [HttpPost]
         public async Task<IHttpActionResult> AddFlowFeedback(int flowId, [FromBody]FlowFeedbackPost flowFeedback)
@@ -330,6 +324,44 @@ namespace OpFlow.Service.Controllers
             var result = DataAccess.SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // POST api/values
+        [SwaggerOperation("Create")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        public HttpResponseMessage Post([FromBody]FlowPost value)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.NewFlow(value.CardID, value.RoomSetupID, value.Description, user.UserID, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // PUT api/values/5
+        [SwaggerOperation("Update")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        public IHttpActionResult Put(int id, [FromBody]FlowPost value)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.UpdateFlow(id, value.CardID, value.RoomSetupID, value.Description, user.UserID, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // DELETE api/values/5
+        [SwaggerOperation("Delete")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        public IHttpActionResult Delete(int id)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.DeleteFlow(id, user.ProviderID, user.LocationID);
+
+            return Ok();
         }
     }
 }
