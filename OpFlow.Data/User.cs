@@ -9,8 +9,36 @@ namespace OpFlow.Data
     {
         public int UserID { get; set; }
         public RoleEnum RoleID { get; set; }
+        public int SpecialtyID { get; set; }
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
+        public string Initials { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string Title { get; set; }
+        public string CellPhone { get; set; }
+        public string Specialty { get; set; }
+        public string RoleName { get; set; }
+    }
+
+    public class UserPost
+    {
+        public RoleEnum RoleID { get; set; }
+        public int SpecialtyID { get; set; }
+        public string Initials { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string Title { get; set; }
+        public string CellPhone { get; set; }
+        public string Password { get; set; }
+    }
+
+    public class UserEdit
+    {
+        public RoleEnum RoleID { get; set; }
+        public int SpecialtyID { get; set; }
         public string Initials { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

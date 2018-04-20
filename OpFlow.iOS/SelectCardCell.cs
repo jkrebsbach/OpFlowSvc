@@ -19,7 +19,7 @@ namespace OpFlow.iOS
                 return;
 
             lblCardDetail.Text = $"{card.CardDescription} - {card.OwnerLastName}";
-            lblCardSummary.Text = $"Avg Time:{card.AvgMinutes} Cost: ${card.Cost} Used:{card.TimesUsed}";
+            lblCardSummary.Text = $"Avg Time:{card.Cost} Cost: ${card.Cost} Used:{card.TimesUsed}";
         }
     }
 }

@@ -8,7 +8,11 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Services.Protocols;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using OpFlow.Data;
+using OpFlow.Service.App_Start;
+using OpFlow.Service.Models;
 
 namespace OpFlow.Service.Controllers
 {
@@ -98,20 +102,107 @@ namespace OpFlow.Service.Controllers
             return Ok();
         }
 
+        // POST api/Account/SetPassword
+        [Route("api/User/SetPassword")]
+        public async Task<IHttpActionResult> ResetPassword(int userId, [FromBody]SetPasswordBindingModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userSecurity = CacheUtil.GetUserSecurity();
+            var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+            var applicationUser =
+                DataAccess.SqlHelper.GetUser(userSecurity.ProviderID, userSecurity.LocationID, null, userId);
+
+            var authenticationUser = await userManager.FindByEmailAsync(applicationUser.Email);
+
+            var code = await userManager.GeneratePasswordResetTokenAsync(authenticationUser.Id);
+
+            var result =
+                await userManager.ResetPasswordAsync(authenticationUser.Id, code, model.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
+        // PUT api/values/5
+        [SwaggerOperation("Update")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        public async Task<IHttpActionResult> Post([FromBody]UserPost model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userSecurity = CacheUtil.GetUserSecurity();
+            var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+            var authenticationUser = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+
+            var result = await userManager.CreateAsync(authenticationUser, model.Password);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest();
+            }
+
+            var applicationUser = DataAccess.SqlHelper.CreateUser((int)model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
+                model.Email, model.CellPhone, model.Initials, model.Title, userSecurity.ProviderID, userSecurity.LocationID);
+
+            return Ok();
+        }
+
         // PUT api/values/5
         [SwaggerOperation("Update")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public void Put(int id, [FromBody]string value)
+        public async Task<IHttpActionResult> Put(int id, [FromBody]UserEdit model)
         {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userSecurity = CacheUtil.GetUserSecurity();
+
+            var applicationUser = DataAccess.SqlHelper.UpdateUser(id, (int)model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
+                model.Email, model.CellPhone, model.Initials, model.Title, userSecurity.ProviderID, userSecurity.LocationID);
+
+            return Ok();
         }
 
         // DELETE api/values/5
         [SwaggerOperation("Delete")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public void Delete(int id)
+        public async Task<IHttpActionResult> Delete(int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userSecurity = CacheUtil.GetUserSecurity();
+            var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+            var applicationUser =
+                DataAccess.SqlHelper.GetUser(userSecurity.ProviderID, userSecurity.LocationID, null, id);
+
+            var authenticationUser = await userManager.FindByEmailAsync(applicationUser.Email);
+
+            var authResult = await userManager.RemovePasswordAsync(User.Identity.GetUserId());
+            var applicationDeletion = DataAccess.SqlHelper.DeleteUser(id, userSecurity.ProviderID, userSecurity.LocationID);
+
+            return Ok();
         }
     }
 }

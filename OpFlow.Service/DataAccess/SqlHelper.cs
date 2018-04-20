@@ -479,7 +479,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("role_id", roleId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
-                new SqlParameter("search", (object)searchString ?? DBNull.Value),
+                new SqlParameter("search", searchString ?? (object)DBNull.Value),
             };
             var dsSchedules = ExecuteCommand("SearchUsers", dsParameters);
 
@@ -552,6 +552,60 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("active_flag", active)
             };
             return ExecuteNonQuery("AssignUserToCase", dsParameters);
+        }
+
+        public static int CreateUser(int roleId, int specialtyId, string firstName, string lastName,
+            string email, string cellPhone, string initials, string title, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("role_id", roleId),
+                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("first_name", firstName),
+                new SqlParameter("last_name", lastName),
+                new SqlParameter("email", email),
+                new SqlParameter("cell_phone", cellPhone),
+                new SqlParameter("initials", initials),
+                new SqlParameter("title", title)
+            };
+            var dsResult = ExecuteCommand("CreateUser", dsParameters);
+
+            var result = dsResult.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.FirstOrDefault()?.Identifier ?? -1;
+        }
+
+        public static int UpdateUser(int userId, int roleId, int specialtyId, string firstName, string lastName,
+            string email, string cellPhone, string initials, string title, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("user_id", userId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("role_id", roleId),
+                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("first_name", firstName),
+                new SqlParameter("last_name", lastName),
+                new SqlParameter("email", email),
+                new SqlParameter("cell_phone", cellPhone),
+                new SqlParameter("initials", initials),
+                new SqlParameter("title", title)
+            };
+            return ExecuteNonQuery("UpdateUser", dsParameters);
+        }
+
+        public static int DeleteUser(int userId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("user_id", userId)
+            };
+            return ExecuteNonQuery("DeleteUser", dsParameters);
         }
 
         public static int NewSmartPhrase(string phrase, int categoryId, int stepId, int roleId, int userId, int providerId, int locationId)
