@@ -608,6 +608,18 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("DeleteUser", dsParameters);
         }
 
+        public static int AddSurgerySmartPhrase(int surgeryId, int smartPhraseId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("smart_phrase_id", smartPhraseId)
+            };
+            return ExecuteNonQuery("InsertSurgeryPhrase", dsParameters);
+        }
+
         public static int NewSmartPhrase(string phrase, int categoryId, int stepId, int roleId, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -671,7 +683,7 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("DeleteSurgeonNote", dsParameters);
         }
 
-        public static int NewFlowImage(int flowId, int stepId, int roleId, int providerId, int locationId)
+        public static int NewFlowImage(int flowId, int stepId, int roleId, string comment, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -679,7 +691,8 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("step_id", stepId),
-                new SqlParameter("role_id", roleId)
+                new SqlParameter("role_id", roleId),
+                new SqlParameter("image_comment", comment)
             };
             var insert = ExecuteCommand("InsertFlowImage", dsParameters);
             var result = insert.Tables[0].DataTableToList<InsertionResult>();
@@ -687,7 +700,7 @@ namespace OpFlow.Service.DataAccess
             return result.First().Identifier;
         }
 
-        public static int EditFlowImage(int flowImageId, int stepId, int roleId, int providerId, int locationId)
+        public static int EditFlowImage(int flowImageId, int stepId, int roleId, string comment, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -695,7 +708,8 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("flow_image_id", flowImageId),
                 new SqlParameter("flow_step_id", stepId),
-                new SqlParameter("role_id", roleId)
+                new SqlParameter("role_id", roleId),
+                new SqlParameter("image_comment", comment)
             };
             return ExecuteNonQuery("EditFlowImage", dsParameters);
         }

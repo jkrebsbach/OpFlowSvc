@@ -265,12 +265,15 @@ namespace OpFlow.Service.Controllers
 
             var flowImages = DataAccess.SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
 
+            var debriefPhrases = surgeryPhrases.Where(s => s.Status == "P").ToList();
+
             var result = new DebriefResult()
             {
                 Flow = flow,
                 PhraseCategories = categories,
                 FlowPhrases = flowPhrases,
                 SurgeryPhrases = surgeryPhrases,
+                DebriefPhrases = debriefPhrases,
                 SmartPhrases = smartPhrases,
                 FlowFeedback = flowFeedback,
                 SurgeonNotes = surgeonNotes,

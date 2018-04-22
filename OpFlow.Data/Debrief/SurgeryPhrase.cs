@@ -11,5 +11,6 @@ namespace OpFlow.Data.Debrief
         public int RoleID { get; set; }
         public int UserID { get; set; }
         public string PhraseComment { get; set; }
+        public string Status { get; set; }
     }
 }

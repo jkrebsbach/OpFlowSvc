@@ -10,6 +10,7 @@ namespace OpFlow.Data.Debrief
         public List<SmartPhraseCategory> PhraseCategories { get; set; }
         public List<FlowPhrase> FlowPhrases { get; set; }
         public List<SurgeryPhrase> SurgeryPhrases { get; set; }
+        public List<SurgeryPhrase> DebriefPhrases { get; set; }
         public List<SmartPhrase> SmartPhrases { get; set; }
         public List<FlowFeedback> FlowFeedback { get; set; }
         public List<FlowSurgeonNote> SurgeonNotes { get; set; }

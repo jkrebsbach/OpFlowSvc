@@ -102,8 +102,8 @@ namespace OpFlow.Service.Controllers
             return Ok();
         }
 
-        // POST api/Account/SetPassword
-        [Route("api/User/SetPassword")]
+        // POST api/Account/ResetPassword
+        [Route("api/User/ResetPassword")]
         public async Task<IHttpActionResult> ResetPassword(int userId, [FromBody]SetPasswordBindingModel model)
         {
             if (!ModelState.IsValid)

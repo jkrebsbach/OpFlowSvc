@@ -11,7 +11,8 @@ namespace OpFlow.Data
         public int ProviderID { get; set; }
         public int SurgeryID { get; set; }
         public int SurgeonID { get; set; }
-        public int ProcedureID { get; set; }
+        public int? ProcedureID { get; set; }
+        public int? BundleID { get; set; }
         public int SpecialtyID { get; set; }
         public int OwnerUserID { get; set; }
         public int TemplateFlowID { get; set; }

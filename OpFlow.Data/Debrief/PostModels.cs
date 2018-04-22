@@ -25,6 +25,7 @@ namespace OpFlow.Data.Debrief
         public int FlowID { get; set; }
         public int RoleID { get; set; }
         public int StepID { get; set; }
+        public string Comment { get; set; }
     }
 
     public class FlowFeedbackPost

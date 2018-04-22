@@ -31,6 +31,21 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [SwaggerOperation("AddSurgerySmartPhrase")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/flow/surgerySmartPhrase", Name = "AddSurgerySmartPhrase")]
+        [HttpPut]
+        public async Task<IHttpActionResult> AddSurgerySmartPhrase(int surgeryId, int smartPhraseId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AddSurgerySmartPhrase(surgeryId, smartPhraseId,
+                user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
         [SwaggerOperation("NewSmartPhrase")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/flow/smartPhrase", Name = "NewSmartPhrase")]
@@ -108,7 +123,7 @@ namespace OpFlow.Service.Controllers
         [Route("api/flow/flowImage", Name = "NewFlowImage")]
         [HttpPut]
         [AllowAnonymous]
-        public async Task<IHttpActionResult> NewFlowImage(int flowId, int stepId, int roleId)
+        public async Task<IHttpActionResult> NewFlowImage(int flowId, int stepId, int roleId, string comment)
         {
             var user = CacheUtil.GetUserSecurity();
 
@@ -117,7 +132,7 @@ namespace OpFlow.Service.Controllers
 
             var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
 
-            var flowImageId = DataAccess.SqlHelper.NewFlowImage(flowId, stepId, roleId,
+            var flowImageId = DataAccess.SqlHelper.NewFlowImage(flowId, stepId, roleId, comment,
                 user.ProviderID, user.LocationID);
 
             var folder = DataAccess.BlobStorageHelper.Folder(flowId, 0, 0, 0, 0);
@@ -135,7 +150,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.EditFlowImage(flowImageId, flowImage.StepID, flowImage.RoleID, user.ProviderID, user.LocationID);
+            DataAccess.SqlHelper.EditFlowImage(flowImageId, flowImage.StepID, flowImage.RoleID, flowImage.Comment, user.ProviderID, user.LocationID);
 
             return Ok();
         }
