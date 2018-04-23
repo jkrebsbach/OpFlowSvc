@@ -341,6 +341,26 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
+        // PUT api/values/5
+        [SwaggerOperation("UpdateFlowSteps")]
+        [Route("api/flow/steps")]
+        [HttpPut]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        public IHttpActionResult UpdateFlowSteps(int flowId, [FromBody]List<FlowStepPost> value)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.DeleteFlowStep(flowId, user.ProviderID, user.LocationID);
+
+            foreach (var flowStep in value)
+            {
+                var result = DataAccess.SqlHelper.InsertFlowStep(flowId, flowStep.StepID, flowStep.StepDuration, flowStep.StepDescription, user.ProviderID, user.LocationID);
+            }
+
+            return Ok();
+        }
+
         // POST api/values
         [SwaggerOperation("Create")]
         [SwaggerResponse(HttpStatusCode.Created)]

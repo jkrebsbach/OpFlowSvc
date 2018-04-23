@@ -57,4 +57,11 @@ namespace OpFlow.Data
         public int RoomSetupID { get; set; }
         public string Description { get; set; }
     }
+
+    public class FlowStepPost
+    {
+        public int StepID { get; set; }
+        public int StepDuration { get; set; }
+        public string StepDescription { get; set; }
+    }
 }

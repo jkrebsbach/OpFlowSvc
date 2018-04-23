@@ -2100,6 +2100,35 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static int DeleteFlowStep(int flowId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = ExecuteNonQuery("DeleteFlowStep", parameters);
+
+            return result;
+        }
+
+        public static int InsertFlowStep(int flowId, int stepId, decimal duration, string description, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("duration", duration),
+                new SqlParameter("description", description),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = ExecuteNonQuery("NewFlowStep", parameters);
+
+            return result;
+        }
+
         public static int NewFlow(int cardId, int roomSetupId, string description, int userId, int providerId, int locationId)
         {
             var parameters = new[]
