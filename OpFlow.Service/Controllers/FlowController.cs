@@ -362,6 +362,50 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [SwaggerOperation("CreateFlowNotification")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/flow/notification")]
+        [HttpPost]
+        public HttpResponseMessage CreateFlowNotification(int flowId, [FromBody]FlowNotificationPost value)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.InsertFlowNotification(flowId, value.StepID, value.NotificationType, value.Message, value.SmsNumber, 
+                value.EmailAddress, value.MessagingUserID, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.Created, result);
+        }
+
+        // POST api/values
+        [SwaggerOperation("EditFlowNotification")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/flow/notification")]
+        [HttpPut]
+        public HttpResponseMessage EditFlowNotification(int flowNotificationId, [FromBody]FlowNotificationPost value)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.EditFlowNotification(flowNotificationId, value.Message, value.SmsNumber,
+                value.EmailAddress, value.MessagingUserID, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // POST api/values
+        [SwaggerOperation("DeleteFlowNotification")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/flow/notification")]
+        [HttpDelete]
+        public HttpResponseMessage DeleteFlowNotification(int flowNotificationId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.DeleteFlowNotification(flowNotificationId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // POST api/values
         [SwaggerOperation("Create")]
         [SwaggerResponse(HttpStatusCode.Created)]
         public HttpResponseMessage Post([FromBody]FlowPost value)

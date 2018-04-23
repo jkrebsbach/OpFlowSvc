@@ -13,6 +13,7 @@ namespace OpFlow.Data
         public int FlowGroupID { get; set; }
         public string FlowMessage { get; set; }
         public string CellPhone { get; set; }
+        public string EmailAddress { get; set; }
         public int? MessagingUserID { get; set; }
     }
 }

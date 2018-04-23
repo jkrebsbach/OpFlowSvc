@@ -2129,6 +2129,59 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static int InsertFlowNotification(int flowId, int stepId, int notificationType, string message, 
+            string smsNumber, string emailAddress, int? messagingUserId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("notification_type", notificationType),
+                new SqlParameter("message", message),
+                new SqlParameter("sms_number", smsNumber ?? (object)DBNull.Value),
+                new SqlParameter("email_address", emailAddress ?? (object)DBNull.Value),
+                new SqlParameter("messaging_user_id", messagingUserId ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsNotification = ExecuteCommand("InsertFlowNotification", parameters);
+
+            var result = dsNotification.Tables[0].DataTableToList<InsertionResult>().First().Identifier;
+
+            return result;
+        }
+
+        public static int EditFlowNotification(int flowNotificationId, string message,
+            string smsNumber, string emailAddress, int? messagingUserId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("flow_notification_id", flowNotificationId),
+                new SqlParameter("message", message),
+                new SqlParameter("sms_number", smsNumber ?? (object)DBNull.Value),
+                new SqlParameter("email_address", emailAddress ?? (object)DBNull.Value),
+                new SqlParameter("messaging_user_id", messagingUserId ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = ExecuteNonQuery("UpdateFlowNotification", parameters);
+
+            return result;
+        }
+
+        public static int DeleteFlowNotification(int flowNotificationId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("flow_notification_id", flowNotificationId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = ExecuteNonQuery("DeleteFlowNotification", parameters);
+
+            return result;
+        }
+
         public static int NewFlow(int cardId, int roomSetupId, string description, int userId, int providerId, int locationId)
         {
             var parameters = new[]

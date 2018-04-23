@@ -64,4 +64,14 @@ namespace OpFlow.Data
         public int StepDuration { get; set; }
         public string StepDescription { get; set; }
     }
+
+    public class FlowNotificationPost
+    {
+        public int StepID { get; set; }
+        public int NotificationType { get; set; }
+        public string Message { get; set; }
+        public string SmsNumber { get; set; }
+        public string EmailAddress { get; set; }
+        public int? MessagingUserID { get; set; }
+    }
 }
