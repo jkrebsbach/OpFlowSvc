@@ -204,11 +204,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetFlowInstructions")]
         [Route("api/flow/instructions")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowStepInstructionResult>))]
-        public HttpResponseMessage GetFlowInstructions(int flowId, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetFlowInstructions(int flowId, int? surgeryId = null, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetFlowInstructions(flowId, user.ProviderID, user.LocationID);
+            var result = DataAccess.SqlHelper.GetFlowInstructions(flowId, surgeryId ?? 0, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -269,21 +269,21 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetFlowDetails")]
         [Route("api/flow/details")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowFeedback>))]
-        public HttpResponseMessage GetFlowDetails(int flowId)
+        public HttpResponseMessage GetFlowDetails(int flowId, int? surgeryId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
             var flow = DataAccess.SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
             var feedback = DataAccess.SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
             var notifications = DataAccess.SqlHelper.GetFlowNotifications(flowId, null, user.ProviderID, user.LocationID);
-            var instructions = DataAccess.SqlHelper.GetFlowInstructions(flowId, user.ProviderID, user.LocationID);
+            var flowInstructions = DataAccess.SqlHelper.GetFlowInstructions(flowId, surgeryId ?? 0, user.ProviderID, user.LocationID);
             var content = DataAccess.SqlHelper.GetFlowContent(flowId, 1, user.ProviderID, user.LocationID);
             var timings = DataAccess.SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
             var images = DataAccess.SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
 
             foreach (var timing in timings)
             {
-                timing.RoleInstructions = instructions.FirstOrDefault(i => i.StepID == timing.StepID)?.FlowRoleInstructions;
+                timing.RoleInstructions = flowInstructions.FirstOrDefault(i => i.StepID == timing.StepID)?.FlowRoleInstructions;
                 timing.StepNotifications = notifications.Where(n => n.StepID == timing.StepID).ToList();
 
                 timing.FlowImages = images.Where(n => n.FlowStepID == timing.StepID).ToList();
@@ -295,7 +295,7 @@ namespace OpFlow.Service.Controllers
                 Steps = timings,
                 Feedback = feedback,
                 Notifications = notifications,
-                Instructions = instructions,
+                Instructions = flowInstructions,
                 Content = content
             };
 
