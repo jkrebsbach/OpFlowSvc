@@ -49,8 +49,6 @@ namespace OpFlow.Data
 
     public class CardQuantityEdit
     {
-        public int ProviderID { get; set; }
-        public int LocationID { get; set; }
         public int ItemID { get; set; }
         public int OpenQty { get; set; }
         public int HoldQty { get; set; }

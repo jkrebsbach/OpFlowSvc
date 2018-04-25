@@ -227,7 +227,9 @@ namespace OpFlow.Service.Controllers
         [HttpPut]
         public async Task<IHttpActionResult> UpdateItemQty(int cardId, [FromBody]CardQuantityEdit cardQuantity)
         {
-            DataAccess.SqlHelper.UpdateCardQuantity(cardId, cardQuantity);
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.UpdateCardQuantity(cardId, cardQuantity, user.ProviderID, user.LocationID);
 
             return Ok();
         }

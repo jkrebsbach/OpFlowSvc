@@ -946,12 +946,12 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("DeleteCard", dsParameters);
         }
 
-        public static int UpdateCardQuantity(int cardId, CardQuantityEdit quantity)
+        public static int UpdateCardQuantity(int cardId, CardQuantityEdit quantity, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", quantity.ProviderID),
-                new SqlParameter("location_id", quantity.LocationID),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
                 new SqlParameter("card_id", cardId),
                 new SqlParameter("item_id", quantity.ItemID),
                 new SqlParameter("open_qty", quantity.OpenQty),
@@ -2192,7 +2192,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("card_id", cardId),
                 new SqlParameter("user_id", userId),
                 new SqlParameter("room_setup_id", roomSetupId),
-                new SqlParameter("description", description)
+                new SqlParameter("description", description ?? (object)DBNull.Value)
             };
             var dsSchedules = ExecuteCommand("NewFlow", parameters);
 
@@ -2211,7 +2211,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("card_id", cardId),
                 new SqlParameter("user_id", userId),
                 new SqlParameter("room_setup_id", roomSetupId),
-                new SqlParameter("description", description)
+                new SqlParameter("description", description ?? (object)DBNull.Value)
             };
 
             return ExecuteNonQuery("UpdateFlow", parameters);
