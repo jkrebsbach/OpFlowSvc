@@ -81,6 +81,13 @@ namespace OpFlow.Data
         public List<SurgeryCountItemPost> InstrumentCounts { get; set; }
     }
 
+    public class SurgeryCustomItemPost
+    {
+        public int ItemID { get; set; }
+        public int Quantity { get; set; }
+        public int? TrayID { get; set; }
+    }
+
     public class SurgeryEditPost
     {
         public int RoomID { get; set; }

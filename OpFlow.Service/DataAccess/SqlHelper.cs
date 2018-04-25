@@ -166,51 +166,6 @@ namespace OpFlow.Service.DataAccess
 
         public static List<ItemMaster> GetItems(string itemType, int? trayId, bool? countNeeded, int providerId, int locationId)
         {
-            if (trayId.HasValue)
-            {
-                var tray = trayId.Value;
-
-                return new List<ItemMaster>()
-                {
-                    new ItemMaster()
-                    {
-                        ItemDescription = "Driver Assembly Cann",
-                        CatalogID = "Acumed-HD-3016",
-                        ItemID = tray * 20 + 1
-                    },
-                    new ItemMaster()
-                    {
-                        ItemDescription = "Driver Acutrak Plus T-handle",
-                        CatalogID = "Acumed-TH-3000",
-                        ItemID = tray * 20 + 2
-                    },
-                    new ItemMaster()
-                    {
-                        ItemDescription = "Trocar Acutrak Plus",
-                        CatalogID = "Acumed-AP-0402",
-                        ItemID = tray * 20 + 3
-                    },
-                    new ItemMaster()
-                    {
-                        ItemDescription = "Drill Guide Acutrak",
-                        CatalogID = "Acumed-MS-2000",
-                        ItemID = tray * 20 + 4
-                    },
-                    new ItemMaster()
-                    {
-                        ItemDescription = "Screw Sizer Acutrak Plus",
-                        CatalogID = "Acumed-AP-0200",
-                        ItemID = tray * 20 + 5
-                    },
-                    new ItemMaster()
-                    {
-                        ItemDescription = "Drill Acutrak Plus",
-                        CatalogID = "Acumed-AP-0100",
-                        ItemID = tray * 20 + 6
-                    }
-                };
-            }
-
             var parameters = new[]
             {
                 new SqlParameter("item_type", itemType ?? (object)DBNull.Value),
@@ -987,6 +942,33 @@ namespace OpFlow.Service.DataAccess
             var result = insert.Tables[0].DataTableToList<InsertionResult>();
 
             return result.FirstOrDefault()?.Identifier ?? -1;
+        }
+
+        public static int AddCustomSurgeryItem(int surgeryId, int itemId, int quantity, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("item_id", itemId),
+                new SqlParameter("quantity", quantity)
+            };
+            return ExecuteNonQuery("InsertCustomSurgeryItem", dsParameters);
+        }
+
+        public static int AddCustomSurgeryTrayItem(int surgeryId, int trayId, int itemId, int quantity, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("tray_id", trayId),
+                new SqlParameter("instrument_id", itemId),
+                new SqlParameter("quantity", quantity)
+            };
+            return ExecuteNonQuery("InsertCustomSurgeryTrayInstrument", dsParameters);
         }
 
         public static int UpdateSurgeryCount(int surgeryId, int itemId, bool pass1, bool pass2, bool pass3, int usage, int providerId, int locationId)

@@ -362,6 +362,27 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [SwaggerOperation("AddCustomSurgeryItem")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        [Route("api/surgery/addSurgeryItemUse", Name = "AddCustomSurgeryItem")]
+        public async Task<HttpResponseMessage> AddCustomSurgeryItem(int surgeryId, [FromBody]SurgeryCustomItemPost customItem)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            if (customItem.TrayID.HasValue)
+            {
+                DataAccess.SqlHelper.AddCustomSurgeryTrayItem(surgeryId, customItem.TrayID ?? 0, customItem.ItemID, customItem.Quantity, user.ProviderID, user.LocationID);
+            }
+            else
+            {
+                DataAccess.SqlHelper.AddCustomSurgeryItem(surgeryId, customItem.ItemID, customItem.Quantity, user.ProviderID, user.LocationID);
+            }
+        
+            return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
+        // POST api/values
         [SwaggerOperation("UpdateSurgeryCounts")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
@@ -487,14 +508,17 @@ namespace OpFlow.Service.Controllers
             var success = DataAccess.SqlHelper.SurgeryEditProperties(surgeryId,
                 surgeryEditPost.RoomID, surgeryEditPost.ScheduleDateTime, user.ProviderID, user.LocationID);
 
-            if (surgeryEditPost.NotificationUser.HasValue)
-            {
-                var message = $"Surgery schedule modified - please review schedule";
+            if (!surgeryEditPost.NotificationUser.HasValue) return Request.CreateResponse(HttpStatusCode.OK, success);
 
-                var notificationUser = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, surgeryEditPost.NotificationUser.Value);
-                if (notificationUser?.CellPhone != null)
-                    NotificationSystem.NotifyUser(notificationUser.CellPhone, message);
-            }
+
+            var surgery = DataAccess.SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID, null);
+            var patient = await DataAccess.SecureSqlHelper.GetPatient(surgery.PatientID, user.DatabaseName);
+
+            var message = $"Surgery #{surgery.CaseNumber} patient {patient.LastName} room {surgery.RoomDescription} {surgery.ScheduleTime:hh\\:mm} modified - please review schedule";
+
+            var notificationUser = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, surgeryEditPost.NotificationUser.Value);
+            if (notificationUser?.CellPhone != null)
+                NotificationSystem.NotifyUser(notificationUser.CellPhone, message);
 
             return Request.CreateResponse(HttpStatusCode.OK, success);
         }
