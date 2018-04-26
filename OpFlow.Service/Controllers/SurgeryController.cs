@@ -148,6 +148,19 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
 
+        // GET api/values/5
+        [SwaggerOperation("Get")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<BundleProcedure>))]
+        [Route("api/surgery/procedures")]
+        public HttpResponseMessage GetSurgeryProcedures(int surgeryId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var procedures = DataAccess.SqlHelper.GetSurgeryProcedures(surgeryId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, procedures);
+        }
+
         // GET api/surgery?userId=5
         [SwaggerOperation("GetDelayReasons")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryDelayReason>))]

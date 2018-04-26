@@ -575,6 +575,18 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("InsertSurgeryPhrase", dsParameters);
         }
 
+        public static int AddFlowSmartPhrase(int flowId, int smartPhraseId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("smart_phrase_id", smartPhraseId)
+            };
+            return ExecuteNonQuery("InsertFlowPhrase", dsParameters);
+        }
+
         public static int NewSmartPhrase(string phrase, int categoryId, int stepId, int roleId, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -1849,6 +1861,21 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = ExecuteCommand("GetBundleProcedures", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<BundleProcedure>();
+
+            return result;
+        }
+
+        public static List<BundleProcedure> GetSurgeryProcedures(int surgeryId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetSurgeryProcedures", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<BundleProcedure>();
 

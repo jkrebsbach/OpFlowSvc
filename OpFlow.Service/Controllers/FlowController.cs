@@ -46,6 +46,21 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [SwaggerOperation("AddFlowSmartPhrase")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/flow/flowSmartPhrase", Name = "AddFlowSmartPhrase")]
+        [HttpPut]
+        public async Task<IHttpActionResult> AddFlowSmartPhrase(int flowId, int smartPhraseId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AddFlowSmartPhrase(flowId, smartPhraseId,
+                user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
         [SwaggerOperation("NewSmartPhrase")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/flow/smartPhrase", Name = "NewSmartPhrase")]
