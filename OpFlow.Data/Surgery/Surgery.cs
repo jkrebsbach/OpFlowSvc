@@ -90,7 +90,7 @@ namespace OpFlow.Data
 
     public class SurgeryProcedureEditPost
     {
-        public string Status { get; set; }
+        public bool IsPerformed { get; set; }
     }
 
     public class SurgeryEditPost

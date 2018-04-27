@@ -981,7 +981,7 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("InsertSurgeryProcedure", dsParameters);
         }
 
-        public static int UpdateSurgeryProcedure(int surgeryId, string cptCode, string procedureStatus, int providerId, int locationId)
+        public static int UpdateSurgeryProcedure(int surgeryId, string cptCode, string performedFlag, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -989,9 +989,21 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("cpt_code", cptCode),
-                new SqlParameter("procedure_status", procedureStatus)
+                new SqlParameter("performed_flag", performedFlag)
             };
             return ExecuteNonQuery("UpdateSurgeryProcedure", dsParameters);
+        }
+
+        public static int DeleteSurgeryProcedure(int surgeryId, string cptCode, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("cpt_code", cptCode)
+            };
+            return ExecuteNonQuery("DeleteSurgeryProcedure", dsParameters);
         }
 
         public static int AddCustomSurgeryTrayItem(int surgeryId, int trayId, int itemId, int quantity, int providerId, int locationId)
