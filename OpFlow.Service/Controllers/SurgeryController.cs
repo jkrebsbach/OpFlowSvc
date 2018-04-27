@@ -396,6 +396,34 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [SwaggerOperation("AddSurgeryProcedure")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        [Route("api/surgery/surgeryProcedure", Name = "AddSurgeryProcedure")]
+        public async Task<HttpResponseMessage> AddSurgeryProcedure(int surgeryId, string cptCode)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AddSurgeryProcedure(surgeryId, cptCode, user.ProviderID, user.LocationID);
+        
+            return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
+        // POST api/values
+        [SwaggerOperation("UpdateSurgeryProcedure")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        [Route("api/surgery/surgeryProcedure", Name = "UpdateSurgeryProcedure")]
+        public async Task<HttpResponseMessage> UpdateSurgeryProcedure(int surgeryId, string cptCode, [FromBody]SurgeryProcedureEditPost procedureEdit)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.UpdateSurgeryProcedure(surgeryId, cptCode, procedureEdit.Status, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
+        // POST api/values
         [SwaggerOperation("UpdateSurgeryCounts")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]

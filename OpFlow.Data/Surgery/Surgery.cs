@@ -88,6 +88,11 @@ namespace OpFlow.Data
         public int? TrayID { get; set; }
     }
 
+    public class SurgeryProcedureEditPost
+    {
+        public string Status { get; set; }
+    }
+
     public class SurgeryEditPost
     {
         public int RoomID { get; set; }

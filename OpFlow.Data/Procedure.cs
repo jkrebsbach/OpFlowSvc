@@ -8,6 +8,7 @@ namespace OpFlow.Data
     {
         public int ProcedureID { get; set; }
         public int SpecialtyID { get; set; }
+        public bool ProcedurePerformed { get; set; }
         public string CPTCode { get; set; }
         public string ProcedureDescription { get; set; }
         public string ProcedureSpecialty { get; set; }
