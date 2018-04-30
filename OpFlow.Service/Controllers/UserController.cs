@@ -119,14 +119,17 @@ namespace OpFlow.Service.Controllers
 
             var authenticationUser = await userManager.FindByEmailAsync(applicationUser.Email);
 
-            var code = await userManager.GeneratePasswordResetTokenAsync(authenticationUser.Id);
-
-            var result =
-                await userManager.ResetPasswordAsync(authenticationUser.Id, code, model.NewPassword);
-
-            if (!result.Succeeded)
+            if (authenticationUser != null)
             {
-                return BadRequest();
+                var code = await userManager.GeneratePasswordResetTokenAsync(authenticationUser.Id);
+
+                var result =
+                    await userManager.ResetPasswordAsync(authenticationUser.Id, code, model.NewPassword);
+
+                if (!result.Succeeded)
+                {
+                    return BadRequest();
+                }
             }
 
             return Ok();
@@ -151,7 +154,7 @@ namespace OpFlow.Service.Controllers
 
             if (!result.Succeeded)
             {
-                return BadRequest();
+                throw new Exception(result.Errors.FirstOrDefault());
             }
 
             var applicationUser = DataAccess.SqlHelper.CreateUser((int)model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
@@ -199,7 +202,11 @@ namespace OpFlow.Service.Controllers
 
             var authenticationUser = await userManager.FindByEmailAsync(applicationUser.Email);
 
-            var authResult = await userManager.RemovePasswordAsync(User.Identity.GetUserId());
+            if (authenticationUser != null)
+            {
+                var authResult = await userManager.RemovePasswordAsync(authenticationUser.Id);
+            }
+
             var applicationDeletion = DataAccess.SqlHelper.DeleteUser(id, userSecurity.ProviderID, userSecurity.LocationID);
 
             return Ok();

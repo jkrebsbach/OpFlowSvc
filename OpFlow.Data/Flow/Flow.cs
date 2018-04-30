@@ -13,6 +13,7 @@ namespace OpFlow.Data
         public int TemplateRoomID { get; set; }
         public int SpecialtyID { get; set; }
         public string FlowDescription { get; set; }
+        public string CardDescription { get; set; }
         public string OwnerLastName { get; set; }
         public string OwnerFirstName { get; set; }
         public int TotalMinutes { get; set; }
@@ -55,12 +56,16 @@ namespace OpFlow.Data
     {
         public int CardID { get; set; }
         public int RoomSetupID { get; set; }
-        public string Description { get; set; }
+        public string FlowDescription { get; set; }
     }
 
     public class FlowStepPost
     {
-        public int StepID { get; set; }
+        public List<FlowStepDetailPost> FlowSteps { get; set; }
+    }
+
+    public class FlowStepDetailPost
+    {
         public int StepDuration { get; set; }
         public string StepDescription { get; set; }
     }

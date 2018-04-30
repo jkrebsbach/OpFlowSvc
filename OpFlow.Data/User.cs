@@ -24,7 +24,7 @@ namespace OpFlow.Data
 
     public class UserPost
     {
-        public RoleEnum RoleID { get; set; }
+        public int RoleID { get; set; }
         public int SpecialtyID { get; set; }
         public string Initials { get; set; }
         public string FirstName { get; set; }
