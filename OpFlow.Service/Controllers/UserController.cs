@@ -111,20 +111,20 @@ namespace OpFlow.Service.Controllers
                 return BadRequest(ModelState);
             }
 
+            if (model.NewPassword != model.ConfirmPassword)
+                return BadRequest("Passwords do not match");
+
             var userSecurity = CacheUtil.GetUserSecurity();
             var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
-            var applicationUser =
-                DataAccess.SqlHelper.GetUser(userSecurity.ProviderID, userSecurity.LocationID, null, userId);
-
-            var authenticationUser = await userManager.FindByEmailAsync(applicationUser.Email);
-
-            if (authenticationUser != null)
+            var secureUser = DataAccess.SqlHelper.GetSecureUser(null, userId);
+            
+            if (secureUser != null && secureUser.ProviderID == userSecurity.ProviderID && secureUser.LocationID == userSecurity.LocationID)
             {
-                var code = await userManager.GeneratePasswordResetTokenAsync(authenticationUser.Id);
+                var code = await userManager.GeneratePasswordResetTokenAsync(secureUser.UserAuthID.ToString());
 
                 var result =
-                    await userManager.ResetPasswordAsync(authenticationUser.Id, code, model.NewPassword);
+                    await userManager.ResetPasswordAsync(secureUser.UserAuthID.ToString(), code, model.NewPassword);
 
                 if (!result.Succeeded)
                 {
@@ -157,7 +157,9 @@ namespace OpFlow.Service.Controllers
                 throw new Exception(result.Errors.FirstOrDefault());
             }
 
-            var applicationUser = DataAccess.SqlHelper.CreateUser((int)model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
+            var userAuthId = new Guid(authenticationUser.Id);
+
+            var applicationUser = DataAccess.SqlHelper.CreateUser(userAuthId, model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
                 model.Email, model.CellPhone, model.Initials, model.Title, userSecurity.ProviderID, userSecurity.LocationID);
 
             return Ok();
@@ -167,7 +169,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Update")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public async Task<IHttpActionResult> Put(int id, [FromBody]UserEdit model)
+        public async Task<IHttpActionResult> Put(int userId, [FromBody]UserEdit model)
         {
 
             if (!ModelState.IsValid)
@@ -176,9 +178,26 @@ namespace OpFlow.Service.Controllers
             }
 
             var userSecurity = CacheUtil.GetUserSecurity();
+            var authUserSecurity = DataAccess.SqlHelper.GetSecureUser(null, userId);
 
-            var applicationUser = DataAccess.SqlHelper.UpdateUser(id, (int)model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
-                model.Email, model.CellPhone, model.Initials, model.Title, userSecurity.ProviderID, userSecurity.LocationID);
+            if (authUserSecurity.ProviderID == userSecurity.ProviderID &&
+                authUserSecurity.LocationID == userSecurity.LocationID)
+            {
+                var applicationUser = DataAccess.SqlHelper.UpdateUser(userId, (int)model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
+                    model.Email, model.CellPhone, model.Initials, model.Title, userSecurity.ProviderID, userSecurity.LocationID);
+
+                // make certain user auth matches what we sent
+                var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                var authUser = await userManager.FindByIdAsync(authUserSecurity.UserAuthID.ToString());
+
+                if (authUser.Email != model.Email)
+                {
+                    authUser.UserName = model.Email;
+                    authUser.Email = model.Email;
+
+                    await userManager.UpdateAsync(authUser);
+                }
+            }
 
             return Ok();
         }
@@ -187,7 +206,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Delete")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public async Task<IHttpActionResult> Delete(int id)
+        public async Task<IHttpActionResult> Delete(int userId)
         {
             if (!ModelState.IsValid)
             {
@@ -198,7 +217,7 @@ namespace OpFlow.Service.Controllers
             var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
             var applicationUser =
-                DataAccess.SqlHelper.GetUser(userSecurity.ProviderID, userSecurity.LocationID, null, id);
+                DataAccess.SqlHelper.GetUser(userSecurity.ProviderID, userSecurity.LocationID, null, userId);
 
             var authenticationUser = await userManager.FindByEmailAsync(applicationUser.Email);
 
@@ -207,7 +226,7 @@ namespace OpFlow.Service.Controllers
                 var authResult = await userManager.RemovePasswordAsync(authenticationUser.Id);
             }
 
-            var applicationDeletion = DataAccess.SqlHelper.DeleteUser(id, userSecurity.ProviderID, userSecurity.LocationID);
+            var applicationDeletion = DataAccess.SqlHelper.DeleteUser(userId, userSecurity.ProviderID, userSecurity.LocationID);
 
             return Ok();
         }

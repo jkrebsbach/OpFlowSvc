@@ -50,6 +50,7 @@ namespace OpFlow.Data
     public class UserSecurity
     {
         public int UserID { get; set; }
+        public Guid UserAuthID { get; set; }
         public string DatabaseName { get; set; }
         public int ProviderID { get; set; }
         public int LocationID { get; set; }

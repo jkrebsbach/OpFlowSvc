@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Caching;
 using System.Web;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
 using OpFlow.Data;
 
 namespace OpFlow.Service
@@ -15,16 +16,17 @@ namespace OpFlow.Service
 
         public static UserSecurity GetUserSecurity()
         {
-            var username = HttpContext.Current.User.Identity.Name;
+            var userAuthId = HttpContext.Current.User.Identity.GetUserId();
 
-            if (MemCache.Contains(username))
-                return MemCache[username] as UserSecurity;
+            if (MemCache.Contains(userAuthId))
+                return MemCache[userAuthId] as UserSecurity;
 
-            var secureUser = DataAccess.SqlHelper.GetSecureUser(username);
+            var userAuthGuid = Guid.Parse(userAuthId);
+            var secureUser = DataAccess.SqlHelper.GetSecureUser(userAuthGuid, null);
             if (secureUser == null)
                 throw new Exception("Unable to locate authenticated user");
 
-            MemCache.Add(username, secureUser, DateTimeOffset.UtcNow.AddHours(1));
+            MemCache.Add(userAuthId, secureUser, DateTimeOffset.UtcNow.AddHours(1));
             return secureUser;
         }
     }

@@ -443,11 +443,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static UserSecurity GetSecureUser(string username)
+        public static UserSecurity GetSecureUser(Guid? userAuthId, int? userId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("email", username),
+                new SqlParameter("user_auth_id", userAuthId ?? (object)DBNull.Value),
+                new SqlParameter("user_id", userId ?? (object)DBNull.Value)
             };
             var dsSchedules = ExecuteCommand("GetUserSecurity", dsParameters);
 
@@ -509,11 +510,12 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("AssignUserToCase", dsParameters);
         }
 
-        public static int CreateUser(int roleId, int specialtyId, string firstName, string lastName,
+        public static int CreateUser(Guid userAuthId, int roleId, int specialtyId, string firstName, string lastName,
             string email, string cellPhone, string initials, string title, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
+                new SqlParameter("user_auth_id", userAuthId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("role_id", roleId),
@@ -525,14 +527,14 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("initials", initials),
                 new SqlParameter("title", title)
             };
-            var dsResult = ExecuteCommand("CreateUser", dsParameters);
+            var dsResult = ExecuteCommand("InsertUser", dsParameters);
 
             var result = dsResult.Tables[0].DataTableToList<InsertionResult>();
 
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public static int UpdateUser(int userId, int roleId, int specialtyId, string firstName, string lastName,
+        public static int UpdateUser(int userId, int? roleId, int? specialtyId, string firstName, string lastName,
             string email, string cellPhone, string initials, string title, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -540,14 +542,14 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("user_id", userId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("role_id", roleId),
-                new SqlParameter("specialty_id", specialtyId),
-                new SqlParameter("first_name", firstName),
-                new SqlParameter("last_name", lastName),
-                new SqlParameter("email", email),
-                new SqlParameter("cell_phone", cellPhone),
-                new SqlParameter("initials", initials),
-                new SqlParameter("title", title)
+                new SqlParameter("role_id", roleId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("first_name", firstName ?? (object)DBNull.Value),
+                new SqlParameter("last_name", lastName ?? (object)DBNull.Value),
+                new SqlParameter("email", email ?? (object)DBNull.Value),
+                new SqlParameter("cell_phone", cellPhone ?? (object)DBNull.Value),
+                new SqlParameter("initials", initials ?? (object)DBNull.Value),
+                new SqlParameter("title", title ?? (object)DBNull.Value)
             };
             return ExecuteNonQuery("UpdateUser", dsParameters);
         }

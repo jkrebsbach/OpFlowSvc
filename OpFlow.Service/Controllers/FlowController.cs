@@ -362,8 +362,6 @@ namespace OpFlow.Service.Controllers
         [HttpPut]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-
-        [AllowAnonymous]
         public IHttpActionResult UpdateFlowSteps(int flowId, [FromBody]FlowStepPost flowStepDetail)
         {
             var user = CacheUtil.GetUserSecurity();
