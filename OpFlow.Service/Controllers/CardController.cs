@@ -260,6 +260,46 @@ namespace OpFlow.Service.Controllers
             return Ok();
         }
 
+        [SwaggerOperation("AssignCardUser")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/card/cardUser", Name = "AssignCardUser")]
+        [HttpPost]
+        public async Task<IHttpActionResult> AssignCardUser(int cardId, int userId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AssignUserToCard(cardId, userId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        [SwaggerOperation("DeleteCardUser")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/card/cardUser", Name = "DeleteCardUser")]
+        [HttpDelete]
+        public async Task<IHttpActionResult> DeleteCardUser(int cardId, int userId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.RemoveUserFromCard(cardId, userId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // PUT api/values
+        [SwaggerOperation("AssignCardItem")]
+        [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
+        [Route("api/card/cardItem", Name = "AssignCardItem")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutCardItem(int cardId, int itemId, [FromBody]CardItemPost value)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.UpdateCardItem(cardId, itemId, value.OpenQty, value.HoldQty, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK);
+        }
+
         // POST api/values
         [SwaggerOperation("Create")]
         [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
@@ -267,8 +307,8 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var cardId = DataAccess.SqlHelper.InsertCard(value.Description, value.OwnerUserID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomID,
-                value.BundleID, value.BundleFlag, value.DefaultFlag, value.SpecialtyDefaultFlag, value.SecondSurgeonUserID, value.ThirdSurgeonUserID,
+            var cardId = DataAccess.SqlHelper.InsertCard(value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomID,
+                value.BundleID, value.BundleFlag, value.DefaultFlag, value.SpecialtyDefaultFlag, 
                 user.UserID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.Created, cardId);
@@ -282,8 +322,8 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.UpdateCard(id, value.Description, value.OwnerUserID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomID,
-                value.BundleID, value.BundleFlag, value.DefaultFlag, value.SpecialtyDefaultFlag, value.SecondSurgeonUserID, value.ThirdSurgeonUserID,
+            DataAccess.SqlHelper.UpdateCard(id, value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomID,
+                value.BundleID, value.BundleFlag, value.DefaultFlag, value.SpecialtyDefaultFlag, 
                 user.UserID, user.ProviderID, user.LocationID);
 
             return Ok();

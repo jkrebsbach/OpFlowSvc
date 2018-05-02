@@ -32,6 +32,9 @@ namespace OpFlow.Data
         public string PatientPosition { get; set; }
         public string FlowStepDescription { get; set; }
         public string RoomSetupDescription { get; set; }
+        public int SharpCount { get; set; }
+        public int NeedleCount { get; set; }
+        public int LapCount { get; set; }
         public DateTime ScheduleDate { get; set; }
         public TimeSpan ScheduleTime { get; set; }
         public DateTime? ActualStartDate { get; set; }

@@ -7,6 +7,7 @@ namespace OpFlow.Data.Debrief
     public class SmartPhrasePost
     {
         public string Phrase { get; set; }
+        public int? UserID { get; set; }
         public int CategoryID { get; set; }
         public int RoleID { get; set; }
         public int StepID { get; set; }
@@ -31,6 +32,13 @@ namespace OpFlow.Data.Debrief
     public class FlowFeedbackPost
     {
         public string Feedback { get; set; }
+    }
+
+    public class PhraseUpdatePost
+    {
+        public string Comments { get; set; }
+        public int StepID { get; set; }
+        public int RoleID { get; set; }
     }
 
     public class DebriefUpdatePost

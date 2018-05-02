@@ -46,16 +46,45 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [SwaggerOperation("AddFlowSmartPhrase")]
+        [SwaggerOperation("AddFlowPhrase")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/flow/flowSmartPhrase", Name = "AddFlowSmartPhrase")]
+        [Route("api/flow/flowPhrase", Name = "AddFlowPhrase")]
         [HttpPut]
-        public async Task<IHttpActionResult> AddFlowSmartPhrase(int flowId, int smartPhraseId)
+        public async Task<IHttpActionResult> AddFlowPhrase(int flowId, int smartPhraseId)
         {
             var user = CacheUtil.GetUserSecurity();
 
             DataAccess.SqlHelper.AddFlowSmartPhrase(flowId, smartPhraseId,
                 user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("UpdateFlowPhrase")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/flow/flowPhrase", Name = "UpdateFlowPhrase")]
+        [HttpPost]
+        public async Task<IHttpActionResult> UpdateFlowPhrase(int flowId, int smartPhraseId, [FromBody]PhraseUpdatePost debriefUpdate)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.UpdateFlowPhrase(flowId, smartPhraseId,
+                debriefUpdate.Comments, debriefUpdate.StepID, debriefUpdate.RoleID, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("DeleteFlowPhrase")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/flow/flowPhrase", Name = "DeleteFlowPhrase")]
+        [HttpDelete]
+        public async Task<IHttpActionResult> DeleteFlowPhrase(int flowId, int smartPhraseId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.DeleteFlowPhrase(flowId, smartPhraseId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -70,7 +99,7 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
 
             DataAccess.SqlHelper.NewSmartPhrase(smartPhrase.Phrase, smartPhrase.CategoryID, smartPhrase.StepID, smartPhrase.RoleID,
-                user.UserID, user.ProviderID, user.LocationID);
+                smartPhrase.UserID ?? user.UserID, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -104,35 +133,6 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [SwaggerOperation("NewSurgeonNote")]
-        [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/flow/surgeonNote", Name = "NewSurgeonNote")]
-        [HttpPut]
-        public async Task<IHttpActionResult> NewSurgeonNote([FromBody]SurgeonNotePost smartPhrase)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            DataAccess.SqlHelper.NewSurgeonNote(smartPhrase.Phrase, smartPhrase.FlowID, smartPhrase.StepID, smartPhrase.RoleID,
-                user.ProviderID, user.LocationID);
-
-            return Ok();
-        }
-
-        // POST api/values
-        [SwaggerOperation("DeleteSurgeonNote")]
-        [SwaggerResponse(HttpStatusCode.OK)]
-        [Route("api/flow/surgeonNote", Name = "DeleteSurgeonNote")]
-        [HttpDelete]
-        public async Task<IHttpActionResult> DeleteSurgeonNote(int surgeonNoteId)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            DataAccess.SqlHelper.DeleteSurgeonNote(surgeonNoteId, user.ProviderID, user.LocationID);
-
-            return Ok();
-        }
-
-        // POST api/values
         [SwaggerOperation("NewFlowImage")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/flow/flowImage", Name = "NewFlowImage")]
@@ -157,15 +157,15 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [SwaggerOperation("EditFlowImage")]
+        [SwaggerOperation("UpdateFlowImage")]
         [SwaggerResponse(HttpStatusCode.OK)]
-        [Route("api/flow/flowImage", Name = "EditFlowImage")]
+        [Route("api/flow/flowImage", Name = "UpdateFlowImage")]
         [HttpPost]
-        public async Task<IHttpActionResult> EditFlowImage(int flowImageId, [FromBody]FlowImagePost flowImage)
+        public async Task<IHttpActionResult> UpdateFlowImage(int flowImageId, [FromBody]FlowImagePost flowImage)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.EditFlowImage(flowImageId, flowImage.StepID, flowImage.RoleID, flowImage.Comment, user.ProviderID, user.LocationID);
+            DataAccess.SqlHelper.UpdateFlowImage(flowImageId, flowImage.Comment, flowImage.StepID, flowImage.RoleID, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -223,7 +223,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetFlowInstructions(flowId, surgeryId ?? 0, user.ProviderID, user.LocationID);
+            var result = DataAccess.SqlHelper.GetFlowInstructions(flowId, surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -291,7 +291,7 @@ namespace OpFlow.Service.Controllers
             var flow = DataAccess.SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
             var feedback = DataAccess.SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
             var notifications = DataAccess.SqlHelper.GetFlowNotifications(flowId, null, user.ProviderID, user.LocationID);
-            var flowInstructions = DataAccess.SqlHelper.GetFlowInstructions(flowId, surgeryId ?? 0, user.ProviderID, user.LocationID);
+            var flowInstructions = DataAccess.SqlHelper.GetFlowInstructions(flowId, surgeryId, user.ProviderID, user.LocationID);
             var content = DataAccess.SqlHelper.GetFlowContent(flowId, 1, user.ProviderID, user.LocationID);
             var timings = DataAccess.SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
             var images = DataAccess.SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);

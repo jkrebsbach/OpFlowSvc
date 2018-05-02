@@ -627,31 +627,6 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("DeleteSmartPhrase", dsParameters);
         }
 
-        public static int NewSurgeonNote(string phrase, int flowId, int stepId, int roleId, int providerId, int locationId)
-        {
-            var dsParameters = new[]
-            {
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
-                new SqlParameter("flow_id", flowId),
-                new SqlParameter("step_id", stepId),
-                new SqlParameter("role_id", roleId),
-                new SqlParameter("phrase", phrase)
-            };
-            return ExecuteNonQuery("InsertFlowSurgeonNote", dsParameters);
-        }
-
-        public static int DeleteSurgeonNote(int surgeonNoteId, int providerId, int locationId)
-        {
-            var dsParameters = new[]
-            {
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
-                new SqlParameter("surgeon_note_id", surgeonNoteId)
-            };
-            return ExecuteNonQuery("DeleteSurgeonNote", dsParameters);
-        }
-
         public static int NewFlowImage(int flowId, int stepId, int roleId, string comment, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -669,18 +644,19 @@ namespace OpFlow.Service.DataAccess
             return result.First().Identifier;
         }
 
-        public static int EditFlowImage(int flowImageId, int stepId, int roleId, string comment, int providerId, int locationId)
+
+        public static int UpdateFlowImage(int flowImageId, string comments, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("flow_image_id", flowImageId),
-                new SqlParameter("flow_step_id", stepId),
+                new SqlParameter("step_id", stepId),
                 new SqlParameter("role_id", roleId),
-                new SqlParameter("image_comment", comment)
+                new SqlParameter("comment", comments ?? (object)DBNull.Value)
             };
-            return ExecuteNonQuery("EditFlowImage", dsParameters);
+            return ExecuteNonQuery("UpdateFlowImage", dsParameters);
         }
 
         public static int DeleteFlowImage(int flowImageId, int providerId, int locationId)
@@ -705,6 +681,99 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("feedback", feedback)
             };
             return ExecuteNonQuery("InsertFlowFeedback", dsParameters);
+        }
+
+        public static int UpdateFlowPhrase(int flowId, int smartPhraseId, string comments, int stepId, int roleId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("smart_phrase_id", smartPhraseId),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("role_id", roleId),
+                new SqlParameter("comment", comments ?? (object)DBNull.Value)
+            };
+            return ExecuteNonQuery("UpdateFlowPhrase", dsParameters);
+        }
+
+        public static int DeleteFlowPhrase(int flowId, int smartPhraseId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("smart_phrase_id", smartPhraseId)
+            };
+            return ExecuteNonQuery("DeleteFlowPhrase", dsParameters);
+        }
+
+        public static int UpdateSurgeryPhrase(int surgeryId, int smartPhraseId, string comments, int stepId, int roleId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("smart_phrase_id", smartPhraseId),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("role_id", roleId),
+                new SqlParameter("comment", comments ?? (object)DBNull.Value)
+            };
+            return ExecuteNonQuery("UpdateSurgeryPhrase", dsParameters);
+        }
+
+        public static int DeleteSurgeryPhrase(int surgeryId, int smartPhraseId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("smart_phrase_id", smartPhraseId)
+            };
+            return ExecuteNonQuery("DeleteSurgeryPhrase", dsParameters);
+        }
+
+        public static int NewSurgeonNote(string phrase, int flowId, int stepId, int roleId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("role_id", roleId),
+                new SqlParameter("phrase", phrase)
+            };
+            return ExecuteNonQuery("InsertFlowSurgeonNote", dsParameters);
+        }
+
+        public static int UpdateSurgeonNote(int surgeonNoteId, string comments, int stepId, int roleId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgeon_note_id", surgeonNoteId),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("role_id", roleId),
+                new SqlParameter("comment", comments ?? (object)DBNull.Value)
+            };
+            return ExecuteNonQuery("UpdateSurgeonNote", dsParameters);
+        }
+
+        public static int DeleteSurgeonNote(int surgeonNoteId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgeon_note_id", surgeonNoteId)
+            };
+            return ExecuteNonQuery("DeleteSurgeonNote", dsParameters);
         }
 
         public static int UpdateDebrief(int flowId, List<FlowPhrase> revisedPhrases, int providerId, int locationId)
@@ -850,8 +919,46 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("AssignRoomSetupToCard", dsParameters);
         }
 
-        public static int InsertCard(string description, int ownerUserId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
-            string defaultFlag, string specialtyDefaultFlag, int? secondSurgeonUserId, int? thirdSurgeonUserId, int userId, int providerId, int locationId)
+        public static int AssignUserToCard(int cardId, int userId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("user_id", userId)
+            };
+            return ExecuteNonQuery("InsertCardUser", dsParameters);
+        }
+
+        public static int RemoveUserFromCard(int cardId, int userId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("user_id", userId)
+            };
+            return ExecuteNonQuery("DeleteCardUser", dsParameters);
+        }
+
+        public static int UpdateCardItem(int cardId, int itemId, int qtyOpen, int qtyHold, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("item_id", itemId),
+                new SqlParameter("qty_open", qtyOpen),
+                new SqlParameter("qty_hold", qtyHold)
+            };
+            return ExecuteNonQuery("UpdateCardItem", dsParameters);
+        }
+
+        public static int InsertCard(string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
+            string defaultFlag, string specialtyDefaultFlag, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -859,19 +966,15 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("description", description ?? (object)DBNull.Value),
                 new SqlParameter("owner_user_id", ownerUserId),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("user_id", userId),
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("template_flow_id", templateFlowId ?? (object)DBNull.Value),
                 new SqlParameter("template_room_id", templateRoomId ?? (object)DBNull.Value),
-                new SqlParameter("specialty_id", DBNull.Value),
                 new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
                 new SqlParameter("bundle_flag", bundleFlag ?? (object)DBNull.Value),
                 new SqlParameter("default_flag", defaultFlag ?? (object)DBNull.Value),
-                new SqlParameter("specialty_default_flag", specialtyDefaultFlag ?? (object)DBNull.Value),
-                new SqlParameter("second_surgeon_user_id", secondSurgeonUserId ?? (object)DBNull.Value),
-                new SqlParameter("second_surgeon_last_name", DBNull.Value),
-                new SqlParameter("third_surgeon_user_id", thirdSurgeonUserId ?? (object)DBNull.Value),
-                new SqlParameter("third_surgeon_last_name", DBNull.Value)
+                new SqlParameter("specialty_default_flag", specialtyDefaultFlag ?? (object)DBNull.Value)
             };
             var insert = ExecuteCommand("NewCard", dsParameters);
             var result = insert.Tables[0].DataTableToList<InsertionResult>();
@@ -879,8 +982,8 @@ namespace OpFlow.Service.DataAccess
             return result.First().Identifier;
         }
 
-        public static int UpdateCard(int cardId, string description, int ownerUserId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
-            string defaultFlag, string specialtyDefaultFlag, int? secondSurgeonUserId, int? thirdSurgeonUserId, int userId, int providerId, int locationId)
+        public static int UpdateCard(int cardId, string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
+            string defaultFlag, string specialtyDefaultFlag, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -893,15 +996,11 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("template_flow_id", templateFlowId ?? (object)DBNull.Value),
                 new SqlParameter("template_room_id", templateRoomId ?? (object)DBNull.Value),
-                new SqlParameter("specialty_id", DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
                 new SqlParameter("bundle_flag", bundleFlag ?? (object)DBNull.Value),
                 new SqlParameter("default_flag", defaultFlag ?? (object)DBNull.Value),
-                new SqlParameter("specialty_default_flag", specialtyDefaultFlag ?? (object)DBNull.Value),
-                new SqlParameter("second_surgeon_user_id", secondSurgeonUserId ?? (object)DBNull.Value),
-                new SqlParameter("second_surgeon_last_name", DBNull.Value),
-                new SqlParameter("third_surgeon_user_id", thirdSurgeonUserId ?? (object)DBNull.Value),
-                new SqlParameter("third_surgeon_last_name", DBNull.Value)
+                new SqlParameter("specialty_default_flag", specialtyDefaultFlag ?? (object)DBNull.Value)
             };
             return ExecuteNonQuery("UpdateCard", dsParameters);
         }
@@ -1006,6 +1105,20 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("cpt_code", cptCode)
             };
             return ExecuteNonQuery("DeleteSurgeryProcedure", dsParameters);
+        }
+
+        public static int UpdateSurgeryHeaderCounts(int surgeryId, int sharpCount, int needleCount, int lapCount, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("sharp_count", sharpCount),
+                new SqlParameter("needle_count", needleCount),
+                new SqlParameter("lap_count", lapCount)
+            };
+            return ExecuteNonQuery("UpdateSurgeryHeaderCounts", dsParameters);
         }
 
         public static int AddCustomSurgeryTrayItem(int surgeryId, int trayId, int itemId, int quantity, int providerId, int locationId)
@@ -1572,7 +1685,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static PatientSurgery GetSurgery(int surgeryId, int providerId, int locationId, string bundleFlag)
+        public static PatientSurgery GetSurgery(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -1581,7 +1694,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
 
-            var command = (bundleFlag == "Y" ? "GetSurgeryBundle" : "GetSurgeryProcedure");
+            var command = "GetSurgeryProcedure";
             var dsSchedules = ExecuteCommand(command, parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<PatientSurgery>().FirstOrDefault();
@@ -2030,12 +2143,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<FlowStepInstructionResult> GetFlowInstructions(int flowId, int surgeryId, int providerId, int locationId)
+        public static List<FlowStepInstructionResult> GetFlowInstructions(int flowId, int? surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
                 {
                     new SqlParameter("flow_id", flowId),
-                    new SqlParameter("surgery_id", surgeryId),
+                    new SqlParameter("surgery_id", surgeryId ?? (object)DBNull.Value),
                     new SqlParameter("provider_id", providerId),
                     new SqlParameter("location_id", locationId)
                 };

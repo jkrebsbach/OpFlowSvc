@@ -19,11 +19,11 @@ namespace OpFlow.Service.Controllers
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
         [SwaggerOperation("GetSurgery")]
         [SwaggerResponse(HttpStatusCode.OK, Type=typeof(PatientSurgery))]
-        public async Task<HttpResponseMessage> GetSurgery(int surgeryId, int? providerId = null, int? locationId = null, string bundleFlag = null)
+        public async Task<HttpResponseMessage> GetSurgery(int surgeryId)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var patientSurgery = DataAccess.SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID, bundleFlag);
+            var patientSurgery = DataAccess.SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
             patientSurgery.Patient =
                 await DataAccess.SecureSqlHelper.GetPatient(patientSurgery.PatientID, user.DatabaseName);
 
@@ -261,20 +261,27 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetDebriefScreen")]
         [Route("api/surgery/debriefScreen")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(DebriefResult))]
-        public HttpResponseMessage GetDebriefScreen(int flowId, int surgeryId)
+        public HttpResponseMessage GetDebriefScreen(int flowId, int? surgeryId)
         {
             var user = CacheUtil.GetUserSecurity();
 
             var flow = DataAccess.SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
             var categories = DataAccess.SqlHelper.GetSmartPhraseCategories(user.ProviderID, user.LocationID);
             var flowPhrases = DataAccess.SqlHelper.GetFlowPhrases(flowId, user.ProviderID, user.LocationID);
-            var surgeryPhrases = DataAccess.SqlHelper.GetSurgeryPhrases(surgeryId, user.ProviderID, user.LocationID);
-            var smartPhrases = DataAccess.SqlHelper.GetSmartPhrases(user.UserID, user.ProviderID, user.LocationID);
+
+            var smartPhrases = new List<SmartPhrase>();
+            if (flow != null)
+                smartPhrases = DataAccess.SqlHelper.GetSmartPhrases(flow.OwnerUserID, user.ProviderID, user.LocationID);
+
             var flowFeedback = DataAccess.SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
             var surgeonNotes = DataAccess.SqlHelper.GetSurgeonNotes(flowId, user.ProviderID, user.LocationID);
             var flowSteps = DataAccess.SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
             var messages =
                 DataAccess.SqlHelper.GetMessaging(user.UserID, surgeryId, null, null, user.ProviderID, user.LocationID);
+
+            var surgeryPhrases = new List<SurgeryPhrase>();
+            if (surgeryId.HasValue)
+                surgeryPhrases = DataAccess.SqlHelper.GetSurgeryPhrases(surgeryId.Value, user.ProviderID, user.LocationID);
 
             var flowImages = DataAccess.SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
 
@@ -309,6 +316,79 @@ namespace OpFlow.Service.Controllers
 
             DataAccess.SqlHelper.UpdateDebrief(flowId, debriefUpdate?.SelectedPhrases, user.ProviderID, user.LocationID);
             DataAccess.SqlHelper.UpdateCaseNotes(surgeryId, debriefUpdate?.CaseNotes, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("UpdateSurgeryPhrase")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/surgeryPhrase", Name = "UpdateSurgeryPhrase")]
+        [HttpPost]
+        public async Task<IHttpActionResult> UpdateSurgeryPhrase(int surgeryId, int smartPhraseId, [FromBody]PhraseUpdatePost debriefUpdate)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.UpdateSurgeryPhrase(surgeryId, smartPhraseId,
+                debriefUpdate.Comments, debriefUpdate.StepID, debriefUpdate.RoleID, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("DeleteSurgeryPhrase")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/surgeryPhrase", Name = "DeleteSurgeryPhrase")]
+        [HttpDelete]
+        public async Task<IHttpActionResult> DeleteSurgeryPhrase(int surgeryId, int smartPhraseId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.DeleteSurgeryPhrase(surgeryId, smartPhraseId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("NewSurgeonNote")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/flow/surgeonNote", Name = "NewSurgeonNote")]
+        [HttpPut]
+        public async Task<IHttpActionResult> NewSurgeonNote([FromBody]SurgeonNotePost smartPhrase)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.NewSurgeonNote(smartPhrase.Phrase, smartPhrase.FlowID, smartPhrase.StepID, smartPhrase.RoleID,
+                user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("UpdateSurgeonNote")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/surgeonNote", Name = "UpdateSurgeonNote")]
+        [HttpPost]
+        public async Task<IHttpActionResult> UpdateSurgeonNote(int surgeonNoteId, [FromBody]PhraseUpdatePost debriefUpdate)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.UpdateSurgeonNote(surgeonNoteId,
+                debriefUpdate.Comments, debriefUpdate.StepID, debriefUpdate.RoleID, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("DeleteSurgeonNote")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/surgeonNote", Name = "DeleteSurgeonNote")]
+        [HttpDelete]
+        public async Task<IHttpActionResult> DeleteSurgeonNote(int surgeonNoteId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.DeleteSurgeonNote(surgeonNoteId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -442,19 +522,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
         [Route("api/surgery/updateCounts", Name = "UpdateSurgeryCounts")]
-        public async Task<HttpResponseMessage> UpdateSurgeryCounts(int surgeryId, [FromBody]SurgeryCountPost countModel)
+        public async Task<HttpResponseMessage> UpdateSurgeryCounts(int surgeryId, int sharpCount, int needleCount, int lapCount)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            foreach (var count in countModel.ItemCounts)
-            {
-                DataAccess.SqlHelper.UpdateSurgeryCount(surgeryId, count.ItemID, count.Pass1, count.Pass2, count.Pass3, count.Usage, user.ProviderID, user.LocationID);
-            }
-            foreach (var count in countModel.InstrumentCounts)
-            {
-                DataAccess.SqlHelper.UpdateSurgeryInstrumentCount(surgeryId, count.ItemID, count.Pass1, count.Pass2, count.Pass3, count.Usage, user.ProviderID, user.LocationID);
-            }
-
+            DataAccess.SqlHelper.UpdateSurgeryHeaderCounts(surgeryId, sharpCount, needleCount, lapCount, user.ProviderID, user.LocationID);
+            
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
 
@@ -566,7 +639,7 @@ namespace OpFlow.Service.Controllers
             if (!surgeryEditPost.NotificationUser.HasValue) return Request.CreateResponse(HttpStatusCode.OK, success);
 
 
-            var surgery = DataAccess.SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID, null);
+            var surgery = DataAccess.SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
             var patient = await DataAccess.SecureSqlHelper.GetPatient(surgery.PatientID, user.DatabaseName);
 
             var message = $"Surgery #{surgery.CaseNumber} patient {patient.LastName} room {surgery.RoomDescription} {surgery.ScheduleTime:hh\\:mm} modified - please review schedule";
