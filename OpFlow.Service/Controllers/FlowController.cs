@@ -202,6 +202,21 @@ namespace OpFlow.Service.Controllers
             return Ok();
         }
 
+
+        // POST api/values
+        [SwaggerOperation("DeleteFlowFeedback")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/flow/flowFeedback", Name = "DeleteFlowFeedback")]
+        [HttpDelete]
+        public async Task<IHttpActionResult> DeleteFlowFeedback(int flowFeedbackId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.DeleteFlowFeedback(flowFeedbackId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
         // GET api/values/5
         [SwaggerOperation("GetCardFlowList")]
         [Route("api/flow/cardFlowList")]

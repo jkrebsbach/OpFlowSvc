@@ -683,6 +683,17 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("InsertFlowFeedback", dsParameters);
         }
 
+        public static int DeleteFlowFeedback(int flowFeedbackId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("flow_feedback_id", flowFeedbackId)
+            };
+            return ExecuteNonQuery("DeleteFlowFeedback", dsParameters);
+        }
+
         public static int UpdateFlowPhrase(int flowId, int smartPhraseId, string comments, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
