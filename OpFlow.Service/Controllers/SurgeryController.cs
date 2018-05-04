@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
 using OpFlow.Data.Debrief;
+using OpFlow.Service.DataAccess;
 using OpFlow.Service.Models;
 using Swashbuckle.Swagger.Annotations;
 
@@ -512,9 +513,64 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.DeleteSurgeryProcedure(surgeryId, cptCode, user.ProviderID, user.LocationID);
+            SqlHelper.DeleteSurgeryProcedure(surgeryId, cptCode, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
+        // POST api/values
+        [SwaggerOperation("NewSurgeryImage")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/flow/surgeryImage", Name = "NewSurgeryImage")]
+        [HttpPut]
+        [AllowAnonymous]
+        public async Task<IHttpActionResult> NewSurgeryImage(int surgeryId, int stepId, int roleId, string comment)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var provider = new MultipartMemoryStreamProvider();
+            await Request.Content.ReadAsMultipartAsync(provider);
+
+            var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
+
+            var SurgeryImageId = SqlHelper.NewSurgeryImage(surgeryId, stepId, roleId, comment,
+                user.ProviderID, user.LocationID);
+
+            var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.SurgeryImages, surgeryId);
+            await BlobStorageHelper.PutBlobBytes(folder, SurgeryImageId.ToString(), fileContents);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("UpdateSurgeryImage")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/flow/surgeryImage", Name = "UpdateSurgeryImage")]
+        [HttpPost]
+        public async Task<IHttpActionResult> UpdateSurgeryImage(int surgeryImageId, [FromBody]FlowImagePost surgeryImage)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            SqlHelper.UpdateSurgeryImage(surgeryImageId, surgeryImage.Comment, surgeryImage.StepID, surgeryImage.RoleID, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("DeleteSurgeryImage")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/flow/surgeryImage", Name = "DeleteSurgeryImage")]
+        [HttpDelete]
+        public async Task<IHttpActionResult> DeleteSurgeryImage(int surgeryImageId, int surgeryId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            SqlHelper.DeleteSurgeryImage(surgeryImageId, user.ProviderID, user.LocationID);
+
+            var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.SurgeryImages, surgeryId);
+            await BlobStorageHelper.DeleteBlob(folder, surgeryImageId.ToString());
+
+            return Ok();
         }
 
         // POST api/values
@@ -526,7 +582,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.UpdateSurgeryHeaderCounts(surgeryId, sharpCount, needleCount, lapCount, user.ProviderID, user.LocationID);
+            SqlHelper.UpdateSurgeryHeaderCounts(surgeryId, sharpCount, needleCount, lapCount, user.ProviderID, user.LocationID);
             
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
@@ -539,9 +595,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> StartSurgery(int surgeryId, DateTime startTime)
         {
             var user = CacheUtil.GetUserSecurity();
-            var success = DataAccess.SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, startTime);
+            var success = SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, startTime);
 
-            var flowStep = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, startTime);
+            var flowStep = SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, startTime);
             FlowStepNotifications(flowStep);
 
             return Request.CreateResponse(HttpStatusCode.OK, success);
@@ -556,7 +612,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var flowStep = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
+            var flowStep = SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
             FlowStepNotifications(flowStep);
 
             return Request.CreateResponse(HttpStatusCode.Created, flowStep);
@@ -571,7 +627,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var flowStep = DataAccess.SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, finishTime);
+            var flowStep = SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, finishTime);
             FlowStepNotifications(flowStep);
 
             return Request.CreateResponse(HttpStatusCode.OK, flowStep);
@@ -583,7 +639,7 @@ namespace OpFlow.Service.Controllers
             if (flowStep == null)
                 return;
 
-            var notifications = DataAccess.SqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.ProviderID, user.LocationID);
+            var notifications = SqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.ProviderID, user.LocationID);
 
             var startNotification = notifications.FirstOrDefault(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
             var endNotification = notifications.FirstOrDefault(n => n.StepID == flowStep.StepID - 1 && n.NotificationType == 2);
@@ -602,7 +658,7 @@ namespace OpFlow.Service.Controllers
 
             if (flowNotification.MessagingUserID != null)
             {
-                DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID, null, flowNotification.MessagingUserID, flowNotification.FlowMessage);
+                SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID, null, flowNotification.MessagingUserID, flowNotification.FlowMessage);
 
             }
         }
@@ -619,7 +675,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.Ambiguous);
 
             var user = CacheUtil.GetUserSecurity();
-            var success = DataAccess.SqlHelper.SurgeryToggleDelay(surgeryId, user.ProviderID, user.LocationID, 
+            var success = SqlHelper.SurgeryToggleDelay(surgeryId, user.ProviderID, user.LocationID, 
                 surgeryDelay.StartTime, surgeryDelay.EndTime, surgeryDelay.DelayReasonID);
 
             return Request.CreateResponse(HttpStatusCode.Created, success);
@@ -639,8 +695,8 @@ namespace OpFlow.Service.Controllers
             if (!surgeryEditPost.NotificationUser.HasValue) return Request.CreateResponse(HttpStatusCode.OK, success);
 
 
-            var surgery = DataAccess.SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
-            var patient = await DataAccess.SecureSqlHelper.GetPatient(surgery.PatientID, user.DatabaseName);
+            var surgery = SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+            var patient = await SecureSqlHelper.GetPatient(surgery.PatientID, user.DatabaseName);
 
             var message = $"Surgery #{surgery.CaseNumber} patient {patient.LastName} room {surgery.RoomDescription} {surgery.ScheduleTime:hh\\:mm} modified - please review schedule";
 

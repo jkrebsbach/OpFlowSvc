@@ -111,6 +111,15 @@ namespace OpFlow.Data
         public int Usage { get; set; }
     }
 
+    public class SurgeryDelay
+    {
+        public int SurgeryID { get; set; }
+        public int TotalMinutes { get; set; }
+        public decimal DelayCost { get; set; }
+        public int ReasonID { get; set; }
+        public string ReasonDescription { get; set; }
+    }
+
     public class SurgeryDelayReason
     {
         public int ReasonID { get; set; }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
+using OpFlow.Service.DataAccess;
 using OpFlow.Service.Models;
 using Swashbuckle.Swagger.Annotations;
 
@@ -17,38 +18,6 @@ namespace OpFlow.Service.Controllers
     public class ImageController : ApiController
     {
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
-        [SwaggerOperation("GetImages")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<string>))]
-        [Route("api/image/listImages")]
-        public async Task<HttpResponseMessage> GetImages(int cardId, int flowId, int stepId, int roleId)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            var folder = DataAccess.BlobStorageHelper.Folder(user.ProviderID, cardId, flowId, stepId, roleId);
-            var fileList = await DataAccess.BlobStorageHelper.ListBlobs(folder);
-
-            return fileList == null ?
-                Request.CreateResponse(HttpStatusCode.NotFound) :
-                Request.CreateResponse(HttpStatusCode.OK, fileList);
-        }
-
-        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
-        [SwaggerOperation("GetImage")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(byte[]))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        public async Task<HttpResponseMessage> GetImage(int cardId, int flowId, int stepId, int roleId, string fileName)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            var folder = DataAccess.BlobStorageHelper.Folder(user.ProviderID, cardId, flowId, stepId, roleId);
-            var binary = await DataAccess.BlobStorageHelper.GetBlobBytes(folder, fileName);
-            
-            return binary == null ? 
-                Request.CreateResponse(HttpStatusCode.NotFound) :
-                ImageResponse(binary);
-        }
-
-        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
         [AllowAnonymous]
         [SwaggerOperation("GetFlowImage")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(byte[]))]
@@ -56,8 +25,24 @@ namespace OpFlow.Service.Controllers
         [Route("api/image/flowImage", Name = "GetFlowImage")]
         public async Task<HttpResponseMessage> GetFlowImage(int flowId, int flowImageId)
         {
-            var folder = DataAccess.BlobStorageHelper.Folder(flowId, 0, 0, 0, 0);
-            var binary = await DataAccess.BlobStorageHelper.GetBlobBytes(folder, flowImageId.ToString());
+            var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, flowId);
+            var binary = await BlobStorageHelper.GetBlobBytes(folder, flowImageId.ToString());
+
+            return binary == null ?
+                Request.CreateResponse(HttpStatusCode.NotFound) :
+                ImageResponse(binary);
+        }
+
+        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
+        [AllowAnonymous]
+        [SwaggerOperation("GetSurgeryImage")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(byte[]))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("api/image/surgeryImage", Name = "GetSurgeryImage")]
+        public async Task<HttpResponseMessage> GetSurgeryImage(int surgeryId, int surgeryImageId)
+        {
+            var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.SurgeryImages, surgeryId);
+            var binary = await BlobStorageHelper.GetBlobBytes(folder, surgeryImageId.ToString());
 
             return binary == null ?
                 Request.CreateResponse(HttpStatusCode.NotFound) :
@@ -73,7 +58,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetPatientPositionImage(int patientPositionId)
         {
             var folder = "PatientPosition";
-            var binary = await DataAccess.BlobStorageHelper.GetBlobBytes(folder, patientPositionId.ToString());
+            var binary = await BlobStorageHelper.GetBlobBytes(folder, patientPositionId.ToString());
 
             return binary == null ?
                 Request.CreateResponse(HttpStatusCode.NotFound) :
@@ -98,45 +83,7 @@ namespace OpFlow.Service.Controllers
             var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
 
             var folder = "PatientPosition";
-            await DataAccess.BlobStorageHelper.PutBlobBytes(folder, patientPositionId.ToString(), fileContents);
-
-            return Ok();
-        }
-
-        // PUT api/values/5
-        [SwaggerOperation("Update")]
-        [SwaggerResponse(HttpStatusCode.OK)]
-        [SwaggerResponse(HttpStatusCode.Ambiguous)]
-        public async Task<IHttpActionResult> Put(int cardId, int flowId, int stepId, int roleId)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            var provider = new MultipartMemoryStreamProvider();
-            await Request.Content.ReadAsMultipartAsync(provider);
-
-            // extract file name and file contents
-            var fileNameParam = provider.Contents[0].Headers.ContentDisposition.Parameters
-                .FirstOrDefault(p => p.Name.ToLower() == "filename");
-            var fileName = fileNameParam?.Value.Trim('"') ?? "";
-            var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
-
-            var folder = DataAccess.BlobStorageHelper.Folder(user.ProviderID, cardId, flowId, stepId, roleId);
-            await DataAccess.BlobStorageHelper.PutBlobBytes(folder, fileName, fileContents);
-
-            return Ok();
-        }
-
-
-
-        // DELETE api/values/5
-        [SwaggerOperation("Delete")]
-        [SwaggerResponse(HttpStatusCode.OK)]
-        public async Task<IHttpActionResult> Delete(int cardId, int flowId, int stepId, int roleId, string filename)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            var folder = DataAccess.BlobStorageHelper.Folder(user.ProviderID, cardId, flowId, stepId, roleId);
-            await DataAccess.BlobStorageHelper.DeleteBlob(folder, filename);
+            await BlobStorageHelper.PutBlobBytes(folder, patientPositionId.ToString(), fileContents);
 
             return Ok();
         }

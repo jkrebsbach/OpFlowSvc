@@ -193,7 +193,7 @@ namespace OpFlow.Service.DataAccess
             return dsItems.Tables[0].DataTableToList<ItemMaster>();
         }
 
-        public static List<Card> GetCardData(int cardId, int providerId, int locationId)
+        public static List<CardDetail> GetCardData(int cardId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -203,7 +203,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = ExecuteCommand("GetCardData", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Card>();
+            var result = dsSchedules.Tables[0].DataTableToList<CardDetail>();
 
             return result;
         }
@@ -644,7 +644,6 @@ namespace OpFlow.Service.DataAccess
             return result.First().Identifier;
         }
 
-
         public static int UpdateFlowImage(int flowImageId, string comments, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -668,6 +667,48 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("flow_image_id", flowImageId)
             };
             return ExecuteNonQuery("DeleteFlowImage", dsParameters);
+        }
+
+        public static int NewSurgeryImage(int surgeryId, int stepId, int roleId, string comment, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("role_id", roleId),
+                new SqlParameter("image_comment", comment)
+            };
+            var insert = ExecuteCommand("InsertSurgeryImage", dsParameters);
+            var result = insert.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.First().Identifier;
+        }
+
+        public static int UpdateSurgeryImage(int surgeryImageId, string comments, int stepId, int roleId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_image_id", surgeryImageId),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("role_id", roleId),
+                new SqlParameter("comment", comments ?? (object)DBNull.Value)
+            };
+            return ExecuteNonQuery("UpdateSurgeryImage", dsParameters);
+        }
+
+        public static int DeleteSurgeryImage(int surgeryImageId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_image_id", surgeryImageId)
+            };
+            return ExecuteNonQuery("DeleteSurgeryImage", dsParameters);
         }
 
         public static int AddFlowFeedback(int flowId, string feedback, int userId, int providerId, int locationId)
@@ -966,6 +1007,18 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("qty_hold", qtyHold)
             };
             return ExecuteNonQuery("UpdateCardItem", dsParameters);
+        }
+
+        public static int UpdateCardProcedure(int cardId, string cptCode, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("cpt_code", cptCode)
+            };
+            return ExecuteNonQuery("UpdateCardProcedure", dsParameters);
         }
 
         public static int InsertCard(string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
@@ -1416,6 +1469,21 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetFlowImages", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<FlowImage>();
+
+            return result;
+        }
+
+        public static List<SurgeryDelay> GetFlowSurgeryDelays(int flowId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("flow_id", flowId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetFlowSurgeryDelays", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<SurgeryDelay>();
 
             return result;
         }

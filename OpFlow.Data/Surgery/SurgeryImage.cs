@@ -4,10 +4,10 @@ using System.Text;
 
 namespace OpFlow.Data
 {
-    public class FlowImage
+    public class SurgeryImage
     {
-        public int FlowImageID { get; set; }
-        public string FlowImagePath { get; set; }
+        public int SurgeryImageID { get; set; }
+        public string SurgeryImagePath { get; set; }
         public int FlowStepID { get; set; }
         public int RoleID { get; set; }
         public string FlowStep { get; set; }

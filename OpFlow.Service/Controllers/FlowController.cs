@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
 using OpFlow.Data.Debrief;
+using OpFlow.Service.DataAccess;
 using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
@@ -150,7 +151,7 @@ namespace OpFlow.Service.Controllers
             var flowImageId = DataAccess.SqlHelper.NewFlowImage(flowId, stepId, roleId, comment,
                 user.ProviderID, user.LocationID);
 
-            var folder = DataAccess.BlobStorageHelper.Folder(flowId, 0, 0, 0, 0);
+            var folder = DataAccess.BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, flowId);
             await DataAccess.BlobStorageHelper.PutBlobBytes(folder, flowImageId.ToString(), fileContents);
 
             return Ok();
@@ -181,7 +182,7 @@ namespace OpFlow.Service.Controllers
 
             DataAccess.SqlHelper.DeleteFlowImage(flowImageId, user.ProviderID, user.LocationID);
 
-            var folder = DataAccess.BlobStorageHelper.Folder(flowId, 0, 0, 0, 0);
+            var folder = DataAccess.BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, flowId);
             await DataAccess.BlobStorageHelper.DeleteBlob(folder, flowImageId.ToString());
 
             return Ok();
@@ -277,7 +278,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetFlowComments(flowId, surgeryId, user.ProviderID, user.LocationID);
+            var result = SqlHelper.GetFlowComments(flowId, surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -290,7 +291,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetFlowMessaging(flowId, user.ProviderID, user.LocationID, stepId);
+            var result = SqlHelper.GetFlowMessaging(flowId, user.ProviderID, user.LocationID, stepId);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -298,18 +299,24 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetFlowDetails")]
         [Route("api/flow/details")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowFeedback>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(FlowDetail))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
         public HttpResponseMessage GetFlowDetails(int flowId, int? surgeryId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var flow = DataAccess.SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
-            var feedback = DataAccess.SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
-            var notifications = DataAccess.SqlHelper.GetFlowNotifications(flowId, null, user.ProviderID, user.LocationID);
-            var flowInstructions = DataAccess.SqlHelper.GetFlowInstructions(flowId, surgeryId, user.ProviderID, user.LocationID);
-            var content = DataAccess.SqlHelper.GetFlowContent(flowId, 1, user.ProviderID, user.LocationID);
-            var timings = DataAccess.SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
-            var images = DataAccess.SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
+            var flow = SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
+
+            if (flow == null)
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var feedback = SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
+            var notifications = SqlHelper.GetFlowNotifications(flowId, null, user.ProviderID, user.LocationID);
+            var flowInstructions = SqlHelper.GetFlowInstructions(flowId, surgeryId, user.ProviderID, user.LocationID);
+            var content = SqlHelper.GetFlowContent(flowId, 1, user.ProviderID, user.LocationID);
+            var timings = SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
+            var images = SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
+            var surgeryDelays = SqlHelper.GetFlowSurgeryDelays(flowId, user.ProviderID, user.LocationID);
 
             foreach (var timing in timings)
             {
@@ -326,7 +333,8 @@ namespace OpFlow.Service.Controllers
                 Feedback = feedback,
                 Notifications = notifications,
                 Instructions = flowInstructions,
-                Content = content
+                Content = content,
+                SurgeryDelays = surgeryDelays
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, flowDetail);

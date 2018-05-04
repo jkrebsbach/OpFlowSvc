@@ -15,6 +15,13 @@ namespace OpFlow.Service.DataAccess
         private const string CONTAINER_NAME = "images";
         private static CloudStorageAccount _storageAccount;
 
+        public enum ImageType
+        {
+            PatientPosition,
+            FlowImages,
+            SurgeryImages
+        }
+
         private static CloudStorageAccount StorageAccount => _storageAccount ?? (_storageAccount = CloudStorageAccount.Parse(
             ConfigurationManager.ConnectionStrings["BlobStorageConnection"].ConnectionString));
 
@@ -107,11 +114,9 @@ namespace OpFlow.Service.DataAccess
         }
     
 
-        public static string Folder(int providerId, int cardId, int flowId, int stepId, int roleId)
+        public static string Folder(ImageType imageType, int containerId)
         {
-            var folder = string.Format($"{providerId}_{cardId}_{flowId}_{stepId}_{roleId}");
-
-            return folder;
+            return $"{imageType}/{containerId}";
         }
     }
 }

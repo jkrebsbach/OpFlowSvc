@@ -41,6 +41,13 @@ namespace OpFlow.Data
         }
     }
 
+    public class CardDetail : Card
+    {
+        public List<SurgeryUser> CardUsers { get; set; }
+        public List<CardItem> CardItems { get; set; }
+        public List<SurgeryInstrumentCount> SurgeryAdditionalItems { get; set; }
+    }
+
     public class SurgeryCard : Card
     {
         public bool CurrentCard { get; set; }    

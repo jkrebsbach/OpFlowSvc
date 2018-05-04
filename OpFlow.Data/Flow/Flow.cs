@@ -50,6 +50,7 @@ namespace OpFlow.Data
         public List<FlowNotification> Notifications { get; set; }
         public List<FlowStepInstructionResult> Instructions { get; set; }
         public List<FlowContent> Content { get; set; }
+        public List<SurgeryDelay> SurgeryDelays { get; set; }
     }
 
     public class FlowPost

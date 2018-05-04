@@ -27,6 +27,28 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, cards);
         }
 
+        [SwaggerOperation("GetById")]
+        [Route("api/card/details")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardDetail))]
+        public HttpResponseMessage Get(int cardId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var cards = DataAccess.SqlHelper.GetCardData(cardId, user.ProviderID, user.LocationID);
+
+            var card = cards.FirstOrDefault();
+            if (card == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            }
+
+            card.CardUsers = DataAccess.SqlHelper.GetCardUsers(cardId, user.ProviderID, user.LocationID, 1);
+            card.CardItems = DataAccess.SqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
+            card.SurgeryAdditionalItems = new List<SurgeryInstrumentCount>();
+
+            return Request.CreateResponse(HttpStatusCode.OK, card);
+        }
+
         // GET api/values/5
         [SwaggerOperation("GetCardItems")]
         [Route("api/card/carditems")]
@@ -296,6 +318,20 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
 
             var result = DataAccess.SqlHelper.UpdateCardItem(cardId, itemId, value.OpenQty, value.HoldQty, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK);
+        }
+
+        // PUT api/values
+        [SwaggerOperation("AssignCardProcedure")]
+        [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
+        [Route("api/card/cardProcedure", Name = "AssignCardProcedure")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutCardItem(int cardId, string cptCode)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.UpdateCardProcedure(cardId, cptCode, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK);
         }
