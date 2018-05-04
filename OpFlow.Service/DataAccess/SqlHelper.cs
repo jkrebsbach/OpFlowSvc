@@ -223,6 +223,36 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static List<SurgeryInstrumentCount> GetCardAdditionalItems(int cardId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetCardAdditionalItems", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<SurgeryInstrumentCount>();
+
+            return result;
+        }
+
+        public static List<Procedure> GetCardProcedures(int cardId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetCardProcedures", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Procedure>();
+
+            return result;
+        }
+
         public static List<CardItemCount> GetSurgeryCardItemCounts(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]

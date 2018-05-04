@@ -44,7 +44,8 @@ namespace OpFlow.Service.Controllers
 
             card.CardUsers = DataAccess.SqlHelper.GetCardUsers(cardId, user.ProviderID, user.LocationID, 1);
             card.CardItems = DataAccess.SqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
-            card.SurgeryAdditionalItems = new List<SurgeryInstrumentCount>();
+            card.SurgeryAdditionalItems = DataAccess.SqlHelper.GetCardAdditionalItems(cardId, user.ProviderID, user.LocationID);
+            card.CardProcedures = DataAccess.SqlHelper.GetCardProcedures(cardId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, card);
         }

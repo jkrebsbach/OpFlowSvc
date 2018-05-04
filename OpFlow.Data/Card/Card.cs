@@ -46,6 +46,7 @@ namespace OpFlow.Data
         public List<SurgeryUser> CardUsers { get; set; }
         public List<CardItem> CardItems { get; set; }
         public List<SurgeryInstrumentCount> SurgeryAdditionalItems { get; set; }
+        public List<Procedure> CardProcedures { get; set; }
     }
 
     public class SurgeryCard : Card

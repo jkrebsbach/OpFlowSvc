@@ -181,9 +181,9 @@ namespace OpFlow.Data
     public class SurgeryInstrumentCount
     {
         public int SurgeryID { get; set; }
-        public int TrayItemID { get; set; }
+        public int? TrayItemID { get; set; }
         public int? ItemID { get; set; }
-        public int InstrumentID { get; set; }
+        public int? InstrumentID { get; set; }
         public int TrayQuantity { get; set; }
         public int QuantityUsed { get; set; }
         public string TrayName { get; set; }
