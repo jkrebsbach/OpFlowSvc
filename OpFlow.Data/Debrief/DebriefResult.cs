@@ -17,6 +17,7 @@ namespace OpFlow.Data.Debrief
         public List<FlowStepTiming> FlowSteps { get; set; }
         public List<Messaging> Messages { get; set; }
         public List<FlowImage> FlowImages { get; set; }
+        public List<SurgeryImage> SurgeryImages { get; set; }
     }
 
     public class SmartPhraseCategory

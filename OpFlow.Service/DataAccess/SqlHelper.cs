@@ -1503,6 +1503,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static List<SurgeryImage> GetSurgeryImages(int surgeryId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetSurgeryImages", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<SurgeryImage>();
+
+            return result;
+        }
+
         public static List<SurgeryDelay> GetFlowSurgeryDelays(int flowId, int providerId, int locationId)
         {
             var dsParameters = new[]

@@ -138,7 +138,6 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/flow/flowImage", Name = "NewFlowImage")]
         [HttpPut]
-        [AllowAnonymous]
         public async Task<IHttpActionResult> NewFlowImage(int flowId, int stepId, int roleId, string comment)
         {
             var user = CacheUtil.GetUserSecurity();
@@ -315,7 +314,8 @@ namespace OpFlow.Service.Controllers
             var flowInstructions = SqlHelper.GetFlowInstructions(flowId, surgeryId, user.ProviderID, user.LocationID);
             var content = SqlHelper.GetFlowContent(flowId, 1, user.ProviderID, user.LocationID);
             var timings = SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
-            var images = SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
+            var flowImages = SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
+            var surgeryImages = SqlHelper.GetSurgeryImages(flowId, user.ProviderID, user.LocationID);
             var surgeryDelays = SqlHelper.GetFlowSurgeryDelays(flowId, user.ProviderID, user.LocationID);
 
             foreach (var timing in timings)
@@ -323,7 +323,8 @@ namespace OpFlow.Service.Controllers
                 timing.RoleInstructions = flowInstructions.FirstOrDefault(i => i.StepID == timing.StepID)?.FlowRoleInstructions;
                 timing.StepNotifications = notifications.Where(n => n.StepID == timing.StepID).ToList();
 
-                timing.FlowImages = images.Where(n => n.FlowStepID == timing.StepID).ToList();
+                timing.FlowImages = flowImages.Where(n => n.FlowStepID == timing.StepID).ToList();
+                timing.SurgeryImages = surgeryImages.Where(n => n.FlowStepID == timing.StepID).ToList();
             }
 
             var flowDetail = new FlowDetail()
