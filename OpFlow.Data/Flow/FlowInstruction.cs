@@ -15,6 +15,7 @@ namespace OpFlow.Data
     public class FlowStepInstructionResult
     {
         public int StepID { get; set; }
+        public string StepName { get; set; }
         public List<FlowRoleInstruction> FlowRoleInstructions { get; }
 
         public FlowStepInstructionResult()
@@ -26,6 +27,7 @@ namespace OpFlow.Data
     public class FlowRoleInstruction
     {
         public int RoleID { get; set; }
+        public string RoleName { get; set; }
         public List<FlowInstruction> FlowInstructions { get; }
 
         public FlowRoleInstruction()

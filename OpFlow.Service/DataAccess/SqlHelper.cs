@@ -2348,14 +2348,16 @@ namespace OpFlow.Service.DataAccess
             {
                 var flowStepInstruction = new FlowStepInstructionResult()
                 {
-                    StepID = stepInstruction.Key
+                    StepID = stepInstruction.Key,
+                    StepName = stepInstruction.First().StepDescription
                 };
 
                 foreach (var roleInstruction in stepInstruction.GroupBy(i => i.RoleID))
                 {
                     var flowRoleInstruction = new FlowRoleInstruction()
                     {
-                        RoleID = roleInstruction.Key
+                        RoleID = roleInstruction.Key,
+                        RoleName = stepInstruction.First().RoleDescription
                     };
 
                     flowRoleInstruction.FlowInstructions.AddRange(roleInstruction.ToList());
