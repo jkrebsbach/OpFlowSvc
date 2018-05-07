@@ -328,10 +328,25 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [SwaggerOperation("AddSurgerySmartPhrase")]
+        [SwaggerResponse(HttpStatusCode.Created)]
+        [Route("api/surgery/surgeryPhrase", Name = "AddSurgerySmartPhrase")]
+        [HttpPost]
+        public async Task<IHttpActionResult> AddSurgerySmartPhrase(int surgeryId, int smartPhraseId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.AddSurgerySmartPhrase(surgeryId, smartPhraseId,
+                user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
         [SwaggerOperation("UpdateSurgeryPhrase")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/surgery/surgeryPhrase", Name = "UpdateSurgeryPhrase")]
-        [HttpPost]
+        [HttpPut]
         public async Task<IHttpActionResult> UpdateSurgeryPhrase(int surgeryId, int smartPhraseId, [FromBody]PhraseUpdatePost debriefUpdate)
         {
             var user = CacheUtil.GetUserSecurity();
@@ -360,7 +375,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("NewSurgeonNote")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/flow/surgeonNote", Name = "NewSurgeonNote")]
-        [HttpPut]
+        [HttpPost]
         public async Task<IHttpActionResult> NewSurgeonNote([FromBody]SurgeonNotePost smartPhrase)
         {
             var user = CacheUtil.GetUserSecurity();
@@ -375,7 +390,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("UpdateSurgeonNote")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/surgery/surgeonNote", Name = "UpdateSurgeonNote")]
-        [HttpPost]
+        [HttpPut]
         public async Task<IHttpActionResult> UpdateSurgeonNote(int surgeonNoteId, [FromBody]PhraseUpdatePost debriefUpdate)
         {
             var user = CacheUtil.GetUserSecurity();

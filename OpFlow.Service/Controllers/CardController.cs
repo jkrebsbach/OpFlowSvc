@@ -328,7 +328,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
         [Route("api/card/cardProcedure", Name = "AssignCardProcedure")]
         [HttpPut]
-        public async Task<HttpResponseMessage> PutCardItem(int cardId, string cptCode)
+        public async Task<HttpResponseMessage> PutCardProcedure(int cardId, string cptCode)
         {
             var user = CacheUtil.GetUserSecurity();
 

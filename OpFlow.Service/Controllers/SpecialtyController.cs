@@ -28,5 +28,19 @@ namespace OpFlow.Service.Controllers
                 Request.CreateResponse(HttpStatusCode.NotFound) :
                 Request.CreateResponse(HttpStatusCode.OK, specialties);
         }
+
+        // PUT api/roomSetup/values/5
+        [SwaggerOperation("Update")]
+        [Route("api/specialty")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        public HttpResponseMessage PutSpecialty(int specialtyId, [FromBody]SpecialtyPost specialty)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.UpdateSpecialty(specialtyId, specialty.Description, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
+        }
     }
 }

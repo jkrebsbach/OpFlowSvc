@@ -1379,6 +1379,20 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static List<RoomGroup> GetRoomGroups(int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = ExecuteCommand("GetRoomGroups", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<RoomGroup>();
+
+            return result;
+        }
+
         public static List<RoomSetup> GetRoomSetups(int? roomSetupId, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -1544,6 +1558,22 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetFlowSurgeonNotes", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<FlowSurgeonNote>();
+
+            return result;
+        }
+
+        public static int UpdateRoom(int roomId, string description, int typeId, int groupId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("room_id", roomId),
+                new SqlParameter("description", description),
+                new SqlParameter("type_id", typeId),
+                new SqlParameter("group_id", groupId)
+            };
+            var result = ExecuteNonQuery("UpdateRoom", dsParameters);
 
             return result;
         }
@@ -2183,6 +2213,20 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetSpecialtyByLocation", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Specialty>();
+
+            return result;
+        }
+
+        public static int UpdateSpecialty(int specialtyId, string description, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("description", description),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = ExecuteNonQuery("UpdateSpecialty", parameters);
 
             return result;
         }

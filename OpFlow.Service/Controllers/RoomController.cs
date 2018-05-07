@@ -16,8 +16,10 @@ namespace OpFlow.Service.Controllers
     {
         // GET api/values
         [SwaggerOperation("GetByLocationId")]
+        [Route("api/room")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Room>))]
-        public IEnumerable<Room> Get(int? roomId = null, int? locationId = null)
+        [HttpGet]
+        public IEnumerable<Room> Get(int? roomId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
@@ -27,16 +29,29 @@ namespace OpFlow.Service.Controllers
 
             return rooms;
         }
+
         // GET api/values
         [SwaggerOperation("GetTypes")]
         [Route("api/room/types")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<RoomType>))]
-        public IEnumerable<RoomType> GetTypes(int? locationId = null)
+        public IEnumerable<RoomType> GetTypes()
         {
             var user = CacheUtil.GetUserSecurity();
 
             return DataAccess.SqlHelper.GetRoomTypes(user.LocationID);
         }
+
+        // GET api/values
+        [SwaggerOperation("GetGroups")]
+        [Route("api/room/groups")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<RoomGroup>))]
+        public IEnumerable<RoomGroup> GetGroups()
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            return DataAccess.SqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
+        }
+
         // GET api/values
         [SwaggerOperation("GetSetups")]
         [Route("api/room/setups")]
@@ -64,10 +79,26 @@ namespace OpFlow.Service.Controllers
             return DataAccess.SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
         }
 
+        // PUT api/roomSetup/values/5
+        [SwaggerOperation("Update")]
+        [Route("api/room")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [HttpPut]
+        public HttpResponseMessage PutRoom(int roomId, [FromBody]RoomPost room)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.UpdateRoom(roomId, room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, roomId);
+        }
+
         // POST api/roomSetup/values
         [SwaggerOperation("Create")]
         [Route("api/room/roomSetup")]
         [SwaggerResponse(HttpStatusCode.Created)]
+        [HttpPost]
         public HttpResponseMessage Post([FromBody]RoomSetup roomSetup)
         {
             var user = CacheUtil.GetUserSecurity();
@@ -82,7 +113,8 @@ namespace OpFlow.Service.Controllers
         [Route("api/room/roomSetup/{roomsetupId}")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage Put(int roomsetupId, [FromBody]RoomSetup roomSetup)
+        [HttpPut]
+        public HttpResponseMessage PutRoomSetup(int roomsetupId, [FromBody]RoomSetup roomSetup)
         {
             var user = CacheUtil.GetUserSecurity();
 

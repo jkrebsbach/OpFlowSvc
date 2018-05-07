@@ -20,4 +20,9 @@ namespace OpFlow.Data
             return SpecialtyDescription;
         }
     }
+
+    public class SpecialtyPost
+    {
+        public string Description { get; set; }
+    }
 }

@@ -32,25 +32,10 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [SwaggerOperation("AddSurgerySmartPhrase")]
-        [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/flow/surgerySmartPhrase", Name = "AddSurgerySmartPhrase")]
-        [HttpPut]
-        public async Task<IHttpActionResult> AddSurgerySmartPhrase(int surgeryId, int smartPhraseId)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            DataAccess.SqlHelper.AddSurgerySmartPhrase(surgeryId, smartPhraseId,
-                user.ProviderID, user.LocationID);
-
-            return Ok();
-        }
-
-        // POST api/values
         [SwaggerOperation("AddFlowPhrase")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/flow/flowPhrase", Name = "AddFlowPhrase")]
-        [HttpPut]
+        [HttpPost]
         public async Task<IHttpActionResult> AddFlowPhrase(int flowId, int smartPhraseId)
         {
             var user = CacheUtil.GetUserSecurity();
@@ -65,7 +50,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("UpdateFlowPhrase")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/flow/flowPhrase", Name = "UpdateFlowPhrase")]
-        [HttpPost]
+        [HttpPut]
         public async Task<IHttpActionResult> UpdateFlowPhrase(int flowId, int smartPhraseId, [FromBody]PhraseUpdatePost debriefUpdate)
         {
             var user = CacheUtil.GetUserSecurity();
@@ -94,7 +79,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("NewSmartPhrase")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/flow/smartPhrase", Name = "NewSmartPhrase")]
-        [HttpPut]
+        [HttpPost]
         public async Task<IHttpActionResult> NewSmartPhrase([FromBody]SmartPhrasePost smartPhrase)
         {
             var user = CacheUtil.GetUserSecurity();
@@ -109,7 +94,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("EditSmartPhrase")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [Route("api/flow/smartPhrase", Name = "EditSmartPhrase")]
-        [HttpPost]
+        [HttpPut]
         public async Task<IHttpActionResult> EditSmartPhrase(int smartPhraseId, [FromBody]SmartPhrasePost smartPhrase)
         {
             var user = CacheUtil.GetUserSecurity();
@@ -315,8 +300,13 @@ namespace OpFlow.Service.Controllers
             var content = SqlHelper.GetFlowContent(flowId, 1, user.ProviderID, user.LocationID);
             var timings = SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
             var flowImages = SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
-            var surgeryImages = SqlHelper.GetSurgeryImages(flowId, user.ProviderID, user.LocationID);
             var surgeryDelays = SqlHelper.GetFlowSurgeryDelays(flowId, user.ProviderID, user.LocationID);
+            var surgeryImages = new List<SurgeryImage>();
+
+            if (surgeryId.HasValue)
+            {
+                surgeryImages = SqlHelper.GetSurgeryImages(surgeryId.Value, user.ProviderID, user.LocationID);
+            }
 
             foreach (var timing in timings)
             {

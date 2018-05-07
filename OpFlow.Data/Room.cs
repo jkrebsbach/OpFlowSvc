@@ -10,8 +10,10 @@ namespace OpFlow.Data
         public int RoomID { get; set; }
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
-        public int RoomTypeID { get; set; }
+        public int? RoomTypeID { get; set; }
         public string RoomType { get; set; }
+        public int? RoomGroupID { get; set; }
+        public string RoomGroup { get; set; }
         public string RoomDescription { get; set; }
 
         public int GetID()
@@ -39,6 +41,29 @@ namespace OpFlow.Data
         {
             return RoomTypeDescription;
         }
+    }
+
+    public class RoomGroup : IBindableEntity
+    {
+        public int RoomGroupID { get; set; }
+        public string RoomGroupDescription { get; set; }
+
+        public int GetID()
+        {
+            return RoomGroupID;
+        }
+
+        public override string ToString()
+        {
+            return RoomGroupDescription;
+        }
+    }
+
+    public class RoomPost
+    {
+        public string Description { get; set; }
+        public int RoomTypeID { get; set; }
+        public int RoomGroupID { get; set; }
     }
 
     public class RoomSetup : IBindableEntity
