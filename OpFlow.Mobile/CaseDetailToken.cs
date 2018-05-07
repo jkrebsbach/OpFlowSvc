@@ -73,7 +73,7 @@ namespace OpFlow.Mobile
 
 
 			var caseDetailCategories = flowInstructions
-				.Select(value => new CaseDetailCategory(value.StepID, "STEPNAME"))
+				.Select(value => new CaseDetailCategory(value.StepID, value.StepName))
 				.ToList();
 
             foreach (var flowStep in flowInstructions)
