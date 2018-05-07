@@ -498,6 +498,20 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [SwaggerOperation("AddSurgeryUser")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        [Route("api/surgery/user", Name = "AddSurgeryUser")]
+        public async Task<HttpResponseMessage> AddSurgeryUser(int surgeryId, int userId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            SqlHelper.AddSurgeryUser(surgeryId, userId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
+        // POST api/values
         [SwaggerOperation("AddSurgeryProcedure")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]

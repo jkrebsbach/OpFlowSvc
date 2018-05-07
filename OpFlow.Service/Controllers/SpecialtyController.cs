@@ -17,7 +17,9 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values/5
         [SwaggerOperation("Get")]
+        [Route("api/specialty")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Specialty>))]
+        [HttpGet]
         public HttpResponseMessage GetSpecialties(int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
@@ -34,6 +36,7 @@ namespace OpFlow.Service.Controllers
         [Route("api/specialty")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [HttpPut]
         public HttpResponseMessage PutSpecialty(int specialtyId, [FromBody]SpecialtyPost specialty)
         {
             var user = CacheUtil.GetUserSecurity();

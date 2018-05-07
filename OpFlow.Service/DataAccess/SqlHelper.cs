@@ -1039,7 +1039,7 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UpdateCardItem", dsParameters);
         }
 
-        public static int UpdateCardProcedure(int cardId, string cptCode, int providerId, int locationId)
+        public static int? UpdateCardProcedure(int cardId, string cptCode, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1048,7 +1048,12 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("card_id", cardId),
                 new SqlParameter("cpt_code", cptCode)
             };
-            return ExecuteNonQuery("UpdateCardProcedure", dsParameters);
+            var updateResult = ExecuteCommand("UpdateCardProcedure", dsParameters);
+
+            if (updateResult.Tables[0].Rows.Count <= 0) return null;
+
+            var result = updateResult.Tables[0].Rows[0];
+            return result["ProcedureID"] == DBNull.Value ? (int?)null : (int)result["ProcedureID"];
         }
 
         public static int InsertCard(string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
@@ -1162,6 +1167,18 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("quantity", quantity)
             };
             return ExecuteNonQuery("InsertCustomSurgeryItem", dsParameters);
+        }
+
+        public static int AddSurgeryUser(int surgeryId, int userId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("user_id", userId)
+            };
+            return ExecuteNonQuery("InsertSurgeryUser", dsParameters);
         }
 
         public static int AddSurgeryProcedure(int surgeryId, string cptCode, int providerId, int locationId)

@@ -328,13 +328,17 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
         [Route("api/card/cardProcedure", Name = "AssignCardProcedure")]
         [HttpPut]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
         public async Task<HttpResponseMessage> PutCardProcedure(int cardId, string cptCode)
         {
             var user = CacheUtil.GetUserSecurity();
 
             var result = DataAccess.SqlHelper.UpdateCardProcedure(cardId, cptCode, user.ProviderID, user.LocationID);
 
-            return Request.CreateResponse(HttpStatusCode.OK);
+            return result.HasValue ? 
+                Request.CreateResponse(HttpStatusCode.OK, result) : 
+                Request.CreateResponse(HttpStatusCode.NotFound, "Invalid CPT Code");
         }
 
         // POST api/values
