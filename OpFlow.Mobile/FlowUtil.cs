@@ -10,18 +10,18 @@ namespace OpFlow.Mobile
 {
     public abstract class FlowUtil
     {
-        public static async Task<List<FlowStepTiming>> GetFlowTimings(int flowId)
+        public static async Task<List<FlowStepTiming>> GetFlowSurgeryTimings(int surgeryId)
         {
-            var command = string.Format("api/flow/timings?flowId={0}", flowId);
+            var command = string.Format("api/flow/surgerytimings?surgeryId={0}", surgeryId);
             var response = await WebUtility.WebRequest<List<FlowStepTiming>>(command, HttpMethod.Get);
 
             return response.OrderBy(r => r.StepID).ToList();
         }
 
-        public static async Task<List<FlowInstruction>> GetFlowInstructions(int flowId)
+        public static async Task<List<FlowStepInstructionResult>> GetFlowInstructions(int flowId, int surgeryId)
         {
-            var command = string.Format("api/flow/instructions?flowId={0}", flowId);
-            var response = await WebUtility.WebRequest<List<FlowInstruction>>(command, HttpMethod.Get);
+			var command = string.Format("api/flow/instructions?flowId={0}&surgeryId={1}", flowId, surgeryId);
+			var response = await WebUtility.WebRequest<List<FlowStepInstructionResult>>(command, HttpMethod.Get);
 
             return response.OrderBy(r => r.StepID).ToList();
         }

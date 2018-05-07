@@ -40,7 +40,7 @@ namespace OpFlow.Mobile
             switch (AppSettings.CurrentScreen)
             {
                 case AppSettings.FragmentEnum.Debrief:
-                    categories = await GetFlowDebrief(surgery.FlowID ?? 0);
+                    categories = await GetFlowDebrief(surgery.SurgeryID);
                     break;
                 case AppSettings.FragmentEnum.Patient:
                     categories = GetPatientDetails(patient);
@@ -49,7 +49,7 @@ namespace OpFlow.Mobile
                     categories = await GetCardItemDetails(surgery.CardID ?? 0);
                     break;
                 case AppSettings.FragmentEnum.FlowDetail:
-                    categories = await GetFlowDetails(surgery.FlowID ?? 0);
+                    categories = await GetFlowDetails(surgery.FlowID ?? 0, surgery.SurgeryID);
                     break;
                 default:
                     categories = GetPatientDetails(patient);
@@ -67,28 +67,34 @@ namespace OpFlow.Mobile
             return result;
         }
 
-        private static async Task<List<CaseDetailCategory>> GetFlowDetails(int flowId)
+        private static async Task<List<CaseDetailCategory>> GetFlowDetails(int flowId, int surgeryId)
         {
-            var flowInstructions = await FlowUtil.GetFlowInstructions(flowId);
+            var flowInstructions = await FlowUtil.GetFlowInstructions(flowId, surgeryId);
 
-            var caseDetailCategories = flowInstructions
-                .OrderBy(fs => fs.StepID)
-                .GroupBy(x => new { x.StepID, x.StepDescription })
-                .Select(value => new CaseDetailCategory(value.Key.StepID, value.Key.StepDescription))
-                .ToList();
 
-            foreach (var flowInstruction in flowInstructions)
+			var caseDetailCategories = flowInstructions
+				.Select(value => new CaseDetailCategory(value.StepID, "STEPNAME"))
+				.ToList();
+
+            foreach (var flowStep in flowInstructions)
             {
-                var category = caseDetailCategories.First(c => c.CategoryGroupId == flowInstruction.StepID);
+                foreach (var flowRole in flowStep.FlowRoleInstructions)
+				{
+					foreach (var flowInstruction in flowRole.FlowInstructions)
+					{
+						var category = caseDetailCategories.FirstOrDefault(c => c.CategoryGroupId == flowStep.StepID);
 
-                category.Tokens.Add(new CaseDetailToken(0, flowInstruction.StepInstruction, flowInstruction.RoleDescription, category));
+						category.Tokens.Add(new CaseDetailToken(0, 
+						      flowInstruction.StepInstruction, flowInstruction.RoleDescription, category));
+					}
+				}
             }
             return caseDetailCategories;
         }
 
-        private static async Task<List<CaseDetailCategory>> GetFlowDebrief(int flowId)
+        private static async Task<List<CaseDetailCategory>> GetFlowDebrief(int surgeryId)
         {
-            var flowSteps = await FlowUtil.GetFlowTimings(flowId);
+            var flowSteps = await FlowUtil.GetFlowSurgeryTimings(surgeryId);
 
             var caseDetailCategories = flowSteps
                 .OrderBy(fs => fs.StepID)
