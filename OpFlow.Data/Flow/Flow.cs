@@ -58,6 +58,7 @@ namespace OpFlow.Data
         public int CardID { get; set; }
         public int RoomSetupID { get; set; }
         public string FlowDescription { get; set; }
+        public bool DefaultFlow { get; set; }
     }
 
     public class FlowStepPost

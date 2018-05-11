@@ -27,6 +27,8 @@ namespace OpFlow.Data
         public string ProcedureDescription { get; set; }
         public string FlowDescription { get; set; }
         public string CardDescription { get; set; }
+        public string BundleDescription { get; set; }
+        public string SpecialtyDescription { get; set; }
         public decimal Cost { get; set; }
 
 

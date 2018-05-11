@@ -283,12 +283,14 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Card> GetCardList(int? userId, int? procedureId, int providerId, int locationId)
+        public static List<Card> GetCardList(int? userId, int? procedureId, int? bundleId, bool defaultCardOnly, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("user_id", userId ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
+                new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
+                new SqlParameter("default_flag", defaultCardOnly),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -1056,8 +1058,20 @@ namespace OpFlow.Service.DataAccess
             return result["ProcedureID"] == DBNull.Value ? (int?)null : (int)result["ProcedureID"];
         }
 
+        public static int? DeleteCardProcedure(int cardId, int procedureId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("procedure_id", procedureId)
+            };
+            return ExecuteNonQuery("DeleteCardProcedure", dsParameters);
+        }
+
         public static int InsertCard(string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
-            string defaultFlag, string specialtyDefaultFlag, int userId, int providerId, int locationId)
+            bool? defaultFlag, bool? specialtyDefaultFlag, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1082,7 +1096,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public static int UpdateCard(int cardId, string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
-            string defaultFlag, string specialtyDefaultFlag, int userId, int providerId, int locationId)
+            bool? defaultFlag, bool? specialtyDefaultFlag, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2268,7 +2282,6 @@ namespace OpFlow.Service.DataAccess
             var parameters = new[]
             {
                 new SqlParameter("flow_id", flowId),
-                new SqlParameter("card_id", DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -2531,7 +2544,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static int NewFlow(int cardId, int roomSetupId, string description, int userId, int providerId, int locationId)
+        public static int NewFlow(int cardId, int roomSetupId, string description, int userId, bool defaultFlow, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2539,6 +2552,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("card_id", cardId),
                 new SqlParameter("user_id", userId),
+                new SqlParameter("default_flow", defaultFlow),
                 new SqlParameter("room_setup_id", roomSetupId),
                 new SqlParameter("description", description ?? (object)DBNull.Value)
             };
@@ -2549,7 +2563,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static int UpdateFlow(int flowId, int cardId, int roomSetupId, string description, int userId, int providerId, int locationId)
+        public static int UpdateFlow(int flowId, int cardId, int roomSetupId, string description, int userId, bool defaultFlow, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2558,6 +2572,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("card_id", cardId),
                 new SqlParameter("user_id", userId),
+                new SqlParameter("default_flow", defaultFlow),
                 new SqlParameter("room_setup_id", roomSetupId),
                 new SqlParameter("description", description ?? (object)DBNull.Value)
             };
