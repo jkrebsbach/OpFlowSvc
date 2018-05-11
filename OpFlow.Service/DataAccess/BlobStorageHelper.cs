@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -71,6 +73,53 @@ namespace OpFlow.Service.DataAccess
 
 
             return memStream.ToArray();
+        }
+
+        public static async Task RotateImage(string folder, string filename, int direction)
+        {
+            var filepath = Path.Combine(folder, filename);
+
+            var memStream = new MemoryStream();
+            ICloudBlob blockBlob;
+
+            try
+            {
+                blockBlob = await Container.GetBlobReferenceFromServerAsync(filepath);
+                blockBlob.DownloadToStream(memStream);
+            }
+            catch (StorageException se)
+            {
+                if (se.Message.Contains("404") || se.Message.Contains("Not Found"))
+                {
+                    return;
+                }
+
+                throw;
+            }
+
+            var outStream = new MemoryStream();
+            memStream.Position = 0;
+
+            using (var img = Image.FromStream(memStream))
+            {
+                switch (direction)
+                {
+                    case 1:
+                        img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        break;
+                    case -1:
+                        img.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                        break;
+                }
+
+                img.Save(outStream, ImageFormat.Png);
+            }
+
+            outStream.Position = 0;
+            if (outStream.Length > 0)
+            {
+                await blockBlob.UploadFromStreamAsync(outStream);
+            }
         }
 
         public static async Task PutBlobBytes(string folder, string filename, byte[] bytes)

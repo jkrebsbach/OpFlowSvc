@@ -80,12 +80,22 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/flow/smartPhrase", Name = "NewSmartPhrase")]
         [HttpPost]
-        public async Task<IHttpActionResult> NewSmartPhrase([FromBody]SmartPhrasePost smartPhrase)
+        public async Task<IHttpActionResult> NewSmartPhrase([FromBody]NewSmartPhrasePost smartPhrase)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.NewSmartPhrase(smartPhrase.Phrase, smartPhrase.CategoryID, smartPhrase.StepID, smartPhrase.RoleID,
+            var smartPhraseId = SqlHelper.NewSmartPhrase(smartPhrase.Phrase, smartPhrase.CategoryID, smartPhrase.StepID, smartPhrase.RoleID,
                 smartPhrase.UserID ?? user.UserID, user.ProviderID, user.LocationID);
+
+            if (smartPhrase.FlowID.HasValue)
+            {
+                SqlHelper.AddFlowSmartPhrase(smartPhrase.FlowID.Value, smartPhraseId, user.ProviderID, user.LocationID);
+            }
+            else if (smartPhrase.SurgeryID.HasValue)
+            {
+                SqlHelper.AddSurgerySmartPhrase(smartPhrase.SurgeryID.Value, smartPhraseId, user.ProviderID,
+                    user.LocationID);
+            }
 
             return Ok();
         }
@@ -151,6 +161,26 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
 
             DataAccess.SqlHelper.UpdateFlowImage(flowImageId, flowImage.Comment, flowImage.StepID, flowImage.RoleID, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("RotateFlowImage")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/flow/rotateFlowImage", Name = "RotateFlowImage")]
+        [HttpPut]
+        public async Task<IHttpActionResult> RotateFlowImage(int flowImageId, int flowId, int direction)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            // Make sure valid rotation direction
+            if (direction != 1 && direction != -1)
+                return Ok();
+
+
+            var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, flowId);
+            await BlobStorageHelper.RotateImage(folder, flowImageId.ToString(), direction);
 
             return Ok();
         }
@@ -322,8 +352,6 @@ namespace OpFlow.Service.Controllers
                 Flow = flow,
                 Steps = timings,
                 Feedback = feedback,
-                Notifications = notifications,
-                Instructions = flowInstructions,
                 Content = content,
                 SurgeryDelays = surgeryDelays
             };
@@ -416,7 +444,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.EditFlowNotification(flowNotificationId, value.Message, value.SmsNumber,
+            var result = DataAccess.SqlHelper.EditFlowNotification(flowNotificationId, value.Message, value.StepID, value.SmsNumber,
                 value.EmailAddress, value.MessagingUserID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);

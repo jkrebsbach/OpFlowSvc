@@ -13,6 +13,12 @@ namespace OpFlow.Data.Debrief
         public int StepID { get; set; }
     }
 
+    public class NewSmartPhrasePost : SmartPhrasePost
+    {
+        public int? FlowID { get; set; }
+        public int? SurgeryID { get; set; }
+    }
+
     public class SurgeonNotePost
     {
         public string Phrase { get; set; }

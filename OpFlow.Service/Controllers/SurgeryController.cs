@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -374,7 +376,7 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("NewSurgeonNote")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/flow/surgeonNote", Name = "NewSurgeonNote")]
+        [Route("api/surgery/surgeonNote", Name = "NewSurgeonNote")]
         [HttpPost]
         public async Task<IHttpActionResult> NewSurgeonNote([FromBody]SurgeonNotePost smartPhrase)
         {
@@ -586,6 +588,26 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
 
             SqlHelper.UpdateSurgeryImage(surgeryImageId, surgeryImage.Comment, surgeryImage.StepID, surgeryImage.RoleID, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("RotateSurgeryImage")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/flow/rotateSurgeryImage", Name = "RotateSurgeryImage")]
+        [HttpPut]
+        public async Task<IHttpActionResult> RotateSurgeryImage(int surgeryImageId, int surgeryId, int direction)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            // Make sure valid rotation direction
+            if (direction != 1 && direction != -1)
+                return Ok();
+
+            var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.SurgeryImages, surgeryId);
+
+            await BlobStorageHelper.RotateImage(folder, surgeryImageId.ToString(), direction);
 
             return Ok();
         }

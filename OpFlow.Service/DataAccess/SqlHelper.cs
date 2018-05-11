@@ -633,7 +633,11 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("user_id", userId),
                 new SqlParameter("phrase", phrase)
             };
-            return ExecuteNonQuery("InsertPhrase", dsParameters);
+            var dsResult = ExecuteCommand("InsertPhrase", dsParameters);
+
+            var result = dsResult.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
         public static int EditSmartPhrase(int smartPhraseId, string phrase, int providerId, int locationId)
@@ -2513,13 +2517,14 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static int EditFlowNotification(int flowNotificationId, string message,
+        public static int EditFlowNotification(int flowNotificationId, string message, int stepId,
             string smsNumber, string emailAddress, int? messagingUserId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("flow_notification_id", flowNotificationId),
                 new SqlParameter("message", message),
+                new SqlParameter("step_id", stepId),
                 new SqlParameter("sms_number", smsNumber ?? (object)DBNull.Value),
                 new SqlParameter("email_address", emailAddress ?? (object)DBNull.Value),
                 new SqlParameter("messaging_user_id", messagingUserId ?? (object)DBNull.Value),
