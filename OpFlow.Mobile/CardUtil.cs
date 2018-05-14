@@ -25,7 +25,7 @@ namespace OpFlow.Mobile
         }
         public static async Task<List<CardItem>> GetCardItems(int cardId)
         {
-            var command = string.Format("api/card/surgery?cardId={0}", cardId);
+            var command = string.Format("api/card/carditems?cardId={0}", cardId);
             var response = await WebUtility.WebRequest<List<CardItem>>(command, HttpMethod.Get);
 
             return response;
