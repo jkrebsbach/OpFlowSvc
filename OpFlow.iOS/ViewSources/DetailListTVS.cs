@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using System.Threading.Tasks;
 using Foundation;
 using OpFlow.iOS.Delegates;
 using OpFlow.Mobile;
@@ -62,13 +60,14 @@ namespace OpFlow.iOS.ViewSources
                 var imageToken = token as CaseImageToken;
                 var hiddenDetails = imageToken.Category.HiddenDetails;
 
-                //var detailCell = tableView.DequeueReusableCell(cellType, indexPath) as DetailImageCell;
-
-                //cell = detailCell;
-                //if (cell != null)
-                //    cell.Hidden = hiddenDetails;
-
-                //detailCell?.UpdateCell(imageToken);
+                var detailCell = tableView.DequeueReusableCell(cellType, indexPath) as DetailImageCell;
+    
+                
+                cell = detailCell;
+                if (cell != null)
+                    cell.Hidden = hiddenDetails;
+    
+                detailCell?.UpdateCell(imageToken);
             }
             else
             {
@@ -161,6 +160,10 @@ namespace OpFlow.iOS.ViewSources
             {
                 return token.Category.HiddenDetails ? 0.0f : defaultSize * 2;
             }
+			else if (item is CaseImageToken)
+			{
+				return 300.0f;
+			}
             
             return defaultSize;
         }

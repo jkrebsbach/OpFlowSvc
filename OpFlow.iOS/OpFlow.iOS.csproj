@@ -235,6 +235,10 @@
     <Compile Include="CardTableCell.designer.cs">
       <DependentUpon>CardTableCell.cs</DependentUpon>
     </Compile>
+    <Compile Include="DetailImageCell.cs" />
+    <Compile Include="DetailImageCell.designer.cs">
+      <DependentUpon>DetailImageCell.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">

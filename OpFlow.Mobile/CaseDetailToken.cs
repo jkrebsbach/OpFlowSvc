@@ -105,8 +105,8 @@ namespace OpFlow.Mobile
                     result.Add(category);
                 }
 
-                category.Images.Add(new CaseImageToken(flowId.ToString(),
-                    flowImage.FlowImageID.ToString(), CaseImageToken.ImageTypeEnum.FlowImage, category));
+                category.Images.Add(new CaseImageToken(flowId,
+                    flowImage.FlowImageID, CaseImageToken.ImageTypeEnum.FlowImage, category));
             }
             foreach (var surgeryImage in flowImages.SurgeryImages.OrderBy(si => si.FlowStep))
             {
@@ -117,8 +117,8 @@ namespace OpFlow.Mobile
                     result.Add(category);
                 }
 
-                category.Images.Add(new CaseImageToken(surgeryId.ToString(),
-                    surgeryImage.SurgeryImageID.ToString(), CaseImageToken.ImageTypeEnum.SurgeryImage, category));
+                category.Images.Add(new CaseImageToken(surgeryId,
+                    surgeryImage.SurgeryImageID, CaseImageToken.ImageTypeEnum.SurgeryImage, category));
             }
 
 
@@ -250,16 +250,16 @@ namespace OpFlow.Mobile
             }
         }
     }
-
+    
     public class CaseImageToken : DetailItem
     {
-        public string FolderID;
-        public string DetailID;
+        public int FolderID;
+        public int DetailID;
         public ImageTypeEnum ImageType;
 
         public readonly CaseDetailCategory Category;
 
-        public CaseImageToken(string folderId, string detailId, ImageTypeEnum imageType, CaseDetailCategory category)
+        public CaseImageToken(int folderId, int detailId, ImageTypeEnum imageType, CaseDetailCategory category)
         {
             FolderID = folderId;
             DetailID = detailId;

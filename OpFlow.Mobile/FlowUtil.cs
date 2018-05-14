@@ -52,6 +52,12 @@ namespace OpFlow.Mobile
             var response = await WebUtility.WebRequest<List<Flow>>(command, HttpMethod.Get);
 
             return response;
+		}
+
+        public static string FlowImageUrl(int flowId, int flowImageId)
+        {
+            var command = string.Format("api/image/flowImage?flowId={0}&flowImageId={1}", flowId, flowImageId);
+            return WebUtility.GetWebUrl(command);
         }
     }
 }

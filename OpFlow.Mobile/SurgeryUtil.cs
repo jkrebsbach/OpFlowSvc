@@ -163,6 +163,12 @@ namespace OpFlow.Mobile
             var response = await WebUtility.WebRequest<List<Surgery>>(command, HttpMethod.Get);
 
             return response;
+		}
+
+        public static string SurgeryImageUrl(int surgeryId, int surgeryImageId)
+        {
+			var command = string.Format("api/image/surgeryImage?surgeryId={0}&surgeryImageId={1}", surgeryId, surgeryImageId);
+            return WebUtility.GetWebUrl(command);
         }
     }
 }

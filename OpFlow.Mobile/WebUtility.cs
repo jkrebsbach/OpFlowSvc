@@ -26,6 +26,11 @@ namespace OpFlow.Mobile
             _client.MaxResponseContentBufferSize = 256000;
         }
 
+        public static String GetWebUrl(string command)
+		{
+			return Path.Combine(_rootUrl, command);
+		}
+
         internal static async Task<T> WebRequest<T>(string command, HttpMethod verb, List<KeyValuePair<string, string>> formData = null)
         {
             var result = string.Empty;
