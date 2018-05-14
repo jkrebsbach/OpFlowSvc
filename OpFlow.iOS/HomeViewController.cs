@@ -7,6 +7,14 @@ namespace OpFlow.iOS
 {
     public partial class HomeViewController : UIViewController
     {
+		partial void btnSignOut_Click(UIButton sender)
+		{
+			AppSettings.SignOutUser();
+			           
+            var controller = Storyboard.InstantiateViewController("LoginViewController");
+            NavigationController.PushViewController(controller, true);
+		}
+
         public HomeViewController(IntPtr handle) : base(handle)
         {
         }

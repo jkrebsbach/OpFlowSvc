@@ -42,6 +42,10 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnSearch_Click (UIKit.UIButton sender);
 
+        [Action ("btnSignOut_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnSignOut_Click (UIKit.UIButton sender);
+
         void ReleaseDesignerOutlets ()
         {
         }
