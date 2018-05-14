@@ -24,6 +24,12 @@ namespace OpFlow.Data
         }
     }
 
+    public class FlowImageResult
+    {
+        public List<FlowImage> FlowImages { get; set; }
+        public List<SurgeryImage> SurgeryImages { get; set; }
+    }
+
     public class FlowRoleInstruction
     {
         public int RoleID { get; set; }

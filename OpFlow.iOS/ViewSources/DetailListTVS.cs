@@ -31,12 +31,14 @@ namespace OpFlow.iOS.ViewSources
                 return tableView.DequeueReusableCell("DetailConfirmCell", indexPath);
 
             var token = _detailItems[indexPath.Row];
-            UITableViewCell cell;
+            UITableViewCell cell = null;
+
+            var cellType = CellType(indexPath);
             if (token is CaseDetailCategory)
             {
                 var hiddenDetails = (token as CaseDetailCategory).HiddenDetails;
 
-                var headerCell = tableView.DequeueReusableCell("DetailHeaderCell", indexPath) as DetailHeaderCell;
+                var headerCell = tableView.DequeueReusableCell(cellType, indexPath) as DetailHeaderCell;
                 headerCell?.AssignToggleImage(hiddenDetails);
 
                 cell = headerCell;
@@ -47,11 +49,7 @@ namespace OpFlow.iOS.ViewSources
                 var detailToken = token as CaseDetailToken;
                 var hiddenDetails = detailToken.Category.HiddenDetails;
                 
-                var detailCellType = (_allowEdit ? "DetailEditableContentCell" : "DetailContentCell");
-                if (detailToken.DetailType == CaseDetailToken.DetailTypes.ImageDetail)
-                    detailCellType = "DetailImageCell";
-
-                var detailCell = tableView.DequeueReusableCell(detailCellType, indexPath) as DetailListCell;
+                var detailCell = tableView.DequeueReusableCell(cellType, indexPath) as DetailListCell;
 
                 cell = detailCell;
                 if (cell != null)
@@ -59,12 +57,45 @@ namespace OpFlow.iOS.ViewSources
 
                 detailCell?.UpdateCell(detailToken);
             }
+            else if (token is CaseImageToken)
+            {
+                var imageToken = token as CaseImageToken;
+                var hiddenDetails = imageToken.Category.HiddenDetails;
+
+                //var detailCell = tableView.DequeueReusableCell(cellType, indexPath) as DetailImageCell;
+
+                //cell = detailCell;
+                //if (cell != null)
+                //    cell.Hidden = hiddenDetails;
+
+                //detailCell?.UpdateCell(imageToken);
+            }
             else
             {
                 throw new Exception("Unsupported Detail Type");
             }
 
             return cell;
+        }
+
+        private string CellType(NSIndexPath indexPath)
+        {
+            var token = _detailItems[indexPath.Row];
+
+            if (token is CaseDetailCategory)
+            {
+                return "DetailHeaderCell";
+            }
+            if (token is CaseDetailToken)
+            {
+                return _allowEdit ? "DetailEditableContentCell" : "DetailContentCell";
+            }
+            if (token is CaseImageToken)
+            {
+                return "DetailImageCell";
+            }
+
+            throw new Exception("Unsupported Detail Type");
         }
 
         public override nint RowsInSection(UITableView tableview, nint section)
@@ -103,7 +134,9 @@ namespace OpFlow.iOS.ViewSources
 
                     if (detailCell == null)
                     {
-                        detailCell = tableView.DequeueReusableCell(_detailCellType, indexPath) as DetailListCell;
+                        var detailCellType = CellType(indexPath);
+
+                        detailCell = tableView.DequeueReusableCell(detailCellType, indexPath) as DetailListCell;
                     }
 
                     // Assign visibility to Hidden flag

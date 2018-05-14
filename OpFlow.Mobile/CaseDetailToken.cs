@@ -17,6 +17,7 @@ namespace OpFlow.Mobile
         public bool HiddenDetails;
 
         public readonly List<CaseDetailToken> Tokens;
+        public readonly List<CaseImageToken> Images;
 
         public CaseDetailCategory(int groupId, string categoryTitle)
         {
@@ -24,6 +25,7 @@ namespace OpFlow.Mobile
             CategoryGroupId = groupId;
 
             Tokens = new List<CaseDetailToken>();
+            Images = new List<CaseImageToken>();
         }
 
         public CaseDetailCategory(int groupId, string categoryTitle, int detailId, string detailText)
@@ -62,6 +64,7 @@ namespace OpFlow.Mobile
                 result.Add(category);
 
                 result.AddRange(category.Tokens);
+                result.AddRange(category.Images ?? new List<CaseImageToken>());
             }
 
             return result;
@@ -69,27 +72,57 @@ namespace OpFlow.Mobile
 
         private static async Task<List<CaseDetailCategory>> GetFlowDetails(int flowId, int surgeryId)
         {
+            var result = new List<CaseDetailCategory>();
             var flowInstructions = await FlowUtil.GetFlowInstructions(flowId, surgeryId);
 
-
-			var caseDetailCategories = flowInstructions
-				.Select(value => new CaseDetailCategory(value.StepID, value.StepName))
-				.ToList();
-
-            foreach (var flowStep in flowInstructions)
+			foreach (var flowStep in flowInstructions)
             {
                 foreach (var flowRole in flowStep.FlowRoleInstructions)
 				{
 					foreach (var flowInstruction in flowRole.FlowInstructions)
 					{
-						var category = caseDetailCategories.FirstOrDefault(c => c.CategoryGroupId == flowStep.StepID);
+						var category = result.FirstOrDefault(c => c.CategoryGroupId == flowStep.StepID);
+					    if (category == null)
+					    {
+					        category = new CaseDetailCategory(flowStep.StepID, flowStep.StepName);
+					        result.Add(category);
+					    }
 
 						category.Tokens.Add(new CaseDetailToken(0, 
 						      flowInstruction.StepInstruction, flowInstruction.RoleDescription, category));
 					}
 				}
             }
-            return caseDetailCategories;
+
+            var flowImages = await FlowUtil.GetFlowImages(flowId, surgeryId);
+
+            foreach (var flowImage in flowImages.FlowImages.OrderBy(fi => fi.FlowStep))
+            {
+                var category = result.FirstOrDefault(c => c.CategoryGroupId == flowImage.FlowStepID);
+                if (category == null)
+                {
+                    category = new CaseDetailCategory(flowImage.FlowStepID, flowImage.FlowStep);
+                    result.Add(category);
+                }
+
+                category.Images.Add(new CaseImageToken(flowId.ToString(),
+                    flowImage.FlowImageID.ToString(), CaseImageToken.ImageTypeEnum.FlowImage, category));
+            }
+            foreach (var surgeryImage in flowImages.SurgeryImages.OrderBy(si => si.FlowStep))
+            {
+                var category = result.FirstOrDefault(c => c.CategoryGroupId == surgeryImage.FlowStepID);
+                if (category == null)
+                {
+                    category = new CaseDetailCategory(surgeryImage.FlowStepID, surgeryImage.FlowStep);
+                    result.Add(category);
+                }
+
+                category.Images.Add(new CaseImageToken(surgeryId.ToString(),
+                    surgeryImage.SurgeryImageID.ToString(), CaseImageToken.ImageTypeEnum.SurgeryImage, category));
+            }
+
+
+            return result;
         }
 
         private static async Task<List<CaseDetailCategory>> GetFlowDebrief(int surgeryId)
@@ -193,8 +226,6 @@ namespace OpFlow.Mobile
         public int DetailId;
         public readonly CaseDetailCategory Category;
 
-        public DetailTypes DetailType;
-
         public CaseDetailToken(int detailId, string detailText, string detailHeader, CaseDetailCategory category)
         {
             DetailId = detailId;
@@ -218,11 +249,29 @@ namespace OpFlow.Mobile
                     return false;
             }
         }
+    }
 
-        public enum DetailTypes
+    public class CaseImageToken : DetailItem
+    {
+        public string FolderID;
+        public string DetailID;
+        public ImageTypeEnum ImageType;
+
+        public readonly CaseDetailCategory Category;
+
+        public CaseImageToken(string folderId, string detailId, ImageTypeEnum imageType, CaseDetailCategory category)
         {
-            DataDetail,
-            ImageDetail
+            FolderID = folderId;
+            DetailID = detailId;
+            ImageType = imageType;
+
+            Category = category;
+        }
+
+        public enum ImageTypeEnum
+        {
+            FlowImage,
+            SurgeryImage
         }
     }
 }

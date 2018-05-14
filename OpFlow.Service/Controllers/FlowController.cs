@@ -236,7 +236,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCardFlowList")]
         [Route("api/flow/cardFlowList")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Flow>))]
-        public HttpResponseMessage GetCardFlowList(int cardId, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetCardFlowList(int cardId)
         {
             var user = CacheUtil.GetUserSecurity();
 
@@ -249,7 +249,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetFlowInstructions")]
         [Route("api/flow/instructions")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowStepInstructionResult>))]
-        public HttpResponseMessage GetFlowInstructions(int flowId, int? surgeryId = null, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetFlowInstructions(int flowId, int? surgeryId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
@@ -259,10 +259,31 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetFlowImages")]
+        [Route("api/flow/images")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(FlowImageResult))]
+        public HttpResponseMessage GetFlowImages(int flowId, int? surgeryId = null)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = new FlowImageResult
+            {
+                FlowImages = SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID)
+            };
+
+            if (surgeryId.HasValue)
+            {
+                result.SurgeryImages = SqlHelper.GetSurgeryImages(surgeryId.Value, user.ProviderID, user.LocationID);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetFlowTimings")]
         [Route("api/flow/timings")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowStepTiming>))]
-        public HttpResponseMessage GetFlowTimings(int flowId, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetFlowTimings(int flowId)
         {
             var user = CacheUtil.GetUserSecurity();
 

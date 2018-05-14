@@ -26,6 +26,14 @@ namespace OpFlow.Mobile
             return response.OrderBy(r => r.StepID).ToList();
         }
 
+        public static async Task<FlowImageResult> GetFlowImages(int flowId, int surgeryId)
+        {
+            var command = string.Format("api/flow/images?flowId={0}&surgeryId={1}", flowId, surgeryId);
+            var response = await WebUtility.WebRequest<FlowImageResult>(command, HttpMethod.Get);
+
+            return response;
+        }
+
         public static async Task<Flow> GetFlow(int flowId, int cardId)
         {
             var command = string.Format("api/flow?flowId={0}&cardId={1}", flowId, cardId);
