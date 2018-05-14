@@ -15,16 +15,12 @@ namespace OpFlow.iOS.ViewSources
         private readonly List<DetailItem> _detailItems;
         private readonly bool _allowEdit;
 
-        private string _detailCellType;
-
         public event EventHandler<List<DetailItem>> DetailListConfirmedEvent;
 
         public DetailListTVS(List<DetailItem> details, bool allowEdit)
         {
             _detailItems = details;
             _allowEdit = allowEdit;
-
-            _detailCellType = (allowEdit ? "DetailEditableContentCell" : "DetailContentCell");
         }
 
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
@@ -35,28 +31,37 @@ namespace OpFlow.iOS.ViewSources
                 return tableView.DequeueReusableCell("DetailConfirmCell", indexPath);
 
             var token = _detailItems[indexPath.Row];
-            var category = (token is CaseDetailCategory detailCategory ? detailCategory : (token as CaseDetailToken).Category);
-
-            var hiddenDetails = category.HiddenDetails;
-
             UITableViewCell cell;
             if (token is CaseDetailCategory)
             {
+                var hiddenDetails = (token as CaseDetailCategory).HiddenDetails;
+
                 var headerCell = tableView.DequeueReusableCell("DetailHeaderCell", indexPath) as DetailHeaderCell;
                 headerCell?.AssignToggleImage(hiddenDetails);
 
                 cell = headerCell;
                 headerCell?.UpdateCell(token as CaseDetailCategory);
             }
-            else
+            else if (token is CaseDetailToken)
             {
-                var detailCell = tableView.DequeueReusableCell(_detailCellType, indexPath) as DetailListCell;
+                var detailToken = token as CaseDetailToken;
+                var hiddenDetails = detailToken.Category.HiddenDetails;
+                
+                var detailCellType = (_allowEdit ? "DetailEditableContentCell" : "DetailContentCell");
+                if (detailToken.DetailType == CaseDetailToken.DetailTypes.ImageDetail)
+                    detailCellType = "DetailImageCell";
+
+                var detailCell = tableView.DequeueReusableCell(detailCellType, indexPath) as DetailListCell;
 
                 cell = detailCell;
                 if (cell != null)
                     cell.Hidden = hiddenDetails;
 
-                detailCell?.UpdateCell(token as CaseDetailToken);
+                detailCell?.UpdateCell(detailToken);
+            }
+            else
+            {
+                throw new Exception("Unsupported Detail Type");
             }
 
             return cell;

@@ -193,6 +193,8 @@ namespace OpFlow.Mobile
         public int DetailId;
         public readonly CaseDetailCategory Category;
 
+        public DetailTypes DetailType;
+
         public CaseDetailToken(int detailId, string detailText, string detailHeader, CaseDetailCategory category)
         {
             DetailId = detailId;
@@ -215,6 +217,12 @@ namespace OpFlow.Mobile
                 default:
                     return false;
             }
+        }
+
+        public enum DetailTypes
+        {
+            DataDetail,
+            ImageDetail
         }
     }
 }
