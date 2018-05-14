@@ -1159,13 +1159,13 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("bundle_id", surgery.BundleID ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("case_id", caseId),
-                new SqlParameter("room_id", surgery.RoomID),
+                new SqlParameter("room_id", surgery.RoomID ?? (object)DBNull.Value),
                 new SqlParameter("schedule_date", surgery.ScheduleDate),
                 new SqlParameter("schedule_time", surgery.ScheduleDate),
                 new SqlParameter("default_card_id", defaultCardId ?? (object)DBNull.Value),
                 new SqlParameter("default_flow_id", defaultFlowId ?? (object)DBNull.Value),
                 new SqlParameter("default_room_id", defaultRoomId ?? (object)DBNull.Value),
-                new SqlParameter("cpt_codes", surgery.CptCode)
+                new SqlParameter("cpt_codes", surgery.CptCode ?? (object)DBNull.Value)
             };
             var insert = ExecuteCommand("NewSurgery", dsParameters);
 

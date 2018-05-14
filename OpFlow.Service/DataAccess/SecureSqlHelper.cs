@@ -85,18 +85,18 @@ namespace OpFlow.Service.DataAccess
             return patients.FirstOrDefault();
         }
 
-        public static async Task<int> CreatePatient(string ptAcctNbr, string initials, DateTime birthDate, string gender, 
-            string firstName, string lastName, decimal bmi, string databaseName)
+        public static async Task<int> CreatePatient(string ptAcctNbr, string initials, DateTime? birthDate, string gender, 
+            string firstName, string lastName, decimal? bmi, string databaseName)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("pt_acct_nbr", ptAcctNbr),
-                new SqlParameter("initials", initials),
-                new SqlParameter("birth_date", birthDate),
-                new SqlParameter("last_name", lastName),
-                new SqlParameter("first_name", firstName),
-                new SqlParameter("gender", gender),
-                new SqlParameter("bmi", bmi)
+                new SqlParameter("pt_acct_nbr", ptAcctNbr ?? (object)DBNull.Value),
+                new SqlParameter("initials", initials ?? (object)DBNull.Value),
+                new SqlParameter("birth_date", birthDate ?? (object)DBNull.Value),
+                new SqlParameter("last_name", lastName ?? (object)DBNull.Value),
+                new SqlParameter("first_name", firstName ?? (object)DBNull.Value),
+                new SqlParameter("gender", gender ?? (object)DBNull.Value),
+                new SqlParameter("bmi", bmi ?? (object)DBNull.Value)
             };
             var insert = await ExecuteCommandAsync("NewPatient", databaseName, dsParameters);
 
