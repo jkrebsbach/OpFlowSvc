@@ -41,7 +41,37 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.UpdateSpecialty(specialtyId, specialty.Description, user.ProviderID, user.LocationID);
+            DataAccess.SqlHelper.UpdateSpecialty(specialtyId, specialty.Name, specialty.Description, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
+        }
+
+        // PUT api/roomSetup/values/5
+        [SwaggerOperation("Insert")]
+        [Route("api/specialty")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [HttpPost]
+        public HttpResponseMessage PostSpecialty([FromBody]SpecialtyPost specialty)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var specialtyId = DataAccess.SqlHelper.InsertSpecialty(specialty.Name, specialty.Description, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
+        }
+
+        // PUT api/roomSetup/values/5
+        [SwaggerOperation("Delete")]
+        [Route("api/specialty")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [HttpDelete]
+        public HttpResponseMessage DeleteSpecialty(int specialtyId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.DeleteSpecialty(specialtyId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
         }

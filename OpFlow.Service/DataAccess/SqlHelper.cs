@@ -1605,10 +1605,40 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("room_id", roomId),
                 new SqlParameter("description", description),
-                new SqlParameter("type_id", typeId),
-                new SqlParameter("group_id", groupId)
+                new SqlParameter("room_type_id", typeId),
+                new SqlParameter("room_group_id", groupId)
             };
             var result = ExecuteNonQuery("UpdateRoom", dsParameters);
+
+            return result;
+        }
+
+        public static int InsertRoom(string description, int typeId, int groupId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("description", description),
+                new SqlParameter("room_type_id", typeId),
+                new SqlParameter("room_group_id", groupId)
+            };
+            var dsResult = ExecuteCommand("InsertRoom", dsParameters);
+
+            var result = dsResult.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.FirstOrDefault()?.Identifier ?? -1;
+        }
+
+        public static int DeleteRoom(int roomId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("room_id", roomId)
+            };
+            var result = ExecuteNonQuery("DeleteRoom", dsParameters);
 
             return result;
         }
@@ -2252,16 +2282,46 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static int UpdateSpecialty(int specialtyId, string description, int providerId, int locationId)
+        public static int UpdateSpecialty(int specialtyId, string name, string description, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("name", name),
                 new SqlParameter("description", description),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = ExecuteNonQuery("UpdateSpecialty", parameters);
+
+            return result;
+        }
+
+        public static int InsertSpecialty(string name, string description, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("name", name),
+                new SqlParameter("description", description),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsResult = ExecuteCommand("InsertSpecialty", parameters);
+
+            var result = dsResult.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.FirstOrDefault()?.Identifier ?? -1;
+        }
+
+        public static int DeleteSpecialty(int specialtyId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("specialty_id", specialtyId)
+            };
+            var result = ExecuteNonQuery("DeleteSpecialty", dsParameters);
 
             return result;
         }

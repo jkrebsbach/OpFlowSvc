@@ -94,8 +94,38 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, roomId);
         }
 
-        // POST api/roomSetup/values
+        // PUT api/roomSetup/values/5
         [SwaggerOperation("Create")]
+        [Route("api/room")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [HttpPost]
+        public HttpResponseMessage PostRoom([FromBody]RoomPost room)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var roomId = DataAccess.SqlHelper.InsertRoom(room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, roomId);
+        }
+
+        // PUT api/roomSetup/values/5
+        [SwaggerOperation("Delete")]
+        [Route("api/room")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [HttpDelete]
+        public HttpResponseMessage DeleteRoom(int roomId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.DeleteRoom(roomId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, roomId);
+        }
+
+        // POST api/roomSetup/values
+        [SwaggerOperation("CreateSetup")]
         [Route("api/room/roomSetup")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [HttpPost]
@@ -109,7 +139,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // PUT api/roomSetup/values/5
-        [SwaggerOperation("Update")]
+        [SwaggerOperation("UpdateSetup")]
         [Route("api/room/roomSetup/{roomsetupId}")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
