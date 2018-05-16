@@ -381,6 +381,42 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetSmartPhraseAdmin")]
+        [Route("api/flow/smartPhraseAdmin")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(SmartPhraseAdmin))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        public HttpResponseMessage GetSmartPhraseAdmin()
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = new SmartPhraseAdmin()
+            {
+                Categories = SqlHelper.GetSmartPhraseCategories(user.ProviderID, user.LocationID),
+                Specialties = SqlHelper.GetSpecialties(user.ProviderID, user.LocationID),
+                Users = SqlHelper.SearchUsers(null, 1, null, user.ProviderID, user.LocationID)
+            };
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetSmartPhrases")]
+        [Route("api/flow/smartPhrases")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SmartPhrase>))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        public HttpResponseMessage GetSmartPhrases(int? categoryId = null, int? specialtyId = null, int? userId = null)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var categories = SqlHelper.GetSmartPhrases(categoryId, specialtyId, null, user.ProviderID, user.LocationID);
+
+            if (userId.HasValue)
+                categories = categories.Where(c => c.UserID == userId.Value).ToList();
+
+            return Request.CreateResponse(HttpStatusCode.OK, categories);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetFlowContent")]
         [Route("api/flow/content")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowContent>))]

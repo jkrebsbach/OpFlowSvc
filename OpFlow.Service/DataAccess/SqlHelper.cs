@@ -1199,6 +1199,18 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("InsertSurgeryUser", dsParameters);
         }
 
+        public static int DeleteSurgeryUser(int surgeryId, int userId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("user_id", userId)
+            };
+            return ExecuteNonQuery("DeleteSurgeryUser", dsParameters);
+        }
+
         public static int AddSurgeryProcedure(int surgeryId, string cptCode, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -1478,13 +1490,15 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<SmartPhrase> GetSmartPhrases(int userId, int providerId, int locationId)
+        public static List<SmartPhrase> GetSmartPhrases(int? categoryId, int? specialtyId, int? userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("user_id", userId),
                 new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("category_id", categoryId ?? (object)DBNull.Value)
             };
             var dsSchedules = ExecuteCommand("GetPhrases", dsParameters);
 

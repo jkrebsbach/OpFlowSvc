@@ -274,7 +274,7 @@ namespace OpFlow.Service.Controllers
 
             var smartPhrases = new List<SmartPhrase>();
             if (flow != null)
-                smartPhrases = SqlHelper.GetSmartPhrases(flow.OwnerUserID, user.ProviderID, user.LocationID);
+                smartPhrases = SqlHelper.GetSmartPhrases(null, null, flow.OwnerUserID, user.ProviderID, user.LocationID);
 
             var flowFeedback = SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
             var surgeonNotes = SqlHelper.GetSurgeonNotes(flowId, user.ProviderID, user.LocationID);
@@ -509,6 +509,20 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
 
             SqlHelper.AddSurgeryUser(surgeryId, userId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
+        // POST api/values
+        [SwaggerOperation("DeleteSurgeryUser")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpDelete]
+        [Route("api/surgery/user", Name = "DeleteSurgeryUser")]
+        public async Task<HttpResponseMessage> DeleteSurgeryUser(int surgeryId, int userId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            SqlHelper.DeleteSurgeryUser(surgeryId, userId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }

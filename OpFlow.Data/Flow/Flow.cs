@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using OpFlow.Data.Debrief;
 
 namespace OpFlow.Data
 {
@@ -51,6 +52,13 @@ namespace OpFlow.Data
         public List<FlowStepInstructionResult> Instructions { get; set; }
         public List<FlowContent> Content { get; set; }
         public List<SurgeryDelay> SurgeryDelays { get; set; }
+    }
+
+    public class SmartPhraseAdmin
+    {
+        public List<SmartPhraseCategory> Categories { get; set; }
+        public List<Specialty> Specialties { get; set; }
+        public List<User> Users { get; set; }
     }
 
     public class FlowPost
