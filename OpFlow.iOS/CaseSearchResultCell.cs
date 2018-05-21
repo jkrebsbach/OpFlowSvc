@@ -17,7 +17,7 @@ namespace OpFlow.iOS
             var surgery = model.Surgery;
             
             lblCaseProcedure.Text = $"{surgery.ProcedureDescription} {surgery.ScheduleDate:M/d} {surgery.ScheduleTime:hh\\:mm}";
-            lblCaseOverview.Text = $"Room:{surgery.RoomDescription} {surgery.SurgeryTeam()}";
+            lblCaseOverview.Text = $"Room:{surgery.RoomDescription} {surgery.SurgeryTeam}";
 
         }
     }

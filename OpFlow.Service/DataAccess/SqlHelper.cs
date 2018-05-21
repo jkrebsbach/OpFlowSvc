@@ -2044,28 +2044,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("SurgeryScheduleDate", scheduleDate ?? (object)DBNull.Value),
                 new SqlParameter("room_id", roomId ?? (object)DBNull.Value)
             };
-            var dsSchedules = ExecuteCommand("GetUserScheduledCases", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<SurgerySchedule>();
-
-            return result;
-        }
-
-        public static List<SurgerySchedule> GetOpenSurgeries(int? userID, int providerId, int locationId,
-            DateTime? scheduleDate, int? roomId)
-        {
-            if (roomId.HasValue)
-                userID = null;
-
-            var parameters = new[]
-            {
-                new SqlParameter("user_id", userID ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
-                new SqlParameter("SurgeryScheduleDate", scheduleDate ?? (object)DBNull.Value),
-                new SqlParameter("room_id", roomId ?? (object)DBNull.Value)
-            };
-            var dsSchedules = ExecuteCommand("GetOpenSurgeriesByUser", parameters);
+            var dsSchedules = ExecuteCommand("GetSurgeriesByUser", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<SurgerySchedule>();
 

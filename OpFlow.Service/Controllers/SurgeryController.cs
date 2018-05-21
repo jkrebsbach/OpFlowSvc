@@ -108,15 +108,16 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSchedule")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySchedule>))]
         [Route("api/Surgery/cases")]
-        public HttpResponseMessage GetSurgerySchedule(DateTime? scheduleDate = null, int? roomId = null, int ? userId = null, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetSurgerySchedule(DateTime? scheduleDate = null, int? roomId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var surgeries = SqlHelper.GetScheduledSurgeries(user.UserID, user.ProviderID, user.LocationID, scheduleDate, roomId);
-            var open = SqlHelper.GetOpenSurgeries(user.UserID, user.ProviderID, user.LocationID, scheduleDate, roomId);
+            int? userId = null;
+            if (roomId == null)
+                userId = user.UserID;
 
-            surgeries.AddRange(open);
-
+            var surgeries = SqlHelper.GetScheduledSurgeries(userId, user.ProviderID, user.LocationID, scheduleDate, roomId);
+            
             foreach (var surgery in surgeries)
             {
                 surgery.SurgeryUsers =
@@ -259,6 +260,24 @@ namespace OpFlow.Service.Controllers
         }
 
 
+
+        // GET api/values/5
+        [SwaggerOperation("GetSearchScreen")]
+        [Route("api/surgery/searchScreen")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(SearchScreen))]
+        public HttpResponseMessage GetSearchScreen()
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = new SearchScreen
+            {
+                Rooms = SqlHelper.GetRooms(user.LocationID),
+                Users = SqlHelper.SearchUsers(null, null, null, user.ProviderID, user.LocationID),
+                Specialties = SqlHelper.GetSpecialties(user.ProviderID, user.LocationID)
+            };
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
 
         // GET api/values/5
         [SwaggerOperation("GetDebriefScreen")]

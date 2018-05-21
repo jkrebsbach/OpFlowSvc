@@ -40,6 +40,7 @@ namespace OpFlow.Data
         public DateTime? ActualStartDate { get; set; }
         public TimeSpan? ActualStartTime { get; set; }
         public TimeSpan? DelayStartTime { get; set; }
+        public TimeSpan? EstFinishTime { get; set; }
         public int? EstDelayMinutes { get; set; }
         public int? TotalMinutes { get; set; }
         public string CaseNotes { get; set; }
@@ -143,6 +144,8 @@ namespace OpFlow.Data
         public int PatientID { get; set; }
         public DateTime ScheduleDate { get; set; }
         public TimeSpan ScheduleTime { get; set; }
+        public TimeSpan? ActualStartTime { get; set; }
+        public TimeSpan? CompletionTime { get; set; }
         public int EstDelayMinutes { get; set; }
         public int CardID { get; set; }
         public int BundleID { get; set; }
@@ -150,12 +153,16 @@ namespace OpFlow.Data
         public string BundleDescription { get; set; }
         public string ProcedureDescription { get; set; }
         public string RoomDescription { get; set; }
+        public string FlowStepDescription { get; set; }
 
         public List<SurgeryUser> SurgeryUsers { get; set; }
 
-        public string SurgeryTeam()
+        public string SurgeryTeam
         {
-            return SurgeryUsers == null ? null : string.Join(", ", SurgeryUsers.Select(su => su.LastName));
+            get
+            {
+                return SurgeryUsers == null ? null : string.Join(", ", SurgeryUsers.Select(su => su.LastName));
+            }
         }
 
         public SurgerySearchResult()
