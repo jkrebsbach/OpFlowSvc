@@ -91,6 +91,17 @@ namespace OpFlow.Data
         public int Quantity { get; set; }
         public int? TrayID { get; set; }
     }
+    public class SurgeryTeamUpdate
+    {
+        public List<int> Surgeries { get; set; }
+        public List<SurgeryTeamEdit> Edits { get; set; }
+    }
+
+    public class SurgeryTeamEdit
+    {
+        public int UserID { get; set; }
+        public bool Assign { get; set; }
+    }
 
     public class SurgeryProcedureEditPost
     {
@@ -142,10 +153,10 @@ namespace OpFlow.Data
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
         public int PatientID { get; set; }
-        public DateTime ScheduleDate { get; set; }
-        public TimeSpan ScheduleTime { get; set; }
-        public TimeSpan? ActualStartTime { get; set; }
-        public TimeSpan? CompletionTime { get; set; }
+        public DateTime ScheduleTime { get; set; }
+        public DateTime? ActualStartTime { get; set; }
+        public DateTime? EstimatedCompletionTime { get; set; }
+        public DateTime? ActualCompletionTime { get; set; }
         public int EstDelayMinutes { get; set; }
         public int CardID { get; set; }
         public int BundleID { get; set; }

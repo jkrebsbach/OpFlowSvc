@@ -518,6 +518,33 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
 
+
+        [SwaggerOperation("UpdateTeams")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/Surgery/updateTeams")]
+        [HttpPost]
+        public HttpResponseMessage UpdateTeams([FromBody]SurgeryTeamUpdate teamUpdate)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            foreach (var surgeryId in teamUpdate.Surgeries)
+            {
+                foreach (var edit in teamUpdate.Edits)
+                {
+                    if (edit.Assign)
+                    {
+                        SqlHelper.AddSurgeryUser(surgeryId, edit.UserID, user.ProviderID, user.LocationID);
+                    }
+                    else
+                    {
+                        SqlHelper.DeleteSurgeryUser(surgeryId, edit.UserID, user.ProviderID, user.LocationID);
+                    }
+                }
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
         // POST api/values
         [SwaggerOperation("AddSurgeryUser")]
         [SwaggerResponse(HttpStatusCode.OK)]

@@ -528,20 +528,6 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UserSurgeryWorkupReviewed", dsParameters);
         }
 
-        public static int AssignUserToCase(int userId, int surgeryId, bool active, int? orderNbr, int providerId, int locationId)
-        {
-            var dsParameters = new[]
-            {
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
-                new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("user_id", userId),
-                new SqlParameter("order_nbr", orderNbr ?? (object)DBNull.Value),
-                new SqlParameter("active_flag", active)
-            };
-            return ExecuteNonQuery("AssignUserToCase", dsParameters);
-        }
-
         public static int CreateUser(Guid userAuthId, int roleId, int specialtyId, string firstName, string lastName,
             string email, string cellPhone, string initials, string title, int providerId, int locationId)
         {

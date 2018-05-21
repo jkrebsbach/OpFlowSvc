@@ -89,19 +89,6 @@ namespace OpFlow.Service.Controllers
             return Ok();
         }
 
-        // POST api/values
-        [SwaggerOperation("AssignUser")]
-        [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/User/Assign", Name = "AssignUser")]
-        public async Task<IHttpActionResult> AssignToCase(int surgeryId, int userId, bool active, int? orderNbr = null)
-        {
-            var userSecurity = CacheUtil.GetUserSecurity();
-
-            DataAccess.SqlHelper.AssignUserToCase(userId, surgeryId, active, orderNbr, userSecurity.ProviderID, userSecurity.LocationID);
-
-            return Ok();
-        }
-
         // POST api/Account/ResetPassword
         [Route("api/User/ResetPassword")]
         public async Task<IHttpActionResult> ResetPassword(int userId, [FromBody]SetPasswordBindingModel model)
