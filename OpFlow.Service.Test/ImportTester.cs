@@ -61,11 +61,11 @@ namespace OpFlow.Service.Test
 
                 var fileContents = File.ReadAllBytes(fileName);
 
-                var user = SqlHelper.GetSecureUser("ben@opflowtech.com");
+                var user = SqlHelper.GetSecureUser(null, 1);
 
-                flowImageId = SqlHelper.NewFlowImage(1, 1, 1, 1, 1);
+                flowImageId = SqlHelper.NewFlowImage(1, 1, 1, "1", 1, 1);
                     
-                var folder = DataAccess.BlobStorageHelper.Folder(user.ProviderID, 1, 0, 0, 0);
+                var folder = DataAccess.BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, 1);
                 await DataAccess.BlobStorageHelper.PutBlobBytes(folder, flowImageId.ToString(), fileContents);
 
             }

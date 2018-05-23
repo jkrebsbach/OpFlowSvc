@@ -34,11 +34,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetMessageGroups")]
         [Route("api/message/groups")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<MessagingGroup>))]
-        public async Task<HttpResponseMessage> GetCaseMessageGroups(int? userId = null, DateTime? surgeryDate = null)
+        public async Task<HttpResponseMessage> GetCaseMessageGroups(int? userId = null, DateTime? startDate = null, DateTime? endDate = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var groups = DataAccess.SqlHelper.GetMessageGroups(userId ?? user.UserID, surgeryDate, user.ProviderID, user.LocationID);
+            var groups = DataAccess.SqlHelper.GetMessageGroups(userId ?? user.UserID, startDate, endDate, user.ProviderID, user.LocationID);
 
             foreach (var group in groups.Where(g => g.PatientID.HasValue))
             {
@@ -79,6 +79,20 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
 
             DataAccess.SqlHelper.AcknowledgeMessage(user.UserID, user.ProviderID, user.LocationID, messageId, hideMessages);
+
+            return Request.CreateResponse(HttpStatusCode.OK, 200);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("DeletePrivateConversation")]
+        [Route("api/message/privateConversation")]
+        [HttpDelete]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        public HttpResponseMessage DeletePrivateConversation(int communicationUserId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            DataAccess.SqlHelper.DeletePrivateConversation(communicationUserId, user.UserID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, 200);
         }

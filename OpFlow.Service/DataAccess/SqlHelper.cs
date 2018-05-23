@@ -120,12 +120,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<MessagingGroup> GetMessageGroups(int userId, DateTime? surgeryDate, int providerId, int locationId)
+        public static List<MessagingGroup> GetMessageGroups(int userId, DateTime? startDate, DateTime? endDate, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("user_id", userId),
-                new SqlParameter("surgery_date", surgeryDate?.Date ?? (object)DBNull.Value),
+                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -148,7 +149,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("communication_user_id", communicationUserId ?? (object)DBNull.Value),
                 new SqlParameter("message", message)
             };
-            var result = ExecuteNonQuery("SendMessage", parameters);
+            var result = ExecuteNonQuery("InsertMessage", parameters);
         }
 
         public static void AcknowledgeMessage(int userId, int providerId, int locationId, int messageId, bool hideMessages)
@@ -162,6 +163,18 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("hide_messages", hideMessages)
             };
             var result = ExecuteNonQuery("InsertMessageAcknowledgement", parameters);
+        }
+
+        public static void DeletePrivateConversation(int communicationUserId, int userId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("user_id", userId),
+                new SqlParameter("communication_user_id", communicationUserId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = ExecuteNonQuery("DeletePrivateConversation", parameters);
         }
 
         public static List<ItemMaster> GetItems(string itemType, int? trayId, bool? countNeeded, int providerId, int locationId)
@@ -1937,13 +1950,14 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<SurgerySearchResult> SearchCases(string caseNbr, int? surgeonUserId, int? roomId, DateTime? begDate, DateTime? endDate, int providerId, int locationId)
+        public static List<SurgerySearchResult> SearchCases(int? surgeonUserId, int? roomId, int? bundleId, int? procedureId, DateTime? begDate, DateTime? endDate, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("case_nbr", caseNbr ?? (object)DBNull.Value),
                 new SqlParameter("user_id", surgeonUserId ?? (object)DBNull.Value),
                 new SqlParameter("room_id", roomId ?? (object)DBNull.Value),
+                new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
+                new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("beg_date", begDate ?? (object)DBNull.Value),
                 new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
@@ -2066,11 +2080,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<SurgeryUser> GetSurgeryUsers(int caseId, int providerId, int locationId)
+        public static List<SurgeryUser> GetSurgeryUsers(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("case_id", caseId),
+                new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -2187,11 +2201,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<CardBundle> GetBundles(int specialtyId, int providerId, int locationId)
+        public static List<CardBundle> GetBundles(int? specialtyId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

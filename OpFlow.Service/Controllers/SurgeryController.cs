@@ -52,14 +52,13 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Ambiguous)]
         [Route("api/Surgery/searchCases")]
         public HttpResponseMessage GetCases(string caseNbr = null, int? surgeonUserId = null, int? roomId = null, 
+            int? bundleId = null, int? procedureId = null,
             DateTime? begDate = null, DateTime? endDate = null, int? providerId = null, int? locationId = null)
         {
-            if (caseNbr == null && surgeonUserId == null && roomId == null)
-                return Request.CreateResponse(HttpStatusCode.Ambiguous);
-
             var user = CacheUtil.GetUserSecurity();
 
-            var schedules = SqlHelper.SearchCases(caseNbr, surgeonUserId, roomId,
+            var schedules = SqlHelper.SearchCases(surgeonUserId, roomId,
+                bundleId, procedureId,
                 begDate, endDate, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
@@ -181,11 +180,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSurgeryUsers")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryUser>))]
         [Route("api/Surgery/users")]
-        public HttpResponseMessage GetSurgeryUsers(int caseId, int? providerId = null, int? locationId = null)
+        public HttpResponseMessage GetSurgeryUsers(int surgeryId, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var schedules = SqlHelper.GetSurgeryUsers(caseId, user.ProviderID, user.LocationID);
+            var schedules = SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -273,7 +272,9 @@ namespace OpFlow.Service.Controllers
             {
                 Rooms = SqlHelper.GetRooms(user.LocationID),
                 Users = SqlHelper.SearchUsers(null, null, null, user.ProviderID, user.LocationID),
-                Specialties = SqlHelper.GetSpecialties(user.ProviderID, user.LocationID)
+                Specialties = SqlHelper.GetSpecialties(user.ProviderID, user.LocationID),
+                Bundles = SqlHelper.GetBundles(null, user.ProviderID, user.LocationID),
+                Procedures = SqlHelper.GetProcedures(null, user.ProviderID, user.LocationID)
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
