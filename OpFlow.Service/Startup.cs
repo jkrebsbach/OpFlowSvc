@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Microsoft.AspNet.SignalR;
 using Microsoft.Owin;
+using Microsoft.Owin.Security.OAuth;
 using Owin;
 
 [assembly: OwinStartup(typeof(OpFlow.Service.Startup))]
@@ -14,6 +16,24 @@ namespace OpFlow.Service
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+
+            var config = new HubConfiguration();
+            config.EnableJSONP = true;
+
+            app.Map("/signalr", map =>
+            {
+                map.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions()
+                {
+                    Provider = new QueryStringOAuthBearerProvider()
+                });
+
+                var hubConfiguration = new HubConfiguration()
+                {
+                    Resolver = GlobalHost.DependencyResolver
+                };
+
+                map.RunSignalR(hubConfiguration);
+            });
         }
     }
 }
