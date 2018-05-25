@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Microsoft.AspNet.SignalR;
+﻿using Microsoft.AspNet.SignalR;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.OAuth;
+using OpFlow.Service.SignalR;
 using Owin;
 
 [assembly: OwinStartup(typeof(OpFlow.Service.Startup))]

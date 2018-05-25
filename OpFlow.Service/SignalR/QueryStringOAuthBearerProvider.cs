@@ -3,7 +3,7 @@ using Microsoft.Owin.Security.OAuth;
 
 //https://stackoverflow.com/questions/26657296/signalr-authentication-with-webapi-bearer-token
 
-namespace OpFlow.Service
+namespace OpFlow.Service.SignalR
 {
     public class QueryStringOAuthBearerProvider : OAuthBearerAuthenticationProvider
     {
