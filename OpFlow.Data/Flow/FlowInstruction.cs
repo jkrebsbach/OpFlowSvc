@@ -6,6 +6,7 @@ namespace OpFlow.Data
 {
     public class FlowInstruction : FlowStep
     {
+        public int SmartPhraseID { get; set; }
         public int RoleID { get; set; }
         public decimal AverageDuration { get; set; }
         public string StepInstruction { get; set; }

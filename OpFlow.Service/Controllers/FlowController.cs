@@ -36,12 +36,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/flow/flowPhrase", Name = "AddFlowPhrase")]
         [HttpPost]
-        public async Task<IHttpActionResult> AddFlowPhrase(int flowId, int smartPhraseId)
+        public async Task<IHttpActionResult> AddFlowPhrase(int flowId, int smartPhraseId, int? stepId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.AddFlowSmartPhrase(flowId, smartPhraseId,
-                user.ProviderID, user.LocationID);
+            SqlHelper.AddFlowSmartPhrase(flowId, smartPhraseId, stepId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -89,7 +88,7 @@ namespace OpFlow.Service.Controllers
 
             if (smartPhrase.FlowID.HasValue)
             {
-                SqlHelper.AddFlowSmartPhrase(smartPhrase.FlowID.Value, smartPhraseId, user.ProviderID, user.LocationID);
+                SqlHelper.AddFlowSmartPhrase(smartPhrase.FlowID.Value, smartPhraseId, smartPhrase.StepID, user.ProviderID, user.LocationID);
             }
             else if (smartPhrase.SurgeryID.HasValue)
             {
@@ -465,13 +464,13 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.DeleteFlowStep(flowId, user.ProviderID, user.LocationID);
+            SqlHelper.DeleteFlowStep(flowId, user.ProviderID, user.LocationID);
 
             for (var index = 0; index < flowStepDetail.FlowSteps.Count; index++)
             {
                 var flowStep = flowStepDetail.FlowSteps[index];
 
-                var result = DataAccess.SqlHelper.InsertFlowStep(flowId, index + 1, flowStep.StepDuration, flowStep.StepDescription, user.ProviderID, user.LocationID);
+                SqlHelper.InsertFlowStep(flowId, index + 1, flowStep.StepDuration, flowStep.StepDescription, user.ProviderID, user.LocationID);
             }
 
             return Ok();
@@ -516,7 +515,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.DeleteFlowNotification(flowNotificationId, user.ProviderID, user.LocationID);
+            var result = SqlHelper.DeleteFlowNotification(flowNotificationId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -528,7 +527,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.NewFlow(value.CardID, value.RoomSetupID, value.FlowDescription, user.UserID, value.DefaultFlow, user.ProviderID, user.LocationID);
+            var result = SqlHelper.NewFlow(value.CardID, value.RoomSetupID, value.FlowDescription, user.UserID, value.DefaultFlow, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -541,7 +540,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.UpdateFlow(id, value.CardID, value.RoomSetupID, value.FlowDescription, user.UserID, value.DefaultFlow, user.ProviderID, user.LocationID);
+            var result = SqlHelper.UpdateFlow(id, value.CardID, value.RoomSetupID, value.FlowDescription, user.UserID, value.DefaultFlow, user.ProviderID, user.LocationID);
 
             return Ok();
         }

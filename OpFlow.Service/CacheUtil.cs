@@ -29,5 +29,20 @@ namespace OpFlow.Service
             MemCache.Add(userAuthId, secureUser, DateTimeOffset.UtcNow.AddHours(1));
             return secureUser;
         }
+
+        public static UserSecurity GetUserByEmail()
+        {
+            var userName = HttpContext.Current.User.Identity.GetUserName();
+
+            if (MemCache.Contains(userName))
+                return MemCache[userName] as UserSecurity;
+
+            var secureUser = DataAccess.SqlHelper.GetSecureUser(null, null, userName);
+            if (secureUser == null)
+                throw new Exception("Unable to locate authenticated user");
+
+            MemCache.Add(userName, secureUser, DateTimeOffset.UtcNow.AddHours(1));
+            return secureUser;
+        }
     }
 }

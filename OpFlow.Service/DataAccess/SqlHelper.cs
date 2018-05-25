@@ -152,6 +152,15 @@ namespace OpFlow.Service.DataAccess
             var result = ExecuteNonQuery("InsertMessage", parameters);
         }
 
+        public static List<string> CalculateSurgeryMessageRecipients(
+            int surgeryId, int providerId, int locationId)
+        {
+            return new List<string>()
+            {
+                "ben@opflowtech.com"
+            };
+        }
+
         public static void AcknowledgeMessage(int userId, int providerId, int locationId, int messageId, bool hideMessages)
         {
             var parameters = new[]
@@ -488,11 +497,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static UserSecurity GetSecureUser(Guid? userAuthId, int? userId)
+        public static UserSecurity GetSecureUser(Guid? userAuthId, int? userId = null, string email = null)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("user_auth_id", userAuthId ?? (object)DBNull.Value),
+                new SqlParameter("email", email ?? (object)DBNull.Value),
                 new SqlParameter("user_id", userId ?? (object)DBNull.Value)
             };
             var dsSchedules = ExecuteCommand("GetUserSecurity", dsParameters);
@@ -608,13 +618,14 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("InsertSurgeryPhrase", dsParameters);
         }
 
-        public static int AddFlowSmartPhrase(int flowId, int smartPhraseId, int providerId, int locationId)
+        public static int AddFlowSmartPhrase(int flowId, int smartPhraseId, int? stepId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("flow_id", flowId),
+                new SqlParameter("step_id", stepId),
                 new SqlParameter("smart_phrase_id", smartPhraseId)
             };
             return ExecuteNonQuery("InsertFlowPhrase", dsParameters);
