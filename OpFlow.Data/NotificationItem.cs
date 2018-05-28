@@ -9,4 +9,11 @@ namespace OpFlow.Data
         public int Id { get; set; }
         public string Message { get; set; }
     }
+
+    public class NotificationDeviceRegistration
+    {
+        public string Platform { get; set; }
+        public string Handle { get; set; }
+        public string[] Tags { get; set; }
+    }
 }
