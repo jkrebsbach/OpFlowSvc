@@ -240,6 +240,7 @@
     <Compile Include="DetailImageCell.designer.cs">
       <DependentUpon>DetailImageCell.cs</DependentUpon>
     </Compile>
+    <Compile Include="Constants.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">
