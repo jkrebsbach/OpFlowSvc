@@ -23,7 +23,7 @@
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
     <CodesignProvision>VS: com.OpFlow.iOS Development</CodesignProvision>
-    <CodesignKey>iPhone Developer: David ROwe (7EY85T9EY5)</CodesignKey>
+    <CodesignKey>iPhone Developer: Jeffrey Krebsbach (SL856TAQY3)</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -35,7 +35,7 @@
     <MtouchArch>x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
     <CodesignProvision>VS: com.OpFlow.iOS Development</CodesignProvision>
-    <CodesignKey>iPhone Developer: David ROwe (7EY85T9EY5)</CodesignKey>
+    <CodesignKey>iPhone Developer: Jeffrey Krebsbach (SL856TAQY3)</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,7 +48,7 @@
     <ConsolePause>false</ConsolePause>
     <MtouchArch>ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignKey>iPhone Developer: David ROwe (7EY85T9EY5)</CodesignKey>
+    <CodesignKey>iPhone Developer: Jeffrey Krebsbach (SL856TAQY3)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignProvision>VS: com.OpFlow.iOS Development</CodesignProvision>
   </PropertyGroup>
@@ -61,7 +61,7 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchArch>ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Developer: David ROwe (7EY85T9EY5)</CodesignKey>
+    <CodesignKey>iPhone Developer: Jeffrey Krebsbach (SL856TAQY3)</CodesignKey>
     <CodesignProvision>VS: com.OpFlow.iOS Development</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">

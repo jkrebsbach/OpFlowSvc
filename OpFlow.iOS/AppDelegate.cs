@@ -27,8 +27,46 @@ namespace OpFlow.iOS
             // Override point for customization after application launch.
             // If not required for your application you can safely delete this method
 
+			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0)) {
+				var pushSettings = UIUserNotificationSettings.GetSettingsForTypes(
+					UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound,
+					new NSSet());
+
+				UIApplication.SharedApplication.RegisterUserNotificationSettings(pushSettings);
+				UIApplication.SharedApplication.RegisterForRemoteNotifications();
+			} else {
+				UIRemoteNotificationType notificationTypes = UIRemoteNotificationType.Alert | UIRemoteNotificationType.Badge | UIRemoteNotificationType.Sound;
+				UIApplication.SharedApplication.RegisterForRemoteNotificationTypes(notificationTypes);
+			}
+
             return true;
         }
+
+        public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+		{
+			// Get current device token
+			var token = deviceToken.Description;
+			if (!string.IsNullOrWhiteSpace(token)) {
+				token = token.Trim('<').Trim('>');
+			}
+
+			// Get prvious token
+			var oldToken = NSUserDefaults.StandardUserDefaults.StringForKey("PushDeviceToken");
+
+            // Has the token changed?
+            if (string.IsNullOrEmpty(oldToken) || !oldToken.Equals(token))
+			{
+				// TODO: Put logic here to notice server that token has changed / been created
+			}
+
+			// Save new device token
+			NSUserDefaults.StandardUserDefaults.SetString(token, "PushDeviceToken");
+		}
+
+        public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
+		{
+			new UIAlertView("Error registering push notifications", error.LocalizedDescription, null, "OK", null).Show();
+		}
 
         public override void OnResignActivation(UIApplication application)
         {
