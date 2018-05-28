@@ -61,5 +61,23 @@ namespace OpFlow.Mobile
 
             return response;
         }
+
+        public static async Task<string> RegisterDevice(string deviceToken)
+        {
+            var command = string.Format("api/notification/device?handle={0}", deviceToken);
+
+            var response = await WebUtility.WebRequest<string>(command, HttpMethod.Post);
+
+            return response;
+        }
+
+        public static async Task<string> RegisterUser(string registrationId, NotificationDeviceRegistration registration)
+        {
+            var command = string.Format("api/notification/device?id={0}", registrationId);
+
+            var response = await WebUtility.SendBodyRequest<string>(command, registration, HttpMethod.Put);
+
+            return response;
+        }
     }
 }

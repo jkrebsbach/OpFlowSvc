@@ -8,6 +8,7 @@ using OpFlow.iOS.Delegates;
 using OpFlow.Mobile;
 using UIKit;
 using Xamarin.Auth;
+using OpFlow.Data;
 
 namespace OpFlow.iOS
 {
@@ -59,6 +60,8 @@ namespace OpFlow.iOS
             {
 				await SetCredential(txtUsername.Text, string.Empty);
 
+                await RegisterDevice(txtUsername.Text);
+
                 // Navigate to schedule page after signon
                 AppSettings.CurrentScreen = AppSettings.FragmentEnum.Schedule;
 
@@ -79,6 +82,24 @@ namespace OpFlow.iOS
                 account.Username = userName;
                 account.Properties["Password"] = password;
                 await store.SaveAsync(account, _appId);
+            }
+        }
+
+        private static async Task RegisterDevice(string userName)
+        {
+            var deviceToken = NSUserDefaults.StandardUserDefaults["PushDeviceToken"];
+
+            if (deviceToken != null && deviceToken.ToString() != null){
+                var token = deviceToken.ToString();
+
+                var registration = await UserUtil.RegisterDevice(token);
+
+                var deviceUpdate = new NotificationDeviceRegistration()
+                {
+                    Platform = "apns",
+                    Handle = token
+                };
+                var listener = await UserUtil.RegisterUser(registration, deviceUpdate);
             }
         }
 
