@@ -42,7 +42,7 @@ namespace OpFlow.Service.Controllers
             {
                 var registrations = await _hub.GetRegistrationsByChannelAsync(handle, 100);
 
-                foreach (RegistrationDescription registration in registrations)
+                foreach (var registration in registrations)
                 {
                     if (newRegistrationId == null)
                     {
@@ -81,7 +81,7 @@ namespace OpFlow.Service.Controllers
                     registration = new WindowsRegistrationDescription(deviceUpdate.Handle);
                     break;
                 case "apns":
-                    registration = new AppleRegistrationDescription(deviceUpdate.Handle);
+                    registration = new AppleRegistrationDescription(deviceUpdate.Handle.Replace(" ", ""));
                     break;
                 case "gcm":
                     registration = new GcmRegistrationDescription(deviceUpdate.Handle);
@@ -94,7 +94,7 @@ namespace OpFlow.Service.Controllers
             var username = HttpContext.Current.User.Identity.Name;
 
             // add check if user is allowed to add these tags
-            registration.Tags = new HashSet<string>(deviceUpdate.Tags);
+            registration.Tags = new HashSet<string>(deviceUpdate.Tags ?? new string[] {});
             registration.Tags.Add("username:" + username);
 
             try
@@ -124,11 +124,11 @@ namespace OpFlow.Service.Controllers
         [Route("api/notification")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
-        public async Task<HttpResponseMessage> PostNotification(string pns, [FromBody]string message, string to_tag)
+        public async Task<HttpResponseMessage> PostNotification(string pns, [FromBody]NotificationMessage message)
         {
             var user = HttpContext.Current.User.Identity.Name;
             string[] userTag = new string[2];
-            userTag[0] = "username:" + to_tag;
+            userTag[0] = "username:" + message.UserName;
             userTag[1] = "from:" + user;
 
             Microsoft.Azure.NotificationHubs.NotificationOutcome outcome = null;
@@ -139,25 +139,25 @@ namespace OpFlow.Service.Controllers
                 case "wns":
                     // Windows 8.1 / Windows Phone 8.1
                     var toast = @"<toast><visual><binding template=""ToastText01""><text id=""1"">" +
-                                "From " + user + ": " + message + "</text></binding></visual></toast>";
+                                "From " + user + ": " + message.Message + "</text></binding></visual></toast>";
                     outcome = await _hub.SendWindowsNativeNotificationAsync(toast, userTag);
                     break;
                 case "apns":
                     // iOS
-                    var alert = "{\"aps\":{\"alert\":\"" + "From " + user + ": " + message + "\"}}";
+                    var alert = "{\"aps\":{\"alert\":\"" + "From " + user + ": " + message.Message + "\"}}";
                     outcome = await _hub.SendAppleNativeNotificationAsync(alert, userTag);
                     break;
                 case "gcm":
                     // Android
-                    var notif = "{ \"data\" : {\"message\":\"" + "From " + user + ": " + message + "\"}}";
+                    var notif = "{ \"data\" : {\"message\":\"" + "From " + user + ": " + message.Message + "\"}}";
                     outcome = await _hub.SendGcmNativeNotificationAsync(notif, userTag);
                     break;
             }
 
             if (outcome != null)
             {
-                if (!((outcome.State == Microsoft.Azure.NotificationHubs.NotificationOutcomeState.Abandoned) ||
-                      (outcome.State == Microsoft.Azure.NotificationHubs.NotificationOutcomeState.Unknown)))
+                if (!((outcome.State == NotificationOutcomeState.Abandoned) ||
+                      (outcome.State == NotificationOutcomeState.Unknown)))
                 {
                     ret = HttpStatusCode.OK;
                 }

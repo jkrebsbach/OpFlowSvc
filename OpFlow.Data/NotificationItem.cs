@@ -16,4 +16,10 @@ namespace OpFlow.Data
         public string Handle { get; set; }
         public string[] Tags { get; set; }
     }
+
+    public class NotificationMessage
+    {
+        public string UserName { get; set; }
+        public string Message { get; set; }
+    }
 }
