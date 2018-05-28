@@ -20,6 +20,7 @@ namespace OpFlow.Data
         public string CellPhone { get; set; }
         public string Specialty { get; set; }
         public string RoleName { get; set; }
+        public string RoleType { get; set; }
 
         public string DeriveInitials()
         {
