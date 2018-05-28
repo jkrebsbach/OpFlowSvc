@@ -20,6 +20,22 @@ namespace OpFlow.Data
         public string CellPhone { get; set; }
         public string Specialty { get; set; }
         public string RoleName { get; set; }
+
+        public string DeriveInitials()
+        {
+            if (!string.IsNullOrEmpty(Initials))
+                return Initials;
+
+            if (!string.IsNullOrEmpty(FirstName) && !string.IsNullOrEmpty(LastName))
+            {
+                return FirstName[0].ToString() + LastName[0].ToString();
+            }
+
+            if (!string.IsNullOrEmpty(LastName))
+                return LastName;
+
+            return FirstName;
+        }
     }
 
     public class UserPost
