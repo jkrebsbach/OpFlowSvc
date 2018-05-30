@@ -24,7 +24,7 @@ namespace OpFlow.Service.Controllers
         [Route("api/notification/device")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
-        public async Task<HttpResponseMessage> PostDevice(string handle, string platform, bool newUser)
+        public async Task<HttpResponseMessage> PostDevice(string handle, string platform)
         {
             if (handle == null)
                 return Request.CreateResponse(HttpStatusCode.Ambiguous);
@@ -36,11 +36,6 @@ namespace OpFlow.Service.Controllers
             try
             {
                 var username = HttpContext.Current.User.Identity.Name;
-
-                if (newUser)
-                {
-                    await PushNotification.CleanupDevice(deviceId);
-                }
 
                 await PushNotification.PutDevice(deviceId,
                     username,

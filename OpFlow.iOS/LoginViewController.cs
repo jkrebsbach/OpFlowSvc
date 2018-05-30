@@ -58,11 +58,9 @@ namespace OpFlow.iOS
 
             if (AppSettings.UserAuthenticated)
             {
-                var account = await GetCurrentCredential();
-				await SetCredential(txtUsername.Text, string.Empty);
+                await SetCredential(txtUsername.Text, string.Empty);
 
-                // if username is different, force token to update
-                await RegisterDevice(txtUsername.Text != account.Username);
+                await RegisterDevice();
 
                 // Navigate to schedule page after signon
                 AppSettings.CurrentScreen = AppSettings.FragmentEnum.Schedule;
@@ -87,14 +85,14 @@ namespace OpFlow.iOS
             }
         }
 
-        private static async Task RegisterDevice(bool newUser)
+        private static async Task RegisterDevice()
         {
             var deviceToken = NSUserDefaults.StandardUserDefaults["PushDeviceToken"];
 
-            if (deviceToken != null && deviceToken.ToString() != null){
+            if (deviceToken != null && deviceToken.ToString() != ""){
                 var token = deviceToken.ToString();
 
-                var registration = await UserUtil.RegisterDevice(token, "apns", newUser);
+                await UserUtil.RegisterDevice(token, "apns");
             }
         }
 

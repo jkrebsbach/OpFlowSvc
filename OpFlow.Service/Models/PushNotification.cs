@@ -58,16 +58,6 @@ namespace OpFlow.Service.Models
         }
 
         /// <summary>
-        /// Remove any existing user associations for this device
-        /// </summary>
-        /// <param name="registrationId"></param>
-        /// <returns></returns>
-        public static async Task CleanupDevice(string registrationId)
-        {
-            await Hub.DeleteRegistrationAsync(registrationId);
-        }
-
-        /// <summary>
         /// Associate username to registered device
         /// </summary>
         /// <param name="id"></param>

@@ -57,7 +57,9 @@ namespace OpFlow.Service.SignalR
         {
             var name = Context.User.Identity.Name;
 
-            await PushNotification.PostNotification(name, who, message);
+            // Don't send push notification to yourself!
+            if (name != who)
+                await PushNotification.PostNotification(name, who, message);
 
             foreach (var connectionId in Connections.GetConnections(who))
             {
