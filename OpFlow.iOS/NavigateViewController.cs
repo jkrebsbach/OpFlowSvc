@@ -132,9 +132,7 @@ namespace OpFlow.iOS
         private async Task LoadSurgery()
         {
             _surgery = await SurgeryUtil.GetSurgery(
-                AppSettings.CurrentSurgery ?? 0, 
-                AppSettings.CurrentUser.ProviderID, 
-                AppSettings.CurrentUser.LocationID);
+                AppSettings.CurrentSurgery ?? 0);
 
             if (_surgery == null)
                 return;
@@ -143,7 +141,7 @@ namespace OpFlow.iOS
 
             _patient = await PatientUtil.GetPatient(_surgery.PatientID);
 
-            var users = await SurgeryUtil.GetSurgeryUsers(_surgery.CaseID);
+            var users = await SurgeryUtil.GetSurgeryUsers(_surgery.SurgeryID);
 
             // If case is open, show debrief button
             btnDebrief.Hidden = (_surgery.SurgeryStatus != "O");

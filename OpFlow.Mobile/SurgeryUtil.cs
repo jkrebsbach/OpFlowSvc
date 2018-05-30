@@ -119,22 +119,19 @@ namespace OpFlow.Mobile
             return response;
         }
 
-        public static async Task<Surgery> GetSurgery(int surgeryId, int providerId, int locationId)
+        public static async Task<Surgery> GetSurgery(int surgeryId)
         {
-            var command = string.Format("api/surgery?surgeryId={0}&providerId={1}&locationId={2}",
-                surgeryId, providerId, locationId);
+            var command = string.Format("api/surgery?surgeryId={0}",
+                surgeryId);
             var response = await WebUtility.WebRequest<Surgery>(command, HttpMethod.Get);
 
             return response;
         }
 
-        public static async Task<List<SurgeryUser>> GetSurgeryUsers(int caseId)
+        public static async Task<List<SurgeryUser>> GetSurgeryUsers(int surgeryId)
         {
-            var providerId = AppSettings.CurrentUser.ProviderID;
-            var locationId = AppSettings.CurrentUser.LocationID;
-
-            var command = string.Format("api/surgery/users?caseId={0}&providerId={1}&locationId={2}", 
-                caseId, providerId, locationId);
+            var command = string.Format("api/surgery/users?surgeryId={0}", 
+                surgeryId);
             var response = await WebUtility.WebRequest<List<SurgeryUser>>(command, HttpMethod.Get);
 
             return response;
@@ -142,28 +139,12 @@ namespace OpFlow.Mobile
 
         public static async Task<List<SurgeryUser>> GetCardUsers(int cardId)
         {
-            var providerId = AppSettings.CurrentUser.ProviderID;
-            var locationId = AppSettings.CurrentUser.LocationID;
-
-            var command = string.Format("api/card/users?cardId={0}&providerId={1}&locationId={2}",
-                cardId, providerId, locationId);
+            var command = string.Format("api/card/users?cardId={0}",
+                cardId);
             var response = await WebUtility.WebRequest<List<SurgeryUser>>(command, HttpMethod.Get);
 
             return response;
         }
-
-        public static async Task<List<Surgery>> GetSurgeryCaseRoomSchedule(int caseID)
-        {
-            var providerId = AppSettings.CurrentUser.ProviderID;
-            var locationId = AppSettings.CurrentUser.LocationID;
-
-            var command = string.Format("api/surgery/RoomSchedule?caseID={0}&providerID={1}&locationID={2}", 
-                caseID, providerId, locationId);
-
-            var response = await WebUtility.WebRequest<List<Surgery>>(command, HttpMethod.Get);
-
-            return response;
-		}
 
         public static string SurgeryImageUrl(int surgeryId, int surgeryImageId)
         {

@@ -37,9 +37,7 @@ namespace OpFlow.iOS
         private async Task SetupDetails()
         {
             var surgery = await SurgeryUtil.GetSurgery(
-                AppSettings.CurrentSurgery ?? 0,
-                AppSettings.CurrentUser.ProviderID,
-                AppSettings.CurrentUser.LocationID);
+                AppSettings.CurrentSurgery ?? 0);
 
             if (surgery == null)
                 return;
