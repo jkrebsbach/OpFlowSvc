@@ -62,9 +62,9 @@ namespace OpFlow.Mobile
             return response;
         }
 
-        public static async Task<string> RegisterDevice(string deviceToken)
+        public static async Task<string> RegisterDevice(string deviceToken, string platform, bool newUser)
         {
-            var command = string.Format("api/notification/device?handle={0}", deviceToken);
+            var command = $"api/notification/device?handle={deviceToken}&platform={platform}&newUser={(newUser ? "true" : "false")}";
 
             var response = await WebUtility.WebRequest<string>(command, HttpMethod.Post);
 

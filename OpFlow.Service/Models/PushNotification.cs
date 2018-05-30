@@ -27,6 +27,11 @@ namespace OpFlow.Service.Models
             }
         }
 
+        /// <summary>
+        /// register device with Push Notification server
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <returns></returns>
         public static async Task<string> PostDevice(string handle)
         {
             string newRegistrationId = null;
@@ -34,7 +39,7 @@ namespace OpFlow.Service.Models
             // make sure there are no existing registrations for this push handle (used for iOS and Android)
             if (handle != null)
             {
-                var registrations = await Hub.GetRegistrationsByChannelAsync(handle, 100);
+                var registrations = await Hub.GetRegistrationsByChannelAsync(handle.Replace(" ", ""), 100);
 
                 foreach (var registration in registrations)
                 {
@@ -49,15 +54,30 @@ namespace OpFlow.Service.Models
                 }
             }
 
-            if (newRegistrationId == null)
-                newRegistrationId = await Hub.CreateRegistrationIdAsync();
-
-            return newRegistrationId;
+            return newRegistrationId ?? await Hub.CreateRegistrationIdAsync();
         }
 
+        /// <summary>
+        /// Remove any existing user associations for this device
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static async Task CleanupDevice(string id)
+        {
+            await Hub.DeleteRegistrationAsync(id);
+        }
 
-
-        public static async Task PutDevice(string id, string username, string platform, string handle, string [] tags)
+        /// <summary>
+        /// Associate username to registered device
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="username"></param>
+        /// <param name="platform"></param>
+        /// <param name="handle"></param>
+        /// <param name="tags"></param>
+        /// <returns></returns>
+        public static async Task PutDevice(string id, 
+            string username, string platform, string handle, string [] tags)
         {
             RegistrationDescription registration = null;
             switch (platform)
@@ -84,9 +104,16 @@ namespace OpFlow.Service.Models
             registration.Tags = new HashSet<string>(tags ?? new string[] { });
             registration.Tags.Add("username:" + username);
 
-            await _hub.CreateOrUpdateRegistrationAsync(registration);
+            await Hub.CreateOrUpdateRegistrationAsync(registration);
         }
 
+        /// <summary>
+        /// Send notification to specific user 
+        /// </summary>
+        /// <param name="sendingUser"></param>
+        /// <param name="targetUser"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static async Task<NotificationOutcome> PostNotification(
             string sendingUser, string targetUser, string message)
         {
@@ -125,6 +152,11 @@ namespace OpFlow.Service.Models
             return outcome;
         }
 
+        /// <summary>
+        /// Broadcast message to all subscribing users
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static async Task BroadcastNotification(string message)
         {
             try

@@ -24,9 +24,37 @@ namespace OpFlow.Service.Controllers
         [Route("api/notification/device")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
-        public async Task<string> PostDevice(string handle = null)
+        public async Task<HttpResponseMessage> PostDevice(string handle, string platform, bool newUser)
         {
-            return await PushNotification.PostDevice(handle);
+            if (handle == null)
+                return Request.CreateResponse(HttpStatusCode.Ambiguous);
+
+            handle = handle.Replace(" ", "");
+
+            var deviceId = await PushNotification.PostDevice(handle);
+
+
+            try
+            {
+                var username = HttpContext.Current.User.Identity.Name;
+
+                if (newUser)
+                {
+                    await PushNotification.CleanupDevice(handle);
+                }
+
+                await PushNotification.PutDevice(deviceId,
+                    username,
+                    platform,
+                    handle,
+                    new string[] {});
+            }
+            catch (MessagingException e)
+            {
+                ReturnGoneIfHubResponseIsGone(e);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK);
         }
 
 
@@ -39,19 +67,6 @@ namespace OpFlow.Service.Controllers
         [HttpPut]
         public async Task<HttpResponseMessage> PutDevice(string id, NotificationDeviceRegistration deviceUpdate)
         {
-            try
-            {
-                await PushNotification.PutDevice(id,
-                    HttpContext.Current.User.Identity.Name,
-                    deviceUpdate.Platform,
-                    deviceUpdate.Handle,
-                    deviceUpdate.Tags);
-
-            }
-            catch (MessagingException e)
-            {
-                ReturnGoneIfHubResponseIsGone(e);
-            }
 
             return Request.CreateResponse(HttpStatusCode.OK);
         }
