@@ -29,10 +29,9 @@ namespace OpFlow.Service.Controllers
             if (handle == null)
                 return Request.CreateResponse(HttpStatusCode.Ambiguous);
 
-            handle = handle.Replace(" ", "");
+            handle = handle.Replace(" ", "").ToUpper();
 
             var deviceId = await PushNotification.PostDevice(handle);
-
 
             try
             {
@@ -40,7 +39,7 @@ namespace OpFlow.Service.Controllers
 
                 if (newUser)
                 {
-                    await PushNotification.CleanupDevice(handle);
+                    await PushNotification.CleanupDevice(deviceId);
                 }
 
                 await PushNotification.PutDevice(deviceId,

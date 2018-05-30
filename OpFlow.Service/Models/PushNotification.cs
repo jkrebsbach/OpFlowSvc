@@ -39,7 +39,7 @@ namespace OpFlow.Service.Models
             // make sure there are no existing registrations for this push handle (used for iOS and Android)
             if (handle != null)
             {
-                var registrations = await Hub.GetRegistrationsByChannelAsync(handle.Replace(" ", ""), 100);
+                var registrations = await Hub.GetRegistrationsByChannelAsync(handle, 100);
 
                 foreach (var registration in registrations)
                 {
@@ -60,11 +60,11 @@ namespace OpFlow.Service.Models
         /// <summary>
         /// Remove any existing user associations for this device
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="registrationId"></param>
         /// <returns></returns>
-        public static async Task CleanupDevice(string id)
+        public static async Task CleanupDevice(string registrationId)
         {
-            await Hub.DeleteRegistrationAsync(id);
+            await Hub.DeleteRegistrationAsync(registrationId);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace OpFlow.Service.Models
                     registration = new WindowsRegistrationDescription(handle);
                     break;
                 case "apns":
-                    registration = new AppleRegistrationDescription(handle.Replace(" ", ""));
+                    registration = new AppleRegistrationDescription(handle);
                     break;
                 case "gcm":
                     registration = new GcmRegistrationDescription(handle);

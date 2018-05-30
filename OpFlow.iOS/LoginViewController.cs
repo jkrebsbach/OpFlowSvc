@@ -62,7 +62,7 @@ namespace OpFlow.iOS
 				await SetCredential(txtUsername.Text, string.Empty);
 
                 // if username is different, force token to update
-                await RegisterDevice(txtUsername.Text == account.Username);
+                await RegisterDevice(txtUsername.Text != account.Username);
 
                 // Navigate to schedule page after signon
                 AppSettings.CurrentScreen = AppSettings.FragmentEnum.Schedule;
