@@ -771,7 +771,7 @@ namespace OpFlow.Service.Controllers
             if (flowNotification == null)
                 return;
 
-            NotificationSystem.NotifyUser(flowNotification.CellPhone, flowNotification.FlowMessage);
+            SmsNotification.NotifyUser(flowNotification.CellPhone, flowNotification.FlowMessage);
 
             if (flowNotification.MessagingUserID != null)
             {
@@ -819,7 +819,7 @@ namespace OpFlow.Service.Controllers
 
             var notificationUser = SqlHelper.GetUser(user.ProviderID, user.LocationID, null, surgeryEditPost.NotificationUser.Value);
             if (notificationUser?.CellPhone != null)
-                NotificationSystem.NotifyUser(notificationUser.CellPhone, message);
+                SmsNotification.NotifyUser(notificationUser.CellPhone, message);
 
             return Request.CreateResponse(HttpStatusCode.OK, success);
         }

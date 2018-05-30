@@ -7,7 +7,7 @@ using System.Web;
 
 namespace OpFlow.Service.Models
 {
-    public abstract class NotificationSystem
+    public abstract class SmsNotification
     {
         public static string NotifyUser(string cellPhone, string message)
         {

@@ -195,6 +195,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\NotificationController.cs" />
+    <Compile Include="Models\PushNotification.cs" />
     <Compile Include="SignalR\AppHub.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
@@ -232,7 +233,7 @@
     <Compile Include="Models\FileParser.cs" />
     <Compile Include="Models\FilePost.cs" />
     <Compile Include="Models\IdentityModel.cs" />
-    <Compile Include="Models\NotificationSystem.cs" />
+    <Compile Include="Models\SmsNotification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="SignalR\ConnectionMapping.cs" />

@@ -144,55 +144,58 @@ namespace OpFlow.AndroidApp
 			public const int ic_hotel_black_18dp = 2130837516;
 			
 			// aapt resource value: 0x7f02000d
-			public const int ic_move_to_inbox_black_18dp = 2130837517;
+			public const int ic_launcher = 2130837517;
 			
 			// aapt resource value: 0x7f02000e
-			public const int ic_payment_black_18dp = 2130837518;
+			public const int ic_move_to_inbox_black_18dp = 2130837518;
 			
 			// aapt resource value: 0x7f02000f
-			public const int ic_person_black_18dp = 2130837519;
+			public const int ic_payment_black_18dp = 2130837519;
 			
 			// aapt resource value: 0x7f020010
-			public const int ic_play_arrow_black_18dp = 2130837520;
+			public const int ic_person_black_18dp = 2130837520;
 			
 			// aapt resource value: 0x7f020011
-			public const int ic_schedule_grey_50_18dp = 2130837521;
+			public const int ic_play_arrow_black_18dp = 2130837521;
 			
 			// aapt resource value: 0x7f020012
-			public const int ic_schedule_grey_800_18dp = 2130837522;
+			public const int ic_schedule_grey_50_18dp = 2130837522;
 			
 			// aapt resource value: 0x7f020013
-			public const int ic_search_grey_50_18dp = 2130837523;
+			public const int ic_schedule_grey_800_18dp = 2130837523;
 			
 			// aapt resource value: 0x7f020014
-			public const int ic_search_grey_800_18dp = 2130837524;
+			public const int ic_search_grey_50_18dp = 2130837524;
 			
 			// aapt resource value: 0x7f020015
-			public const int ic_settings_black_18dp = 2130837525;
+			public const int ic_search_grey_800_18dp = 2130837525;
 			
 			// aapt resource value: 0x7f020016
-			public const int ic_work_black_18dp = 2130837526;
+			public const int ic_settings_black_18dp = 2130837526;
 			
 			// aapt resource value: 0x7f020017
-			public const int ic_work_grey_50_18dp = 2130837527;
+			public const int ic_work_black_18dp = 2130837527;
 			
 			// aapt resource value: 0x7f020018
-			public const int ic_work_grey_800_18dp = 2130837528;
+			public const int ic_work_grey_50_18dp = 2130837528;
 			
 			// aapt resource value: 0x7f020019
-			public const int infinity = 2130837529;
+			public const int ic_work_grey_800_18dp = 2130837529;
 			
 			// aapt resource value: 0x7f02001a
-			public const int OpFlowLogo = 2130837530;
+			public const int infinity = 2130837530;
 			
 			// aapt resource value: 0x7f02001b
-			public const int RedExclamationPoint = 2130837531;
+			public const int OpFlowLogo = 2130837531;
 			
 			// aapt resource value: 0x7f02001c
-			public const int RoundGrayRectangle = 2130837532;
+			public const int RedExclamationPoint = 2130837532;
 			
 			// aapt resource value: 0x7f02001d
-			public const int RoundRectangle = 2130837533;
+			public const int RoundGrayRectangle = 2130837533;
+			
+			// aapt resource value: 0x7f02001e
+			public const int RoundRectangle = 2130837534;
 			
 			static Drawable()
 			{
@@ -610,20 +613,20 @@ namespace OpFlow.AndroidApp
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f050002
-			public const int ApplicationName = 2131034114;
-			
-			// aapt resource value: 0x7f050001
-			public const int Hello = 2131034113;
-			
 			// aapt resource value: 0x7f050003
-			public const int app_name = 2131034115;
+			public const int ApplicationName = 2131034115;
+			
+			// aapt resource value: 0x7f050002
+			public const int Hello = 2131034114;
+			
+			// aapt resource value: 0x7f050000
+			public const int app_name = 2131034112;
 			
 			// aapt resource value: 0x7f050004
 			public const int empty_string = 2131034116;
 			
-			// aapt resource value: 0x7f050000
-			public const int title_activity_webview = 2131034112;
+			// aapt resource value: 0x7f050001
+			public const int title_activity_webview = 2131034113;
 			
 			static String()
 			{

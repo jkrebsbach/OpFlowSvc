@@ -625,7 +625,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("flow_id", flowId),
-                new SqlParameter("step_id", stepId),
+                new SqlParameter("step_id", stepId ?? (object)DBNull.Value),
                 new SqlParameter("smart_phrase_id", smartPhraseId)
             };
             return ExecuteNonQuery("InsertFlowPhrase", dsParameters);
