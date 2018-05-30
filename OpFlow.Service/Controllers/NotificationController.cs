@@ -51,20 +51,6 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK);
         }
 
-
-
-        // PUT api/notification/device?id=abc
-        // This creates or updates a registration (with provided channelURI) at the specified id
-        [SwaggerOperation("RegisterDevice")]
-        [Route("api/notification/device")]
-        [SwaggerResponse(HttpStatusCode.OK)]
-        [HttpPut]
-        public async Task<HttpResponseMessage> PutDevice(string id, NotificationDeviceRegistration deviceUpdate)
-        {
-
-            return Request.CreateResponse(HttpStatusCode.OK);
-        }
-
         private static void ReturnGoneIfHubResponseIsGone(MessagingException e)
         {
             var webex = e.InnerException as WebException;

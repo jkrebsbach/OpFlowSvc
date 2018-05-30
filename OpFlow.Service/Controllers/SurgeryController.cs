@@ -126,18 +126,6 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, surgeries);
         }
 
-        [SwaggerOperation("GetSurgeryRoomSchedule")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgery>))]
-        [Route("api/Surgery/RoomSchedule")]
-        public HttpResponseMessage GetRoomSurgerySchedule(int roomId, DateTime? scheduleDate = null, int? providerId = null, int? locationId = null)
-        {
-            var user = CacheUtil.GetUserSecurity();
-
-            var schedules = SqlHelper.GetSurgeryRoomSchedule(roomId, scheduleDate, user.ProviderID, user.LocationID);
-
-            return Request.CreateResponse(HttpStatusCode.OK, schedules);
-        }
-
         // GET api/surgery?userId=5
         [SwaggerOperation("GetAlerts")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgery>))]
