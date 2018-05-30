@@ -97,10 +97,7 @@ namespace OpFlow.AndroidApp.Fragments
             {
                 if (_patient == null || _surgery == null)
                 {
-                    _surgery = await SurgeryUtil.GetSurgery(
-                        AppSettings.CurrentSurgery ?? -1, 
-                        AppSettings.CurrentUser.ProviderID,
-                        AppSettings.CurrentUser.LocationID);
+                    _surgery = await SurgeryUtil.GetSurgery(AppSettings.CurrentSurgery ?? -1);
 
                     if (_surgery == null)
                         return;

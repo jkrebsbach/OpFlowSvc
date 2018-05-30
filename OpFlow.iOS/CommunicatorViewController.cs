@@ -11,13 +11,25 @@ namespace OpFlow.iOS
 {
     public partial class CommunicatorViewController : OpFlowViewController
     {
+        private readonly SocketClient _client;
+
         public CommunicatorViewController (IntPtr handle) : base (handle)
         {
+            _client = new SocketClient("iOS");
         }
 
         public override async void ViewDidLoad()
         {
             base.ViewDidLoad();
+
+            await _client.Connect();
+
+            _client.OnMessageReceived += (sender, message) => InvokeOnMainThread(
+                () =>
+                {
+                    var tmpInt = 5;
+                });
+            
 
             //Title = "SCHEDULEVIEW";
             await ExecuteAsyncWebRequest(LoadMessageGroups);

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
+using OpFlow.Service.Models;
 using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
@@ -55,15 +56,43 @@ namespace OpFlow.Service.Controllers
         [Route("api/message")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<MessagingGroup>))]
         [SwaggerResponse(HttpStatusCode.Ambiguous)]
-        public HttpResponseMessage Put([FromBody]MessagePost messagePost, int? surgeryId = null, int? communicationUserId = null)
+        public async Task<HttpResponseMessage> Put([FromBody]MessagePost messagePost, int? surgeryId = null, int? communicationUserId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            if (surgeryId == null && communicationUserId == null)
+            if ((surgeryId == null && communicationUserId == null) || messagePost == null)
                 return Request.CreateResponse(HttpStatusCode.Ambiguous);
 
             DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
-                surgeryId, communicationUserId, messagePost?.Message);
+                surgeryId, communicationUserId, messagePost.Message);
+
+            if (surgeryId != null)
+            {
+                var recipients = DataAccess.SqlHelper.GetSurgeryUsers(surgeryId.Value, user.ProviderID, user.LocationID);
+
+                var sender =
+                    DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+
+                foreach (var recipient in recipients)
+                {
+                    // don't send message to yourself
+                    if (recipient.Email == sender.Email)
+                        continue;
+
+                    await PushNotification.PostNotification(sender.Email, recipient.Email, messagePost.Message);
+                }
+            }
+            else if (communicationUserId != null)
+            {
+                var recipientUser =
+                    DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, communicationUserId);
+
+                var sender =
+                    DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+
+
+                await PushNotification.PostNotification(sender.Email, recipientUser.Email, messagePost.Message);
+            }
 
             return Request.CreateResponse(HttpStatusCode.OK, 200);
         }

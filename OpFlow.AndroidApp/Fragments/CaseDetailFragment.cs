@@ -104,7 +104,7 @@ namespace OpFlow.AndroidApp.Fragments
                 var locationId = AppSettings.CurrentUser.LocationID;
                 var providerId = AppSettings.CurrentUser.ProviderID;
 
-                _surgery = await SurgeryUtil.GetSurgery(surgeryId, providerId, locationId);
+                _surgery = await SurgeryUtil.GetSurgery(surgeryId);
 
                 if (_surgery != null)
                 {

@@ -97,12 +97,9 @@ namespace OpFlow.AndroidApp.Fragments
 
         private async Task LoadCase()
         {
-            var locationId = AppSettings.CurrentUser.LocationID;
-            var providerId = AppSettings.CurrentUser.ProviderID;
             var surgeryId = AppSettings.CurrentSurgery ?? 0;
 
-            var currentSurgery = await SurgeryUtil.GetSurgery(
-                surgeryId, locationId, providerId);
+            var currentSurgery = await SurgeryUtil.GetSurgery(surgeryId);
 
             // Something could go wrong?...
             if (currentSurgery?.CardID == null)
