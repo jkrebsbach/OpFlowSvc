@@ -16,7 +16,17 @@ namespace OpFlow.iOS
         private readonly HubConnection _connection;
         private readonly IHubProxy _proxy;
 
-        public event EventHandler<string> OnMessageReceived;
+        public class MessageReceiveEvent
+        {
+            public string Message { get; set; }
+            public int SenderRoleID { get; set; }
+            public string SenderUserName { get; set; }
+            public DateTime InsertTimestamp { get; set; }
+            public int? SurgeryID { get; set; }
+            public int? CommunicationUserID { get; set; }
+        }
+
+        public event EventHandler<MessageReceiveEvent> OnMessageReceived;
 
         public SocketClient(string platform)
         {
@@ -30,18 +40,31 @@ namespace OpFlow.iOS
         {
             await _connection.Start();
 
-            _proxy.On("messageReceived", (string platform, string message) =>
+            _proxy.On("broadcastMessage", (string message, int senderRoleId, string senderUserName, DateTime insertTimestamp,
+                                          int? surgeryId, int? communicationUserId) =>
             {
-                if (OnMessageReceived != null)
-                    OnMessageReceived(this, string.Format("{0}: {1}", platform, message));
+                OnMessageReceived?.Invoke(this, new MessageReceiveEvent()
+                {
+                    Message = message,
+                    SenderRoleID = senderRoleId,
+                    SenderUserName = senderUserName,
+                    InsertTimestamp = insertTimestamp,
+                    SurgeryID = surgeryId,
+                    CommunicationUserID = communicationUserId
+                });
             });
 
-            Send("Connected");
+            //Send("Connected");
         }
 
-        public Task Send(string message)
+        public Task SendSurgeryMessage(int surgeryId, string message)
         {
-            return _proxy.Invoke("Send", _platform, message);
+            return _proxy.Invoke("sendSurgeryMessage", surgeryId, message);
+        }
+
+        public Task SendPrivateMessage(int communicationUserId, string message)
+        {
+            return _proxy.Invoke("sendPrivateMessage", communicationUserId, message);
         }
     }
 }

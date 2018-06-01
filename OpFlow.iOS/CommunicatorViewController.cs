@@ -1,17 +1,20 @@
 using Foundation;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using OpFlow.Data;
 using OpFlow.iOS.Delegates;
 using OpFlow.iOS.ViewSources;
 using OpFlow.Mobile;
 using UIKit;
+using System.Collections.Generic;
 
 namespace OpFlow.iOS
 {
     public partial class CommunicatorViewController : OpFlowViewController
     {
         private readonly SocketClient _client;
+        private List<MessagingGroup> _messageGroups;
 
         public CommunicatorViewController (IntPtr handle) : base (handle)
         {
@@ -27,7 +30,28 @@ namespace OpFlow.iOS
             _client.OnMessageReceived += (sender, message) => InvokeOnMainThread(
                 () =>
                 {
-                    var tmpInt = 5;
+                    var messageGroup = _messageGroups.FirstOrDefault(m =>
+                                                                    m.SurgeryID == message.SurgeryID &&
+                                                                     m.CommunicationUserID == message.CommunicationUserID);
+
+                    if (messageGroup != null)
+                    {
+                        messageGroup.LatestMessage = message.Message;
+                        messageGroup.LatestInsertTimestamp = message.InsertTimestamp;
+                    }
+                    else
+                    {
+                        messageGroup = new MessagingGroup()
+                        {
+                            SurgeryID = message.SurgeryID,
+                            CommunicationUserID = message.CommunicationUserID,
+                            CommunicationTargetName = message.SenderUserName,
+                            LatestMessage = message.Message,
+                            LatestInsertTimestamp = message.InsertTimestamp
+                        };    
+                    }
+
+                    CommunicatorTableView.ReloadData();
                 });
             
 
@@ -37,15 +61,16 @@ namespace OpFlow.iOS
 
         private async Task LoadMessageGroups()
         {
-            var messageGroups = await MessagingUtil.GetMessageGroups();
+            _messageGroups = await MessagingUtil.GetMessageGroups();
 
-            var messageGroupTableViewSource = new CommunicationGroupTVS(messageGroups);
+            var messageGroupTableViewSource = new CommunicationGroupTVS(_messageGroups);
             messageGroupTableViewSource.MessageGroupSelectionEvent += SelectMessageGroup;
 
             CommunicatorTableView.Source = messageGroupTableViewSource;
 
             CommunicatorTableView.ReloadData();
         }
+
         private void SelectMessageGroup(object sender, MessagingGroup messageGroup)
         {
             AppSettings.CurrentMessagingGroup = messageGroup;

@@ -6,18 +6,40 @@ using OpFlow.iOS.Delegates;
 using OpFlow.iOS.ViewSources;
 using OpFlow.Mobile;
 using UIKit;
+using System.Collections.Generic;
 
 namespace OpFlow.iOS
 {
     public partial class CommunicationDetailViewController : OpFlowViewController
     {
+        private readonly SocketClient _client;
+        private List<Messaging> _messages;
+
         public CommunicationDetailViewController (IntPtr handle) : base (handle)
         {
+            _client = new SocketClient("iOS");
         }
 
         public override async void ViewDidLoad()
         {
             base.ViewDidLoad();
+
+            await _client.Connect();
+
+            _client.OnMessageReceived += (sender, message) => InvokeOnMainThread(
+                () =>
+                {
+                    var newMessage = new Messaging()
+                    {
+                        SenderRoleID = (RoleEnum)message.SenderRoleID,
+                        UserName = message.SenderUserName,
+                        Message = message.Message,
+                        InsertTimestamp = message.InsertTimestamp
+                    };
+
+                    _messages.Add(newMessage);
+                    CommunicatorTableView.ReloadData();
+                });
 
             SetupDoneStyleTextField(txtMessage);
 
@@ -29,17 +51,17 @@ namespace OpFlow.iOS
         {
             var currentMessageGroup = AppSettings.CurrentMessagingGroup;
 
-            var messages = await MessagingUtil.GetMessages(currentMessageGroup.SurgeryID, currentMessageGroup.CaseGroupID, currentMessageGroup.CommunicationUserID);
+            _messages = await MessagingUtil.GetMessages(currentMessageGroup.SurgeryID, currentMessageGroup.CaseGroupID, currentMessageGroup.CommunicationUserID);
 
-            var messageTableViewSource = new CommunicatorTVS(messages);
+            var messageTableViewSource = new CommunicatorTVS(_messages);
 
             CommunicatorTableView.Source = messageTableViewSource;
             CommunicatorTableView.ReloadData();
 
             // If we have any messages, scroll to bottom of message stack
-            if (messages.Count > 0)
+            if (_messages.Count > 0)
             {
-                var detailIndexPath = NSIndexPath.FromRowSection(messages.Count - 1, 0);
+                var detailIndexPath = NSIndexPath.FromRowSection(_messages.Count - 1, 0);
                 CommunicatorTableView.ScrollToRow(detailIndexPath, UITableViewScrollPosition.None, true);
             }
         }
@@ -56,15 +78,29 @@ namespace OpFlow.iOS
 
         private async Task SendMessage()
         {
-            if (txtMessage.Text == "")
-                return;
+            try
+            {
+                if (txtMessage.Text == "")
+                    return;
 
-            await MessagingUtil.SendMessage(AppSettings.CurrentMessagingGroup, txtMessage.Text);
-            txtMessage.ResignFirstResponder();
+                //await MessagingUtil.SendMessage(AppSettings.CurrentMessagingGroup, txtMessage.Text);
 
-            txtMessage.Text = string.Empty;
+                if (AppSettings.CurrentMessagingGroup.SurgeryID.HasValue)
+                    await _client.SendSurgeryMessage(AppSettings.CurrentMessagingGroup.SurgeryID.Value, txtMessage.Text);
+                else
+                    await _client.SendPrivateMessage(AppSettings.CurrentMessagingGroup.CommunicationUserID.Value, txtMessage.Text);
 
-            await LoadMessages();
+                txtMessage.ResignFirstResponder();
+
+                txtMessage.Text = string.Empty;
+
+                //await LoadMessages();
+                
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
