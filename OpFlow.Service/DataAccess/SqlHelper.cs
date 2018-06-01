@@ -1085,7 +1085,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public static int InsertCard(string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
-            bool? defaultFlag, bool? specialtyDefaultFlag, int userId, int providerId, int locationId)
+            bool? defaultFlag, bool? specialtyDefaultFlag, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1094,7 +1094,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("description", description ?? (object)DBNull.Value),
                 new SqlParameter("owner_user_id", ownerUserId),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
-                new SqlParameter("user_id", userId),
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("template_flow_id", templateFlowId ?? (object)DBNull.Value),
                 new SqlParameter("template_room_id", templateRoomId ?? (object)DBNull.Value),
@@ -1107,6 +1106,21 @@ namespace OpFlow.Service.DataAccess
             var result = insert.Tables[0].DataTableToList<InsertionResult>();
 
             return result.First().Identifier;
+        }
+
+        public static int InsertCardItemFromStage(int cardId, int providerId, int locationId, string procedure, string surgeon)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("procedure", procedure),
+                new SqlParameter("surgeon", surgeon)
+            };
+
+            var insert = ExecuteNonQuery("InsertCardItemFromStage", dsParameters);
+            return insert;
         }
 
         public static int UpdateCard(int cardId, string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
@@ -2137,15 +2151,47 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<CardFlowRoom> GetBundleDefaultCardFlowRoom(int bundleId)
+        public static CardFlowRoom GetBundleDefaultCardFlowRoom(int bundleId, int userId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("bundle_id", bundleId)
+                new SqlParameter("bundle_id", bundleId),
+                new SqlParameter("user_id", userId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
             };
             var dsSchedules = ExecuteCommand("GetBundleDefaultCardFlowRoom", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<CardFlowRoom>();
+
+            return result.FirstOrDefault();
+        }
+
+        public static List<Surgeon> GetImportSurgeons(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = ExecuteCommand("GetImportSurgeons", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Surgeon>();
+
+            return result;
+        }
+
+        public static List<Procedure> GetImportProcedures(string importSurgeon, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgeon", importSurgeon),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = ExecuteCommand("GetImportProcedures", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Procedure>();
 
             return result;
         }

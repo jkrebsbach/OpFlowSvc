@@ -153,6 +153,7 @@ namespace OpFlow.Data
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
         public int PatientID { get; set; }
+        public int RoomID { get; set; }
         public DateTime ScheduleTime { get; set; }
         public DateTime? ActualStartTime { get; set; }
         public DateTime? EstimatedCompletionTime { get; set; }

@@ -477,7 +477,7 @@ namespace OpFlow.Service.Controllers
                 user.LocationID, surgery.CaseNbr);
 
             var cardFlowRoom = surgery.BundleID.HasValue ? 
-                SqlHelper.GetBundleDefaultCardFlowRoom(surgery.BundleID.Value).FirstOrDefault() : 
+                SqlHelper.GetBundleDefaultCardFlowRoom(surgery.BundleID.Value, surgery.SurgeonUserID, user.ProviderID, user.LocationID) : 
                 SqlHelper.GetProcedureDefaultCardFlowRoom(user.ProviderID, user.LocationID, surgery.CptCode).FirstOrDefault();
 
             var surgeryId = SqlHelper.CreateSurgery(surgery, user.ProviderID, user.LocationID, patientId, caseId, 

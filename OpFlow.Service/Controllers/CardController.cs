@@ -172,14 +172,45 @@ namespace OpFlow.Service.Controllers
         [Route("api/card/bundledefault")]
         [SwaggerOperation("GetBundleDefaultCardFlowRoom")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardFlowRoom))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage GetBundleDefaultCardFlowRoom(int bundleId)
+        public HttpResponseMessage GetBundleDefaultCardFlowRoom(int bundleId, int? userId = null)
         {
-            var result = DataAccess.SqlHelper.GetBundleDefaultCardFlowRoom(bundleId).FirstOrDefault();
+            var user = CacheUtil.GetUserSecurity();
 
-            return result == null ?
-                Request.CreateResponse(HttpStatusCode.NotFound) :
-                Request.CreateResponse(HttpStatusCode.OK, result);
+            var result = DataAccess.SqlHelper.GetBundleDefaultCardFlowRoom(bundleId, userId ?? user.UserID, user.ProviderID, user.LocationID) ??
+                new CardFlowRoom()
+                {
+                    CardDescription = "None",
+                    FlowDescription = "None",
+                    RoomDescription = "None"
+                };
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [Route("api/card/importSurgeons")]
+        [SwaggerOperation("GetImportSurgeons")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgeon>))]
+        public HttpResponseMessage GetImportSurgeons()
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetImportSurgeons(user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [Route("api/card/importProcedures")]
+        [SwaggerOperation("GetImportProcedures")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Procedure>))]
+        public HttpResponseMessage GetImportProcedures(string importSurgeon)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetImportProcedures(importSurgeon, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // GET api/values/5
@@ -366,7 +397,13 @@ namespace OpFlow.Service.Controllers
 
             var cardId = DataAccess.SqlHelper.InsertCard(value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomID,
                 value.BundleID, value.BundleFlag, value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1", 
-                user.UserID, user.ProviderID, user.LocationID);
+                user.ProviderID, user.LocationID);
+
+            if (!string.IsNullOrEmpty(value.ImportSurgeon) && !string.IsNullOrEmpty(value.ImportProcedure))
+            {
+                DataAccess.SqlHelper.InsertCardItemFromStage(cardId, user.ProviderID, user.LocationID,
+                    value.ImportProcedure, value.ImportSurgeon);
+            }
 
             return Request.CreateResponse(HttpStatusCode.Created, cardId);
         }
