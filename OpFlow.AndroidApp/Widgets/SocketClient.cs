@@ -10,6 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Microsoft.AspNet.SignalR.Client;
+using OpFlow.Mobile;
 
 namespace OpFlow.AndroidApp.Widgets
 {
@@ -25,6 +26,7 @@ namespace OpFlow.AndroidApp.Widgets
         {
             _platform = platform;
             _connection = new HubConnection("https://opflowservice.azurewebsites.net/signalr");
+            _connection.Headers.Add("Authorization", "Bearer " + AppSettings.AuthenticationToken);
             _proxy = _connection.CreateHubProxy("appHub");
         }
 

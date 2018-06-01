@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Foundation;
 using Microsoft.AspNet.SignalR.Client;
+using OpFlow.Mobile;
 using UIKit;
 
 namespace OpFlow.iOS
@@ -21,6 +22,7 @@ namespace OpFlow.iOS
         {
             _platform = platform;
             _connection = new HubConnection("https://opflowservice.azurewebsites.net/signalr");
+            _connection.Headers.Add("Authorization", "Bearer " + AppSettings.AuthenticationToken);
             _proxy = _connection.CreateHubProxy("appHub");
         }
 

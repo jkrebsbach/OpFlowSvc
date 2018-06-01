@@ -114,6 +114,9 @@ namespace OpFlow.Mobile
                 CurrentUser = await UserUtil.GetUser();
         }
 
+        public static string AuthenticationToken => _authToken?.AccessToken;
+
+
         public static void SignOutUser()
         {
             _authToken = null;
