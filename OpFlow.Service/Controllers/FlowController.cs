@@ -489,6 +489,51 @@ namespace OpFlow.Service.Controllers
             return Ok();
         }
 
+        // PUT api/values/5
+        [SwaggerOperation("UpdateSurgerySteps")]
+        [Route("api/flow/surgerySteps")]
+        [HttpPut]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        public IHttpActionResult UpdateSurgerySteps(int stepId, [FromBody]StepPost flowStepDetail)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            SqlHelper.UpdateSurgeryStep(stepId, flowStepDetail.StepName, flowStepDetail.StepNotificationType, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // PUT api/values/5
+        [SwaggerOperation("AddSurgerySteps")]
+        [Route("api/flow/surgerySteps")]
+        [HttpPost]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        public IHttpActionResult AddSurgerySteps([FromBody]StepPost flowStepDetail)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            SqlHelper.AddSurgeryStep(flowStepDetail.StepName, flowStepDetail.StepNotificationType, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // PUT api/values/5
+        [SwaggerOperation("DeleteSurgerySteps")]
+        [Route("api/flow/surgerySteps")]
+        [HttpDelete]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        public IHttpActionResult DeleteSurgerySteps(int stepId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            SqlHelper.DeleteSurgeryStep(stepId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
         // POST api/values
         [SwaggerOperation("CreateFlowNotification")]
         [SwaggerResponse(HttpStatusCode.Created)]

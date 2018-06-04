@@ -2619,6 +2619,50 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static int UpdateSurgeryStep(int stepId, string stepDescription, string notificationType, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("step_description", stepDescription),
+                new SqlParameter("notification_type", notificationType),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = ExecuteNonQuery("UpdateStep", parameters);
+
+            return result;
+        }
+
+        public static int AddSurgeryStep(string stepDescription, string notificationType, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("step_description", stepDescription),
+                new SqlParameter("notification_type", notificationType),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsNotification = ExecuteCommand("InsertStep", parameters);
+
+            var result = dsNotification.Tables[0].DataTableToList<InsertionResult>().First().Identifier;
+
+            return result;
+        }
+
+        public static int DeleteSurgeryStep(int stepId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = ExecuteNonQuery("DeleteStep", parameters);
+
+            return result;
+        }
+
         public static int InsertFlowNotification(int flowId, int stepId, int notificationType, string message, 
             string smsNumber, string emailAddress, int? messagingUserId, int providerId, int locationId)
         {

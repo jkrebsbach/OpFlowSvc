@@ -40,5 +40,28 @@ namespace OpFlow.Data
     {
         public int StepID { get; set; }
         public string StepName { get; set; }
+        public string StepNotificationType { get; set; }
+
+        public string StepNotificationDescription
+        {
+            get
+            {
+                switch (StepNotificationType)
+                {
+                    case "M":
+                        return "Mobile Alert";
+                    case "D":
+                        return "Dashboard Only";
+                    default:
+                        return "UNKNOWN";
+                }
+            }
+        }
+    }
+
+    public class StepPost
+    {
+        public string StepName { get; set; }
+        public string StepNotificationType { get; set; }
     }
 }

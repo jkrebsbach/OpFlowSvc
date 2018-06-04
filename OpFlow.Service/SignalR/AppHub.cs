@@ -46,11 +46,11 @@ namespace OpFlow.Service.SignalR
             var sender =
                 DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
 
-            var recipients = new[] { recipientUser.Email, HttpContext.Current.User.Identity.GetUserName() };
-            foreach (var recipient in recipients)
-            {
-                await SendMessage(recipient, message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
-            }
+            // Send messages to communication target
+            await SendMessage(recipientUser.Email, message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, null, sender.UserID);
+
+            // Send messages to communication source
+            await SendMessage(HttpContext.Current.User.Identity.GetUserName(), message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
         }
 
         private async Task SendMessage(string who, string message, int senderRoleId, string senderUserName, DateTime insertTimestamp, int? surgeryId, int? communicationUserId)
