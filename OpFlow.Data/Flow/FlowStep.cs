@@ -35,4 +35,10 @@ namespace OpFlow.Data
         public TimeSpan StepStartTime { get; set; }
         public TimeSpan StepEndTime { get; set; }
     }
+
+    public class Step
+    {
+        public int StepID { get; set; }
+        public string StepName { get; set; }
+    }
 }

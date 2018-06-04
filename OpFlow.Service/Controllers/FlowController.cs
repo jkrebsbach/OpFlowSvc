@@ -442,6 +442,19 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetSteps")]
+        [Route("api/flow/steps")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Step>))]
+        public HttpResponseMessage GetSteps()
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = DataAccess.SqlHelper.GetSteps(user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetFlowFeedback")]
         [Route("api/flow/feedback")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<FlowFeedback>))]
@@ -470,7 +483,7 @@ namespace OpFlow.Service.Controllers
             {
                 var flowStep = flowStepDetail.FlowSteps[index];
 
-                SqlHelper.InsertFlowStep(flowId, index + 1, flowStep.StepDuration, flowStep.StepDescription, user.ProviderID, user.LocationID);
+                SqlHelper.InsertFlowStep(flowId, flowStep.StepID, index + 1, flowStep.StepDuration, user.ProviderID, user.LocationID);
             }
 
             return Ok();

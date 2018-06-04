@@ -2561,6 +2561,20 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static List<Step> GetSteps(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetSteps", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Step>();
+
+            return result;
+        }
+
         public static List<FlowFeedback> GetFlowFeedback(int flowId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -2589,14 +2603,14 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static int InsertFlowStep(int flowId, int stepId, decimal duration, string description, int providerId, int locationId)
+        public static int InsertFlowStep(int flowId, int stepId, int stepSequence, decimal duration, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("flow_id", flowId),
                 new SqlParameter("step_id", stepId),
                 new SqlParameter("duration", duration),
-                new SqlParameter("description", description),
+                new SqlParameter("step_sequence", stepSequence),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

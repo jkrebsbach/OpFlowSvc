@@ -77,7 +77,7 @@ namespace OpFlow.Data
     public class FlowStepDetailPost
     {
         public int StepDuration { get; set; }
-        public string StepDescription { get; set; }
+        public int StepID { get; set; }
     }
 
     public class FlowNotificationPost
