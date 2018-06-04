@@ -57,6 +57,12 @@ namespace OpFlow.iOS
             //Send("Connected");
         }
 
+        public void Disconnect()
+        {
+            if (_connection != null)
+                _connection.Dispose();
+        }
+
         public Task SendSurgeryMessage(int surgeryId, string message)
         {
             return _proxy.Invoke("sendSurgeryMessage", surgeryId, message);

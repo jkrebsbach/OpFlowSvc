@@ -27,19 +27,28 @@ namespace OpFlow.iOS
             await _client.Connect();
 
             _client.OnMessageReceived += (sender, message) => InvokeOnMainThread(
-                () =>
-                {
-                    var newMessage = new Messaging()
-                    {
-                        SenderRoleID = (RoleEnum)message.SenderRoleID,
-                        UserName = message.SenderUserName,
-                        Message = message.Message,
-                        InsertTimestamp = message.InsertTimestamp
-                    };
+                () => {
+                var currentMessageGroup = AppSettings.CurrentMessagingGroup;
 
+                var newMessage = new Messaging()
+                {
+                    SenderRoleID = (RoleEnum)message.SenderRoleID,
+                    UserName = message.SenderUserName,
+                    Message = message.Message,
+                    InsertTimestamp = message.InsertTimestamp
+                };
+
+                // Is this message part of the current conversation?
+                if (message.SurgeryID == currentMessageGroup.SurgeryID &&
+                    message.CommunicationUserID == currentMessageGroup.CommunicationUserID)
+                {
                     _messages.Add(newMessage);
                     CommunicatorTableView.ReloadData();
-                });
+
+                    var detailIndexPath = NSIndexPath.FromRowSection(_messages.Count - 1, 0);
+                    CommunicatorTableView.ScrollToRow(detailIndexPath, UITableViewScrollPosition.None, true);
+                }
+            });
 
             SetupDoneStyleTextField(txtMessage);
 

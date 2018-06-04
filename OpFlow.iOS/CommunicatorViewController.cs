@@ -31,8 +31,8 @@ namespace OpFlow.iOS
                 () =>
                 {
                     var messageGroup = _messageGroups.FirstOrDefault(m =>
-                                                                    m.SurgeryID == message.SurgeryID &&
-                                                                     m.CommunicationUserID == message.CommunicationUserID);
+                        m.SurgeryID == message.SurgeryID &&
+                         m.CommunicationUserID == message.CommunicationUserID);
 
                     if (messageGroup != null)
                     {
@@ -73,6 +73,7 @@ namespace OpFlow.iOS
 
         private void SelectMessageGroup(object sender, MessagingGroup messageGroup)
         {
+            _client.Disconnect();
             AppSettings.CurrentMessagingGroup = messageGroup;
 
             NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CommunicationDetail);
