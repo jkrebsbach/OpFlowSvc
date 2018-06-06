@@ -167,5 +167,43 @@ namespace OpFlow.Service.DataAccess
         {
             return $"{imageType}/{containerId}";
         }
+
+        public static byte[] CompressImage(byte[] sourceImage)
+        {
+            var memStream = new MemoryStream(sourceImage);
+            var outStream = new MemoryStream();
+            memStream.Position = 0;
+
+            using (var img = Image.FromStream(memStream))
+            {
+                var jpgEncoder = GetEncoder(ImageFormat.Jpeg);
+
+                // Create an Encoder object based on the GUID
+                // for the Quality parameter category.
+                var myEncoder = Encoder.Quality;
+                var encoderParams = new EncoderParameters(1);
+                var encoderParameter = new EncoderParameter(myEncoder, 25L);
+                encoderParams.Param[0] = encoderParameter;
+
+                img.Save(outStream, jpgEncoder, encoderParams);
+            }
+
+            outStream.Position = 0;
+
+            return outStream.GetBuffer();
+        }
+        private static ImageCodecInfo GetEncoder(ImageFormat format)
+        {
+            var codecs = ImageCodecInfo.GetImageDecoders();
+
+            foreach (var codec in codecs)
+            {
+                if (codec.FormatID == format.Guid)
+                {
+                    return codec;
+                }
+            }
+            return null;
+        }
     }
 }

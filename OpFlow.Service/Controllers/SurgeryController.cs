@@ -616,7 +616,19 @@ namespace OpFlow.Service.Controllers
             var provider = new MultipartMemoryStreamProvider();
             await Request.Content.ReadAsMultipartAsync(provider);
 
+            // extract file name and file contents
+            var fileNameParam = provider.Contents[0].Headers.ContentDisposition.Parameters
+                .FirstOrDefault(p => p.Name.ToLower() == "filename");
+            var fileName = fileNameParam?.Value.Trim('"') ?? "";
+            var fileExtension = Path.GetExtension(fileName);
             var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
+
+            if (fileExtension == ".png" ||
+                fileExtension == ".jpg" ||
+                fileExtension == ".jpeg")
+            {
+                fileContents = BlobStorageHelper.CompressImage(fileContents);
+            }
 
             var SurgeryImageId = SqlHelper.NewSurgeryImage(surgeryId, stepId, roleId, comment,
                 user.ProviderID, user.LocationID);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -139,13 +140,25 @@ namespace OpFlow.Service.Controllers
             var provider = new MultipartMemoryStreamProvider();
             await Request.Content.ReadAsMultipartAsync(provider);
 
+            // extract file name and file contents
+            var fileNameParam = provider.Contents[0].Headers.ContentDisposition.Parameters
+                .FirstOrDefault(p => p.Name.ToLower() == "filename");
+            var fileName = fileNameParam?.Value.Trim('"') ?? "";
+            var fileExtension = Path.GetExtension(fileName);
             var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
 
-            var flowImageId = DataAccess.SqlHelper.NewFlowImage(flowId, stepId, roleId, comment,
+            var flowImageId = SqlHelper.NewFlowImage(flowId, stepId, roleId, comment,
                 user.ProviderID, user.LocationID);
 
-            var folder = DataAccess.BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, flowId);
-            await DataAccess.BlobStorageHelper.PutBlobBytes(folder, flowImageId.ToString(), fileContents);
+            if (fileExtension == ".png" ||
+                fileExtension == ".jpg" ||
+                fileExtension == ".jpeg")
+            {
+                fileContents = BlobStorageHelper.CompressImage(fileContents);
+            }
+
+            var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, flowId);
+            await BlobStorageHelper.PutBlobBytes(folder, flowImageId.ToString(), fileContents);
 
             return Ok();
         }
