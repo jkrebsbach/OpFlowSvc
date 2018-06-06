@@ -48,6 +48,8 @@ namespace OpFlow.Service.Controllers
                 group.CommunicationTargetName = $"{patient.LastName} {group.CommunicationTargetName}";
             }
 
+            groups = groups.OrderByDescending(g => g.SurgeryID.HasValue).ToList();
+
             return Request.CreateResponse(HttpStatusCode.OK, groups);
         }
 
