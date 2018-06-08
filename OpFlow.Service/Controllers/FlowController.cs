@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -34,16 +35,30 @@ namespace OpFlow.Service.Controllers
 
         // POST api/values
         [SwaggerOperation("AddFlowPhrase")]
-        [SwaggerResponse(HttpStatusCode.Created)]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.Conflict)]
         [Route("api/flow/flowPhrase", Name = "AddFlowPhrase")]
         [HttpPost]
-        public async Task<IHttpActionResult> AddFlowPhrase(int flowId, int smartPhraseId, int? stepId = null)
+        public async Task<HttpResponseMessage> AddFlowPhrase(int flowId, int smartPhraseId, int? stepId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            SqlHelper.AddFlowSmartPhrase(flowId, smartPhraseId, stepId, user.ProviderID, user.LocationID);
+            try
+            {
+                await SqlHelper.AddFlowSmartPhrase(flowId, smartPhraseId, stepId, user.ProviderID, user.LocationID);
+            }
+            catch (SqlException sqlEx)
+            {
+                if (sqlEx.Message.ToUpper().Contains("DUPLICATE KEY"))
+                {
+                    return Request.CreateResponse(HttpStatusCode.Conflict,
+                        "Cannot assign instruction to step multiple times");
+                }
 
-            return Ok();
+                throw;
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, 200);
         }
 
         // POST api/values

@@ -42,7 +42,7 @@ namespace OpFlow.Data
     public class UserPost
     {
         public int RoleID { get; set; }
-        public int SpecialtyID { get; set; }
+        public int? SpecialtyID { get; set; }
         public string Initials { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -55,7 +55,7 @@ namespace OpFlow.Data
     public class UserEdit
     {
         public RoleEnum RoleID { get; set; }
-        public int SpecialtyID { get; set; }
+        public int? SpecialtyID { get; set; }
         public string Initials { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

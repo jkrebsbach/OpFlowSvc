@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -339,17 +340,31 @@ namespace OpFlow.Service.Controllers
 
         // POST api/values
         [SwaggerOperation("AddSurgerySmartPhrase")]
-        [SwaggerResponse(HttpStatusCode.Created)]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.Conflict)]
         [Route("api/surgery/surgeryPhrase", Name = "AddSurgerySmartPhrase")]
         [HttpPost]
-        public async Task<IHttpActionResult> AddSurgerySmartPhrase(int surgeryId, int smartPhraseId)
+        public async Task<HttpResponseMessage> AddSurgerySmartPhrase(int surgeryId, int smartPhraseId)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.AddSurgerySmartPhrase(surgeryId, smartPhraseId,
-                user.ProviderID, user.LocationID);
+            try
+            {
+                await SqlHelper.AddSurgerySmartPhrase(surgeryId, smartPhraseId,
+                    user.ProviderID, user.LocationID);
+            }
+            catch (SqlException sqlEx)
+            {
+                if (sqlEx.Message.ToUpper().Contains("UNIQUE"))
+                {
+                    return Request.CreateResponse(HttpStatusCode.Conflict,
+                        "Cannot assign instruction to step multiple times");
+                }
 
-            return Ok();
+                throw;
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK);
         }
 
         // POST api/values
@@ -796,6 +811,20 @@ namespace OpFlow.Service.Controllers
                 surgeryDelay.StartTime, surgeryDelay.EndTime, surgeryDelay.DelayReasonID);
 
             return Request.CreateResponse(HttpStatusCode.Created, success);
+        }
+
+        // POST api/values
+        [SwaggerOperation("SurgeryReviewComplete")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        [Route("api/surgery/reviewComplete", Name = "SurgeryReviewComplete")]
+        public async Task<HttpResponseMessage> SurgeryReviewComplete(int surgeryId, DateTime reviewComplete)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var success = SqlHelper.SurgeryReviewComplete(surgeryId, reviewComplete, user.UserID, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, success);
         }
 
         // POST api/values

@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using System.Web;
 using OpFlow.Data;
 using OpFlow.Data.Administration;
@@ -50,6 +51,28 @@ namespace OpFlow.Service.DataAccess
             using (var dataAdapter = new SqlDataAdapter(cmd))
             {
                 result = cmd.ExecuteNonQuery();
+
+                cmd.Parameters.Clear();
+                conn.Close();
+
+                return result;
+            }
+        }
+
+        private static async Task<int> ExecuteNonQueryAsync(string storedProcedure, SqlParameter[] dsParameters = null, CommandType commandType = CommandType.StoredProcedure)
+        {
+            var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString);
+            var cmd = new SqlCommand(storedProcedure, conn) { CommandType = commandType };
+
+            cmd.Parameters.AddRange(dsParameters);
+
+            await conn.OpenAsync();
+
+            var result = -1;
+
+            using (var dataAdapter = new SqlDataAdapter(cmd))
+            {
+                result = await cmd.ExecuteNonQueryAsync();
 
                 cmd.Parameters.Clear();
                 conn.Close();
@@ -551,7 +574,7 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UserSurgeryWorkupReviewed", dsParameters);
         }
 
-        public static int CreateUser(Guid userAuthId, int roleId, int specialtyId, string firstName, string lastName,
+        public static int CreateUser(Guid userAuthId, int? roleId, int? specialtyId, string firstName, string lastName,
             string email, string cellPhone, string initials, string title, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -559,14 +582,14 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("user_auth_id", userAuthId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("role_id", roleId),
-                new SqlParameter("specialty_id", specialtyId),
-                new SqlParameter("first_name", firstName),
-                new SqlParameter("last_name", lastName),
-                new SqlParameter("email", email),
-                new SqlParameter("cell_phone", cellPhone),
-                new SqlParameter("initials", initials),
-                new SqlParameter("title", title)
+                new SqlParameter("role_id", roleId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("first_name", firstName ?? (object)DBNull.Value),
+                new SqlParameter("last_name", lastName ?? (object)DBNull.Value),
+                new SqlParameter("email", email ?? (object)DBNull.Value),
+                new SqlParameter("cell_phone", cellPhone ?? (object)DBNull.Value),
+                new SqlParameter("initials", initials ?? (object)DBNull.Value),
+                new SqlParameter("title", title ?? (object)DBNull.Value)
             };
             var dsResult = ExecuteCommand("InsertUser", dsParameters);
 
@@ -606,7 +629,7 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("DeleteUser", dsParameters);
         }
 
-        public static int AddSurgerySmartPhrase(int surgeryId, int smartPhraseId, int providerId, int locationId)
+        public static async Task<int> AddSurgerySmartPhrase(int surgeryId, int smartPhraseId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -615,10 +638,10 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("smart_phrase_id", smartPhraseId)
             };
-            return ExecuteNonQuery("InsertSurgeryPhrase", dsParameters);
+            return await ExecuteNonQueryAsync("InsertSurgeryPhrase", dsParameters);
         }
 
-        public static int AddFlowSmartPhrase(int flowId, int smartPhraseId, int? stepId, int providerId, int locationId)
+        public static async Task<int> AddFlowSmartPhrase(int flowId, int smartPhraseId, int? stepId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -628,7 +651,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("step_id", stepId ?? (object)DBNull.Value),
                 new SqlParameter("smart_phrase_id", smartPhraseId)
             };
-            return ExecuteNonQuery("InsertFlowPhrase", dsParameters);
+            return await ExecuteNonQueryAsync("InsertFlowPhrase", dsParameters);
         }
 
         public static int NewSmartPhrase(string phrase, int categoryId, int stepId, int roleId, int userId, int providerId, int locationId)
@@ -1386,6 +1409,21 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("delay_reason_id", delayReasonId ?? (object)DBNull.Value)
             };
             var update = ExecuteNonQuery("UpdateSurgeryDelays", dsParameters);
+
+            return update;
+        }
+
+        public static int SurgeryReviewComplete(int surgeryId, DateTime reviewComplete, int userId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("surgery_review", reviewComplete),
+                new SqlParameter("user_id", userId)
+            };
+            var update = ExecuteNonQuery("UpdateSurgeryUserReview", dsParameters);
 
             return update;
         }

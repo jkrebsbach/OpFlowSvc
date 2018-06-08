@@ -19,6 +19,7 @@ namespace OpFlow.Data
         public DateTime? CheckOutDate { get; set; }
         public TimeSpan? CheckOutTime { get; set; }
         public string WorkupReview { get; set; }
+        public DateTime? SurgeryReview { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
