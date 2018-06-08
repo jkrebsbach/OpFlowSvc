@@ -16,17 +16,21 @@ namespace OpFlow.iOS
         {
             lblMessageGroup.Text = messageGroup.CommunicationTargetName;
 
-            lblRecentMessage.Text = (messageGroup.SenderUserID == AppSettings.CurrentUser.UserID ? "You: " : " ") +
-                messageGroup.LatestMessage;
+            var messageTimestamp = messageGroup.LatestInsertTimestamp.ToString("HH:mm");
+            if (messageGroup.LatestInsertTimestamp.Date != DateTime.Today)
+                messageTimestamp = messageGroup.LatestInsertTimestamp.ToString("M/d");
 
-            var backgroundColor = UIColor.Green;
+            lblRecentMessage.Text = (messageGroup.SenderUserID == AppSettings.CurrentUser.UserID ? "You: " : " ") +
+                messageTimestamp + " " +
+                messageGroup.LatestMessage;
+            
+            var backgroundColor = UIColor.FromRGB(100, 149, 237);
 
             if (messageGroup.CommunicationUserID.HasValue)
             {
-                backgroundColor = UIColor.FromRGB(100, 149, 237);
+                backgroundColor = UIColor.Green;
             }
 
-            //Layer.BackgroundColor = backgroundColor.CGColor;
             lblMessageGroup.BackgroundColor = backgroundColor;
         }
     }

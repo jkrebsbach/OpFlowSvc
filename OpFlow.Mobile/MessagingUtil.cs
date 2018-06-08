@@ -52,7 +52,7 @@ namespace OpFlow.Mobile
             var command = string.Format("api/message/groups");
             var response = await WebUtility.WebRequest<List<MessagingGroup>>(command, HttpMethod.Get);
 
-            return response.OrderBy(r => r.CommunicationTargetName).ToList();
+            return response.ToList();
         }
     }
 }

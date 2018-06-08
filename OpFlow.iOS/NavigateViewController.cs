@@ -13,17 +13,43 @@ namespace OpFlow.iOS
 {
     public partial class NavigateViewController : OpFlowViewController
     {
-        
+        private readonly SocketClient _client;
+        private List<Messaging> _messages;
+
         Surgery _surgery;
         Patient _patient;
         
         public NavigateViewController (IntPtr handle) : base (handle)
         {
+            _client = new SocketClient("iOS");
         }
 
         public override async void ViewDidLoad()
         {
             base.ViewDidLoad();
+
+            await _client.Connect();
+
+            _client.OnMessageReceived += (sender, message) => InvokeOnMainThread(
+                () => {
+                    var newMessage = new Messaging()
+                    {
+                        SenderRoleID = (RoleEnum)message.SenderRoleID,
+                        UserName = message.SenderUserName,
+                        Message = message.Message,
+                        InsertTimestamp = message.InsertTimestamp
+                    };
+
+                    // Is this message part of the current conversation?
+                    if (message.SurgeryID == AppSettings.CurrentSurgery)
+                    {
+                        _messages.Add(newMessage);
+                        CommunicatorTableView.ReloadData();
+
+                        var detailIndexPath = NSIndexPath.FromRowSection(_messages.Count - 1, 0);
+                        CommunicatorTableView.ScrollToRow(detailIndexPath, UITableViewScrollPosition.None, true);
+                    }
+                });
 
             lblSurgeon.TextColor = RoleEnum.Surgeon.RoleBackgroundColorMapping();
             lblAnes.TextColor = RoleEnum.Anesthesiologist.RoleBackgroundColorMapping();
@@ -56,12 +82,7 @@ namespace OpFlow.iOS
             if (txtCommunicator.Text == "")
                 return;
 
-            var messageGroup = new MessagingGroup()
-            {
-                SurgeryID = AppSettings.CurrentSurgery
-            };
-
-            await MessagingUtil.SendMessage(messageGroup, txtCommunicator.Text);
+            await _client.SendSurgeryMessage(AppSettings.CurrentSurgery.Value, txtCommunicator.Text);
             txtCommunicator.ResignFirstResponder();
 
             txtCommunicator.Text = string.Empty;
@@ -164,17 +185,17 @@ namespace OpFlow.iOS
 
         private async Task LoadMessages()
         {
-            var messaging = await MessagingUtil.GetMessages(_surgery.SurgeryID, null, null);
+            _messages = await MessagingUtil.GetMessages(_surgery.SurgeryID, null, null);
 
-            var messagingTableViewSource = new CommunicatorTVS(messaging);
+            var messagingTableViewSource = new CommunicatorTVS(_messages);
 
             CommunicatorTableView.Source = messagingTableViewSource;
             CommunicatorTableView.ReloadData();
 
             // If we have any messages, scroll to bottom of message stack
-            if (messaging.Count > 0)
+            if (_messages.Count > 0)
             {
-                var detailIndexPath = NSIndexPath.FromRowSection(messaging.Count - 1, 0);
+                var detailIndexPath = NSIndexPath.FromRowSection(_messages.Count - 1, 0);
                 CommunicatorTableView.ScrollToRow(detailIndexPath, UITableViewScrollPosition.None, true);
             }
         }

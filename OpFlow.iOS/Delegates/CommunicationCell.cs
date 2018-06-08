@@ -19,7 +19,11 @@ namespace OpFlow.iOS.Delegates
 
         public void UpdateCell(Messaging message)
         {
-            LblCommunicator.Text = message.Message;
+            var messageTimestamp = message.InsertTimestamp.ToString("HH:mm");
+            if (message.InsertTimestamp.Date != DateTime.Today)
+                messageTimestamp = message.InsertTimestamp.ToString("M/d");
+
+            LblCommunicator.Text = messageTimestamp + " " + message.Message;
             LblInitials.Text = message.UserName;
 
             LblInitials.BackgroundColor = message.SenderRoleID.RoleBackgroundColorMapping();
