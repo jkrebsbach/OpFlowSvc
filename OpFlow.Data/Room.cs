@@ -66,6 +66,15 @@ namespace OpFlow.Data
         public int RoomGroupID { get; set; }
     }
 
+    public class RoomSetupDetail
+    {
+        public List<RoomSetup> RoomSetups;
+        public List<RoomType> RoomTypes;
+        public List<PatientPosition> PatientPositions;
+        public List<ItemMaster> EquipmentItems;
+        public List<ItemMaster> InstrumentItems;
+    }
+
     public class RoomSetup : IBindableEntity
     {
         public int RoomSetupID { get; set; }

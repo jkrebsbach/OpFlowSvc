@@ -58,6 +58,36 @@ namespace OpFlow.Service.DataAccess
                 return result;
             }
         }
+        private static async Task<DataSet> ExecuteCommandAsync(string storedProcedure, SqlParameter[] dsParameters = null)
+        {
+            try
+            {
+                using (var conn =
+                    new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString))
+                using (var cmd = new SqlCommand(storedProcedure, conn) {CommandType = CommandType.StoredProcedure})
+                {
+                    cmd.Parameters.AddRange(dsParameters);
+
+                    await conn.OpenAsync();
+
+                    using (var dataAdapter = new SqlDataAdapter(cmd))
+                    {
+                        var ds = new DataSet();
+
+                        await Task.Run(() => dataAdapter.Fill(ds));
+
+                        cmd.Parameters.Clear();
+                        conn.Close();
+
+                        return ds;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
         private static async Task<int> ExecuteNonQueryAsync(string storedProcedure, SqlParameter[] dsParameters = null, CommandType commandType = CommandType.StoredProcedure)
         {
@@ -2296,7 +2326,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<CardBundle> GetBundles(int? specialtyId, int providerId, int locationId)
+        public static async Task<List<CardBundle>> GetBundles(int? specialtyId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2304,9 +2334,16 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetBundlesBySpecialty", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetBundlesBySpecialty", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<CardBundle>();
+            var procedures = dsSchedules.Tables[1].DataTableToList<BundleProcedure>();
+
+            foreach (var procedure in procedures)
+            {
+                var bundle = result.FirstOrDefault(b => b.BundleID == procedure.BundleID);
+                bundle?.Procedures.Add(procedure);
+            }
 
             return result;
         }
@@ -2322,6 +2359,82 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetBundleProcedures", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<BundleProcedure>();
+
+            return result;
+        }
+
+        public static int NewBundle(string description, int specialtyId, List<int> procedures, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("description", description),
+                new SqlParameter("specialty_id", specialtyId)
+            };
+            var dsSchedules = ExecuteCommand("InsertBundle", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<InsertionResult>();
+
+            var bundleId = result.FirstOrDefault()?.Identifier ?? 0;
+
+            UpdateBundleProcedures(bundleId, procedures, providerId, locationId);
+
+            return bundleId;
+        }
+
+        public static int UpdateBundle(int bundleId, string description, int specialtyId, List<int> procedures, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("bundle_id", bundleId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("description", description),
+                new SqlParameter("specialty_id", specialtyId)
+            };
+            var result = ExecuteNonQuery("UpdateBundle", parameters);
+
+            UpdateBundleProcedures(bundleId, procedures, providerId, locationId);
+
+            return result;
+        }
+
+        private static int UpdateBundleProcedures(int bundleId, List<int> procedures, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("bundle_id", bundleId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = ExecuteNonQuery("DeleteBundleProcedures", parameters);
+
+            foreach (var procedureId in procedures)
+            {
+                parameters = new[]
+                {
+                    new SqlParameter("bundle_id", bundleId),
+                    new SqlParameter("procedure_id", procedureId),
+                    new SqlParameter("provider_id", providerId),
+                    new SqlParameter("location_id", locationId)
+                };
+
+                result = ExecuteNonQuery("InsertBundleProcedure", parameters);
+            }
+
+            return result;
+        }
+
+        public static int DeleteBundle(int bundleId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("bundle_id", bundleId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = ExecuteNonQuery("DeleteBundle", parameters);
 
             return result;
         }

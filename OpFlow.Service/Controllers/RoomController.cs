@@ -72,6 +72,37 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values
+        [SwaggerOperation("GetSetupDetail")]
+        [Route("api/room/setupDetail")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(RoomSetupDetail))]
+        public RoomSetupDetail GetSetupDetail(int? roomSetupId = null, int? locationId = null)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var setups = DataAccess.SqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID);
+
+            if (roomSetupId != null)
+                setups = setups.Where(s => s.RoomSetupID == roomSetupId).ToList();
+
+            var roomTypes = DataAccess.SqlHelper.GetRoomTypes(user.LocationID);
+            var patientPositions = DataAccess.SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
+
+            var equipment = DataAccess.SqlHelper.GetItems("EQUIPMENT", null, false, user.ProviderID, user.LocationID);
+            var instruments = DataAccess.SqlHelper.GetItems("INSTRUMENT", null, false, user.ProviderID, user.LocationID);
+
+            var result = new RoomSetupDetail()
+            {
+                RoomSetups = setups,
+                RoomTypes = roomTypes,
+                PatientPositions = patientPositions,
+                EquipmentItems = equipment,
+                InstrumentItems = instruments
+            };
+
+            return result;
+        }
+
+        // GET api/values
         [SwaggerOperation("GetPatientPositions")]
         [Route("api/room/patientPositions")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<PatientPosition>))]

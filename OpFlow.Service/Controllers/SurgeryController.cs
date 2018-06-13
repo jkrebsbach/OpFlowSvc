@@ -253,7 +253,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSearchScreen")]
         [Route("api/surgery/searchScreen")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(SearchScreen))]
-        public HttpResponseMessage GetSearchScreen()
+        public async Task<HttpResponseMessage> GetSearchScreen()
         {
             var user = CacheUtil.GetUserSecurity();
 
@@ -262,7 +262,7 @@ namespace OpFlow.Service.Controllers
                 Rooms = SqlHelper.GetRooms(user.LocationID),
                 Users = SqlHelper.SearchUsers(null, null, null, user.ProviderID, user.LocationID),
                 Specialties = SqlHelper.GetSpecialties(user.ProviderID, user.LocationID),
-                Bundles = SqlHelper.GetBundles(null, user.ProviderID, user.LocationID),
+                Bundles = await SqlHelper.GetBundles(null, user.ProviderID, user.LocationID),
                 Procedures = SqlHelper.GetProcedures(null, user.ProviderID, user.LocationID)
             };
 

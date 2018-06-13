@@ -70,7 +70,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.UpdateFlowPhrase(flowId, smartPhraseId,
+            SqlHelper.UpdateFlowPhrase(flowId, smartPhraseId,
                 debriefUpdate.Comments, debriefUpdate.StepID, debriefUpdate.RoleID, user.ProviderID, user.LocationID);
 
             return Ok();
@@ -85,7 +85,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.DeleteFlowPhrase(flowId, smartPhraseId, user.ProviderID, user.LocationID);
+            SqlHelper.DeleteFlowPhrase(flowId, smartPhraseId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -104,11 +104,11 @@ namespace OpFlow.Service.Controllers
 
             if (smartPhrase.FlowID.HasValue)
             {
-                SqlHelper.AddFlowSmartPhrase(smartPhrase.FlowID.Value, smartPhraseId, smartPhrase.StepID, user.ProviderID, user.LocationID);
+                await SqlHelper.AddFlowSmartPhrase(smartPhrase.FlowID.Value, smartPhraseId, smartPhrase.StepID, user.ProviderID, user.LocationID);
             }
             else if (smartPhrase.SurgeryID.HasValue)
             {
-                SqlHelper.AddSurgerySmartPhrase(smartPhrase.SurgeryID.Value, smartPhraseId, user.ProviderID,
+                await SqlHelper.AddSurgerySmartPhrase(smartPhrase.SurgeryID.Value, smartPhraseId, user.ProviderID,
                     user.LocationID);
             }
 
@@ -124,7 +124,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.EditSmartPhrase(smartPhraseId, smartPhrase.Phrase, user.ProviderID, user.LocationID);
+            SqlHelper.EditSmartPhrase(smartPhraseId, smartPhrase.Phrase, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -138,7 +138,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.DeleteSmartPhrase(smartPhraseId, user.ProviderID, user.LocationID);
+            SqlHelper.DeleteSmartPhrase(smartPhraseId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -477,7 +477,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetSteps(user.ProviderID, user.LocationID);
+            var result = SqlHelper.GetSteps(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
