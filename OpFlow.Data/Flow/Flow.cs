@@ -11,7 +11,7 @@ namespace OpFlow.Data
         public int CardID { get; set; }
         public int OwnerUserID { get; set; }
         public int TemplateFlowID { get; set; }
-        public int TemplateRoomID { get; set; }
+        public int? TemplateRoomSetupID { get; set; }
         public int SpecialtyID { get; set; }
         public string FlowDescription { get; set; }
         public string CardDescription { get; set; }

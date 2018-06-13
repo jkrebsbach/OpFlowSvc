@@ -47,6 +47,10 @@ namespace OpFlow.Data.Debrief
         public int RoleID { get; set; }
     }
 
+    public class BatchEditModel
+    {
+        public List<int> FlowIDList { get; set; }
+    }
     public class DebriefUpdatePost
     {
         public string CaseNotes { get; set; }

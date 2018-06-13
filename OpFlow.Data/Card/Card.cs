@@ -16,7 +16,7 @@ namespace OpFlow.Data
         public int SpecialtyID { get; set; }
         public int OwnerUserID { get; set; }
         public int TemplateFlowID { get; set; }
-        public int TemplateRoomID { get; set; }
+        public int TemplateRoomSetupID { get; set; }
         public string SpecialtyDefaultFlag { get; set; }
         public string LocationName { get; set; }
         public string OwnerLastName { get; set; }
@@ -75,7 +75,7 @@ namespace OpFlow.Data
         public string DefaultFlag { get; set; }
         public string SpecialtyDefaultFlag { get; set; }
         public int? TemplateFlowID { get; set; }
-        public int? TemplateRoomID { get; set; }
+        public int? TemplateRoomSetupID { get; set; }
         public string ImportSurgeon { get; set; }
         public string ImportProcedure { get; set; }
     }

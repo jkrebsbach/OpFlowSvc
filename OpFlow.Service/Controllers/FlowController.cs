@@ -62,6 +62,35 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [SwaggerOperation("BulkAddFlowPhrase")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/flow/flowPhraseBatch", Name = "BulkAddFlowPhrase")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> AddFlowPhraseBatch(int smartPhraseId, int stepId, [FromBody]BatchEditModel batch)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            foreach (var flowId in batch.FlowIDList)
+            {
+                try
+                {
+                    await SqlHelper.AddFlowSmartPhrase(flowId, smartPhraseId, stepId, user.ProviderID, user.LocationID);
+                }
+                catch (SqlException sqlEx)
+                {
+                if (sqlEx.Message.ToUpper().Contains("DUPLICATE KEY"))
+                {
+                    // Ignore issue
+                }
+
+                throw;
+                }
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, 200);
+        }
+
+        // POST api/values
         [SwaggerOperation("UpdateFlowPhrase")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/flow/flowPhrase", Name = "UpdateFlowPhrase")]

@@ -303,16 +303,16 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [SwaggerOperation("AssignRoomSetupCard")]
+        [SwaggerOperation("AssignRoomSetup")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/card/assignRoomSetup", Name = "AssignRoomSetupCard")]
-        public async Task<IHttpActionResult> AssignRoomSetupToCard(int cardId, int roomSetupId)
+        public HttpResponseMessage AssignRoomSetupToCard(int cardId, int roomSetupId)
         {
             var user = CacheUtil.GetUserSecurity();
 
             DataAccess.SqlHelper.AssignRoomSetupToCard(roomSetupId, cardId, user.ProviderID, user.LocationID);
 
-            return Ok();
+            return Request.CreateResponse(HttpStatusCode.OK, 418);
         }
 
         [SwaggerOperation("AssignCardUser")]
@@ -395,7 +395,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var cardId = DataAccess.SqlHelper.InsertCard(value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomID,
+            var cardId = DataAccess.SqlHelper.InsertCard(value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
                 value.BundleID, value.BundleFlag, value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1", 
                 user.ProviderID, user.LocationID);
 
@@ -416,7 +416,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.UpdateCard(id, value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomID,
+            DataAccess.SqlHelper.UpdateCard(id, value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
                 value.BundleID, value.BundleFlag, value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1", 
                 user.UserID, user.ProviderID, user.LocationID);
 
