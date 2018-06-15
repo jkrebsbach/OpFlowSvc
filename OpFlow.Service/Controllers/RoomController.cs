@@ -87,8 +87,8 @@ namespace OpFlow.Service.Controllers
             var roomTypes = DataAccess.SqlHelper.GetRoomTypes(user.LocationID);
             var patientPositions = DataAccess.SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
 
-            var equipment = DataAccess.SqlHelper.GetItems("EQUIPMENT", null, false, user.ProviderID, user.LocationID);
-            var instruments = DataAccess.SqlHelper.GetItems("INSTRUMENT", null, false, user.ProviderID, user.LocationID);
+            var equipment = DataAccess.SqlHelper.GetItems("EQUIPMENT", null, null, user.ProviderID, user.LocationID);
+            var instruments = DataAccess.SqlHelper.GetItems("INSTRUMENT", null, null, user.ProviderID, user.LocationID);
 
             var result = new RoomSetupDetail()
             {

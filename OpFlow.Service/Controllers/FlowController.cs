@@ -66,11 +66,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [Route("api/flow/flowPhraseBatch", Name = "BulkAddFlowPhrase")]
         [HttpPost]
-        public async Task<HttpResponseMessage> AddFlowPhraseBatch(int smartPhraseId, int stepId, [FromBody]BatchEditModel batch)
+        public async Task<HttpResponseMessage> AddFlowPhraseBatch(int flowId, int stepId, [FromBody]BatchEditModel batch)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            foreach (var flowId in batch.FlowIDList)
+            foreach (var smartPhraseId in batch.SmartPhraseIDList)
             {
                 try
                 {
@@ -78,12 +78,13 @@ namespace OpFlow.Service.Controllers
                 }
                 catch (SqlException sqlEx)
                 {
-                if (sqlEx.Message.ToUpper().Contains("DUPLICATE KEY"))
-                {
-                    // Ignore issue
-                }
+                    if (sqlEx.Message.ToUpper().Contains("DUPLICATE KEY"))
+                    {
+                        // Ignore issue
+                        continue;
+                    }
 
-                throw;
+                    throw;
                 }
             }
 

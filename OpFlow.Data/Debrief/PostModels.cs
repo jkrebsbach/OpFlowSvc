@@ -49,7 +49,7 @@ namespace OpFlow.Data.Debrief
 
     public class BatchEditModel
     {
-        public List<int> FlowIDList { get; set; }
+        public List<int> SmartPhraseIDList { get; set; }
     }
     public class DebriefUpdatePost
     {
