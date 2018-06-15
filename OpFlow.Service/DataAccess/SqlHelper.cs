@@ -861,14 +861,14 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("DeleteFlowPhrase", dsParameters);
         }
 
-        public static int UpdateSurgeryPhrase(int surgeryId, int smartPhraseId, string comments, int stepId, int roleId, int providerId, int locationId)
+        public static int UpdateSurgeryPhrase(int surgeryId, int surgeryPhraseId, string comments, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("smart_phrase_id", smartPhraseId),
+                new SqlParameter("surgery_phrase_id", surgeryPhraseId),
                 new SqlParameter("step_id", stepId),
                 new SqlParameter("role_id", roleId),
                 new SqlParameter("comment", comments ?? (object)DBNull.Value)
@@ -927,87 +927,17 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("DeleteSurgeonNote", dsParameters);
         }
 
-        public static int UpdateDebrief(int flowId, List<FlowPhrase> revisedPhrases, int providerId, int locationId)
-        {
-            throw new NotImplementedException("");
-            //var currentPhrases = GetFlowPhrases(flowId, providerId, locationId);
-
-            //foreach (var revisedPhrase in revisedPhrases)
-            //{
-            //    SqlParameter[] dsParameters;
-
-            //    if (revisedPhrase.PhraseComment == string.Empty)
-            //        revisedPhrase.PhraseComment = null;
-
-            //    var currentPhrase = currentPhrases.First(c => c.SmartPhraseID == revisedPhrase.SmartPhraseID);
-
-            //    if (revisedPhrase.PhraseActive)
-            //    {
-            //        if (revisedPhrase.PhraseActive && !currentPhrase.PhraseActive)
-            //        {
-            //            // insert phrase
-            //            dsParameters = new[]
-            //            {
-            //                new SqlParameter("provider_id", providerId),
-            //                new SqlParameter("location_id", locationId),
-            //                new SqlParameter("flow_id", flowId),
-            //                new SqlParameter("step_id", revisedPhrase.FlowStepID),
-            //                new SqlParameter("role_id", revisedPhrase.RoleID),
-            //                new SqlParameter("smart_phrase_id", revisedPhrase.SmartPhraseID),
-            //                new SqlParameter("comment", revisedPhrase.PhraseComment ?? (object)DBNull.Value)
-            //            };
-            //            ExecuteNonQuery("InsertFlowPhrase", dsParameters);
-            //        }
-            //        else if (revisedPhrase.FlowStepID != currentPhrase.FlowStepID ||
-            //            revisedPhrase.RoleID != currentPhrase.RoleID ||
-            //            revisedPhrase.PhraseComment != currentPhrase.PhraseComment)
-            //        {
-            //            // Update step & role if needed
-            //            dsParameters = new[]
-            //            {
-            //                new SqlParameter("provider_id", providerId),
-            //                new SqlParameter("location_id", locationId),
-            //                new SqlParameter("flow_id", flowId),
-            //                new SqlParameter("step_id", revisedPhrase.FlowStepID),
-            //                new SqlParameter("role_id", revisedPhrase.RoleID),
-            //                new SqlParameter("smart_phrase_id", revisedPhrase.SmartPhraseID),
-            //                new SqlParameter("comment", revisedPhrase.PhraseComment ?? (object)DBNull.Value)
-            //            };
-            //            ExecuteNonQuery("UpdateFlowPhrase", dsParameters);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (currentPhrase.PhraseActive)
-            //        {
-            //            // delete phrase
-
-            //            dsParameters = new[]
-            //            {
-            //                new SqlParameter("provider_id", providerId),
-            //                new SqlParameter("location_id", locationId),
-            //                new SqlParameter("flow_id", flowId),
-            //                new SqlParameter("smart_phrase_id", currentPhrase.SmartPhraseID)
-            //            };
-            //            ExecuteNonQuery("DeleteFlowPhrase", dsParameters);
-            //        }
-            //    }
-                
-            //}
-
-            //return 0;
-        }
-
-        public static int UpdateCaseNotes(int surgeryId, string caseNotes, int providerId, int locationId)
+        public static async Task<int> SurgeryPhraseDebrief(int surgeryPhraseId, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("case_notes", caseNotes)
+                new SqlParameter("surgery_phrase_id", surgeryPhraseId),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("role_id", roleId)
             };
-            return ExecuteNonQuery("UpdateCaseNotes", dsParameters);
+            return await ExecuteNonQueryAsync("SurgeryPhraseDebrief", dsParameters);
         }
 
         public static int AssignCardToCase(int cardId, int surgeryId, int providerId, int locationId)
@@ -1353,7 +1283,7 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("InsertCustomSurgeryTrayInstrument", dsParameters);
         }
 
-        public static int UpdateSurgeryCount(int surgeryId, int itemId, bool pass1, bool pass2, bool pass3, int usage, int providerId, int locationId)
+        public static async Task<int> UpdateSurgeryCount(int surgeryId, int itemId, bool pass1, bool pass2, bool pass3, int usage, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1366,11 +1296,11 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("pass_3", pass3),
                 new SqlParameter("usage", usage)
             };
-            var update = ExecuteNonQuery("UpdateSurgeryCount", dsParameters);
+            var update = await ExecuteNonQueryAsync("UpdateSurgeryCount", dsParameters);
 
             return update;
         }
-        public static int UpdateSurgeryInstrumentCount(int surgeryId, int instrumentId, bool pass1, bool pass2, bool pass3, int usage, int providerId, int locationId)
+        public static async Task<int> UpdateSurgeryInstrumentCount(int surgeryId, int instrumentId, bool pass1, bool pass2, bool pass3, int usage, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1383,7 +1313,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("pass_3", pass3),
                 new SqlParameter("usage", usage)
             };
-            var update = ExecuteNonQuery("UpdateSurgeryInstrumentCount", dsParameters);
+            var update = await ExecuteNonQueryAsync("UpdateSurgeryInstrumentCount", dsParameters);
 
             return update;
         }

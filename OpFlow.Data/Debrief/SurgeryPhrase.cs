@@ -6,6 +6,7 @@ namespace OpFlow.Data.Debrief
 {
     public class SurgeryPhrase : SmartPhrase
     {
+        public int SurgeryPhraseID { get; set; }
         public int SurgeryID { get; set; }
         public int FlowStepID { get; set; }
         public int RoleID { get; set; }

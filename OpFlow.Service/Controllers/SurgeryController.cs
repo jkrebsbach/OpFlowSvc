@@ -302,15 +302,12 @@ namespace OpFlow.Service.Controllers
                 surgeryImages = SqlHelper.GetSurgeryImages(surgeryId.Value, user.ProviderID, user.LocationID);
             }
 
-            var debriefPhrases = surgeryPhrases.Where(s => s.Status == "P").ToList();
-
             var result = new DebriefResult()
             {
                 Flow = flow,
                 PhraseCategories = categories,
                 FlowPhrases = flowPhrases,
                 SurgeryPhrases = surgeryPhrases,
-                DebriefPhrases = debriefPhrases,
                 SmartPhrases = smartPhrases,
                 FlowFeedback = flowFeedback,
                 SurgeonNotes = surgeonNotes,
@@ -327,13 +324,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("UpdateDebrief")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/surgery/debrief", Name = "UpdateDebrief")]
-        [HttpPost]
-        public async Task<IHttpActionResult> UpdateDebrief(int surgeryId, int flowId, [FromBody]DebriefUpdatePost debriefUpdate)
+        [HttpPut]
+        public async Task<IHttpActionResult> UpdateDebrief(int surgeryPhraseId, int stepId, int roleId)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            SqlHelper.UpdateDebrief(flowId, debriefUpdate?.SelectedPhrases, user.ProviderID, user.LocationID);
-            SqlHelper.UpdateCaseNotes(surgeryId, debriefUpdate?.CaseNotes, user.ProviderID, user.LocationID);
+            await SqlHelper.SurgeryPhraseDebrief(surgeryPhraseId, stepId, roleId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -372,11 +368,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/surgery/surgeryPhrase", Name = "UpdateSurgeryPhrase")]
         [HttpPut]
-        public async Task<IHttpActionResult> UpdateSurgeryPhrase(int surgeryId, int smartPhraseId, [FromBody]PhraseUpdatePost debriefUpdate)
+        public async Task<IHttpActionResult> UpdateSurgeryPhrase(int surgeryId, int surgeryPhraseId, [FromBody]PhraseUpdatePost debriefUpdate)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            SqlHelper.UpdateSurgeryPhrase(surgeryId, smartPhraseId,
+            SqlHelper.UpdateSurgeryPhrase(surgeryId, surgeryPhraseId,
                 debriefUpdate.Comments, debriefUpdate.StepID, debriefUpdate.RoleID, user.ProviderID, user.LocationID);
 
             return Ok();
@@ -716,7 +712,7 @@ namespace OpFlow.Service.Controllers
 
             foreach (var surgeryCount in post.ItemCounts)
             {
-                SqlHelper.UpdateSurgeryCount(surgeryId, surgeryCount.ItemID, surgeryCount.Pass1,
+                await SqlHelper.UpdateSurgeryCount(surgeryId, surgeryCount.ItemID, surgeryCount.Pass1,
                     surgeryCount.Pass2, surgeryCount.Pass3, surgeryCount.Usage, user.ProviderID,
                     user.LocationID);
 
@@ -724,7 +720,7 @@ namespace OpFlow.Service.Controllers
 
             foreach (var instrumentCount in post.InstrumentCounts)
             {
-                SqlHelper.UpdateSurgeryInstrumentCount(surgeryId, instrumentCount.ItemID, instrumentCount.Pass1,
+                await SqlHelper.UpdateSurgeryInstrumentCount(surgeryId, instrumentCount.ItemID, instrumentCount.Pass1,
                     instrumentCount.Pass2, instrumentCount.Pass3, instrumentCount.Usage, user.ProviderID,
                     user.LocationID);
             }
