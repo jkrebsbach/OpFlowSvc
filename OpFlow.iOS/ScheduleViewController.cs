@@ -132,12 +132,6 @@ namespace OpFlow.iOS
             await UpdateDateStrings();
         }
 
-        private async void ReviewSurgery(object sender, Surgery e)
-        {
-            await ExecuteAsyncWebRequest(() => SurgeryUtil.ReviewSurgery(e.SurgeryID));
-            await LoadSchedule();
-        }
-
         private async Task ChangeDay(int dayOfWeek)
         {
             var weekDelta = dayOfWeek - (int)_selectedDate.DayOfWeek;
@@ -226,11 +220,18 @@ namespace OpFlow.iOS
                 return;
             }
 
-            var surgeryPatients = await SurgeryUtil.GetSurgeryPatients(schedule.Cast<Surgery>().ToList());
+            var surgeries = new List<Surgery>();
+            schedule.ForEach(s => surgeries.Add(new Surgery()
+            {
+                SurgeryID = s.SurgeryID,
+                PatientID = s.PatientID
+            }));
+            var surgeryPatients = await SurgeryUtil.GetSurgeryPatients(surgeries);
             
             var surgeryTableViewSource = new SurgeryTVS(schedule, surgeryPatients);
             surgeryTableViewSource.SurgerySelectionEvent += SelectSurgery;
             surgeryTableViewSource.DebriefSelectionEvent += SelectDebrief;
+            surgeryTableViewSource.ReviewSurgeryEvent += ReviewSurgery;
 
             ScheduleTableView.Source = surgeryTableViewSource;
             ScheduleTableView.ReloadData();
@@ -248,6 +249,12 @@ namespace OpFlow.iOS
             AppSettings.LoadSurgery(surgery.SurgeryID);
 
             NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.Debrief);
+        }
+
+        private async void ReviewSurgery(object sender, SurgerySearchResult e)
+        {
+            await ExecuteAsyncWebRequest(async () => await SurgeryUtil.ReviewSurgery(e.SurgeryID));
+            await LoadSchedule();
         }
     }
 }

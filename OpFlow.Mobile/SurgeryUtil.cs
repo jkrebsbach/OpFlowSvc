@@ -121,12 +121,12 @@ namespace OpFlow.Mobile
             return response;
         }
 
-        public static async Task<string> ReviewSurgery(int surgeryId)
+        public static async Task<int> ReviewSurgery(int surgeryId)
         {
             var command = string.Format("api/surgery/reviewComplete?surgeryId={0}&reviewComplete={1}", 
                                         surgeryId, DateTime.Now);
 
-            var response = await WebUtility.SendBodyRequest<string>(command, 0, HttpMethod.Post);
+            var response = await WebUtility.SendBodyRequest<int>(command, 0, HttpMethod.Post);
 
             return response;
             

@@ -149,7 +149,7 @@ namespace OpFlow.iOS
         {
             if (_reviewNeeded)
             {
-                await ExecuteAsyncWebRequest(() => SurgeryUtil.ReviewSurgery(_surgery.SurgeryID));
+                await ExecuteAsyncWebRequest(async () => await SurgeryUtil.ReviewSurgery(_surgery.SurgeryID));
                 await ExecuteAsyncWebRequest(LoadSurgery);
 
             }
