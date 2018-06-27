@@ -132,6 +132,12 @@ namespace OpFlow.iOS
             await UpdateDateStrings();
         }
 
+        private async void ReviewSurgery(object sender, Surgery e)
+        {
+            await ExecuteAsyncWebRequest(() => SurgeryUtil.ReviewSurgery(e.SurgeryID));
+            await LoadSchedule();
+        }
+
         private async Task ChangeDay(int dayOfWeek)
         {
             var weekDelta = dayOfWeek - (int)_selectedDate.DayOfWeek;
@@ -230,14 +236,14 @@ namespace OpFlow.iOS
             ScheduleTableView.ReloadData();
         }
 
-        private void SelectSurgery(object sender, Surgery surgery)
+        private void SelectSurgery(object sender, SurgerySearchResult surgery)
         {
             AppSettings.LoadSurgery(surgery.SurgeryID);
 
             NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
         }
 
-        private void SelectDebrief(object sender, Surgery surgery)
+        private void SelectDebrief(object sender, SurgerySearchResult surgery)
         {
             AppSettings.LoadSurgery(surgery.SurgeryID);
 

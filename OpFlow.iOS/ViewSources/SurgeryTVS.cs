@@ -13,13 +13,15 @@ namespace OpFlow.iOS.ViewSources
 {
     public class SurgeryTVS : UITableViewSource
     {
-        private readonly List<SurgerySchedule> _surgeries;
+        private readonly List<SurgerySearchResult> _surgeries;
         private readonly Dictionary<int, Patient> _surgeryPatients;
 
-        public event EventHandler<Surgery> SurgerySelectionEvent;
-        public event EventHandler<Surgery> DebriefSelectionEvent;
+        public event EventHandler<SurgerySearchResult> SurgerySelectionEvent;
+        public event EventHandler<SurgerySearchResult> DebriefSelectionEvent;
 
-        public SurgeryTVS(List<SurgerySchedule> surgeries, Dictionary<int, Patient> surgeryPatients)
+        public event EventHandler<SurgerySearchResult> ReviewSurgeryEvent;
+
+        public SurgeryTVS(List<SurgerySearchResult> surgeries, Dictionary<int, Patient> surgeryPatients)
         {
             _surgeries = surgeries;
             _surgeryPatients = surgeryPatients;
@@ -36,9 +38,18 @@ namespace OpFlow.iOS.ViewSources
             else
                 cell = tableView.DequeueReusableCell("ScheduleCell", indexPath) as ScheduleTableCell;
 
+            cell.ReviewSurgery += ReviewSurgeryEventFired;
             cell?.UpdateCell(surgery, patient, this);
 
             return cell;
+        }
+
+        public void ReviewSurgeryEventFired(object sender, int surgeryId)
+        {
+            if (ReviewSurgeryEvent != null){
+                var surgery = _surgeries.FirstOrDefault(s => s.SurgeryID == surgeryId);
+                this.ReviewSurgeryEvent(this, surgery);
+            }
         }
 
         public override nint RowsInSection(UITableView tableview, nint section)
@@ -46,7 +57,7 @@ namespace OpFlow.iOS.ViewSources
             return _surgeries.Count;
         }
 
-        public void NavigationButtonEvent(Surgery surgery)
+        public void NavigationButtonEvent(SurgerySearchResult surgery)
         {
             DebriefSelectionEvent?.Invoke(this, surgery);
         }

@@ -12,7 +12,7 @@ namespace OpFlow.iOS
     public partial class OpenCaseCell :  ScheduleTableCell
     {
         private SurgeryTVS _surgeryTvs;
-        private Surgery _surgery;
+        private SurgerySearchResult _surgery;
 
         public OpenCaseCell (IntPtr handle) : base (handle)
         {
@@ -23,7 +23,7 @@ namespace OpFlow.iOS
             _surgeryTvs?.NavigationButtonEvent(_surgery);
         }
 
-        internal override void UpdateCell(SurgerySchedule surgery, Patient patient, SurgeryTVS surgeryTVS)
+        internal override void UpdateCell(SurgerySearchResult surgery, Patient patient, SurgeryTVS surgeryTVS)
         {
             CustomFormatting();
 

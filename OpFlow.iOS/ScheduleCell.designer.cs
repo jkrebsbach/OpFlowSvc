@@ -16,6 +16,10 @@ namespace OpFlow.iOS
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton btnReview { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblDuration { get; set; }
 
         [Outlet]
@@ -46,8 +50,17 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblSurgeryTeam { get; set; }
 
+        [Action ("btnReview_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnReview_Click (UIKit.UIButton sender);
+
         void ReleaseDesignerOutlets ()
         {
+            if (btnReview != null) {
+                btnReview.Dispose ();
+                btnReview = null;
+            }
+
             if (lblDuration != null) {
                 lblDuration.Dispose ();
                 lblDuration = null;

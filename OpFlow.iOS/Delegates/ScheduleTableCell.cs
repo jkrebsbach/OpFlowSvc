@@ -13,6 +13,8 @@ namespace OpFlow.iOS.Delegates
 {
     public abstract class ScheduleTableCell : UITableViewCell
     {
+        public EventHandler<int> ReviewSurgery;
+
         public ScheduleTableCell(IntPtr handle) : base(handle)
         { }
 
@@ -20,6 +22,6 @@ namespace OpFlow.iOS.Delegates
         {
         }
 
-        internal abstract void UpdateCell(SurgerySchedule surgery, Patient patient, SurgeryTVS surgeryTVS);
+        internal abstract void UpdateCell(SurgerySearchResult surgery, Patient patient, SurgeryTVS surgeryTVS);
     }
 }

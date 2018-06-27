@@ -277,6 +277,17 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="123900">
+                                                    <rect key="frame" x="225" y="67" width="71" height="30"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" red="0.82947997969999998" green="0.0" blue="0.077408997990000006" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <state key="normal" title="REVIEW">
+                                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="btnReview_Click:" destination="2671" eventType="touchUpInside" id="123901"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="uug-oe-KCF" firstAttribute="top" secondItem="2672" secondAttribute="top" id="E46-wD-sDc"/>
@@ -285,6 +296,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="btnReview" destination="123900" id="name-outlet-123900"/>
                                             <outlet property="lblDuration" destination="88010" id="name-outlet-88010"/>
                                             <outlet property="lblLocation" destination="42683" id="name-outlet-42683"/>
                                             <outlet property="lblPatientInfo" destination="2678" id="name-outlet-2678"/>

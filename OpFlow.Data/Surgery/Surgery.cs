@@ -159,10 +159,12 @@ namespace OpFlow.Data
         public DateTime? EstimatedCompletionTime { get; set; }
         public DateTime? ActualCompletionTime { get; set; }
         public int EstDelayMinutes { get; set; }
+        public int? TotalMinutes { get; set; }
         public int CardID { get; set; }
         public int BundleID { get; set; }
         public int ProcedureID { get; set; }
         public string BundleDescription { get; set; }
+        public string CardDescription { get; set; }
         public string ProcedureDescription { get; set; }
         public string RoomDescription { get; set; }
         public string FlowStepDescription { get; set; }

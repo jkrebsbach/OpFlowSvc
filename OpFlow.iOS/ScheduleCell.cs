@@ -12,13 +12,24 @@ namespace OpFlow.iOS
 {
     public partial class ScheduleCell : ScheduleTableCell
     {
+        int _surgeryId;
+
         public ScheduleCell (IntPtr handle) : base (handle)
         {
         }
 
-        internal override void UpdateCell(SurgerySchedule surgery, Patient patient, SurgeryTVS surgeryTVS)
+        partial void btnReview_Click(UIButton sender)
+        {
+            if (this.ReviewSurgery != null){
+                this.ReviewSurgery(this, _surgeryId);
+            }
+        }
+
+        internal override void UpdateCell(SurgerySearchResult surgery, Patient patient, SurgeryTVS surgeryTVS)
         {
             CustomFormatting();
+
+            _surgeryId = surgery.SurgeryID;
 
             lblLocation.Text = surgery.RoomDescription;
             lblPatientInfo.Text = $"{patient?.BirthDate.CalculateAge()} {patient?.Gender}";
@@ -28,6 +39,12 @@ namespace OpFlow.iOS
                 patientName = patient?.Initials ?? string.Empty;
             if (patientName == string.Empty)
                 patientName = "UNK";
+
+            var surgeryUser = surgery
+                .SurgeryUsers.FirstOrDefault(s =>
+                      s.RoleID == 1 && s.UserID == AppSettings.CurrentUser.UserID);
+
+            btnReview.Hidden = (surgeryUser == null || surgeryUser.SurgeryReview != null);
 
             lblPatientName.Text = patientName;
             lblProcedure.Text = surgery.ProcedureDescription;

@@ -18,6 +18,8 @@ namespace OpFlow.iOS
 
         Surgery _surgery;
         Patient _patient;
+
+        bool _reviewNeeded;
         
         public NavigateViewController (IntPtr handle) : base (handle)
         {
@@ -143,9 +145,18 @@ namespace OpFlow.iOS
             NavigateScreen(AppSettings.FragmentEnum.Room);
         }
 
-        partial void btnDebrief_Click(UIButton sender)
+        async partial void btnDebrief_Click(UIButton sender)
         {
-            NavigateScreen(AppSettings.FragmentEnum.Debrief);
+            if (_reviewNeeded)
+            {
+                await ExecuteAsyncWebRequest(() => SurgeryUtil.ReviewSurgery(_surgery.SurgeryID));
+                await ExecuteAsyncWebRequest(LoadSurgery);
+
+            }
+            else
+            {
+                NavigateScreen(AppSettings.FragmentEnum.Debrief);
+            }
         }
 
         private void NavigateScreen(AppSettings.FragmentEnum targetScreen)
@@ -178,7 +189,20 @@ namespace OpFlow.iOS
             var users = await SurgeryUtil.GetSurgeryUsers(_surgery.SurgeryID);
 
             // If case is open, show debrief button
-            btnDebrief.Hidden = (_surgery.SurgeryStatus != "O");
+            var currentUser = users.FirstOrDefault(u => u.RoleID == 1 &&
+                                                   u.UserID == AppSettings.CurrentUser.UserID);
+            if (currentUser != null && currentUser.SurgeryReview == null)
+            {
+                btnDebrief.Hidden = false;
+                btnDebrief.SetTitle("REVIEW", UIControlState.Normal);
+                btnDebrief.BackgroundColor = UIColor.Red;
+
+                _reviewNeeded = true;
+            }
+            else 
+            {
+                btnDebrief.Hidden = (_surgery.SurgeryStatus != "O");
+            }
 
             lblSurgeonName.Text = GetUserName(users, RoleEnum.Surgeon);
             lblCirculatorName.Text = GetUserName(users, RoleEnum.Circulator);

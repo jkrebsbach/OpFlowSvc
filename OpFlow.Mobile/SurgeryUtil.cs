@@ -12,15 +12,17 @@ namespace OpFlow.Mobile
 {
     public abstract class SurgeryUtil
     {
-        public static async Task<List<SurgerySchedule>> GetSurgeryUserSchedule(DateTime scheduleDate, int? roomId = null)
+        public static async Task<List<SurgerySearchResult>> GetSurgeryUserSchedule(DateTime scheduleDate, int? roomId = null)
         {
             var userId = AppSettings.CurrentUser.UserID;
 
-            var command = $"api/surgery/cases?userId={userId}&scheduleDate={scheduleDate:yyyy-MM-dd}";
+            var command = $"api/surgery/searchCases?begDate={scheduleDate:yyyy-MM-dd}&endDate={scheduleDate:yyyy-MM-dd}";
             if (roomId.HasValue)
                 command += $"&roomId={roomId}";
+            else
+                command += $"&surgeonUserId={userId}";
             
-            var response = await WebUtility.WebRequest<List<SurgerySchedule>>(command, HttpMethod.Get);
+            var response = await WebUtility.WebRequest<List<SurgerySearchResult>>(command, HttpMethod.Get);
 
             return response;
         }
@@ -117,6 +119,17 @@ namespace OpFlow.Mobile
             var response = await WebUtility.SendBodyRequest<string>(command, 0, HttpMethod.Post);
 
             return response;
+        }
+
+        public static async Task<string> ReviewSurgery(int surgeryId)
+        {
+            var command = string.Format("api/surgery/reviewComplete?surgeryId={0}&reviewComplete={1}", 
+                                        surgeryId, DateTime.Now);
+
+            var response = await WebUtility.SendBodyRequest<string>(command, 0, HttpMethod.Post);
+
+            return response;
+            
         }
 
         public static async Task<Surgery> GetSurgery(int surgeryId)
