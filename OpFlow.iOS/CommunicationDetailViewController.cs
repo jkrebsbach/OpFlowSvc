@@ -20,11 +20,24 @@ namespace OpFlow.iOS
             _client = new SocketClient("iOS");
         }
 
+        public override void ViewDidDisappear(bool animated)
+        {
+            base.ViewDidDisappear(animated);
+
+            _client.Disconnect();
+        }
+
+        public override async void ViewWillAppear(bool animated)
+        {
+            base.ViewWillAppear(animated);
+
+
+            await _client.Connect();
+        }
+
         public override async void ViewDidLoad()
         {
             base.ViewDidLoad();
-
-            await _client.Connect();
 
             _client.OnMessageReceived += (sender, message) => InvokeOnMainThread(
                 () => {

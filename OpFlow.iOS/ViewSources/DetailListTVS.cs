@@ -138,8 +138,10 @@ namespace OpFlow.iOS.ViewSources
                         detailCell = tableView.DequeueReusableCell(detailCellType, indexPath) as DetailListCell;
                     }
 
-                    // Assign visibility to Hidden flag
-                    detailCell.Hidden = category.HiddenDetails;
+                    if (detailCell != null){
+                        // Assign visibility to Hidden flag
+                        detailCell.Hidden = category.HiddenDetails;
+                    }
                 }
 
                 tableView.BeginUpdates();
