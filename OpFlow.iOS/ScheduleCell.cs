@@ -23,7 +23,13 @@ namespace OpFlow.iOS
             lblLocation.Text = surgery.RoomDescription;
             lblPatientInfo.Text = $"{patient?.BirthDate.CalculateAge()} {patient?.Gender}";
 
-            lblPatientName.Text = $"{patient?.Initials ?? "UNK"}";
+            var patientName = $"{patient?.LastName} {patient?.FirstName}".Trim();
+            if (patientName == string.Empty)
+                patientName = patient?.Initials ?? string.Empty;
+            if (patientName == string.Empty)
+                patientName = "UNK";
+
+            lblPatientName.Text = patientName;
             lblProcedure.Text = surgery.ProcedureDescription;
             lblSurgeryTeam.Text = CalculateSurgeryTeam(surgery.SurgeryUsers);
             lblStartTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");

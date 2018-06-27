@@ -30,10 +30,16 @@ namespace OpFlow.iOS
             _surgeryTvs = surgeryTVS;
             _surgery = surgery;
 
+            var patientName = $"{patient?.LastName} {patient?.FirstName}".Trim();
+            if (patientName == string.Empty)
+                patientName = patient?.Initials ?? string.Empty;
+            if (patientName == string.Empty)
+                patientName = "UNK";
+
             lblLocation.Text = surgery.RoomDescription;
             lblPatientInfo.Text = string.Format("{0} {1}", patient?.BirthDate.CalculateAge(), patient?.Gender);
-            //lblPatientName.Text = string.Format("{0}, {1}", patient?.LastName, patient?.FirstName);
-            lblPatientName.Text = string.Format("{0}", patient?.Initials ?? "UNK");
+
+            lblPatientName.Text = patientName;
             lblProcedure.Text = surgery.ProcedureDescription;
             lblSurgeryTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
 
