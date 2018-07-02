@@ -17,45 +17,45 @@ namespace OpFlow.Service.DataAccess
     {
         private static DataSet ExecuteCommand(string storedProcedure, SqlParameter[] dsParameters = null)
         {
-            var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString);
-            var cmd = new SqlCommand(storedProcedure, conn) {CommandType = CommandType.StoredProcedure};
-
-            cmd.Parameters.AddRange(dsParameters);
-
-            conn.Open();
-
-            using (var dataAdapter = new SqlDataAdapter(cmd))
+            using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString))
+            using (var cmd = new SqlCommand(storedProcedure, conn) {CommandType = CommandType.StoredProcedure})
             {
-                DataSet ds = new DataSet();
+                cmd.Parameters.AddRange(dsParameters);
 
-                dataAdapter.Fill(ds);
+                conn.Open();
 
-                cmd.Parameters.Clear();
-                conn.Close();
+                using (var dataAdapter = new SqlDataAdapter(cmd))
+                {
+                    DataSet ds = new DataSet();
 
-                return ds;
+                    dataAdapter.Fill(ds);
+
+                    cmd.Parameters.Clear();
+                    conn.Close();
+
+                    return ds;
+                }
             }
         }
 
         private static int ExecuteNonQuery(string storedProcedure, SqlParameter[] dsParameters = null, CommandType commandType = CommandType.StoredProcedure)
         {
-            var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString);
-            var cmd = new SqlCommand(storedProcedure, conn) { CommandType = commandType };
-
-            cmd.Parameters.AddRange(dsParameters);
-
-            conn.Open();
-
-            var result = -1;
-
-            using (var dataAdapter = new SqlDataAdapter(cmd))
+            using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString))
+            using (var cmd = new SqlCommand(storedProcedure, conn) {CommandType = commandType})
             {
-                result = cmd.ExecuteNonQuery();
+                cmd.Parameters.AddRange(dsParameters);
 
-                cmd.Parameters.Clear();
-                conn.Close();
+                conn.Open();
 
-                return result;
+                using (var dataAdapter = new SqlDataAdapter(cmd))
+                {
+                    var result = cmd.ExecuteNonQuery();
+
+                    cmd.Parameters.Clear();
+                    conn.Close();
+
+                    return result;
+                }
             }
         }
         private static async Task<DataSet> ExecuteCommandAsync(string storedProcedure, SqlParameter[] dsParameters = null)
@@ -91,18 +91,14 @@ namespace OpFlow.Service.DataAccess
 
         private static async Task<int> ExecuteNonQueryAsync(string storedProcedure, SqlParameter[] dsParameters = null, CommandType commandType = CommandType.StoredProcedure)
         {
-            var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString);
-            var cmd = new SqlCommand(storedProcedure, conn) { CommandType = commandType };
+            using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString))
+            using (var cmd = new SqlCommand(storedProcedure, conn) { CommandType = commandType })
+            { 
+                cmd.Parameters.AddRange(dsParameters);
 
-            cmd.Parameters.AddRange(dsParameters);
+                await conn.OpenAsync();
 
-            await conn.OpenAsync();
-
-            var result = -1;
-
-            using (var dataAdapter = new SqlDataAdapter(cmd))
-            {
-                result = await cmd.ExecuteNonQueryAsync();
+                var result = await cmd.ExecuteNonQueryAsync();
 
                 cmd.Parameters.Clear();
                 conn.Close();
