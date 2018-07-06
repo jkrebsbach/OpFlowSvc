@@ -17,7 +17,13 @@ namespace OpFlow.Mobile
     {
         private static HttpClient _client;
         private static string _rootUrl = "https://opflowservice.azurewebsites.net";
-        
+
+        public static void SetEnvironment(bool productionEnvironment)
+        {
+            if (productionEnvironment)
+                _rootUrl = "https://opflowsvc.azurewebsites.net";
+        }
+
         static WebUtility()
         {
             _client = new HttpClient();

@@ -42,6 +42,8 @@ namespace OpFlow.iOS
 				UIApplication.SharedApplication.RegisterForRemoteNotificationTypes(notificationTypes);
 			}
 
+            WebUtility.SetEnvironment(Settings.ProductionEnvironment);
+
             return true;
         }
 

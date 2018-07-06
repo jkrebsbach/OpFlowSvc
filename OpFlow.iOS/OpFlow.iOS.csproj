@@ -241,6 +241,7 @@
       <DependentUpon>DetailImageCell.cs</DependentUpon>
     </Compile>
     <Compile Include="Constants.cs" />
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">
@@ -371,6 +372,7 @@
     <BundleResource Include="Resources\ic_loop_blue_dark_36pt.png" />
     <BundleResource Include="Resources\ic_loop_blue_dark_36pt%402x.png" />
     <BundleResource Include="Resources\ic_loop_blue_dark_36pt%403x.png" />
+    <BundleResource Include="Settings.bundle\Root.plist" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">
