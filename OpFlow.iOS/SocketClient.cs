@@ -28,12 +28,21 @@ namespace OpFlow.iOS
 
         public event EventHandler<MessageReceiveEvent> OnMessageReceived;
 
+        private static string _devUrl = "https://opflowservice.azurewebsites.net/signalr";
+        private static string _prodUrl = "https://opflowsvc.azurewebsites.net/signalr";
+        private static bool _productionEnvironment;
+
         public SocketClient(string platform)
         {
             _platform = platform;
-            _connection = new HubConnection("https://opflowservice.azurewebsites.net/signalr");
+            _connection = new HubConnection(_productionEnvironment ? _prodUrl : _devUrl);
             _connection.Headers.Add("Authorization", "Bearer " + AppSettings.AuthenticationToken);
             _proxy = _connection.CreateHubProxy("appHub");
+        }
+
+        public static void SetEnvironment(bool isProduction)
+        {
+            _productionEnvironment = isProduction;
         }
 
         public async Task Connect()

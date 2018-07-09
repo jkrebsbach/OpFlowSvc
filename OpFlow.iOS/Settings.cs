@@ -12,7 +12,7 @@ namespace OpFlow.iOS
         {
         }
 
-        public static bool ProductionEnvironment
+        public static bool IsProductionEnvironment
         {
             get 
             {

@@ -16,25 +16,42 @@ namespace OpFlow.Mobile
     public abstract class WebUtility
     {
         private static HttpClient _client;
-        private static string _rootUrl = "https://opflowservice.azurewebsites.net";
+
+        private static string _devUrl = "https://opflowservice.azurewebsites.net";
+        private static string _prodUrl = "https://opflowsvc.azurewebsites.net";
 
         public static void SetEnvironment(bool productionEnvironment)
         {
             if (productionEnvironment)
-                _rootUrl = "https://opflowsvc.azurewebsites.net";
+            {
+                _client = new HttpClient()
+                {
+                    BaseAddress = new Uri(_prodUrl),
+                    MaxResponseContentBufferSize = 256000
+                };
+            }
+            else
+            {
+                _client = new HttpClient()
+                {
+                    BaseAddress = new Uri(_devUrl),
+                    MaxResponseContentBufferSize = 256000
+                };
+            }
         }
 
         static WebUtility()
         {
-            _client = new HttpClient();
-
-            _client.BaseAddress = new Uri(_rootUrl);
-            _client.MaxResponseContentBufferSize = 256000;
+            _client = new HttpClient()
+            {
+                BaseAddress = new Uri(_devUrl),
+                MaxResponseContentBufferSize = 256000
+            };
         }
 
         public static String GetWebUrl(string command)
 		{
-			return Path.Combine(_rootUrl, command);
+			return Path.Combine(_client.BaseAddress.ToString(), command);
 		}
 
         internal static async Task<T> WebRequest<T>(string command, HttpMethod verb, List<KeyValuePair<string, string>> formData = null)
