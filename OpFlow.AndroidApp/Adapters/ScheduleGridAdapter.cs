@@ -19,10 +19,10 @@ namespace OpFlow.AndroidApp.Adapters
     public class ScheduleGridAdapter : BaseAdapter
     {
         private Context _context;
-        private List<SurgerySchedule> _schedule;
+        private List<SurgerySearchResult> _schedule;
         private Dictionary<int, Patient> _surgeryPatients;
      
-        public ScheduleGridAdapter(Context c, List<SurgerySchedule> schedule, Dictionary<int, Patient> surgeryPatients)
+        public ScheduleGridAdapter(Context c, List<SurgerySearchResult> schedule, Dictionary<int, Patient> surgeryPatients)
         {
             _context = c;
             _schedule = schedule;

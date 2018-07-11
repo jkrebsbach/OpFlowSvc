@@ -16,10 +16,10 @@ namespace OpFlow.AndroidApp.Adapters
     public class FutureCaseListAdapter : BaseAdapter
     {
         private Context _context;
-        private List<SurgerySchedule> _cases;
+        private List<SurgerySearchResult> _cases;
         private Dictionary<int, Patient> _surgeryPatients;
 
-        public FutureCaseListAdapter(Context c, List<SurgerySchedule> cases, Dictionary<int, Patient> surgeryPatients)
+        public FutureCaseListAdapter(Context c, List<SurgerySearchResult> cases, Dictionary<int, Patient> surgeryPatients)
         {
             _context = c;
             _cases = cases;
@@ -33,7 +33,7 @@ namespace OpFlow.AndroidApp.Adapters
 
         public override long GetItemId(int position)
         {
-            return _cases[position].CardID ?? 0;
+            return _cases[position].CardID;
         }
 
         public override View GetView(int position, View convertView, ViewGroup parent)
@@ -55,7 +55,7 @@ namespace OpFlow.AndroidApp.Adapters
 
             txtPatientName.Text = patient?.LastName;
             txtProcedure.Text = currentCase.ProcedureDescription;
-            txtCaseTime.Text = currentCase.ScheduleDate.ToString("M/d/yyyy") + currentCase.ScheduleTime.ToString(@"hh\:mm");
+            txtCaseTime.Text = currentCase.ScheduleTime.ToString("M/d/yyyy") + currentCase.ScheduleTime.ToString(@"hh\:mm");
 
             // TODO: Make this dependent on status of schedule event
             ivStatus.SetImageDrawable(_context.GetDrawable(Resource.Drawable.DarkGreenCheckMark));

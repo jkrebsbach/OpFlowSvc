@@ -243,6 +243,7 @@
     </Compile>
     <Compile Include="Constants.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="ViewSources\CardListTVS.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">

@@ -35,9 +35,14 @@ namespace OpFlow.Mobile
 
             return response;
         }
-        public static async Task<List<CardBundle>> GetBundles(int specialtyId)
+        public static async Task<List<CardBundle>> GetBundles(int? specialtyId)
         {
-            var command = string.Format("api/bundle?specialtyId={0}", specialtyId);
+            var command = "api/bundle";
+            if (specialtyId.HasValue)
+            {
+                command += $"?specialtyId={specialtyId}";
+            }
+
             var response = await WebUtility.WebRequest<List<CardBundle>>(command, HttpMethod.Get);
 
             return response;

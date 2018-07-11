@@ -16,7 +16,7 @@ namespace OpFlow.AndroidApp.Fragments
 {
     public class FutureCaseFragment : OpFlowFragmentBase
     {
-        private List<SurgerySchedule> _schedule;
+        private List<SurgerySearchResult> _schedule;
         private Dictionary<int, Patient> _surgeryPatients;
         private ListView _lvFutureCases;
 
