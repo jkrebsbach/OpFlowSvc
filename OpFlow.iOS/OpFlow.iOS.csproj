@@ -8,7 +8,8 @@
     <RootNamespace>OpFlow.iOS</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>OpFlow.iOS</AssemblyName>
-    <NuGetPackageImportStamp></NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -373,6 +374,9 @@
     <BundleResource Include="Resources\ic_loop_blue_dark_36pt%402x.png" />
     <BundleResource Include="Resources\ic_loop_blue_dark_36pt%403x.png" />
     <BundleResource Include="Settings.bundle\Root.plist" />
+    <BundleResource Include="Resources\ic_camera_alt_blue_dark_36pt.png" />
+    <BundleResource Include="Resources\ic_camera_alt_blue_dark_36pt%402x.png" />
+    <BundleResource Include="Resources\ic_camera_alt_blue_dark_36pt%403x.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">
