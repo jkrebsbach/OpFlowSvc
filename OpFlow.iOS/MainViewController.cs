@@ -8,6 +8,7 @@ using OpFlow.iOS.Delegates;
 using OpFlow.Mobile;
 using UIKit;
 using CoreAnimation;
+using System.IO;
 
 namespace OpFlow.iOS
 {
@@ -148,6 +149,43 @@ namespace OpFlow.iOS
                 PresentContainerView(AppSettings.PriorScreen);
         }
 
+
+        private void PresentCamera(object sender, EventArgs eventArgs)
+        {
+            var vc = new UIImagePickerController();
+            vc.PrefersStatusBarHidden();
+            vc.AllowsEditing = true;
+            vc.SourceType = UIImagePickerControllerSourceType.Camera;
+
+            vc.MediaTypes = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.Camera);
+
+            vc.FinishedPickingMedia += async (s, evt) => {
+                vc.DismissModalViewController(true);
+
+                await UploadImage(evt.EditedImage);
+            };
+
+            vc.Canceled += (s, evt) => {
+                vc.DismissModalViewController(true);
+            };
+
+            PresentViewController(vc, true, () => {});
+        }
+
+        private async Task UploadImage(UIImage sourceImage) {
+            var imageStream = sourceImage.AsPNG().AsStream();
+            byte[] imageBytes;
+            using (var memoryStream = new MemoryStream())
+            {
+                imageStream.CopyTo(memoryStream);
+                imageBytes = memoryStream.ToArray();
+            }
+
+            AppSettings.PriorScreen = AppSettings.CurrentScreen;
+            var flowId = AppSettings.CurrentFlow ?? 0;
+            await FlowUtil.UploadFlowImage(flowId, imageBytes);
+        }
+
         private UIBarButtonItem SetupCustomBack(string backText)
         {
             var containView = new UIView(new CGRect(0, 0, 102, 40));
@@ -185,10 +223,12 @@ namespace OpFlow.iOS
 
             switch (buttonType)
             {
-                case CustomButtonType.Compose:
-                    uiButton = new UIButton(new CGRect(0, 0, 40, 40));
-                    uiButton.SetImage(UIImage.FromBundle("Navigation_Compose.png"), UIControlState.Normal);
+                case CustomButtonType.Camera:
+                    uiButton = new UIButton(new CGRect(0, 0, 75, 40));
+                    uiButton.SetImage(UIImage.FromBundle("ic_camera_alt_blue_dark_36pt.png"), UIControlState.Normal);
                     uiButton.ImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
+
+                    navigationAction = PresentCamera;
                     break;
                 case CustomButtonType.Cancel:
                     uiButton = new UIButton(new CGRect(0, 0, 75, 40));
@@ -196,6 +236,11 @@ namespace OpFlow.iOS
                     uiButton.SetTitleColor(uiButton.TintColor, UIControlState.Normal);
 
                     navigationAction = NavigateBack;
+                    break;
+                case CustomButtonType.Compose:
+                    uiButton = new UIButton(new CGRect(0, 0, 40, 40));
+                    uiButton.SetImage(UIImage.FromBundle("Navigation_Compose.png"), UIControlState.Normal);
+                    uiButton.ImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
                     break;
                 case CustomButtonType.Done:
                     uiButton = new UIButton(new CGRect(0, 0, 75, 40));
@@ -227,6 +272,7 @@ namespace OpFlow.iOS
 
         private enum CustomButtonType
         {
+            Camera,
             Compose,
             Cancel,
             Done,
@@ -250,6 +296,7 @@ namespace OpFlow.iOS
                     Title = AppSettings.CurrentUserTitle,
                     TintColor = UIColor.Black
                 };
+            UIBarButtonItem cameraButton = null;
 
             switch (fragmentEnum)
             {
@@ -296,6 +343,7 @@ namespace OpFlow.iOS
                     await _containerViewController.PresentDetailViewAsync();
                     
                     rightButton = SetupCustomEdit(CustomButtonType.Update);
+                    cameraButton = SetupCustomEdit(CustomButtonType.Camera);
                     break;
 
                 case AppSettings.FragmentEnum.CardAssignment:
@@ -372,7 +420,11 @@ namespace OpFlow.iOS
             }
 
             NavigationItem.LeftBarButtonItem = customBackButton;
-            NavigationItem.RightBarButtonItems = new[] { rightButton };
+
+            NavigationItem.RightBarButtonItems = (
+                cameraButton == null ? 
+                    new[] { rightButton } :
+                    new[] { cameraButton, rightButton });
         }
 
         private void NavBarEdit(object sender, EventArgs e)
