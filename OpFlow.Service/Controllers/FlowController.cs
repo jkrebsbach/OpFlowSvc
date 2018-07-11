@@ -178,7 +178,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/flow/flowImage", Name = "NewFlowImage")]
         [HttpPut]
-        public async Task<IHttpActionResult> NewFlowImage(int flowId, int stepId, int roleId, string comment)
+        public async Task<IHttpActionResult> NewFlowImage(int flowId, int? stepId = null, int? roleId = null, string comment = null)
         {
             var user = CacheUtil.GetUserSecurity();
 

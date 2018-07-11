@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Authentication;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using OpFlow.Data;
@@ -17,6 +18,7 @@ namespace OpFlow.Mobile
     {
         private static HttpClient _client;
 
+        private static string _testUrl = "https://localhost:44338/";
         private static string _devUrl = "https://opflowservice.azurewebsites.net";
         private static string _prodUrl = "https://opflowsvc.azurewebsites.net";
 
@@ -38,6 +40,15 @@ namespace OpFlow.Mobile
                     MaxResponseContentBufferSize = 256000
                 };
             }
+        }
+
+        public static void EnableTesting()
+        {
+            _client = new HttpClient()
+            {
+                BaseAddress = new Uri(_testUrl),
+                MaxResponseContentBufferSize = 256000
+            };
         }
 
         static WebUtility()
@@ -80,6 +91,36 @@ namespace OpFlow.Mobile
             return JsonConvert.DeserializeObject<T>(result);
         }
 
+        internal static async Task<T> FileRequest<T>(string command, HttpMethod verb, byte[] fileBytes)
+        {
+            var result = string.Empty;
+
+            if (!AppSettings.UserAuthenticated)
+            {
+                throw new AuthenticationException("No authenticated user");
+            }
+            var request = new HttpRequestMessage(verb, command);
+            request.Headers.ExpectContinue = false;
+
+            var multiPartContent = new MultipartFormDataContent("----FileBoundary");
+            var byteArrayContent = new ByteArrayContent(fileBytes);
+            byteArrayContent.Headers.Add("Content-Type", "application/octet-stream");
+            multiPartContent.Add(byteArrayContent, "filename", "image.png");
+            request.Content = multiPartContent;
+
+            using (var response = await _client.SendAsync(request, HttpCompletionOption.ResponseContentRead, CancellationToken.None))
+            {
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                    return default(T);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                    return default(T);
+
+                result = await response.Content.ReadAsStringAsync();
+            }
+
+            return JsonConvert.DeserializeObject<T>(result);
+        }
         internal static async Task<T> SendBodyRequest<T>(string command, object bodyData, 
                          HttpMethod httpMethod)
         {

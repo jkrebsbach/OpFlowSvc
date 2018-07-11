@@ -60,10 +60,10 @@ namespace OpFlow.Mobile
             return WebUtility.GetWebUrl(command);
         }
 
-        public static async Task<int> UploadFlowImage(int flowId, byte[] flowBytes)
+        public static async Task<string> UploadFlowImage(int flowId, byte[] flowBytes)
         {
-            var command = string.Format("api/flow/cardFlowList?cardId={0}", flowId);
-            var response = await WebUtility.WebRequest<int>(command, HttpMethod.Put);
+            var command = string.Format("api/flow/flowImage?flowId={0}", flowId);
+            var response = await WebUtility.FileRequest<string>(command, HttpMethod.Put, flowBytes);
 
             return response;
             
