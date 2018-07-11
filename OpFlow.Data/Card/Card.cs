@@ -17,6 +17,7 @@ namespace OpFlow.Data
         public int OwnerUserID { get; set; }
         public int TemplateFlowID { get; set; }
         public int TemplateRoomSetupID { get; set; }
+        public string CptCode { get; set; }
         public string SpecialtyDefaultFlag { get; set; }
         public string LocationName { get; set; }
         public string OwnerLastName { get; set; }

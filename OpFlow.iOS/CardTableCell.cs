@@ -13,9 +13,9 @@ namespace OpFlow.iOS
 
         public void UpdateCell(Card card)
         {
-            lblProcedureName.Text = $"{card.CptCode} {card.CardDescription}";
-            lblProcedureDetail.Text = $"Avg Time: {card.AverageTime} Time Cost: {card.TimeCost}";
-            lblProcedureCost.Text = $"Card Cost: {card.Cost} Total: {card.TotalCost}";
+            lblProcedureName.Text = $"{card.CptCode} - {card.CardDescription}";
+            lblProcedureDetail.Text = $"Owner: {card.OwnerLastName}";
+            lblProcedureCost.Text = $"Card Cost: {card.Cost} Times Used: {card.TimesUsed}";
         }
     }
 }
