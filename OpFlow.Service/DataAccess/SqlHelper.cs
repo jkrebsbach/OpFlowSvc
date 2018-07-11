@@ -1087,7 +1087,7 @@ namespace OpFlow.Service.DataAccess
             return result.First().Identifier;
         }
 
-        public static int InsertCardItemFromStage(int cardId, int providerId, int locationId, string procedure, string surgeon)
+        public static async Task<int> InsertCardItemFromStage(int cardId, int providerId, int locationId, string procedure, string surgeon)
         {
             var dsParameters = new[]
             {
@@ -1098,11 +1098,11 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgeon", surgeon)
             };
 
-            var insert = ExecuteNonQuery("InsertCardItemFromStage", dsParameters);
+            var insert = await ExecuteNonQueryAsync("InsertCardItemFromStage", dsParameters);
             return insert;
         }
 
-        public static int UpdateCard(int cardId, string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
+        public static async Task<int> UpdateCard(int cardId, string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
             bool? defaultFlag, bool? specialtyDefaultFlag, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -1125,13 +1125,32 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UpdateCard", dsParameters);
         }
 
-        public static int DeleteCard(int cardId, int providerId, int locationId)
+        public static async Task<int> InitializeCard(int cardId, int providerId, int locationId, string importSurgeon, string importProcedure)
+        {
+
+            var dsParameters = new[]
+            {
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgeon", importSurgeon),
+                new SqlParameter("procedure", importProcedure)
+            };
+
+            var insert = await ExecuteNonQueryAsync("InitializeCard", dsParameters);
+            return insert;
+        }
+
+
+        public static async Task<int> DeleteCard(int cardId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
                 new SqlParameter("card_id", cardId)
             };
-            return ExecuteNonQuery("DeleteCard", dsParameters);
+            return await ExecuteNonQueryAsync("DeleteCard", dsParameters);
         }
 
         public static int UpdateCardQuantity(int cardId, CardQuantityEdit quantity, int providerId, int locationId)
@@ -1761,6 +1780,19 @@ namespace OpFlow.Service.DataAccess
             }
 
             return roomSetupId;
+        }
+
+        public static async Task<int> DeleteRoomSetup(int roomSetupId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("room_setup_id", roomSetupId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var insert = await ExecuteNonQueryAsync("DeleteRoomSetup", dsParameters);
+
+            return insert;
         }
 
         public static int CreateRoomSetup(RoomSetup roomSetup, int providerId, int locationId)
@@ -2727,6 +2759,19 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static async Task<int> DeleteSurgery(int surgeryId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("DeleteSurgery", parameters);
+
+            return result;
+        }
+
         public static int DeleteSurgeryStep(int stepId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -2830,7 +2875,7 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UpdateFlow", parameters);
         }
 
-        public static int DeleteFlow(int flowId, int providerId, int locationId)
+        public static async Task<int> DeleteFlow(int flowId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2838,7 +2883,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            return ExecuteNonQuery("DeleteFlow", parameters);
+            return await ExecuteNonQueryAsync("DeleteFlow", parameters);
         }
 
         public static void InsertStagingData(int providerId, int locationId, int? secureId, IImportData sourceData)

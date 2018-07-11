@@ -888,8 +888,13 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Delete")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public void Delete(int id)
+        public async Task<HttpResponseMessage> Delete(int id)
         {
+            var user = CacheUtil.GetUserSecurity();
+
+            var success = await SqlHelper.DeleteSurgery(id, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, success);
         }
     }
 }

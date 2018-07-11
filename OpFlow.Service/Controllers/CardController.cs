@@ -401,7 +401,7 @@ namespace OpFlow.Service.Controllers
 
             if (!string.IsNullOrEmpty(value.ImportSurgeon) && !string.IsNullOrEmpty(value.ImportProcedure))
             {
-                DataAccess.SqlHelper.InsertCardItemFromStage(cardId, user.ProviderID, user.LocationID,
+                await DataAccess.SqlHelper.InsertCardItemFromStage(cardId, user.ProviderID, user.LocationID,
                     value.ImportProcedure, value.ImportSurgeon);
             }
 
@@ -416,9 +416,17 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.UpdateCard(id, value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
-                value.BundleID, value.BundleFlag, value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1", 
-                user.UserID, user.ProviderID, user.LocationID);
+            if (value.ImportSurgeon != null && value.ImportProcedure != null)
+            {
+                await DataAccess.SqlHelper.InitializeCard(id, user.ProviderID, user.LocationID,
+                    value.ImportSurgeon, value.ImportProcedure);
+            }
+            else
+            {
+                await DataAccess.SqlHelper.UpdateCard(id, value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
+                    value.BundleID, value.BundleFlag, value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1",
+                    user.UserID, user.ProviderID, user.LocationID);
+            }
 
             return Ok();
         }
@@ -431,7 +439,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.DeleteCard(id, user.ProviderID, user.LocationID);
+            await DataAccess.SqlHelper.DeleteCard(id, user.ProviderID, user.LocationID);
 
             return Ok();
         }

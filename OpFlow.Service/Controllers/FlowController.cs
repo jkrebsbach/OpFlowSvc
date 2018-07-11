@@ -665,11 +665,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Delete")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public IHttpActionResult Delete(int id)
+        public async Task<IHttpActionResult> Delete(int id)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.DeleteFlow(id, user.ProviderID, user.LocationID);
+            var result = await SqlHelper.DeleteFlow(id, user.ProviderID, user.LocationID);
 
             return Ok();
         }

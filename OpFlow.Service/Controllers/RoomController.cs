@@ -186,5 +186,20 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, roomsetupId);
         }
+
+        // PUT api/roomSetup/values/5
+        [SwaggerOperation("DeleteSetup")]
+        [Route("api/room/roomSetup/{roomsetupId}")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteSetup(int roomsetupId, [FromBody]RoomSetup roomSetup)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            await DataAccess.SqlHelper.DeleteRoomSetup(roomsetupId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, roomsetupId);
+        }
     }
 }
