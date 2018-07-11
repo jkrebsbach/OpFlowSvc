@@ -9,20 +9,17 @@ namespace OpFlow.Mobile
 {
     public abstract class CardUtil
     {
-        public static async Task<List<Card>> GetCards(int? bundleId, int? procedureId)
+        public static async Task<List<Card>> GetCards(int? bundleId, int? procedureId, bool defaultFilter)
         {
-            var command = "api/card/list";
-            var strDelim = "?";
+            var command = $"api/card/list?defaultFilter={defaultFilter}";
 
             if (bundleId.HasValue)
             {
-                command += $"{strDelim}bundleId={bundleId}";
-                strDelim = "&";
+                command += $"&bundleId={bundleId}";
             }
             if (procedureId.HasValue)
             {
-                command += $"{strDelim}procedureId={procedureId}";
-                strDelim = "&";
+                command += $"&procedureId={procedureId}";
             }
 
             var response = await WebUtility.WebRequest<List<Card>>(command, HttpMethod.Get);

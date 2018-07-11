@@ -20,6 +20,10 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UISwitch swtDefault { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField txtBundle { get; set; }
 
         [Outlet]
@@ -31,6 +35,11 @@ namespace OpFlow.iOS
             if (CardListTableView != null) {
                 CardListTableView.Dispose ();
                 CardListTableView = null;
+            }
+
+            if (swtDefault != null) {
+                swtDefault.Dispose ();
+                swtDefault = null;
             }
 
             if (txtBundle != null) {

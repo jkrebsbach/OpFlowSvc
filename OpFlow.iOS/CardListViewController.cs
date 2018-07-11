@@ -42,6 +42,7 @@ namespace OpFlow.iOS
             _bundlePicker = new OpFlowTextPicker(txtBundle, bundles.Cast<IBindableEntity>().ToList());
 
             _bundlePicker.ValueChanged += UpdateBundle;
+            swtDefault.ValueChanged += UpdateBundle;
 
             await UpdateCards();
         }
@@ -54,8 +55,9 @@ namespace OpFlow.iOS
         private async Task UpdateCards()
         {
             var bundleId = _bundlePicker.GetCurrentId();
+            var defaultFilter = swtDefault.On;
 
-            var cards = await CardUtil.GetCards(bundleId, null);
+            var cards = await CardUtil.GetCards(bundleId, null, defaultFilter);
             var messagingTableViewSource = new CardListTVS(cards);
 
             CardListTableView.Source = messagingTableViewSource;
