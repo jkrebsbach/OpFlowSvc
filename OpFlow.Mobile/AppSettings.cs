@@ -86,6 +86,7 @@ namespace OpFlow.Mobile
         public static void LoadSurgeryAttributes(Surgery surgery){
             CurrentPatient = surgery.PatientID;
             CurrentCard = surgery.CardID;
+            CurrentBundle = surgery.BundleID;
             CurrentProcedure = surgery.ProcedureID;
             CurrentFlow = surgery.FlowID;
             CurrentRoomSetup = surgery.RoomSetupID;
@@ -97,6 +98,7 @@ namespace OpFlow.Mobile
         public static MessagingGroup CurrentMessagingGroup { get; set; }
 
         public static int? CurrentCard { get; set; }
+        public static int? CurrentBundle { get; set; }
         public static int? CurrentProcedure { get; set; }
         public static int? CurrentFlow { get; set; }
         public static int? CurrentRoomSetup { get; set; }

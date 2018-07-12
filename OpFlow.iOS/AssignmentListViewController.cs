@@ -27,9 +27,11 @@ namespace OpFlow.iOS
                     .Show();
                 return;
             }
-            else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CardAssignment && AppSettings.CurrentProcedure == null)
+            else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CardAssignment 
+                     && AppSettings.CurrentBundle == null
+                     && AppSettings.CurrentProcedure == null)
             {
-                new UIAlertView("Error", "No procedure assigned to surgery", null, "OK", null)
+                new UIAlertView("Error", "No bundle or procedure assigned to surgery", null, "OK", null)
                     .Show();
                 return;
             }
@@ -56,7 +58,7 @@ namespace OpFlow.iOS
             {
                 currentId = AppSettings.CurrentCard ?? -1;
 
-                var cards = await CardUtil.GetCards(null, AppSettings.CurrentProcedure ?? 0, false);
+                var cards = await CardUtil.GetCards(AppSettings.CurrentBundle, AppSettings.CurrentProcedure, false);
                 options = cards.Cast<IBindableEntity>().ToList();
             }
 
