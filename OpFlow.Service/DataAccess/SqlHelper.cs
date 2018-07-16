@@ -1034,21 +1034,16 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UpdateCardItem", dsParameters);
         }
 
-        public static int? UpdateCardProcedure(int cardId, string cptCode, int providerId, int locationId)
+        public static int? UpdateCardProcedure(int cardId, int procedureId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("card_id", cardId),
-                new SqlParameter("cpt_code", cptCode)
+                new SqlParameter("procedure_id", procedureId)
             };
-            var updateResult = ExecuteCommand("UpdateCardProcedure", dsParameters);
-
-            if (updateResult.Tables[0].Rows.Count <= 0) return null;
-
-            var result = updateResult.Tables[0].Rows[0];
-            return result["ProcedureID"] == DBNull.Value ? (int?)null : (int)result["ProcedureID"];
+            return ExecuteNonQuery("UpdateCardProcedure", dsParameters);
         }
 
         public static int? DeleteCardProcedure(int cardId, int procedureId, int providerId, int locationId)
@@ -1233,14 +1228,14 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("DeleteSurgeryUser", dsParameters);
         }
 
-        public static int AddSurgeryProcedure(int surgeryId, string cptCode, int providerId, int locationId)
+        public static int AddSurgeryProcedure(int surgeryId, int procedureId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("cpt_code", cptCode)
+                new SqlParameter("procedure_id", procedureId)
             };
             return ExecuteNonQuery("InsertSurgeryProcedure", dsParameters);
         }
@@ -1270,7 +1265,7 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("DeleteSurgeryProcedure", dsParameters);
         }
 
-        public static int UpdateSurgeryHeaderCounts(int surgeryId, int sharpCount, int needleCount, int lapCount, int providerId, int locationId)
+        public static int UpdateSurgeryHeaderCounts(int surgeryId, int sharpCount, int needleCount, int lapCount, int specimenCount, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1279,7 +1274,8 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("sharp_count", sharpCount),
                 new SqlParameter("needle_count", needleCount),
-                new SqlParameter("lap_count", lapCount)
+                new SqlParameter("lap_count", lapCount),
+                new SqlParameter("specimen_count", specimenCount)
             };
             return ExecuteNonQuery("UpdateSurgeryHeaderCounts", dsParameters);
         }

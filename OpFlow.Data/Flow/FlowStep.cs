@@ -13,6 +13,7 @@ namespace OpFlow.Data
         public string FlowStepStatus { get; set; }
         public string StepDescription { get; set; }
         public int StepDuration { get; set; }
+        public int StepSequence { get; set; }
 
         public List<FlowRoleInstruction> RoleInstructions { get; set; }
         public List<FlowNotification> StepNotifications { get; set; }

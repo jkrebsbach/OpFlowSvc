@@ -582,11 +582,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
         [Route("api/surgery/surgeryProcedure", Name = "AddSurgeryProcedure")]
-        public async Task<HttpResponseMessage> AddSurgeryProcedure(int surgeryId, string cptCode)
+        public async Task<HttpResponseMessage> AddSurgeryProcedure(int surgeryId, int procedureId)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            SqlHelper.AddSurgeryProcedure(surgeryId, cptCode, user.ProviderID, user.LocationID);
+            SqlHelper.AddSurgeryProcedure(surgeryId, procedureId, user.ProviderID, user.LocationID);
         
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
@@ -737,11 +737,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
         [Route("api/surgery/updateCounts", Name = "UpdateSurgeryCounts")]
-        public async Task<HttpResponseMessage> UpdateSurgeryCounts(int surgeryId, int sharpCount, int needleCount, int lapCount)
+        public async Task<HttpResponseMessage> UpdateSurgeryCounts(int surgeryId, int sharpCount, int needleCount, int lapCount, int specimenCount)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            SqlHelper.UpdateSurgeryHeaderCounts(surgeryId, sharpCount, needleCount, lapCount, user.ProviderID, user.LocationID);
+            SqlHelper.UpdateSurgeryHeaderCounts(surgeryId, sharpCount, needleCount, lapCount, specimenCount, user.ProviderID, user.LocationID);
             
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }

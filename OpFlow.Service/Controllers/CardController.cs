@@ -362,11 +362,11 @@ namespace OpFlow.Service.Controllers
         [HttpPut]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public async Task<HttpResponseMessage> PutCardProcedure(int cardId, string cptCode)
+        public async Task<HttpResponseMessage> PutCardProcedure(int cardId, int procedureId)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.UpdateCardProcedure(cardId, cptCode, user.ProviderID, user.LocationID);
+            var result = DataAccess.SqlHelper.UpdateCardProcedure(cardId, procedureId, user.ProviderID, user.LocationID);
 
             return result.HasValue ? 
                 Request.CreateResponse(HttpStatusCode.OK, result) : 
@@ -379,7 +379,7 @@ namespace OpFlow.Service.Controllers
         [HttpDelete]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public async Task<HttpResponseMessage> PutCardProcedure(int cardId, int procedureId)
+        public async Task<HttpResponseMessage> DeleteCardProcedure(int cardId, int procedureId)
         {
             var user = CacheUtil.GetUserSecurity();
 

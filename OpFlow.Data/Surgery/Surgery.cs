@@ -35,6 +35,7 @@ namespace OpFlow.Data
         public int SharpCount { get; set; }
         public int NeedleCount { get; set; }
         public int LapCount { get; set; }
+        public int SpecimenCount { get; set; }
         public DateTime ScheduleDate { get; set; }
         public TimeSpan ScheduleTime { get; set; }
         public DateTime? ActualStartDate { get; set; }
