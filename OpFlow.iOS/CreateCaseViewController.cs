@@ -225,7 +225,7 @@ namespace OpFlow.iOS
                      CaseNbr = txtCaseNbr.Text,
                     PtAcctNbr = txtPatientId.Text,
                     PtDOB = DateTime.Parse(txtPatientDOB.Text),
-                    PtInitials = txtInitials.Text,
+                    PtMiddleInitial = txtInitials.Text,
                     PtGender = txtGender.Text,
                     SpecialtyID = _specialtyPicker?.GetCurrentId() ?? 0,
                     SurgeonUserID = _surgeonPicker?.GetCurrentId() ?? 0,

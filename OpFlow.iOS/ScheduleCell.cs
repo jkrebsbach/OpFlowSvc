@@ -36,7 +36,7 @@ namespace OpFlow.iOS
 
             var patientName = $"{patient?.LastName} {patient?.FirstName}".Trim();
             if (patientName == string.Empty)
-                patientName = patient?.Initials ?? string.Empty;
+                patientName = patient?.LastName ?? string.Empty;
             if (patientName == string.Empty)
                 patientName = "UNK";
 

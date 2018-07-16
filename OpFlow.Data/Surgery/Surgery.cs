@@ -66,10 +66,10 @@ namespace OpFlow.Data
         public string CaseNbr { get; set; }
         public string PtAcctNbr { get; set; }
         public DateTime? PtDOB { get; set; }
-        public string PtInitials { get; set; }
         public string PtGender { get; set; }
         public string PtFirstName { get; set; }
         public string PtLastName { get; set; }
+        public string PtMiddleInitial { get; set; }
         public decimal? PtBMI { get; set; }
         public int SpecialtyID { get; set; }
         public int SurgeonUserID { get; set; }

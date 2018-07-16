@@ -244,7 +244,7 @@ namespace OpFlow.iOS
             return user == null ? "NONE" : string.Format("{0}, {1} {2}", user.LastName, user.FirstName, user.UserTitle);
         }
 
-        private string PatientNameText =>  string.IsNullOrEmpty(_patient?.Initials) ? "UNK" : _patient.Initials;
+        private string PatientNameText =>  string.IsNullOrEmpty(_patient?.LastName) ? "UNK" : _patient.MiddleInitial;
 
         private string PatientInfoText => string.Format("{0} {1}", _patient?.BirthDate.CalculateAge(), _patient?.Gender);
     }

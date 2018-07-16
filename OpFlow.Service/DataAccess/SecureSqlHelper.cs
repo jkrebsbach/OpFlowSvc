@@ -64,11 +64,17 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<Patient> GetPatient(int patientId, string databaseName)
+        public static async Task<Patient> GetPatient(int patientId, 
+            int userId, string userFirstName, string userLastName, int userRole,
+            string databaseName)
         {
             var parameters = new[]
             {
-                new SqlParameter("patient_id", patientId)
+                new SqlParameter("patient_id", patientId),
+                new SqlParameter("user_id", userId),
+                new SqlParameter("user_first_name", userFirstName),
+                new SqlParameter("user_last_name", userLastName),
+                new SqlParameter("user_role", userRole)
             };
             var dsSchedules = await ExecuteCommandAsync("GetPatient", databaseName, parameters);
 
@@ -85,16 +91,16 @@ namespace OpFlow.Service.DataAccess
             return patients.FirstOrDefault();
         }
 
-        public static async Task<int> CreatePatient(string ptAcctNbr, string initials, DateTime? birthDate, string gender, 
-            string firstName, string lastName, decimal? bmi, string databaseName)
+        public static async Task<int> CreatePatient(string ptAcctNbr, DateTime? birthDate, string gender, 
+            string firstName, string lastName, string middleInitial, decimal? bmi, string databaseName)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("pt_acct_nbr", ptAcctNbr ?? (object)DBNull.Value),
-                new SqlParameter("initials", initials ?? (object)DBNull.Value),
                 new SqlParameter("birth_date", birthDate ?? (object)DBNull.Value),
                 new SqlParameter("last_name", lastName ?? (object)DBNull.Value),
                 new SqlParameter("first_name", firstName ?? (object)DBNull.Value),
+                new SqlParameter("middle_initial", middleInitial ?? (object)DBNull.Value),
                 new SqlParameter("gender", gender ?? (object)DBNull.Value),
                 new SqlParameter("bmi", bmi ?? (object)DBNull.Value)
             };

@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Http;
 using Newtonsoft.Json;
 using OpFlow.Data;
+using OpFlow.Service.DataAccess;
 using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
@@ -22,8 +23,11 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Get(int patientId)
         {
             var user = CacheUtil.GetUserSecurity();
+            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
 
-            var patient = await DataAccess.SecureSqlHelper.GetPatient(patientId, user.DatabaseName);
+            var patient = await DataAccess.SecureSqlHelper.GetPatient(patientId,
+                user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
+                user.DatabaseName);
 
             if (patient == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound, "Patient not found");
@@ -37,8 +41,6 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<Patient>))]
         public async Task<HttpResponseMessage> GetArray(string patientIdArrayJson)
         {
-            var user = CacheUtil.GetUserSecurity();
-
             var patientIds = new List<int>();
             var patients = new List<Patient>();
             
@@ -47,9 +49,14 @@ namespace OpFlow.Service.Controllers
 
             if (patientIds != null)
             {
+                var user = CacheUtil.GetUserSecurity();
+                var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+
                 foreach (var patientId in patientIds)
                 {
-                    var patient = await DataAccess.SecureSqlHelper.GetPatient(patientId, user.DatabaseName);
+                    var patient = await DataAccess.SecureSqlHelper.GetPatient(patientId,
+                        user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
+                        user.DatabaseName);
                     if (patient != null)
                         patients.Add(patient);
                 }
@@ -65,8 +72,8 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var patientId = await DataAccess.SecureSqlHelper.CreatePatient(patient.PatientAcctNbr, patient.Initials,
-                patient.BirthDate, patient.Gender, patient.FirstName, patient.LastName, patient.BMI, user.DatabaseName);
+            var patientId = await DataAccess.SecureSqlHelper.CreatePatient(patient.PatientAcctNbr,
+                patient.BirthDate, patient.Gender, patient.FirstName, patient.LastName, patient.MiddleInitial, patient.BMI, user.DatabaseName);
 
             return Request.CreateResponse(HttpStatusCode.Created, patientId);
         }

@@ -24,5 +24,24 @@ namespace OpFlow.Data
         public string LastName { get; set; }
         public string Email { get; set; }
         public string UserTitle { get; set; }
+
+        public DateTime? FlowUpdate { get; set; }
+        public DateTime? CardUpdate { get; set; }
+        public DateTime? RoomSetupUpdate { get; set; }
+
+        public DateTime? CardRevisionDate
+        {
+            get
+            {
+                DateTime? maxDate = FlowUpdate;
+
+                if (maxDate == null || (CardUpdate.HasValue && CardUpdate.Value > maxDate.Value))
+                    maxDate = CardUpdate;
+                if (maxDate == null || (RoomSetupUpdate.HasValue && RoomSetupUpdate.Value > maxDate.Value))
+                    maxDate = RoomSetupUpdate;
+
+                return maxDate;
+            }
+        }
     }
 }

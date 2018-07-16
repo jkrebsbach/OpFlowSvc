@@ -6,7 +6,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.UI;
 using OpFlow.Data;
+using OpFlow.Service.DataAccess;
 using OpFlow.Service.Models;
 using Swashbuckle.Swagger.Annotations;
 
@@ -38,12 +40,15 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCaseMessageGroups(int? userId = null, DateTime? startDate = null, DateTime? endDate = null)
         {
             var user = CacheUtil.GetUserSecurity();
+            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
 
             var groups = DataAccess.SqlHelper.GetMessageGroups(userId ?? user.UserID, startDate, endDate, user.ProviderID, user.LocationID);
 
             foreach (var group in groups.Where(g => g.PatientID.HasValue))
             {
-                var patient = await DataAccess.SecureSqlHelper.GetPatient(group.PatientID.Value, user.DatabaseName);
+                var patient = await DataAccess.SecureSqlHelper.GetPatient(group.PatientID.Value, 
+                    user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID,
+                    user.DatabaseName);
 
                 group.CommunicationTargetName = $"{patient.LastName} {group.CommunicationTargetName}";
             }

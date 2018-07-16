@@ -27,9 +27,13 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
+            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+
             var patientSurgery = SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
             patientSurgery.Patient =
-                await SecureSqlHelper.GetPatient(patientSurgery.PatientID, user.DatabaseName);
+                await SecureSqlHelper.GetPatient(patientSurgery.PatientID,
+                user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
+                user.DatabaseName);
 
             return Request.CreateResponse(HttpStatusCode.OK, patientSurgery);
         }
@@ -481,8 +485,8 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Post([FromBody]SurgeryPost surgery)
         {
             var user = CacheUtil.GetUserSecurity();
-            var patientId = await SecureSqlHelper.CreatePatient(surgery.PtAcctNbr, surgery.PtInitials,
-                surgery.PtDOB, surgery.PtGender, surgery.PtFirstName, surgery.PtLastName, surgery.PtBMI, user.DatabaseName);
+            var patientId = await SecureSqlHelper.CreatePatient(surgery.PtAcctNbr,
+                surgery.PtDOB, surgery.PtGender, surgery.PtFirstName, surgery.PtLastName, surgery.PtMiddleInitial, surgery.PtBMI, user.DatabaseName);
 
             var caseId = SqlHelper.CreateCase(patientId, user.UserID, surgery.SpecialtyID, user.ProviderID,
                 user.LocationID, surgery.CaseNbr);
@@ -865,7 +869,11 @@ namespace OpFlow.Service.Controllers
 
 
             var surgery = SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
-            var patient = await SecureSqlHelper.GetPatient(surgery.PatientID, user.DatabaseName);
+            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+
+            var patient = await SecureSqlHelper.GetPatient(surgery.PatientID,
+                user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
+                user.DatabaseName);
 
             var message = $"Surgery #{surgery.CaseNumber} patient {patient.LastName} room {surgery.RoomDescription} {surgery.ScheduleTime:hh\\:mm} modified - please review schedule";
 

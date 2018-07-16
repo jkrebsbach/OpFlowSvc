@@ -10,7 +10,7 @@ namespace OpFlow.Data
         public string PatientAcctNbr { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Initials { get; set; }
+        public string MiddleInitial { get; set; }
         public DateTime BirthDate { get; set; }
         public string Gender { get; set; }
         public decimal BMI { get; set; }
@@ -41,7 +41,7 @@ namespace OpFlow.Data
     public class PatientPost
     {
         public string PatientAcctNbr { get; set; }
-        public string Initials { get; set; }
+        public string MiddleInitial { get; set; }
         public DateTime BirthDate { get; set; }
         public string Gender { get; set; }
         public string FirstName { get; set; }
