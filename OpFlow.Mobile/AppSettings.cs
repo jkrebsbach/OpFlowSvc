@@ -34,9 +34,12 @@ namespace OpFlow.Mobile
             CreateCase = 16,
             CommunicationDetail = 17,
             NewCommunicationSetup = 18,
+            ImageSetup = 19
         }
 
         public static int? CurrentSurgery { get; set; }
+
+        public static byte[] CurrentImage { get; set; }
 
         public static FragmentEnum CurrentScreen;
         public static FragmentEnum PriorScreen;

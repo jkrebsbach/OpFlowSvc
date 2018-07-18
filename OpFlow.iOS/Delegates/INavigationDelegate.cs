@@ -13,6 +13,7 @@ namespace OpFlow.iOS.Delegates
     public interface INavigationDelegate
     {
         event EventHandler DoneEventFired;
+        event EventHandler RefreshData;
 
         void PresentContainerView(AppSettings.FragmentEnum fragmentEnum);
     }

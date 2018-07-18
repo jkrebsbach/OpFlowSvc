@@ -20,16 +20,31 @@ namespace OpFlow.iOS
         {
             base.ViewDidLoad();
 
+            if (NavigationDelegate != null)
+                NavigationDelegate.RefreshData += OnRefreshData;
+
             try
             {
                 await ExecuteAsyncWebRequest(SetupDetails);
-                //await SetupDetails();
 
-                DetailTableView.ReloadData();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public async void OnRefreshData(object sender, EventArgs e)
+        {
+            try
+            {
+                await ExecuteAsyncWebRequest(SetupDetails);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
                 throw;
             }
         }
@@ -51,6 +66,7 @@ namespace OpFlow.iOS
             detailTableViewSource.DetailListConfirmedEvent += ConfirmDetails;
 
             DetailTableView.Source = detailTableViewSource;
+            DetailTableView.ReloadData();
         }
 
         private async void ConfirmDetails(object sender, List<DetailItem> tokens)
