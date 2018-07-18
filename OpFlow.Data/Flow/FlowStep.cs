@@ -14,6 +14,7 @@ namespace OpFlow.Data
         public string StepDescription { get; set; }
         public int StepDuration { get; set; }
         public int StepSequence { get; set; }
+        public bool DashboardTime { get; set; }
 
         public List<FlowRoleInstruction> RoleInstructions { get; set; }
         public List<FlowNotification> StepNotifications { get; set; }
@@ -42,6 +43,7 @@ namespace OpFlow.Data
         public int StepID { get; set; }
         public string StepName { get; set; }
         public string StepNotificationType { get; set; }
+        public bool DashboardTime { get; set; }
 
         public string StepNotificationDescription
         {
@@ -58,11 +60,13 @@ namespace OpFlow.Data
                 }
             }
         }
+        public string StepTimingDescription => DashboardTime ? "Include in timing" : "Exclude from timing";
     }
 
     public class StepPost
     {
         public string StepName { get; set; }
         public string StepNotificationType { get; set; }
+        public bool StepTiming { get; set; }
     }
 }

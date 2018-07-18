@@ -357,7 +357,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetFlowSurgeryTimings(surgeryId, user.ProviderID, user.LocationID);
+            var result = SqlHelper.GetFlowSurgeryTimings(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -557,7 +557,8 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            SqlHelper.UpdateSurgeryStep(stepId, flowStepDetail.StepName, flowStepDetail.StepNotificationType, user.ProviderID, user.LocationID);
+            SqlHelper.UpdateSurgeryStep(stepId, 
+                flowStepDetail.StepName, flowStepDetail.StepNotificationType, flowStepDetail.StepTiming, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -572,7 +573,8 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            SqlHelper.AddSurgeryStep(flowStepDetail.StepName, flowStepDetail.StepNotificationType, user.ProviderID, user.LocationID);
+            SqlHelper.AddSurgeryStep(
+                flowStepDetail.StepName, flowStepDetail.StepNotificationType, flowStepDetail.StepTiming, user.ProviderID, user.LocationID);
 
             return Ok();
         }

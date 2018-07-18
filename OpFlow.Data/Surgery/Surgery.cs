@@ -164,6 +164,7 @@ namespace OpFlow.Data
         public int CardID { get; set; }
         public int BundleID { get; set; }
         public int ProcedureID { get; set; }
+        public string CPTCode { get; set; }
         public string BundleDescription { get; set; }
         public string CardDescription { get; set; }
         public string ProcedureDescription { get; set; }

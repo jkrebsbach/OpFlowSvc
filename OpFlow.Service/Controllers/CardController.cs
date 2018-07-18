@@ -85,7 +85,8 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
 
             var defaultCardOnly = defaultFilter ?? false;
-            var result = DataAccess.SqlHelper.GetCardList(userId, procedureId, bundleId, defaultCardOnly, user.ProviderID, user.LocationID);
+            var result = DataAccess.SqlHelper.GetCardList(userId, procedureId, bundleId, defaultCardOnly, user.ProviderID, user.LocationID)
+                .OrderBy(c => c.CardDescription).ToList();
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

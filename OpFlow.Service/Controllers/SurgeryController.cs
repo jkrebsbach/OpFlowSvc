@@ -564,6 +564,27 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [SwaggerOperation("NotifyAdministrator")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        [Route("api/surgery/notifyAdministrator", Name = "NotifyAdministrator")]
+        public async Task<HttpResponseMessage> NotifyAdministrator(int surgeryId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var surgery = SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+            if (surgery == null)
+                return Request.CreateResponse(HttpStatusCode.NotFound, 0);
+
+            var helpString = "Help needed with surgery in room: " + surgery.RoomDescription;
+            var administrator = "16127016239";
+
+            SmsNotification.NotifyUser(administrator, helpString);
+
+            return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
+        // POST api/values
         [SwaggerOperation("DeleteSurgeryUser")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpDelete]

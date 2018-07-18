@@ -2724,13 +2724,14 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static int UpdateSurgeryStep(int stepId, string stepDescription, string notificationType, int providerId, int locationId)
+        public static int UpdateSurgeryStep(int stepId, string stepDescription, string notificationType, bool stepTiming, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("step_id", stepId),
                 new SqlParameter("step_description", stepDescription),
                 new SqlParameter("notification_type", notificationType),
+                new SqlParameter("dashboard_time", stepTiming),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -2739,12 +2740,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static int AddSurgeryStep(string stepDescription, string notificationType, int providerId, int locationId)
+        public static int AddSurgeryStep(string stepDescription, string notificationType, bool stepTiming, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("step_description", stepDescription),
                 new SqlParameter("notification_type", notificationType),
+                new SqlParameter("dashboard_time", stepTiming),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
