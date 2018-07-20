@@ -21,6 +21,7 @@ namespace OpFlow.iOS
         private readonly NSString CommunicatorSegue = (NSString)"communicatorSegue";
         private readonly NSString CommunicatorDetailSegue = (NSString)"communicatorDetailSegue";
         private readonly NSString NewCommunicationSegue = (NSString)"newCommunicationSegue";
+        private readonly NSString ImageSetupSegue = (NSString)"imageSetupSegue";
 
         private INavigationDelegate _hostController;
 
@@ -127,6 +128,14 @@ namespace OpFlow.iOS
         {
             _viewChanging = new TaskCompletionSource<bool>();
             PerformSegue(NewCommunicationSegue, this);
+
+            return _viewChanging.Task;
+        }
+
+        public Task<bool> PresentImageSetupViewAsync()
+        {
+            _viewChanging = new TaskCompletionSource<bool>();
+            PerformSegue(ImageSetupSegue, this);
 
             return _viewChanging.Task;
         }

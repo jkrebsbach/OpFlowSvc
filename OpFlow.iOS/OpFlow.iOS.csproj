@@ -244,6 +244,10 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ViewSources\CardListTVS.cs" />
+    <Compile Include="ImageSetupViewController.cs" />
+    <Compile Include="ImageSetupViewController.designer.cs">
+      <DependentUpon>ImageSetupViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">

@@ -18,6 +18,7 @@ namespace OpFlow.iOS
         private NSObject _foregroundNotification;
 
         public event EventHandler DoneEventFired;
+        public event EventHandler RefreshData;
 
         public MainViewController (IntPtr handle) : base (handle)
         {
@@ -162,7 +163,14 @@ namespace OpFlow.iOS
             vc.FinishedPickingMedia += async (s, evt) => {
                 vc.DismissModalViewController(true);
 
-                await UploadImage(evt.EditedImage);
+                var imageStream = evt.EditedImage.AsPNG().AsStream();
+                using (var memoryStream = new MemoryStream())
+                {
+                    imageStream.CopyTo(memoryStream);
+                    AppSettings.CurrentImage = memoryStream.ToArray();
+                }
+
+                PresentContainerView(AppSettings.FragmentEnum.ImageSetup);
             };
 
             vc.Canceled += (s, evt) => {
@@ -170,20 +178,6 @@ namespace OpFlow.iOS
             };
 
             PresentViewController(vc, true, () => {});
-        }
-
-        private async Task UploadImage(UIImage sourceImage) {
-            var imageStream = sourceImage.AsPNG().AsStream();
-            byte[] imageBytes;
-            using (var memoryStream = new MemoryStream())
-            {
-                imageStream.CopyTo(memoryStream);
-                imageBytes = memoryStream.ToArray();
-            }
-
-            AppSettings.PriorScreen = AppSettings.CurrentScreen;
-            var flowId = AppSettings.CurrentFlow ?? 0;
-            await FlowUtil.UploadFlowImage(flowId, imageBytes);
         }
 
         private UIBarButtonItem SetupCustomBack(string backText)
@@ -413,6 +407,14 @@ namespace OpFlow.iOS
                     customBackButton = null; // Cancel action, not back
 
                     await _containerViewController.PresentCaseGroupEditViewAsync();
+
+                    rightButton = SetupCustomEdit(CustomButtonType.Cancel);
+                    break;
+                case AppSettings.FragmentEnum.ImageSetup:
+                    Title = "Image Properties";
+                    customBackButton = null; // Cancel action, not back
+
+                    await _containerViewController.PresentImageSetupViewAsync();
 
                     rightButton = SetupCustomEdit(CustomButtonType.Cancel);
                     break;
