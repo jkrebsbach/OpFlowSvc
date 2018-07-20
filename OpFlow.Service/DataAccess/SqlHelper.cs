@@ -736,15 +736,15 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("DeleteSmartPhrase", dsParameters);
         }
 
-        public static int NewFlowImage(int flowId, int? stepId, int? roleId, string comment, int providerId, int locationId)
+        public static int NewFlowImage(int flowId, int stepId, int roleId, string comment, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("flow_id", flowId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("step_id", stepId ?? (object)DBNull.Value),
-                new SqlParameter("role_id", roleId ?? (object)DBNull.Value),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("role_id", roleId),
                 new SqlParameter("image_comment", comment ?? (object)DBNull.Value)
             };
             var insert = ExecuteCommand("InsertFlowImage", dsParameters);

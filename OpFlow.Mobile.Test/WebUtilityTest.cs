@@ -27,7 +27,7 @@ namespace OpFlow.Mobile.Test
             var fileBytes = File.ReadAllBytes(@"C:\temp\sample_image.jpg");
 
             await AppSettings.AuthenticateUser("info@opflowtech.com", "OpFlow1!");
-            await FlowUtil.UploadFlowImage(1, fileBytes);
+            await FlowUtil.UploadFlowImage(1, 1, 1, fileBytes);
         }
     }
 }
