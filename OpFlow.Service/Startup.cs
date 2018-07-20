@@ -26,7 +26,8 @@ namespace OpFlow.Service
 
                 var hubConfiguration = new HubConfiguration()
                 {
-                    Resolver = GlobalHost.DependencyResolver
+                    Resolver = GlobalHost.DependencyResolver,
+                    EnableDetailedErrors = true
                 };
 
                 map.RunSignalR(hubConfiguration);

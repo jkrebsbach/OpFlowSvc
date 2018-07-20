@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -17,8 +18,9 @@ namespace OpFlow.Service.Models
             {
                 if (_hub == null)
                 {
-                    var connectionString = "Endpoint=sb://opflow.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=FvZ3wmulqHDTy+22bTThgjWi0H9kI+SXl/5on8fNL5A=";
-                    var notificationHubPath = "opflow";
+                    var connectionString = ConfigurationManager.ConnectionStrings["PushNotificationConnection"].ConnectionString;
+
+                    var notificationHubPath = ConfigurationManager.AppSettings["PushNotificationHub"];
                     // Create a new Notification Hub client.
                     _hub = NotificationHubClient.CreateClientFromConnectionString(connectionString, notificationHubPath);
                 }
