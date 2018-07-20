@@ -41,30 +41,33 @@ namespace OpFlow.iOS
 
         async partial void btnAccept_Click(UIButton sender)
         {
-            var stepId = _stepPicker.GetCurrentId();
-            var roleId = _rolePicker.GetCurrentId();
+            var stepId = _stepPicker.GetCurrentId() ?? 0;
+            var roleId = _rolePicker.GetCurrentId() ?? 0;
 
-            if ((stepId ?? 0) == 0)
+            if (stepId == 0)
             {
                 ShowDialog("No step", "Please select a step");
                 return;
             }
 
-            if ((roleId ?? 0) == 0)
+            if (roleId == 0)
             {
                 ShowDialog("No role", "Please select a role");
                 return;
             }
 
-            AppSettings.PriorScreen = AppSettings.CurrentScreen;
-            var flowId = AppSettings.CurrentFlow ?? 0;
-            await FlowUtil.UploadFlowImage(flowId, stepId.Value, roleId.Value, AppSettings.CurrentImage);
-
-            AppSettings.CurrentImage = null;
+            await ExecuteAsyncWebRequest(() => UploadImage(stepId, roleId));
             // Navigate to flow detail page
-
             NavigationDelegate?.PresentContainerView(AppSettings.FragmentEnum.FlowDetail);
         }
 
+        private async Task UploadImage(int stepId, int roleId)
+        {
+            AppSettings.PriorScreen = AppSettings.CurrentScreen;
+            var flowId = AppSettings.CurrentFlow ?? 0;
+            await FlowUtil.UploadFlowImage(flowId, stepId, roleId, AppSettings.CurrentImage);
+
+            AppSettings.CurrentImage = null;
+        }
     }
 }

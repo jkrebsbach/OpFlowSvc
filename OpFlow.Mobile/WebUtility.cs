@@ -114,7 +114,10 @@ namespace OpFlow.Mobile
                     return default(T);
 
                 if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    var error = await response.Content.ReadAsStringAsync();
                     return default(T);
+                }
 
                 result = await response.Content.ReadAsStringAsync();
             }
