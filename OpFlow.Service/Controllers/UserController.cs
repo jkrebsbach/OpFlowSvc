@@ -55,6 +55,21 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, users);
         }
 
+        /// <summary>
+        /// List roles
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<User>))]
+        [Route("api/User/Roles", Name = "GetRoles")]
+        public HttpResponseMessage GetRoles(string nameSearchText = null, int? roleId = null, int? specialtyId = null)
+        {
+            var userSecurity = CacheUtil.GetUserSecurity();
+
+            var roles = DataAccess.SqlHelper.GetRoles(userSecurity.ProviderID, userSecurity.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, roles);
+        }
+
         // POST api/values
         [SwaggerOperation("CheckIn")]
         [SwaggerResponse(HttpStatusCode.Created)]

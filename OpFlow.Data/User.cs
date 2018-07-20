@@ -73,6 +73,12 @@ namespace OpFlow.Data
         public int LocationID { get; set; }
     }
 
+    public class Role
+    {
+        public int RoleID { get; set; }
+        public string RoleDescription { get; set; }
+    }
+
     public enum RoleEnum
     {
         Surgeon = 1,

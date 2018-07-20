@@ -546,6 +546,20 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static List<Role> GetRoles(int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = ExecuteCommand("GetRoles", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Role>();
+
+            return result;
+        }
+
         public static UserSecurity GetSecureUser(Guid? userAuthId, int? userId = null, string email = null)
         {
             var dsParameters = new[]
