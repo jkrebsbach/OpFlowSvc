@@ -4,9 +4,8 @@ using System.Text;
 
 namespace OpFlow.Data
 {
-    public class FlowStep
+    public class FlowStep : Step
     {
-        public int StepID { get; set; }
         public int FlowID { get; set; }
         public int SurgeryID { get; set; }
         public int StepOwnerUserID { get; set; }
@@ -14,7 +13,6 @@ namespace OpFlow.Data
         public string StepDescription { get; set; }
         public int StepDuration { get; set; }
         public int StepSequence { get; set; }
-        public bool DashboardTime { get; set; }
 
         public List<FlowRoleInstruction> RoleInstructions { get; set; }
         public List<FlowNotification> StepNotifications { get; set; }
@@ -32,13 +30,12 @@ namespace OpFlow.Data
 
     public class FlowStepSurgeryTiming : FlowStepTiming
     {
-        public int SurgeryID { get; set; }
         public string StepStatus { get; set; }
         public TimeSpan StepStartTime { get; set; }
         public TimeSpan StepEndTime { get; set; }
     }
 
-    public class Step
+    public class Step : IBindableEntity
     {
         public int StepID { get; set; }
         public string StepName { get; set; }
@@ -61,6 +58,16 @@ namespace OpFlow.Data
             }
         }
         public string StepTimingDescription => DashboardTime ? "Include in timing" : "Exclude from timing";
+
+        public int GetID()
+        {
+            return StepID;
+        }
+
+        public override string ToString()
+        {
+            return StepName;
+        }
     }
 
     public class StepPost

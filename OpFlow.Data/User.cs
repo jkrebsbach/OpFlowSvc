@@ -73,10 +73,19 @@ namespace OpFlow.Data
         public int LocationID { get; set; }
     }
 
-    public class Role
+    public class Role : IBindableEntity
     {
         public int RoleID { get; set; }
         public string RoleDescription { get; set; }
+
+        public int GetID() {
+            return RoleID;
+        }
+
+        public override string ToString()
+        {
+            return RoleDescription;
+        }
     }
 
     public enum RoleEnum

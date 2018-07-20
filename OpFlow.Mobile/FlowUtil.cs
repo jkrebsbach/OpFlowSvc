@@ -52,7 +52,19 @@ namespace OpFlow.Mobile
             var response = await WebUtility.WebRequest<List<Flow>>(command, HttpMethod.Get);
 
             return response;
-		}
+        }
+
+        public static Task<List<FlowStepTiming>> GetFlowTimings(int flowId)
+        {
+            var command = $"api/flow/timings?flowId={flowId}";
+            return WebUtility.WebRequest<List<FlowStepTiming>>(command, HttpMethod.Get);
+        }
+
+        public static Task<List<Step>> GetSteps()
+        {
+            var command = "api/flow/steps";
+            return WebUtility.WebRequest<List<Step>>(command, HttpMethod.Get);
+        }
 
         public static string FlowImageUrl(int flowId, int flowImageId)
         {
@@ -60,9 +72,9 @@ namespace OpFlow.Mobile
             return WebUtility.GetWebUrl(command);
         }
 
-        public static async Task<string> UploadFlowImage(int flowId, byte[] flowBytes)
+        public static async Task<string> UploadFlowImage(int flowId, int stepId, int roleId, byte[] flowBytes)
         {
-            var command = string.Format("api/flow/flowImage?flowId={0}", flowId);
+            var command = $"api/flow/flowImage?flowId={flowId}&stepId={stepId}&roleId={roleId}";
             var response = await WebUtility.FileRequest<string>(command, HttpMethod.Put, flowBytes);
 
             return response;
