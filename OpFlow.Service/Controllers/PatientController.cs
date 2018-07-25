@@ -70,10 +70,13 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created)]
         public async Task<HttpResponseMessage> Post([FromBody]PatientPost patient)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var secureUser = CacheUtil.GetUserSecurity();
+            var user = SqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID, null, secureUser.UserID);
 
-            var patientId = await DataAccess.SecureSqlHelper.CreatePatient(patient.PatientAcctNbr,
-                patient.BirthDate, patient.Gender, patient.FirstName, patient.LastName, patient.MiddleInitial, patient.BMI, user.DatabaseName);
+            var patientId = await SecureSqlHelper.CreatePatient(patient.PatientAcctNbr,
+                patient.BirthDate, patient.Gender, patient.FirstName, patient.LastName, patient.MiddleInitial, patient.BMI,
+                secureUser.UserID, user.FirstName, user.LastName, (int)user.RoleID,
+                    secureUser.DatabaseName);
 
             return Request.CreateResponse(HttpStatusCode.Created, patientId);
         }

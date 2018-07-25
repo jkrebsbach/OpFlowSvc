@@ -92,7 +92,8 @@ namespace OpFlow.Service.DataAccess
         }
 
         public static async Task<int> CreatePatient(string ptAcctNbr, DateTime? birthDate, string gender, 
-            string firstName, string lastName, string middleInitial, decimal? bmi, string databaseName)
+            string firstName, string lastName, string middleInitial, decimal? bmi, 
+            int userId, string userFirstName, string userLastName, int? userRoleId, string databaseName)
         {
             var dsParameters = new[]
             {
@@ -102,7 +103,11 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("first_name", firstName ?? (object)DBNull.Value),
                 new SqlParameter("middle_initial", middleInitial ?? (object)DBNull.Value),
                 new SqlParameter("gender", gender ?? (object)DBNull.Value),
-                new SqlParameter("bmi", bmi ?? (object)DBNull.Value)
+                new SqlParameter("bmi", bmi ?? (object)DBNull.Value),
+                new SqlParameter("user_id", userId),
+                new SqlParameter("user_first_name", userFirstName ?? (object)DBNull.Value),
+                new SqlParameter("user_last_name", userLastName ?? (object)DBNull.Value),
+                new SqlParameter("user_role INT", userRoleId ?? (object)DBNull.Value),
             };
             var insert = await ExecuteCommandAsync("NewPatient", databaseName, dsParameters);
 

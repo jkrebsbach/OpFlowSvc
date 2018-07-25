@@ -484,18 +484,22 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created)]
         public async Task<HttpResponseMessage> Post([FromBody]SurgeryPost surgery)
         {
-            var user = CacheUtil.GetUserSecurity();
-            var patientId = await SecureSqlHelper.CreatePatient(surgery.PtAcctNbr,
-                surgery.PtDOB, surgery.PtGender, surgery.PtFirstName, surgery.PtLastName, surgery.PtMiddleInitial, surgery.PtBMI, user.DatabaseName);
+            var secureUser = CacheUtil.GetUserSecurity();
+            var user = SqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID, null, secureUser.UserID);
 
-            var caseId = SqlHelper.CreateCase(patientId, user.UserID, surgery.SpecialtyID, user.ProviderID,
-                user.LocationID, surgery.CaseNbr);
+            var patientId = await SecureSqlHelper.CreatePatient(surgery.PtAcctNbr,
+                surgery.PtDOB, surgery.PtGender, surgery.PtFirstName, surgery.PtLastName, surgery.PtMiddleInitial, surgery.PtBMI, 
+                user.UserID, user.FirstName, user.LastName, (int)user.RoleID,
+                secureUser.DatabaseName);
+
+            var caseId = SqlHelper.CreateCase(patientId, secureUser.UserID, surgery.SpecialtyID, secureUser.ProviderID,
+                secureUser.LocationID, surgery.CaseNbr);
 
             var cardFlowRoom = surgery.BundleID.HasValue ? 
-                SqlHelper.GetBundleDefaultCardFlowRoom(surgery.BundleID.Value, surgery.SurgeonUserID, user.ProviderID, user.LocationID) : 
-                SqlHelper.GetProcedureDefaultCardFlowRoom(user.ProviderID, user.LocationID, surgery.CptCode).FirstOrDefault();
+                SqlHelper.GetBundleDefaultCardFlowRoom(surgery.BundleID.Value, surgery.SurgeonUserID, secureUser.ProviderID, secureUser.LocationID) : 
+                SqlHelper.GetProcedureDefaultCardFlowRoom(secureUser.ProviderID, secureUser.LocationID, surgery.CptCode).FirstOrDefault();
 
-            var surgeryId = SqlHelper.CreateSurgery(surgery, user.ProviderID, user.LocationID, patientId, caseId, 
+            var surgeryId = SqlHelper.CreateSurgery(surgery, secureUser.ProviderID, secureUser.LocationID, patientId, caseId, 
                 cardFlowRoom?.ProcedureID, cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID);
 
             return Request.CreateResponse(HttpStatusCode.Created, surgeryId);
