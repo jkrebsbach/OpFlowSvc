@@ -107,7 +107,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("user_id", userId),
                 new SqlParameter("user_first_name", userFirstName ?? (object)DBNull.Value),
                 new SqlParameter("user_last_name", userLastName ?? (object)DBNull.Value),
-                new SqlParameter("user_role INT", userRoleId ?? (object)DBNull.Value),
+                new SqlParameter("user_role", userRoleId ?? (object)DBNull.Value),
             };
             var insert = await ExecuteCommandAsync("NewPatient", databaseName, dsParameters);
 

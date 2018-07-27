@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.UI;
+using Microsoft.Azure.NotificationHubs;
 using OpFlow.Data;
 using OpFlow.Service.DataAccess;
 using OpFlow.Service.Models;
@@ -73,6 +74,8 @@ namespace OpFlow.Service.Controllers
             DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
                 surgeryId, communicationUserId, messagePost.Message);
 
+            NotificationOutcome notificationOutcome = null;
+
             if (surgeryId != null)
             {
                 var recipients = DataAccess.SqlHelper.GetSurgeryUsers(surgeryId.Value, user.ProviderID, user.LocationID);
@@ -86,7 +89,7 @@ namespace OpFlow.Service.Controllers
                     if (recipient.Email == sender.Email)
                         continue;
 
-                    await PushNotification.PostNotification(sender.Email, recipient.Email, messagePost.Message);
+                    notificationOutcome = await PushNotification.PostNotification(sender.Email, recipient.Email, messagePost.Message);
                 }
             }
             else if (communicationUserId != null)
@@ -98,10 +101,10 @@ namespace OpFlow.Service.Controllers
                     DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
 
 
-                await PushNotification.PostNotification(sender.Email, recipientUser.Email, messagePost.Message);
+                notificationOutcome = await PushNotification.PostNotification(sender.Email, recipientUser.Email, messagePost.Message);
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, 200);
+            return Request.CreateResponse(HttpStatusCode.OK, notificationOutcome);
         }
 
         // GET api/values/5

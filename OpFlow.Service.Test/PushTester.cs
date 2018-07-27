@@ -1,0 +1,47 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpFlow.Service.Models;
+
+namespace OpFlow.Service.Test
+{
+    [TestClass]
+    public class PushTester
+    {
+        [TestMethod]
+        public void TestPushMessage()
+        {
+            try
+            {
+                Task.Run(async () =>
+                {
+                    await MessageTester();
+                }).GetAwaiter().GetResult();
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private async Task MessageTester()
+        {
+            try
+            {
+             
+            await PushNotification.PostNotification("dave@opflowtech.com", "martyn@opflowtech.com", "This is a test");
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+    }
+}
