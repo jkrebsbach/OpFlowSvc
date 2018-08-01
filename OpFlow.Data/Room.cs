@@ -66,11 +66,20 @@ namespace OpFlow.Data
         public int RoomGroupID { get; set; }
     }
 
+    public class RoomSetupImage
+    {
+        public int RoomSetupImageID { get; set; }
+        public int RoomSetupID { get; set; }
+        public string Label { get; set; }
+    }
+
     public class RoomSetupDetail
     {
         public List<RoomSetup> RoomSetups;
         public List<RoomType> RoomTypes;
         public List<PatientPosition> PatientPositions;
+        public List<Laterality> Lateralities;
+        public List<BedOrientation> BedOrientations;
         public List<ItemMaster> EquipmentItems;
         public List<ItemMaster> InstrumentItems;
     }
@@ -80,6 +89,8 @@ namespace OpFlow.Data
         public int RoomSetupID { get; set; }
         public int RoomTypeID { get; set; }
         public int PatientPositionID { get; set; }
+        public int BedOrientationID { get; set; }
+        public int LateralityID { get; set; }
         public int PatientExtremityPositionID { get; set; }
         public string RoomTypeDescription { get; set; }
         public int OwnerUserID { get; set; }
@@ -94,6 +105,7 @@ namespace OpFlow.Data
         public List<RoomSetupStaffPosition> StaffPositions { get; set; }
         public List<RoomSetupEquipment> SetupEquipment { get; set; }
         public List<RoomSetupItem> SetupItems { get; set; }
+        public List<RoomSetupImage> SetupImages { get; set; }
 
         public string EquipmentList()
         {
@@ -107,6 +119,7 @@ namespace OpFlow.Data
             SetupEquipment = new List<RoomSetupEquipment>();
             SetupItems = new List<RoomSetupItem>();
             StaffPositions = new List<RoomSetupStaffPosition>();
+            SetupImages = new List<RoomSetupImage>();
         }
 
         public int GetID()

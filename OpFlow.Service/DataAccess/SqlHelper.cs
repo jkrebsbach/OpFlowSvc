@@ -1501,6 +1501,7 @@ namespace OpFlow.Service.DataAccess
             var setupEquipments = dsSchedules.Tables[1].DataTableToList<RoomSetupEquipment>();
             var setupItems = dsSchedules.Tables[2].DataTableToList<RoomSetupItem>();
             var staffPositions = dsSchedules.Tables[3].DataTableToList<RoomSetupStaffPosition>();
+            var roomSetupImages = dsSchedules.Tables[4].DataTableToList<RoomSetupImage>();
 
             foreach (var setupItem in setupEquipments)
             {
@@ -1520,6 +1521,12 @@ namespace OpFlow.Service.DataAccess
                 setup?.StaffPositions.Add(staffPosition);
             }
 
+            foreach (var setupImage in roomSetupImages)
+            {
+                var setup = setups.FirstOrDefault(s => s.RoomSetupID == setupImage.RoomSetupID);
+                setup?.SetupImages.Add(setupImage);
+            }
+
             return setups;
         }
 
@@ -1533,6 +1540,34 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetPatientPositions", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<PatientPosition>();
+
+            return result;
+        }
+
+        public static List<BedOrientation> GetBedOrientations(int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = ExecuteCommand("GetBedOrientations", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<BedOrientation>();
+
+            return result;
+        }
+
+        public static List<Laterality> GetLateralities(int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = ExecuteCommand("GetLateralities", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Laterality>();
 
             return result;
         }
@@ -1711,10 +1746,10 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("room_setup_id", roomSetupId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("patient_position_id", roomSetup.PatientPositionID),
+                new SqlParameter("laterality_id", roomSetup.LateralityID),
                 new SqlParameter("patient_extremity_position_id", roomSetup.PatientExtremityPositionID),
                 new SqlParameter("room_type_id", roomSetup.RoomTypeID),
-                new SqlParameter("bed_orientation", roomSetup.BedOrientation),
+                new SqlParameter("bed_orientation_id", roomSetup.BedOrientationID),
             };
             var update = ExecuteNonQuery("UpdateRoomSetup", dsParameters);
             var currentRoomSetup = GetRoomSetups(roomSetupId, providerId, locationId).FirstOrDefault();
@@ -1811,10 +1846,10 @@ namespace OpFlow.Service.DataAccess
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("patient_position_id", roomSetup.PatientPositionID),
+                new SqlParameter("laterality_id", roomSetup.LateralityID),
                 new SqlParameter("patient_extremity_position_id", roomSetup.PatientExtremityPositionID),
                 new SqlParameter("room_type_id", roomSetup.RoomTypeID),
-                new SqlParameter("bed_orientation", roomSetup.BedOrientation)
+                new SqlParameter("bed_orientation_id", roomSetup.BedOrientation)
             };
             var insert = ExecuteCommand("NewRoomSetup", dsParameters);
 
@@ -1840,6 +1875,43 @@ namespace OpFlow.Service.DataAccess
             return roomSetupId;
         }
 
+        public static int NewRoomSetupImage(int roomSetupId, string label, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("room_setup_id", roomSetupId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("label", label ?? (object)DBNull.Value)
+            };
+            var insert = ExecuteCommand("InsertRoomSetupImage", dsParameters);
+            var result = insert.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.First().Identifier;
+        }
+
+        public static int UpdateRoomSetupImage(int roomSetupImageId, string label, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("room_setup_image_id", roomSetupImageId),
+                new SqlParameter("label", label ?? (object)DBNull.Value)
+            };
+            return ExecuteNonQuery("UpdateRoomSetupImage", dsParameters);
+        }
+
+        public static int DeleteRoomSetupImage(int roomSetupImageId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("room_setup_image_id", roomSetupImageId)
+            };
+            return ExecuteNonQuery("DeleteRoomSetupImage", dsParameters);
+        }
 
         public static int InsertRoomSetupEquipment(int roomSetupId, RoomSetupEquipment roomSetupEquipment, int providerId, int locationId)
         {
@@ -1973,7 +2045,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("staff_position", roomSetupStaffPosition.StaffPosition)
             };
-            var result = ExecuteNonQuery("DeleteRoomSetupItem", dsParameters);
+            var result = ExecuteNonQuery("DeleteRoomSetupStaffPosition", dsParameters);
 
             return result;
         }

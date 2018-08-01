@@ -21,6 +21,7 @@ namespace OpFlow.Service.DataAccess
         {
             PatientPosition,
             FlowImages,
+            RoomSetupImages,
             SurgeryImages
         }
 
