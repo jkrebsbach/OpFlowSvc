@@ -1486,6 +1486,20 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+        public static RoomSetup GetRoomSetup(int roomSetupId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("room_setup_id", roomSetupId),
+            };
+            var dsSchedules = ExecuteCommand("GetRoomSetups", dsParameters);
+
+            var setups = dsSchedules.Tables[0].DataTableToList<RoomSetup>();
+            
+            return setups.FirstOrDefault(s => s.RoomSetupID == roomSetupId);
+        }
 
         public static List<RoomSetup> GetRoomSetups(int? roomSetupId, int providerId, int locationId)
         {
@@ -1890,7 +1904,7 @@ namespace OpFlow.Service.DataAccess
             return result.First().Identifier;
         }
 
-        public static int UpdateRoomSetupImage(int roomSetupImageId, string label, int providerId, int locationId)
+        public static async Task<int> UpdateRoomSetupImage(int roomSetupImageId, string label, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1899,7 +1913,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("room_setup_image_id", roomSetupImageId),
                 new SqlParameter("label", label ?? (object)DBNull.Value)
             };
-            return ExecuteNonQuery("UpdateRoomSetupImage", dsParameters);
+            return await ExecuteNonQueryAsync("UpdateRoomSetupImage", dsParameters);
         }
 
         public static int DeleteRoomSetupImage(int roomSetupImageId, int providerId, int locationId)

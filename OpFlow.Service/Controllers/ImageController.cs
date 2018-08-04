@@ -18,13 +18,18 @@ namespace OpFlow.Service.Controllers
     public class ImageController : ApiController
     {
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
-        [AllowAnonymous]
         [SwaggerOperation("GetFlowImage")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(byte[]))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("api/image/flowImage", Name = "GetFlowImage")]
         public async Task<HttpResponseMessage> GetFlowImage(int flowId, int flowImageId)
         {
+            var user = CacheUtil.GetUserSecurity();
+            var flow = SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
+
+            if (flow == null)
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, flowId);
             var binary = await BlobStorageHelper.GetBlobBytes(folder, flowImageId.ToString());
 
@@ -34,13 +39,18 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
-        [AllowAnonymous]
         [SwaggerOperation("GetSurgeryImage")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(byte[]))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("api/image/surgeryImage", Name = "GetSurgeryImage")]
         public async Task<HttpResponseMessage> GetSurgeryImage(int surgeryId, int surgeryImageId)
         {
+            var user = CacheUtil.GetUserSecurity();
+            var surgery = SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+
+            if (surgery == null)
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.SurgeryImages, surgeryId);
             var binary = await BlobStorageHelper.GetBlobBytes(folder, surgeryImageId.ToString());
 
@@ -50,7 +60,6 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
-        [AllowAnonymous]
         [SwaggerOperation("GetPatientPositionImage")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(byte[]))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
@@ -65,36 +74,59 @@ namespace OpFlow.Service.Controllers
                 ImageResponse(binary);
         }
 
+        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
+        [SwaggerOperation("GetRoomSetupImage")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(SecureImage))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("api/image/roomSetup", Name = "GetRoomSetupImage")]
+        public async Task<HttpResponseMessage> GetRoomSetupImage(int roomSetupId, int roomSetupImageId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+            var roomSetup = SqlHelper.GetRoomSetup(roomSetupId, user.ProviderID, user.LocationID);
+
+            if (roomSetup == null)
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+
+            var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.RoomSetupImages, roomSetupId);
+            var binary = await BlobStorageHelper.GetBlobBytes(folder, roomSetupImageId.ToString());
+
+            return binary == null ?
+                Request.CreateResponse(HttpStatusCode.NotFound) :
+                ImageResponse(binary);
+        }
+
 
         // PUT api/values/5
-        [SwaggerOperation("UpdatePatientPositionImage")]
-        [SwaggerResponse(HttpStatusCode.OK)]
-        [HttpPost]
-        [Route("api/image/patientPosition", Name = "UpdatePatientPositionImage")]
-        public async Task<IHttpActionResult> PutPatientPositionImage(int patientPositionId)
-        {
-            var provider = new MultipartMemoryStreamProvider();
-            await Request.Content.ReadAsMultipartAsync(provider);
+        //[SwaggerOperation("UpdatePatientPositionImage")]
+        //[SwaggerResponse(HttpStatusCode.OK)]
+        //[HttpPost]
+        //[Route("api/image/patientPosition", Name = "UpdatePatientPositionImage")]
+        //public async Task<IHttpActionResult> PutPatientPositionImage(int patientPositionId)
+        //{
+        //    var provider = new MultipartMemoryStreamProvider();
+        //    await Request.Content.ReadAsMultipartAsync(provider);
 
-            // extract file name and file contents
-            var fileNameParam = provider.Contents[0].Headers.ContentDisposition.Parameters
-                .FirstOrDefault(p => p.Name.ToLower() == "filename");
-            var fileName = fileNameParam?.Value.Trim('"') ?? "";
-            var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
+        //    // extract file name and file contents
+        //    var fileNameParam = provider.Contents[0].Headers.ContentDisposition.Parameters
+        //        .FirstOrDefault(p => p.Name.ToLower() == "filename");
+        //    var fileName = fileNameParam?.Value.Trim('"') ?? "";
+        //    var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
 
-            var folder = "PatientPosition";
-            await BlobStorageHelper.PutBlobBytes(folder, patientPositionId.ToString(), fileContents);
+        //    var folder = "PatientPosition";
+        //    await BlobStorageHelper.PutBlobBytes(folder, patientPositionId.ToString(), fileContents);
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
         private HttpResponseMessage ImageResponse(byte[] payloadBytes)
         {
-            var result = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new ByteArrayContent(payloadBytes)
-            };
-            result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            var result = Request.CreateResponse(HttpStatusCode.OK,
+                new SecureImage()
+                {
+                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(payloadBytes)
+                });
+
             return result;
         }
 

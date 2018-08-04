@@ -277,7 +277,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.UpdateRoomSetupImage(roomSetupImageId, flowImage.Comment, user.ProviderID, user.LocationID);
+            await SqlHelper.UpdateRoomSetupImage(roomSetupImageId, flowImage.Comment, user.ProviderID, user.LocationID);
 
             return Ok();
         }
