@@ -82,13 +82,9 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var setups = DataAccess.SqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID);
+            var setups = DataAccess.SqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID)
+                .Where(s => s.RoomSetupID == roomSetupId).ToList();
             
-            if (roomSetupId.HasValue)
-            {
-                setups = setups.Where(s => s.RoomSetupID == roomSetupId).ToList();
-            }
-
             var roomTypes = DataAccess.SqlHelper.GetRoomTypes(user.LocationID);
             var patientPositions = DataAccess.SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
             var lateralities = DataAccess.SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
