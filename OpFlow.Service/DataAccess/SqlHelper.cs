@@ -1753,90 +1753,23 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static int UpdateRoomSetup(int roomSetupId, int providerId, int locationId, RoomSetup roomSetup)
+        public static async Task<int> UpdateRoomSetup(int roomSetupId, int providerId, int locationId, RoomSetup newRoomSetup)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("room_setup_id", roomSetupId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("laterality_id", roomSetup.LateralityID),
-                new SqlParameter("patient_extremity_position_id", roomSetup.PatientExtremityPositionID),
-                new SqlParameter("room_type_id", roomSetup.RoomTypeID),
-                new SqlParameter("bed_orientation_id", roomSetup.BedOrientationID),
+                new SqlParameter("setup_name", newRoomSetup.SetupName),
+                new SqlParameter("laterality_id", newRoomSetup.LateralityID),
+                new SqlParameter("patient_extremity_position_id", newRoomSetup.PatientExtremityPositionID),
+                new SqlParameter("room_type_id", newRoomSetup.RoomTypeID),
+                new SqlParameter("bed_orientation_id", newRoomSetup.BedOrientationID),
             };
-            var update = ExecuteNonQuery("UpdateRoomSetup", dsParameters);
+            var update = await ExecuteNonQueryAsync("UpdateRoomSetup", dsParameters);
             var currentRoomSetup = GetRoomSetups(roomSetupId, providerId, locationId).FirstOrDefault();
 
-
-            foreach (var roomSetupEquipment in roomSetup.SetupEquipment)
-            {
-                var currentEquipment = currentRoomSetup?.SetupEquipment?.FirstOrDefault(se =>
-                    se.RoomSetupEquipmentID == roomSetupEquipment.RoomSetupEquipmentID);
-
-                if (currentEquipment != null)
-                    UpdateRoomSetupEquipment(roomSetupEquipment, providerId, locationId);
-                else
-                {
-                    roomSetupEquipment.RoomSetupEquipmentID =
-                        InsertRoomSetupEquipment(roomSetupId, roomSetupEquipment, providerId, locationId);
-                }
-            }
-            foreach (var roomSetupItem in roomSetup.SetupItems)
-            {
-                var currentItem = currentRoomSetup?.SetupItems?.FirstOrDefault(se =>
-                    se.RoomSetupItemID == roomSetupItem.RoomSetupItemID);
-
-                if (currentItem != null)
-                    UpdateRoomSetupItem(roomSetupItem, providerId, locationId);
-                else
-                {
-                    roomSetupItem.RoomSetupItemID =
-                        InsertRoomSetupItem(roomSetupId, roomSetupItem, providerId, locationId);
-                }
-            }
-            foreach (var roomSetupStaffPosition in roomSetup.StaffPositions)
-            {
-                var currentStaffPosition = currentRoomSetup?.StaffPositions?.FirstOrDefault(se =>
-                    se.StaffPosition == roomSetupStaffPosition.StaffPosition);
-
-                if (currentStaffPosition != null)
-                    UpdateRoomSetupStaffPosition(roomSetupStaffPosition, providerId, locationId);
-                else
-                {
-                    InsertRoomSetupStaffPosition(roomSetupId, roomSetupStaffPosition, providerId, locationId);
-                }
-            }
-
-            if (currentRoomSetup != null)
-            {
-                foreach (var currentSetupEquipment in currentRoomSetup?.SetupEquipment)
-                {
-                    var sentEquipment = roomSetup.SetupEquipment.FirstOrDefault(se =>
-                        se.RoomSetupEquipmentID == currentSetupEquipment.RoomSetupEquipmentID);
-
-                    if (sentEquipment == null)
-                        DeleteRoomSetupEquipment(currentSetupEquipment.RoomSetupEquipmentID, providerId, locationId);
-                }
-
-                foreach (var currentSetupEquipment in currentRoomSetup?.SetupItems)
-                {
-                    var sentItem = roomSetup.SetupItems.FirstOrDefault(se =>
-                        se.RoomSetupItemID == currentSetupEquipment.RoomSetupItemID);
-
-                    if (sentItem == null)
-                        DeleteRoomSetupItem(currentSetupEquipment.RoomSetupItemID, providerId, locationId);
-                }
-
-                foreach (var currentStaffPosition in currentRoomSetup?.StaffPositions)
-                {
-                    var sentItem = roomSetup.StaffPositions.FirstOrDefault(se =>
-                        se.StaffPosition == currentStaffPosition.StaffPosition);
-
-                    if (sentItem == null)
-                        DeleteRoomSetupStaffPosition(currentStaffPosition, providerId, locationId);
-                }
-            }
+            await SyncRoomSetupAttributes(roomSetupId, providerId, locationId, newRoomSetup, currentRoomSetup);
 
             return roomSetupId;
         }
@@ -1854,39 +1787,117 @@ namespace OpFlow.Service.DataAccess
             return insert;
         }
 
-        public static int CreateRoomSetup(RoomSetup roomSetup, int providerId, int locationId)
+        public static async Task<int> CreateRoomSetup(RoomSetup roomSetup, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
+                new SqlParameter("setup_name", roomSetup.SetupName),
                 new SqlParameter("laterality_id", roomSetup.LateralityID),
                 new SqlParameter("patient_extremity_position_id", roomSetup.PatientExtremityPositionID),
                 new SqlParameter("room_type_id", roomSetup.RoomTypeID),
-                new SqlParameter("bed_orientation_id", roomSetup.BedOrientation)
+                new SqlParameter("bed_orientation_id", roomSetup.BedOrientationID)
             };
-            var insert = ExecuteCommand("NewRoomSetup", dsParameters);
+            var insert = ExecuteCommand("InsertRoomSetup", dsParameters);
 
             var result = insert.Tables[0].DataTableToList<InsertionResult>();
 
             var roomSetupId = result.FirstOrDefault()?.Identifier ?? -1;
 
-            foreach (var roomSetupEquipment in roomSetup.SetupEquipment)
-            {
-                roomSetupEquipment.RoomSetupEquipmentID =
-                    InsertRoomSetupEquipment(roomSetupId, roomSetupEquipment, providerId, locationId);
-            }
-            foreach (var roomSetupItem in roomSetup.SetupItems)
-            {
-                roomSetupItem.RoomSetupItemID =
-                    InsertRoomSetupItem(roomSetupId, roomSetupItem, providerId, locationId);
-            }
-            foreach (var staffPosition in roomSetup.StaffPositions)
-            {
-                InsertRoomSetupStaffPosition(roomSetupId, staffPosition, providerId, locationId);
-            }
+            await SyncRoomSetupAttributes(roomSetupId, providerId, locationId, roomSetup, null);
 
             return roomSetupId;
+        }
+
+        private static async Task SyncRoomSetupAttributes(int roomSetupId, int providerId, int locationId, RoomSetup newRoomSetup, RoomSetup currentRoomSetup)
+        {
+            foreach (var roomSetupEquipment in newRoomSetup.SetupEquipment)
+            {
+                var currentEquipment = currentRoomSetup?.SetupEquipment?.FirstOrDefault(se =>
+                    se.RoomSetupEquipmentID == roomSetupEquipment.RoomSetupEquipmentID);
+
+                if (currentEquipment != null)
+                    await UpdateRoomSetupEquipment(roomSetupEquipment, providerId, locationId);
+                else
+                {
+                    roomSetupEquipment.RoomSetupEquipmentID =
+                        InsertRoomSetupEquipment(roomSetupId, roomSetupEquipment, providerId, locationId);
+                }
+            }
+            foreach (var roomSetupItem in newRoomSetup.SetupItems)
+            {
+                var currentItem = currentRoomSetup?.SetupItems?.FirstOrDefault(se =>
+                    se.RoomSetupItemID == roomSetupItem.RoomSetupItemID);
+
+                if (currentItem != null)
+                    UpdateRoomSetupItem(roomSetupItem, providerId, locationId);
+                else
+                {
+                    roomSetupItem.RoomSetupItemID =
+                        InsertRoomSetupItem(roomSetupId, roomSetupItem, providerId, locationId);
+                }
+            }
+            foreach (var roomSetupStaffPosition in newRoomSetup.StaffPositions)
+            {
+                var currentStaffPosition = currentRoomSetup?.StaffPositions?.FirstOrDefault(se =>
+                    se.StaffPosition == roomSetupStaffPosition.StaffPosition);
+
+                if (currentStaffPosition != null)
+                    UpdateRoomSetupStaffPosition(roomSetupStaffPosition, providerId, locationId);
+                else
+                {
+                    InsertRoomSetupStaffPosition(roomSetupId, roomSetupStaffPosition, providerId, locationId);
+                }
+            }
+            foreach (var setupImage in newRoomSetup.SetupImages)
+            {
+                var currentImage = currentRoomSetup?.SetupImages?.FirstOrDefault(img =>
+                    img.RoomSetupImageID == setupImage.RoomSetupImageID);
+
+                // can't create inline - must upload out of band
+                if (currentImage != null)
+                    await UpdateRoomSetupImage(currentImage.RoomSetupImageID, setupImage.Label, providerId, locationId);
+            }
+
+            if (currentRoomSetup != null)
+            {
+                foreach (var currentSetupEquipment in currentRoomSetup.SetupEquipment ?? new List<RoomSetupEquipment>())
+                {
+                    var sentEquipment = newRoomSetup.SetupEquipment.FirstOrDefault(se =>
+                        se.RoomSetupEquipmentID == currentSetupEquipment.RoomSetupEquipmentID);
+
+                    if (sentEquipment == null)
+                        DeleteRoomSetupEquipment(currentSetupEquipment.RoomSetupEquipmentID, providerId, locationId);
+                }
+
+                foreach (var currentSetupEquipment in currentRoomSetup.SetupItems ?? new List<RoomSetupItem>())
+                {
+                    var sentItem = newRoomSetup.SetupItems.FirstOrDefault(se =>
+                        se.RoomSetupItemID == currentSetupEquipment.RoomSetupItemID);
+
+                    if (sentItem == null)
+                        DeleteRoomSetupItem(currentSetupEquipment.RoomSetupItemID, providerId, locationId);
+                }
+
+                foreach (var currentStaffPosition in currentRoomSetup.StaffPositions ?? new List<RoomSetupStaffPosition>())
+                {
+                    var sentItem = newRoomSetup.StaffPositions.FirstOrDefault(se =>
+                        se.StaffPosition == currentStaffPosition.StaffPosition);
+
+                    if (sentItem == null)
+                        DeleteRoomSetupStaffPosition(currentStaffPosition, providerId, locationId);
+                }
+
+                foreach (var currentImage in currentRoomSetup.SetupImages ?? new List<RoomSetupImage>())
+                {
+                    var sentImage = newRoomSetup.SetupImages.FirstOrDefault(img =>
+                        img.RoomSetupImageID == currentImage.RoomSetupImageID);
+
+                    if (sentImage == null)
+                        DeleteRoomSetupImage(currentImage.RoomSetupImageID, providerId, locationId);
+                }
+            }
         }
 
         public static int NewRoomSetupImage(int roomSetupId, string label, int providerId, int locationId)
@@ -1979,7 +1990,7 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public static int UpdateRoomSetupEquipment(RoomSetupEquipment roomSetupEquipment, int providerId, int locationId)
+        public static async Task<int> UpdateRoomSetupEquipment(RoomSetupEquipment roomSetupEquipment, int providerId, int locationId)
         {
             var dsParameters = new[]
             {

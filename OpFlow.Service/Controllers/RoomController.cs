@@ -190,11 +190,11 @@ namespace OpFlow.Service.Controllers
         [Route("api/room/roomSetup")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [HttpPost]
-        public HttpResponseMessage Post([FromBody]RoomSetup roomSetup)
+        public async Task<HttpResponseMessage> Post([FromBody]RoomSetup roomSetup)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var roomSetupId = DataAccess.SqlHelper.CreateRoomSetup(roomSetup, user.ProviderID, user.LocationID);
+            var roomSetupId = await SqlHelper.CreateRoomSetup(roomSetup, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomSetupId);
         }
@@ -205,11 +205,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpPut]
-        public HttpResponseMessage PutRoomSetup(int roomsetupId, [FromBody]RoomSetup roomSetup)
+        public async Task<HttpResponseMessage> PutRoomSetup(int roomsetupId, [FromBody]RoomSetup roomSetup)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.UpdateRoomSetup(roomsetupId, user.ProviderID, user.LocationID, roomSetup);
+            await SqlHelper.UpdateRoomSetup(roomsetupId, user.ProviderID, user.LocationID, roomSetup);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomsetupId);
         }
@@ -220,11 +220,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpDelete]
-        public async Task<HttpResponseMessage> DeleteSetup(int roomsetupId, [FromBody]RoomSetup roomSetup)
+        public async Task<HttpResponseMessage> DeleteSetup(int roomsetupId)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            await DataAccess.SqlHelper.DeleteRoomSetup(roomsetupId, user.ProviderID, user.LocationID);
+            await SqlHelper.DeleteRoomSetup(roomsetupId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomsetupId);
         }
@@ -247,6 +247,11 @@ namespace OpFlow.Service.Controllers
             var fileName = fileNameParam?.Value.Trim('"') ?? "";
             var fileExtension = Path.GetExtension(fileName);
             var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
+
+            // Make sure there's actually a valid room setup to assign this image to...
+            var roomSetup = SqlHelper.GetRoomSetup(roomSetupId, user.ProviderID, user.LocationID);
+            if (roomSetup == null)
+                return Ok();
 
             var roomSetupImageId = SqlHelper.NewRoomSetupImage(roomSetupId, label,
                 user.ProviderID, user.LocationID);
