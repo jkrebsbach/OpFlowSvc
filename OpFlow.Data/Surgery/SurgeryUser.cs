@@ -43,5 +43,16 @@ namespace OpFlow.Data
                 return maxDate;
             }
         }
+
+        public bool SurgeryReviewObsolete
+        {
+            get
+            {
+                if (CardRevisionDate.HasValue && SurgeryReview.HasValue)
+                    return CardRevisionDate.Value > SurgeryReview.Value;
+
+                return false;
+            }
+        }
     }
 }

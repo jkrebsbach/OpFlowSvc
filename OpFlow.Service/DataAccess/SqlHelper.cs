@@ -1398,6 +1398,24 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
+        public static async Task<int> SurgeryToggleDelayCustom(int surgeryId, int providerId, int locationId, DateTime? startTime, DateTime? endTime, string customReason)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("delay_start_time", startTime ?? (object)DBNull.Value),
+                new SqlParameter("delay_end_time", endTime?? (object)DBNull.Value),
+                new SqlParameter("custom_reason", customReason ?? (object)DBNull.Value)
+            };
+            var dataSet = await ExecuteCommandAsync("UpdateSurgeryDelayCustom", dsParameters);
+
+            var result = dataSet.Tables[0].DataTableToList<InsertionResult>().First().Identifier;
+
+            return result;
+        }
+
         public static int SurgeryReviewComplete(int surgeryId, DateTime reviewComplete, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]

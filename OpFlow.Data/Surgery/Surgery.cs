@@ -20,7 +20,7 @@ namespace OpFlow.Data
         public int? FlowID { get; set; }
         public int UserID { get; set; }
         public int UserRoleID { get; set; }
-        public int StepID { get; set; }
+        public int? StepID { get; set; }
         public string CaseNumber { get; set; }
         public string CurrentStep { get; set; }
         public string SurgeryStatus { get; set; }
@@ -146,6 +146,13 @@ namespace OpFlow.Data
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public int? DelayReasonID { get; set; }
+    }
+
+    public class CustomDelayPost
+    {
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
+        public string CustomReason { get; set; }
     }
 
     public class SurgerySearchResult
