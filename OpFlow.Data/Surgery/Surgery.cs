@@ -16,6 +16,7 @@ namespace OpFlow.Data
         public int? ProcedureID { get; set; }
         public int? BundleID { get; set; }
         public int? RoomID { get; set; }
+        public int? LateralityID { get; set; }
         public int? RoomSetupID { get; set; }
         public int? FlowID { get; set; }
         public int UserID { get; set; }
@@ -27,6 +28,7 @@ namespace OpFlow.Data
         public string ProcedureDescription { get; set; }
         public string BundleDescription { get; set; }
         public string CardDescription { get; set; }
+        public string LateralityDescription { get; set; }
         public string FlowDescription { get; set; }
         public string RoomDescription { get; set; }
         public string SurgeonFirstName { get; set; }
@@ -58,6 +60,13 @@ namespace OpFlow.Data
     {
         public Patient Patient { get; set; }
     }
+    
+    public class NewSurgerySetup
+    {
+        public List<Room> Rooms { get; set; }   
+        public List<Specialty> Specialties { get; set; }
+        public List<Laterality> Lateralities { get; set; }
+    }
 
     public class SurgerySchedule : Surgery
     {
@@ -77,7 +86,9 @@ namespace OpFlow.Data
         public int SpecialtyID { get; set; }
         public int SurgeonUserID { get; set; }
         public int? RoomID { get; set; }
+
         public int? BundleID { get; set; }
+        public int? LateralityID { get; set; }
         public string CptCode { get; set; }
         public DateTime ScheduleDate { get; set; }
     }

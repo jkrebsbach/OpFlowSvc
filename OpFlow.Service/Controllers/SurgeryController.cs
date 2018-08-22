@@ -38,6 +38,28 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, patientSurgery);
         }
 
+        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
+        [SwaggerOperation("GetNewSurgerySetup")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(NewSurgerySetup))]
+        [Route("api/Surgery/newSurgerySetup")]
+        public async Task<HttpResponseMessage> GetNewSurgerySetup()
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var rooms = await SqlHelper.GetRooms(user.LocationID);
+            var specialties = SqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
+            var lateralities = SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
+
+            var result = new NewSurgerySetup()
+            {
+                Rooms = rooms,
+                Specialties = specialties,
+                Lateralities = lateralities
+            };
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
         // GET api/surgery?userId=5
         [SwaggerOperation("GetCase")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Surgery))]
@@ -263,7 +285,7 @@ namespace OpFlow.Service.Controllers
 
             var result = new SearchScreen
             {
-                Rooms = SqlHelper.GetRooms(user.LocationID),
+                Rooms = await SqlHelper.GetRooms(user.LocationID),
                 Users = SqlHelper.SearchUsers(null, null, null, user.ProviderID, user.LocationID),
                 Specialties = SqlHelper.GetSpecialties(user.ProviderID, user.LocationID),
                 Bundles = await SqlHelper.GetBundles(null, user.ProviderID, user.LocationID),

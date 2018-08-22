@@ -1196,9 +1196,10 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("default_card_id", defaultCardId ?? (object)DBNull.Value),
                 new SqlParameter("default_flow_id", defaultFlowId ?? (object)DBNull.Value),
                 new SqlParameter("default_room_id", defaultRoomId ?? (object)DBNull.Value),
-                new SqlParameter("cpt_codes", surgery.CptCode ?? (object)DBNull.Value)
+                new SqlParameter("cpt_codes", surgery.CptCode ?? (object)DBNull.Value),
+                new SqlParameter("laterality_id", surgery.LateralityID ?? (object)DBNull.Value)
             };
-            var insert = ExecuteCommand("NewSurgery", dsParameters);
+            var insert = ExecuteCommand("InsertSurgery", dsParameters);
 
             var result = insert.Tables[0].DataTableToList<InsertionResult>();
 
@@ -1465,13 +1466,13 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public static List<Room> GetRooms(int locationId)
+        public static async Task<List<Room>> GetRooms(int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("location_id", locationId),
             };
-            var dsSchedules = ExecuteCommand("GetRooms", dsParameters);
+            var dsSchedules = await ExecuteCommandAsync("GetRooms", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Room>();
 

@@ -22,11 +22,11 @@ namespace OpFlow.Service.Controllers
         [Route("api/room")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Room>))]
         [HttpGet]
-        public IEnumerable<Room> Get(int? roomId = null, int? roomGroupId = null)
+        public async Task<IEnumerable<Room>> Get(int? roomId = null, int? roomGroupId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var rooms = DataAccess.SqlHelper.GetRooms(user.LocationID);
+            var rooms = await SqlHelper.GetRooms(user.LocationID);
             if (roomId.HasValue)
                 rooms = rooms.Where(r => r.RoomID == roomId).ToList();
 
