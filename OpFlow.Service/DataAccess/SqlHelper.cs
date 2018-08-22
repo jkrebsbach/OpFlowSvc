@@ -107,6 +107,21 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
+        public static async Task<List<AnalyticsSummary>> GetAnalytics(int providerId, int locationId, int? tableId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("table_id", tableId ?? (object)DBNull.Value)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetPowerBIAnalytic", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<AnalyticsSummary>();
+            
+            return result;
+        }
+
         public static List<ImportType> GetImportTypes(int providerId, int locationId)
         {
             var parameters = new[]
