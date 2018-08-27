@@ -77,6 +77,11 @@ namespace OpFlow.Data
         public string SpecialtyDefaultFlag { get; set; }
         public int? TemplateFlowID { get; set; }
         public int? TemplateRoomSetupID { get; set; }
+        public List<CardPostImportProcedure> Procedures { get; set; }
+    }
+
+    public class CardPostImportProcedure
+    {
         public string ImportSurgeon { get; set; }
         public string ImportProcedure { get; set; }
     }

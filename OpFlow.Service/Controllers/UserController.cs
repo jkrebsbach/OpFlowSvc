@@ -139,7 +139,7 @@ namespace OpFlow.Service.Controllers
 
         // PUT api/values/5
         [SwaggerOperation("Update")]
-        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.OK, Type= typeof(int))]
         public async Task<IHttpActionResult> Post([FromBody]UserPost model)
         {
             if (!ModelState.IsValid)
@@ -161,10 +161,22 @@ namespace OpFlow.Service.Controllers
 
             var userAuthId = new Guid(authenticationUser.Id);
 
-            var applicationUser = DataAccess.SqlHelper.CreateUser(userAuthId, model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
-                model.Email, model.CellPhone, model.Initials, model.Title, userSecurity.ProviderID, userSecurity.LocationID);
+            try
+            {
+                var applicationUserId = DataAccess.SqlHelper.CreateUser(userAuthId, model.RoleID, model.SpecialtyID,
+                    model.FirstName, model.LastName,
+                    model.Email, model.CellPhone, model.Initials, model.Title, userSecurity.ProviderID,
+                    userSecurity.LocationID);
 
-            return Ok();
+                return Ok(applicationUserId);
+            }
+            catch (Exception ex)
+            {
+                // roll back creation of aspnet user
+                await userManager.DeleteAsync(authenticationUser);
+
+                throw ex;
+            }
         }
 
         // PUT api/values/5

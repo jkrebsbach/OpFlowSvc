@@ -1149,16 +1149,14 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UpdateCard", dsParameters);
         }
 
-        public static async Task<int> InitializeCard(int cardId, int providerId, int locationId, string importSurgeon, string importProcedure)
+        public static async Task<int> InitializeCard(int cardId, int providerId, int locationId)
         {
 
             var dsParameters = new[]
             {
                 new SqlParameter("card_id", cardId),
                 new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
-                new SqlParameter("surgeon", importSurgeon),
-                new SqlParameter("procedure", importProcedure)
+                new SqlParameter("location_id", locationId)
             };
 
             var insert = await ExecuteNonQueryAsync("InitializeCard", dsParameters);

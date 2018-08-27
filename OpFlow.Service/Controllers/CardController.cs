@@ -400,11 +400,7 @@ namespace OpFlow.Service.Controllers
                 value.BundleID, value.BundleFlag, value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1", 
                 user.ProviderID, user.LocationID);
 
-            if (!string.IsNullOrEmpty(value.ImportSurgeon) && !string.IsNullOrEmpty(value.ImportProcedure))
-            {
-                await DataAccess.SqlHelper.InsertCardItemFromStage(cardId, user.ProviderID, user.LocationID,
-                    value.ImportProcedure, value.ImportSurgeon);
-            }
+            await InitializeCardProcedures(cardId, user, value.Procedures);
 
             return Request.CreateResponse(HttpStatusCode.Created, cardId);
         }
@@ -417,10 +413,9 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            if (value.ImportSurgeon != null && value.ImportProcedure != null)
+            if (value.Procedures != null)
             {
-                await DataAccess.SqlHelper.InitializeCard(id, user.ProviderID, user.LocationID,
-                    value.ImportSurgeon, value.ImportProcedure);
+                await InitializeCardProcedures(id, user, value.Procedures);
             }
             else
             {
@@ -430,6 +425,24 @@ namespace OpFlow.Service.Controllers
             }
 
             return Ok();
+        }
+
+        private async Task InitializeCardProcedures(int cardId, UserSecurity user, List<CardPostImportProcedure> procedures)
+        {
+            if (procedures != null)
+            {
+                await DataAccess.SqlHelper.InitializeCard(cardId, user.ProviderID, user.LocationID);
+
+                foreach (var procedure in procedures)
+                {
+                    if (!string.IsNullOrEmpty(procedure.ImportSurgeon) && !string.IsNullOrEmpty(procedure.ImportProcedure))
+                    {
+                        await DataAccess.SqlHelper.InsertCardItemFromStage(cardId, user.ProviderID, user.LocationID,
+                            procedure.ImportProcedure, procedure.ImportSurgeon);
+                    }
+
+                }
+            }
         }
 
         // DELETE api/values/5
