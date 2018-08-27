@@ -139,7 +139,7 @@ namespace OpFlow.Service.Controllers
 
         // PUT api/values/5
         [SwaggerOperation("Update")]
-        [SwaggerResponse(HttpStatusCode.OK, Type= typeof(int))]
+        [SwaggerResponse(HttpStatusCode.OK, Type=typeof(int))]
         public async Task<IHttpActionResult> Post([FromBody]UserPost model)
         {
             if (!ModelState.IsValid)
