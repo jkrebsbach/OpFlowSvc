@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.SignalR;
 using Microsoft.Owin;
+using Microsoft.Owin.Cors;
 using Microsoft.Owin.Security.OAuth;
 using OpFlow.Service.SignalR;
 using Owin;
@@ -19,6 +20,8 @@ namespace OpFlow.Service
 
             app.Map("/signalr", map =>
             {
+                //map.UseCors(CorsOptions.AllowAll);
+
                 map.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions()
                 {
                     Provider = new QueryStringOAuthBearerProvider()
@@ -30,6 +33,7 @@ namespace OpFlow.Service
                     EnableDetailedErrors = true
                 };
 
+                
                 map.RunSignalR(hubConfiguration);
             });
         }

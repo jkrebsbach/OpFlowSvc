@@ -26,6 +26,8 @@ namespace OpFlow.Service.SignalR
             var sender =
                 DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
 
+            Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, surgeryId, nul);
+
             foreach (var recipient in recipients)
             {
                 await SendMessage(recipient.Email, message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
@@ -46,6 +48,8 @@ namespace OpFlow.Service.SignalR
             var sender =
                 DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
 
+            Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
+
             // Send messages to communication target
             await SendMessage(recipientUser.Email, message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, null, sender.UserID);
 
@@ -55,16 +59,19 @@ namespace OpFlow.Service.SignalR
 
         private async Task SendMessage(string who, string message, int senderRoleId, string senderUserName, DateTime insertTimestamp, int? surgeryId, int? communicationUserId)
         {
+            //System.Diagnostics.Debug.WriteLine("SENDING MESSAGE");
             var name = Context.User.Identity.Name;
 
             // Don't send push notification to yourself!
             if (name != who)
                 await PushNotification.PostNotification(name, who, message);
 
-            foreach (var connectionId in Connections.GetConnections(who))
-            {
-                Clients.Client(connectionId).broadcastMessage(message, senderRoleId, senderUserName, insertTimestamp, surgeryId, communicationUserId);
-            }
+            //Clients.All.broadcastMessage(message, senderRoleId, senderUserName, insertTimestamp, surgeryId, communicationUserId);
+
+            //foreach (var connectionId in Connections.GetConnections(who))
+            //{
+            //    Clients.Client(connectionId).broadcastMessage(message, senderRoleId, senderUserName, insertTimestamp, surgeryId, communicationUserId);
+            //}
         }
     }
 }

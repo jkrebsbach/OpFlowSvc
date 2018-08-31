@@ -24,8 +24,8 @@ namespace OpFlow.Service.Test
                     var positionBinary = File.ReadAllBytes($@"C:\temp\OpFlow\{images[image]}.png");
                     
 
-                    ImageController cont = new ImageController();
-                    await cont.PutPatientPositionImage(image);
+                    //ImageController cont = new ImageController();
+                    //await cont.GetPatientPositionImage(image);
 
                 }
 

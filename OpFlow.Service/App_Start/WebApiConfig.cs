@@ -28,7 +28,7 @@ namespace OpFlow.Service
             // Enforce HTTPS
             config.Filters.Add(new Filters.RequireHttpsAttribute());
 
-            // Use below lines to allow localhost testing
+            //// Use below lines to allow localhost testing
             //var cors = new EnableCorsAttribute("*", "*", "*");
             //config.EnableCors(cors);
         }
