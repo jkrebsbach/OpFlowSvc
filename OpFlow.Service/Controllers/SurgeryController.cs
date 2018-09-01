@@ -246,12 +246,14 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCardItemCounts")]
         [Route("api/surgery/cardItemCounts")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardItemCountResult))]
-        public HttpResponseMessage GetSurgeryCardItemCounts(int surgeryId)
+        public async Task<HttpResponseMessage> GetSurgeryCardItemCounts(int surgeryId)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var itemCounts = SqlHelper.GetSurgeryCardItemCounts(surgeryId, user.ProviderID, user.LocationID)
+            var itemCounts = (await SqlHelper.GetSurgeryCardItemCounts(surgeryId, user.ProviderID, user.LocationID))
                 .GroupBy(ic => ic.ItemType);
+
+            var trayOpens = await SqlHelper.GetSurgeryTrayOpens(surgeryId, user.ProviderID, user.LocationID);
 
             var result = new CardItemCountResult();
 
@@ -264,16 +266,47 @@ namespace OpFlow.Service.Controllers
                 else
                 {
                     var trayItems = countType.ToList();
+                    var tray = trayItems.FirstOrDefault();
 
-                    result.Trays[trayItems.FirstOrDefault()?.TrayID ?? 0] = countType.ToList();
-
+                    var trayUsage = result.Trays.FirstOrDefault(t => t.TrayID == tray.TrayID);
+                    if (trayUsage == null)
+                    {
+                        trayUsage = new TrayUsage()
+                            {
+                                TrayID = tray.TrayID ?? 0,
+                                TrayItems = countType.ToList()
+                            };
+                        result.Trays.Add(trayUsage);
+                    }
+                    else // error condition..
+                    {
+                        trayUsage.TrayItems = countType.ToList();
+                    }
                 }
+            }
+
+            foreach (var trayOpen in trayOpens)
+            {
+                var tray = result.Trays.FirstOrDefault(t => t.TrayID == trayOpen.TrayID);
+                tray.TrayOpened = trayOpen.TrayOpened;
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
 
+        [SwaggerOperation("UpdateTrayOpen")]
+        [Route("api/surgery/updateTrayOpen")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        public async Task<HttpResponseMessage> UpdateSurgeryTrayOpen(int surgeryId, int trayId, bool trayOpened)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = await SqlHelper.UpdateSurgeryTrayOpens(surgeryId, user.ProviderID, user.LocationID, trayId, trayOpened);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+
+        }
 
         // GET api/values/5
         [SwaggerOperation("GetSearchScreen")]

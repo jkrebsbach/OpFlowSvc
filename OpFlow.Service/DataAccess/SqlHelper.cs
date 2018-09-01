@@ -339,7 +339,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<CardItemCount> GetSurgeryCardItemCounts(int surgeryId, int providerId, int locationId)
+        public static async Task<List<CardItemCount>> GetSurgeryCardItemCounts(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -347,9 +347,39 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetSurgeryCardItemCounts", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeryCardItemCounts", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<CardItemCount>();
+
+            return result;
+        }
+
+        public static async Task<List<SurgeryTrayOpen>> GetSurgeryTrayOpens(int surgeryId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeryTrayOpens", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<SurgeryTrayOpen>();
+
+            return result;
+        }
+
+        public static async Task<int> UpdateSurgeryTrayOpens(int surgeryId, int providerId, int locationId, int trayId, bool trayOpened)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("tray_id", trayId),
+                new SqlParameter("tray_opened", trayOpened)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateSurgeryTrayOpens", parameters);
 
             return result;
         }
