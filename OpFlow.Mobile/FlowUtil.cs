@@ -54,22 +54,27 @@ namespace OpFlow.Mobile
             return response;
         }
 
-        public static Task<List<FlowStepTiming>> GetFlowTimings(int flowId)
+        public static async Task<List<FlowStepTiming>> GetFlowTimings(int flowId)
         {
             var command = $"api/flow/timings?flowId={flowId}";
-            return WebUtility.WebRequest<List<FlowStepTiming>>(command, HttpMethod.Get);
+            return await WebUtility.WebRequest<List<FlowStepTiming>>(command, HttpMethod.Get);
         }
 
-        public static Task<List<Step>> GetSteps()
+        public static async Task<List<Step>> GetSteps()
         {
             var command = "api/flow/steps";
-            return WebUtility.WebRequest<List<Step>>(command, HttpMethod.Get);
+            return await WebUtility.WebRequest<List<Step>>(command, HttpMethod.Get);
         }
 
-        public static string FlowImageUrl(int flowId, int flowImageId)
+        public static async Task<byte[]> FlowImageBytes(int flowId, int flowImageId)
         {
             var command = string.Format("api/image/flowImage?flowId={0}&flowImageId={1}", flowId, flowImageId);
-            return WebUtility.GetWebUrl(command);
+            var image = await WebUtility.WebRequest<SecureImage>(command,  HttpMethod.Get);
+
+            if (image?.DocumentBytes == null)
+                return null;
+
+            return Convert.FromBase64String(image.DocumentBytes);
         }
 
         public static async Task<string> UploadFlowImage(int flowId, int stepId, int roleId, byte[] flowBytes)
