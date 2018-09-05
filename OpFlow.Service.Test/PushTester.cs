@@ -12,29 +12,11 @@ namespace OpFlow.Service.Test
     public class PushTester
     {
         [TestMethod]
-        public void TestPushMessage()
+        public async Task TestPushMessage()
         {
             try
             {
-                Task.Run(async () =>
-                {
-                    await MessageTester();
-                }).GetAwaiter().GetResult();
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-        private async Task MessageTester()
-        {
-            try
-            {
-             
-            await PushNotification.PostNotification("dave@opflowtech.com", "martyn@opflowtech.com", "This is a test");
+                await PushNotification.PostNotification("martyn@opflowtech.com", "role3@opflowtech.com", "This is a test");
 
             }
             catch (Exception e)

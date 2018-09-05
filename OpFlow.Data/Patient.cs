@@ -15,6 +15,18 @@ namespace OpFlow.Data
         public string Gender { get; set; }
         public decimal BMI { get; set; }
 
+        public string Initials
+        {
+            get
+            {
+                var finit = string.IsNullOrEmpty(FirstName) ? "" : FirstName.Substring(0, 1);
+                var minit = string.IsNullOrEmpty(MiddleInitial) ? "" : MiddleInitial.Substring(0, 1);
+                var linit = string.IsNullOrEmpty(LastName) ? "" : LastName.Substring(0, 1);
+
+                return $"{finit}{minit}{linit}";
+            }
+        }
+
         public int PatientAge
         {
             get

@@ -71,17 +71,17 @@ namespace OpFlow.Service.Controllers
             if ((surgeryId == null && communicationUserId == null) || messagePost == null)
                 return Request.CreateResponse(HttpStatusCode.Ambiguous);
 
-            DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
+            await SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
                 surgeryId, communicationUserId, messagePost.Message);
 
             NotificationOutcome notificationOutcome = null;
 
             if (surgeryId != null)
             {
-                var recipients = DataAccess.SqlHelper.GetSurgeryUsers(surgeryId.Value, user.ProviderID, user.LocationID);
+                var recipients = await SqlHelper.GetSurgeryUsers(surgeryId.Value, user.ProviderID, user.LocationID);
 
                 var sender =
-                    DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+                    SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
 
                 foreach (var recipient in recipients)
                 {
@@ -89,16 +89,26 @@ namespace OpFlow.Service.Controllers
                     if (recipient.Email == sender.Email)
                         continue;
 
+                    var surgery = SqlHelper.GetSurgery(surgeryId ?? -1, user.ProviderID, user.LocationID);
+                    var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+                    var patient = await SecureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
+                        userObject.LastName, (int)userObject.RoleID, user.DatabaseName);
+
+                    // Prepend surgery descriptor to message
+                    var surgeryText =
+                        $"MRN: {surgery.CaseNumber} Room: {surgery.RoomDescription} Patient: {patient.Initials} Gender: {patient.Gender} Age: {patient.PatientAge} Message: ";
+
+                    messagePost.Message = surgeryText + messagePost.Message;
                     notificationOutcome = await PushNotification.PostNotification(sender.Email, recipient.Email, messagePost.Message);
                 }
             }
             else if (communicationUserId != null)
             {
                 var recipientUser =
-                    DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, communicationUserId);
+                    SqlHelper.GetUser(user.ProviderID, user.LocationID, null, communicationUserId);
 
                 var sender =
-                    DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+                    SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
 
 
                 notificationOutcome = await PushNotification.PostNotification(sender.Email, recipientUser.Email, messagePost.Message);
