@@ -72,14 +72,21 @@ namespace OpFlow.iOS
                 _connection.Dispose();
         }
 
-        public Task SendSurgeryMessage(int surgeryId, string message)
+        public async Task SendSurgeryMessage(int surgeryId, string message)
         {
-            return _proxy.Invoke("sendSurgeryMessage", surgeryId, message);
+            await _proxy.Invoke("sendSurgeryMessage", surgeryId, message);
         }
 
-        public Task SendPrivateMessage(int communicationUserId, string message)
+        public async Task SendPrivateMessage(int communicationUserId, string message)
         {
-            return _proxy.Invoke("sendPrivateMessage", communicationUserId, message);
+            try
+            {
+                await _proxy.Invoke("sendPrivateMessage", communicationUserId, message);
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

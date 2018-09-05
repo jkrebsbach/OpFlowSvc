@@ -26,15 +26,29 @@ namespace OpFlow.Data
         public int Usage { get; set; }
     }
 
+    public class SurgeryTrayOpen
+    {
+        public int SurgeryID { get; set; }
+        public int TrayID { get; set; }
+        public bool TrayOpened { get; set; }
+    }
+
     public class CardItemCountResult
     {
         public List<CardItemCount> Supplies { get; set; }
         public List<CardItemCount> Instruments { get; set; }
-        public Dictionary<int, List<CardItemCount>> Trays { get; set; }
+        public List<TrayUsage> Trays { get; set; }
 
         public CardItemCountResult()
         {
-            Trays = new Dictionary<int, List<CardItemCount>>();
+            Trays = new List<TrayUsage>();
         }
+    }
+
+    public class TrayUsage
+    {
+        public int TrayID { get; set; }
+        public bool TrayOpened { get; set; }
+        public List<CardItemCount> TrayItems { get; set; }
     }
 }

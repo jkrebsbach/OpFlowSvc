@@ -91,7 +91,7 @@ namespace OpFlow.Service.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> BroadcastNotification([FromBody]NotificationItem item)
         {
-            PushNotification.BroadcastNotification(item.Message);
+            await PushNotification.BroadcastNotification(item.Message);
 
             return Ok();
         }

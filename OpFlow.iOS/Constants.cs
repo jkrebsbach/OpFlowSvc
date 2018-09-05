@@ -10,7 +10,7 @@ namespace OpFlow.iOS
 {
     public class Constants
     {
-        public const string ConnectionString = "Endpoint=sb://opflow.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=5Xbx0FOwXH6+al/eGiKnTJxTLmqEWmWHM/BeOkc83Bk=";
-        public const string NotificationHubPath = "opflow";
+        public const string ConnectionString = "Endpoint=sb://opflowhub.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=xhYtxEF+3byCD2NP3M743+iHA6iXGP3JiGnMrWIYB7k=";
+        public const string NotificationHubPath = "opflowhub";
     }
 }

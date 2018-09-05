@@ -18,15 +18,26 @@ namespace OpFlow.Service.SignalR
             var user = CacheUtil.GetUserByEmail();
             var insertTimestamp = DateTime.Now;
             
-            DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
+            await DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
                 surgeryId, null, message);
 
-            var recipients = DataAccess.SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
+            var recipients = await DataAccess.SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
+            var surgery = DataAccess.SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+            var userObject = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+            var patient = await DataAccess.SecureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
+                userObject.LastName, (int)userObject.RoleID, user.DatabaseName);
 
             var sender =
                 DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
 
+            
             Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
+
+            // Prepend surgery descriptor to message
+            var surgeryText =
+                $"MRN: {surgery.CaseNumber} Room: {surgery.RoomDescription} Patient: {patient.Initials} Gender: {patient.Gender} Age: {patient.PatientAge} Message: ";
+
+            message = surgeryText + message;
 
             foreach (var recipient in recipients)
             {
@@ -39,7 +50,7 @@ namespace OpFlow.Service.SignalR
             var user = CacheUtil.GetUserByEmail();
             var insertTimestamp = DateTime.Now;
 
-            DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
+            await DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
                 null, communicationUserId, message);
 
             var recipientUser = 

@@ -134,7 +134,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSchedule")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySchedule>))]
         [Route("api/Surgery/cases")]
-        public HttpResponseMessage GetSurgerySchedule(DateTime? scheduleDate = null, int? roomId = null)
+        public async Task<HttpResponseMessage> GetSurgerySchedule(DateTime? scheduleDate = null, int? roomId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
@@ -147,7 +147,7 @@ namespace OpFlow.Service.Controllers
             foreach (var surgery in surgeries)
             {
                 surgery.SurgeryUsers =
-                    SqlHelper.GetSurgeryUsers(surgery.CaseID, user.ProviderID, user.LocationID);
+                    await SqlHelper.GetSurgeryUsers(surgery.CaseID, user.ProviderID, user.LocationID);
             }
             
             return Request.CreateResponse(HttpStatusCode.OK, surgeries);
@@ -157,11 +157,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetAlerts")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgery>))]
         [Route("api/Surgery/alerts")]
-        public HttpResponseMessage GetSurgeryAlerts(int surgeryId, int? providerId = null, int? locationId = null)
+        public async Task<HttpResponseMessage> GetSurgeryAlerts(int surgeryId, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var schedules = SqlHelper.GetSurgeryAlerts(surgeryId, user.ProviderID, user.LocationID);
+            var schedules = await SqlHelper.GetSurgeryAlerts(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -183,11 +183,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetDelayReasons")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryDelayReason>))]
         [Route("api/Surgery/delayReasons")]
-        public HttpResponseMessage GetSurgeryDelayReasons()
+        public async Task<HttpResponseMessage> GetSurgeryDelayReasons()
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var reasons = SqlHelper.GetSurgeryDelayReasons(user.ProviderID, user.LocationID);
+            var reasons = await SqlHelper.GetSurgeryDelayReasons(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, reasons);
         }
@@ -195,11 +195,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSurgeryUsers")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryUser>))]
         [Route("api/Surgery/users")]
-        public HttpResponseMessage GetSurgeryUsers(int surgeryId, int? providerId = null, int? locationId = null)
+        public async Task<HttpResponseMessage> GetSurgeryUsers(int surgeryId, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var schedules = SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
+            var schedules = await SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -246,12 +246,14 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCardItemCounts")]
         [Route("api/surgery/cardItemCounts")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardItemCountResult))]
-        public HttpResponseMessage GetSurgeryCardItemCounts(int surgeryId)
+        public async Task<HttpResponseMessage> GetSurgeryCardItemCounts(int surgeryId)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var itemCounts = SqlHelper.GetSurgeryCardItemCounts(surgeryId, user.ProviderID, user.LocationID)
+            var itemCounts = (await SqlHelper.GetSurgeryCardItemCounts(surgeryId, user.ProviderID, user.LocationID))
                 .GroupBy(ic => ic.ItemType);
+
+            var trayOpens = await SqlHelper.GetSurgeryTrayOpens(surgeryId, user.ProviderID, user.LocationID);
 
             var result = new CardItemCountResult();
 
@@ -264,16 +266,47 @@ namespace OpFlow.Service.Controllers
                 else
                 {
                     var trayItems = countType.ToList();
+                    var tray = trayItems.FirstOrDefault();
 
-                    result.Trays[trayItems.FirstOrDefault()?.TrayID ?? 0] = countType.ToList();
-
+                    var trayUsage = result.Trays.FirstOrDefault(t => t.TrayID == tray.TrayID);
+                    if (trayUsage == null)
+                    {
+                        trayUsage = new TrayUsage()
+                            {
+                                TrayID = tray.TrayID ?? 0,
+                                TrayItems = countType.ToList()
+                            };
+                        result.Trays.Add(trayUsage);
+                    }
+                    else // error condition..
+                    {
+                        trayUsage.TrayItems = countType.ToList();
+                    }
                 }
+            }
+
+            foreach (var trayOpen in trayOpens)
+            {
+                var tray = result.Trays.FirstOrDefault(t => t.TrayID == trayOpen.TrayID);
+                tray.TrayOpened = trayOpen.TrayOpened;
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
 
+        [SwaggerOperation("UpdateTrayOpen")]
+        [Route("api/surgery/updateTrayOpen")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        public async Task<HttpResponseMessage> UpdateSurgeryTrayOpen(int surgeryId, int trayId, bool trayOpened)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = await SqlHelper.UpdateSurgeryTrayOpens(surgeryId, user.ProviderID, user.LocationID, trayId, trayOpened);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+
+        }
 
         // GET api/values/5
         [SwaggerOperation("GetSearchScreen")]
@@ -818,7 +851,7 @@ namespace OpFlow.Service.Controllers
             var success = SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, startTime);
 
             var flowStep = SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, startTime);
-            FlowStepNotifications(flowStep);
+            await FlowStepNotifications(flowStep);
 
             return Request.CreateResponse(HttpStatusCode.OK, success);
         }
@@ -833,7 +866,7 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
 
             var flowStep = SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
-            FlowStepNotifications(flowStep);
+            await FlowStepNotifications(flowStep);
 
             return Request.CreateResponse(HttpStatusCode.Created, flowStep);
         }
@@ -848,12 +881,12 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
 
             var flowStep = SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, finishTime);
-            FlowStepNotifications(flowStep);
+            await FlowStepNotifications(flowStep);
 
             return Request.CreateResponse(HttpStatusCode.OK, flowStep);
         }
 
-        private static void FlowStepNotifications(FlowStep flowStep)
+        private static async Task FlowStepNotifications(FlowStep flowStep)
         {
             var user = CacheUtil.GetUserSecurity();
             if (flowStep == null)
@@ -864,11 +897,11 @@ namespace OpFlow.Service.Controllers
             var startNotification = notifications.FirstOrDefault(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
             var endNotification = notifications.FirstOrDefault(n => n.StepID == flowStep.StepID - 1 && n.NotificationType == 2);
 
-            SendNotification(startNotification);
-            SendNotification(endNotification);
+            await SendNotification(startNotification);
+            await SendNotification(endNotification);
         }
 
-        private static void SendNotification(FlowNotification flowNotification)
+        private static async Task SendNotification(FlowNotification flowNotification)
         {
             var user = CacheUtil.GetUserSecurity();
             if (flowNotification == null)
@@ -878,7 +911,7 @@ namespace OpFlow.Service.Controllers
 
             if (flowNotification.MessagingUserID != null)
             {
-                SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID, null, flowNotification.MessagingUserID, flowNotification.FlowMessage);
+                await SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID, null, flowNotification.MessagingUserID, flowNotification.FlowMessage);
 
             }
         }
