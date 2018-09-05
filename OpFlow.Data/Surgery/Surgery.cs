@@ -175,6 +175,7 @@ namespace OpFlow.Data
         public int LocationID { get; set; }
         public int PatientID { get; set; }
         public int RoomID { get; set; }
+        public int LateralityID { get; set; }
         public DateTime ScheduleTime { get; set; }
         public DateTime? ActualStartTime { get; set; }
         public DateTime? EstimatedCompletionTime { get; set; }
@@ -190,6 +191,7 @@ namespace OpFlow.Data
         public string ProcedureDescription { get; set; }
         public string RoomDescription { get; set; }
         public string FlowStepDescription { get; set; }
+        public string LateralityDescription { get; set; }
 
         public List<SurgeryUser> SurgeryUsers { get; set; }
 

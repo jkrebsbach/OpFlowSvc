@@ -348,7 +348,7 @@ namespace OpFlow.Service.Controllers
 
         // POST api/values
         [SwaggerOperation("UpdateDebrief")]
-        [SwaggerResponse(HttpStatusCode.Created)]
+        [SwaggerResponse(HttpStatusCode.OK)]
         [Route("api/surgery/debrief", Name = "UpdateDebrief")]
         [HttpPut]
         public async Task<IHttpActionResult> UpdateDebrief(int surgeryPhraseId, int stepId, int roleId)
@@ -356,6 +356,20 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
 
             await SqlHelper.SurgeryPhraseDebrief(surgeryPhraseId, stepId, roleId, user.ProviderID, user.LocationID);
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("UpdateCaseNotes")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/surgery/caseNotes", Name = "UpdateCaseNotes")]
+        [HttpPut]
+        public async Task<IHttpActionResult> UpdateCaseNotes(int surgeryId, [FromBody]DebriefUpdatePost update)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            await SqlHelper.SurgeryUpdateCaseNotes(surgeryId, update.CaseNotes, user.ProviderID, user.LocationID);
 
             return Ok();
         }

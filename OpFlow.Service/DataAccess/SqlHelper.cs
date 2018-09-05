@@ -728,13 +728,18 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public static int EditSmartPhrase(int smartPhraseId, string phrase, int providerId, int locationId)
+        public static int EditSmartPhrase(int smartPhraseId, string phrase, 
+            int categoryId, int userId, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("smart_phrase_id", smartPhraseId),
+                new SqlParameter("category_id", categoryId),
+                new SqlParameter("user_id", userId),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("role_id", roleId),
                 new SqlParameter("phrase", phrase)
             };
             return ExecuteNonQuery("UpdateSmartPhrase", dsParameters);
@@ -965,6 +970,18 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("SurgeryPhraseDebrief", dsParameters);
         }
 
+
+        public static async Task<int> SurgeryUpdateCaseNotes(int surgeryId, string caseNotes, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("case_notes", caseNotes)
+            };
+            return await ExecuteNonQueryAsync("UpdateSurgeryCaseNotes", dsParameters);
+        }
         public static int AssignCardToCase(int cardId, int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]

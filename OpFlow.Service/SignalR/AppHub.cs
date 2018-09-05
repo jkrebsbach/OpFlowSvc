@@ -26,7 +26,7 @@ namespace OpFlow.Service.SignalR
             var sender =
                 DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
 
-            Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, surgeryId, nul);
+            Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
 
             foreach (var recipient in recipients)
             {

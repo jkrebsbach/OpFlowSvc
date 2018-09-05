@@ -154,7 +154,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            SqlHelper.EditSmartPhrase(smartPhraseId, smartPhrase.Phrase, user.ProviderID, user.LocationID);
+            SqlHelper.EditSmartPhrase(smartPhraseId, smartPhrase.Phrase, smartPhrase.CategoryID, smartPhrase.UserID ??  user.UserID, smartPhrase.StepID, smartPhrase.RoleID, user.ProviderID, user.LocationID);
 
             return Ok();
         }
