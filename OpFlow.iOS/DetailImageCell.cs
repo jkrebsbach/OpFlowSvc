@@ -9,35 +9,33 @@ namespace OpFlow.iOS
 	public partial class DetailImageCell : UITableViewCell
     {
 		private UIImage _image;
-		private NSUrl _url;
-
+		
         public DetailImageCell (IntPtr handle) : base (handle)
         {
 		}
 
-        public void UpdateCell(CaseImageToken token)
+        public async void UpdateCell(CaseImageToken token)
         {
 			if (_image != null)
 				return;
 
 			try
 			{
-				var url = string.Empty;
+                byte[] imageBytes;
 
                 if (token.ImageType == CaseImageToken.ImageTypeEnum.FlowImage)
 				{
-					url = FlowUtil.FlowImageUrl(token.FolderID, token.DetailID);
+                    imageBytes = await FlowUtil.FlowImageBytes(token.FolderID, token.DetailID);
 				}
 				else
 				{
-					url = SurgeryUtil.SurgeryImageUrl(token.FolderID, token.DetailID);
+                    imageBytes = await SurgeryUtil.SurgeryImageBytes(token.FolderID, token.DetailID);
 				}
 
-				if (url == string.Empty)
+				if (imageBytes == null)
 					return;
 
-				var nsUrl = new NSUrl(url);
-                using (var data = NSData.FromUrl(nsUrl))
+				using (var data = NSData.FromArray(imageBytes))
 				{
 					if (data != null)
 					{
