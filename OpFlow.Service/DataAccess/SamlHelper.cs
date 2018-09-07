@@ -147,7 +147,7 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        public static void Logout(HttpRequest request, HttpResponse response)
+        public static void Logout(HttpRequestBase request, HttpResponseBase response)
         {
             try
             {
@@ -172,7 +172,7 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        public static void ResolveArtifacts(HttpRequest request, HttpResponse response)
+        public static void ResolveArtifacts(HttpRequestBase request, HttpResponseBase response)
         {
             try
             {
@@ -202,7 +202,7 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        private static void HandleLogoutRequest(LogoutRequest message, X509Certificate2 x509Certificate, HttpRequest request, HttpResponse response)
+        private static void HandleLogoutRequest(LogoutRequest message, X509Certificate2 x509Certificate, HttpRequestBase request, HttpResponseBase response)
         {
             // This is the logged in ID.
             string nameId = message.NameId.NameIdentifier;
@@ -226,7 +226,7 @@ namespace OpFlow.Service.DataAccess
             #endregion
         }
 
-        private static void HandleLogoutResponse(LogoutResponse message, HttpResponse response)
+        private static void HandleLogoutResponse(LogoutResponse message, HttpResponseBase response)
         {
             SamlTrace.Log(LogLevel.Info, "Received a Logout Response");
 
@@ -234,7 +234,7 @@ namespace OpFlow.Service.DataAccess
             response.Redirect("~/", false);
         }
 
-        private static string GetAbsoluteUrl(HttpRequest request, string relativeUrl)
+        private static string GetAbsoluteUrl(HttpRequestBase request, string relativeUrl)
         {
             return new Uri(request.Url, relativeUrl).ToString();
         }
