@@ -4,9 +4,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Security;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.DataHandler;
+using Microsoft.Owin.Security.DataProtection;
 using Microsoft.Owin.Security.OAuth;
 using OpFlow.Service.App_Start;
 using OpFlow.Service.Models;
@@ -43,6 +46,50 @@ namespace OpFlow.Service.Providers
             var ticket = new AuthenticationTicket(oAuthIdentity, properties);
             context.Validated(ticket);
             context.Request.Context.Authentication.SignIn(cookiesIdentity);
+        }
+
+        public static async Task<string> GenerateBearerToken(string username)
+        {
+            var owinContext = HttpContext.Current.GetOwinContext();
+            var userManager = owinContext.GetUserManager<ApplicationUserManager>();
+
+            var user = await userManager.FindByEmailAsync("info@opflowtech.com");
+
+            if (user == null)
+            {
+                throw new Exception("The user name or password is incorrect.");
+            }
+
+            var oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
+                OAuthDefaults.AuthenticationType);
+            var cookiesIdentity = await user.GenerateUserIdentityAsync(userManager,
+                CookieAuthenticationDefaults.AuthenticationType);
+
+            var properties = CreateProperties(user.UserName);
+            var ticket = new AuthenticationTicket(oAuthIdentity, properties);
+            
+            var secureDataFormat = new TicketDataFormat(new MachineKeyProtector());
+            return secureDataFormat.Protect(ticket);
+        }
+
+        private class MachineKeyProtector : IDataProtector
+        {
+            private readonly string[] _purpose =
+            {
+                typeof(OAuthAuthorizationServerMiddleware).Namespace,
+                "Access_Token",
+                "v1"
+            };
+
+            public byte[] Protect(byte[] userData)
+            {
+                return System.Web.Security.MachineKey.Protect(userData, _purpose);
+            }
+
+            public byte[] Unprotect(byte[] protectedData)
+            {
+                return System.Web.Security.MachineKey.Unprotect(protectedData, _purpose);
+            }
         }
 
         public override Task TokenEndpoint(OAuthTokenEndpointContext context)

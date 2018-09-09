@@ -9,11 +9,13 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
+using System.Web.Security;
 using ComponentPro.Saml2;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using OpFlow.Service.App_Start;
 using OpFlow.Service.DataAccess;
+using OpFlow.Service.Providers;
 using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
@@ -28,7 +30,7 @@ namespace OpFlow.Service.Controllers
         /// </summary>
         /// <returns></returns>
         [Route("api/Saml/Login", Name = "SamlLogin")]
-        public ActionResult SamlLogin()
+        public async Task<ActionResult> SamlLogin()
         {
             try
             {
@@ -124,8 +126,11 @@ namespace OpFlow.Service.Controllers
                 // Set authentication cookie.
                 System.Web.Security.FormsAuthentication.SetAuthCookie(userName, false);
 
+                var token = await ApplicationOAuthProvider.GenerateBearerToken(userName);
+
                 // Redirect to the requested URL.
-                Response.Redirect(samlResponse.RelayState, false);
+                //return Redirect(samlResponse.RelayState + "?authToken=" + token);
+                return Redirect("https://opflow.azurewebsites.net?authToken=" + token);
 
                 #endregion
             }
@@ -137,6 +142,7 @@ namespace OpFlow.Service.Controllers
 
             return View();
         }
+
         /// <summary>
         /// Endpoint to logout users via SAML
         /// </summary>
