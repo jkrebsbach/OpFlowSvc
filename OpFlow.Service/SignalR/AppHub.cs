@@ -23,12 +23,11 @@ namespace OpFlow.Service.SignalR
 
             var recipients = await DataAccess.SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
             var surgery = DataAccess.SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
-            var userObject = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+            var userObject = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
             var patient = await DataAccess.SecureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
                 userObject.LastName, (int)userObject.RoleID, user.DatabaseName);
 
-            var sender =
-                DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+            var sender = userObject;
 
             
             Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
@@ -54,10 +53,10 @@ namespace OpFlow.Service.SignalR
                 null, communicationUserId, message);
 
             var recipientUser = 
-                DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, communicationUserId);
+                DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID,  communicationUserId);
 
             var sender =
-                DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+                DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
             Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
 

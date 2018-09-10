@@ -32,9 +32,8 @@ namespace OpFlow.Service.Controllers
         public HttpResponseMessage Get()
         {
             var user = CacheUtil.GetUserSecurity();
-            var username = HttpContext.Current.User.Identity.Name;
-
-            var result = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, username, null);
+            
+            var result = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserAuthID);
 
             return result == null ? Request.CreateResponse(HttpStatusCode.NotFound, "User not found") : Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -163,7 +162,7 @@ namespace OpFlow.Service.Controllers
 
             try
             {
-                var applicationUserId = DataAccess.SqlHelper.CreateUser(userAuthId, model.RoleID, model.SpecialtyID,
+                var applicationUserId = await DataAccess.SqlHelper.CreateUser(userAuthId, model.RoleID, model.SpecialtyID,
                     model.FirstName, model.LastName,
                     model.Email, model.CellPhone, model.Initials, model.Title, userSecurity.ProviderID,
                     userSecurity.LocationID);
@@ -231,7 +230,7 @@ namespace OpFlow.Service.Controllers
             var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
             var applicationUser =
-                DataAccess.SqlHelper.GetUser(userSecurity.ProviderID, userSecurity.LocationID, null, userId);
+                DataAccess.SqlHelper.GetUser(userSecurity.ProviderID, userSecurity.LocationID,  userId);
 
             var authenticationUser = await userManager.FindByEmailAsync(applicationUser.Email);
 

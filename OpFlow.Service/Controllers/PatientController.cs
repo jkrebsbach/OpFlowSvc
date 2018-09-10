@@ -23,7 +23,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Get(int patientId)
         {
             var user = CacheUtil.GetUserSecurity();
-            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
             var patient = await DataAccess.SecureSqlHelper.GetPatient(patientId,
                 user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
@@ -50,7 +50,7 @@ namespace OpFlow.Service.Controllers
             if (patientIds != null)
             {
                 var user = CacheUtil.GetUserSecurity();
-                var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+                var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
                 foreach (var patientId in patientIds)
                 {
@@ -71,7 +71,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Post([FromBody]PatientPost patient)
         {
             var secureUser = CacheUtil.GetUserSecurity();
-            var user = SqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID, null, secureUser.UserID);
+            var user = SqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID,  secureUser.UserID);
 
             var patientId = await SecureSqlHelper.CreatePatient(patient.PatientAcctNbr,
                 patient.BirthDate, patient.Gender, patient.FirstName, patient.LastName, patient.MiddleInitial, patient.BMI,

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -29,7 +30,7 @@ namespace OpFlow.Service.Controllers
         /// Endpoint to login users via SAML
         /// </summary>
         /// <returns></returns>
-        [Route("api/Saml/Login", Name = "SamlLogin")]
+        [Route("Saml/Login", Name = "SamlLogin")]
         public async Task<ActionResult> SamlLogin()
         {
             try
@@ -126,11 +127,18 @@ namespace OpFlow.Service.Controllers
                 // Set authentication cookie.
                 System.Web.Security.FormsAuthentication.SetAuthCookie(userName, false);
 
-                var token = await ApplicationOAuthProvider.GenerateBearerToken(userName);
+                var email = userName;
+                if (userName.IndexOf("@") <= 0)
+                {
+                    email = userName + "@opflowtech.com";
+                }
+
+                var token = await ApplicationOAuthProvider.GenerateBearerToken(userName, email, new List<string>());
 
                 // Redirect to the requested URL.
+                var responseUrl = ConfigurationManager.AppSettings["ResponseURL"];
                 //return Redirect(samlResponse.RelayState + "?authToken=" + token);
-                return Redirect("https://opflow.azurewebsites.net?authToken=" + token);
+                return Redirect($"{responseUrl}?authToken={token}");
 
                 #endregion
             }
@@ -147,7 +155,7 @@ namespace OpFlow.Service.Controllers
         /// Endpoint to logout users via SAML
         /// </summary>
         /// <returns></returns>
-        [Route("api/Saml/Logout", Name = "SamlLogout")]
+        [Route("Saml/Logout", Name = "SamlLogout")]
         [HttpPost]
         public async Task<ActionResult> SamlLogout()
         {
@@ -170,7 +178,7 @@ namespace OpFlow.Service.Controllers
         /// Endpoint to excpose SAML artifacts
         /// </summary>
         /// <returns></returns>
-        [Route("api/Saml/Artifacts", Name = "SamlArtifacts")]
+        [Route("Saml/Artifacts", Name = "SamlArtifacts")]
         [HttpPost]
         public ActionResult SamlArtifacts()
         {
@@ -184,14 +192,14 @@ namespace OpFlow.Service.Controllers
         /// Endpoint to login users via SAML
         /// </summary>
         /// <returns></returns>
-        [Route("api/Saml/Attributes", Name = "SamlAttributes")]
+        [Route("Saml/Attributes", Name = "SamlAttributes")]
         [HttpPost]
         public ActionResult SamlAttributes()
         {
             var user = CacheUtil.GetUserSecurity();
             var username = HttpContext.User.Identity.Name;
 
-            var result = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, username, null);
+            var result = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserAuthID);
 
             if (result == null)
                 throw new HttpException(404, "User not found");

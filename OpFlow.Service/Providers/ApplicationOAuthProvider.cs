@@ -12,6 +12,7 @@ using Microsoft.Owin.Security.DataHandler;
 using Microsoft.Owin.Security.DataProtection;
 using Microsoft.Owin.Security.OAuth;
 using OpFlow.Service.App_Start;
+using OpFlow.Service.DataAccess;
 using OpFlow.Service.Models;
 
 namespace OpFlow.Service.Providers
@@ -48,28 +49,49 @@ namespace OpFlow.Service.Providers
             context.Request.Context.Authentication.SignIn(cookiesIdentity);
         }
 
-        public static async Task<string> GenerateBearerToken(string username)
+        public static async Task<string> GenerateBearerToken(string username, string userEmail, List<string> opflowRoles)
         {
-            var owinContext = HttpContext.Current.GetOwinContext();
-            var userManager = owinContext.GetUserManager<ApplicationUserManager>();
-
-            var user = await userManager.FindByEmailAsync("info@opflowtech.com");
-
-            if (user == null)
+            try
             {
-                throw new Exception("The user name or password is incorrect.");
+                var owinContext = HttpContext.Current.GetOwinContext();
+                var userManager = owinContext.GetUserManager<ApplicationUserManager>();
+
+                var user = await userManager.FindByNameAsync(username);
+
+                if (user == null)
+                {
+                    user = new ApplicationUser()
+                    {
+                        UserName = username,
+                        Email = userEmail
+                    };
+                    var result = await userManager.CreateAsync(user);
+
+                    if (!result.Succeeded)
+                        throw new Exception("Unable to create new user");
+
+                    var userAuthId = new Guid(user.Id);
+
+                    var roleId = opflowRoles.Any(r => r.Contains("surgeon")) ? 1 : 4;
+                    var userId = await SqlHelper.CreateUser(userAuthId, roleId, null, username, username,
+                        userEmail, null, null, null, 1, 1);
+                }
+
+                var oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
+                    OAuthDefaults.AuthenticationType);
+                var cookiesIdentity = await user.GenerateUserIdentityAsync(userManager,
+                    CookieAuthenticationDefaults.AuthenticationType);
+
+                var properties = CreateProperties(user.UserName);
+                var ticket = new AuthenticationTicket(oAuthIdentity, properties);
+
+                var secureDataFormat = new TicketDataFormat(new MachineKeyProtector());
+                return secureDataFormat.Protect(ticket);
             }
-
-            var oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
-                OAuthDefaults.AuthenticationType);
-            var cookiesIdentity = await user.GenerateUserIdentityAsync(userManager,
-                CookieAuthenticationDefaults.AuthenticationType);
-
-            var properties = CreateProperties(user.UserName);
-            var ticket = new AuthenticationTicket(oAuthIdentity, properties);
-            
-            var secureDataFormat = new TicketDataFormat(new MachineKeyProtector());
-            return secureDataFormat.Protect(ticket);
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         private class MachineKeyProtector : IDataProtector

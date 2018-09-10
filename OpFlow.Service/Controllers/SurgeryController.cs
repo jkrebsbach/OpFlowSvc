@@ -27,7 +27,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
             var patientSurgery = SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
             patientSurgery.Patient =
@@ -554,7 +554,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Post([FromBody]SurgeryPost surgery)
         {
             var secureUser = CacheUtil.GetUserSecurity();
-            var user = SqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID, null, secureUser.UserID);
+            var user = SqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID,  secureUser.UserID);
 
             var patientId = await SecureSqlHelper.CreatePatient(surgery.PtAcctNbr,
                 surgery.PtDOB, surgery.PtGender, surgery.PtFirstName, surgery.PtLastName, surgery.PtMiddleInitial, surgery.PtBMI, 
@@ -981,7 +981,7 @@ namespace OpFlow.Service.Controllers
 
 
             var surgery = SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
-            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, null, user.UserID);
+            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
             var patient = await SecureSqlHelper.GetPatient(surgery.PatientID,
                 user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
@@ -989,7 +989,7 @@ namespace OpFlow.Service.Controllers
 
             var message = $"Surgery #{surgery.CaseNumber} patient {patient.LastName} room {surgery.RoomDescription} {surgery.ScheduleTime:hh\\:mm} modified - please review schedule";
 
-            var notificationUser = SqlHelper.GetUser(user.ProviderID, user.LocationID, null, surgeryEditPost.NotificationUser.Value);
+            var notificationUser = SqlHelper.GetUser(user.ProviderID, user.LocationID,  surgeryEditPost.NotificationUser.Value);
             if (notificationUser?.CellPhone != null)
                 SmsNotification.NotifyUser(notificationUser.CellPhone, message);
 

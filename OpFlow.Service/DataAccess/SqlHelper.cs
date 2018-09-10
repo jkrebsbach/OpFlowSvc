@@ -558,14 +558,30 @@ namespace OpFlow.Service.DataAccess
 
         }
 
-        public static User GetUser(int providerId, int locationId, string username, int? userId)
+        public static User GetUser(int providerId, int locationId, Guid userAuthId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("email", username ?? (object)DBNull.Value),
-                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("user_auth_id", userAuthId),
+                new SqlParameter("user_id", DBNull.Value)
+            };
+            var dsSchedules = ExecuteCommand("GetUser", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<User>().FirstOrDefault();
+
+            return result;
+        }
+
+        public static User GetUser(int providerId, int locationId, int userId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("user_auth_id", DBNull.Value),
+                new SqlParameter("user_id", userId),
             };
             var dsSchedules = ExecuteCommand("GetUser", dsParameters);
 
@@ -659,7 +675,7 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UserSurgeryWorkupReviewed", dsParameters);
         }
 
-        public static int CreateUser(Guid userAuthId, int? roleId, int? specialtyId, string firstName, string lastName,
+        public static async Task<int> CreateUser(Guid userAuthId, int? roleId, int? specialtyId, string firstName, string lastName,
             string email, string cellPhone, string initials, string title, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -676,7 +692,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("initials", initials ?? (object)DBNull.Value),
                 new SqlParameter("title", title ?? (object)DBNull.Value)
             };
-            var dsResult = ExecuteCommand("InsertUser", dsParameters);
+            var dsResult = await ExecuteCommandAsync("InsertUser", dsParameters);
 
             var result = dsResult.Tables[0].DataTableToList<InsertionResult>();
 
