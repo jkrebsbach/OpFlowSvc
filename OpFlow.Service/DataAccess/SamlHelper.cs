@@ -29,9 +29,7 @@ namespace OpFlow.Service.DataAccess
             {
                 if (_appCert == null)
                 {
-                    var fileName = "OpFlowWebCert.pfx";
-                    var password = "Summer1!";
-                    _appCert = new X509Certificate2(fileName, password, X509KeyStorageFlags.MachineKeySet);
+                    _appCert = (X509Certificate2)HttpContext.Current.Application[CertKeyName];
                 }
 
                 return _appCert;
@@ -80,7 +78,9 @@ namespace OpFlow.Service.DataAccess
 
                     // Load the private key.
                     // Consider caching the loaded key in production environment for better performance.
-                    X509Certificate2 decryptionKey = new X509Certificate2(Path.Combine(HttpRuntime.AppDomainAppPath, "EncryptionKey.pfx"), "password");
+                    //var templatePath = System.Web.HttpContext.Current.Request.MapPath(pfxPath);
+                    //X509Certificate2 decryptionKey = new X509Certificate2(templatePath, "password");
+                    var decryptionKey = AppCert;
 
                     // Decrypt the encrypted assertion.
                     samlAssertion = encryptedAssertion.Decrypt(decryptionKey.PrivateKey, null);

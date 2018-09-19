@@ -25,6 +25,7 @@ namespace OpFlow.Service.Controllers
     public class SamlController : Controller
     {
         private const string CertKeyName = "Cert";
+        private const string RequestorCertKeyName = "RequestorCert";
 
         /// <summary>
         /// Endpoint to login users via SAML
@@ -49,7 +50,7 @@ namespace OpFlow.Service.Controllers
                     // Validate the SAML response with the certificate.
                     if (!samlResponse.Validate(x509Certificate))
                     {
-                        throw new ApplicationException("SAML response signature is not valid.");
+                       throw new ApplicationException("SAML response signature is not valid.");
                     }
                 }
 
@@ -71,9 +72,7 @@ namespace OpFlow.Service.Controllers
                 {
                     EncryptedAssertion encryptedAssertion = samlResponse.GetEncryptedAssertions()[0];
 
-                    // Load the private key.
-                    // Consider caching the loaded key in production environment for better performance.
-                    X509Certificate2 decryptionKey = new X509Certificate2(Path.Combine(HttpRuntime.AppDomainAppPath, "OpFlowWebCert.pfx"), "Summer1!");
+                    var decryptionKey = (X509Certificate2)HttpContext.Application[CertKeyName];
 
                     // Decrypt the encrypted assertion.
                     samlAssertion = encryptedAssertion.Decrypt(decryptionKey.PrivateKey, null);
@@ -146,6 +145,7 @@ namespace OpFlow.Service.Controllers
             catch (Exception exception)
             {
                 System.Diagnostics.Trace.Write("ServiceProvider - An Error occurred: " + exception.ToString());
+                throw exception;
             }
 
             return View();
