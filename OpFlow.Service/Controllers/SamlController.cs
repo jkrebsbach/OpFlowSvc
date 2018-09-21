@@ -8,10 +8,14 @@ using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
+using ComponentPro.Saml;
+using ComponentPro.Saml.Binding;
 using ComponentPro.Saml2;
+using ComponentPro.Saml2.Binding;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using OpFlow.Service.App_Start;
@@ -22,16 +26,106 @@ using Swashbuckle.Swagger.Annotations;
 namespace OpFlow.Service.Controllers
 {
     [AllowAnonymous]
+    [RoutePrefix("Saml")]
     public class SamlController : Controller
     {
         private const string CertKeyName = "Cert";
         private const string RequestorCertKeyName = "RequestorCert";
 
         /// <summary>
+        /// Handles the IdpLogin button to requests login at the Identify Provider site.
+        /// </summary>
+        [Route("IdpLogin", Name = "IdpLogin")]
+        [HttpPost]
+        public ActionResult IdPLogin()
+        {
+            var context = HttpContext;
+
+            var spToIdPBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
+            var idPToSPBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
+
+            // Create the authentication request.
+            AuthnRequest authnRequest = BuildAuthenticationRequest(context, idPToSPBinding, spToIdPBinding);
+
+            // Create and cache the relay state so we remember which SP resource the user wishes 
+            // to access after SSO.
+            string spResourceUrl = Util.GetAbsoluteUrl(context, FormsAuthentication.GetRedirectUrl("", false));
+            string relayState = Guid.NewGuid().ToString();
+            SamlSettings.CacheProvider.Insert(relayState, spResourceUrl, new TimeSpan(1, 0, 0));
+
+            
+            // Send the authentication request to the identity provider over the selected binding.
+            string idpUrl = string.Format("{0}?{1}={2}", WebConfigurationManager.AppSettings["SingleSignonIdProviderUrl"], Util.BindingVarName, HttpUtility.UrlEncode(spToIdPBinding));
+
+            switch (spToIdPBinding)
+            {
+                case SamlBindingUri.HttpRedirect:
+                    X509Certificate2 x509Certificate = (X509Certificate2)context.Application[CertKeyName];
+
+                    authnRequest.Redirect(Response, idpUrl, relayState, x509Certificate.PrivateKey);
+                    break;
+
+                case SamlBindingUri.HttpPost:
+                    authnRequest.SendHttpPost(Response, idpUrl, relayState);
+
+                    // Don't send this form.
+                    Response.End();
+                    break;
+
+                case SamlBindingUri.HttpArtifact:
+                    // Create the artifact.
+                    string identificationUrl = Util.GetAbsoluteUrl(context, "~/");
+                    Saml2ArtifactType0004 httpArtifact = new Saml2ArtifactType0004(SamlArtifact.GetSourceId(identificationUrl), SamlArtifact.GetHandle());
+
+                    // Cache the authentication request for subsequent sending using the artifact resolution protocol.
+                    SamlSettings.CacheProvider.Insert(httpArtifact.ToString(), authnRequest.GetXml(), new TimeSpan(1, 0, 0));
+
+                    // Send the artifact.
+                    httpArtifact.Redirect(Response, idpUrl, relayState);
+                    break;
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View();
+        }
+
+        /// <summary>
+        /// Builds an authentication request.
+        /// </summary>
+        /// <returns>The authentication request.</returns>
+        private AuthnRequest BuildAuthenticationRequest(HttpContextBase context, string idpToSPBindingList, string spToIdPBinding)
+        {
+            string issuerUrl = Util.GetAbsoluteUrl(context, "~/");
+            // Construct the assertion Consumer Service Url.
+            string assertionConsumerServiceUrl = string.Format("{0}?{1}={2}", Util.GetAbsoluteUrl(context, "~/AssertionService"),
+                Util.BindingVarName, HttpUtility.UrlEncode(idpToSPBindingList));
+
+            // Create the authentication request.
+            AuthnRequest authnRequest = new AuthnRequest();
+            authnRequest.Destination = WebConfigurationManager.AppSettings["SingleSignonIdProviderUrl"];
+            authnRequest.Issuer = new Issuer(issuerUrl);
+            authnRequest.ForceAuthn = false;
+            authnRequest.NameIdPolicy = new NameIdPolicy(null, null, true);
+            authnRequest.ProtocolBinding = idpToSPBindingList;
+            authnRequest.AssertionConsumerServiceUrl = assertionConsumerServiceUrl;
+
+            if (spToIdPBinding != SamlBindingUri.HttpRedirect)
+            {
+                // Get the certificate
+                X509Certificate2 x509Certificate = (X509Certificate2)context.Application[CertKeyName];
+
+                // Sign the authentication request.
+                authnRequest.Sign(x509Certificate);
+            }
+            return authnRequest;
+
+        }
+
+        /// <summary>
         /// Endpoint to login users via SAML
         /// </summary>
         /// <returns></returns>
-        [Route("Saml/Login", Name = "SamlLogin")]
+        [Route("Login", Name = "SamlLogin")]
         [HttpPost]
         public async Task<ActionResult> SamlLogin()
         {
@@ -156,7 +250,7 @@ namespace OpFlow.Service.Controllers
         /// Endpoint to logout users via SAML
         /// </summary>
         /// <returns></returns>
-        [Route("Saml/Logout", Name = "SamlLogout")]
+        [Route("Logout", Name = "SamlLogout")]
         [HttpPost]
         public async Task<ActionResult> SamlLogout()
         {
@@ -179,7 +273,7 @@ namespace OpFlow.Service.Controllers
         /// Endpoint to excpose SAML artifacts
         /// </summary>
         /// <returns></returns>
-        [Route("Saml/Artifacts", Name = "SamlArtifacts")]
+        [Route("Artifacts", Name = "SamlArtifacts")]
         [HttpPost]
         public ActionResult SamlArtifacts()
         {
@@ -193,7 +287,7 @@ namespace OpFlow.Service.Controllers
         /// Endpoint to login users via SAML
         /// </summary>
         /// <returns></returns>
-        [Route("Saml/Attributes", Name = "SamlAttributes")]
+        [Route("Attributes", Name = "SamlAttributes")]
         [HttpPost]
         public ActionResult SamlAttributes()
         {
@@ -206,6 +300,24 @@ namespace OpFlow.Service.Controllers
                 throw new HttpException(404, "User not found");
 
             return Json( new { result });
+        }
+
+        public class Util
+        {
+            /// <summary>
+            /// The query string variable that indicates the IdentityProvider to ServiceProvider binding.
+            /// </summary>
+            public const string BindingVarName = "binding";
+
+            /// <summary>
+            /// The query string parameter that contains error description for the login failure. 
+            /// </summary>
+            public const string ErrorVarName = "error";
+
+            public static string GetAbsoluteUrl(HttpContextBase context, string relativeUrl)
+            {
+                return new Uri(context.Request.Url, System.Web.Mvc.UrlHelper.GenerateContentUrl(relativeUrl, context)).ToString();
+            }
         }
     }
 }
