@@ -88,6 +88,12 @@
     <Reference Include="Microsoft.WindowsAzure.Configuration, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.3.2.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
     </Reference>
+    <Reference Include="Mindscape.Raygun4Net, Version=5.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mindscape.Raygun4Net.5.6.0\lib\net40\Mindscape.Raygun4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Mindscape.Raygun4Net4, Version=5.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mindscape.Raygun4Net.5.6.0\lib\net40\Mindscape.Raygun4Net4.dll</HintPath>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>

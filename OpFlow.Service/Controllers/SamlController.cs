@@ -32,6 +32,7 @@ namespace OpFlow.Service.Controllers
         /// </summary>
         /// <returns></returns>
         [Route("Saml/Login", Name = "SamlLogin")]
+        [HttpPost]
         public async Task<ActionResult> SamlLogin()
         {
             try

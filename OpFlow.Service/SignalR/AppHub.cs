@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.SignalR;
+using Mindscape.Raygun4Net;
 using OpFlow.Service.Models;
 
 namespace OpFlow.Service.SignalR
@@ -15,38 +16,50 @@ namespace OpFlow.Service.SignalR
     {
         public async Task SendSurgeryMessage(int surgeryId, string message)
         {
-            var user = CacheUtil.GetUserByEmail();
-            var insertTimestamp = DateTime.Now;
-            
-            await DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
-                surgeryId, null, message);
-
-            var recipients = await DataAccess.SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
-            var surgery = DataAccess.SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
-            var userObject = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
-            var patient = await DataAccess.SecureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
-                userObject.LastName, (int)userObject.RoleID, user.DatabaseName);
-
-            var sender = userObject;
-
-            
-            Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
-
-            // Prepend surgery descriptor to message
-            var surgeryText =
-                $"MRN: {surgery.CaseNumber} Room: {surgery.RoomDescription} Patient: {patient.Initials} Gender: {patient.Gender} Age: {patient.PatientAge} Message: ";
-
-            message = surgeryText + message;
-
-            foreach (var recipient in recipients)
+            try
             {
-                await SendMessage(recipient.Email, message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
+                var user = CacheUtil.GetUserByEmail(Context.User.Identity.Name);
+                var insertTimestamp = DateTime.Now;
+
+                await DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
+                    surgeryId, null, message);
+
+                var recipients = await DataAccess.SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
+                var surgery = DataAccess.SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+                var userObject = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                var patient = await DataAccess.SecureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
+                    userObject.LastName, (int)userObject.RoleID, user.DatabaseName);
+
+                var sender = userObject;
+
+
+                Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
+
+                // Prepend surgery descriptor to message
+                var surgeryText =
+                    $"MRN: {surgery.CaseNumber} Room: {surgery.RoomDescription} Patient: {patient.Initials} Gender: {patient.Gender} Age: {patient.PatientAge} Message: ";
+
+                message = surgeryText + message;
+
+                foreach (var recipient in recipients)
+                {
+                    await SendMessage(recipient.Email, message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
+                client.Send(e);
+                throw;
+            }
+            
+           
         }
 
         public async Task SendPrivateMessage(int communicationUserId, string message)
         {
-            var user = CacheUtil.GetUserByEmail();
+            var user = CacheUtil.GetUserByEmail(Context.User.Identity.Name);
             var insertTimestamp = DateTime.Now;
 
             await DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,

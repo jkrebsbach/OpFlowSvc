@@ -30,9 +30,10 @@ namespace OpFlow.Service
             return secureUser;
         }
 
-        public static UserSecurity GetUserByEmail()
+        public static UserSecurity GetUserByEmail(string userName = null)
         {
-            var userName = HttpContext.Current.User.Identity.GetUserName();
+            if (userName == null)
+                userName = HttpContext.Current.User.Identity.GetUserName();
 
             if (MemCache.Contains(userName))
                 return MemCache[userName] as UserSecurity;
