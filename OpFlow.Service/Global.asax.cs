@@ -25,8 +25,6 @@ namespace OpFlow.Service
 
         protected void Application_Start()
         {
-            ComponentPro.Licensing.Saml.LicenseManager.SetLicenseKey(ComponentProLicense.Key);
-
             AreaRegistration.RegisterAllAreas();
 
             RegisterRoutes(RouteTable.Routes);
@@ -43,58 +41,56 @@ namespace OpFlow.Service
 
         private void LoadCertificate()
         {
-            //var sha256DigestMethod = "http://www.w3.org/2001/04/xmlenc#sha256";
-            //var sha256SignatureMethod = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256";
-            //CryptoConfig.AddAlgorithm(typeof(RSAPKCS1SHA256SignatureDescription), sha256SignatureMethod);
+            var sha256DigestMethod = "http://www.w3.org/2001/04/xmlenc#sha256";
+            var sha256SignatureMethod = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256";
+            CryptoConfig.AddAlgorithm(typeof(RSAPKCS1SHA256SignatureDescription), sha256SignatureMethod);
 
-            //var decryptionKeyTask = KeyVaultHelper.GetCertificate();
-            //decryptionKeyTask.Wait();
+            var decryptionKeyTask = KeyVaultHelper.GetCertificate();
+            decryptionKeyTask.Wait();
 
-            //Application[CertKeyName] = decryptionKeyTask.Result;
+            Application[CertKeyName] = decryptionKeyTask.Result;
+            //var cert = TryStore(StoreLocation.CurrentUser);
 
-            X509Store certStore = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+            //if (cert == null)
+            //    cert = TryStore(StoreLocation.LocalMachine);
+
+            //if (cert != null)
+            //{
+            //    // Use certificate
+            //    Console.WriteLine(cert.FriendlyName);
+            //    Application[CertKeyName] = cert;
+
+            //}
+        }
+
+        private X509Certificate2 TryStore(StoreLocation storeLocation)
+        {
+
+            X509Store certStore = new X509Store(StoreName.My, storeLocation);
             certStore.Open(OpenFlags.ReadOnly);
             X509Certificate2Collection certCollection = certStore.Certificates.Find(
                 X509FindType.FindByThumbprint,
                 // Replace below with your certificate's thumbprint
                 "0A16E68470EB22FAA7D7874C997BD9E8CBBAE1FA",
                 false);
-            
-            // Get the first cert with the thumbprint
-            if (certCollection.Count > 0)
-            {
-                X509Certificate2 cert = certCollection[0];
-
-                // Use certificate
-                Console.WriteLine(cert.FriendlyName);
-                Application[CertKeyName] = cert;
-                return;
-            }
-
-
-            certStore = new X509Store(StoreName.My, StoreLocation.LocalMachine);
-            certStore.Open(OpenFlags.ReadOnly);
-            certCollection = certStore.Certificates.Find(
-                X509FindType.FindByThumbprint,
-                // Replace below with your certificate's thumbprint
-                "0A16E68470EB22FAA7D7874C997BD9E8CBBAE1FA",
-                false);
 
             // Get the first cert with the thumbprint
             if (certCollection.Count > 0)
             {
-                X509Certificate2 cert = certCollection[0];
-
-                // Use certificate
-                Console.WriteLine(cert.FriendlyName);
-                Application[CertKeyName] = cert;
+                return certCollection[0];
             }
+
+            return null;
         }
 
         private void LoadRequestorCertificate()
         {
             var certPath = Path.Combine(HttpRuntime.AppDomainAppPath, @"FedTest.cer");
-            var cert = X509Certificate2.CreateFromCertFile(certPath);
+            
+            X509Certificate2 cert = new X509Certificate2(certPath, string.Empty,
+                X509KeyStorageFlags.MachineKeySet |
+                X509KeyStorageFlags.PersistKeySet |
+                X509KeyStorageFlags.Exportable);
 
             Application[RequestorCertKeyName] = cert;
         }

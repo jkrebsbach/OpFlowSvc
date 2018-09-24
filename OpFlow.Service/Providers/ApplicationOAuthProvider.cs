@@ -49,7 +49,7 @@ namespace OpFlow.Service.Providers
             context.Request.Context.Authentication.SignIn(cookiesIdentity);
         }
 
-        public static async Task<string> GenerateBearerToken(string username, string userEmail, List<string> opflowRoles)
+        public static async Task<string> GenerateBearerToken(string username, string userEmail, string firstName, string lastName, List<string> opflowRoles)
         {
             try
             {
@@ -73,8 +73,8 @@ namespace OpFlow.Service.Providers
                     var userAuthId = new Guid(user.Id);
 
                     var roleId = opflowRoles.Any(r => r.Contains("surgeon")) ? 1 : 4;
-                    var userId = await SqlHelper.CreateUser(userAuthId, roleId, null, username, username,
-                        userEmail, null, null, null, 1, 1);
+                    var userId = await SqlHelper.CreateUser(userAuthId, roleId, null, firstName, lastName,
+                        username, null, null, null, 1, 1);
                 }
 
                 var oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,

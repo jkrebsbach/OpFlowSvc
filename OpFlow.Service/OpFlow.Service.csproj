@@ -45,13 +45,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ComponentPro.Common, Version=6.8.40.4155, Culture=neutral, PublicKeyToken=0efede2d78b28dff, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\ComponentPro\UltimateStudio v6.8.4155\Bin\Net\ComponentPro.Common.dll</HintPath>
-    </Reference>
     <Reference Include="ComponentPro.Saml, Version=6.8.40.4155, Culture=neutral, PublicKeyToken=0efede2d78b28dff, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\ComponentPro\UltimateStudio v6.8.4155\Bin\Net\ComponentPro.Saml.dll</HintPath>
+      <HintPath>..\..\..\..\..\ComponentPro\UltimateSaml v7.0.88\Bin\Net\ComponentPro.Saml.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.3.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
@@ -278,7 +274,6 @@
     <Content Include="Scripts\jquery-3.3.1-vsdoc.js" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComponentProLicense.cs" />
     <Compile Include="Controllers\AnalyticsController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\SamlController.cs" />

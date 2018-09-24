@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Web;
@@ -18,6 +19,8 @@ using ComponentPro.Saml2;
 using ComponentPro.Saml2.Binding;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Mindscape.Raygun4Net;
+using Newtonsoft.Json;
 using OpFlow.Service.App_Start;
 using OpFlow.Service.DataAccess;
 using OpFlow.Service.Providers;
@@ -95,9 +98,11 @@ namespace OpFlow.Service.Controllers
         /// <returns>The authentication request.</returns>
         private AuthnRequest BuildAuthenticationRequest(HttpContextBase context, string idpToSPBindingList, string spToIdPBinding)
         {
-            string issuerUrl = Util.GetAbsoluteUrl(context, "~/");
+            //string issuerUrl = Util.GetAbsoluteUrl(context, "~/");
+            string issuerUrl = "http://authentication.operativeflow.com/adfs/services/trust";
+
             // Construct the assertion Consumer Service Url.
-            string assertionConsumerServiceUrl = string.Format("{0}?{1}={2}", Util.GetAbsoluteUrl(context, "~/AssertionService"),
+            string assertionConsumerServiceUrl = string.Format("{0}?{1}={2}", Util.GetAbsoluteUrl(context, "~/saml/login"),
                 Util.BindingVarName, HttpUtility.UrlEncode(idpToSPBindingList));
 
             // Create the authentication request.
@@ -114,8 +119,14 @@ namespace OpFlow.Service.Controllers
                 // Get the certificate
                 X509Certificate2 x509Certificate = (X509Certificate2)context.Application[CertKeyName];
 
+                var exportedKeyMaterial = x509Certificate.PrivateKey.ToXmlString(true);
+
+                var key = new RSACryptoServiceProvider(new CspParameters(24 /* PROV_RSA_AES */));
+                key.PersistKeyInCsp = false;
+                key.FromXmlString(exportedKeyMaterial);
+
                 // Sign the authentication request.
-                authnRequest.Sign(x509Certificate);
+                authnRequest.Sign(key, x509Certificate, "http://www.w3.org/2001/04/xmlenc#sha256", "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"); // In this case we sign the entity descriptor. 
             }
             return authnRequest;
 
@@ -140,7 +151,7 @@ namespace OpFlow.Service.Controllers
                 if (samlResponse.IsSigned())
                 {
                     // Loaded the previously loaded certificate.
-                    X509Certificate2 x509Certificate = (X509Certificate2)System.Web.HttpContext.Current.Application[CertKeyName];
+                    X509Certificate2 x509Certificate = (X509Certificate2)System.Web.HttpContext.Current.Application[RequestorCertKeyName];
 
                     // Validate the SAML response with the certificate.
                     if (!samlResponse.Validate(x509Certificate))
@@ -159,26 +170,33 @@ namespace OpFlow.Service.Controllers
                     throw new ApplicationException("SAML response is not success");
                 }
 
-                Assertion samlAssertion;
+                Assertion samlAssertion = null;
 
-                // Define ENCRYPTEDSAML preprocessor flag if you wish to decrypt the SAML response.
-#if ENCRYPTEDSAML
-                if (samlResponse.GetEncryptedAssertions().Count > 0)
+                var encAssertions = samlResponse.GetEncryptedAssertions();
+                var assertions = samlResponse.GetAssertions();
+
+                if (encAssertions.Count > 0)
                 {
-                    EncryptedAssertion encryptedAssertion = samlResponse.GetEncryptedAssertions()[0];
+                    foreach (var encryptedAssertion in encAssertions)
+                    {
+                        if (encryptedAssertion == null)
+                        {
+                            continue;
+                        }
 
-                    var decryptionKey = (X509Certificate2)HttpContext.Application[CertKeyName];
+                        var decryptionKey = (X509Certificate2)HttpContext.Application[CertKeyName];
 
-                    // Decrypt the encrypted assertion.
-                    samlAssertion = encryptedAssertion.Decrypt(decryptionKey.PrivateKey, null);
+                        // Decrypt the encrypted assertion.
+                        samlAssertion = encryptedAssertion.Decrypt(decryptionKey.PrivateKey, null);
+                    }
                 }
                 else
                 {
                     throw new ApplicationException("No encrypted assertions found in the SAML response");
                 }
-#else
+
                 // Get the asserted identity.
-                if (samlResponse.GetAssertions().Length > 0)
+                if (samlAssertion == null && assertions.Length > 0)
                 {
                     samlAssertion = samlResponse.GetAssertions()[0];
                 }
@@ -186,7 +204,10 @@ namespace OpFlow.Service.Controllers
                 {
                     throw new ApplicationException("No assertions found in the SAML response");
                 }
-#endif
+
+
+                if (samlAssertion == null)
+                    throw new Exception("Saml assertion null");
 
                 // Get the subject name identifier.
                 string userName;
@@ -202,32 +223,39 @@ namespace OpFlow.Service.Controllers
 
                 #region Extract Custom Attributes
 
-                // If you need to add custom attributes, uncomment the following code
-                //if (samlAssertion.AttributeStatements.Count > 0)
-                //{
-                //    foreach (AttributeStatement attributeStatement in samlAssertion.AttributeStatements)
-                //    {
-                //        // If you need to decrypt encrypted attributes, refer to this topic: http://www.samlcomponent.net/encrypting-and-decrypting-saml-response-xml
-                //        foreach (ComponentPro.Saml2.Attribute attribute in attributeStatement.Attributes)
-                //        {
-                //            // Process your custom attribute here.
-                //            // ...
-                //        }
-                //    }
-                //}
+                var firstName = string.Empty;
+                var lastName = string.Empty;
+
+                //If you need to add custom attributes, uncomment the following code
+                foreach (var attributeStatement in samlAssertion.AttributeStatements ?? new AttributeStatement [0])
+                {
+                    // If you need to decrypt encrypted attributes, refer to this topic: http://www.samlcomponent.net/encrypting-and-decrypting-saml-response-xml
+                    foreach (ComponentPro.Saml2.Attribute attribute in attributeStatement.Attributes)
+                    {
+                        if (attribute.Name == "fname")
+                            firstName = ParseStringValue(attribute.Values);
+
+                        if (attribute.Name == "lname")
+                            lastName = ParseStringValue(attribute.Values);
+
+                        // Process your custom attribute here.
+                        // ...
+                    }
+                }
 
                 #endregion
 
                 // Set authentication cookie.
                 System.Web.Security.FormsAuthentication.SetAuthCookie(userName, false);
 
+                // attemp to generate universally unique identifiers
                 var email = userName;
-                if (userName.IndexOf("@") <= 0)
+                if (userName.IndexOf("@", StringComparison.Ordinal) <= 0)
                 {
-                    email = userName + "@opflowtech.com";
+                    email = userName + "@unc.saml";
                 }
 
-                var token = await ApplicationOAuthProvider.GenerateBearerToken(userName, email, new List<string>());
+                var token = await ApplicationOAuthProvider.GenerateBearerToken(userName, email, firstName, lastName, new List<string>());
 
                 // Redirect to the requested URL.
                 var responseUrl = ConfigurationManager.AppSettings["ResponseURL"];
@@ -239,11 +267,19 @@ namespace OpFlow.Service.Controllers
 
             catch (Exception exception)
             {
+                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
+                client.Send(exception);
+
                 System.Diagnostics.Trace.Write("ServiceProvider - An Error occurred: " + exception.ToString());
                 throw exception;
             }
 
             return View();
+        }
+
+        private string ParseStringValue(IList<AttributeValue> values)
+        {
+            return values.FirstOrDefault()?.Data.ToString() ?? string.Empty;
         }
 
         /// <summary>

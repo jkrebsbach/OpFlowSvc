@@ -14,10 +14,10 @@ namespace OpFlow.Service.DataAccess
 {
     public static class KeyVaultHelper
     {
-        const string CLIENT_ID = "e31f24bd-7908-4c51-9fd1-3e3e004ccd1b";
-        const string CLIENT_SECRET = "uhX0xERxt1KGFZg/FMj4YV+Df4ryuFvRVsFiqCVp3mc=";
+        const string CLIENT_ID = "626daf39-f2d5-44a3-9f53-9e275f1a6e76";
+        const string CLIENT_SECRET = "P1ma6wbXj8pFXmAXhXLol1o+q1+0MfCJxEYo4qA4PJ8=";
 
-        const string CERTIFICATE_IDENTIFIER = "https://opflowvault.vault.azure.net/certificates/OpFlowWebCert/b9d8cda9055444378484c4b860a465cf";
+        const string CERTIFICATE_IDENTIFIER = "https://opflowvault.vault.azure.net/certificates/OpFlowWebCert/9d31a2d41602465aaaf1de9bd1004b83";
 
         const string KEY_VAULT_IDENTIFIER = "https://opflowvault.vault.azure.net/";
         const string CERTIFICATE_NAME = "OpFlowWebCert";
@@ -40,7 +40,7 @@ namespace OpFlow.Service.DataAccess
                 //Console.WriteLine(Certificate2.X509Thumbprint.ToHexString());
 
                 var certificateIdentifierSecretPart =
-                    "https://opflowvault.vault.azure.net/secrets/OpFlowWebCert/b9d8cda9055444378484c4b860a465cf";
+                    "https://opflowvault.vault.azure.net/secrets/OpFlowWebCert/9d31a2d41602465aaaf1de9bd1004b83";
                 SecretBundle secret =
                     await client.GetSecretAsync(certificateIdentifierSecretPart);
 
