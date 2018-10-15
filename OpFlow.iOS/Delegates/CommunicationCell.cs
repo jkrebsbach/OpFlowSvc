@@ -19,9 +19,11 @@ namespace OpFlow.iOS.Delegates
 
         public void UpdateCell(Messaging message)
         {
-            var messageTimestamp = message.InsertTimestamp.ToString("HH:mm");
-            if (message.InsertTimestamp.Date != DateTime.Today)
-                messageTimestamp = message.InsertTimestamp.ToString("M/d");
+            var messageTime = message.InsertTimestamp.LocalDateTime;
+
+            var messageTimestamp = messageTime.ToString("HH:mm");
+            if (messageTime.Date != DateTime.Today)
+                messageTimestamp = messageTime.ToString("M/d");
 
             LblCommunicator.Text = messageTimestamp + " " + message.Message;
             LblInitials.Text = message.UserName;

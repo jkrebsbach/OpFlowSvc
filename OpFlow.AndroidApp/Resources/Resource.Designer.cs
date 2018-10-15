@@ -30,12 +30,128 @@ namespace OpFlow.AndroidApp
 			global::PCLCrypto.Resource.String.Hello = global::OpFlow.AndroidApp.Resource.String.Hello;
 			global::Xamarin.Auth.Resource.Animation.slide_in_right = global::OpFlow.AndroidApp.Resource.Animation.slide_in_right;
 			global::Xamarin.Auth.Resource.Animation.slide_out_left = global::OpFlow.AndroidApp.Resource.Animation.slide_out_left;
+			global::Xamarin.Auth.Resource.Attribute.font = global::OpFlow.AndroidApp.Resource.Attribute.font;
+			global::Xamarin.Auth.Resource.Attribute.fontProviderAuthority = global::OpFlow.AndroidApp.Resource.Attribute.fontProviderAuthority;
+			global::Xamarin.Auth.Resource.Attribute.fontProviderCerts = global::OpFlow.AndroidApp.Resource.Attribute.fontProviderCerts;
+			global::Xamarin.Auth.Resource.Attribute.fontProviderFetchStrategy = global::OpFlow.AndroidApp.Resource.Attribute.fontProviderFetchStrategy;
+			global::Xamarin.Auth.Resource.Attribute.fontProviderFetchTimeout = global::OpFlow.AndroidApp.Resource.Attribute.fontProviderFetchTimeout;
+			global::Xamarin.Auth.Resource.Attribute.fontProviderPackage = global::OpFlow.AndroidApp.Resource.Attribute.fontProviderPackage;
+			global::Xamarin.Auth.Resource.Attribute.fontProviderQuery = global::OpFlow.AndroidApp.Resource.Attribute.fontProviderQuery;
+			global::Xamarin.Auth.Resource.Attribute.fontStyle = global::OpFlow.AndroidApp.Resource.Attribute.fontStyle;
+			global::Xamarin.Auth.Resource.Attribute.fontWeight = global::OpFlow.AndroidApp.Resource.Attribute.fontWeight;
+			global::Xamarin.Auth.Resource.Boolean.abc_action_bar_embed_tabs = global::OpFlow.AndroidApp.Resource.Boolean.abc_action_bar_embed_tabs;
+			global::Xamarin.Auth.Resource.Color.notification_action_color_filter = global::OpFlow.AndroidApp.Resource.Color.notification_action_color_filter;
+			global::Xamarin.Auth.Resource.Color.notification_icon_bg_color = global::OpFlow.AndroidApp.Resource.Color.notification_icon_bg_color;
+			global::Xamarin.Auth.Resource.Color.notification_material_background_media_default_color = global::OpFlow.AndroidApp.Resource.Color.notification_material_background_media_default_color;
+			global::Xamarin.Auth.Resource.Color.primary_text_default_material_dark = global::OpFlow.AndroidApp.Resource.Color.primary_text_default_material_dark;
+			global::Xamarin.Auth.Resource.Color.ripple_material_light = global::OpFlow.AndroidApp.Resource.Color.ripple_material_light;
+			global::Xamarin.Auth.Resource.Color.secondary_text_default_material_dark = global::OpFlow.AndroidApp.Resource.Color.secondary_text_default_material_dark;
+			global::Xamarin.Auth.Resource.Color.secondary_text_default_material_light = global::OpFlow.AndroidApp.Resource.Color.secondary_text_default_material_light;
+			global::Xamarin.Auth.Resource.Dimension.compat_button_inset_horizontal_material = global::OpFlow.AndroidApp.Resource.Dimension.compat_button_inset_horizontal_material;
+			global::Xamarin.Auth.Resource.Dimension.compat_button_inset_vertical_material = global::OpFlow.AndroidApp.Resource.Dimension.compat_button_inset_vertical_material;
+			global::Xamarin.Auth.Resource.Dimension.compat_button_padding_horizontal_material = global::OpFlow.AndroidApp.Resource.Dimension.compat_button_padding_horizontal_material;
+			global::Xamarin.Auth.Resource.Dimension.compat_button_padding_vertical_material = global::OpFlow.AndroidApp.Resource.Dimension.compat_button_padding_vertical_material;
+			global::Xamarin.Auth.Resource.Dimension.compat_control_corner_material = global::OpFlow.AndroidApp.Resource.Dimension.compat_control_corner_material;
+			global::Xamarin.Auth.Resource.Dimension.notification_action_icon_size = global::OpFlow.AndroidApp.Resource.Dimension.notification_action_icon_size;
+			global::Xamarin.Auth.Resource.Dimension.notification_action_text_size = global::OpFlow.AndroidApp.Resource.Dimension.notification_action_text_size;
+			global::Xamarin.Auth.Resource.Dimension.notification_big_circle_margin = global::OpFlow.AndroidApp.Resource.Dimension.notification_big_circle_margin;
+			global::Xamarin.Auth.Resource.Dimension.notification_content_margin_start = global::OpFlow.AndroidApp.Resource.Dimension.notification_content_margin_start;
+			global::Xamarin.Auth.Resource.Dimension.notification_large_icon_height = global::OpFlow.AndroidApp.Resource.Dimension.notification_large_icon_height;
+			global::Xamarin.Auth.Resource.Dimension.notification_large_icon_width = global::OpFlow.AndroidApp.Resource.Dimension.notification_large_icon_width;
+			global::Xamarin.Auth.Resource.Dimension.notification_main_column_padding_top = global::OpFlow.AndroidApp.Resource.Dimension.notification_main_column_padding_top;
+			global::Xamarin.Auth.Resource.Dimension.notification_media_narrow_margin = global::OpFlow.AndroidApp.Resource.Dimension.notification_media_narrow_margin;
+			global::Xamarin.Auth.Resource.Dimension.notification_right_icon_size = global::OpFlow.AndroidApp.Resource.Dimension.notification_right_icon_size;
+			global::Xamarin.Auth.Resource.Dimension.notification_right_side_padding_top = global::OpFlow.AndroidApp.Resource.Dimension.notification_right_side_padding_top;
+			global::Xamarin.Auth.Resource.Dimension.notification_small_icon_background_padding = global::OpFlow.AndroidApp.Resource.Dimension.notification_small_icon_background_padding;
+			global::Xamarin.Auth.Resource.Dimension.notification_small_icon_size_as_large = global::OpFlow.AndroidApp.Resource.Dimension.notification_small_icon_size_as_large;
+			global::Xamarin.Auth.Resource.Dimension.notification_subtext_size = global::OpFlow.AndroidApp.Resource.Dimension.notification_subtext_size;
+			global::Xamarin.Auth.Resource.Dimension.notification_top_pad = global::OpFlow.AndroidApp.Resource.Dimension.notification_top_pad;
+			global::Xamarin.Auth.Resource.Dimension.notification_top_pad_large_text = global::OpFlow.AndroidApp.Resource.Dimension.notification_top_pad_large_text;
 			global::Xamarin.Auth.Resource.Drawable.ic_arrow_back = global::OpFlow.AndroidApp.Resource.Drawable.ic_arrow_back;
+			global::Xamarin.Auth.Resource.Drawable.notification_action_background = global::OpFlow.AndroidApp.Resource.Drawable.notification_action_background;
+			global::Xamarin.Auth.Resource.Drawable.notification_bg = global::OpFlow.AndroidApp.Resource.Drawable.notification_bg;
+			global::Xamarin.Auth.Resource.Drawable.notification_bg_low = global::OpFlow.AndroidApp.Resource.Drawable.notification_bg_low;
+			global::Xamarin.Auth.Resource.Drawable.notification_bg_low_normal = global::OpFlow.AndroidApp.Resource.Drawable.notification_bg_low_normal;
+			global::Xamarin.Auth.Resource.Drawable.notification_bg_low_pressed = global::OpFlow.AndroidApp.Resource.Drawable.notification_bg_low_pressed;
+			global::Xamarin.Auth.Resource.Drawable.notification_bg_normal = global::OpFlow.AndroidApp.Resource.Drawable.notification_bg_normal;
+			global::Xamarin.Auth.Resource.Drawable.notification_bg_normal_pressed = global::OpFlow.AndroidApp.Resource.Drawable.notification_bg_normal_pressed;
+			global::Xamarin.Auth.Resource.Drawable.notification_icon_background = global::OpFlow.AndroidApp.Resource.Drawable.notification_icon_background;
+			global::Xamarin.Auth.Resource.Drawable.notification_template_icon_bg = global::OpFlow.AndroidApp.Resource.Drawable.notification_template_icon_bg;
+			global::Xamarin.Auth.Resource.Drawable.notification_template_icon_low_bg = global::OpFlow.AndroidApp.Resource.Drawable.notification_template_icon_low_bg;
+			global::Xamarin.Auth.Resource.Drawable.notification_tile_bg = global::OpFlow.AndroidApp.Resource.Drawable.notification_tile_bg;
+			global::Xamarin.Auth.Resource.Drawable.notify_panel_notification_icon_bg = global::OpFlow.AndroidApp.Resource.Drawable.notify_panel_notification_icon_bg;
+			global::Xamarin.Auth.Resource.Id.action0 = global::OpFlow.AndroidApp.Resource.Id.action0;
+			global::Xamarin.Auth.Resource.Id.action_container = global::OpFlow.AndroidApp.Resource.Id.action_container;
+			global::Xamarin.Auth.Resource.Id.action_divider = global::OpFlow.AndroidApp.Resource.Id.action_divider;
+			global::Xamarin.Auth.Resource.Id.action_image = global::OpFlow.AndroidApp.Resource.Id.action_image;
+			global::Xamarin.Auth.Resource.Id.action_text = global::OpFlow.AndroidApp.Resource.Id.action_text;
+			global::Xamarin.Auth.Resource.Id.actions = global::OpFlow.AndroidApp.Resource.Id.actions;
+			global::Xamarin.Auth.Resource.Id.async = global::OpFlow.AndroidApp.Resource.Id.async;
+			global::Xamarin.Auth.Resource.Id.blocking = global::OpFlow.AndroidApp.Resource.Id.blocking;
+			global::Xamarin.Auth.Resource.Id.cancel_action = global::OpFlow.AndroidApp.Resource.Id.cancel_action;
+			global::Xamarin.Auth.Resource.Id.chronometer = global::OpFlow.AndroidApp.Resource.Id.chronometer;
+			global::Xamarin.Auth.Resource.Id.end_padder = global::OpFlow.AndroidApp.Resource.Id.end_padder;
+			global::Xamarin.Auth.Resource.Id.forever = global::OpFlow.AndroidApp.Resource.Id.forever;
+			global::Xamarin.Auth.Resource.Id.icon = global::OpFlow.AndroidApp.Resource.Id.icon;
+			global::Xamarin.Auth.Resource.Id.icon_group = global::OpFlow.AndroidApp.Resource.Id.icon_group;
+			global::Xamarin.Auth.Resource.Id.info = global::OpFlow.AndroidApp.Resource.Id.info;
+			global::Xamarin.Auth.Resource.Id.italic = global::OpFlow.AndroidApp.Resource.Id.italic;
+			global::Xamarin.Auth.Resource.Id.line1 = global::OpFlow.AndroidApp.Resource.Id.line1;
+			global::Xamarin.Auth.Resource.Id.line3 = global::OpFlow.AndroidApp.Resource.Id.line3;
+			global::Xamarin.Auth.Resource.Id.media_actions = global::OpFlow.AndroidApp.Resource.Id.media_actions;
+			global::Xamarin.Auth.Resource.Id.normal = global::OpFlow.AndroidApp.Resource.Id.normal;
+			global::Xamarin.Auth.Resource.Id.notification_background = global::OpFlow.AndroidApp.Resource.Id.notification_background;
+			global::Xamarin.Auth.Resource.Id.notification_main_column = global::OpFlow.AndroidApp.Resource.Id.notification_main_column;
+			global::Xamarin.Auth.Resource.Id.notification_main_column_container = global::OpFlow.AndroidApp.Resource.Id.notification_main_column_container;
+			global::Xamarin.Auth.Resource.Id.right_icon = global::OpFlow.AndroidApp.Resource.Id.right_icon;
+			global::Xamarin.Auth.Resource.Id.right_side = global::OpFlow.AndroidApp.Resource.Id.right_side;
+			global::Xamarin.Auth.Resource.Id.status_bar_latest_event_content = global::OpFlow.AndroidApp.Resource.Id.status_bar_latest_event_content;
+			global::Xamarin.Auth.Resource.Id.text = global::OpFlow.AndroidApp.Resource.Id.text;
+			global::Xamarin.Auth.Resource.Id.text2 = global::OpFlow.AndroidApp.Resource.Id.text2;
+			global::Xamarin.Auth.Resource.Id.time = global::OpFlow.AndroidApp.Resource.Id.time;
+			global::Xamarin.Auth.Resource.Id.title = global::OpFlow.AndroidApp.Resource.Id.title;
 			global::Xamarin.Auth.Resource.Id.webview = global::OpFlow.AndroidApp.Resource.Id.webview;
+			global::Xamarin.Auth.Resource.Integer.cancel_button_image_alpha = global::OpFlow.AndroidApp.Resource.Integer.cancel_button_image_alpha;
+			global::Xamarin.Auth.Resource.Integer.status_bar_notification_info_maxnum = global::OpFlow.AndroidApp.Resource.Integer.status_bar_notification_info_maxnum;
 			global::Xamarin.Auth.Resource.Layout.activity_webview = global::OpFlow.AndroidApp.Resource.Layout.activity_webview;
-			global::Xamarin.Auth.Resource.String.ApplicationName = global::OpFlow.AndroidApp.Resource.String.ApplicationName;
-			global::Xamarin.Auth.Resource.String.Hello = global::OpFlow.AndroidApp.Resource.String.Hello;
+			global::Xamarin.Auth.Resource.Layout.notification_action = global::OpFlow.AndroidApp.Resource.Layout.notification_action;
+			global::Xamarin.Auth.Resource.Layout.notification_action_tombstone = global::OpFlow.AndroidApp.Resource.Layout.notification_action_tombstone;
+			global::Xamarin.Auth.Resource.Layout.notification_media_action = global::OpFlow.AndroidApp.Resource.Layout.notification_media_action;
+			global::Xamarin.Auth.Resource.Layout.notification_media_cancel_action = global::OpFlow.AndroidApp.Resource.Layout.notification_media_cancel_action;
+			global::Xamarin.Auth.Resource.Layout.notification_template_big_media = global::OpFlow.AndroidApp.Resource.Layout.notification_template_big_media;
+			global::Xamarin.Auth.Resource.Layout.notification_template_big_media_custom = global::OpFlow.AndroidApp.Resource.Layout.notification_template_big_media_custom;
+			global::Xamarin.Auth.Resource.Layout.notification_template_big_media_narrow = global::OpFlow.AndroidApp.Resource.Layout.notification_template_big_media_narrow;
+			global::Xamarin.Auth.Resource.Layout.notification_template_big_media_narrow_custom = global::OpFlow.AndroidApp.Resource.Layout.notification_template_big_media_narrow_custom;
+			global::Xamarin.Auth.Resource.Layout.notification_template_custom_big = global::OpFlow.AndroidApp.Resource.Layout.notification_template_custom_big;
+			global::Xamarin.Auth.Resource.Layout.notification_template_icon_group = global::OpFlow.AndroidApp.Resource.Layout.notification_template_icon_group;
+			global::Xamarin.Auth.Resource.Layout.notification_template_lines_media = global::OpFlow.AndroidApp.Resource.Layout.notification_template_lines_media;
+			global::Xamarin.Auth.Resource.Layout.notification_template_media = global::OpFlow.AndroidApp.Resource.Layout.notification_template_media;
+			global::Xamarin.Auth.Resource.Layout.notification_template_media_custom = global::OpFlow.AndroidApp.Resource.Layout.notification_template_media_custom;
+			global::Xamarin.Auth.Resource.Layout.notification_template_part_chronometer = global::OpFlow.AndroidApp.Resource.Layout.notification_template_part_chronometer;
+			global::Xamarin.Auth.Resource.Layout.notification_template_part_time = global::OpFlow.AndroidApp.Resource.Layout.notification_template_part_time;
+			global::Xamarin.Auth.Resource.String.status_bar_notification_info_overflow = global::OpFlow.AndroidApp.Resource.String.status_bar_notification_info_overflow;
 			global::Xamarin.Auth.Resource.String.title_activity_webview = global::OpFlow.AndroidApp.Resource.String.title_activity_webview;
+			global::Xamarin.Auth.Resource.Style.TextAppearance_Compat_Notification = global::OpFlow.AndroidApp.Resource.Style.TextAppearance_Compat_Notification;
+			global::Xamarin.Auth.Resource.Style.TextAppearance_Compat_Notification_Info = global::OpFlow.AndroidApp.Resource.Style.TextAppearance_Compat_Notification_Info;
+			global::Xamarin.Auth.Resource.Style.TextAppearance_Compat_Notification_Info_Media = global::OpFlow.AndroidApp.Resource.Style.TextAppearance_Compat_Notification_Info_Media;
+			global::Xamarin.Auth.Resource.Style.TextAppearance_Compat_Notification_Line2 = global::OpFlow.AndroidApp.Resource.Style.TextAppearance_Compat_Notification_Line2;
+			global::Xamarin.Auth.Resource.Style.TextAppearance_Compat_Notification_Line2_Media = global::OpFlow.AndroidApp.Resource.Style.TextAppearance_Compat_Notification_Line2_Media;
+			global::Xamarin.Auth.Resource.Style.TextAppearance_Compat_Notification_Media = global::OpFlow.AndroidApp.Resource.Style.TextAppearance_Compat_Notification_Media;
+			global::Xamarin.Auth.Resource.Style.TextAppearance_Compat_Notification_Time = global::OpFlow.AndroidApp.Resource.Style.TextAppearance_Compat_Notification_Time;
+			global::Xamarin.Auth.Resource.Style.TextAppearance_Compat_Notification_Time_Media = global::OpFlow.AndroidApp.Resource.Style.TextAppearance_Compat_Notification_Time_Media;
+			global::Xamarin.Auth.Resource.Style.TextAppearance_Compat_Notification_Title = global::OpFlow.AndroidApp.Resource.Style.TextAppearance_Compat_Notification_Title;
+			global::Xamarin.Auth.Resource.Style.TextAppearance_Compat_Notification_Title_Media = global::OpFlow.AndroidApp.Resource.Style.TextAppearance_Compat_Notification_Title_Media;
+			global::Xamarin.Auth.Resource.Style.Widget_Compat_NotificationActionContainer = global::OpFlow.AndroidApp.Resource.Style.Widget_Compat_NotificationActionContainer;
+			global::Xamarin.Auth.Resource.Style.Widget_Compat_NotificationActionText = global::OpFlow.AndroidApp.Resource.Style.Widget_Compat_NotificationActionText;
+			global::Xamarin.Auth.Resource.Styleable.FontFamily = global::OpFlow.AndroidApp.Resource.Styleable.FontFamily;
+			global::Xamarin.Auth.Resource.Styleable.FontFamily_fontProviderAuthority = global::OpFlow.AndroidApp.Resource.Styleable.FontFamily_fontProviderAuthority;
+			global::Xamarin.Auth.Resource.Styleable.FontFamily_fontProviderCerts = global::OpFlow.AndroidApp.Resource.Styleable.FontFamily_fontProviderCerts;
+			global::Xamarin.Auth.Resource.Styleable.FontFamily_fontProviderFetchStrategy = global::OpFlow.AndroidApp.Resource.Styleable.FontFamily_fontProviderFetchStrategy;
+			global::Xamarin.Auth.Resource.Styleable.FontFamily_fontProviderFetchTimeout = global::OpFlow.AndroidApp.Resource.Styleable.FontFamily_fontProviderFetchTimeout;
+			global::Xamarin.Auth.Resource.Styleable.FontFamily_fontProviderPackage = global::OpFlow.AndroidApp.Resource.Styleable.FontFamily_fontProviderPackage;
+			global::Xamarin.Auth.Resource.Styleable.FontFamily_fontProviderQuery = global::OpFlow.AndroidApp.Resource.Styleable.FontFamily_fontProviderQuery;
+			global::Xamarin.Auth.Resource.Styleable.FontFamilyFont = global::OpFlow.AndroidApp.Resource.Styleable.FontFamilyFont;
+			global::Xamarin.Auth.Resource.Styleable.FontFamilyFont_font = global::OpFlow.AndroidApp.Resource.Styleable.FontFamilyFont_font;
 		}
 		
 		public partial class Animation
@@ -60,8 +176,35 @@ namespace OpFlow.AndroidApp
 		public partial class Attribute
 		{
 			
+			// aapt resource value: 0x7f010009
+			public const int date = 2130771977;
+			
+			// aapt resource value: 0x7f010007
+			public const int font = 2130771975;
+			
 			// aapt resource value: 0x7f010000
-			public const int date = 2130771968;
+			public const int fontProviderAuthority = 2130771968;
+			
+			// aapt resource value: 0x7f010003
+			public const int fontProviderCerts = 2130771971;
+			
+			// aapt resource value: 0x7f010004
+			public const int fontProviderFetchStrategy = 2130771972;
+			
+			// aapt resource value: 0x7f010005
+			public const int fontProviderFetchTimeout = 2130771973;
+			
+			// aapt resource value: 0x7f010001
+			public const int fontProviderPackage = 2130771969;
+			
+			// aapt resource value: 0x7f010002
+			public const int fontProviderQuery = 2130771970;
+			
+			// aapt resource value: 0x7f010006
+			public const int fontStyle = 2130771974;
+			
+			// aapt resource value: 0x7f010008
+			public const int fontWeight = 2130771976;
 			
 			static Attribute()
 			{
@@ -73,23 +216,60 @@ namespace OpFlow.AndroidApp
 			}
 		}
 		
+		public partial class Boolean
+		{
+			
+			// aapt resource value: 0x7f090000
+			public const int abc_action_bar_embed_tabs = 2131296256;
+			
+			static Boolean()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Boolean()
+			{
+			}
+		}
+		
 		public partial class Color
 		{
 			
-			// aapt resource value: 0x7f060000
-			public const int opflow_black = 2131099648;
+			// aapt resource value: 0x7f070003
+			public const int notification_action_color_filter = 2131165187;
 			
-			// aapt resource value: 0x7f060003
-			public const int opflow_blue = 2131099651;
+			// aapt resource value: 0x7f070004
+			public const int notification_icon_bg_color = 2131165188;
 			
-			// aapt resource value: 0x7f060004
-			public const int opflow_highlight = 2131099652;
+			// aapt resource value: 0x7f070000
+			public const int notification_material_background_media_default_color = 2131165184;
 			
-			// aapt resource value: 0x7f060002
-			public const int opflow_lightgray = 2131099650;
+			// aapt resource value: 0x7f070007
+			public const int opflow_black = 2131165191;
 			
-			// aapt resource value: 0x7f060001
-			public const int opflow_white = 2131099649;
+			// aapt resource value: 0x7f07000a
+			public const int opflow_blue = 2131165194;
+			
+			// aapt resource value: 0x7f07000b
+			public const int opflow_highlight = 2131165195;
+			
+			// aapt resource value: 0x7f070009
+			public const int opflow_lightgray = 2131165193;
+			
+			// aapt resource value: 0x7f070008
+			public const int opflow_white = 2131165192;
+			
+			// aapt resource value: 0x7f070001
+			public const int primary_text_default_material_dark = 2131165185;
+			
+			// aapt resource value: 0x7f070005
+			public const int ripple_material_light = 2131165189;
+			
+			// aapt resource value: 0x7f070002
+			public const int secondary_text_default_material_dark = 2131165186;
+			
+			// aapt resource value: 0x7f070006
+			public const int secondary_text_default_material_light = 2131165190;
 			
 			static Color()
 			{
@@ -97,6 +277,79 @@ namespace OpFlow.AndroidApp
 			}
 			
 			private Color()
+			{
+			}
+		}
+		
+		public partial class Dimension
+		{
+			
+			// aapt resource value: 0x7f0a0004
+			public const int compat_button_inset_horizontal_material = 2131361796;
+			
+			// aapt resource value: 0x7f0a0005
+			public const int compat_button_inset_vertical_material = 2131361797;
+			
+			// aapt resource value: 0x7f0a0006
+			public const int compat_button_padding_horizontal_material = 2131361798;
+			
+			// aapt resource value: 0x7f0a0007
+			public const int compat_button_padding_vertical_material = 2131361799;
+			
+			// aapt resource value: 0x7f0a0008
+			public const int compat_control_corner_material = 2131361800;
+			
+			// aapt resource value: 0x7f0a0009
+			public const int notification_action_icon_size = 2131361801;
+			
+			// aapt resource value: 0x7f0a000a
+			public const int notification_action_text_size = 2131361802;
+			
+			// aapt resource value: 0x7f0a000b
+			public const int notification_big_circle_margin = 2131361803;
+			
+			// aapt resource value: 0x7f0a0001
+			public const int notification_content_margin_start = 2131361793;
+			
+			// aapt resource value: 0x7f0a000c
+			public const int notification_large_icon_height = 2131361804;
+			
+			// aapt resource value: 0x7f0a000d
+			public const int notification_large_icon_width = 2131361805;
+			
+			// aapt resource value: 0x7f0a0002
+			public const int notification_main_column_padding_top = 2131361794;
+			
+			// aapt resource value: 0x7f0a0003
+			public const int notification_media_narrow_margin = 2131361795;
+			
+			// aapt resource value: 0x7f0a000e
+			public const int notification_right_icon_size = 2131361806;
+			
+			// aapt resource value: 0x7f0a0000
+			public const int notification_right_side_padding_top = 2131361792;
+			
+			// aapt resource value: 0x7f0a000f
+			public const int notification_small_icon_background_padding = 2131361807;
+			
+			// aapt resource value: 0x7f0a0010
+			public const int notification_small_icon_size_as_large = 2131361808;
+			
+			// aapt resource value: 0x7f0a0011
+			public const int notification_subtext_size = 2131361809;
+			
+			// aapt resource value: 0x7f0a0012
+			public const int notification_top_pad = 2131361810;
+			
+			// aapt resource value: 0x7f0a0013
+			public const int notification_top_pad_large_text = 2131361811;
+			
+			static Dimension()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Dimension()
 			{
 			}
 		}
@@ -186,16 +439,52 @@ namespace OpFlow.AndroidApp
 			public const int infinity = 2130837530;
 			
 			// aapt resource value: 0x7f02001b
-			public const int OpFlowLogo = 2130837531;
+			public const int notification_action_background = 2130837531;
 			
 			// aapt resource value: 0x7f02001c
-			public const int RedExclamationPoint = 2130837532;
+			public const int notification_bg = 2130837532;
 			
 			// aapt resource value: 0x7f02001d
-			public const int RoundGrayRectangle = 2130837533;
+			public const int notification_bg_low = 2130837533;
 			
 			// aapt resource value: 0x7f02001e
-			public const int RoundRectangle = 2130837534;
+			public const int notification_bg_low_normal = 2130837534;
+			
+			// aapt resource value: 0x7f02001f
+			public const int notification_bg_low_pressed = 2130837535;
+			
+			// aapt resource value: 0x7f020020
+			public const int notification_bg_normal = 2130837536;
+			
+			// aapt resource value: 0x7f020021
+			public const int notification_bg_normal_pressed = 2130837537;
+			
+			// aapt resource value: 0x7f020022
+			public const int notification_icon_background = 2130837538;
+			
+			// aapt resource value: 0x7f020029
+			public const int notification_template_icon_bg = 2130837545;
+			
+			// aapt resource value: 0x7f02002a
+			public const int notification_template_icon_low_bg = 2130837546;
+			
+			// aapt resource value: 0x7f020023
+			public const int notification_tile_bg = 2130837539;
+			
+			// aapt resource value: 0x7f020024
+			public const int notify_panel_notification_icon_bg = 2130837540;
+			
+			// aapt resource value: 0x7f020025
+			public const int OpFlowLogo = 2130837541;
+			
+			// aapt resource value: 0x7f020026
+			public const int RedExclamationPoint = 2130837542;
+			
+			// aapt resource value: 0x7f020027
+			public const int RoundGrayRectangle = 2130837543;
+			
+			// aapt resource value: 0x7f020028
+			public const int RoundRectangle = 2130837544;
 			
 			static Drawable()
 			{
@@ -210,293 +499,386 @@ namespace OpFlow.AndroidApp
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f0a0037
-			public const int DataHeader = 2131361847;
+			// aapt resource value: 0x7f0b0042
+			public const int DataHeader = 2131427394;
 			
-			// aapt resource value: 0x7f0a000b
-			public const int DataRow = 2131361803;
+			// aapt resource value: 0x7f0b0016
+			public const int DataRow = 2131427350;
 			
-			// aapt resource value: 0x7f0a0034
-			public const int btnArticles = 2131361844;
+			// aapt resource value: 0x7f0b004f
+			public const int action0 = 2131427407;
 			
-			// aapt resource value: 0x7f0a0031
-			public const int btnCases = 2131361841;
+			// aapt resource value: 0x7f0b004c
+			public const int action_container = 2131427404;
 			
-			// aapt resource value: 0x7f0a002f
-			public const int btnCheckIn = 2131361839;
+			// aapt resource value: 0x7f0b0053
+			public const int action_divider = 2131427411;
 			
-			// aapt resource value: 0x7f0a0036
-			public const int btnCommunity = 2131361846;
+			// aapt resource value: 0x7f0b004d
+			public const int action_image = 2131427405;
 			
-			// aapt resource value: 0x7f0a0035
-			public const int btnData = 2131361845;
+			// aapt resource value: 0x7f0b004e
+			public const int action_text = 2131427406;
 			
-			// aapt resource value: 0x7f0a0013
-			public const int btnDebrief = 2131361811;
+			// aapt resource value: 0x7f0b005d
+			public const int actions = 2131427421;
 			
-			// aapt resource value: 0x7f0a003b
-			public const int btnLogin = 2131361851;
+			// aapt resource value: 0x7f0b0006
+			public const int async = 2131427334;
 			
-			// aapt resource value: 0x7f0a0032
-			public const int btnMetrics = 2131361842;
+			// aapt resource value: 0x7f0b0007
+			public const int blocking = 2131427335;
 			
-			// aapt resource value: 0x7f0a0030
-			public const int btnSchedule = 2131361840;
+			// aapt resource value: 0x7f0b003f
+			public const int btnArticles = 2131427391;
 			
-			// aapt resource value: 0x7f0a001d
-			public const int btnSearch = 2131361821;
+			// aapt resource value: 0x7f0b003c
+			public const int btnCases = 2131427388;
 			
-			// aapt resource value: 0x7f0a0033
-			public const int btnToDoList = 2131361843;
+			// aapt resource value: 0x7f0b003a
+			public const int btnCheckIn = 2131427386;
 			
-			// aapt resource value: 0x7f0a004d
-			public const int gvDailySchedule = 2131361869;
+			// aapt resource value: 0x7f0b0041
+			public const int btnCommunity = 2131427393;
 			
-			// aapt resource value: 0x7f0a000e
-			public const int gvScheduledProcedures = 2131361806;
+			// aapt resource value: 0x7f0b0040
+			public const int btnData = 2131427392;
 			
-			// aapt resource value: 0x7f0a0024
-			public const int gvSurgeryUsers = 2131361828;
+			// aapt resource value: 0x7f0b001e
+			public const int btnDebrief = 2131427358;
 			
-			// aapt resource value: 0x7f0a0052
-			public const int ivAlerts = 2131361874;
+			// aapt resource value: 0x7f0b0046
+			public const int btnLogin = 2131427398;
 			
-			// aapt resource value: 0x7f0a0026
-			public const int ivCheckInStatus = 2131361830;
+			// aapt resource value: 0x7f0b003d
+			public const int btnMetrics = 2131427389;
 			
-			// aapt resource value: 0x7f0a0053
-			public const int ivDelays = 2131361875;
+			// aapt resource value: 0x7f0b003b
+			public const int btnSchedule = 2131427387;
 			
-			// aapt resource value: 0x7f0a0056
-			public const int ivHeaderIcon = 2131361878;
+			// aapt resource value: 0x7f0b0028
+			public const int btnSearch = 2131427368;
 			
-			// aapt resource value: 0x7f0a0051
-			public const int ivPrefCard = 2131361873;
+			// aapt resource value: 0x7f0b003e
+			public const int btnToDoList = 2131427390;
 			
-			// aapt resource value: 0x7f0a0028
-			public const int ivReviewStatus = 2131361832;
+			// aapt resource value: 0x7f0b0050
+			public const int cancel_action = 2131427408;
 			
-			// aapt resource value: 0x7f0a002a
-			public const int ivRoleStatus = 2131361834;
+			// aapt resource value: 0x7f0b0058
+			public const int chronometer = 2131427416;
 			
-			// aapt resource value: 0x7f0a002e
-			public const int ivStatus = 2131361838;
+			// aapt resource value: 0x7f0b005f
+			public const int end_padder = 2131427423;
 			
-			// aapt resource value: 0x7f0a0043
-			public const int ivWeekBack = 2131361859;
+			// aapt resource value: 0x7f0b0008
+			public const int forever = 2131427336;
 			
-			// aapt resource value: 0x7f0a0045
-			public const int ivWeekForward = 2131361861;
+			// aapt resource value: 0x7f0b006c
+			public const int gvDailySchedule = 2131427436;
 			
-			// aapt resource value: 0x7f0a0008
-			public const int lvCaseDetails = 2131361800;
+			// aapt resource value: 0x7f0b0019
+			public const int gvScheduledProcedures = 2131427353;
 			
-			// aapt resource value: 0x7f0a002c
-			public const int lvFutureCases = 2131361836;
+			// aapt resource value: 0x7f0b002f
+			public const int gvSurgeryUsers = 2131427375;
 			
-			// aapt resource value: 0x7f0a003d
-			public const int mainFragment = 2131361853;
+			// aapt resource value: 0x7f0b005a
+			public const int icon = 2131427418;
 			
-			// aapt resource value: 0x7f0a005c
-			public const int menu_cases = 2131361884;
+			// aapt resource value: 0x7f0b005e
+			public const int icon_group = 2131427422;
 			
-			// aapt resource value: 0x7f0a005a
-			public const int menu_communicator = 2131361882;
+			// aapt resource value: 0x7f0b0059
+			public const int info = 2131427417;
 			
-			// aapt resource value: 0x7f0a005d
-			public const int menu_edit = 2131361885;
+			// aapt resource value: 0x7f0b0009
+			public const int italic = 2131427337;
 			
-			// aapt resource value: 0x7f0a005f
-			public const int menu_preferences = 2131361887;
+			// aapt resource value: 0x7f0b0071
+			public const int ivAlerts = 2131427441;
 			
-			// aapt resource value: 0x7f0a005e
-			public const int menu_save = 2131361886;
+			// aapt resource value: 0x7f0b0031
+			public const int ivCheckInStatus = 2131427377;
 			
-			// aapt resource value: 0x7f0a005b
-			public const int menu_schedule = 2131361883;
+			// aapt resource value: 0x7f0b0072
+			public const int ivDelays = 2131427442;
 			
-			// aapt resource value: 0x7f0a0059
-			public const int menu_search = 2131361881;
+			// aapt resource value: 0x7f0b0075
+			public const int ivHeaderIcon = 2131427445;
 			
-			// aapt resource value: 0x7f0a003f
-			public const int navHome = 2131361855;
+			// aapt resource value: 0x7f0b0070
+			public const int ivPrefCard = 2131427440;
 			
-			// aapt resource value: 0x7f0a003e
-			public const int navSchedule = 2131361854;
+			// aapt resource value: 0x7f0b0033
+			public const int ivReviewStatus = 2131427379;
 			
-			// aapt resource value: 0x7f0a0040
-			public const int navSearch = 2131361856;
+			// aapt resource value: 0x7f0b0035
+			public const int ivRoleStatus = 2131427381;
 			
-			// aapt resource value: 0x7f0a0015
-			public const int pnlCard = 2131361813;
+			// aapt resource value: 0x7f0b0039
+			public const int ivStatus = 2131427385;
 			
-			// aapt resource value: 0x7f0a001e
-			public const int pnlCaseDetail = 2131361822;
+			// aapt resource value: 0x7f0b0062
+			public const int ivWeekBack = 2131427426;
 			
-			// aapt resource value: 0x7f0a0009
-			public const int pnlConfirmButton = 2131361801;
+			// aapt resource value: 0x7f0b0064
+			public const int ivWeekForward = 2131427428;
 			
-			// aapt resource value: 0x7f0a0017
-			public const int pnlDashboard = 2131361815;
+			// aapt resource value: 0x7f0b0000
+			public const int line1 = 2131427328;
 			
-			// aapt resource value: 0x7f0a0016
-			public const int pnlFlow = 2131361814;
+			// aapt resource value: 0x7f0b0001
+			public const int line3 = 2131427329;
 			
-			// aapt resource value: 0x7f0a004e
-			public const int pnlLayout = 2131361870;
+			// aapt resource value: 0x7f0b0013
+			public const int lvCaseDetails = 2131427347;
 			
-			// aapt resource value: 0x7f0a0055
-			public const int pnlOpenCase = 2131361877;
+			// aapt resource value: 0x7f0b0037
+			public const int lvFutureCases = 2131427383;
 			
-			// aapt resource value: 0x7f0a0014
-			public const int pnlPatient = 2131361812;
+			// aapt resource value: 0x7f0b0048
+			public const int mainFragment = 2131427400;
 			
-			// aapt resource value: 0x7f0a0050
-			public const int pnlScheduledCase = 2131361872;
+			// aapt resource value: 0x7f0b0052
+			public const int media_actions = 2131427410;
 			
-			// aapt resource value: 0x7f0a000d
-			public const int pnlScheduledProceduresHeaders = 2131361805;
+			// aapt resource value: 0x7f0b007b
+			public const int menu_cases = 2131427451;
 			
-			// aapt resource value: 0x7f0a0023
-			public const int spnAssignment = 2131361827;
+			// aapt resource value: 0x7f0b0079
+			public const int menu_communicator = 2131427449;
 			
-			// aapt resource value: 0x7f0a0042
-			public const int spnRoom = 2131361858;
+			// aapt resource value: 0x7f0b007c
+			public const int menu_edit = 2131427452;
 			
-			// aapt resource value: 0x7f0a0022
-			public const int swtCheckIn = 2131361826;
+			// aapt resource value: 0x7f0b007e
+			public const int menu_preferences = 2131427454;
 			
-			// aapt resource value: 0x7f0a0041
-			public const int swtSurgeon = 2131361857;
+			// aapt resource value: 0x7f0b007d
+			public const int menu_save = 2131427453;
 			
-			// aapt resource value: 0x7f0a003c
-			public const int toolbar = 2131361852;
+			// aapt resource value: 0x7f0b007a
+			public const int menu_schedule = 2131427450;
 			
-			// aapt resource value: 0x7f0a001a
-			public const int txtAnesName = 2131361818;
+			// aapt resource value: 0x7f0b0078
+			public const int menu_search = 2131427448;
 			
-			// aapt resource value: 0x7f0a0021
-			public const int txtCard = 2131361825;
+			// aapt resource value: 0x7f0b004a
+			public const int navHome = 2131427402;
 			
-			// aapt resource value: 0x7f0a0020
-			public const int txtCase = 2131361824;
+			// aapt resource value: 0x7f0b0049
+			public const int navSchedule = 2131427401;
 			
-			// aapt resource value: 0x7f0a002d
-			public const int txtCaseTime = 2131361837;
+			// aapt resource value: 0x7f0b004b
+			public const int navSearch = 2131427403;
 			
-			// aapt resource value: 0x7f0a0019
-			public const int txtCirculatorName = 2131361817;
+			// aapt resource value: 0x7f0b000a
+			public const int normal = 2131427338;
 			
-			// aapt resource value: 0x7f0a000a
-			public const int txtConfirmText = 2131361802;
+			// aapt resource value: 0x7f0b005c
+			public const int notification_background = 2131427420;
 			
-			// aapt resource value: 0x7f0a0044
-			public const int txtCurrentWeek = 2131361860;
+			// aapt resource value: 0x7f0b0055
+			public const int notification_main_column = 2131427413;
 			
-			// aapt resource value: 0x7f0a0027
-			public const int txtDelay = 2131361831;
+			// aapt resource value: 0x7f0b0054
+			public const int notification_main_column_container = 2131427412;
 			
-			// aapt resource value: 0x7f0a0054
-			public const int txtDelayAmt = 2131361876;
+			// aapt resource value: 0x7f0b0020
+			public const int pnlCard = 2131427360;
 			
-			// aapt resource value: 0x7f0a002b
-			public const int txtDelayStatus = 2131361835;
+			// aapt resource value: 0x7f0b0029
+			public const int pnlCaseDetail = 2131427369;
 			
-			// aapt resource value: 0x7f0a0038
-			public const int txtError = 2131361848;
+			// aapt resource value: 0x7f0b0014
+			public const int pnlConfirmButton = 2131427348;
 			
-			// aapt resource value: 0x7f0a0012
-			public const int txtFlowStep = 2131361810;
+			// aapt resource value: 0x7f0b0022
+			public const int pnlDashboard = 2131427362;
 			
-			// aapt resource value: 0x7f0a0057
-			public const int txtHeaderApplication = 2131361879;
+			// aapt resource value: 0x7f0b0021
+			public const int pnlFlow = 2131427361;
 			
-			// aapt resource value: 0x7f0a0058
-			public const int txtHeaderUser = 2131361880;
+			// aapt resource value: 0x7f0b006d
+			public const int pnlLayout = 2131427437;
 			
-			// aapt resource value: 0x7f0a000c
-			public const int txtItemText = 2131361804;
+			// aapt resource value: 0x7f0b0074
+			public const int pnlOpenCase = 2131427444;
 			
-			// aapt resource value: 0x7f0a0003
-			public const int txtLocation = 2131361795;
+			// aapt resource value: 0x7f0b001f
+			public const int pnlPatient = 2131427359;
 			
-			// aapt resource value: 0x7f0a003a
-			public const int txtPassword = 2131361850;
+			// aapt resource value: 0x7f0b006f
+			public const int pnlScheduledCase = 2131427439;
 			
-			// aapt resource value: 0x7f0a0004
-			public const int txtPatientAge = 2131361796;
+			// aapt resource value: 0x7f0b0018
+			public const int pnlScheduledProceduresHeaders = 2131427352;
 			
-			// aapt resource value: 0x7f0a0006
-			public const int txtPatientBMI = 2131361798;
+			// aapt resource value: 0x7f0b005b
+			public const int right_icon = 2131427419;
 			
-			// aapt resource value: 0x7f0a0011
-			public const int txtPatientInfo = 2131361809;
+			// aapt resource value: 0x7f0b0056
+			public const int right_side = 2131427414;
 			
-			// aapt resource value: 0x7f0a0001
-			public const int txtPatientName = 2131361793;
+			// aapt resource value: 0x7f0b002e
+			public const int spnAssignment = 2131427374;
 			
-			// aapt resource value: 0x7f0a0005
-			public const int txtPatientSex = 2131361797;
+			// aapt resource value: 0x7f0b0061
+			public const int spnRoom = 2131427425;
 			
-			// aapt resource value: 0x7f0a0007
-			public const int txtProcedure = 2131361799;
+			// aapt resource value: 0x7f0b0051
+			public const int status_bar_latest_event_content = 2131427409;
 			
-			// aapt resource value: 0x7f0a0002
-			public const int txtProcedureStart = 2131361794;
+			// aapt resource value: 0x7f0b002d
+			public const int swtCheckIn = 2131427373;
 			
-			// aapt resource value: 0x7f0a001c
-			public const int txtRepName = 2131361820;
+			// aapt resource value: 0x7f0b0060
+			public const int swtSurgeon = 2131427424;
 			
-			// aapt resource value: 0x7f0a0029
-			public const int txtRole = 2131361833;
+			// aapt resource value: 0x7f0b0002
+			public const int tag_transition_group = 2131427330;
 			
-			// aapt resource value: 0x7f0a0025
-			public const int txtRoleName = 2131361829;
+			// aapt resource value: 0x7f0b0003
+			public const int text = 2131427331;
 			
-			// aapt resource value: 0x7f0a0010
-			public const int txtRoom = 2131361808;
+			// aapt resource value: 0x7f0b0004
+			public const int text2 = 2131427332;
 			
-			// aapt resource value: 0x7f0a001b
-			public const int txtScrubName = 2131361819;
+			// aapt resource value: 0x7f0b0057
+			public const int time = 2131427415;
 			
-			// aapt resource value: 0x7f0a000f
-			public const int txtStartTime = 2131361807;
+			// aapt resource value: 0x7f0b0005
+			public const int title = 2131427333;
 			
-			// aapt resource value: 0x7f0a001f
-			public const int txtSurgeon = 2131361823;
+			// aapt resource value: 0x7f0b0047
+			public const int toolbar = 2131427399;
 			
-			// aapt resource value: 0x7f0a0018
-			public const int txtSurgeonName = 2131361816;
+			// aapt resource value: 0x7f0b0025
+			public const int txtAnesName = 2131427365;
 			
-			// aapt resource value: 0x7f0a004f
-			public const int txtTime = 2131361871;
+			// aapt resource value: 0x7f0b002c
+			public const int txtCard = 2131427372;
 			
-			// aapt resource value: 0x7f0a0039
-			public const int txtUserName = 2131361849;
+			// aapt resource value: 0x7f0b002b
+			public const int txtCase = 2131427371;
 			
-			// aapt resource value: 0x7f0a004b
-			public const int txtWeekFriday = 2131361867;
+			// aapt resource value: 0x7f0b0038
+			public const int txtCaseTime = 2131427384;
 			
-			// aapt resource value: 0x7f0a0047
-			public const int txtWeekMonday = 2131361863;
+			// aapt resource value: 0x7f0b0024
+			public const int txtCirculatorName = 2131427364;
 			
-			// aapt resource value: 0x7f0a004c
-			public const int txtWeekSaturday = 2131361868;
+			// aapt resource value: 0x7f0b0015
+			public const int txtConfirmText = 2131427349;
 			
-			// aapt resource value: 0x7f0a0046
-			public const int txtWeekSunday = 2131361862;
+			// aapt resource value: 0x7f0b0063
+			public const int txtCurrentWeek = 2131427427;
 			
-			// aapt resource value: 0x7f0a004a
-			public const int txtWeekThursday = 2131361866;
+			// aapt resource value: 0x7f0b0032
+			public const int txtDelay = 2131427378;
 			
-			// aapt resource value: 0x7f0a0048
-			public const int txtWeekTuesday = 2131361864;
+			// aapt resource value: 0x7f0b0073
+			public const int txtDelayAmt = 2131427443;
 			
-			// aapt resource value: 0x7f0a0049
-			public const int txtWeekWednesday = 2131361865;
+			// aapt resource value: 0x7f0b0036
+			public const int txtDelayStatus = 2131427382;
 			
-			// aapt resource value: 0x7f0a0000
-			public const int webview = 2131361792;
+			// aapt resource value: 0x7f0b0043
+			public const int txtError = 2131427395;
+			
+			// aapt resource value: 0x7f0b001d
+			public const int txtFlowStep = 2131427357;
+			
+			// aapt resource value: 0x7f0b0076
+			public const int txtHeaderApplication = 2131427446;
+			
+			// aapt resource value: 0x7f0b0077
+			public const int txtHeaderUser = 2131427447;
+			
+			// aapt resource value: 0x7f0b0017
+			public const int txtItemText = 2131427351;
+			
+			// aapt resource value: 0x7f0b000e
+			public const int txtLocation = 2131427342;
+			
+			// aapt resource value: 0x7f0b0045
+			public const int txtPassword = 2131427397;
+			
+			// aapt resource value: 0x7f0b000f
+			public const int txtPatientAge = 2131427343;
+			
+			// aapt resource value: 0x7f0b0011
+			public const int txtPatientBMI = 2131427345;
+			
+			// aapt resource value: 0x7f0b001c
+			public const int txtPatientInfo = 2131427356;
+			
+			// aapt resource value: 0x7f0b000c
+			public const int txtPatientName = 2131427340;
+			
+			// aapt resource value: 0x7f0b0010
+			public const int txtPatientSex = 2131427344;
+			
+			// aapt resource value: 0x7f0b0012
+			public const int txtProcedure = 2131427346;
+			
+			// aapt resource value: 0x7f0b000d
+			public const int txtProcedureStart = 2131427341;
+			
+			// aapt resource value: 0x7f0b0027
+			public const int txtRepName = 2131427367;
+			
+			// aapt resource value: 0x7f0b0034
+			public const int txtRole = 2131427380;
+			
+			// aapt resource value: 0x7f0b0030
+			public const int txtRoleName = 2131427376;
+			
+			// aapt resource value: 0x7f0b001b
+			public const int txtRoom = 2131427355;
+			
+			// aapt resource value: 0x7f0b0026
+			public const int txtScrubName = 2131427366;
+			
+			// aapt resource value: 0x7f0b001a
+			public const int txtStartTime = 2131427354;
+			
+			// aapt resource value: 0x7f0b002a
+			public const int txtSurgeon = 2131427370;
+			
+			// aapt resource value: 0x7f0b0023
+			public const int txtSurgeonName = 2131427363;
+			
+			// aapt resource value: 0x7f0b006e
+			public const int txtTime = 2131427438;
+			
+			// aapt resource value: 0x7f0b0044
+			public const int txtUserName = 2131427396;
+			
+			// aapt resource value: 0x7f0b006a
+			public const int txtWeekFriday = 2131427434;
+			
+			// aapt resource value: 0x7f0b0066
+			public const int txtWeekMonday = 2131427430;
+			
+			// aapt resource value: 0x7f0b006b
+			public const int txtWeekSaturday = 2131427435;
+			
+			// aapt resource value: 0x7f0b0065
+			public const int txtWeekSunday = 2131427429;
+			
+			// aapt resource value: 0x7f0b0069
+			public const int txtWeekThursday = 2131427433;
+			
+			// aapt resource value: 0x7f0b0067
+			public const int txtWeekTuesday = 2131427431;
+			
+			// aapt resource value: 0x7f0b0068
+			public const int txtWeekWednesday = 2131427432;
+			
+			// aapt resource value: 0x7f0b000b
+			public const int webview = 2131427339;
 			
 			static Id()
 			{
@@ -511,8 +893,14 @@ namespace OpFlow.AndroidApp
 		public partial class Integer
 		{
 			
-			// aapt resource value: 0x7f070000
-			public const int SpinnerHeight = 2131165184;
+			// aapt resource value: 0x7f080002
+			public const int SpinnerHeight = 2131230722;
+			
+			// aapt resource value: 0x7f080000
+			public const int cancel_button_image_alpha = 2131230720;
+			
+			// aapt resource value: 0x7f080001
+			public const int status_bar_notification_info_maxnum = 2131230721;
 			
 			static Integer()
 			{
@@ -573,13 +961,58 @@ namespace OpFlow.AndroidApp
 			public const int Main = 2130903054;
 			
 			// aapt resource value: 0x7f03000f
-			public const int Schedule = 2130903055;
+			public const int notification_action = 2130903055;
 			
 			// aapt resource value: 0x7f030010
-			public const int ScheduleGrid = 2130903056;
+			public const int notification_action_tombstone = 2130903056;
 			
 			// aapt resource value: 0x7f030011
-			public const int Toolbar = 2130903057;
+			public const int notification_media_action = 2130903057;
+			
+			// aapt resource value: 0x7f030012
+			public const int notification_media_cancel_action = 2130903058;
+			
+			// aapt resource value: 0x7f030013
+			public const int notification_template_big_media = 2130903059;
+			
+			// aapt resource value: 0x7f030014
+			public const int notification_template_big_media_custom = 2130903060;
+			
+			// aapt resource value: 0x7f030015
+			public const int notification_template_big_media_narrow = 2130903061;
+			
+			// aapt resource value: 0x7f030016
+			public const int notification_template_big_media_narrow_custom = 2130903062;
+			
+			// aapt resource value: 0x7f030017
+			public const int notification_template_custom_big = 2130903063;
+			
+			// aapt resource value: 0x7f030018
+			public const int notification_template_icon_group = 2130903064;
+			
+			// aapt resource value: 0x7f030019
+			public const int notification_template_lines_media = 2130903065;
+			
+			// aapt resource value: 0x7f03001a
+			public const int notification_template_media = 2130903066;
+			
+			// aapt resource value: 0x7f03001b
+			public const int notification_template_media_custom = 2130903067;
+			
+			// aapt resource value: 0x7f03001c
+			public const int notification_template_part_chronometer = 2130903068;
+			
+			// aapt resource value: 0x7f03001d
+			public const int notification_template_part_time = 2130903069;
+			
+			// aapt resource value: 0x7f03001e
+			public const int Schedule = 2130903070;
+			
+			// aapt resource value: 0x7f03001f
+			public const int ScheduleGrid = 2130903071;
+			
+			// aapt resource value: 0x7f030020
+			public const int Toolbar = 2130903072;
 			
 			static Layout()
 			{
@@ -594,11 +1027,11 @@ namespace OpFlow.AndroidApp
 		public partial class Menu
 		{
 			
-			// aapt resource value: 0x7f090000
-			public const int nav_menu = 2131296256;
+			// aapt resource value: 0x7f0c0000
+			public const int nav_menu = 2131492864;
 			
-			// aapt resource value: 0x7f090001
-			public const int option_menu = 2131296257;
+			// aapt resource value: 0x7f0c0001
+			public const int option_menu = 2131492865;
 			
 			static Menu()
 			{
@@ -613,17 +1046,20 @@ namespace OpFlow.AndroidApp
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f050003
-			public const int ApplicationName = 2131034115;
+			// aapt resource value: 0x7f050004
+			public const int ApplicationName = 2131034116;
 			
-			// aapt resource value: 0x7f050002
-			public const int Hello = 2131034114;
+			// aapt resource value: 0x7f050003
+			public const int Hello = 2131034115;
 			
 			// aapt resource value: 0x7f050000
 			public const int app_name = 2131034112;
 			
-			// aapt resource value: 0x7f050004
-			public const int empty_string = 2131034116;
+			// aapt resource value: 0x7f050005
+			public const int empty_string = 2131034117;
+			
+			// aapt resource value: 0x7f050002
+			public const int status_bar_notification_info_overflow = 2131034114;
 			
 			// aapt resource value: 0x7f050001
 			public const int title_activity_webview = 2131034113;
@@ -641,17 +1077,53 @@ namespace OpFlow.AndroidApp
 		public partial class Style
 		{
 			
-			// aapt resource value: 0x7f080000
-			public const int OpFlowTheme = 2131230720;
+			// aapt resource value: 0x7f06000c
+			public const int OpFlowTheme = 2131099660;
 			
-			// aapt resource value: 0x7f080003
-			public const int TextView_Calendar = 2131230723;
+			// aapt resource value: 0x7f060005
+			public const int TextAppearance_Compat_Notification = 2131099653;
 			
-			// aapt resource value: 0x7f080002
-			public const int TextView_Header = 2131230722;
+			// aapt resource value: 0x7f060006
+			public const int TextAppearance_Compat_Notification_Info = 2131099654;
 			
-			// aapt resource value: 0x7f080001
-			public const int ToolBarStyle = 2131230721;
+			// aapt resource value: 0x7f060000
+			public const int TextAppearance_Compat_Notification_Info_Media = 2131099648;
+			
+			// aapt resource value: 0x7f06000b
+			public const int TextAppearance_Compat_Notification_Line2 = 2131099659;
+			
+			// aapt resource value: 0x7f060004
+			public const int TextAppearance_Compat_Notification_Line2_Media = 2131099652;
+			
+			// aapt resource value: 0x7f060001
+			public const int TextAppearance_Compat_Notification_Media = 2131099649;
+			
+			// aapt resource value: 0x7f060007
+			public const int TextAppearance_Compat_Notification_Time = 2131099655;
+			
+			// aapt resource value: 0x7f060002
+			public const int TextAppearance_Compat_Notification_Time_Media = 2131099650;
+			
+			// aapt resource value: 0x7f060008
+			public const int TextAppearance_Compat_Notification_Title = 2131099656;
+			
+			// aapt resource value: 0x7f060003
+			public const int TextAppearance_Compat_Notification_Title_Media = 2131099651;
+			
+			// aapt resource value: 0x7f06000f
+			public const int TextView_Calendar = 2131099663;
+			
+			// aapt resource value: 0x7f06000e
+			public const int TextView_Header = 2131099662;
+			
+			// aapt resource value: 0x7f06000d
+			public const int ToolBarStyle = 2131099661;
+			
+			// aapt resource value: 0x7f060009
+			public const int Widget_Compat_NotificationActionContainer = 2131099657;
+			
+			// aapt resource value: 0x7f06000a
+			public const int Widget_Compat_NotificationActionText = 2131099658;
 			
 			static Style()
 			{
@@ -667,10 +1139,54 @@ namespace OpFlow.AndroidApp
 		{
 			
 			public static int[] DatePicker = new int[] {
-					2130771968};
+					2130771977};
 			
 			// aapt resource value: 0
 			public const int DatePicker_date = 0;
+			
+			public static int[] FontFamily = new int[] {
+					2130771968,
+					2130771969,
+					2130771970,
+					2130771971,
+					2130771972,
+					2130771973};
+			
+			// aapt resource value: 0
+			public const int FontFamily_fontProviderAuthority = 0;
+			
+			// aapt resource value: 3
+			public const int FontFamily_fontProviderCerts = 3;
+			
+			// aapt resource value: 4
+			public const int FontFamily_fontProviderFetchStrategy = 4;
+			
+			// aapt resource value: 5
+			public const int FontFamily_fontProviderFetchTimeout = 5;
+			
+			// aapt resource value: 1
+			public const int FontFamily_fontProviderPackage = 1;
+			
+			// aapt resource value: 2
+			public const int FontFamily_fontProviderQuery = 2;
+			
+			public static int[] FontFamilyFont = new int[] {
+					0,
+					2130771974,
+					2130771975,
+					2130771976};
+			
+			// aapt resource value: 0
+			public const int FontFamilyFont_android_font = 0;
+			
+			// aapt resource value: 0
+			public const int FontFamilyFont_android_fontStyle = 0;
+			
+			// aapt resource value: 0
+			public const int FontFamilyFont_android_fontWeight = 0;
+			
+			// aapt resource value: 2
+			public const int FontFamilyFont_font = 2;
 			
 			static Styleable()
 			{
