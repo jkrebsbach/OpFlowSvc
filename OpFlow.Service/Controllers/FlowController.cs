@@ -604,7 +604,7 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
 
             var result = DataAccess.SqlHelper.InsertFlowNotification(flowId, value.StepID, value.NotificationType, value.Message, value.SmsNumber, 
-                value.EmailAddress, value.MessagingUserID, user.ProviderID, user.LocationID);
+                value.EmailAddress, value.MessagingUserID, value.MessagingRoleID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.Created, result);
         }
@@ -619,7 +619,7 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
 
             var result = DataAccess.SqlHelper.EditFlowNotification(flowNotificationId, value.Message, value.StepID, value.SmsNumber,
-                value.EmailAddress, value.MessagingUserID, user.ProviderID, user.LocationID);
+                value.EmailAddress, value.MessagingUserID, value.MessagingRoleID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

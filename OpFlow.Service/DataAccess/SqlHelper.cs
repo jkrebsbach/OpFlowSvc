@@ -1442,7 +1442,7 @@ namespace OpFlow.Service.DataAccess
         /// <param name="locationId"></param>
         /// <param name="startTime"></param>
         /// <returns>Current flow step after advancing</returns>
-        public static FlowStep SurgeryMoveNextStep(int surgeryId, int providerId, int locationId, DateTime startTime)
+        public static FlowStepResult SurgeryMoveNextStep(int surgeryId, int providerId, int locationId, DateTime startTime)
         {
             var dsParameters = new[]
             {
@@ -1453,7 +1453,7 @@ namespace OpFlow.Service.DataAccess
             };
 
             var update = ExecuteCommand("UpdateSurgeryFlowTimings", dsParameters);
-            var flowSteps = update.Tables[0].DataTableToList<FlowStep>();
+            var flowSteps = update.Tables[0].DataTableToList<FlowStepResult>();
             var flowStep = flowSteps.FirstOrDefault();
 
             return flowStep;
@@ -2990,7 +2990,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public static int InsertFlowNotification(int flowId, int stepId, int notificationType, string message, 
-            string smsNumber, string emailAddress, int? messagingUserId, int providerId, int locationId)
+            string smsNumber, string emailAddress, int? messagingUserId, int? messagingRoleId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3001,6 +3001,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("sms_number", smsNumber ?? (object)DBNull.Value),
                 new SqlParameter("email_address", emailAddress ?? (object)DBNull.Value),
                 new SqlParameter("messaging_user_id", messagingUserId ?? (object)DBNull.Value),
+                new SqlParameter("messaging_role_id", messagingUserId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -3012,7 +3013,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public static int EditFlowNotification(int flowNotificationId, string message, int stepId,
-            string smsNumber, string emailAddress, int? messagingUserId, int providerId, int locationId)
+            string smsNumber, string emailAddress, int? messagingUserId, int? messagingRoleId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3022,6 +3023,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("sms_number", smsNumber ?? (object)DBNull.Value),
                 new SqlParameter("email_address", emailAddress ?? (object)DBNull.Value),
                 new SqlParameter("messaging_user_id", messagingUserId ?? (object)DBNull.Value),
+                new SqlParameter("messaging_role_id", messagingRoleId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

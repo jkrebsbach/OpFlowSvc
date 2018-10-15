@@ -23,6 +23,13 @@ namespace OpFlow.Data
         public TimeSpan EndTime { get; set; }
     }
 
+    public class FlowStepResult
+    {
+        public int FlowID { get; set; }
+        public int? StepID { get; set; }
+        public int? PreviousStepID { get; set; }
+    }
+
     public class FlowStepTiming : FlowStep
     {
         public int? AverageDuration { get; set; }

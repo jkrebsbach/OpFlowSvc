@@ -15,6 +15,7 @@ namespace OpFlow.Data
         public string CellPhone { get; set; }
         public string EmailAddress { get; set; }
         public int? MessagingUserID { get; set; }
+        public int? MessagingRoleID { get; set; }
     }
 }
 

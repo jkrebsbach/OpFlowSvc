@@ -12,7 +12,7 @@ namespace OpFlow.Service.SignalR
         private readonly static ConnectionMapping<string> _connections =
             new ConnectionMapping<string>();
 
-        protected ConnectionMapping<string> Connections => _connections;
+        protected static ConnectionMapping<string> Connections => _connections;
 
         public override Task OnConnected()
         {

@@ -88,5 +88,6 @@ namespace OpFlow.Data
         public string SmsNumber { get; set; }
         public string EmailAddress { get; set; }
         public int? MessagingUserID { get; set; }
+        public int? MessagingRoleID { get; set; }
     }
 }
