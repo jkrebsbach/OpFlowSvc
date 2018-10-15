@@ -23,13 +23,13 @@ namespace OpFlow.Service.SignalR
                 var user = CacheUtil.GetUserByEmail(Context.User.Identity.Name);
                 var insertTimestamp = DateTime.Now;
 
-                await DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
+                await SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
                     surgeryId, null, message);
 
-                var recipients = await DataAccess.SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
-                var surgery = DataAccess.SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
-                var userObject = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
-                var patient = await DataAccess.SecureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
+                var recipients = await SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
+                var surgery = SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+                var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                var patient = await SecureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
                     userObject.LastName, (int)userObject.RoleID, user.DatabaseName);
 
                 var sender = userObject;
@@ -45,7 +45,7 @@ namespace OpFlow.Service.SignalR
 
                 foreach (var recipient in recipients)
                 {
-                    await SendMessage(recipient.Email, message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
+                    await PushNotificationMessage(recipient.Email, message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
                 }
             }
             catch (Exception e)
@@ -76,53 +76,80 @@ namespace OpFlow.Service.SignalR
             Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
 
             // Send messages to communication target
-            await SendMessage(recipientUser.Email, message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, null, sender.UserID);
+            await PushNotificationMessage(recipientUser.Email, message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, null, sender.UserID);
 
             // Send messages to communication source
-            await SendMessage(HttpContext.Current.User.Identity.GetUserName(), message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
+            await PushNotificationMessage(HttpContext.Current.User.Identity.GetUserName(), message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
         }
 
         public async Task AdvanceSurgery(int surgeryId, DateTime stepTime, bool startSurgery)
         {
-            var user = CacheUtil.GetUserByEmail(Context.User.Identity.Name);
+            try
+            {
+                var user = CacheUtil.GetUserByEmail(Context.User.Identity.Name);
 
-            if (startSurgery)
-                SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, stepTime);
+                if (startSurgery)
+                    SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, stepTime);
             
-            var flowStep = SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
-            var notifications = SqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.ProviderID, user.LocationID);
+                var flowStep = SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
+                var notifications = SqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.ProviderID, user.LocationID);
 
-            var nextNotification = notifications.FirstOrDefault(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
-            var prevNotification = notifications.FirstOrDefault(n => n.StepID == flowStep.PreviousStepID && n.NotificationType == 2);
+                var nextNotifications = notifications.Where(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
+                var prevNotifications = notifications.Where(n => n.StepID == flowStep.PreviousStepID && n.NotificationType == 2);
 
-            var sender = SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                var sender = SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
-            await SendNotification(user, sender, nextNotification); // Next step
-            await SendNotification(user, sender, prevNotification); // Previous step
+                foreach (var nextNotification in nextNotifications)
+                    await SendNotification(user, sender, surgeryId, nextNotification); // Next step
+
+                foreach (var prevNotification in prevNotifications)
+                    await SendNotification(user, sender, surgeryId, prevNotification); // Previous step
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
+                client.Send(e);
+                throw;
+            }
         }
 
-        private async Task SendNotification(UserSecurity user, User sender, FlowNotification flowNotification)
+        private async Task SendNotification(UserSecurity user, User sender, int surgeryId, FlowNotification flowNotification)
         {
             if (flowNotification == null)
                 return;
 
             SmsNotification.NotifyUser(flowNotification.CellPhone, flowNotification.FlowMessage);
 
-            if (flowNotification.MessagingUserID != null)
+            if (flowNotification.MessagingUserID.HasValue)
             {
-                var recipientUser =
-                    DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, flowNotification.MessagingUserID.Value);
+                await SendNotification(user, sender, flowNotification.MessagingUserID.Value, flowNotification.FlowMessage);
+            }
 
-                await SendMessage(recipientUser.Email, flowNotification.FlowMessage, (int)sender.RoleID, sender.DeriveInitials(), DateTime.Now, null, sender.UserID);
+            if (flowNotification.MessagingRoleID.HasValue)
+            {
+                var surgeryUsers = await SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
 
-                Clients.All.broadcastMessage(flowNotification.FlowMessage, 
-                    (int)sender.RoleID, sender.DeriveInitials(), DateTime.Now, null, flowNotification.MessagingUserID);
-                await SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID, null, flowNotification.MessagingUserID, flowNotification.FlowMessage);
-
+                foreach (var surgeryUser in surgeryUsers)
+                {
+                    await SendNotification(user, sender, surgeryUser.UserID, flowNotification.FlowMessage);
+                }
             }
         }
 
-        private async Task SendMessage(string who, string message, int senderRoleId, string senderUserName, DateTime insertTimestamp, int? surgeryId, int? communicationUserId)
+        private async Task SendNotification(UserSecurity user, User sender, int targetUserId, string message)
+        {
+            var recipientUser = SqlHelper.GetUser(user.ProviderID, user.LocationID, targetUserId);
+
+            await PushNotificationMessage(recipientUser.Email, message, (int)sender.RoleID, sender.DeriveInitials(), DateTime.Now, null, sender.UserID);
+
+            Clients.All.broadcastMessage(message,
+                (int)sender.RoleID, sender.DeriveInitials(), DateTime.Now, null, targetUserId);
+            await SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID, null, targetUserId, message);
+
+        }
+
+        private async Task PushNotificationMessage(string who, string message, int senderRoleId, string senderUserName, DateTime insertTimestamp, int? surgeryId, int? communicationUserId)
         {
             //System.Diagnostics.Debug.WriteLine("SENDING MESSAGE");
             var name = Context.User.Identity.Name;

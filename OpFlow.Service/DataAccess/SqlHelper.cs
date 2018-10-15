@@ -3001,7 +3001,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("sms_number", smsNumber ?? (object)DBNull.Value),
                 new SqlParameter("email_address", emailAddress ?? (object)DBNull.Value),
                 new SqlParameter("messaging_user_id", messagingUserId ?? (object)DBNull.Value),
-                new SqlParameter("messaging_role_id", messagingUserId ?? (object)DBNull.Value),
+                new SqlParameter("messaging_role_id", messagingRoleId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
