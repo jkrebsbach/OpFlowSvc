@@ -130,7 +130,8 @@ namespace OpFlow.Service.Models
                         break;
                     case "apns":
                         // iOS
-                        var alert = "{\"aps\":{\"alert\":\"" + "From " + sendingUser + ": " + message + "\"}}";
+                        var alert = $"{{\"aps\":{{\"alert\":\"From {sendingUser}: {message}\", \"sound\":\"default\"}} }}";
+                        //var alert = "{\"aps\":{\"alert\":\"" + "From " + sendingUser + ": " + message + "\"}}";
                         outcome = await Hub.SendAppleNativeNotificationAsync(alert, userTag);
                         break;
                     case "gcm":

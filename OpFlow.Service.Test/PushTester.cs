@@ -16,7 +16,7 @@ namespace OpFlow.Service.Test
         {
             try
             {
-                await PushNotification.PostNotification("martyn@opflowtech.com", "role3@opflowtech.com", "This is a test");
+                await PushNotification.PostNotification("martyn@opflowtech.com", "role2@opflowtech.com", "This is a test");
 
             }
             catch (Exception e)
