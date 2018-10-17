@@ -26,17 +26,13 @@ namespace OpFlow.Mobile
 
             return response;
         }
-        public static async Task<List<SurgerySearchResult>> SearchCases(string caseNbr, int? surgeonUserId, int? roomId,
+
+        public static async Task<List<SurgerySearchResult>> SearchCases(int? surgeonUserId, int? roomId,
             DateTime? beginDate, DateTime? endDate)
         {
             var command = $"api/surgery/searchCases?";
             var strDelim = string.Empty;
 
-            if (caseNbr != null)
-            {
-                command += $"{strDelim}caseNbr={caseNbr}";
-                strDelim = "&";
-            }
             if (roomId.HasValue)
             {
                 command += $"{strDelim}roomId={roomId}";
@@ -72,6 +68,17 @@ namespace OpFlow.Mobile
             var command = $"api/surgery";
 
             var response = await WebUtility.SendBodyRequest<int>(command, surgery, HttpMethod.Post);
+
+            return response;
+        }
+
+        public static async Task<int> AssignSurgery(int surgeryId)
+        {
+            var userId = AppSettings.CurrentUser.UserID;
+
+            var command = $"api/surgery/user?surgeryId={surgeryId}&userId={userId}";
+
+            var response = await WebUtility.WebRequest<int>(command, HttpMethod.Post);
 
             return response;
         }

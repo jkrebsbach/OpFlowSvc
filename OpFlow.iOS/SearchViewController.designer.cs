@@ -16,6 +16,10 @@ namespace OpFlow.iOS
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton btnAssign { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITableView CaseSearchTableView { get; set; }
 
         [Outlet]
@@ -24,15 +28,7 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITextField txtCase { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField txtEndDate { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITextField txtPatient { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -46,8 +42,17 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField txtSurgeon { get; set; }
 
+        [Action ("btnAssign_Click:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnAssign_Click (UIKit.UIButton sender);
+
         void ReleaseDesignerOutlets ()
         {
+            if (btnAssign != null) {
+                btnAssign.Dispose ();
+                btnAssign = null;
+            }
+
             if (CaseSearchTableView != null) {
                 CaseSearchTableView.Dispose ();
                 CaseSearchTableView = null;
@@ -58,19 +63,9 @@ namespace OpFlow.iOS
                 txtBeginDate = null;
             }
 
-            if (txtCase != null) {
-                txtCase.Dispose ();
-                txtCase = null;
-            }
-
             if (txtEndDate != null) {
                 txtEndDate.Dispose ();
                 txtEndDate = null;
-            }
-
-            if (txtPatient != null) {
-                txtPatient.Dispose ();
-                txtPatient = null;
             }
 
             if (txtRoom != null) {

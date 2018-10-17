@@ -12,12 +12,12 @@ namespace OpFlow.iOS
         {
         }
 
-        public void UpdateCell(SearchCaseTVS.SurgerySearchModel model)
+        public void UpdateCell(SearchCaseTVS.SurgerySearchModel model, Patient patient)
         {
             var surgery = model.Surgery;
             
             lblCaseProcedure.Text = $"{surgery.ProcedureDescription} {surgery.ScheduleTime:M/d} {surgery.ScheduleTime:hh\\:mm}";
-            lblCaseOverview.Text = $"Room:{surgery.RoomDescription} {surgery.SurgeryTeam}";
+            lblCaseOverview.Text = $"{patient.LastName}, {patient.FirstName} {patient.MiddleInitial} Room:{surgery.RoomDescription} {surgery.SurgeryTeam}";
 
         }
     }

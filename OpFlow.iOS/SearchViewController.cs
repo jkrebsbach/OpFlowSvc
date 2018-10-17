@@ -20,6 +20,8 @@ namespace OpFlow.iOS
         private OpFlowTextDatePicker _beginDate;
         private OpFlowTextDatePicker _endDate;
 
+        private List<int> _surgeryIds;
+
         public SearchViewController (IntPtr handle) : base (handle)
         {
         }
@@ -28,9 +30,7 @@ namespace OpFlow.iOS
         {
             base.ViewDidLoad();
 
-            SetupDoneStyleTextField(txtCase, false);
-            SetupDoneStyleTextField(txtPatient, false);
-
+            btnAssign.Hidden = true;
             _beginDate = new OpFlowTextDatePicker(txtBeginDate)
             {
                 Mode = UIDatePickerMode.Date
@@ -42,8 +42,6 @@ namespace OpFlow.iOS
 
             _beginDate.DateChanged += ParametersChanged;
             _endDate.DateChanged += ParametersChanged;
-
-            txtCase.AddTarget(ParametersChanged, UIControlEvent.EditingDidEnd);
 
             await ExecuteAsyncWebRequest(LoadDropdowns);
         }
@@ -57,12 +55,8 @@ namespace OpFlow.iOS
         {
             int? surgeonId = null;
             int? roomId = null;
-            string caseNbr = null;
             DateTime? beginDate = null;
             DateTime? endDate = null;
-
-            if (txtCase.Text != "")
-                caseNbr = txtCase.Text;
 
             if (txtSurgeon.Text != "")
                 surgeonId = _surgeonPicker.GetCurrentId();
@@ -77,18 +71,41 @@ namespace OpFlow.iOS
                 endDate = _endDate.Date.ToDateTime().Date;
 
             var surgeries = new List<SurgerySearchResult>();
-            if (caseNbr != null || surgeonId != null || roomId != null || beginDate != null || endDate != null)
+            var patients = new List<Patient>();
+            if (surgeonId != null || roomId != null || beginDate != null || endDate != null)
             {
-                surgeries = await SurgeryUtil.SearchCases(caseNbr, surgeonId, roomId, beginDate, endDate);
+                surgeries = await SurgeryUtil.SearchCases(surgeonId, roomId, beginDate, endDate);
+
+                var patientIds = surgeries.Select(s => s.PatientID).ToList();
+                patients = await PatientUtil.GetPatients(patientIds);
             }
 
-            var surgeryTableViewSource = new SearchCaseTVS(surgeries);
+            var surgeryTableViewSource = new SearchCaseTVS(surgeries, patients);
+            _surgeryIds = surgeries.Select(s => s.SurgeryID).ToList();
 
             CaseSearchTableView.Source = surgeryTableViewSource;
             CaseSearchTableView.ReloadData();
 
+            btnAssign.Hidden = false;
+
             surgeryTableViewSource.EntitySelectionEvent += SelectCase;
         }
+
+        async partial void btnAssign_Click(UIButton sender)
+        {
+            await ExecuteAsyncWebRequest(AssignSurgeries, "Assigning...");
+
+            ShowDialog("Done", "Assignment complete");
+        }
+
+        private async Task AssignSurgeries()
+        {
+            foreach (var surgeryId in _surgeryIds)
+                await SurgeryUtil.AssignSurgery(surgeryId);
+
+
+        }
+
 
         protected void SelectCase(Object sender, SurgerySearchResult surgery)
         {

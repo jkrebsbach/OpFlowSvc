@@ -12,23 +12,27 @@ namespace OpFlow.iOS.ViewSources
     public class SearchCaseTVS : UITableViewSource
     {
         private readonly List<SurgerySearchModel> _surgeries;
+        private readonly List<Patient> _patients;
         public event EventHandler<SurgerySearchResult> EntitySelectionEvent;
 
-        public SearchCaseTVS(List<SurgerySearchResult> surgeries)
+        public SearchCaseTVS(List<SurgerySearchResult> surgeries, List<Patient> patients)
         {
             _surgeries = new List<SurgerySearchModel>();
 
             surgeries.ForEach(s => _surgeries.Add(new SurgerySearchModel(s)));
+            _patients = patients;
         }
 
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
         {
             var surgery = _surgeries[indexPath.Row];
 
+            var patient = _patients.FirstOrDefault(p => p.PatientID == surgery.Surgery.PatientID);
+
             var cell = 
                 tableView.DequeueReusableCell("CaseSearchResultCell", indexPath) as CaseSearchResultCell;
 
-            cell?.UpdateCell(surgery);
+            cell?.UpdateCell(surgery, patient);
 
             return cell;
         }
