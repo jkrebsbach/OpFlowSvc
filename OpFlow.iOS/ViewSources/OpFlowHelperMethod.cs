@@ -46,6 +46,8 @@ namespace OpFlow.iOS.ViewSources
                     return UIColor.Red;
                 case RoleEnum.Administration:
                     return UIColor.Purple;
+                case RoleEnum.CRNA:
+                    return UIColor.Black;
                 default:
                     return UIColor.White;
             }

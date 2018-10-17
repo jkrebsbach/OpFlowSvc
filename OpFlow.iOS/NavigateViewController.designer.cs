@@ -64,6 +64,14 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblCrna { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblCrnaName { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblFlowStep { get; set; }
 
         [Outlet]
@@ -81,14 +89,6 @@ namespace OpFlow.iOS
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblProcedure { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblRep { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblRepName { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -232,6 +232,16 @@ namespace OpFlow.iOS
                 lblCirculatorName = null;
             }
 
+            if (lblCrna != null) {
+                lblCrna.Dispose ();
+                lblCrna = null;
+            }
+
+            if (lblCrnaName != null) {
+                lblCrnaName.Dispose ();
+                lblCrnaName = null;
+            }
+
             if (lblFlowStep != null) {
                 lblFlowStep.Dispose ();
                 lblFlowStep = null;
@@ -255,16 +265,6 @@ namespace OpFlow.iOS
             if (lblProcedure != null) {
                 lblProcedure.Dispose ();
                 lblProcedure = null;
-            }
-
-            if (lblRep != null) {
-                lblRep.Dispose ();
-                lblRep = null;
-            }
-
-            if (lblRepName != null) {
-                lblRepName.Dispose ();
-                lblRepName = null;
             }
 
             if (lblScrub != null) {

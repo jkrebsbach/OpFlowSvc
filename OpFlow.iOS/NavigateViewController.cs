@@ -70,7 +70,7 @@ namespace OpFlow.iOS
             lblAnes.TextColor = RoleEnum.Anesthesiologist.RoleBackgroundColorMapping();
             lblCirculator.TextColor = RoleEnum.Circulator.RoleBackgroundColorMapping();
             lblScrub.TextColor = RoleEnum.ScrubTech.RoleBackgroundColorMapping();
-            lblRep.TextColor = RoleEnum.Representative.RoleBackgroundColorMapping();
+            lblCrna.TextColor = RoleEnum.CRNA.RoleBackgroundColorMapping();
 
             SetupTitleView(vwSurgeon);
             SetupTitleView(vwCirculator);
@@ -208,7 +208,7 @@ namespace OpFlow.iOS
             lblCirculatorName.Text = GetUserName(users, RoleEnum.Circulator);
             lblScrubName.Text = GetUserName(users, RoleEnum.ScrubTech);
             lblAnesName.Text = GetUserName(users, RoleEnum.FrontDesk);
-            lblRepName.Text = GetUserName(users, RoleEnum.FrontDesk);
+            lblCrnaName.Text = GetUserName(users, RoleEnum.CRNA);
 
             lblPatientName.Text = PatientNameText;
             lblPatientInfo.Text = PatientInfoText;
@@ -244,7 +244,8 @@ namespace OpFlow.iOS
             return user == null ? "NONE" : string.Format("{0}, {1} {2}", user.LastName, user.FirstName, user.UserTitle);
         }
 
-        private string PatientNameText =>  string.IsNullOrEmpty(_patient?.LastName) ? "UNK" : _patient.MiddleInitial;
+        private string PatientNameText =>  
+            $"{_patient?.LastName ?? ""}, {_patient?.FirstName ?? ""} {_patient.MiddleInitial}";
 
         private string PatientInfoText => string.Format("{0} {1}", _patient?.BirthDate.CalculateAge(), _patient?.Gender);
     }

@@ -22,17 +22,20 @@ namespace OpFlow.iOS
         {
             base.ViewDidLoad();
 
-			var account = await GetCurrentCredential();
-			if (account != null){
-				txtUsername.Text = account.Username;
-			}
+            SetupDoneStyleTextField(txtUsername, true);
+            SetupDoneStyleTextField(txtPassword, false);
+
+            var account = await GetCurrentCredential();
+            if (account != null){
+                txtUsername.Text = account.Username;
+            }
 
             //  sizing issues moving windows up and down - just keep it all down
             //NavigationItem.SetHidesBackButton(true, false);
             //NavigationController.NavigationBar.Hidden = true;
         }
 
-		UIAlertController _loginError = null;
+        UIAlertController _loginError = null;
 
         async partial void SignOnClick(UIButton sender)
         {
@@ -40,12 +43,12 @@ namespace OpFlow.iOS
 
 
             if (!AppSettings.UserAuthenticated)
-			{
+            {
                 await Task.Delay(500); // something goofy about modal dialogs?...
                 
                 if (_loginError != null)
                 {
-					_loginError.DismissViewController(false, null);
+                    _loginError.DismissViewController(false, null);
                 }
                 _loginError = ShowDialog("Error", "Please enter a valid username and password");
                 txtPassword.Text = "";
@@ -70,7 +73,7 @@ namespace OpFlow.iOS
             }
         }
 
-		private const string _appId = "OpFlow";
+        private const string _appId = "OpFlow";
 
         private static async Task SetCredential(string userName, string password)
         {
