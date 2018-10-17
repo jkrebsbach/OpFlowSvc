@@ -60,6 +60,15 @@ namespace OpFlow.iOS
             var cards = await CardUtil.GetCards(bundleId, null, defaultFilter);
             var messagingTableViewSource = new CardListTVS(cards);
 
+            var minimumCost = 0.0M;
+            if (cards.Any())
+                minimumCost = cards.Min(c => c.Cost);
+
+            lblCardCost.Text = $"${minimumCost.ToString("#,##0.00")}";
+
+            CardListTableView.RowHeight = 80f;
+            CardListTableView.EstimatedRowHeight = 80f;
+
             CardListTableView.Source = messagingTableViewSource;
             CardListTableView.ReloadData();
         }

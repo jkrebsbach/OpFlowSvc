@@ -15,7 +15,7 @@ namespace OpFlow.iOS
         {
             lblProcedureName.Text = $"{card.CptCode} - {card.CardDescription}";
             lblProcedureDetail.Text = $"Owner: {card.OwnerLastName}";
-            lblProcedureCost.Text = $"Card Cost: {card.Cost} Times Used: {card.TimesUsed}";
+            lblProcedureCost.Text = $"Card Cost: ${card.Cost.ToString("#,##0.00")} Times Used: {card.TimesUsed}";
         }
     }
 }
