@@ -104,6 +104,7 @@ namespace OpFlow.Service.SignalR
 
                 foreach (var prevNotification in prevNotifications)
                     await SendNotification(user, sender, surgeryId, prevNotification); // Previous step
+
             }
             catch (Exception e)
             {
@@ -118,6 +119,9 @@ namespace OpFlow.Service.SignalR
         {
             if (flowNotification == null)
                 return;
+
+            // Send surgery message in addition to notifications
+            await SendSurgeryMessage(surgeryId, flowNotification.FlowMessage);
 
             SmsNotification.NotifyUser(flowNotification.CellPhone, flowNotification.FlowMessage);
 
