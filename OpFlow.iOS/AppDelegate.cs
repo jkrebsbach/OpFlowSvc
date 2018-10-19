@@ -154,6 +154,18 @@ namespace OpFlow.iOS
                 AppSettings.SignOutUser();
 
             _lockoutTime = DateTime.MaxValue;
+
+
+            LocalAuthHelper.Authenticate(null, // do nothing on success
+                                        () =>
+            {
+                // Show View Controller that requires authentication
+                InvokeOnMainThread(() =>
+                {
+                    var localAuthViewController = new LocalAuthViewController();
+                    Window.RootViewController.ShowViewController(localAuthViewController, null);
+                })
+            })
         }
 
         public override void OnActivated(UIApplication application)

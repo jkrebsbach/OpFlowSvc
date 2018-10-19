@@ -108,7 +108,6 @@
     <Compile Include="NavigateViewController.designer.cs">
       <DependentUpon>NavigateViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="NSDateExtensions.cs" />
     <Compile Include="SearchViewController.cs" />
     <Compile Include="SearchViewController.designer.cs">
       <DependentUpon>SearchViewController.cs</DependentUpon>
@@ -121,7 +120,6 @@
     <Compile Include="SelectUserCell.designer.cs">
       <DependentUpon>SelectUserCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="SocketClient.cs" />
     <Compile Include="ViewSources\AssignmentSelectionTVS.cs" />
     <Compile Include="ViewSources\BasicPickerModel.cs" />
     <Compile Include="ViewSources\CommunicationGroupTVS.cs" />
@@ -241,13 +239,16 @@
     <Compile Include="DetailImageCell.designer.cs">
       <DependentUpon>DetailImageCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="Constants.cs" />
-    <Compile Include="Settings.cs" />
     <Compile Include="ViewSources\CardListTVS.cs" />
     <Compile Include="ImageSetupViewController.cs" />
     <Compile Include="ImageSetupViewController.designer.cs">
       <DependentUpon>ImageSetupViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Constants.cs" />
+    <Compile Include="Helpers\NSDateExtensions.cs" />
+    <Compile Include="Helpers\SocketClient.cs" />
+    <Compile Include="Helpers\Settings.cs" />
+    <Compile Include="Helpers\LocalAuthHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">
@@ -428,6 +429,7 @@
   <ItemGroup>
     <Folder Include="Resources\Media.xcassets\Home.imageset\" />
     <Folder Include="Resources\Media.xcassets\Icons.imageset\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
