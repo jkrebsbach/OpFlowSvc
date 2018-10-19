@@ -155,7 +155,7 @@ namespace OpFlow.iOS
 
             _lockoutTime = DateTime.MaxValue;
 
-
+            /*
             LocalAuthHelper.Authenticate(null, // do nothing on success
                                         () =>
             {
@@ -165,7 +165,7 @@ namespace OpFlow.iOS
                     var localAuthViewController = new LocalAuthViewController();
                     Window.RootViewController.ShowViewController(localAuthViewController, null);
                 })
-            })
+            })*/
         }
 
         public override void OnActivated(UIApplication application)

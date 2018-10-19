@@ -9,7 +9,7 @@ namespace OpFlow.Data
     {
         public int UserID { get; set; }
         public RoleEnum RoleID { get; set; }
-        public int SpecialtyID { get; set; }
+        public int? SpecialtyID { get; set; }
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
         public string Initials { get; set; }

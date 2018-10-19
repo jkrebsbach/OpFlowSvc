@@ -13,6 +13,8 @@ namespace OpFlow.iOS.ViewSources
     {
         private readonly List<SurgerySearchModel> _surgeries;
         private readonly List<Patient> _patients;
+
+        public event EventHandler<SurgerySearchResult> AddCaseEvent;
         public event EventHandler<SurgerySearchResult> EntitySelectionEvent;
 
         public SearchCaseTVS(List<SurgerySearchResult> surgeries, List<Patient> patients)
@@ -32,7 +34,7 @@ namespace OpFlow.iOS.ViewSources
             var cell = 
                 tableView.DequeueReusableCell("CaseSearchResultCell", indexPath) as CaseSearchResultCell;
 
-            cell?.UpdateCell(surgery, patient);
+            cell?.UpdateCell(surgery, patient, this);
 
             return cell;
         }
@@ -57,6 +59,11 @@ namespace OpFlow.iOS.ViewSources
             {
                 Surgery = surgery;
             }
+        }
+
+        public void AddCaseButtonEvent(SurgerySearchResult surgery)
+        {
+            AddCaseEvent?.Invoke(this, surgery);
         }
 
         public override void RowSelected(UITableView tableView, NSIndexPath indexPath)

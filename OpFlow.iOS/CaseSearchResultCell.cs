@@ -8,16 +8,25 @@ namespace OpFlow.iOS
 {
     public partial class CaseSearchResultCell : UITableViewCell
     {
+        private SearchCaseTVS _searchTvs;
+        SurgerySearchResult _surgery;
+
         public CaseSearchResultCell (IntPtr handle) : base (handle)
         {
         }
 
-        public void UpdateCell(SearchCaseTVS.SurgerySearchModel model, Patient patient)
+        partial void btnAdd_Clicked(UIButton sender)
         {
-            var surgery = model.Surgery;
-            
-            lblCaseProcedure.Text = $"{surgery.ProcedureDescription} {surgery.ScheduleTime:M/d} {surgery.ScheduleTime:hh\\:mm}";
-            lblCaseOverview.Text = $"{patient.LastName}, {patient.FirstName} {patient.MiddleInitial} Room:{surgery.RoomDescription} {surgery.SurgeryTeam}";
+            _searchTvs.AddCaseButtonEvent(_surgery);
+        }
+
+        public void UpdateCell(SearchCaseTVS.SurgerySearchModel model, Patient patient, SearchCaseTVS searchTvs)
+        {
+            _searchTvs = searchTvs;
+            _surgery = model.Surgery;
+
+            lblCaseProcedure.Text = $"{_surgery.ProcedureDescription} {_surgery.ScheduleTime:M/d} {_surgery.ScheduleTime:hh\\:mm}";
+            lblCaseOverview.Text = $"{patient.LastName}, {patient.FirstName} {patient.MiddleInitial} Room:{_surgery.RoomDescription} {_surgery.SurgeryTeam}";
 
         }
     }

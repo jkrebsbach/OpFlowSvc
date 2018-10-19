@@ -22,6 +22,10 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblCaseProcedure { get; set; }
 
+        [Action ("btnAdd_Clicked:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void btnAdd_Clicked (UIKit.UIButton sender);
+
         void ReleaseDesignerOutlets ()
         {
             if (lblCaseOverview != null) {

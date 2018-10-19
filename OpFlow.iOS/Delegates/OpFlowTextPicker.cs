@@ -37,6 +37,17 @@ namespace OpFlow.iOS.Delegates
             UpdateSelection(e);
         }
 
+        public void DefaultSelection(int index)
+        {
+            var selection = (Model as BasicPickerModel)?.CurrentSelection(index);
+            (Model as BasicPickerModel)?.RowSelected?.Invoke(this, selection);
+
+
+            Select(index, 0, false);
+
+            UpdateSelection(selection);
+        }
+
         private void UpdateSelection(IBindableEntity selection)
         {
             _selection = selection;

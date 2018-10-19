@@ -33,17 +33,23 @@ namespace OpFlow.iOS
             btnAssign.Hidden = true;
             _beginDate = new OpFlowTextDatePicker(txtBeginDate)
             {
-                Mode = UIDatePickerMode.Date
+                Mode = UIDatePickerMode.Date,
+                Date = NSDate.Now
             };
             _endDate = new OpFlowTextDatePicker(txtEndDate)
             {
-                Mode = UIDatePickerMode.Date
+                Mode = UIDatePickerMode.Date,
+                Date = NSDate.Now
             };
+
+            txtBeginDate.Text = DateTime.Today.ToString("M/d/yyyy");
+            txtEndDate.Text = DateTime.Today.ToString("M/d/yyyy");
 
             _beginDate.DateChanged += ParametersChanged;
             _endDate.DateChanged += ParametersChanged;
 
             await ExecuteAsyncWebRequest(LoadDropdowns);
+            await ExecuteAsyncWebRequest(SearchCases);
         }
 
         public async void ParametersChanged(object sender, EventArgs e)
@@ -55,6 +61,7 @@ namespace OpFlow.iOS
         {
             int? surgeonId = null;
             int? roomId = null;
+            int? specialtyId = null;
             DateTime? beginDate = null;
             DateTime? endDate = null;
 
@@ -63,6 +70,9 @@ namespace OpFlow.iOS
 
             if (txtRoom.Text != "")
                 roomId = _roomPicker.GetCurrentId();
+
+            if (txtSpecialty.Text != "")
+                specialtyId = _specialtyPicker.GetCurrentId();
 
             if (txtBeginDate.Text != "")
                 beginDate = _beginDate.Date.ToDateTime().Date;
@@ -74,7 +84,7 @@ namespace OpFlow.iOS
             var patients = new List<Patient>();
             if (surgeonId != null || roomId != null || beginDate != null || endDate != null)
             {
-                surgeries = await SurgeryUtil.SearchCases(surgeonId, roomId, beginDate, endDate);
+                surgeries = await SurgeryUtil.SearchCases(surgeonId, roomId, specialtyId, beginDate, endDate);
 
                 var patientIds = surgeries.Select(s => s.PatientID).ToList();
                 patients = await PatientUtil.GetPatients(patientIds);
@@ -86,9 +96,20 @@ namespace OpFlow.iOS
             CaseSearchTableView.Source = surgeryTableViewSource;
             CaseSearchTableView.ReloadData();
 
-            btnAssign.Hidden = false;
+            surgeryTableViewSource.AddCaseEvent += AddCase;
+
+            btnAssign.Hidden = surgeries.Count == 0;
 
             surgeryTableViewSource.EntitySelectionEvent += SelectCase;
+        }
+
+        int _surgeryId = -1;
+        private async void AddCase(object sender, SurgerySearchResult surgery)
+        {
+            _surgeryId = surgery.SurgeryID;
+            await ExecuteAsyncWebRequest(AssignSurgery, "Assigning...");
+
+            ShowDialog("Done", "Assignment complete");
         }
 
         async partial void btnAssign_Click(UIButton sender)
@@ -98,12 +119,16 @@ namespace OpFlow.iOS
             ShowDialog("Done", "Assignment complete");
         }
 
+        private async Task AssignSurgery()
+        {
+            await SurgeryUtil.AssignSurgery(_surgeryId);
+
+        }
+
         private async Task AssignSurgeries()
         {
             foreach (var surgeryId in _surgeryIds)
                 await SurgeryUtil.AssignSurgery(surgeryId);
-
-
         }
 
 
@@ -133,6 +158,12 @@ namespace OpFlow.iOS
             });
             _specialtyPicker = new OpFlowTextPicker(txtSpecialty, specialties.Cast<IBindableEntity>().ToList());
 
+            if (AppSettings.CurrentUser.SpecialtyID.HasValue) {
+                var specialty = specialties.FirstOrDefault(s => s.SpecialtyID == AppSettings.CurrentUser.SpecialtyID);
+                var index = specialties.IndexOf(specialty);
+                _specialtyPicker.DefaultSelection(index + 1);
+            }
+
             _roomPicker.ValueChanged += ParametersChanged;
             _specialtyPicker.ValueChanged += SpecialtyChanged;
         }
@@ -140,6 +171,7 @@ namespace OpFlow.iOS
         private async void SpecialtyChanged(object sender, EventArgs e)
         {
             await ExecuteAsyncWebRequest(LoadSurgeons);
+            await ExecuteAsyncWebRequest(SearchCases);
         }
 
         private async Task LoadSurgeons()

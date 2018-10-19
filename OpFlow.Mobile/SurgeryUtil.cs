@@ -20,7 +20,7 @@ namespace OpFlow.Mobile
             if (roomId.HasValue)
                 command += $"&roomId={roomId}";
             else
-                command += $"&surgeonUserId={userId}";
+                command += $"&userId={userId}";
             
             var response = await WebUtility.WebRequest<List<SurgerySearchResult>>(command, HttpMethod.Get);
 
@@ -28,7 +28,7 @@ namespace OpFlow.Mobile
         }
 
         public static async Task<List<SurgerySearchResult>> SearchCases(int? surgeonUserId, int? roomId,
-            DateTime? beginDate, DateTime? endDate)
+            int? specialtyId, DateTime? beginDate, DateTime? endDate)
         {
             var command = $"api/surgery/searchCases?";
             var strDelim = string.Empty;
@@ -36,6 +36,11 @@ namespace OpFlow.Mobile
             if (roomId.HasValue)
             {
                 command += $"{strDelim}roomId={roomId}";
+                strDelim = "&";
+            }
+            if (specialtyId.HasValue)
+            {
+                command += $"{strDelim}specialtyId={specialtyId}";
                 strDelim = "&";
             }
             if (surgeonUserId.HasValue)
