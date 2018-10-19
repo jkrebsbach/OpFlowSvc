@@ -60,6 +60,49 @@ namespace OpFlow.Service.Providers
 
                 if (user == null)
                 {
+                    int? roleId = null;
+
+                    foreach (var opflowRole in opflowRoles)
+                    {
+                        switch (opflowRole)
+                        {
+                            case "CN=SC-UNCH-OPFLOW-Surgeon,OU=Applications,OU=Secure,OU=Groups,DC=unch,DC=unc,DC=edu":
+                                roleId = 1;
+                                break;
+                            case
+                            "CN=SC-UNCH-OPFLOW-Circulator,OU=Applications,OU=Secure,OU=Groups,DC=unch,DC=unc,DC=edu":
+                                roleId = 2;
+                                break;
+                            case
+                            "CN=SC-UNCH-OPFLOW-SurgicalTech,OU=Applications,OU=Secure,OU=Groups,DC=unch,DC=unc,DC=edu":
+                                roleId = 3;
+                                break;
+                            case "CN=SC-UNCH-OPFLOW-CRNA,OU=Applications,OU=Secure,OU=Groups,DC=unch,DC=unc,DC=edu":
+                                roleId = 4;
+                                break;
+                            case "CN=SC-UNCH-OPFLOW-FrontDesk,OU=Applications,OU=Secure,OU=Groups,DC=unch,DC=unc,DC=edu":
+                                roleId = 7;
+                                break;
+                            case
+                            "CN=SC-UNCH-OPFLOW-Administration,OU=Applications,OU=Secure,OU=Groups,DC=unch,DC=unc,DC=edu":
+                                roleId = 9;
+                                break;
+                            case
+                            "CN=SC-UNCH-OPFLOW-Anesthesiologist,OU=Applications,OU=Secure,OU=Groups,DC=unch,DC=unc,DC=edu":
+                                roleId = 11;
+                                break;
+                            case
+                            "CN=SC-UNCH-OPFLOW-PostOpNurse,OU=Applications,OU=Secure,OU=Groups,DC=unch,DC=unc,DC=edu":
+                                roleId = 13;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    if (roleId == null)
+                        return null;
+
                     user = new ApplicationUser()
                     {
                         UserName = username,
@@ -71,10 +114,8 @@ namespace OpFlow.Service.Providers
                         throw new Exception("Unable to create new user");
 
                     var userAuthId = new Guid(user.Id);
-
-                    var roleId = opflowRoles.Any(r => r.Contains("surgeon")) ? 1 : 4;
                     var userId = await SqlHelper.CreateUser(userAuthId, roleId, null, firstName, lastName,
-                        username, null, null, null, 1, 1);
+                        username, null, null, "", 1, 1);
                 }
 
                 var oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,

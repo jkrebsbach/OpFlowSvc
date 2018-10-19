@@ -78,14 +78,14 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchResult>))]
         [SwaggerResponse(HttpStatusCode.Ambiguous)]
         [Route("api/Surgery/searchCases")]
-        public HttpResponseMessage GetCases(string caseNbr = null, int? surgeonUserId = null, int? roomId = null, 
-            int? bundleId = null, int? procedureId = null,
+        public HttpResponseMessage GetCases(string caseNbr = null, int? surgeonUserId = null, int? userId = null, int? roomId = null, 
+            int? bundleId = null, int? procedureId = null, int? specialtyId = null,
             DateTime? begDate = null, DateTime? endDate = null, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var schedules = SqlHelper.SearchCases(surgeonUserId, roomId,
-                bundleId, procedureId,
+            var schedules = SqlHelper.SearchCases(userId, surgeonUserId, roomId,
+                bundleId, procedureId, specialtyId,
                 begDate, endDate, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);

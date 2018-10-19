@@ -2203,14 +2203,17 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<SurgerySearchResult> SearchCases(int? surgeonUserId, int? roomId, int? bundleId, int? procedureId, DateTime? begDate, DateTime? endDate, int providerId, int locationId)
+        public static List<SurgerySearchResult> SearchCases(int? userId, int? surgeonUserId, int? roomId, int? bundleId, int? procedureId, int? specialtyId,
+            DateTime? begDate, DateTime? endDate, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("user_id", surgeonUserId ?? (object)DBNull.Value),
+                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_user_id", surgeonUserId ?? (object)DBNull.Value),
                 new SqlParameter("room_id", roomId ?? (object)DBNull.Value),
                 new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("beg_date", begDate ?? (object)DBNull.Value),
                 new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),

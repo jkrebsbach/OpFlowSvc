@@ -225,6 +225,7 @@ namespace OpFlow.Service.Controllers
 
                 var firstName = string.Empty;
                 var lastName = string.Empty;
+                var opflowRoles = new List<string>();
 
                 //If you need to add custom attributes, uncomment the following code
                 foreach (var attributeStatement in samlAssertion.AttributeStatements ?? new AttributeStatement [0])
@@ -240,13 +241,12 @@ namespace OpFlow.Service.Controllers
 
                         // Process your custom attribute here.
                         // ...
+                        if (attribute.Name == "role")
+                            opflowRoles = attribute.Values.ToList().Select(a => a.Data?.ToString() ?? "").ToList();
                     }
                 }
 
                 #endregion
-
-                // Set authentication cookie.
-                System.Web.Security.FormsAuthentication.SetAuthCookie(userName, false);
 
                 // attemp to generate universally unique identifiers
                 var email = userName;
@@ -255,8 +255,18 @@ namespace OpFlow.Service.Controllers
                     email = userName + "@unc.saml";
                 }
 
-                var token = await ApplicationOAuthProvider.GenerateBearerToken(userName, email, firstName, lastName, new List<string>());
+                var token = await ApplicationOAuthProvider.GenerateBearerToken(userName, email, firstName, lastName, opflowRoles);
 
+                if (token == null)
+                {
+                    //var strContent = JsonConvert.SerializeObject(opflowRoles);
+                    //return Content("We got here, and not there");
+                    return View("Unauthorized");
+                }
+                
+                // Set authentication cookie.
+                System.Web.Security.FormsAuthentication.SetAuthCookie(userName, false);
+                
                 // Redirect to the requested URL.
                 var responseUrl = ConfigurationManager.AppSettings["ResponseURL"];
                 //return Redirect(samlResponse.RelayState + "?authToken=" + token);
