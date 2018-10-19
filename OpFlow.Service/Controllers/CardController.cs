@@ -343,6 +343,20 @@ namespace OpFlow.Service.Controllers
         }
 
         // PUT api/values
+        [SwaggerOperation("DeleteCardItem")]
+        [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
+        [Route("api/card/cardItem", Name = "DeleteCardItem")]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteCardItem(int cardId, int itemId)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            var result = await DataAccess.SqlHelper.DeleteCardItem(cardId, itemId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK);
+        }
+
+        // PUT api/values
         [SwaggerOperation("AssignCardItem")]
         [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
         [Route("api/card/cardItem", Name = "AssignCardItem")]
@@ -351,7 +365,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.UpdateCardItem(cardId, itemId, value.OpenQty, value.HoldQty, user.ProviderID, user.LocationID);
+            var result = await DataAccess.SqlHelper.UpdateCardItem(cardId, itemId, value.OpenQty, value.HoldQty, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK);
         }
@@ -367,7 +381,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.UpdateCardProcedure(cardId, procedureId, user.ProviderID, user.LocationID);
+            var result = await DataAccess.SqlHelper.UpdateCardProcedure(cardId, procedureId, user.ProviderID, user.LocationID);
 
             return result.HasValue ? 
                 Request.CreateResponse(HttpStatusCode.OK, result) : 

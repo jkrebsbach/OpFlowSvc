@@ -45,7 +45,7 @@ namespace OpFlow.Service.SignalR
 
                 foreach (var recipient in recipients)
                 {
-                    await PushNotificationMessage(recipient.Email, message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
+                    await PushNotificationMessage(sender, recipient.Email, message);
                 }
             }
             catch (Exception e)
@@ -76,10 +76,10 @@ namespace OpFlow.Service.SignalR
             Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
 
             // Send messages to communication target
-            await PushNotificationMessage(recipientUser.Email, message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, null, sender.UserID);
+            await PushNotificationMessage(sender, recipientUser.Email, message);
 
             // Send messages to communication source
-            await PushNotificationMessage(HttpContext.Current.User.Identity.GetUserName(), message, (int)sender.RoleID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
+            await PushNotificationMessage(sender, sender.Email, message);
         }
 
         public async Task AdvanceSurgery(int surgeryId, DateTime stepTime, bool startSurgery)
@@ -145,7 +145,7 @@ namespace OpFlow.Service.SignalR
         {
             var recipientUser = SqlHelper.GetUser(user.ProviderID, user.LocationID, targetUserId);
 
-            await PushNotificationMessage(recipientUser.Email, message, (int)sender.RoleID, sender.DeriveInitials(), DateTime.Now, null, sender.UserID);
+            await PushNotificationMessage(sender, recipientUser.Email, message);
 
             Clients.All.broadcastMessage(message,
                 (int)sender.RoleID, sender.DeriveInitials(), DateTime.Now, null, targetUserId);
@@ -153,14 +153,16 @@ namespace OpFlow.Service.SignalR
 
         }
 
-        private async Task PushNotificationMessage(string who, string message, int senderRoleId, string senderUserName, DateTime insertTimestamp, int? surgeryId, int? communicationUserId)
+        private async Task PushNotificationMessage(User sender, string recipientEmail, string message)
         {
             //System.Diagnostics.Debug.WriteLine("SENDING MESSAGE");
-            var name = Context.User.Identity.Name;
+            var senderEmail = Context.User.Identity.Name;
+
+            var senderName = $"{sender.LastName}, {sender.FirstName}";
 
             // Don't send push notification to yourself!
-            if (name != who)
-                await PushNotification.PostNotification(name, who, message);
+            if (recipientEmail != sender.Email)
+                await PushNotification.PostNotification(senderName, senderEmail, recipientEmail, message);
 
             //Clients.All.broadcastMessage(message, senderRoleId, senderUserName, insertTimestamp, surgeryId, communicationUserId);
 

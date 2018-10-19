@@ -99,7 +99,8 @@ namespace OpFlow.Service.Controllers
                         $"MRN: {surgery.CaseNumber} Room: {surgery.RoomDescription} Patient: {patient.Initials} Gender: {patient.Gender} Age: {patient.PatientAge} Message: ";
 
                     messagePost.Message = surgeryText + messagePost.Message;
-                    notificationOutcome = await PushNotification.PostNotification(sender.Email, recipient.Email, messagePost.Message);
+                    var senderName = $"{sender.LastName}, {sender.FirstName}";
+                    notificationOutcome = await PushNotification.PostNotification(sender.Email, senderName, recipient.Email, messagePost.Message);
                 }
             }
             else if (communicationUserId != null)
@@ -110,8 +111,8 @@ namespace OpFlow.Service.Controllers
                 var sender =
                     SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
-
-                notificationOutcome = await PushNotification.PostNotification(sender.Email, recipientUser.Email, messagePost.Message);
+                var senderName = $"{sender.LastName}, {sender.FirstName}";
+                notificationOutcome = await PushNotification.PostNotification(sender.Email, senderName, recipientUser.Email, messagePost.Message);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, notificationOutcome);

@@ -1112,7 +1112,19 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("DeleteCardUser", dsParameters);
         }
 
-        public static int UpdateCardItem(int cardId, int itemId, int qtyOpen, int qtyHold, int providerId, int locationId)
+        public static async Task<int> DeleteCardItem(int cardId, int itemId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("item_id", itemId)
+            };
+            return await ExecuteNonQueryAsync("DeleteCardItem", dsParameters);
+        }
+
+        public static async Task<int> UpdateCardItem(int cardId, int itemId, int qtyOpen, int qtyHold, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1123,10 +1135,10 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("qty_open", qtyOpen),
                 new SqlParameter("qty_hold", qtyHold)
             };
-            return ExecuteNonQuery("UpdateCardItem", dsParameters);
+            return await ExecuteNonQueryAsync("UpdateCardItem", dsParameters);
         }
 
-        public static int? UpdateCardProcedure(int cardId, int procedureId, int providerId, int locationId)
+        public static async Task<int?> UpdateCardProcedure(int cardId, int procedureId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1135,7 +1147,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("card_id", cardId),
                 new SqlParameter("procedure_id", procedureId)
             };
-            return ExecuteNonQuery("UpdateCardProcedure", dsParameters);
+            return await ExecuteNonQueryAsync("UpdateCardProcedure", dsParameters);
         }
 
         public static int? DeleteCardProcedure(int cardId, int procedureId, int providerId, int locationId)

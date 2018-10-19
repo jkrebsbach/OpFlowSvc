@@ -10,6 +10,7 @@ using System.Web.Http.Tracing;
 using Microsoft.Azure.NotificationHubs;
 using Microsoft.Azure.NotificationHubs.Messaging;
 using OpFlow.Data;
+using OpFlow.Service.DataAccess;
 using OpFlow.Service.Models;
 using Swashbuckle.Swagger.Annotations;
 
@@ -71,7 +72,12 @@ namespace OpFlow.Service.Controllers
             var sendingUser = HttpContext.Current.User.Identity.Name;
             var ret = HttpStatusCode.InternalServerError;
 
-            var outcome = await PushNotification.PostNotification(sendingUser, message.UserName, message.Message);
+            var user = CacheUtil.GetUserSecurity();
+            var sender =
+                SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+
+            var senderName = $"{sender.LastName}, {sender.FirstName}";
+            var outcome = await PushNotification.PostNotification(sendingUser, senderName, message.UserName, message.Message);
 
             if (outcome != null)
             {

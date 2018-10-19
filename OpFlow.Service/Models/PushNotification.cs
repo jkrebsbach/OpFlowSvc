@@ -102,16 +102,17 @@ namespace OpFlow.Service.Models
         /// <summary>
         /// Send notification to specific user 
         /// </summary>
+        /// <param name="sendingEmail"></param>
         /// <param name="sendingUser"></param>
         /// <param name="targetUser"></param>
         /// <param name="message"></param>
         /// <returns></returns>
         public static async Task<NotificationOutcome> PostNotification(
-            string sendingUser, string targetUser, string message)
+            string sendingEmail, string sendingUser, string targetUser, string message)
         {
             string[] userTag = new string[2];
             userTag[0] = "username:" + targetUser;
-            userTag[1] = "from:" + sendingUser;
+            userTag[1] = "from:" + sendingEmail;
 
             NotificationOutcome outcome = null;
 
