@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
 using OpFlow.Data.Administration;
+using OpFlow.Data.Analytics;
 using OpFlow.Service.DataAccess;
 using OpFlow.Service.Models;
 using Swashbuckle.Swagger.Annotations;
@@ -43,6 +44,19 @@ namespace OpFlow.Service.Controllers
                 ImportDefinitions = SqlHelper.GetImportDefinition(importTypeId, user.ProviderID, user.LocationID),
                 ImportLogs = SqlHelper.GetImportLog(importTypeId, user.ProviderID, user.LocationID)
             };
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetCaseOverview")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(OverviewScreen))]
+        [Route("api/administration/caseOverview")]
+        public async Task<HttpResponseMessage> GetCaseOverview(DateTime beginDate, DateTime endDate, int? specialtyId = null, int? bundleId = null)
+        {
+            var user = CacheUtil.GetUserSecurity();
+            
+            var result = await SqlHelper.GetCaseOverview(user.ProviderID, user.LocationID, beginDate, endDate, specialtyId, bundleId);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

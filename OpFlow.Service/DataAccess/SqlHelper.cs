@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using OpFlow.Data;
 using OpFlow.Data.Administration;
+using OpFlow.Data.Analytics;
 using OpFlow.Data.Debrief;
 
 namespace OpFlow.Service.DataAccess
@@ -147,6 +148,28 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = ExecuteCommand("GetImportDefinition", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<ImportDefinition>();
+
+            return result;
+        }
+
+        public static async Task<OverviewScreen> GetCaseOverview(int providerId, int locationId, DateTime beginDate, DateTime endDate, int? specialtyId, int? bundleId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("begin_date", beginDate),
+                new SqlParameter("end_date", endDate),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetCaseOverview", parameters);
+
+            var result = new OverviewScreen();
+
+            result.CaseOverview = dsSchedules.Tables[0].DataTableToList<CaseOverview>().FirstOrDefault();
+            result.CaseSurgeonOverview = dsSchedules.Tables[1].DataTableToList<CaseSurgeonOverview>();
+            result.CaseBundleOverview = dsSchedules.Tables[2].DataTableToList<CaseBundleOverview>();
 
             return result;
         }

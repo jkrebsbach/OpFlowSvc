@@ -162,7 +162,7 @@ namespace OpFlow.Service.SignalR
 
             // Don't send push notification to yourself!
             if (recipientEmail != sender.Email)
-                await PushNotification.PostNotification(senderName, senderEmail, recipientEmail, message);
+                await PushNotification.PostNotification(senderEmail, senderName, recipientEmail, message);
 
             //Clients.All.broadcastMessage(message, senderRoleId, senderUserName, insertTimestamp, surgeryId, communicationUserId);
 
