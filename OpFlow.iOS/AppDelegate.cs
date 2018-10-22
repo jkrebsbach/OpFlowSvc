@@ -17,7 +17,7 @@ namespace OpFlow.iOS
 
         // class-level declarations
         private DateTime _lockoutTime;
-        private readonly TimeSpan _inactivitySpan = new TimeSpan(0, 4, 0, 0);
+        private readonly TimeSpan _inactivitySpan = new TimeSpan(1, 0, 0, 0);
 
         public override UIWindow Window
         {

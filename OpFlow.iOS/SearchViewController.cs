@@ -93,6 +93,9 @@ namespace OpFlow.iOS
             var surgeryTableViewSource = new SearchCaseTVS(surgeries, patients);
             _surgeryIds = surgeries.Select(s => s.SurgeryID).ToList();
 
+            CaseSearchTableView.RowHeight = 80f;
+            CaseSearchTableView.EstimatedRowHeight = 80f;
+
             CaseSearchTableView.Source = surgeryTableViewSource;
             CaseSearchTableView.ReloadData();
 
@@ -162,6 +165,8 @@ namespace OpFlow.iOS
                 var specialty = specialties.FirstOrDefault(s => s.SpecialtyID == AppSettings.CurrentUser.SpecialtyID);
                 var index = specialties.IndexOf(specialty);
                 _specialtyPicker.DefaultSelection(index + 1);
+
+                await LoadSurgeons();
             }
 
             _roomPicker.ValueChanged += ParametersChanged;
@@ -182,8 +187,18 @@ namespace OpFlow.iOS
 
             if (specialtyId > 0)
                 surgeons = await UserUtil.GetSurgeons(specialtyId ?? 0);
-            
+
+
+            surgeons.Insert(0, new Surgeon()
+            {
+                SpecialtyID = 0,
+                LastName = "[Blank]"
+            });
+
             _surgeonPicker = new OpFlowTextPicker(txtSurgeon, surgeons.Cast<IBindableEntity>().ToList());
+
+            // Force reset, in case something was already assigned before swapping specialty
+            _surgeonPicker.DefaultSelection(0);
 
             _surgeonPicker.ValueChanged += ParametersChanged;
         }
