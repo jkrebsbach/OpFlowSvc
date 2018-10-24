@@ -1827,7 +1827,7 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="35570">
-                                <rect key="frame" x="35" y="101" width="80" height="80"/>
+                                <rect key="frame" x="35" y="144" width="80" height="80"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="80" id="0c2-Ij-yYO"/>
                                     <constraint firstAttribute="height" constant="80" id="7p1-zn-FsX"/>
@@ -1838,7 +1838,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="35571">
-                                <rect key="frame" x="219" y="101" width="80" height="80"/>
+                                <rect key="frame" x="219" y="144" width="80" height="80"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="80" id="3ml-Zs-wYc"/>
                                     <constraint firstAttribute="width" constant="80" id="Tzb-25-dve"/>
@@ -1851,7 +1851,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="35572">
-                                <rect key="frame" x="35" y="201" width="80" height="80"/>
+                                <rect key="frame" x="35" y="244" width="80" height="80"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="80" id="MD6-rL-ggS"/>
                                     <constraint firstAttribute="height" constant="80" id="qP0-EG-KAB"/>
@@ -1864,7 +1864,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="55490">
-                                <rect key="frame" x="130" y="325" width="60" height="60"/>
+                                <rect key="frame" x="130" y="368" width="60" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="60" id="5Kr-87-g4T"/>
                                     <constraint firstAttribute="height" constant="60" id="Kmk-Sl-1Wg"/>
@@ -1878,7 +1878,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="35573">
-                                <rect key="frame" x="219" y="201" width="80" height="80"/>
+                                <rect key="frame" x="219" y="244" width="80" height="80"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="80" id="GjW-mj-8ie"/>
                                     <constraint firstAttribute="width" constant="80" id="Pau-OB-Mba"/>
@@ -1891,7 +1891,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7fk-qx-1fs">
-                                <rect key="frame" x="35" y="170" width="80" height="30"/>
+                                <rect key="frame" x="35" y="213" width="80" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="80" id="DTS-HF-lRv"/>
                                 </constraints>
@@ -1901,28 +1901,28 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GOl-S1-Inw">
-                                <rect key="frame" x="212" y="170" width="94" height="30"/>
+                                <rect key="frame" x="212" y="213" width="94" height="30"/>
                                 <state key="normal" title="Search Cases"/>
                                 <connections>
                                     <action selector="btnSearch_Click:" destination="35565" eventType="touchUpInside" id="86569"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XQc-Px-vi5">
-                                <rect key="frame" x="40" y="265" width="70" height="30"/>
+                                <rect key="frame" x="40" y="308" width="70" height="30"/>
                                 <state key="normal" title="New Case"/>
                                 <connections>
                                     <action selector="btnCase_Click:" destination="35565" eventType="touchUpInside" id="86570"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k4S-Mq-2CF">
-                                <rect key="frame" x="238.5" y="265" width="41" height="30"/>
+                                <rect key="frame" x="238.5" y="308" width="41" height="30"/>
                                 <state key="normal" title="Cards"/>
                                 <connections>
                                     <action selector="btnCard_Click:" destination="35565" eventType="touchUpInside" id="86571"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OMz-ZF-ych">
-                                <rect key="frame" x="109.5" y="375" width="101" height="30"/>
+                                <rect key="frame" x="109.5" y="418" width="101" height="30"/>
                                 <state key="normal" title="Communicator"/>
                                 <connections>
                                     <action selector="btnCommunicator_Click:" destination="35565" eventType="touchUpInside" id="86574"/>
@@ -1949,11 +1949,11 @@
                             <constraint firstItem="35570" firstAttribute="leading" secondItem="35566" secondAttribute="leading" constant="35" id="JXt-Hw-1bv"/>
                             <constraint firstItem="35573" firstAttribute="top" secondItem="35571" secondAttribute="bottom" constant="20" id="OZj-pM-985"/>
                             <constraint firstItem="7fk-qx-1fs" firstAttribute="centerY" secondItem="GOl-S1-Inw" secondAttribute="centerY" id="SNK-jO-Hca"/>
-                            <constraint firstItem="35571" firstAttribute="top" secondItem="35569" secondAttribute="bottom" constant="6" id="Tg6-JW-00p"/>
                             <constraint firstItem="OMz-ZF-ych" firstAttribute="top" secondItem="55490" secondAttribute="bottom" constant="-10" id="UKp-Ld-nfE"/>
                             <constraint firstItem="k4S-Mq-2CF" firstAttribute="top" secondItem="35573" secondAttribute="bottom" constant="-16" id="Xhc-7f-QRF"/>
                             <constraint firstItem="35572" firstAttribute="leading" secondItem="35566" secondAttribute="leading" constant="35" id="YTP-ZJ-Vwt"/>
                             <constraint firstItem="35570" firstAttribute="centerY" secondItem="35571" secondAttribute="centerY" id="aFa-8y-ljl"/>
+                            <constraint firstItem="35573" firstAttribute="centerY" secondItem="35566" secondAttribute="centerY" id="ac0-4o-LEY"/>
                             <constraint firstItem="35572" firstAttribute="centerY" secondItem="35573" secondAttribute="centerY" id="ae8-J2-ASq"/>
                             <constraint firstItem="fKf-kW-Nqh" firstAttribute="centerX" secondItem="35566" secondAttribute="centerX" id="e4T-Fm-PjW"/>
                             <constraint firstItem="35569" firstAttribute="top" secondItem="35562" secondAttribute="bottom" id="kh0-xL-mdd"/>
