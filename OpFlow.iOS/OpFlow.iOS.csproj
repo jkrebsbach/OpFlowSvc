@@ -383,6 +383,13 @@
     <BundleResource Include="Resources\ic_camera_alt_blue_dark_36pt.png" />
     <BundleResource Include="Resources\ic_camera_alt_blue_dark_36pt%402x.png" />
     <BundleResource Include="Resources\ic_camera_alt_blue_dark_36pt%403x.png" />
+    <BundleResource Include="Resources\calendar.png" />
+    <BundleResource Include="Resources\card.png" />
+    <BundleResource Include="Resources\case.png" />
+    <BundleResource Include="Resources\communicator.png" />
+    <BundleResource Include="Resources\cycle.png" />
+    <BundleResource Include="Resources\graph.png" />
+    <BundleResource Include="Resources\search.png" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">
