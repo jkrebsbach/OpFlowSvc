@@ -32,7 +32,7 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITextField txtProcedure { get; set; }
+        UIKit.UITextField txtSurgeon { get; set; }
 
         void ReleaseDesignerOutlets ()
         {
@@ -56,9 +56,9 @@ namespace OpFlow.iOS
                 txtBundle = null;
             }
 
-            if (txtProcedure != null) {
-                txtProcedure.Dispose ();
-                txtProcedure = null;
+            if (txtSurgeon != null) {
+                txtSurgeon.Dispose ();
+                txtSurgeon = null;
             }
         }
     }

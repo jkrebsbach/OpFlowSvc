@@ -14,6 +14,7 @@ namespace OpFlow.iOS
     public partial class CardListViewController : OpFlowViewController
     {
         private OpFlowTextPicker _bundlePicker;
+        private OpFlowTextPicker _surgeonPicker;
 
         public CardListViewController (IntPtr handle) : base (handle)
         {
@@ -44,6 +45,11 @@ namespace OpFlow.iOS
             _bundlePicker.ValueChanged += UpdateBundle;
             swtDefault.ValueChanged += UpdateBundle;
 
+            var surgeons = await UserUtil.GetSurgeons(null);
+            _surgeonPicker = new OpFlowTextPicker(txtSurgeon, surgeons.Cast<IBindableEntity>().ToList());
+
+            _surgeonPicker.ValueChanged += UpdateBundle;
+
             await UpdateCards();
         }
 
@@ -55,9 +61,10 @@ namespace OpFlow.iOS
         private async Task UpdateCards()
         {
             var bundleId = _bundlePicker.GetCurrentId();
+            var surgeonId = _surgeonPicker.GetCurrentId();
             var defaultFilter = swtDefault.On;
 
-            var cards = await CardUtil.GetCards(bundleId, null, defaultFilter);
+            var cards = await CardUtil.GetCards(bundleId, null, surgeonId, defaultFilter);
             var messagingTableViewSource = new CardListTVS(cards);
 
             var minimumCost = 0.0M;

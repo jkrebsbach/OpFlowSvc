@@ -47,9 +47,16 @@ namespace OpFlow.Mobile
             var response = await WebUtility.SendBodyRequest<int>(command, messagePost, HttpMethod.Put);
         }
 
-        public static async Task<List<MessagingGroup>> GetMessageGroups()
+        public static async Task<List<MessagingGroup>> GetMessageGroups(bool onlyToday)
         {
-            var command = string.Format("api/message/groups");
+            var command = string.Format("api/message/groups?startDate={0}",
+                                       DateTime.Today.ToString("M/d/yyyy"));
+
+            if (onlyToday)
+            {
+                command += string.Format("&endDate={0}", DateTime.Today.ToString("M/d/yyyy"));
+            }
+
             var response = await WebUtility.WebRequest<List<MessagingGroup>>(command, HttpMethod.Get);
 
             return response.ToList();

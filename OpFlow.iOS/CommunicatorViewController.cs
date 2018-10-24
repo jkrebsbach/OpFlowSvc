@@ -74,7 +74,9 @@ namespace OpFlow.iOS
 
         private async Task LoadMessageGroups()
         {
-            _messageGroups = await MessagingUtil.GetMessageGroups();
+            var onlyToday = swtCaseFilter.On;
+
+            _messageGroups = await MessagingUtil.GetMessageGroups(onlyToday);
 
             var messageGroupTableViewSource = new CommunicationGroupTVS(_messageGroups);
             messageGroupTableViewSource.MessageGroupSelectionEvent += SelectMessageGroup;
@@ -82,6 +84,11 @@ namespace OpFlow.iOS
             CommunicatorTableView.Source = messageGroupTableViewSource;
 
             CommunicatorTableView.ReloadData();
+        }
+
+        async partial void swtCaseFilter_Changed(UISwitch sender)
+        {
+            await ExecuteAsyncWebRequest(LoadMessageGroups);
         }
 
         private void SelectMessageGroup(object sender, MessagingGroup messageGroup)

@@ -52,7 +52,15 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblCasesByRoom { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblCurrentWeek { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblYourCases { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -121,9 +129,19 @@ namespace OpFlow.iOS
                 btnWednesday = null;
             }
 
+            if (lblCasesByRoom != null) {
+                lblCasesByRoom.Dispose ();
+                lblCasesByRoom = null;
+            }
+
             if (lblCurrentWeek != null) {
                 lblCurrentWeek.Dispose ();
                 lblCurrentWeek = null;
+            }
+
+            if (lblYourCases != null) {
+                lblYourCases.Dispose ();
+                lblYourCases = null;
             }
 
             if (pickerRoom != null) {

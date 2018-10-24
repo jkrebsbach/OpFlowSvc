@@ -37,10 +37,14 @@ namespace OpFlow.iOS
             btnPrev.Transform = CGAffineTransform.MakeRotation((float)Math.PI);
 
             pickerRoom.Hidden = true;
+            lblCasesByRoom.Hidden = true;
             
             switchSurgeon.ValueChanged += async delegate
             {
                 pickerRoom.Hidden = switchSurgeon.On;
+                lblCasesByRoom.Hidden = switchSurgeon.On;
+
+                lblYourCases.Hidden = !switchSurgeon.On;
 
                 await LoadSchedule();
             };

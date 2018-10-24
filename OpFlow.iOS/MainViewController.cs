@@ -236,6 +236,13 @@ namespace OpFlow.iOS
 
                     navigationAction = NavigateBack;
                     break;
+                case CustomButtonType.Home:
+                    uiButton = new UIButton(new CGRect(0, 0, 75, 40));
+                    uiButton.SetTitle("Home", UIControlState.Normal);
+                    uiButton.SetTitleColor(uiButton.TintColor, UIControlState.Normal);
+
+                    navigationAction = NavigateBack;
+                    break;
                 case CustomButtonType.Compose:
                     uiButton = new UIButton(new CGRect(0, 0, 40, 40));
                     uiButton.SetImage(UIImage.FromBundle("Navigation_Compose.png"), UIControlState.Normal);
@@ -275,6 +282,7 @@ namespace OpFlow.iOS
             Compose,
             Cancel,
             Done,
+            Home,
             Update
         }
 
@@ -380,7 +388,7 @@ namespace OpFlow.iOS
                     customBackButton = null; // Cancel action, not back
                     await _containerViewController.PresentSearchCaseViewAsync();
 
-                    rightButton = SetupCustomEdit(CustomButtonType.Cancel);
+                    rightButton = SetupCustomEdit(CustomButtonType.Home);
 
                     break;
 

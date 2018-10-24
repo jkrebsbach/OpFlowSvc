@@ -58,7 +58,7 @@ namespace OpFlow.iOS
             {
                 currentId = AppSettings.CurrentCard ?? -1;
 
-                var cards = await CardUtil.GetCards(AppSettings.CurrentBundle, AppSettings.CurrentProcedure, false);
+                var cards = await CardUtil.GetCards(AppSettings.CurrentBundle, AppSettings.CurrentProcedure, null, false);
                 options = cards.Cast<IBindableEntity>().ToList();
             }
 
