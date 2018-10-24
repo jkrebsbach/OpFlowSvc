@@ -137,7 +137,12 @@ namespace OpFlow.iOS
             else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CardList)
                 NavigateHome();
             else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.Communicator)
-                PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
+            {
+                if (AppSettings.CurrentSurgery == null)
+                    PresentContainerView(AppSettings.FragmentEnum.Schedule);
+                else
+                    PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
+            }
             else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.CardDetail)
                 PresentContainerView(AppSettings.FragmentEnum.CaseNavigate);
             else if (AppSettings.CurrentScreen == AppSettings.FragmentEnum.FlowDetail)
@@ -389,7 +394,11 @@ namespace OpFlow.iOS
 
                 case AppSettings.FragmentEnum.Communicator:
                     Title = "Communicator";
-                    customBackButton = SetupCustomBack("Surgery");
+                    var previousPage = "Schedule";
+                    if (AppSettings.CurrentSurgery != null)
+                        previousPage = "Surgery";
+
+                    customBackButton = SetupCustomBack(previousPage);
                     await _containerViewController.PresentCommunicatorViewAsync();
 
                     rightButton = SetupCustomEdit(CustomButtonType.Compose);

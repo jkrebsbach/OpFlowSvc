@@ -17,18 +17,7 @@ namespace OpFlow.iOS
 
         public HomeViewController(IntPtr handle) : base(handle)
         {
-        }
-
-        partial void btnCommunity_Click(UIButton sender)
-        {
-            var controller = Storyboard.InstantiateViewController("MainViewController");
-            NavigationController.PushViewController(controller, true);
-        }
-
-        partial void btnAnalytics_Click(UIButton sender)
-        {
-            var controller = Storyboard.InstantiateViewController("MainViewController");
-            NavigationController.PushViewController(controller, true);
+            AppSettings.CurrentSurgery = null;
         }
 
         partial void btnCard_Click(UIButton sender)

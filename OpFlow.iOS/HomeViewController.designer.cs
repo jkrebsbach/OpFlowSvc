@@ -14,10 +14,6 @@ namespace OpFlow.iOS
     [Register ("HomeViewController")]
     partial class HomeViewController
     {
-        [Action ("btnAnalytics_Click:")]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        partial void btnAnalytics_Click (UIKit.UIButton sender);
-
         [Action ("btnCard_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnCard_Click (UIKit.UIButton sender);
@@ -29,10 +25,6 @@ namespace OpFlow.iOS
         [Action ("btnCommunicator_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnCommunicator_Click (UIKit.UIButton sender);
-
-        [Action ("btnCommunity_Click:")]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        partial void btnCommunity_Click (UIKit.UIButton sender);
 
         [Action ("btnSchedule_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
