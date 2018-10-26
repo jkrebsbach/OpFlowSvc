@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Deployment.Internal.CodeSigning;
 using System.IO;
 using System.Linq;
@@ -85,7 +86,8 @@ namespace OpFlow.Service
 
         private void LoadRequestorCertificate()
         {
-            var certPath = Path.Combine(HttpRuntime.AppDomainAppPath, @"FedTest.cer");
+            var certFilename = ConfigurationManager.AppSettings["RequestorCertName"];
+            var certPath = Path.Combine(HttpRuntime.AppDomainAppPath, certFilename);
             
             X509Certificate2 cert = new X509Certificate2(certPath, string.Empty,
                 X509KeyStorageFlags.MachineKeySet |
