@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Timers;
 using Foundation;
+using OpFlow.iOS.Helpers;
 using OpFlow.Mobile;
 using UIKit;
 using WindowsAzure.Messaging;
@@ -17,7 +18,7 @@ namespace OpFlow.iOS
 
         // class-level declarations
         private DateTime _lockoutTime;
-        private readonly TimeSpan _inactivitySpan = new TimeSpan(1, 0, 0, 0);
+        private readonly TimeSpan _inactivitySpan = new TimeSpan(0, 8, 0, 0);
 
         public override UIWindow Window
         {
@@ -155,17 +156,16 @@ namespace OpFlow.iOS
 
             _lockoutTime = DateTime.MaxValue;
 
-            /*
-            LocalAuthHelper.Authenticate(null, // do nothing on success
-                                        () =>
-            {
+            //LocalAuthHelper.Authenticate(null, // do nothing on success
+              //                          () =>
+            //{
                 // Show View Controller that requires authentication
-                InvokeOnMainThread(() =>
-                {
-                    var localAuthViewController = new LocalAuthViewController();
-                    Window.RootViewController.ShowViewController(localAuthViewController, null);
-                })
-            })*/
+               // InvokeOnMainThread(() =>
+               // {
+                  //  var localAuthViewController = new LocalAuthViewController();
+                //    Window.RootViewController.ShowViewController(localAuthViewController, null);
+              //  });
+            //});
         }
 
         public override void OnActivated(UIApplication application)

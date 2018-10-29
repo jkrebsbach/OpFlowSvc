@@ -25,8 +25,6 @@ namespace OpFlow.iOS
 
         internal override void UpdateCell(SurgerySearchResult surgery, Patient patient, SurgeryTVS surgeryTVS)
         {
-            CustomFormatting();
-
             _surgeryTvs = surgeryTVS;
             _surgery = surgery;
 

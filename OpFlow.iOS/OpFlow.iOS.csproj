@@ -249,12 +249,17 @@
     <Compile Include="Helpers\SocketClient.cs" />
     <Compile Include="Helpers\Settings.cs" />
     <Compile Include="Helpers\LocalAuthHelper.cs" />
+    <Compile Include="LocalAuthViewController.cs" />
+    <Compile Include="LocalAuthViewController.designer.cs">
+      <DependentUpon>LocalAuthViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">
       <SubType>Designer</SubType>
     </InterfaceDefinition>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
+    <InterfaceDefinition Include="LocalAuthViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PCLCrypto, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d4421c8a4786956c, processorArchitecture=MSIL">

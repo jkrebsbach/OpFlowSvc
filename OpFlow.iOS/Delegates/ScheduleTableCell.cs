@@ -18,10 +18,6 @@ namespace OpFlow.iOS.Delegates
         public ScheduleTableCell(IntPtr handle) : base(handle)
         { }
 
-        protected void CustomFormatting()
-        {
-        }
-
         internal abstract void UpdateCell(SurgerySearchResult surgery, Patient patient, SurgeryTVS surgeryTVS);
     }
 }
