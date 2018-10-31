@@ -49,7 +49,6 @@ namespace OpFlow.iOS
             lblSurgeryTeam.Text = CalculateSurgeryTeam(surgery.SurgeryUsers);
             lblStartTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
 
-            lblPreferenceCard.Text = surgery.CardDescription ?? "Unassigned";
             lblDuration.Text = "Duration: " + (surgery.TotalMinutes?.ToString() ?? "UNK");
         }
 

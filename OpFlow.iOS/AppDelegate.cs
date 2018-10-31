@@ -152,7 +152,9 @@ namespace OpFlow.iOS
             // Here you can undo many of the changes made on entering the background.
 
             if (_lockoutTime < DateTime.Now)
+            {
                 AppSettings.SignOutUser();
+            }
 
             _lockoutTime = DateTime.MaxValue;
 

@@ -259,7 +259,6 @@
       <SubType>Designer</SubType>
     </InterfaceDefinition>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
-    <InterfaceDefinition Include="LocalAuthViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PCLCrypto, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d4421c8a4786956c, processorArchitecture=MSIL">

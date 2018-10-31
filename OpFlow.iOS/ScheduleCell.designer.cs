@@ -36,10 +36,6 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblPreferenceCard { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblProcedure { get; set; }
 
         [Outlet]
@@ -79,11 +75,6 @@ namespace OpFlow.iOS
             if (lblPatientName != null) {
                 lblPatientName.Dispose ();
                 lblPatientName = null;
-            }
-
-            if (lblPreferenceCard != null) {
-                lblPreferenceCard.Dispose ();
-                lblPreferenceCard = null;
             }
 
             if (lblProcedure != null) {

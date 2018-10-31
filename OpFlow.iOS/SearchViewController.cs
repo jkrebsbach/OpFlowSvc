@@ -149,7 +149,7 @@ namespace OpFlow.iOS
             rooms.Insert(0, new Room()
             {
                 RoomID = 0,
-                RoomDescription = "[Blank]"
+                RoomDescription = "All"
             });
             _roomPicker = new OpFlowTextPicker(txtRoom, rooms.Cast<IBindableEntity>().ToList());
 
@@ -157,7 +157,7 @@ namespace OpFlow.iOS
             specialties.Insert(0, new Specialty()
             {
                 SpecialtyID = 0,
-                SpecialtyDescription = "[Blank]"
+                SpecialtyDescription = "All"
             });
             _specialtyPicker = new OpFlowTextPicker(txtSpecialty, specialties.Cast<IBindableEntity>().ToList());
 
