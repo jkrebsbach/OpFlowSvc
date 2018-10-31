@@ -93,8 +93,8 @@ namespace OpFlow.iOS
             var surgeryTableViewSource = new SearchCaseTVS(surgeries, patients);
             _surgeryIds = surgeries.Select(s => s.SurgeryID).ToList();
 
-            CaseSearchTableView.RowHeight = 80f;
-            CaseSearchTableView.EstimatedRowHeight = 80f;
+            CaseSearchTableView.RowHeight = 120f;
+            CaseSearchTableView.EstimatedRowHeight = 120f;
 
             CaseSearchTableView.Source = surgeryTableViewSource;
             CaseSearchTableView.ReloadData();
