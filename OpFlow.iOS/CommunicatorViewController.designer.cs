@@ -16,7 +16,11 @@ namespace OpFlow.iOS
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITableView CommunicatorTableView { get; set; }
+        UIKit.UITableView PrivateCommunicatorTableView { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UITableView SurgeryCommunicatorTableView { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -28,9 +32,14 @@ namespace OpFlow.iOS
 
         void ReleaseDesignerOutlets ()
         {
-            if (CommunicatorTableView != null) {
-                CommunicatorTableView.Dispose ();
-                CommunicatorTableView = null;
+            if (PrivateCommunicatorTableView != null) {
+                PrivateCommunicatorTableView.Dispose ();
+                PrivateCommunicatorTableView = null;
+            }
+
+            if (SurgeryCommunicatorTableView != null) {
+                SurgeryCommunicatorTableView.Dispose ();
+                SurgeryCommunicatorTableView = null;
             }
 
             if (swtCaseFilter != null) {

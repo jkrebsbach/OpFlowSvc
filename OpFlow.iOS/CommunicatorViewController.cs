@@ -61,10 +61,12 @@ namespace OpFlow.iOS
                             CommunicationTargetName = message.SenderUserName,
                             LatestMessage = message.Message,
                             LatestInsertTimestamp = message.InsertTimestamp
-                        };    
+                        };
+
+                        _messageGroups.Add(messageGroup);
                     }
 
-                    CommunicatorTableView.ReloadData();
+                    RefreshTables();
                 });
             
 
@@ -78,12 +80,25 @@ namespace OpFlow.iOS
 
             _messageGroups = await MessagingUtil.GetMessageGroups(onlyToday);
 
-            var messageGroupTableViewSource = new CommunicationGroupTVS(_messageGroups);
-            messageGroupTableViewSource.MessageGroupSelectionEvent += SelectMessageGroup;
+            RefreshTables();
+        }
 
-            CommunicatorTableView.Source = messageGroupTableViewSource;
+        private void RefreshTables()
+        {
 
-            CommunicatorTableView.ReloadData();
+            var surgeryMessageGroupTableViewSource =
+                new CommunicationGroupTVS(_messageGroups.Where(m => m.SurgeryID.HasValue).ToList());
+            surgeryMessageGroupTableViewSource.MessageGroupSelectionEvent += SelectMessageGroup;
+
+            SurgeryCommunicatorTableView.Source = surgeryMessageGroupTableViewSource;
+            SurgeryCommunicatorTableView.ReloadData();
+
+            var privateMessageGroupTableViewSource =
+                new CommunicationGroupTVS(_messageGroups.Where(m => !m.SurgeryID.HasValue).ToList());
+            privateMessageGroupTableViewSource.MessageGroupSelectionEvent += SelectMessageGroup;
+
+            PrivateCommunicatorTableView.Source = privateMessageGroupTableViewSource;
+            PrivateCommunicatorTableView.ReloadData();
         }
 
         async partial void swtCaseFilter_Changed(UISwitch sender)
