@@ -9,11 +9,15 @@ using OpFlow.Mobile;
 using UIKit;
 using Xamarin.Auth;
 using OpFlow.Data;
+using OpFlow.iOS.Helpers;
 
 namespace OpFlow.iOS
 {
     public partial class LoginViewController : OpFlowViewController
     {
+        String ServiceID = "OPFLOW_MOBILE";
+        String password = null;
+
         public LoginViewController (IntPtr handle) : base (handle)
         {
         }
@@ -26,26 +30,54 @@ namespace OpFlow.iOS
             SetupDoneStyleTextField(txtPassword, false);
 
             var account = await GetCurrentCredential();
-            if (account != null){
+            if (account != null)
+            {
                 txtUsername.Text = account.Username;
-            }
 
-            //  sizing issues moving windows up and down - just keep it all down
-            //NavigationItem.SetHidesBackButton(true, false);
-            //NavigationController.NavigationBar.Hidden = true;
+                password = KeychainHelper.GetPasswordForUsername(txtUsername.Text,
+                                                                    ServiceID,
+                                                                     true);
+
+                if (!string.IsNullOrEmpty(password))
+                {
+                    LocalAuthHelper.Authenticate(AuthSuccess, AuthFailure);
+                }
+            }
+        }
+
+        private void AuthSuccess()
+        {
+            InvokeOnMainThread(async () =>
+            {
+                await ExecuteSignOn();
+            });
+        }
+
+        private void AuthFailure()
+        {
+            InvokeOnMainThread(() =>
+            {
+                password = string.Empty;
+                _loginError = ShowDialog("Error", "Issues retrieving biometric authentication");
+            });
         }
 
         UIAlertController _loginError = null;
 
         async partial void SignOnClick(UIButton sender)
         {
-            await ExecuteAsyncWebRequest(SignOn, "Authenticating...");
+            password = txtPassword.Text;
+            await ExecuteSignOn();
+        }
 
+        private async Task ExecuteSignOn()
+        {
+            await ExecuteAsyncWebRequest(SignOn, "Authenticating...");
 
             if (!AppSettings.UserAuthenticated)
             {
                 await Task.Delay(500); // something goofy about modal dialogs?...
-                
+
                 if (_loginError != null)
                 {
                     _loginError.DismissViewController(false, null);
@@ -57,11 +89,14 @@ namespace OpFlow.iOS
 
         private async Task SignOn()
         {
-            await AppSettings.AuthenticateUser(txtUsername.Text, txtPassword.Text);
+            await AppSettings.AuthenticateUser(txtUsername.Text, password);
 
             if (AppSettings.UserAuthenticated)
             {
-                await SetCredential(txtUsername.Text, string.Empty);
+                await SetCredential(txtUsername.Text);
+
+                KeychainHelper.SetPasswordForUsername(
+                    txtUsername.Text, txtPassword.Text, ServiceID, Security.SecAccessible.WhenPasscodeSetThisDeviceOnly, true);
 
                 await RegisterDevice();
 
@@ -75,7 +110,7 @@ namespace OpFlow.iOS
 
         private const string _appId = "OpFlow";
 
-        private static async Task SetCredential(string userName, string password)
+        private static async Task SetCredential(string userName)
         {
             if (!string.IsNullOrWhiteSpace(userName))
             {
@@ -83,7 +118,6 @@ namespace OpFlow.iOS
                 var account = (await store.FindAccountsForServiceAsync(_appId)).FirstOrDefault() ?? new Account();
 
                 account.Username = userName;
-                account.Properties["Password"] = password;
                 await store.SaveAsync(account, _appId);
             }
         }
