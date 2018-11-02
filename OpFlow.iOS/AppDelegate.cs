@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Timers;
 using Foundation;
 using OpFlow.iOS.Helpers;
@@ -15,6 +16,9 @@ namespace OpFlow.iOS
     public class AppDelegate : UIApplicationDelegate
     {
         private SBNotificationHub Hub { get; set; }
+        private static SocketClient _client;
+
+        public static SocketClient AppSocketClient => _client;
 
         // class-level declarations
         private DateTime _lockoutTime;
@@ -146,6 +150,16 @@ namespace OpFlow.iOS
             _lockoutTime = DateTime.Now.Add(_inactivitySpan);
         }
 
+        public static async Task SetupSocketClient()
+        {
+            if (_client == null)
+            {
+                _client = new SocketClient("iOS");
+            }
+
+            await _client.Connect();
+        }
+
         public override void WillEnterForeground(UIApplication application)
         {
             // Called as part of the transiton from background to active state.
@@ -158,16 +172,6 @@ namespace OpFlow.iOS
 
             _lockoutTime = DateTime.MaxValue;
 
-            //LocalAuthHelper.Authenticate(null, // do nothing on success
-              //                          () =>
-            //{
-                // Show View Controller that requires authentication
-               // InvokeOnMainThread(() =>
-               // {
-                  //  var localAuthViewController = new LocalAuthViewController();
-                //    Window.RootViewController.ShowViewController(localAuthViewController, null);
-              //  });
-            //});
         }
 
         public override void OnActivated(UIApplication application)

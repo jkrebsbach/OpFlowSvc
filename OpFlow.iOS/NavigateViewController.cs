@@ -8,29 +8,31 @@ using System.Collections.Generic;
 using System.Linq;
 using OpFlow.iOS.Delegates;
 using OpFlow.iOS.ViewSources;
+using static OpFlow.iOS.SocketClient;
 
 namespace OpFlow.iOS
 {
     public partial class NavigateViewController : OpFlowViewController
     {
-        private readonly SocketClient _client;
         private List<Messaging> _messages;
 
         Surgery _surgery;
         Patient _patient;
 
         bool _reviewNeeded;
-        
-        public NavigateViewController (IntPtr handle) : base (handle)
+
+        NSObject _notificationObserver;
+
+        public NavigateViewController(IntPtr handle) : base(handle)
         {
-            _client = new SocketClient("iOS");
         }
 
         public override void ViewDidDisappear(bool animated)
         {
             base.ViewDidDisappear(animated);
 
-            _client.Disconnect();
+            AppDelegate.AppSocketClient.OnMessageReceived -= SocketMessageReceived;
+            NSNotificationCenter.DefaultCenter.RemoveObserver(_notificationObserver);
         }
 
         public override async void ViewWillAppear(bool animated)
@@ -38,33 +40,51 @@ namespace OpFlow.iOS
             base.ViewWillAppear(animated);
 
 
-            await _client.Connect();
+            _notificationObserver = NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidBecomeActiveNotification, RefreshSocket);
+
+            await AppDelegate.SetupSocketClient();
+            await ExecuteAsyncWebRequest(LoadSurgery);
+
+            AppDelegate.AppSocketClient.OnMessageReceived += SocketMessageReceived;
+        }
+
+        private async void RefreshSocket(NSNotification notification)
+        {
+            await AppDelegate.SetupSocketClient();
+            await ExecuteAsyncWebRequest(LoadSurgery);
+        }
+
+
+        private void SocketMessageReceived(Object sender, MessageReceiveEvent message)
+        {
+
+            var newMessage = new Messaging()
+            {
+                SenderRoleID = (RoleEnum)message.SenderRoleID,
+                UserName = message.SenderUserName,
+                Message = message.Message,
+                InsertTimestamp = message.InsertTimestamp
+            };
+
+            // Is this message part of the current conversation?
+            if (message.SurgeryID == AppSettings.CurrentSurgery)
+            {
+                _messages.Add(newMessage);
+
+                InvokeOnMainThread(() =>
+                {
+                    CommunicatorTableView.ReloadData();
+
+                    var detailIndexPath = NSIndexPath.FromRowSection(_messages.Count - 1, 0);
+                    CommunicatorTableView.ScrollToRow(detailIndexPath, UITableViewScrollPosition.None, true);
+
+                });
+            }
         }
 
         public override async void ViewDidLoad()
         {
             base.ViewDidLoad();
-
-            _client.OnMessageReceived += (sender, message) => InvokeOnMainThread(
-                () => {
-                    var newMessage = new Messaging()
-                    {
-                        SenderRoleID = (RoleEnum)message.SenderRoleID,
-                        UserName = message.SenderUserName,
-                        Message = message.Message,
-                        InsertTimestamp = message.InsertTimestamp
-                    };
-
-                    // Is this message part of the current conversation?
-                    if (message.SurgeryID == AppSettings.CurrentSurgery)
-                    {
-                        _messages.Add(newMessage);
-                        CommunicatorTableView.ReloadData();
-
-                        var detailIndexPath = NSIndexPath.FromRowSection(_messages.Count - 1, 0);
-                        CommunicatorTableView.ScrollToRow(detailIndexPath, UITableViewScrollPosition.None, true);
-                    }
-                });
 
             lblSurgeon.TextColor = RoleEnum.Surgeon.RoleBackgroundColorMapping();
             lblAnes.TextColor = RoleEnum.Anesthesiologist.RoleBackgroundColorMapping();
@@ -83,8 +103,7 @@ namespace OpFlow.iOS
             SetupDoneStyleTextField(txtCommunicator);
 
             Title = "SCHEDULEVIEW";
-            await ExecuteAsyncWebRequest(LoadSurgery);
-            //await LoadSurgery();
+
         }
 
         async partial void btnSendMessage_Click(UIButton sender)
@@ -92,7 +111,7 @@ namespace OpFlow.iOS
             if (txtCommunicator.Text == "")
                 return;
 
-            await _client.SendSurgeryMessage(AppSettings.CurrentSurgery.Value, txtCommunicator.Text);
+            await AppDelegate.AppSocketClient.SendSurgeryMessage(AppSettings.CurrentSurgery.Value, txtCommunicator.Text);
             txtCommunicator.ResignFirstResponder();
 
             txtCommunicator.Text = string.Empty;

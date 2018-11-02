@@ -47,6 +47,9 @@ namespace OpFlow.iOS
 
         public async Task Connect()
         {
+            if (_connection.State == ConnectionState.Connected)
+                return;
+
             await _connection.Start();
 
             _proxy.On("broadcastMessage", (string message, int senderRoleId, string senderUserName, DateTime insertTimestamp,

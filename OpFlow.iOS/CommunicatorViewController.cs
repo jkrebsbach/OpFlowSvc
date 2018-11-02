@@ -8,70 +8,81 @@ using OpFlow.iOS.ViewSources;
 using OpFlow.Mobile;
 using UIKit;
 using System.Collections.Generic;
+using static OpFlow.iOS.SocketClient;
 
 namespace OpFlow.iOS
 {
     public partial class CommunicatorViewController : OpFlowViewController
     {
-        private readonly SocketClient _client;
         private List<MessagingGroup> _messageGroups;
 
-        public CommunicatorViewController (IntPtr handle) : base (handle)
+        NSObject _notificationObserver;
+
+        public CommunicatorViewController(IntPtr handle) : base(handle)
         {
-            _client = new SocketClient("iOS");
         }
 
         public override void ViewDidDisappear(bool animated)
         {
             base.ViewDidDisappear(animated);
 
-            _client.Disconnect();
+            AppDelegate.AppSocketClient.OnMessageReceived -= SocketMessageReceived;
+            NSNotificationCenter.DefaultCenter.RemoveObserver(_notificationObserver);
         }
 
         public override async void ViewWillAppear(bool animated)
         {
             base.ViewWillAppear(animated);
 
+            _notificationObserver = NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidBecomeActiveNotification, RefreshSocket);
+            await AppDelegate.SetupSocketClient();
 
-            await _client.Connect();
+            AppDelegate.AppSocketClient.OnMessageReceived += SocketMessageReceived;
+        }
+
+
+        async void RefreshSocket(NSNotification notification)
+        {
+            await AppDelegate.SetupSocketClient();
+            await ExecuteAsyncWebRequest(LoadMessageGroups);
         }
 
         public override async void ViewDidLoad()
         {
             base.ViewDidLoad();
 
-            _client.OnMessageReceived += (sender, message) => InvokeOnMainThread(
-                () =>
-                {
-                    var messageGroup = _messageGroups.FirstOrDefault(m =>
-                        m.SurgeryID == message.SurgeryID &&
-                         m.CommunicationUserID == message.CommunicationUserID);
-
-                    if (messageGroup != null)
-                    {
-                        messageGroup.LatestMessage = message.Message;
-                        messageGroup.LatestInsertTimestamp = message.InsertTimestamp;
-                    }
-                    else
-                    {
-                        messageGroup = new MessagingGroup()
-                        {
-                            SurgeryID = message.SurgeryID,
-                            CommunicationUserID = message.CommunicationUserID,
-                            CommunicationTargetName = message.SenderUserName,
-                            LatestMessage = message.Message,
-                            LatestInsertTimestamp = message.InsertTimestamp
-                        };
-
-                        _messageGroups.Add(messageGroup);
-                    }
-
-                    RefreshTables();
-                });
-            
 
             //Title = "SCHEDULEVIEW";
             await ExecuteAsyncWebRequest(LoadMessageGroups);
+        }
+
+        private void SocketMessageReceived(Object sender, MessageReceiveEvent message) {
+            var messageGroup = _messageGroups.FirstOrDefault(m =>
+                        m.SurgeryID == message.SurgeryID &&
+                         m.CommunicationUserID == message.CommunicationUserID);
+
+            if (messageGroup != null)
+            {
+                messageGroup.LatestMessage = message.Message;
+                messageGroup.LatestInsertTimestamp = message.InsertTimestamp;
+            }
+            else
+            {
+                messageGroup = new MessagingGroup()
+                {
+                    SurgeryID = message.SurgeryID,
+                    CommunicationUserID = message.CommunicationUserID,
+                    CommunicationTargetName = message.SenderUserName,
+                    LatestMessage = message.Message,
+                    LatestInsertTimestamp = message.InsertTimestamp
+                };
+
+                _messageGroups.Add(messageGroup);
+            }
+
+            InvokeOnMainThread(() => {
+                RefreshTables();
+            });
         }
 
         private async Task LoadMessageGroups()

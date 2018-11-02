@@ -48,6 +48,9 @@ namespace OpFlow.iOS
 
         private string CalculateSurgeryTeam(List<SurgeryUser> surgeryUsers)
         {
+            if (!surgeryUsers.Any())
+                return "NONE";
+
             var result = string.Join(", ", surgeryUsers.Select(s => s.LastName));
 
             return result;

@@ -7,61 +7,74 @@ using OpFlow.iOS.ViewSources;
 using OpFlow.Mobile;
 using UIKit;
 using System.Collections.Generic;
+using static OpFlow.iOS.SocketClient;
 
 namespace OpFlow.iOS
 {
     public partial class CommunicationDetailViewController : OpFlowViewController
     {
-        private readonly SocketClient _client;
         private List<Messaging> _messages;
+        NSObject _notificationObserver;
 
         public CommunicationDetailViewController (IntPtr handle) : base (handle)
         {
-            _client = new SocketClient("iOS");
         }
 
         public override void ViewDidDisappear(bool animated)
         {
             base.ViewDidDisappear(animated);
 
-            _client.Disconnect();
+            AppDelegate.AppSocketClient.OnMessageReceived -= SocketMessageReceived;
+            NSNotificationCenter.DefaultCenter.RemoveObserver(_notificationObserver);
         }
 
         public override async void ViewWillAppear(bool animated)
         {
             base.ViewWillAppear(animated);
 
+            _notificationObserver = NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidBecomeActiveNotification, RefreshSocket);
+            await AppDelegate.SetupSocketClient();
 
-            await _client.Connect();
+            AppDelegate.AppSocketClient.OnMessageReceived += SocketMessageReceived;
+        }
+        private void SocketMessageReceived(Object sender, MessageReceiveEvent message)
+        {
+            var currentMessageGroup = AppSettings.CurrentMessagingGroup;
+
+            var newMessage = new Messaging()
+            {
+                SenderRoleID = (RoleEnum)message.SenderRoleID,
+                UserName = message.SenderUserName,
+                Message = message.Message,
+                InsertTimestamp = message.InsertTimestamp
+            };
+
+            // Is this message part of the current conversation?
+            if (message.SurgeryID == currentMessageGroup.SurgeryID &&
+                message.CommunicationUserID == currentMessageGroup.CommunicationUserID)
+            {
+                _messages.Add(newMessage);
+
+                InvokeOnMainThread(() =>
+                {
+                    CommunicatorTableView.ReloadData();
+
+                    var detailIndexPath = NSIndexPath.FromRowSection(_messages.Count - 1, 0);
+                    CommunicatorTableView.ScrollToRow(detailIndexPath, UITableViewScrollPosition.None, true);
+                });
+            }
+
+        }
+
+        async void RefreshSocket(NSNotification notification)
+        {
+            await AppDelegate.SetupSocketClient();
+            await ExecuteAsyncWebRequest(LoadMessages);
         }
 
         public override async void ViewDidLoad()
         {
             base.ViewDidLoad();
-
-            _client.OnMessageReceived += (sender, message) => InvokeOnMainThread(
-                () => {
-                var currentMessageGroup = AppSettings.CurrentMessagingGroup;
-
-                var newMessage = new Messaging()
-                {
-                    SenderRoleID = (RoleEnum)message.SenderRoleID,
-                    UserName = message.SenderUserName,
-                    Message = message.Message,
-                    InsertTimestamp = message.InsertTimestamp
-                };
-
-                // Is this message part of the current conversation?
-                if (message.SurgeryID == currentMessageGroup.SurgeryID &&
-                    message.CommunicationUserID == currentMessageGroup.CommunicationUserID)
-                {
-                    _messages.Add(newMessage);
-                    CommunicatorTableView.ReloadData();
-
-                    var detailIndexPath = NSIndexPath.FromRowSection(_messages.Count - 1, 0);
-                    CommunicatorTableView.ScrollToRow(detailIndexPath, UITableViewScrollPosition.None, true);
-                }
-            });
 
             SetupDoneStyleTextField(txtMessage);
 
@@ -108,9 +121,9 @@ namespace OpFlow.iOS
                 //await MessagingUtil.SendMessage(AppSettings.CurrentMessagingGroup, txtMessage.Text);
 
                 if (AppSettings.CurrentMessagingGroup.SurgeryID.HasValue)
-                    await _client.SendSurgeryMessage(AppSettings.CurrentMessagingGroup.SurgeryID.Value, txtMessage.Text);
+                    await AppDelegate.AppSocketClient.SendSurgeryMessage(AppSettings.CurrentMessagingGroup.SurgeryID.Value, txtMessage.Text);
                 else
-                    await _client.SendPrivateMessage(AppSettings.CurrentMessagingGroup.CommunicationUserID.Value, txtMessage.Text);
+                    await AppDelegate.AppSocketClient.SendPrivateMessage(AppSettings.CurrentMessagingGroup.CommunicationUserID.Value, txtMessage.Text);
 
                 txtMessage.ResignFirstResponder();
 

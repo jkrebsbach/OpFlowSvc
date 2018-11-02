@@ -30,9 +30,6 @@ namespace OpFlow.iOS
             Title = "SCHEDULEVIEW";
             NavigationItem.SetHidesBackButton(true, false);
 
-            ScheduleTableView.RowHeight = 120f;
-            ScheduleTableView.EstimatedRowHeight = 40f;
-            
             // rotate arrow 180deg / pi radians
             btnPrev.Transform = CGAffineTransform.MakeRotation((float)Math.PI);
 
