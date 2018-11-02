@@ -87,11 +87,6 @@ namespace OpFlow.iOS
             //await LoadSurgery();
         }
 
-        async partial void btnRefresh_Click(UIButton sender)
-        {
-            await ExecuteAsyncWebRequest(LoadMessages);
-        }
-
         async partial void btnSendMessage_Click(UIButton sender)
         {
             if (txtCommunicator.Text == "")

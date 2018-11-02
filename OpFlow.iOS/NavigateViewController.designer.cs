@@ -36,10 +36,6 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UIButton btnRefresh { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UIButton btnSendMessage { get; set; }
 
         [Outlet]
@@ -158,10 +154,6 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnPatient_Click (UIKit.UIButton sender);
 
-        [Action ("btnRefresh_Click:")]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        partial void btnRefresh_Click (UIKit.UIButton sender);
-
         [Action ("btnRoom_Click:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnRoom_Click (UIKit.UIButton sender);
@@ -195,11 +187,6 @@ namespace OpFlow.iOS
             if (btnPatient != null) {
                 btnPatient.Dispose ();
                 btnPatient = null;
-            }
-
-            if (btnRefresh != null) {
-                btnRefresh.Dispose ();
-                btnRefresh = null;
             }
 
             if (btnSendMessage != null) {

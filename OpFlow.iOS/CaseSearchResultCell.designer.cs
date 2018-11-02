@@ -22,6 +22,14 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblCaseProcedure { get; set; }
 
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblCaseTeam { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblCaseTiming { get; set; }
+
         [Action ("btnAdd_Clicked:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnAdd_Clicked (UIKit.UIButton sender);
@@ -36,6 +44,16 @@ namespace OpFlow.iOS
             if (lblCaseProcedure != null) {
                 lblCaseProcedure.Dispose ();
                 lblCaseProcedure = null;
+            }
+
+            if (lblCaseTeam != null) {
+                lblCaseTeam.Dispose ();
+                lblCaseTeam = null;
+            }
+
+            if (lblCaseTiming != null) {
+                lblCaseTiming.Dispose ();
+                lblCaseTiming = null;
             }
         }
     }
