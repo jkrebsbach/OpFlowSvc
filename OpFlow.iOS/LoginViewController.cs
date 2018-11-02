@@ -89,6 +89,7 @@ namespace OpFlow.iOS
 
         private async Task SignOn()
         {
+            AppDelegate.DisposeSocketClient();
             await AppSettings.AuthenticateUser(txtUsername.Text, password);
 
             if (AppSettings.UserAuthenticated)

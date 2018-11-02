@@ -160,6 +160,13 @@ namespace OpFlow.iOS
             await _client.Connect();
         }
 
+        public static void DisposeSocketClient()
+        {
+            if (_client != null){
+                _client.Disconnect();
+            }
+        }
+
         public override void WillEnterForeground(UIApplication application)
         {
             // Called as part of the transiton from background to active state.
