@@ -16,10 +16,6 @@ namespace OpFlow.iOS
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel lblCaseOverview { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblCaseProcedure { get; set; }
 
         [Outlet]
@@ -30,17 +26,24 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblCaseTiming { get; set; }
 
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblPatientName { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblPatientOverview { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblStaffChange { get; set; }
+
         [Action ("btnAdd_Clicked:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void btnAdd_Clicked (UIKit.UIButton sender);
 
         void ReleaseDesignerOutlets ()
         {
-            if (lblCaseOverview != null) {
-                lblCaseOverview.Dispose ();
-                lblCaseOverview = null;
-            }
-
             if (lblCaseProcedure != null) {
                 lblCaseProcedure.Dispose ();
                 lblCaseProcedure = null;
@@ -54,6 +57,21 @@ namespace OpFlow.iOS
             if (lblCaseTiming != null) {
                 lblCaseTiming.Dispose ();
                 lblCaseTiming = null;
+            }
+
+            if (lblPatientName != null) {
+                lblPatientName.Dispose ();
+                lblPatientName = null;
+            }
+
+            if (lblPatientOverview != null) {
+                lblPatientOverview.Dispose ();
+                lblPatientOverview = null;
+            }
+
+            if (lblStaffChange != null) {
+                lblStaffChange.Dispose ();
+                lblStaffChange = null;
             }
         }
     }

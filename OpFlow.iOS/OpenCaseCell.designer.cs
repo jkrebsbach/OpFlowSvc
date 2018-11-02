@@ -40,6 +40,10 @@ namespace OpFlow.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblStaffChange { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblSurgeryTeam { get; set; }
 
         [Outlet]
@@ -80,6 +84,11 @@ namespace OpFlow.iOS
             if (lblProcedure != null) {
                 lblProcedure.Dispose ();
                 lblProcedure = null;
+            }
+
+            if (lblStaffChange != null) {
+                lblStaffChange.Dispose ();
+                lblStaffChange = null;
             }
 
             if (lblSurgeryTeam != null) {

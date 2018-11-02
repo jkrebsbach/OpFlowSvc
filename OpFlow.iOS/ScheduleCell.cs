@@ -32,7 +32,7 @@ namespace OpFlow.iOS
             lblLocation.Text = surgery.RoomDescription;
             lblPatientInfo.Text = $"{patient?.BirthDate.CalculateAge()} {patient?.Gender}";
 
-            var patientName = $"{patient?.LastName} {patient?.FirstName}".Trim();
+            var patientName = $"{patient?.LastName}, {patient?.FirstName} {patient?.MiddleInitial}".Trim();
             if (patientName == string.Empty)
                 patientName = patient?.LastName ?? string.Empty;
             if (patientName == string.Empty)
@@ -45,11 +45,24 @@ namespace OpFlow.iOS
             btnReview.Hidden = (surgeryUser == null || surgeryUser.SurgeryReview != null);
 
             lblPatientName.Text = patientName;
-            lblProcedure.Text = surgery.ProcedureDescription;
+
+            var procedureDescription = surgery.ProcedureDescription ?? "";
+            if (procedureDescription.Length > 75)
+            {
+                procedureDescription = procedureDescription.Substring(0, 75) + "...";
+            }
+            lblProcedure.Text = procedureDescription;
             lblSurgeryTeam.Text = CalculateSurgeryTeam(surgery.SurgeryUsers);
             lblStartTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
 
             lblDuration.Text = "Duration: " + (surgery.TotalMinutes?.ToString() ?? "UNK");
+
+            var step = "Scheduled";
+            if (surgery.SurgeryStatus == "C")
+                step = "Closed";
+
+            lblFlowStep.Text = $"Start: {surgery.ActualStartTime?.ToString("HH:mm") ?? "Scheduled"} Step:{step}";
+            lblStaffChange.Text = $"Staff Change: {surgery.StaffChange ?? "ASK"}";
         }
 
         private string CalculateSurgeryTeam(List<SurgeryUser> surgeryUsers)

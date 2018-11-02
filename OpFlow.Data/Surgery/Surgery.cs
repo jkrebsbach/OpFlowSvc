@@ -192,6 +192,7 @@ namespace OpFlow.Data
         public string RoomDescription { get; set; }
         public string FlowStepDescription { get; set; }
         public string LateralityDescription { get; set; }
+        public string StaffChange { get; set; }
 
         public List<SurgeryUser> SurgeryUsers { get; set; }
 

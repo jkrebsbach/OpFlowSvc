@@ -6,6 +6,8 @@ using OpFlow.Mobile;
 using Foundation;
 using UIKit;
 using OpFlow.iOS.ViewSources;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OpFlow.iOS
 {
@@ -28,7 +30,7 @@ namespace OpFlow.iOS
             _surgeryTvs = surgeryTVS;
             _surgery = surgery;
 
-            var patientName = $"{patient?.LastName} {patient?.FirstName}".Trim();
+            var patientName = $"{patient?.LastName}, {patient?.FirstName} {patient?.MiddleInitial}".Trim();
             if (patientName == string.Empty)
                 patientName = patient?.LastName ?? string.Empty;
             if (patientName == string.Empty)
@@ -38,11 +40,25 @@ namespace OpFlow.iOS
             lblPatientInfo.Text = string.Format("{0} {1}", patient?.BirthDate.CalculateAge(), patient?.Gender);
 
             lblPatientName.Text = patientName;
-            lblProcedure.Text = surgery.ProcedureDescription;
+
+            var procedureDescription = _surgery.ProcedureDescription ?? "";
+            if (procedureDescription.Length > 75)
+            {
+                procedureDescription = procedureDescription.Substring(0, 75) + "...";
+            }
+            lblProcedure.Text = procedureDescription;
+            lblSurgeryTeam.Text = CalculateSurgeryTeam(surgery.SurgeryUsers);
             lblSurgeryTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
 
-            lblFlowStep.Text = surgery.FlowStepDescription;
+            lblFlowStep.Text = $"Start: {surgery.ActualStartTime?.ToString("HH:mm")} Step:{surgery.FlowStepDescription}";
+            lblStaffChange.Text = $"Staff Change: {surgery.StaffChange ?? "ASK"}";
+        }
 
+        private string CalculateSurgeryTeam(List<SurgeryUser> surgeryUsers)
+        {
+            var result = string.Join(", ", surgeryUsers.Select(s => s.LastName));
+
+            return result;
         }
     }
 }

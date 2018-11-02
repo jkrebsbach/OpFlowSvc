@@ -3,6 +3,8 @@ using System;
 using OpFlow.Data;
 using UIKit;
 using OpFlow.iOS.ViewSources;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OpFlow.iOS
 {
@@ -32,8 +34,23 @@ namespace OpFlow.iOS
             }
 
             lblCaseProcedure.Text = $"{_surgery.ScheduleTime:M/d} {_surgery.ScheduleTime:hh\\:mm} {procedureDescription}";
-            lblCaseOverview.Text = $"{patient.LastName}, {patient.FirstName} {patient.MiddleInitial} Room:{_surgery.RoomDescription} {_surgery.SurgeryTeam}";
+            lblCaseTeam.Text = CalculateSurgeryTeam(_surgery.SurgeryUsers);
+            lblPatientName.Text = $"{patient.LastName}, {patient.FirstName} {patient.MiddleInitial}".Trim();
+            lblPatientOverview.Text = $"{patient.PatientAge} {patient.Gender} {_surgery.RoomDescription}";
 
+            var step = _surgery.FlowStepDescription ?? "Scheduled";
+            if (_surgery.SurgeryStatus == "C")
+                step = "Closed";
+
+            lblCaseTiming.Text = $"Start: {_surgery.ActualStartTime?.ToString("HH:mm") ?? "Scheduled"} Step:{step}";
+            lblStaffChange.Text = $"Staff Change: {_surgery.StaffChange ?? "ASK"}";
+        }
+
+        private string CalculateSurgeryTeam(List<SurgeryUser> surgeryUsers)
+        {
+            var result = string.Join(", ", surgeryUsers.Select(s => s.LastName));
+
+            return result;
         }
     }
 }
