@@ -165,6 +165,8 @@ namespace OpFlow.iOS
             if (_client != null){
                 _client.Disconnect();
             }
+
+            _client = null;
         }
 
         public override void WillEnterForeground(UIApplication application)
