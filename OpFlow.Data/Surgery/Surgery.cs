@@ -25,6 +25,7 @@ namespace OpFlow.Data
         public string CaseNumber { get; set; }
         public string CurrentStep { get; set; }
         public string SurgeryStatus { get; set; }
+        public string StaffChange { get; set; }
         public string ProcedureDescription { get; set; }
         public string BundleDescription { get; set; }
         public string CardDescription { get; set; }

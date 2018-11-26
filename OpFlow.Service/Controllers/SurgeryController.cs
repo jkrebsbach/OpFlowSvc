@@ -839,6 +839,20 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [SwaggerOperation("UpdateStaffChange")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        [Route("api/surgery/updateStaffChange", Name = "UpdateStaffChange")]
+        public async Task<HttpResponseMessage> UpdateStaffChange(int surgeryId, string staffChange)
+        {
+            var user = CacheUtil.GetUserSecurity();
+
+            SqlHelper.UpdateStaffChange(surgeryId, staffChange, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
+        // POST api/values
         [SwaggerOperation("ToggleDelay")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.Ambiguous)]

@@ -1406,6 +1406,18 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UpdateSurgeryHeaderCounts", dsParameters);
         }
 
+        public static int UpdateStaffChange(int surgeryId, string staffChange, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("staff_change", staffChange)
+            };
+            return ExecuteNonQuery("UpdateSurgeryStaffChange", dsParameters);
+        }
+
         public static int AddCustomSurgeryTrayItem(int surgeryId, int trayId, int itemId, int quantity, int providerId, int locationId)
         {
             var dsParameters = new[]
