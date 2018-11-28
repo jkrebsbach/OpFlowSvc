@@ -22,12 +22,20 @@ namespace OpFlow.iOS
         {
         }
 
+        public override void ViewWillAppear(bool animated)
+        {
+            NavigationController.NavigationBar.Hidden = true;
+
+            base.ViewWillAppear(animated);
+        }
+
         public override async void ViewDidLoad()
         {
             base.ViewDidLoad();
 
             SetupDoneStyleTextField(txtUsername, true);
             SetupDoneStyleTextField(txtPassword, false);
+
 
             var account = await GetCurrentCredential();
             if (account != null)
