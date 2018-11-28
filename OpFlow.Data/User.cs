@@ -24,12 +24,9 @@ namespace OpFlow.Data
 
         public string DeriveInitials()
         {
-            if (!string.IsNullOrEmpty(Initials))
-                return Initials;
-
             if (!string.IsNullOrEmpty(FirstName) && !string.IsNullOrEmpty(LastName))
             {
-                return FirstName[0].ToString() + LastName[0].ToString();
+                return $"{FirstName[0]}{LastName[0]}";
             }
 
             if (!string.IsNullOrEmpty(LastName))

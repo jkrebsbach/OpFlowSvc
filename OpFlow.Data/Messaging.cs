@@ -11,7 +11,25 @@ namespace OpFlow.Data
         public int RecipientUserID { get; set; }
 
         public RoleEnum SenderRoleID { get; set; }
-        public string UserName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
+        public string UserName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(FirstName) && !string.IsNullOrEmpty(LastName))
+                {
+                    return $"{FirstName[0]}{LastName[0]}";
+                }
+
+                if (!string.IsNullOrEmpty(LastName))
+                    return LastName;
+
+                return FirstName;
+            }
+        }
+
         public string Message { get; set; }
         public DateTimeOffset InsertTimestamp { get; set; }
     }
