@@ -44,7 +44,7 @@ namespace OpFlow.iOS
             var newMessage = new Messaging()
             {
                 SenderRoleID = (RoleEnum)message.SenderRoleID,
-                UserName = message.SenderUserName,
+                LastName = message.SenderUserName,
                 Message = message.Message,
                 InsertTimestamp = message.InsertTimestamp
             };

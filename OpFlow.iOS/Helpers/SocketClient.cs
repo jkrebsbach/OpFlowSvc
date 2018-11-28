@@ -20,6 +20,7 @@ namespace OpFlow.iOS
         {
             public string Message { get; set; }
             public int SenderRoleID { get; set; }
+            public int SenderUserID { get; set; }
             public string SenderUserName { get; set; }
             public DateTime InsertTimestamp { get; set; }
             public int? SurgeryID { get; set; }
@@ -52,13 +53,15 @@ namespace OpFlow.iOS
 
             await _connection.Start();
 
-            _proxy.On("broadcastMessage", (string message, int senderRoleId, string senderUserName, DateTime insertTimestamp,
-                                          int? surgeryId, int? communicationUserId) =>
+            _proxy.On("broadcastMessage", (string message, int senderRoleId, int senderUserId,
+                string senderUserName, DateTime insertTimestamp,
+                int? surgeryId, int? communicationUserId) =>
             {
                 OnMessageReceived?.Invoke(this, new MessageReceiveEvent()
                 {
                     Message = message,
                     SenderRoleID = senderRoleId,
+                    SenderUserID = senderUserId,
                     SenderUserName = senderUserName,
                     InsertTimestamp = insertTimestamp,
                     SurgeryID = surgeryId,

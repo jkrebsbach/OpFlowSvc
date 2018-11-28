@@ -11,6 +11,7 @@ namespace OpFlow.Data
         public int RecipientUserID { get; set; }
 
         public RoleEnum SenderRoleID { get; set; }
+        public int SenderUserID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
