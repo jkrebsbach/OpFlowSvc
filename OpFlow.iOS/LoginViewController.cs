@@ -29,6 +29,13 @@ namespace OpFlow.iOS
             base.ViewWillAppear(animated);
         }
 
+        public override void ViewWillDisappear(bool animated)
+        {
+            NavigationController.NavigationBar.Hidden = false;
+
+            base.ViewWillDisappear(animated);
+        }
+
         public override async void ViewDidLoad()
         {
             base.ViewDidLoad();

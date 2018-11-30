@@ -43,7 +43,7 @@ namespace OpFlow.iOS
                 step = "Closed";
 
             lblCaseTiming.Text = $"Start: {_surgery.ActualStartTime?.ToString("HH:mm") ?? "Scheduled"} Step:{step}";
-            lblStaffChange.Text = $"Staff Change: {_surgery.StaffChange ?? "ASK"}";
+            lblStaffChange.Text = $"Staff Change: {_surgery.StaffChange ?? "YES"}";
         }
 
         private string CalculateSurgeryTeam(List<SurgeryUser> surgeryUsers)

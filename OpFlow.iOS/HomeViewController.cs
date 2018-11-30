@@ -7,7 +7,21 @@ namespace OpFlow.iOS
 {
     public partial class HomeViewController : UIViewController
     {
-		partial void btnSignOut_Click(UIButton sender)
+        public override void ViewWillAppear(bool animated)
+        {
+            NavigationController.NavigationBar.Hidden = true;
+
+            base.ViewWillAppear(animated);
+        }
+
+        public override void ViewWillDisappear(bool animated)
+        {
+            NavigationController.NavigationBar.Hidden = false;
+
+            base.ViewWillDisappear(animated);
+        }
+
+        partial void btnSignOut_Click(UIButton sender)
 		{
 			AppSettings.SignOutUser();
 			           

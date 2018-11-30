@@ -51,7 +51,7 @@ namespace OpFlow.iOS
             lblSurgeryTime.Text = surgery.ScheduleTime.ToString(@"hh\:mm");
 
             lblFlowStep.Text = $"Start: {surgery.ActualStartTime?.ToString("HH:mm")} Step:{surgery.FlowStepDescription}";
-            lblStaffChange.Text = $"Staff Change: {surgery.StaffChange ?? "ASK"}";
+            lblStaffChange.Text = $"Staff Change: {surgery.StaffChange ?? "YES"}";
         }
 
         private string CalculateSurgeryTeam(List<SurgeryUser> surgeryUsers)
