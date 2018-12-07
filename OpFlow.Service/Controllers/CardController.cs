@@ -294,11 +294,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("AssignFlow")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/card/assignFlow", Name = "AssignFlowCard")]
-        public HttpResponseMessage AssignToCard(int cardId, int flowId)
+        public async Task<HttpResponseMessage> AssignToCard(int cardId, int flowId)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.AssignFlowToCard(flowId, cardId, user.ProviderID, user.LocationID);
+            await DataAccess.SqlHelper.AssignFlowToCard(flowId, cardId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, 418);
         }
@@ -307,11 +307,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("AssignRoomSetup")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [Route("api/card/assignRoomSetup", Name = "AssignRoomSetupCard")]
-        public HttpResponseMessage AssignRoomSetupToCard(int cardId, int roomSetupId)
+        public async Task<HttpResponseMessage> AssignRoomSetupToCard(int cardId, int roomSetupId)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.AssignRoomSetupToCard(roomSetupId, cardId, user.ProviderID, user.LocationID);
+            await DataAccess.SqlHelper.AssignRoomSetupToCard(roomSetupId, cardId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, 418);
         }
@@ -324,7 +324,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.AssignUserToCard(cardId, userId, user.ProviderID, user.LocationID);
+            await DataAccess.SqlHelper.AssignUserToCard(cardId, userId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -337,7 +337,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.RemoveUserFromCard(cardId, userId, user.ProviderID, user.LocationID);
+            await DataAccess.SqlHelper.RemoveUserFromCard(cardId, userId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -383,9 +383,7 @@ namespace OpFlow.Service.Controllers
 
             var result = await DataAccess.SqlHelper.UpdateCardProcedure(cardId, procedureId, user.ProviderID, user.LocationID);
 
-            return result.HasValue ? 
-                Request.CreateResponse(HttpStatusCode.OK, result) : 
-                Request.CreateResponse(HttpStatusCode.NotFound, "Invalid CPT Code");
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // PUT api/values
@@ -398,7 +396,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.DeleteCardProcedure(cardId, procedureId, user.ProviderID, user.LocationID);
+            var result = await DataAccess.SqlHelper.DeleteCardProcedure(cardId, procedureId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -410,7 +408,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var cardId = DataAccess.SqlHelper.InsertCard(value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
+            var cardId = await DataAccess.SqlHelper.InsertCard(value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
                 value.BundleID, value.BundleFlag, value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1", 
                 user.ProviderID, user.LocationID);
 

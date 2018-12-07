@@ -75,7 +75,7 @@ namespace OpFlow.Service.Controllers
         [Route("api/User/Checkin", Name = "Checkin")]
         public async Task<IHttpActionResult> CheckinUser(int surgeryId, [FromBody]User user)
         {
-            DataAccess.SqlHelper.CheckInUser(user, surgeryId);
+            await DataAccess.SqlHelper.CheckInUser(user, surgeryId);
 
             return Ok();
         }
@@ -86,7 +86,7 @@ namespace OpFlow.Service.Controllers
         [Route("api/User/Checkout", Name = "Checkout")]
         public async Task<IHttpActionResult> CheckoutUser(int surgeryId, [FromBody]User user)
         {
-            DataAccess.SqlHelper.CheckOutUser(user, surgeryId);
+            await DataAccess.SqlHelper.CheckOutUser(user, surgeryId);
 
             return Ok();
         }
@@ -98,7 +98,7 @@ namespace OpFlow.Service.Controllers
         [Route("api/User/Reviewed", Name = "Reviewed")]
         public async Task<IHttpActionResult> WorkupReviewed(int surgeryId, [FromBody]User user)
         {
-            DataAccess.SqlHelper.WorkupReviewed(user, surgeryId);
+            await DataAccess.SqlHelper.WorkupReviewed(user, surgeryId);
 
             return Ok();
         }

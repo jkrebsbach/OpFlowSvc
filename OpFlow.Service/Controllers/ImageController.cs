@@ -25,7 +25,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetFlowImage(int flowId, int flowImageId)
         {
             var user = CacheUtil.GetUserSecurity();
-            var flow = SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
+            var flow = await SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
 
             if (flow == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
@@ -46,7 +46,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgeryImage(int surgeryId, int surgeryImageId)
         {
             var user = CacheUtil.GetUserSecurity();
-            var surgery = SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+            var surgery = await SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
 
             if (surgery == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);

@@ -21,7 +21,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var caseId = DataAccess.SqlHelper.CreateCase(newCase.PatientID, user.UserID, newCase.SpecialtyID,
+            var caseId = await DataAccess.SqlHelper.CreateCase(newCase.PatientID, user.UserID, newCase.SpecialtyID,
                 user.ProviderID, user.LocationID, newCase.CaseNbr);
 
             return Request.CreateResponse(HttpStatusCode.Created, caseId);

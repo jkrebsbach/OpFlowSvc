@@ -22,11 +22,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Get")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Flow))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage GetFlow(int flowId, int? cardId = null, int? providerId = null, int? locationId = null)
+        public async Task<HttpResponseMessage> GetFlow(int flowId, int? cardId = null, int? providerId = null, int? locationId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var flow = DataAccess.SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
+            var flow = await SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
 
             return flow == null ? 
                 Request.CreateResponse(HttpStatusCode.NotFound) : 
@@ -100,7 +100,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            SqlHelper.UpdateFlowPhrase(flowId, smartPhraseId,
+            await SqlHelper.UpdateFlowPhrase(flowId, smartPhraseId,
                 debriefUpdate.Comments, debriefUpdate.StepID, debriefUpdate.RoleID, user.ProviderID, user.LocationID);
 
             return Ok();
@@ -115,7 +115,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            SqlHelper.DeleteFlowPhrase(flowId, smartPhraseId, user.ProviderID, user.LocationID);
+            await SqlHelper.DeleteFlowPhrase(flowId, smartPhraseId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -129,7 +129,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var smartPhraseId = SqlHelper.NewSmartPhrase(smartPhrase.Phrase, smartPhrase.CategoryID, smartPhrase.StepID, smartPhrase.RoleID,
+            var smartPhraseId = await SqlHelper.NewSmartPhrase(smartPhrase.Phrase, smartPhrase.CategoryID, smartPhrase.StepID, smartPhrase.RoleID,
                 smartPhrase.UserID ?? user.UserID, user.ProviderID, user.LocationID);
 
             if (smartPhrase.FlowID.HasValue)
@@ -154,7 +154,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            SqlHelper.EditSmartPhrase(smartPhraseId, smartPhrase.Phrase, smartPhrase.CategoryID, smartPhrase.UserID ??  user.UserID, smartPhrase.StepID, smartPhrase.RoleID, user.ProviderID, user.LocationID);
+            await SqlHelper.EditSmartPhrase(smartPhraseId, smartPhrase.Phrase, smartPhrase.CategoryID, smartPhrase.UserID ??  user.UserID, smartPhrase.StepID, smartPhrase.RoleID, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -168,7 +168,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            SqlHelper.DeleteSmartPhrase(smartPhraseId, user.ProviderID, user.LocationID);
+            await SqlHelper.DeleteSmartPhrase(smartPhraseId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -217,7 +217,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.UpdateFlowImage(flowImageId, flowImage.Comment, flowImage.StepID, flowImage.RoleID, user.ProviderID, user.LocationID);
+            await SqlHelper.UpdateFlowImage(flowImageId, flowImage.Comment, flowImage.StepID, flowImage.RoleID, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -251,10 +251,10 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.DeleteFlowImage(flowImageId, user.ProviderID, user.LocationID);
+            await SqlHelper.DeleteFlowImage(flowImageId, user.ProviderID, user.LocationID);
 
-            var folder = DataAccess.BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, flowId);
-            await DataAccess.BlobStorageHelper.DeleteBlob(folder, flowImageId.ToString());
+            var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, flowId);
+            await BlobStorageHelper.DeleteBlob(folder, flowImageId.ToString());
 
             return Ok();
         }
@@ -269,7 +269,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.AddFlowFeedback(flowId, flowFeedback.Feedback, user.UserID, user.ProviderID, user.LocationID);
+            await SqlHelper.AddFlowFeedback(flowId, flowFeedback.Feedback, user.UserID, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -284,7 +284,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.DeleteFlowFeedback(flowFeedbackId, user.ProviderID, user.LocationID);
+            await SqlHelper.DeleteFlowFeedback(flowFeedbackId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -393,11 +393,11 @@ namespace OpFlow.Service.Controllers
         [Route("api/flow/details")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(FlowDetail))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public HttpResponseMessage GetFlowDetails(int flowId, int? surgeryId = null)
+        public async Task<HttpResponseMessage> GetFlowDetails(int flowId, int? surgeryId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var flow = SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
+            var flow = await SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
 
             if (flow == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
@@ -408,7 +408,7 @@ namespace OpFlow.Service.Controllers
             var content = SqlHelper.GetFlowContent(flowId, 1, user.ProviderID, user.LocationID);
             var timings = SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
             var flowImages = SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
-            var surgeryDelays = SqlHelper.GetFlowSurgeryDelays(flowId, user.ProviderID, user.LocationID);
+            var surgeryDelays = await SqlHelper.GetFlowSurgeryDelays(flowId, user.ProviderID, user.LocationID);
             var surgeryImages = new List<SurgeryImage>();
 
             if (surgeryId.HasValue)

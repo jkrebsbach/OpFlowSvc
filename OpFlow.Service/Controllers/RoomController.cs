@@ -44,7 +44,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            return DataAccess.SqlHelper.GetRoomTypes(user.LocationID);
+            return SqlHelper.GetRoomTypes(user.LocationID);
         }
 
         // GET api/values
@@ -55,7 +55,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            return DataAccess.SqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
+            return SqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
         }
 
         // GET api/values
@@ -66,7 +66,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var setups = DataAccess.SqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID);
+            var setups = SqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID);
 
             if (roomSetupId != null)
                 setups = setups.Where(s => s.RoomSetupID == roomSetupId).ToList();
@@ -82,16 +82,16 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var setups = DataAccess.SqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID)
+            var setups = SqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID)
                 .Where(s => s.RoomSetupID == roomSetupId).ToList();
             
-            var roomTypes = DataAccess.SqlHelper.GetRoomTypes(user.LocationID);
-            var patientPositions = DataAccess.SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
-            var lateralities = DataAccess.SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
-            var bedOrientations = DataAccess.SqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
+            var roomTypes = SqlHelper.GetRoomTypes(user.LocationID);
+            var patientPositions = SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
+            var lateralities = SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
+            var bedOrientations = SqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
 
-            var equipment = DataAccess.SqlHelper.GetItems("EQUIPMENT", null, null, user.ProviderID, user.LocationID);
-            var instruments = DataAccess.SqlHelper.GetItems("INSTRUMENT", null, null, user.ProviderID, user.LocationID);
+            var equipment = SqlHelper.GetItems("EQUIPMENT", null, null, user.ProviderID, user.LocationID);
+            var instruments = SqlHelper.GetItems("INSTRUMENT", null, null, user.ProviderID, user.LocationID);
 
             var result = new RoomSetupDetail()
             {
@@ -115,7 +115,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            return DataAccess.SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
+            return SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
         }
 
         // GET api/values
@@ -126,7 +126,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            return DataAccess.SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
+            return SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
         }
 
         // GET api/values
@@ -137,7 +137,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            return DataAccess.SqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
+            return SqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
         }
 
         // PUT api/roomSetup/values/5
@@ -150,7 +150,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.UpdateRoom(roomId, room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
+            SqlHelper.UpdateRoom(roomId, room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomId);
         }
@@ -165,7 +165,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var roomId = DataAccess.SqlHelper.InsertRoom(room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
+            var roomId = SqlHelper.InsertRoom(room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomId);
         }
@@ -180,7 +180,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.DeleteRoom(roomId, user.ProviderID, user.LocationID);
+            SqlHelper.DeleteRoom(roomId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomId);
         }
@@ -253,7 +253,7 @@ namespace OpFlow.Service.Controllers
             if (roomSetup == null)
                 return Ok();
 
-            var roomSetupImageId = SqlHelper.NewRoomSetupImage(roomSetupId, label,
+            var roomSetupImageId = await SqlHelper.NewRoomSetupImage(roomSetupId, label,
                 user.ProviderID, user.LocationID);
 
             if (fileExtension == ".png" ||
@@ -312,10 +312,10 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.DeleteRoomSetupImage(roomSetupImageId, user.ProviderID, user.LocationID);
+            await SqlHelper.DeleteRoomSetupImage(roomSetupImageId, user.ProviderID, user.LocationID);
 
-            var folder = DataAccess.BlobStorageHelper.Folder(BlobStorageHelper.ImageType.RoomSetupImages, roomSetupId);
-            await DataAccess.BlobStorageHelper.DeleteBlob(folder, roomSetupImageId.ToString());
+            var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.RoomSetupImages, roomSetupId);
+            await BlobStorageHelper.DeleteBlob(folder, roomSetupImageId.ToString());
 
             return Ok();
         }

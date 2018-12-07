@@ -55,6 +55,7 @@ namespace OpFlow.Data
         public DateTime ScheduleDateTime => ScheduleDate.Add(ScheduleTime);
         public DateTime? ActualStartDateTime => ActualStartTime.HasValue ? ActualStartDate?.Add(ActualStartTime.Value) : null;
         public DateTime? DelayStartDateTime => DelayStartTime.HasValue ? ScheduleDate.Add(DelayStartTime.Value) : (DateTime?)null;
+        public DateTime? EstFinishDateTime => EstFinishTime.HasValue ? ScheduleDate.Add(EstFinishTime.Value) : (DateTime?)null;
     }
 
     public class PatientSurgery : Surgery

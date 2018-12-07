@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
-using OpFlow.Data;
 using OpFlow.Service.DataAccess;
 using Swashbuckle.Swagger.Annotations;
 
@@ -24,7 +23,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var analyticsSummary = SqlHelper.GetAnalytics(user.ProviderID, user.LocationID, tableId);
+            var analyticsSummary = await SqlHelper.GetAnalytics(user.ProviderID, user.LocationID, tableId);
             
             return Request.CreateResponse(HttpStatusCode.OK, analyticsSummary);
         }

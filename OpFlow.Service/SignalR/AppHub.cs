@@ -27,7 +27,7 @@ namespace OpFlow.Service.SignalR
                     surgeryId, null, message);
 
                 var recipients = await SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
-                var surgery = SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+                var surgery = await SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
                 var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
                 var patient = await SecureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
                     userObject.LastName, (int)userObject.RoleID, user.DatabaseName);
@@ -89,9 +89,9 @@ namespace OpFlow.Service.SignalR
                 var user = CacheUtil.GetUserByEmail(Context.User.Identity.Name);
 
                 if (startSurgery)
-                    SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, stepTime);
+                    await SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, stepTime);
             
-                var flowStep = SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
+                var flowStep = await SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
                 var notifications = SqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.ProviderID, user.LocationID);
 
                 var nextNotifications = notifications.Where(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
