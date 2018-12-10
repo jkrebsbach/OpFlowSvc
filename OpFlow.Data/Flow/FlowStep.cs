@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace OpFlow.Data
@@ -19,8 +20,8 @@ namespace OpFlow.Data
         public List<FlowImage> FlowImages { get; set; }
         public List<SurgeryImage> SurgeryImages { get; set; }
 
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTime { get; set; }
+        public TimeSpan? StartTime { get; set; }
+        public TimeSpan? EndTime { get; set; }
     }
 
     public class FlowStepResult
@@ -38,8 +39,28 @@ namespace OpFlow.Data
     public class FlowStepSurgeryTiming : FlowStepTiming
     {
         public string StepStatus { get; set; }
-        public TimeSpan StepStartTime { get; set; }
-        public TimeSpan StepEndTime { get; set; }
+        public bool PatientIn { get; set; }
+        public bool PatientOut { get; set; }
+        public TimeSpan EstStartTime { get; set; }
+        public TimeSpan ScheduleTime { get; set; }
+        public DateTime ScheduleDate { get; set; }
+
+
+        public DateTime EstStartDateTime => ScheduleDate.Add(EstStartTime);
+
+        public static void CalculateEstimatedTimes(List<FlowStepSurgeryTiming> timings)
+        {
+            var startTime = timings.FirstOrDefault()?.StartTime ?? timings.FirstOrDefault()?.ScheduleTime;
+            if (startTime == null)
+                return;
+
+            var currTime = startTime.Value;
+            foreach (var t in timings)
+            {
+                t.EstStartTime = currTime;
+                currTime = currTime.Add(new TimeSpan(0, t.StepDuration, 0));
+            }
+        }
     }
 
     public class Step : IBindableEntity

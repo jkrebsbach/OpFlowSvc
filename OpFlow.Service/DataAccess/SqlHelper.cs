@@ -2828,6 +2828,8 @@ namespace OpFlow.Service.DataAccess
 
             var result = dsSchedules.Tables[0].DataTableToList<FlowStepSurgeryTiming>();
 
+            FlowStepSurgeryTiming.CalculateEstimatedTimes(result);
+
             return result;
         }
 

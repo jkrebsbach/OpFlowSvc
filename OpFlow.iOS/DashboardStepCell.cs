@@ -16,8 +16,8 @@ namespace OpFlow.iOS
             lblPhase.Text = flowTiming.StepDescription;
             //lblPhase.BackgroundColor = PhaseColor(flowTiming.StepDescription);
    
-			lblStart.Text = flowTiming.StartTime == TimeSpan.Zero ? "" : flowTiming.StartTime.ToString(@"hh\:mm");
-			lblEnd.Text = flowTiming.EndTime == TimeSpan.Zero ? "" : flowTiming.EndTime.ToString(@"hh\:mm");
+			lblStart.Text = flowTiming.StartTime?.ToString(@"hh\:mm") ?? "";
+			lblEnd.Text = flowTiming.EndTime?.ToString(@"hh\:mm") ?? "";
 
             lblProcedure.Text = flowTiming.StepDescription;
             lblDelay.Text = "";
