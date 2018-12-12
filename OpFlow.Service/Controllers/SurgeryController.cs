@@ -387,6 +387,25 @@ namespace OpFlow.Service.Controllers
 
             var result = await SqlHelper.GetSurgeryRoomSummary(surgeryId, user.ProviderID, user.LocationID);
 
+            foreach (var surgery in result)
+            {
+                if (surgery.TotalMinutes == null)
+                    continue;
+
+                var nextStarts = result.Where(s => s.ScheduleDateTime > surgery.ScheduleDateTime).ToList();
+
+                if (!nextStarts.Any())
+                    continue;
+
+                var nextStart = nextStarts.Min(s => s.ScheduleDateTime);
+
+                var finishTime = surgery.ScheduleDateTime.AddMinutes(surgery.TotalMinutes.Value);
+                var idleMinutes = nextStart.Subtract(finishTime).Minutes;
+
+                if (idleMinutes > 0)
+                    surgery.IdleMinutes = idleMinutes;
+            }
+
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 

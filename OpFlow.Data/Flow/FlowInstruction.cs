@@ -37,6 +37,27 @@ namespace OpFlow.Data
         public string RoleName { get; set; }
         public List<FlowInstruction> FlowInstructions { get; }
 
+
+        public int SortIndex 
+        {
+            get
+            {
+                switch (RoleID)
+                {
+                    case 2:
+                        return 1;
+                    case 3:
+                        return 2;
+                    case 4:
+                        return 3;
+                    case 10:
+                        return 4;
+                    default:
+                        return 5;
+                }
+            }
+        }
+
         public FlowRoleInstruction()
         {
             FlowInstructions = new List<FlowInstruction>();

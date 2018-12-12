@@ -1819,7 +1819,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<Surgery>> GetSurgeryRoomSummary(int surgeryId, int providerId, int locationId)
+        public static async Task<List<RoomSummary>> GetSurgeryRoomSummary(int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1829,7 +1829,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("GetSurgeryRoomSummary", dsParameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Surgery>();
+            var result = dsSchedules.Tables[0].DataTableToList<RoomSummary>();
 
             return result;
         }

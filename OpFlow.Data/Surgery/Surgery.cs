@@ -58,6 +58,11 @@ namespace OpFlow.Data
         public DateTime? EstFinishDateTime => EstFinishTime.HasValue ? ScheduleDate.Add(EstFinishTime.Value) : (DateTime?)null;
     }
 
+    public class RoomSummary : Surgery
+    {
+        public int? IdleMinutes { get; set; }
+    }
+
     public class PatientSurgery : Surgery
     {
         public Patient Patient { get; set; }
