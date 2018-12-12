@@ -346,7 +346,7 @@ namespace OpFlow.Service.Controllers
             var surgeonNotes = SqlHelper.GetSurgeonNotes(flowId, user.ProviderID, user.LocationID);
             var flowSteps = SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
             var messages =
-                SqlHelper.GetMessaging(user.UserID, surgeryId, null, null, user.ProviderID, user.LocationID);
+                await SqlHelper.GetMessaging(user.UserID, surgeryId, null, null, user.ProviderID, user.LocationID);
 
             var flowImages = SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
 

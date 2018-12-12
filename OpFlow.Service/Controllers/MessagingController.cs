@@ -23,12 +23,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetMessages")]
         [Route("api/message/list")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Messaging>))]
-        public HttpResponseMessage GetCaseMessaging(int? userId = null,
+        public async Task<HttpResponseMessage> GetCaseMessaging(int? userId = null,
             int? surgeryId = null, int? caseGroupId = null, int? recipientId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetMessaging(userId ?? user.UserID, 
+            var result = await SqlHelper.GetMessaging(userId ?? user.UserID, 
                 surgeryId, caseGroupId, recipientId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -43,7 +43,7 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
             var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
-            var groups = DataAccess.SqlHelper.GetMessageGroups(userId ?? user.UserID, startDate, endDate, user.ProviderID, user.LocationID);
+            var groups = await SqlHelper.GetMessageGroups(userId ?? user.UserID, startDate, endDate, user.ProviderID, user.LocationID);
 
             foreach (var group in groups.Where(g => g.PatientID.HasValue))
             {

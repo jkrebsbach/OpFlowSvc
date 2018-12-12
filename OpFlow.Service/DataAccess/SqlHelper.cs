@@ -189,7 +189,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Messaging> GetMessaging(int userId, int? surgeryId, int? caseGroupId, int? recipientId, int providerId, int locationId)
+        public static async Task<List<Messaging>> GetMessaging(int userId, int? surgeryId, int? caseGroupId, int? recipientId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -200,14 +200,14 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetMessaging", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetMessaging", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Messaging>();
 
             return result;
         }
 
-        public static List<MessagingGroup> GetMessageGroups(int userId, DateTime? startDate, DateTime? endDate, int providerId, int locationId)
+        public static async Task<List<MessagingGroup>> GetMessageGroups(int userId, DateTime? startDate, DateTime? endDate, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -217,7 +217,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetMessagingGroups", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetMessagingGroups", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<MessagingGroup>();
 
