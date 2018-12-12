@@ -885,42 +885,6 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [SwaggerOperation("ToggleDelay")]
-        [SwaggerResponse(HttpStatusCode.OK)]
-        [SwaggerResponse(HttpStatusCode.Ambiguous)]
-        [HttpPost]
-        [Route("api/surgery/toggleDelay", Name = "ToggleDelay")]
-        public async Task<HttpResponseMessage> ToggleSurgeryDelay(int surgeryId, [FromBody]SurgeryDelayPost surgeryDelay)
-        {
-            if (surgeryDelay.StartTime == null && surgeryDelay.EndTime == null)
-                return Request.CreateResponse(HttpStatusCode.Ambiguous);
-
-            var user = CacheUtil.GetUserSecurity();
-            var success = await SqlHelper.SurgeryToggleDelay(surgeryId, user.ProviderID, user.LocationID, 
-                surgeryDelay.StartTime, surgeryDelay.EndTime, surgeryDelay.DelayReasonID);
-
-            return Request.CreateResponse(HttpStatusCode.Created, success);
-        }
-
-        // POST api/values
-        [SwaggerOperation("ToggleDelayCustom")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [SwaggerResponse(HttpStatusCode.Ambiguous)]
-        [HttpPost]
-        [Route("api/surgery/toggleDelayCustom", Name = "ToggleDelayCustom")]
-        public async Task<HttpResponseMessage> ToggleSurgeryDelayCustom(int surgeryId, [FromBody]CustomDelayPost surgeryDelay)
-        {
-            if (surgeryDelay.StartTime == null && surgeryDelay.EndTime == null)
-                return Request.CreateResponse(HttpStatusCode.Ambiguous);
-
-            var user = CacheUtil.GetUserSecurity();
-            var surgeryDelayReasonId = await SqlHelper.SurgeryToggleDelayCustom(surgeryId, user.ProviderID, user.LocationID,
-                surgeryDelay.StartTime, surgeryDelay.EndTime, surgeryDelay.CustomReason);
-
-            return Request.CreateResponse(HttpStatusCode.Created, surgeryDelayReasonId);
-        }
-
-        // POST api/values
         [SwaggerOperation("SurgeryReviewComplete")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]

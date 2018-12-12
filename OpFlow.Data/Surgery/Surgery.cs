@@ -166,13 +166,6 @@ namespace OpFlow.Data
         public int? DelayReasonID { get; set; }
     }
 
-    public class CustomDelayPost
-    {
-        public DateTime? StartTime { get; set; }
-        public DateTime? EndTime { get; set; }
-        public string CustomReason { get; set; }
-    }
-
     public class SurgerySearchResult
     {
         public int UserID { get; set; }

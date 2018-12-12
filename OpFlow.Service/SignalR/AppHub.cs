@@ -82,39 +82,6 @@ namespace OpFlow.Service.SignalR
             await PushNotificationMessage(sender, sender.Email, message);
         }
 
-        public async Task AdvanceSurgery(int surgeryId, DateTime stepTime, bool startSurgery)
-        {
-            try
-            {
-                var user = CacheUtil.GetUserByEmail(Context.User.Identity.Name);
-
-                if (startSurgery)
-                    await SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, stepTime);
-            
-                var flowStep = await SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
-                var notifications = SqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.ProviderID, user.LocationID);
-
-                var nextNotifications = notifications.Where(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
-                var prevNotifications = notifications.Where(n => n.StepID == flowStep.PreviousStepID && n.NotificationType == 2);
-
-                var sender = SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
-
-                foreach (var nextNotification in nextNotifications)
-                    await SendNotification(user, sender, surgeryId, nextNotification); // Next step
-
-                foreach (var prevNotification in prevNotifications)
-                    await SendNotification(user, sender, surgeryId, prevNotification); // Previous step
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
-                client.Send(e);
-                throw;
-            }
-        }
-
         private async Task SendNotification(UserSecurity user, User sender, int surgeryId, FlowNotification flowNotification)
         {
             if (flowNotification == null)
@@ -170,6 +137,68 @@ namespace OpFlow.Service.SignalR
             //{
             //    Clients.Client(connectionId).broadcastMessage(message, senderRoleId, senderUserId, senderUserName, insertTimestamp, surgeryId, communicationUserId);
             //}
+        }
+
+
+
+        public async Task AdvanceSurgery(int surgeryId, DateTime stepTime, bool startSurgery)
+        {
+            try
+            {
+                var user = CacheUtil.GetUserByEmail(Context.User.Identity.Name);
+
+                if (startSurgery)
+                    await SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, stepTime);
+
+                var flowStep = await SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
+                var notifications = SqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.ProviderID, user.LocationID);
+
+                var nextNotifications = notifications.Where(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
+                var prevNotifications = notifications.Where(n => n.StepID == flowStep.PreviousStepID && n.NotificationType == 2);
+
+                var sender = SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+
+                foreach (var nextNotification in nextNotifications)
+                    await SendNotification(user, sender, surgeryId, nextNotification); // Next step
+
+                foreach (var prevNotification in prevNotifications)
+                    await SendNotification(user, sender, surgeryId, prevNotification); // Previous step
+
+                NotifySurgeryChange("FLOW", surgeryId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
+                client.Send(e);
+                throw;
+            }
+        }
+
+        public async Task ToggleSurgeryDelay(int surgeryId, DateTime? startTime, DateTime? endTime, int? delayReasonId, string customReason)
+        {
+            if (startTime == null && endTime == null)
+                return;
+
+            var user = CacheUtil.GetUserSecurity();
+
+            if (customReason != null)
+            {
+                var surgeryDelayReasonId = await SqlHelper.SurgeryToggleDelayCustom(surgeryId, user.ProviderID, user.LocationID,
+                    startTime, endTime, customReason);
+            }
+            else
+            {
+                var success = await SqlHelper.SurgeryToggleDelay(surgeryId, user.ProviderID, user.LocationID,
+                    startTime, endTime, delayReasonId);
+            }
+
+            NotifySurgeryChange("FLOW", surgeryId);
+        }
+
+        private void NotifySurgeryChange(string property, int surgeryId)
+        {
+            Clients.All.surgeryChange(property, surgeryId);
         }
     }
 }
