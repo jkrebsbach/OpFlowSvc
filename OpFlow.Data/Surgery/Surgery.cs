@@ -61,6 +61,8 @@ namespace OpFlow.Data
     public class RoomSummary : Surgery
     {
         public int? IdleMinutes { get; set; }
+
+        public Patient Patient { get; set; }
     }
 
     public class PatientSurgery : Surgery
