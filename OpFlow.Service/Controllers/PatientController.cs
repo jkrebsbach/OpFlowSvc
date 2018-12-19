@@ -25,7 +25,7 @@ namespace OpFlow.Service.Controllers
             var user = CacheUtil.GetUserSecurity();
             var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
-            var patient = await DataAccess.SecureSqlHelper.GetPatient(patientId,
+            var patient = await SecureSqlHelper.GetPatient(patientId,
                 user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
                 user.DatabaseName);
 
@@ -47,19 +47,18 @@ namespace OpFlow.Service.Controllers
             if (patientIdArrayJson != null)
                 patientIds = JsonConvert.DeserializeObject<List<int>>(patientIdArrayJson);
 
-            if (patientIds != null)
-            {
-                var user = CacheUtil.GetUserSecurity();
-                var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+            if (patientIds == null) return Request.CreateResponse(HttpStatusCode.OK, patients);
 
-                foreach (var patientId in patientIds)
-                {
-                    var patient = await DataAccess.SecureSqlHelper.GetPatient(patientId,
-                        user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
-                        user.DatabaseName);
-                    if (patient != null)
-                        patients.Add(patient);
-                }
+            var user = CacheUtil.GetUserSecurity();
+            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+
+            foreach (var patientId in patientIds)
+            {
+                var patient = await SecureSqlHelper.GetPatient(patientId,
+                    user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
+                    user.DatabaseName);
+                if (patient != null)
+                    patients.Add(patient);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, patients);

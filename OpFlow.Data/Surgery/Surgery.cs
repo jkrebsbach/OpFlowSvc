@@ -58,6 +58,43 @@ namespace OpFlow.Data
         public DateTime? EstFinishDateTime => EstFinishTime.HasValue ? ScheduleDate.Add(EstFinishTime.Value) : (DateTime?)null;
     }
 
+    public class RoomOverview
+    {
+        public int RoomID { get; set; }
+        public string RoomDescription { get; set; }
+        public List<RoomHour> RoomHours { get; set; }
+    }
+
+    public class RoomHour
+    {
+        public List<RoomSummary> RoomSummary { get; set; }
+        
+        private RoomHour(IEnumerable<RoomSummary> summary)
+        {
+            RoomSummary = summary.ToList();
+        }
+        
+        public static List<RoomHour> Summarize(List<RoomSummary> roomSummary)
+        {
+            var result = new List<RoomHour>();
+
+            var startTime = 8;
+            var endTime = 16;
+
+            result.Add(new RoomHour(roomSummary.Where(rs => rs.ScheduleTime.Hours < startTime)));
+
+            while (startTime <= endTime)
+            {
+                result.Add(new RoomHour(roomSummary.Where(rs => rs.ScheduleTime.Hours == startTime)));
+                startTime++;
+            }
+
+            result.Add(new RoomHour(roomSummary.Where(rs => rs.ScheduleTime.Hours > endTime)));
+
+            return result;
+        }
+    }
+
     public class RoomSummary : Surgery
     {
         public int? IdleMinutes { get; set; }

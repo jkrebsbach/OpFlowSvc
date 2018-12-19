@@ -1834,6 +1834,28 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static async Task<List<RoomSummary>> GetSurgeryRoomOverview(
+            int? specialtyId, int? roomId, int? surgeonId, int? bundleId, int? procedureId,
+            DateTime surgeryDate, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("room_id", roomId ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonId ?? (object)DBNull.Value),
+                new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
+                new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
+                new SqlParameter("surgery_date", surgeryDate),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeryRoomOverview", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<RoomSummary>();
+
+            return result;
+        }
+
         public static async Task<List<SurgeryDelay>> GetFlowSurgeryDelays(int flowId, int providerId, int locationId)
         {
             var dsParameters = new[]

@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using Mindscape.Raygun4Net;
 using OpFlow.Data;
 using Swashbuckle.Swagger.Annotations;
 
@@ -406,15 +407,26 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
         public async Task<HttpResponseMessage> Post([FromBody]CardPost value)
         {
-            var user = CacheUtil.GetUserSecurity();
+            try
+            {
+                var user = CacheUtil.GetUserSecurity();
 
-            var cardId = await DataAccess.SqlHelper.InsertCard(value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
-                value.BundleID, value.BundleFlag, value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1", 
-                user.ProviderID, user.LocationID);
+                var cardId = await DataAccess.SqlHelper.InsertCard(value.Description, value.OwnerUserID,
+                    value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
+                    value.BundleID, value.BundleFlag, value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1",
+                    user.ProviderID, user.LocationID);
 
-            await InitializeCardProcedures(cardId, user, value.Procedures);
+                await InitializeCardProcedures(cardId, user, value.Procedures);
 
-            return Request.CreateResponse(HttpStatusCode.Created, cardId);
+                return Request.CreateResponse(HttpStatusCode.Created, cardId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
+                client.Send(ex);
+                throw;
+            }
         }
 
         // PUT api/values/5
@@ -423,20 +435,30 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.NotFound)]
         public async Task<IHttpActionResult> Put(int id, [FromBody]CardPost value)
         {
-            var user = CacheUtil.GetUserSecurity();
-
-            if (value.Procedures != null)
+            try
             {
-                await InitializeCardProcedures(id, user, value.Procedures);
-            }
-            else
-            {
-                await DataAccess.SqlHelper.UpdateCard(id, value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
-                    value.BundleID, value.BundleFlag, value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1",
-                    user.UserID, user.ProviderID, user.LocationID);
-            }
+                var user = CacheUtil.GetUserSecurity();
 
-            return Ok();
+                if (value.Procedures != null)
+                {
+                    await InitializeCardProcedures(id, user, value.Procedures);
+                }
+                else
+                {
+                    await DataAccess.SqlHelper.UpdateCard(id, value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
+                        value.BundleID, value.BundleFlag, value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1",
+                        user.UserID, user.ProviderID, user.LocationID);
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
+                client.Send(ex);
+                throw;
+            }
         }
 
         private async Task InitializeCardProcedures(int cardId, UserSecurity user, List<CardPostImportProcedure> procedures)
@@ -463,11 +485,21 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.NotFound)]
         public async Task<IHttpActionResult> Delete(int id)
         {
+            try
+            {
             var user = CacheUtil.GetUserSecurity();
 
             await DataAccess.SqlHelper.DeleteCard(id, user.ProviderID, user.LocationID);
 
             return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
+                client.Send(ex);
+                throw;
+            }
         }
     }
 }

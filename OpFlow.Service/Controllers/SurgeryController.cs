@@ -415,6 +415,54 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [SwaggerOperation("GetSurgeryRoomOverview")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<RoomOverview>))]
+        [Route("api/surgery/roomOverview", Name = "GetSurgeryRoomOverview")]
+        public async Task<HttpResponseMessage> GetSurgeryRoomOverview(int? specialtyId, int? roomId, int? surgeonId, int? bundleId, int? procedureId, DateTime surgeryDate)
+        {
+            var user = CacheUtil.GetUserSecurity();
+            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+
+            var surgeries = await SqlHelper.GetSurgeryRoomOverview(
+                specialtyId, roomId, surgeonId, bundleId, procedureId,
+                surgeryDate, user.ProviderID, user.LocationID);
+
+            foreach (var surgery in surgeries)
+            {
+                surgery.Patient = await SecureSqlHelper.GetPatient(surgery.PatientID,
+                    user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID,
+                    user.DatabaseName);
+
+                if (surgery.TotalMinutes == null)
+                    continue;
+
+                var nextStarts = surgeries.Where(s => s.ScheduleDateTime > surgery.ScheduleDateTime).ToList();
+
+                if (!nextStarts.Any())
+                    continue;
+
+                var nextStart = nextStarts.Min(s => s.ScheduleDateTime);
+
+                var finishTime = surgery.ScheduleDateTime.AddMinutes(surgery.TotalMinutes.Value);
+                var idleMinutes = nextStart.Subtract(finishTime).Minutes;
+
+                if (idleMinutes > 0)
+                    surgery.IdleMinutes = idleMinutes;
+            }
+
+            var result = surgeries.GroupBy(s => new {s.RoomID, s.RoomDescription})
+                .Select(r => new RoomOverview()
+                {
+                    RoomID = r.Key.RoomID ?? 0,
+                    RoomDescription = r.Key.RoomDescription,
+                    RoomHours = RoomHour.Summarize(r.ToList())
+                })
+                .ToList();
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // POST api/values
         [SwaggerOperation("UpdateDebrief")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [Route("api/surgery/debrief", Name = "UpdateDebrief")]
