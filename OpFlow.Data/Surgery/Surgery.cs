@@ -78,8 +78,8 @@ namespace OpFlow.Data
         {
             var result = new List<RoomHour>();
 
-            var startTime = 8;
-            var endTime = 16;
+            var startTime = 7;
+            var endTime = 22;
 
             result.Add(new RoomHour(roomSummary.Where(rs => rs.ScheduleTime.Hours < startTime)));
 
