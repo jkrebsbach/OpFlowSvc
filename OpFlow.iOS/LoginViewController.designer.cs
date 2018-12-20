@@ -16,6 +16,10 @@ namespace OpFlow.iOS
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton btnSaml { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UIButton btnSignOn { get; set; }
 
         [Outlet]
@@ -26,12 +30,21 @@ namespace OpFlow.iOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField txtUsername { get; set; }
 
+        [Action ("SamlClick:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void SamlClick (UIKit.UIButton sender);
+
         [Action ("SignOnClick:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void SignOnClick (UIKit.UIButton sender);
 
         void ReleaseDesignerOutlets ()
         {
+            if (btnSaml != null) {
+                btnSaml.Dispose ();
+                btnSaml = null;
+            }
+
             if (btnSignOn != null) {
                 btnSignOn.Dispose ();
                 btnSignOn = null;

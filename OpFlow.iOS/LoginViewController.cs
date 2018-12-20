@@ -79,6 +79,12 @@ namespace OpFlow.iOS
 
         UIAlertController _loginError = null;
 
+        async partial void SamlClick(UIButton sender)
+        {
+            var controller = Storyboard.InstantiateViewController("SamlViewController");
+            NavigationController.PushViewController(controller, true);
+        }
+
         async partial void SignOnClick(UIButton sender)
         {
             password = txtPassword.Text;

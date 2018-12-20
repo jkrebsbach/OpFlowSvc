@@ -254,6 +254,10 @@
       <DependentUpon>LocalAuthViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\KeychainHelper.cs" />
+    <Compile Include="SamlViewController.cs" />
+    <Compile Include="SamlViewController.designer.cs">
+      <DependentUpon>SamlViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard">

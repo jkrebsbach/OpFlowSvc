@@ -1,9 +1,6 @@
-using Foundation;
 using System;
 using OpFlow.iOS.Delegates;
-using OpFlow.iOS.ViewSources;
 using OpFlow.Mobile;
-using UIKit;
 
 namespace OpFlow.iOS
 {
