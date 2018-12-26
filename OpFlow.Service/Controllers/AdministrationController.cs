@@ -82,18 +82,22 @@ namespace OpFlow.Service.Controllers
 
                 var fileParser = new FileParser(fileName, fileContents);
 
-                var records = fileParser.ParseFile(importTypeId);
+                await fileParser.ParseFile(importTypeId, user.ProviderID, user.LocationID);
 
-                if (records != null)
+                if (fileParser.Records != null)
                 {
-                    foreach (var record in records)
-                    {
+                    var secureUser = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
-                        var secureId = await SecureSqlHelper.InsertStagingData(record, user.DatabaseName);
-                        SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record);
+                    foreach (var record in fileParser.Records)
+                    {
+                        var secureId = await SecureSqlHelper.InsertStagingData(record, user.UserID, 
+                            secureUser.FirstName, secureUser.LastName, (int)secureUser.RoleID,
+                            user.DatabaseName);
+
+                        await SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
                     }
 
-                    SqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, records.Count, fileName);
+                    SqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, fileParser.Records.Count, fileName);
                 }
 
                 return Request.CreateResponse(HttpStatusCode.OK, fileParser.Status);

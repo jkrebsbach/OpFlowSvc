@@ -115,26 +115,31 @@ namespace OpFlow.Service.DataAccess
 
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
-        public static async Task<int?> InsertStagingData(IImportData sourceData, string databaseName)
+        public static async Task<int?> InsertStagingData(IImportData sourceData,
+            int userId, string userFirstName, string userLastName, int? userRoleId, string databaseName)
         {
             if (sourceData is ScheduleImport schedule)
             {
-                var parameters = new[]
+                var dsParameters = new[]
                 {
-                    new SqlParameter("pt_acct_nbr", schedule.PatientID),
-                    new SqlParameter("first_name", schedule.FirstName),
-                    new SqlParameter("last_name", schedule.LastName),
-                    new SqlParameter("birth_date", schedule.DateOfBirth),
-                    new SqlParameter("[BMI]," , schedule.BMI),
-                    new SqlParameter("gender", schedule.Gender),
-                    new SqlParameter("[Medical_History]", schedule.MedicalHistory),
-                    new SqlParameter("[risk_factors]", schedule.RiskFactors),
-                    new SqlParameter("[medications]", schedule.Medications),
-                    new SqlParameter("[allergies]", schedule.Allergies),
-                    new SqlParameter("[notes]", schedule.Notes)
+                    new SqlParameter("pt_acct_nbr", schedule.MRN ?? (object)DBNull.Value),
+                    new SqlParameter("last_name", schedule.PatientLastName ?? (object)DBNull.Value),
+                    new SqlParameter("first_name", schedule.PatientFirstName ?? (object)DBNull.Value),
+                    new SqlParameter("middle_initial", schedule.PatientMInit ?? (object)DBNull.Value),
+                    new SqlParameter("birth_date", schedule.DateOfBirth ?? (object)DBNull.Value),
+                    new SqlParameter("bmi", schedule.BMI ?? (object)DBNull.Value),
+                    new SqlParameter("gender", schedule.Gender ?? (object)DBNull.Value),
+                    new SqlParameter("medical_history", schedule.MedicalHistory ?? (object)DBNull.Value),
+                    new SqlParameter("risk_factors", schedule.RiskFactors ?? (object)DBNull.Value),
+                    new SqlParameter("medications", schedule.Medications ?? (object)DBNull.Value),
+                    new SqlParameter("allergies", schedule.Allergies ?? (object)DBNull.Value),
+                    new SqlParameter("notes", schedule.Notes ?? (object)DBNull.Value),
+                    new SqlParameter("user_id", userId),
+                    new SqlParameter("user_first_name", userFirstName ?? (object)DBNull.Value),
+                    new SqlParameter("user_last_name", userLastName ?? (object)DBNull.Value),
+                    new SqlParameter("user_role", userRoleId ?? (object)DBNull.Value),
                 };
-
-                var insert = await ExecuteCommandAsync(@"NewPatient_Staging", databaseName, parameters);
+                var insert = await ExecuteCommandAsync("NewPatient_Staging", databaseName, dsParameters);
 
                 var result = insert.Tables[0].DataTableToList<InsertionResult>();
 

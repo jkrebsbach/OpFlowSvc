@@ -129,8 +129,8 @@ namespace OpFlow.Data
         public string PtLastName { get; set; }
         public string PtMiddleInitial { get; set; }
         public decimal? PtBMI { get; set; }
-        public int SpecialtyID { get; set; }
-        public int SurgeonUserID { get; set; }
+        public int? SpecialtyID { get; set; }
+        public int? SurgeonUserID { get; set; }
         public int? RoomID { get; set; }
 
         public int? BundleID { get; set; }

@@ -229,8 +229,7 @@ namespace OpFlow.Service.Controllers
             var userSecurity = CacheUtil.GetUserSecurity();
             var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
-            var applicationUser =
-                DataAccess.SqlHelper.GetUser(userSecurity.ProviderID, userSecurity.LocationID,  userId);
+            var applicationUser = await DataAccess.SqlHelper.GetUser(userSecurity.ProviderID, userSecurity.LocationID,  userId);
 
             var authenticationUser = await userManager.FindByEmailAsync(applicationUser.Email);
 

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
+using OpFlow.Data;
 using OpFlow.Data.Administration;
 using OpFlow.Service.DataAccess;
 
@@ -15,32 +17,37 @@ namespace OpFlow.Service.Models
 
         public string Status;
 
+        public FileParserRelations Relations { get; set; }
+        public List<IImportData> Records { get; set; }
+
         public FileParser(string filename, byte[] filecontents)
         {
             _filename = filename;
             _fileContents = filecontents;
         }
 
-        public List<IImportData> ParseFile(int importTypeId)
+        public async Task ParseFile(int importTypeId, int providerId, int locationId)
         {
-            
             if (Path.GetExtension(_filename) == ".csv")
             {
                 var csvData = System.Text.Encoding.UTF8.GetString(_fileContents);
 
                 var parser = new CsvParser(csvData);
-                var results = parser.ParseCSV(importTypeId);
+                Records = parser.ParseCSV(importTypeId);
 
                 Status = "good to go";
-
-                return results;
             }
             else
             {
                 Status = $"{Path.GetExtension(_filename)} is not an accepted format.";
             }
 
-            return null;
+            Relations = new FileParserRelations();
+            if (importTypeId == 1)
+            {
+                Relations.Rooms = await SqlHelper.GetRooms(locationId);
+                Relations.Surgeons = await SqlHelper.GetSurgeons(null, providerId, locationId);
+            }
         }
     }
 }

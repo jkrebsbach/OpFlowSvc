@@ -17,8 +17,8 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestImportFile()
         {
-            var fileName = @"C:\temp\test.csv";
-            var importTypeId = 5;
+            var fileName = @"C:\temp\TestImportUNC.csv";
+            var importTypeId = 1;
 
             var user = SqlHelper.GetSecureUser(null, 1);
 
@@ -28,18 +28,18 @@ namespace OpFlow.Service.Test
 
                 var fileParser = new FileParser(fileName, fileContents);
 
-                var records = fileParser.ParseFile(importTypeId);
+                await fileParser.ParseFile(importTypeId, 1, 1);
 
-                if (records != null)
+                if (fileParser.Records != null)
                 {
-                    foreach (var record in records)
+                    foreach (var record in fileParser.Records)
                     {
 
-                        var secureId = await SecureSqlHelper.InsertStagingData(record, user.DatabaseName);
-                        SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record);
+                        var secureId = await SecureSqlHelper.InsertStagingData(record, user.UserID, "TEST", "TEST", 1, user.DatabaseName);
+                        await SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
                     }
 
-                    SqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, records.Count, fileName);
+                    SqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, fileParser.Records.Count, fileName);
                 }
 
             }

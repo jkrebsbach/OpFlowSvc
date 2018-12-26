@@ -286,7 +286,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.UpdateCardQuantity(cardId, cardQuantity, user.ProviderID, user.LocationID);
+            await DataAccess.SqlHelper.UpdateCardQuantity(cardId, cardQuantity, user.ProviderID, user.LocationID);
 
             return Ok();
         }

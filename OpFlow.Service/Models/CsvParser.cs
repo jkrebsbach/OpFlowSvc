@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Web;
 using CsvHelper;
 using OpFlow.Data.Administration;
 
@@ -29,33 +27,32 @@ namespace OpFlow.Service.Models
 
                 while (_csv.Read())
                 {
+                    var checkField = _csv.GetField(0);
+                    if (checkField == string.Empty)
+                        continue;
+
                     switch (importTypeId)
                     {
                         case 1:
                             result.Add(new ScheduleImport
                             {
-                                PatientID = _csv.GetField(5),
-                                CaseID = _csv.GetField(5),
-                                FirstName = _csv.GetField(5),
-                                LastName = _csv.GetField(5),
-                                DateOfBirth = DateTime.Parse(_csv.GetField(5)),
-                                Gender = _csv.GetField(5),
-                                BMI = Int32.Parse(_csv.GetField(5)),
-                                MedicalHistory = _csv.GetField(5),
-                                RiskFactors = _csv.GetField(5),
-                                Medications = _csv.GetField(5),
-                                Allergies = _csv.GetField(5),
-                                Notes = _csv.GetField(5),
-                                ScheduleDate = DateTime.Parse(_csv.GetField(5)),
-                                ScheduleTime = _csv.GetField(5),
-                                Location = _csv.GetField(5),
-                                Room = _csv.GetField(5),
-                                Procedure = _csv.GetField(5),
-                                ProcedureCard = _csv.GetField(5),
-                                Surgeon = _csv.GetField(5),
-                                Circulator = _csv.GetField(5),
-                                Anes = _csv.GetField(5),
-                                Tech = _csv.GetField(5)
+                                MRN = _csv.GetField(0),
+                                CaseNbr = _csv.GetField(1),
+                                PatientName = _csv.GetField(2),
+                                DateOfBirth = DateTime.Parse(_csv.GetField(3)),
+                                Gender = _csv.GetField(4),
+                                BMIText = _csv.GetField(5),
+                                Medications = _csv.GetField(6),
+                                Allergies = _csv.GetField(7),
+                                ScheduleDate = DateTime.Parse(_csv.GetField(8)),
+                                ScheduleTime = _csv.GetField(9),
+                                Location = _csv.GetField(10),
+                                Room = _csv.GetField(11),
+                                Procedure = _csv.GetField(12),
+                                Laterality = _csv.GetField(13),
+                                Surgeon = _csv.GetField(14),
+                                ProcedurePreferenceCards = _csv.GetField(15),
+                                Notes = _csv.GetField(16)
                             });
                             break;
                         case 2:

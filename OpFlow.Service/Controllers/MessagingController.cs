@@ -41,13 +41,13 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCaseMessageGroups(int? userId = null, DateTime? startDate = null, DateTime? endDate = null)
         {
             var user = CacheUtil.GetUserSecurity();
-            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+            var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
             var groups = await SqlHelper.GetMessageGroups(userId ?? user.UserID, startDate, endDate, user.ProviderID, user.LocationID);
 
             foreach (var group in groups.Where(g => g.PatientID.HasValue))
             {
-                var patient = await DataAccess.SecureSqlHelper.GetPatient(group.PatientID.Value, 
+                var patient = await SecureSqlHelper.GetPatient(group.PatientID.Value, 
                     user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID,
                     user.DatabaseName);
 
@@ -80,8 +80,7 @@ namespace OpFlow.Service.Controllers
             {
                 var recipients = await SqlHelper.GetSurgeryUsers(surgeryId.Value, user.ProviderID, user.LocationID);
 
-                var sender =
-                    SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+                var sender = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
                 foreach (var recipient in recipients)
                 {
@@ -90,7 +89,7 @@ namespace OpFlow.Service.Controllers
                         continue;
 
                     var surgery = await SqlHelper.GetSurgery(surgeryId ?? -1, user.ProviderID, user.LocationID);
-                    var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+                    var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
                     var patient = await SecureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
                         userObject.LastName, (int)userObject.RoleID, user.DatabaseName);
 
@@ -105,11 +104,9 @@ namespace OpFlow.Service.Controllers
             }
             else if (communicationUserId != null)
             {
-                var recipientUser =
-                    SqlHelper.GetUser(user.ProviderID, user.LocationID,  communicationUserId ?? -1);
+                var recipientUser = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  communicationUserId ?? -1);
 
-                var sender =
-                    SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+                var sender = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
                 var senderName = $"{sender.LastName}, {sender.FirstName}";
                 notificationOutcome = await PushNotification.PostNotification(sender.Email, senderName, recipientUser.Email, messagePost.Message);

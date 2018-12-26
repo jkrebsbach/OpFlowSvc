@@ -25,7 +25,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+            var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
             var patientSurgery = await SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
             patientSurgery.Patient =
@@ -384,7 +384,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgeryRoomSummary(int surgeryId)
         {
             var user = CacheUtil.GetUserSecurity();
-            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+            var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
             var result = await SqlHelper.GetSurgeryRoomSummary(surgeryId, user.ProviderID, user.LocationID);
 
@@ -418,10 +418,10 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSurgeryRoomOverview")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<RoomOverview>))]
         [Route("api/surgery/roomOverview", Name = "GetSurgeryRoomOverview")]
-        public async Task<HttpResponseMessage> GetSurgeryRoomOverview(int? specialtyId, int? roomId, int? surgeonId, DateTime surgeryDate)
+        public async Task<HttpResponseMessage> GetSurgeryRoomOverview(DateTime surgeryDate, int? specialtyId = null, int? roomId = null, int? surgeonId = null)
         {
             var user = CacheUtil.GetUserSecurity();
-            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+            var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
             int? bundleId = null;
             int? procedureId = null;
@@ -640,7 +640,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Post([FromBody]SurgeryPost surgery)
         {
             var secureUser = CacheUtil.GetUserSecurity();
-            var user = SqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID,  secureUser.UserID);
+            var user = await SqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID,  secureUser.UserID);
 
             var patientId = await SecureSqlHelper.CreatePatient(surgery.PtAcctNbr,
                 surgery.PtDOB, surgery.PtGender, surgery.PtFirstName, surgery.PtLastName, surgery.PtMiddleInitial, surgery.PtBMI, 
@@ -650,11 +650,11 @@ namespace OpFlow.Service.Controllers
             var caseId = await SqlHelper.CreateCase(patientId, secureUser.UserID, surgery.SpecialtyID, secureUser.ProviderID,
                 secureUser.LocationID, surgery.CaseNbr);
 
-            var cardFlowRoom = surgery.BundleID.HasValue ? 
-                SqlHelper.GetBundleDefaultCardFlowRoom(surgery.BundleID.Value, surgery.SurgeonUserID, secureUser.ProviderID, secureUser.LocationID) : 
+            var cardFlowRoom = (surgery.BundleID.HasValue && surgery.SurgeonUserID.HasValue) ? 
+                SqlHelper.GetBundleDefaultCardFlowRoom(surgery.BundleID.Value, surgery.SurgeonUserID.Value, secureUser.ProviderID, secureUser.LocationID) : 
                 SqlHelper.GetProcedureDefaultCardFlowRoom(secureUser.ProviderID, secureUser.LocationID, surgery.CptCode).FirstOrDefault();
 
-            var surgeryId = SqlHelper.CreateSurgery(surgery, secureUser.ProviderID, secureUser.LocationID, patientId, caseId, 
+            var surgeryId = await SqlHelper.CreateSurgery(surgery, secureUser.ProviderID, secureUser.LocationID, patientId, caseId, 
                 cardFlowRoom?.ProcedureID, cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID);
 
             return Request.CreateResponse(HttpStatusCode.Created, surgeryId);
@@ -969,7 +969,7 @@ namespace OpFlow.Service.Controllers
 
 
             var surgery = await SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
-            var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+            var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
             var patient = await SecureSqlHelper.GetPatient(surgery.PatientID,
                 user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
@@ -977,7 +977,7 @@ namespace OpFlow.Service.Controllers
 
             var message = $"Surgery #{surgery.CaseNumber} patient {patient.LastName} room {surgery.RoomDescription} {surgery.ScheduleTime:hh\\:mm} modified - please review schedule";
 
-            var notificationUser = SqlHelper.GetUser(user.ProviderID, user.LocationID,  surgeryEditPost.NotificationUser.Value);
+            var notificationUser = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  surgeryEditPost.NotificationUser.Value);
             if (notificationUser?.CellPhone != null)
                 SmsNotification.NotifyUser(notificationUser.CellPhone, message);
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
@@ -16,11 +17,11 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("Get")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgeon>))]
-        public HttpResponseMessage GetSurgeons(int? specialtyId = null, int? providerId = null, int? locationId = null)
+        public async Task<HttpResponseMessage> GetSurgeons(int? specialtyId = null)
         {
             var user = CacheUtil.GetUserSecurity();
 
-            var surgeons = DataAccess.SqlHelper.GetSurgeons(specialtyId, user.ProviderID, user.LocationID);
+            var surgeons = await DataAccess.SqlHelper.GetSurgeons(specialtyId, user.ProviderID, user.LocationID);
 
             return surgeons == null ?
                 Request.CreateResponse(HttpStatusCode.NotFound) :

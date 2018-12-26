@@ -597,7 +597,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static User GetUser(int providerId, int locationId, int userId)
+        public static async Task<User> GetUser(int providerId, int locationId, int userId)
         {
             var dsParameters = new[]
             {
@@ -606,9 +606,9 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("user_auth_id", DBNull.Value),
                 new SqlParameter("user_id", userId),
             };
-            var dsSchedules = ExecuteCommand("GetUser", dsParameters);
+            var dsUsers = await ExecuteCommandAsync("GetUser", dsParameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<User>().FirstOrDefault();
+            var result = dsUsers.Tables[0].DataTableToList<User>().FirstOrDefault();
 
             return result;
         }
@@ -1273,7 +1273,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteCard", dsParameters);
         }
 
-        public static int UpdateCardQuantity(int cardId, CardQuantityEdit quantity, int providerId, int locationId)
+        public static async Task<int> UpdateCardQuantity(int cardId, CardQuantityEdit quantity, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1288,7 +1288,7 @@ namespace OpFlow.Service.DataAccess
             return ExecuteNonQuery("UpdateCardItemQty", dsParameters);
         }
 
-        public static int CreateSurgery(SurgeryPost surgery, int providerId, int locationId, int patientId, int caseId, 
+        public static async Task<int> CreateSurgery(SurgeryPost surgery, int providerId, int locationId, int patientId, int caseId, 
             int? procedureId, int? defaultCardId, int? defaultFlowId, int? defaultRoomId)
         {
             var dsParameters = new[]
@@ -1296,8 +1296,8 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("patient_id", patientId),
-                new SqlParameter("user_id", surgery.SurgeonUserID),
-                new SqlParameter("specialty_id", surgery.SpecialtyID),
+                new SqlParameter("user_id", surgery.SurgeonUserID ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", surgery.SpecialtyID ?? (object)DBNull.Value),
                 new SqlParameter("bundle_id", surgery.BundleID ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("case_id", caseId),
@@ -1310,7 +1310,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("cpt_codes", surgery.CptCode ?? (object)DBNull.Value),
                 new SqlParameter("laterality_id", surgery.LateralityID ?? (object)DBNull.Value)
             };
-            var insert = ExecuteCommand("InsertSurgery", dsParameters);
+            var insert = await ExecuteCommandAsync("InsertSurgery", dsParameters);
 
             var result = insert.Tables[0].DataTableToList<InsertionResult>();
 
@@ -1571,13 +1571,13 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
-        public static async Task<int> CreateCase(int patientId, int userId, int specialtyId, int providerId, int locationId, string caseNbr)
+        public static async Task<int> CreateCase(int patientId, int? userId, int? specialtyId, int providerId, int locationId, string caseNbr)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("patient_id", patientId),
-                new SqlParameter("user_id", userId),
-                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("case_nbr", caseNbr)
@@ -2500,7 +2500,7 @@ namespace OpFlow.Service.DataAccess
         {
             var parameters = new[]
             {
-                new SqlParameter("surgeon", importSurgeon),
+                new SqlParameter("surgeon", importSurgeon ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
@@ -2517,9 +2517,25 @@ namespace OpFlow.Service.DataAccess
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("cpt_code", cptCode)
+                new SqlParameter("cpt_code", cptCode ?? (object)DBNull.Value)
             };
             var dsSchedules = ExecuteCommand("GetProcedureDefaultCardFlowRoom", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<CardFlowRoom>();
+
+            return result;
+        }
+
+        public static List<CardFlowRoom> GetImportDefaultCardFlowRoom(int providerId, int locationId, int ownerUserId, string procedureCard)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("owner_user_id", ownerUserId),
+                new SqlParameter("procedure_card", procedureCard ?? (object)DBNull.Value)
+            };
+            var dsSchedules = ExecuteCommand("GetImportDefaultCardFlowRoom", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<CardFlowRoom>();
 
@@ -2532,7 +2548,7 @@ namespace OpFlow.Service.DataAccess
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("cpt_code", cptCode)
+                new SqlParameter("cpt_code", cptCode ?? (object)DBNull.Value)
             };
             var dsSchedules = ExecuteCommand("GetProcedureDefaultCardFlowRoom", parameters);
 
@@ -2548,7 +2564,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("specialty_id", specialtyId),
-                new SqlParameter("cpt_codes", cptCodes)
+                new SqlParameter("cpt_codes", cptCodes ?? (object)DBNull.Value)
             };
             var dsSchedules = ExecuteCommand("GetMultipleProceduresDefaultCardFlowRoom", parameters);
 
@@ -2564,7 +2580,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("specialty_id", specialtyId),
-                new SqlParameter("cpt_codes", cptCodes)
+                new SqlParameter("cpt_codes", cptCodes ?? (object)DBNull.Value)
             };
             var dsSchedules = ExecuteCommand("GetSpecialtyMultipleProceduresDefaultCardFlowRoom", parameters);
 
@@ -2774,7 +2790,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<Surgeon> GetSurgeons(int? specialtyId, int providerId, int locationId)
+        public static async Task<List<Surgeon>> GetSurgeons(int? specialtyId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2782,7 +2798,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetSurgeonBySpecialty", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeonBySpecialty", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Surgeon>();
 
@@ -3181,8 +3197,9 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteFlow", parameters);
         }
 
-        public static void InsertStagingData(int providerId, int locationId, int? secureId, IImportData sourceData)
+        public static async Task<int?> InsertStagingData(int providerId, int locationId, int? secureId, IImportData sourceData, FileParserRelations relations)
         {
+            int? insertion = null;
             if (sourceData is ItemImport item)
             {
                 var parameters = new[]
@@ -3204,7 +3221,7 @@ namespace OpFlow.Service.DataAccess
                     new SqlParameter("inventory_value", item.InventoryValue)
                 };
 
-                var insertion = ExecuteNonQuery(@"INSERT stag_item (provider_id, location_id, location, location_name, from_loc, bin_seq, 
+                insertion = ExecuteNonQuery(@"INSERT stag_item (provider_id, location_id, location, location_name, from_loc, bin_seq, 
                     bin, item_nbr, description, manu_name, mfg_nbr, par_level, uom, item_cost, inventory_value)
                 VALUES (@provider_id, @location_id, @location, @location_name, @from_loc, @bin_seq,
                     @bin, @item_nbr, @description, @manu_name, @mfg_nbr, @par_level, @uom, @item_cost, @inventory_value)", parameters, CommandType.Text);
@@ -3231,7 +3248,7 @@ namespace OpFlow.Service.DataAccess
                     new SqlParameter("unit", card.Unit)
                 };
 
-                var insertion = ExecuteNonQuery(@"INSERT stag_card (provider_id, location_id, location, surgeon, preference_card_name, type,
+                insertion = ExecuteNonQuery(@"INSERT stag_card (provider_id, location_id, location, surgeon, preference_card_name, type,
                     lawson_id, catalog_nbr, supply_description, manufacturer, open_amt, prn_required, cost_per_unit_ot, dosage, unit)
                         VALUES (@provider_id, @location_id, @location, @surgeon, @preference_card_name, @type,
                     @lawson_id, @catalog_nbr, @supply_description, @manufacturer, @open_amt, @prn_required, @cost_per_unit_ot, @dosage, @unit)", parameters, CommandType.Text);
@@ -3250,35 +3267,46 @@ namespace OpFlow.Service.DataAccess
                     new SqlParameter("manufacturer", tray.Manufacturer)
                 };
 
-                var insertion = ExecuteNonQuery(@"INSERT stag_tray (provider_id, location_id, customer, tray_id, tray_name, instrument_name, quantity, manufacturer)
+                insertion = ExecuteNonQuery(@"INSERT stag_tray (provider_id, location_id, customer, tray_id, tray_name, instrument_name, quantity, manufacturer)
                 VALUES (@provider_id, @location_id, @customer, @tray_id, @tray_name, @instrument_name, @quantity, @manufacturer)", parameters, CommandType.Text);
             }
             else if(sourceData is ScheduleImport schedule)
             {
-                var parameters = new[]
+                var surgery = new SurgeryPost()
                 {
-                    new SqlParameter("provider_id", providerId),
-                    new SqlParameter("location_id", locationId),
-                    new SqlParameter("patient_id", secureId),
-                    new SqlParameter("case_id", schedule.CaseID),
-                    new SqlParameter("[schedule_date]", schedule.ScheduleDate),
-                    new SqlParameter("[schedule_time]", schedule.ScheduleTime),
-                    new SqlParameter("[location]", schedule.Location),
-                    new SqlParameter("[room]", schedule.Room),
-                    new SqlParameter("[procedure]", schedule.Procedure),
-                    new SqlParameter("[procedure_card]", schedule.ProcedureCard),
-                    new SqlParameter("[surgeon]", schedule.Surgeon),
-                    new SqlParameter("[circulator]", schedule.Circulator),
-                    new SqlParameter("[anes]", schedule.Anes),
-                    new SqlParameter("[tech]", schedule.Tech)
+                    BundleID = null,
+                    CaseNbr = schedule.CaseNbr,
+                    CptCode = schedule.CptCode,
+                    LateralityID = null,
+                    ScheduleDate = schedule.ScheduleDateTime,
                 };
+                
+                var room = relations.Rooms.FirstOrDefault(r => r.RoomDescription == schedule.Room);
+                var surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == schedule.PrimarySurgeon.LastName && r.FirstName == schedule.PrimarySurgeon.FirstName);
 
-                var insertion = ExecuteNonQuery(@"INSERT[dbo].[stag_schedule]([provider_id],[location_id],[patient_id],[case_id],
-                        [schedule_date],[schedule_time],[location],[room],[procedure],[procedure_card],[surgeon],[circulator],[anes],[tech]) 
-                    VALUES (@provider_id,@location_id,@patient_id,@case_id,
-                    @schedule_date,@schedule_time,@location,
-                    @room,@procedure,@procedure_card,@surgeon,@circulator,@anes,@tech)", parameters, CommandType.Text);
+                surgery.RoomID = room?.RoomID;
+                surgery.SurgeonUserID = surgeon?.UserID;
+
+                var caseId = await CreateCase(secureId ?? -1, surgery.SurgeonUserID, surgery.SpecialtyID, providerId,
+                    locationId, surgery.CaseNbr);
+
+                CardFlowRoom cardFlowRoom = null;
+                if (surgery.SurgeonUserID != null)
+                    cardFlowRoom = GetImportDefaultCardFlowRoom(providerId, locationId, surgery.SurgeonUserID.Value, schedule.ProcedureCard).FirstOrDefault();
+
+                insertion = await CreateSurgery(surgery, providerId, locationId, secureId ?? -1, caseId,
+                    cardFlowRoom?.ProcedureID, cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID);
+
+                foreach (var secondarySurgeon in schedule.SecondarySurgeons)
+                {
+                    surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == secondarySurgeon.LastName && r.FirstName == secondarySurgeon.FirstName);
+
+                    if (surgeon != null && insertion != null)
+                        await AddSurgeryUser(insertion.Value, surgeon.UserID, providerId, locationId);
+                }
             }
+
+            return insertion;
         }
 
         public static void InsertImportLog(int providerId, int locationId, int importTypeId, int userId, int recordCount, string filename)

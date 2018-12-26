@@ -28,7 +28,7 @@ namespace OpFlow.Service.SignalR
 
                 var recipients = await SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
                 var surgery = await SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
-                var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
                 var patient = await SecureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
                     userObject.LastName, (int)userObject.RoleID, user.DatabaseName);
 
@@ -68,10 +68,10 @@ namespace OpFlow.Service.SignalR
                 null, communicationUserId, message);
 
             var recipientUser = 
-                DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID,  communicationUserId);
+                await SqlHelper.GetUser(user.ProviderID, user.LocationID,  communicationUserId);
 
             var sender =
-                DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+                await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
             Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
 
@@ -110,7 +110,7 @@ namespace OpFlow.Service.SignalR
 
         private async Task SendNotification(UserSecurity user, User sender, int targetUserId, string message)
         {
-            var recipientUser = SqlHelper.GetUser(user.ProviderID, user.LocationID, targetUserId);
+            var recipientUser = await SqlHelper.GetUser(user.ProviderID, user.LocationID, targetUserId);
 
             await PushNotificationMessage(sender, recipientUser.Email, message);
 
@@ -156,7 +156,7 @@ namespace OpFlow.Service.SignalR
                 var nextNotifications = notifications.Where(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
                 var prevNotifications = notifications.Where(n => n.StepID == flowStep.PreviousStepID && n.NotificationType == 2);
 
-                var sender = SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                var sender = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
                 foreach (var nextNotification in nextNotifications)
                     await SendNotification(user, sender, surgeryId, nextNotification); // Next step
