@@ -418,10 +418,13 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSurgeryRoomOverview")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<RoomOverview>))]
         [Route("api/surgery/roomOverview", Name = "GetSurgeryRoomOverview")]
-        public async Task<HttpResponseMessage> GetSurgeryRoomOverview(int? specialtyId, int? roomId, int? surgeonId, int? bundleId, int? procedureId, DateTime surgeryDate)
+        public async Task<HttpResponseMessage> GetSurgeryRoomOverview(int? specialtyId, int? roomId, int? surgeonId, DateTime surgeryDate)
         {
             var user = CacheUtil.GetUserSecurity();
             var userObject = SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+
+            int? bundleId = null;
+            int? procedureId = null;
 
             var surgeries = await SqlHelper.GetSurgeryRoomOverview(
                 specialtyId, roomId, surgeonId, bundleId, procedureId,
