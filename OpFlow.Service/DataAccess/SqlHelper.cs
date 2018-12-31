@@ -1641,33 +1641,33 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<RoomType> GetRoomTypes(int locationId)
+        public static async Task<List<RoomType>> GetRoomTypes(int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("location_id", locationId),
             };
-            var dsSchedules = ExecuteCommand("GetRoomTypes", dsParameters);
+            var dsSchedules = await ExecuteCommandAsync("GetRoomTypes", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<RoomType>();
 
             return result;
         }
 
-        public static List<RoomGroup> GetRoomGroups(int providerId, int locationId)
+        public static async Task<List<RoomGroup>> GetRoomGroups(int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
-            var dsSchedules = ExecuteCommand("GetRoomGroups", dsParameters);
+            var dsSchedules = await ExecuteCommandAsync("GetRoomGroups", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<RoomGroup>();
 
             return result;
         }
-        public static RoomSetup GetRoomSetup(int roomSetupId, int providerId, int locationId)
+        public static async Task<RoomSetup> GetRoomSetup(int roomSetupId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1675,7 +1675,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("room_setup_id", roomSetupId),
             };
-            var dsSchedules = ExecuteCommand("GetRoomSetups", dsParameters);
+            var dsSchedules = await ExecuteCommandAsync("GetRoomSetups", dsParameters);
 
             var setups = dsSchedules.Tables[0].DataTableToList<RoomSetup>();
             
@@ -1874,16 +1874,15 @@ namespace OpFlow.Service.DataAccess
         }
 
         public static async Task<List<RoomSummary>> GetSurgeryRoomOverview(
-            int? specialtyId, int? roomId, int? surgeonId, int? bundleId, int? procedureId,
+            int? specialtyId, int? roomGroupId, int? roomId, int? surgeonId, 
             DateTime surgeryDate, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("room_group_id", roomGroupId ?? (object)DBNull.Value),
                 new SqlParameter("room_id", roomId ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_id", surgeonId ?? (object)DBNull.Value),
-                new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
-                new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("surgery_date", surgeryDate),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
@@ -3311,9 +3310,6 @@ namespace OpFlow.Service.DataAccess
                 surgery.RoomID = room?.RoomID;
                 surgery.SurgeonUserID = surgeon?.UserID;
 
-                var caseId = await CreateCase(secureId ?? -1, surgery.SurgeonUserID, surgery.SpecialtyID, providerId,
-                    locationId, surgery.CaseNbr);
-
                 CardFlowRoom cardFlowRoom = null;
                 if (surgery.SurgeonUserID != null)
                 {
@@ -3321,6 +3317,26 @@ namespace OpFlow.Service.DataAccess
                         surgery.SurgeonUserID.Value, schedule.ProcedureCard);
                     cardFlowRoom = cardFlows.FirstOrDefault();
                 }
+
+                if (surgery.RoomID == null)
+                {
+                    result.Messages.Add("Unable to find room: " + schedule.Room);
+                    return result;
+                }
+                if (surgery.SurgeonUserID == null)
+                {
+                    result.Messages.Add("Unable to find primary surgeon: " + schedule.Surgeon);
+                    return result;
+                }
+                if (cardFlowRoom == null)
+                {
+                    result.Messages.Add("Unable to find card: " + schedule.ProcedureCard);
+                    return result;
+                }
+
+                var caseId = await CreateCase(secureId ?? -1, surgery.SurgeonUserID, surgery.SpecialtyID, providerId,
+                    locationId, surgery.CaseNbr);
+
 
                 result.Identity = await CreateSurgery(surgery, providerId, locationId, secureId ?? -1, caseId,
                     cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID);
@@ -3331,20 +3347,13 @@ namespace OpFlow.Service.DataAccess
 
                     if (surgeon == null)
                     {
-                        result.Messages.Add("Unable to find surgeon: " + schedule.Surgeon);
+                        result.Messages.Add("Unable to find secondary surgeons: " + schedule.Surgeon);
                     }
                     else
                     {
                         await AddSurgeryUser(result.Identity, surgeon.UserID, providerId, locationId);
                     }
                 }
-
-                if (surgery.RoomID == null)
-                    result.Messages.Add("Unable to find room: " + schedule.Room);
-                if (surgery.SurgeonUserID == null)
-                    result.Messages.Add("Unable to find surgeon: " + schedule.Surgeon);
-                if (cardFlowRoom == null)
-                    result.Messages.Add("Unable to find card: " + schedule.ProcedureCard);
             }
 
             return result;

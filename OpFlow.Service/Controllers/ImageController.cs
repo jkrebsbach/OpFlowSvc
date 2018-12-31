@@ -82,7 +82,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetRoomSetupImage(int roomSetupId, int roomSetupImageId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var roomSetup = SqlHelper.GetRoomSetup(roomSetupId, user.ProviderID, user.LocationID);
+            var roomSetup = await SqlHelper.GetRoomSetup(roomSetupId, user.ProviderID, user.LocationID);
 
             if (roomSetup == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);

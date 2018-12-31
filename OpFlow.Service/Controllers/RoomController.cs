@@ -44,7 +44,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            return SqlHelper.GetRoomTypes(user.LocationID);
+            return await SqlHelper.GetRoomTypes(user.LocationID);
         }
 
         // GET api/values
@@ -55,7 +55,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            return SqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
+            return await SqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
         }
 
         // GET api/values
@@ -85,7 +85,7 @@ namespace OpFlow.Service.Controllers
             var setups = SqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID)
                 .Where(s => s.RoomSetupID == roomSetupId).ToList();
             
-            var roomTypes = SqlHelper.GetRoomTypes(user.LocationID);
+            var roomTypes = await SqlHelper.GetRoomTypes(user.LocationID);
             var patientPositions = SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
             var lateralities = SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
             var bedOrientations = SqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
@@ -249,7 +249,7 @@ namespace OpFlow.Service.Controllers
             var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
 
             // Make sure there's actually a valid room setup to assign this image to...
-            var roomSetup = SqlHelper.GetRoomSetup(roomSetupId, user.ProviderID, user.LocationID);
+            var roomSetup = await SqlHelper.GetRoomSetup(roomSetupId, user.ProviderID, user.LocationID);
             if (roomSetup == null)
                 return Ok();
 

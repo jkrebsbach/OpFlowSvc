@@ -36,23 +36,20 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("GetByList")]
+        [SwaggerOperation("PostPatientArrayByList")]
         [Route("api/patient/array")]
+        [HttpPost]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<Patient>))]
-        public async Task<HttpResponseMessage> GetArray(string patientIdArrayJson)
+        public async Task<HttpResponseMessage> PatientArray([FromBody]PatientArrayPost post)
         {
-            var patientIds = new List<int>();
             var patients = new List<Patient>();
             
-            if (patientIdArrayJson != null)
-                patientIds = JsonConvert.DeserializeObject<List<int>>(patientIdArrayJson);
-
-            if (patientIds == null) return Request.CreateResponse(HttpStatusCode.OK, patients);
+            if (post?.PatientArray == null) return Request.CreateResponse(HttpStatusCode.OK, patients);
 
             var user = await CacheUtil.GetUserSecurity();
             var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
-            foreach (var patientId in patientIds)
+            foreach (var patientId in post?.PatientArray)
             {
                 var patient = await SecureSqlHelper.GetPatient(patientId,
                     user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
@@ -64,8 +61,38 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, patients);
         }
 
-        // POST api/values
-        [SwaggerOperation("Create")]
+        [SwaggerOperation("GetByList")]
+        [Route("api/patient/array")]
+        [HttpGet]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<Patient>))]
+        public async Task<HttpResponseMessage> GetArray(string patientIdArrayJson)
+        {
+            var patientIds = new List<int>();
+            var patients = new List<Patient>();
+
+            if (patientIdArrayJson != null)
+                patientIds = JsonConvert.DeserializeObject<List<int>>(patientIdArrayJson);
+
+            if (patientIds == null) return Request.CreateResponse(HttpStatusCode.OK, patients);
+        
+            var user = await CacheUtil.GetUserSecurity();
+            var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+
+            foreach (var patientId in patientIds)
+            { 
+                var patient = await SecureSqlHelper.GetPatient(patientId,
+                    user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID,
+                    user.DatabaseName);
+                if (patient != null)
+                    patients.Add(patient);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, patients);
+        }
+
+
+    // POST api/values
+    [SwaggerOperation("Create")]
         [SwaggerResponse(HttpStatusCode.Created)]
         public async Task<HttpResponseMessage> Post([FromBody]PatientPost patient)
         {

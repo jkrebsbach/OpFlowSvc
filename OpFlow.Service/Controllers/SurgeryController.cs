@@ -317,6 +317,7 @@ namespace OpFlow.Service.Controllers
             var result = new SearchScreen
             {
                 Rooms = await SqlHelper.GetRooms(user.LocationID),
+                RoomGroups = await SqlHelper.GetRoomGroups(user.ProviderID, user.LocationID),
                 Users = await SqlHelper.SearchUsers(null, null, null, user.ProviderID, user.LocationID),
                 Specialties = await SqlHelper.GetSpecialties(user.ProviderID, user.LocationID),
                 Bundles = await SqlHelper.GetBundles(null, user.ProviderID, user.LocationID),
@@ -418,7 +419,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSurgeryRoomOverview")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<RoomOverview>))]
         [Route("api/surgery/roomOverview", Name = "GetSurgeryRoomOverview")]
-        public async Task<HttpResponseMessage> GetSurgeryRoomOverview(DateTime surgeryDate, int? specialtyId = null, int? roomId = null, int? surgeonId = null)
+        public async Task<HttpResponseMessage> GetSurgeryRoomOverview(DateTime surgeryDate, int? specialtyId = null, int? roomGroupId = null, int? roomId = null, int? surgeonId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
@@ -427,7 +428,7 @@ namespace OpFlow.Service.Controllers
             int? procedureId = null;
 
             var surgeries = await SqlHelper.GetSurgeryRoomOverview(
-                specialtyId, roomId, surgeonId, bundleId, procedureId,
+                specialtyId, roomGroupId, roomId, surgeonId, 
                 surgeryDate, user.ProviderID, user.LocationID);
 
             foreach (var surgery in surgeries)

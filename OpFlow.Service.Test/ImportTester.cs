@@ -18,7 +18,7 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestImportFile()
         {
-            var fileName = @"C:\temp\OpFlowDec20.csv";
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\opflow_pilot_dec27_updated.csv";
             var importTypeId = 1;
 
             var user = await SqlHelper.GetSecureUser(null, 1);

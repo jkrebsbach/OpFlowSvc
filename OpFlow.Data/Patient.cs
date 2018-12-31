@@ -50,6 +50,11 @@ namespace OpFlow.Data
         }
     }
 
+    public class PatientArrayPost
+    {
+        public List<int> PatientArray { get; set; }   
+    }
+
     public class PatientPost
     {
         public string PatientAcctNbr { get; set; }
