@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
+using System.Xml;
 using OpFlow.Data;
 using OpFlow.Data.Administration;
 using OpFlow.Data.Analytics;
@@ -1471,39 +1472,88 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("InsertCustomSurgeryTrayInstrument", dsParameters);
         }
 
-        public static async Task<int> UpdateSurgeryCount(int surgeryId, int itemId, bool pass1, bool pass2, bool pass3, int usage, int providerId, int locationId)
+        public static async Task<int> UpdateSurgeryCount(int surgeryId, List<SurgeryCountItemPost> itemUsage, int providerId, int locationId)
         {
+            var usageSummary = GetUsageSummary(itemUsage);
             var dsParameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("item_id", itemId),
-                new SqlParameter("pass_1", pass1),
-                new SqlParameter("pass_2", pass2),
-                new SqlParameter("pass_3", pass3),
-                new SqlParameter("usage", usage)
+                new SqlParameter("usage_summary", usageSummary ?? (object)DBNull.Value)
             };
             var update = await ExecuteNonQueryAsync("UpdateSurgeryCount", dsParameters);
 
             return update;
         }
-        public static async Task<int> UpdateSurgeryInstrumentCount(int surgeryId, int instrumentId, bool pass1, bool pass2, bool pass3, int usage, int providerId, int locationId)
+        public static async Task<int> UpdateSurgeryInstrumentCount(int surgeryId, List<SurgeryCountItemPost> instrumentUsage, int providerId, int locationId)
         {
+            var usageSummary = GetUsageSummary(instrumentUsage);
             var dsParameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("instrument_id", instrumentId),
-                new SqlParameter("pass_1", pass1),
-                new SqlParameter("pass_2", pass2),
-                new SqlParameter("pass_3", pass3),
-                new SqlParameter("usage", usage)
+                new SqlParameter("usage_summary", usageSummary ?? (object)DBNull.Value)
             };
             var update = await ExecuteNonQueryAsync("UpdateSurgeryInstrumentCount", dsParameters);
 
             return update;
+        }
+
+
+
+        private static string GetUsageSummary(List<SurgeryCountItemPost> countData)
+        {
+            if (!countData.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var customItem in countData)
+            {
+                // prevent adding invalid data
+                if (customItem.ItemID <= 0)
+                    continue;
+
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, customItem.ItemID);
+                AddColumn(doc, row, "1");
+                AddColumn(doc, row, customItem.Pass1 ? 1 : 0);
+                
+                row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, customItem.ItemID);
+                AddColumn(doc, row, "2");
+                AddColumn(doc, row, customItem.Pass2 ? 1 : 0);
+                
+                row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, customItem.ItemID);
+                AddColumn(doc, row, "3");
+                AddColumn(doc, row, customItem.Pass3 ? 1 : 0);
+                
+                row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, customItem.ItemID);
+                AddColumn(doc, row, "U");
+                AddColumn(doc, row, customItem.Usage);
+            }
+
+            return table.OuterXml;
+        }
+
+        private static void AddColumn(XmlDocument doc, XmlElement row, object value)
+        {
+            var col = doc.CreateElement("col");
+            col.InnerText = String.Format("{0}", value);
+            row.AppendChild(col);
         }
 
         public static async Task<int> StartSurgery(int surgeryId, int providerId, int locationId, DateTime startTime)

@@ -895,20 +895,8 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            foreach (var surgeryCount in post.ItemCounts)
-            {
-                await SqlHelper.UpdateSurgeryCount(surgeryId, surgeryCount.ItemID, surgeryCount.Pass1,
-                    surgeryCount.Pass2, surgeryCount.Pass3, surgeryCount.Usage, user.ProviderID,
-                    user.LocationID);
-
-            }
-
-            foreach (var instrumentCount in post.InstrumentCounts)
-            {
-                await SqlHelper.UpdateSurgeryInstrumentCount(surgeryId, instrumentCount.ItemID, instrumentCount.Pass1,
-                    instrumentCount.Pass2, instrumentCount.Pass3, instrumentCount.Usage, user.ProviderID,
-                    user.LocationID);
-            }
+            await SqlHelper.UpdateSurgeryCount(surgeryId, post.ItemCounts, user.ProviderID, user.LocationID);
+            await SqlHelper.UpdateSurgeryInstrumentCount(surgeryId, post.InstrumentCounts, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
