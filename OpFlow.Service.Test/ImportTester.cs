@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpFlow.Data.Administration;
 using OpFlow.Service.Controllers;
 using OpFlow.Service.DataAccess;
 using OpFlow.Service.Models;
@@ -17,10 +18,11 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestImportFile()
         {
-            var fileName = @"C:\temp\TestImportUNC.csv";
+            var fileName = @"C:\temp\OpFlowDec20.csv";
             var importTypeId = 1;
 
-            var user = SqlHelper.GetSecureUser(null, 1);
+            var user = await SqlHelper.GetSecureUser(null, 1);
+            int? logId = null;
 
             try
             {
@@ -32,14 +34,20 @@ namespace OpFlow.Service.Test
 
                 if (fileParser.Records != null)
                 {
+                    logId = await SqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, fileParser.Records.Count, fileName);
+
                     foreach (var record in fileParser.Records)
                     {
 
                         var secureId = await SecureSqlHelper.InsertStagingData(record, user.UserID, "TEST", "TEST", 1, user.DatabaseName);
-                        await SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
+
+                        var result = await SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
+                        foreach (var message in result.Messages)
+                        {
+                            await SqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message, (record as ScheduleImport)?.MRN);
+                        }
                     }
 
-                    SqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, fileParser.Records.Count, fileName);
                 }
 
             }

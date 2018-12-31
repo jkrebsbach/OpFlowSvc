@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using Microsoft.AspNet.Identity;
@@ -14,7 +15,7 @@ namespace OpFlow.Service
         private static readonly MemoryCache MemCache = MemoryCache.Default;
 
 
-        public static UserSecurity GetUserSecurity()
+        public static async Task<UserSecurity> GetUserSecurity()
         {
             var userAuthId = HttpContext.Current.User.Identity.GetUserId();
 
@@ -22,7 +23,7 @@ namespace OpFlow.Service
                 return MemCache[userAuthId] as UserSecurity;
 
             var userAuthGuid = Guid.Parse(userAuthId);
-            var secureUser = DataAccess.SqlHelper.GetSecureUser(userAuthGuid, null);
+            var secureUser = await DataAccess.SqlHelper.GetSecureUser(userAuthGuid, null);
             if (secureUser == null)
                 throw new Exception("Unable to locate authenticated user");
 
@@ -30,7 +31,7 @@ namespace OpFlow.Service
             return secureUser;
         }
 
-        public static UserSecurity GetUserByEmail(string userName = null)
+        public static async Task<UserSecurity> GetUserByEmail(string userName = null)
         {
             if (userName == null)
                 userName = HttpContext.Current.User.Identity.GetUserName();
@@ -38,7 +39,7 @@ namespace OpFlow.Service
             if (MemCache.Contains(userName))
                 return MemCache[userName] as UserSecurity;
 
-            var secureUser = DataAccess.SqlHelper.GetSecureUser(null, null, userName);
+            var secureUser = await DataAccess.SqlHelper.GetSecureUser(null, null, userName);
             if (secureUser == null)
                 throw new Exception("Unable to locate authenticated user");
 

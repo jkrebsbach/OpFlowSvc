@@ -21,7 +21,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardBundle>))]
         public async Task<HttpResponseMessage> GetBundles(int? specialtyId = null)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var bundles = await DataAccess.SqlHelper.GetBundles(specialtyId, user.ProviderID, user.LocationID);
 
@@ -32,9 +32,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Get")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<BundleProcedure>))]
         [Route("api/bundle/procedures")]
-        public HttpResponseMessage GetBundleProcedures(int bundleId)
+        public async Task<HttpResponseMessage> GetBundleProcedures(int bundleId)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var procedures = DataAccess.SqlHelper.GetBundleProcedures(bundleId, user.ProviderID, user.LocationID);
 
@@ -44,9 +44,9 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("Create")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        public HttpResponseMessage Post([FromBody]BundlePost value)
+        public async Task<HttpResponseMessage> Post([FromBody]BundlePost value)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var result = SqlHelper.NewBundle(value.BundleDescription, value.SpecialtyID, value.Procedures, user.ProviderID, user.LocationID);
 
@@ -57,9 +57,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Update")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public IHttpActionResult Put(int id, [FromBody]BundlePost value)
+        public async Task<IHttpActionResult> Put(int id, [FromBody]BundlePost value)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var result = SqlHelper.UpdateBundle(id, value.BundleDescription, value.SpecialtyID, value.Procedures, user.ProviderID, user.LocationID);
 
@@ -70,9 +70,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Delete")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public IHttpActionResult Delete(int id)
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var result = SqlHelper.DeleteBundle(id, user.ProviderID, user.LocationID);
 

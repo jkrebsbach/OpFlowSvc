@@ -19,7 +19,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgeon>))]
         public async Task<HttpResponseMessage> GetSurgeons(int? specialtyId = null)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var surgeons = await DataAccess.SqlHelper.GetSurgeons(specialtyId, user.ProviderID, user.LocationID);
 

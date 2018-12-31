@@ -22,7 +22,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.NotFound)]
         public async Task<HttpResponseMessage> Get(int patientId)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
             var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
             var patient = await SecureSqlHelper.GetPatient(patientId,
@@ -49,7 +49,7 @@ namespace OpFlow.Service.Controllers
 
             if (patientIds == null) return Request.CreateResponse(HttpStatusCode.OK, patients);
 
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
             var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
             foreach (var patientId in patientIds)
@@ -69,7 +69,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created)]
         public async Task<HttpResponseMessage> Post([FromBody]PatientPost patient)
         {
-            var secureUser = CacheUtil.GetUserSecurity();
+            var secureUser = await CacheUtil.GetUserSecurity();
             var user = await SqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID,  secureUser.UserID);
 
             var patientId = await SecureSqlHelper.CreatePatient(patient.PatientAcctNbr,

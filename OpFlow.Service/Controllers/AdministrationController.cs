@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using Mindscape.Raygun4Net;
 using OpFlow.Data;
 using OpFlow.Data.Administration;
 using OpFlow.Data.Analytics;
@@ -22,11 +23,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetImportType")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ImportType>))]
         [Route("api/administration/importTypes")]
-        public HttpResponseMessage GetImportTypes()
+        public async Task<HttpResponseMessage> GetImportTypes()
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
-            var importTypes = SqlHelper.GetImportTypes(user.ProviderID, user.LocationID);
+            var importTypes = await SqlHelper.GetImportTypes(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, importTypes);
         }
@@ -35,15 +36,28 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetImportDetails")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ImportDetail))]
         [Route("api/administration/importDetails")]
-        public HttpResponseMessage GetImportDetail(int importTypeId)
+        public async Task<HttpResponseMessage> GetImportDetail(int importTypeId)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var result = new ImportDetail()
             {
-                ImportDefinitions = SqlHelper.GetImportDefinition(importTypeId, user.ProviderID, user.LocationID),
-                ImportLogs = SqlHelper.GetImportLog(importTypeId, user.ProviderID, user.LocationID)
+                ImportDefinitions = await SqlHelper.GetImportDefinition(importTypeId, user.ProviderID, user.LocationID),
+                ImportLogs = await SqlHelper.GetImportLog(importTypeId, user.ProviderID, user.LocationID)
             };
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetImportMessages")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ImportMessage>))]
+        [Route("api/administration/importMessages")]
+        public async Task<HttpResponseMessage> GetImportMessages(int importLogId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var result = await SqlHelper.GetImportMessages(importLogId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -54,7 +68,7 @@ namespace OpFlow.Service.Controllers
         [Route("api/administration/caseOverview")]
         public async Task<HttpResponseMessage> GetCaseOverview(DateTime beginDate, DateTime endDate, int? specialtyId = null, int? bundleId = null)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
             
             var result = await SqlHelper.GetCaseOverview(user.ProviderID, user.LocationID, beginDate, endDate, specialtyId, bundleId);
 
@@ -67,10 +81,12 @@ namespace OpFlow.Service.Controllers
         [Route("api/administration/importFile")]
         public async Task<HttpResponseMessage> PutImportFile(int importTypeId)
         {
+            var user = await CacheUtil.GetUserSecurity();
+            int? logId = null;
+
             try
             {
-                var user = CacheUtil.GetUserSecurity();
-
+                
                 var provider = new MultipartMemoryStreamProvider();
                 await Request.Content.ReadAsMultipartAsync(provider);
 
@@ -84,6 +100,9 @@ namespace OpFlow.Service.Controllers
 
                 await fileParser.ParseFile(importTypeId, user.ProviderID, user.LocationID);
 
+
+                logId = await SqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, fileParser.Records.Count, fileName);
+
                 if (fileParser.Records != null)
                 {
                     var secureUser = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
@@ -94,17 +113,25 @@ namespace OpFlow.Service.Controllers
                             secureUser.FirstName, secureUser.LastName, (int)secureUser.RoleID,
                             user.DatabaseName);
 
-                        await SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
+                        var result = await SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
+                        foreach (var message in result.Messages)
+                        {
+                            await SqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message, (record as ScheduleImport)?.MRN);
+                        }
                     }
-
-                    SqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, fileParser.Records.Count, fileName);
                 }
 
                 return Request.CreateResponse(HttpStatusCode.OK, fileParser.Status);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(ex);
+                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
+                client.Send(ex);
+
+                if (logId != null)
+                    await SqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "ERROR", ex.Message, null);
+
                 throw;
             }
         }

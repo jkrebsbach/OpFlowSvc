@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
@@ -16,9 +17,9 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("Get")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Procedure>))]
-        public HttpResponseMessage GetProcedures(int? specialtyId = null)
+        public async Task<HttpResponseMessage> GetProcedures(int? specialtyId = null)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
             
             var procedures = DataAccess.SqlHelper.GetProcedures(specialtyId, user.ProviderID, user.LocationID);
 

@@ -335,9 +335,9 @@ namespace OpFlow.Service.Controllers
         /// <returns></returns>
         [Route("Attributes", Name = "SamlAttributes")]
         [HttpPost]
-        public ActionResult SamlAttributes()
+        public async Task<ActionResult> SamlAttributes()
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
             var username = HttpContext.User.Identity.Name;
 
             var result = DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserAuthID);

@@ -72,7 +72,7 @@ namespace OpFlow.Service.Controllers
             var sendingUser = HttpContext.Current.User.Identity.Name;
             var ret = HttpStatusCode.InternalServerError;
 
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
             var sender = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
             var senderName = $"{sender.LastName}, {sender.FirstName}";

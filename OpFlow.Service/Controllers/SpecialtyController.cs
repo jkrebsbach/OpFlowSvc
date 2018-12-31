@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
@@ -20,11 +21,11 @@ namespace OpFlow.Service.Controllers
         [Route("api/specialty")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Specialty>))]
         [HttpGet]
-        public HttpResponseMessage GetSpecialties(int? providerId = null, int? locationId = null)
+        public async Task<HttpResponseMessage> GetSpecialties(int? providerId = null, int? locationId = null)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
-            var specialties = DataAccess.SqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
+            var specialties = await DataAccess.SqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
 
             return specialties == null ?
                 Request.CreateResponse(HttpStatusCode.NotFound) :
@@ -37,9 +38,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpPut]
-        public HttpResponseMessage PutSpecialty(int specialtyId, [FromBody]SpecialtyPost specialty)
+        public async Task<HttpResponseMessage> PutSpecialty(int specialtyId, [FromBody]SpecialtyPost specialty)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             DataAccess.SqlHelper.UpdateSpecialty(specialtyId, specialty.Name, specialty.Description, user.ProviderID, user.LocationID);
 
@@ -52,9 +53,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpPost]
-        public HttpResponseMessage PostSpecialty([FromBody]SpecialtyPost specialty)
+        public async Task<HttpResponseMessage> PostSpecialty([FromBody]SpecialtyPost specialty)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var specialtyId = DataAccess.SqlHelper.InsertSpecialty(specialty.Name, specialty.Description, user.ProviderID, user.LocationID);
 
@@ -67,9 +68,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpDelete]
-        public HttpResponseMessage DeleteSpecialty(int specialtyId)
+        public async Task<HttpResponseMessage> DeleteSpecialty(int specialtyId)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             DataAccess.SqlHelper.DeleteSpecialty(specialtyId, user.ProviderID, user.LocationID);
 

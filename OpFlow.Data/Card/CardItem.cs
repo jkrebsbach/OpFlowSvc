@@ -51,4 +51,11 @@ namespace OpFlow.Data
         public bool TrayOpened { get; set; }
         public List<CardItemCount> TrayItems { get; set; }
     }
+
+    public class TrayUsageHistory
+    {
+        public string TrayName { get; set; }
+        public string InstrumentDescription { get; set; }
+        public int QtyOpen { get; set; }
+    }
 }

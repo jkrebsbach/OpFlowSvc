@@ -178,6 +178,9 @@ namespace OpFlow.Data.Administration
 
                 try
                 {
+                    if (ScheduleTime.Length == 3)
+                        ScheduleTime = "0" + ScheduleTime;
+
                     var ts = DateTime.ParseExact(ScheduleTime, "HHmm", CultureInfo.InvariantCulture).TimeOfDay;
                     result = ScheduleDate.Add(ts);
                 }

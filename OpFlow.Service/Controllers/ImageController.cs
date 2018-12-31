@@ -24,7 +24,7 @@ namespace OpFlow.Service.Controllers
         [Route("api/image/flowImage", Name = "GetFlowImage")]
         public async Task<HttpResponseMessage> GetFlowImage(int flowId, int flowImageId)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
             var flow = await SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
 
             if (flow == null)
@@ -45,7 +45,7 @@ namespace OpFlow.Service.Controllers
         [Route("api/image/surgeryImage", Name = "GetSurgeryImage")]
         public async Task<HttpResponseMessage> GetSurgeryImage(int surgeryId, int surgeryImageId)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
             var surgery = await SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
 
             if (surgery == null)
@@ -81,7 +81,7 @@ namespace OpFlow.Service.Controllers
         [Route("api/image/roomSetup", Name = "GetRoomSetupImage")]
         public async Task<HttpResponseMessage> GetRoomSetupImage(int roomSetupId, int roomSetupImageId)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
             var roomSetup = SqlHelper.GetRoomSetup(roomSetupId, user.ProviderID, user.LocationID);
 
             if (roomSetup == null)

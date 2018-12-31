@@ -33,6 +33,8 @@ namespace OpFlow.Data
         public decimal Cost { get; set; }
 
 
+        public List<CardSource> Sources { get; set; }
+
         public int GetID()
         {
             return CardID;
@@ -43,6 +45,14 @@ namespace OpFlow.Data
             return CardDescription;
         }
     }
+
+    public class CardSource
+    {
+        public int CardID { get; set; }
+        public string PreferenceCardName { get; set; }
+        public string SurgeonName { get; set; }
+    }
+
 
     public class CardDetail : Card
     {

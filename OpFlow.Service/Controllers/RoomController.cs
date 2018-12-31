@@ -24,7 +24,7 @@ namespace OpFlow.Service.Controllers
         [HttpGet]
         public async Task<IEnumerable<Room>> Get(int? roomId = null, int? roomGroupId = null)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var rooms = await SqlHelper.GetRooms(user.LocationID);
             if (roomId.HasValue)
@@ -40,9 +40,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetTypes")]
         [Route("api/room/types")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<RoomType>))]
-        public IEnumerable<RoomType> GetTypes()
+        public async Task<IEnumerable<RoomType>> GetTypes()
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             return SqlHelper.GetRoomTypes(user.LocationID);
         }
@@ -51,9 +51,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetGroups")]
         [Route("api/room/groups")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<RoomGroup>))]
-        public IEnumerable<RoomGroup> GetGroups()
+        public async Task<IEnumerable<RoomGroup>> GetGroups()
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             return SqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
         }
@@ -62,9 +62,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSetups")]
         [Route("api/room/setups")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<RoomSetup>))]
-        public IEnumerable<RoomSetup> GetSetups(int? roomSetupId = null, int? locationId = null)
+        public async Task<IEnumerable<RoomSetup>> GetSetups(int? roomSetupId = null, int? locationId = null)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var setups = SqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID);
 
@@ -78,9 +78,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSetupDetail")]
         [Route("api/room/setupDetail")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(RoomSetupDetail))]
-        public RoomSetupDetail GetSetupDetail(int? roomSetupId = null)
+        public async Task<RoomSetupDetail> GetSetupDetail(int? roomSetupId = null)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var setups = SqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID)
                 .Where(s => s.RoomSetupID == roomSetupId).ToList();
@@ -90,8 +90,8 @@ namespace OpFlow.Service.Controllers
             var lateralities = SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
             var bedOrientations = SqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
 
-            var equipment = SqlHelper.GetItems("EQUIPMENT", null, null, user.ProviderID, user.LocationID);
-            var instruments = SqlHelper.GetItems("INSTRUMENT", null, null, user.ProviderID, user.LocationID);
+            var equipment = await SqlHelper.GetItems("EQUIPMENT", null, null, user.ProviderID, user.LocationID);
+            var instruments = await SqlHelper.GetItems("INSTRUMENT", null, null, user.ProviderID, user.LocationID);
 
             var result = new RoomSetupDetail()
             {
@@ -111,9 +111,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetPatientPositions")]
         [Route("api/room/patientPositions")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<PatientPosition>))]
-        public IEnumerable<PatientPosition> GetPatientPositions()
+        public async Task<IEnumerable<PatientPosition>> GetPatientPositions()
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             return SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
         }
@@ -122,9 +122,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetLateralities")]
         [Route("api/room/lateralities")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Laterality>))]
-        public IEnumerable<Laterality> GetLateralities()
+        public async Task<IEnumerable<Laterality>> GetLateralities()
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             return SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
         }
@@ -133,9 +133,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetBedOrientations")]
         [Route("api/room/bedOrientations")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<BedOrientation>))]
-        public IEnumerable<BedOrientation> GetBedOrientations()
+        public async Task<IEnumerable<BedOrientation>> GetBedOrientations()
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             return SqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
         }
@@ -146,9 +146,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpPut]
-        public HttpResponseMessage PutRoom(int roomId, [FromBody]RoomPost room)
+        public async Task<HttpResponseMessage> PutRoom(int roomId, [FromBody]RoomPost room)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             SqlHelper.UpdateRoom(roomId, room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
 
@@ -161,9 +161,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpPost]
-        public HttpResponseMessage PostRoom([FromBody]RoomPost room)
+        public async Task<HttpResponseMessage> PostRoom([FromBody]RoomPost room)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var roomId = SqlHelper.InsertRoom(room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
 
@@ -176,9 +176,9 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpDelete]
-        public HttpResponseMessage DeleteRoom(int roomId)
+        public async Task<HttpResponseMessage> DeleteRoom(int roomId)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             SqlHelper.DeleteRoom(roomId, user.ProviderID, user.LocationID);
 
@@ -192,7 +192,7 @@ namespace OpFlow.Service.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> Post([FromBody]RoomSetup roomSetup)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var roomSetupId = await SqlHelper.CreateRoomSetup(roomSetup, user.ProviderID, user.LocationID);
 
@@ -207,7 +207,7 @@ namespace OpFlow.Service.Controllers
         [HttpPut]
         public async Task<HttpResponseMessage> PutRoomSetup(int roomsetupId, [FromBody]RoomSetup roomSetup)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             await SqlHelper.UpdateRoomSetup(roomsetupId, user.ProviderID, user.LocationID, roomSetup);
 
@@ -222,7 +222,7 @@ namespace OpFlow.Service.Controllers
         [HttpDelete]
         public async Task<HttpResponseMessage> DeleteSetup(int roomsetupId)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             await SqlHelper.DeleteRoomSetup(roomsetupId, user.ProviderID, user.LocationID);
 
@@ -236,7 +236,7 @@ namespace OpFlow.Service.Controllers
         [HttpPut]
         public async Task<IHttpActionResult> NewRoomSetupImage(int roomSetupId, string label = null)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var provider = new MultipartMemoryStreamProvider();
             await Request.Content.ReadAsMultipartAsync(provider);
@@ -276,7 +276,7 @@ namespace OpFlow.Service.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> UpdateRoomSetupImage(int roomSetupImageId, [FromBody]FlowImagePost flowImage)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             await SqlHelper.UpdateRoomSetupImage(roomSetupImageId, flowImage.Comment, user.ProviderID, user.LocationID);
 
@@ -290,7 +290,7 @@ namespace OpFlow.Service.Controllers
         [HttpPut]
         public async Task<IHttpActionResult> RotateRoomSetupImage(int roomSetupImageId, int roomSetupId, int direction)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             // Make sure valid rotation direction
             if (direction != 1 && direction != -1)
@@ -310,7 +310,7 @@ namespace OpFlow.Service.Controllers
         [HttpDelete]
         public async Task<IHttpActionResult> DeleteRoomSetupImage(int roomSetupImageId, int roomSetupId)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             await SqlHelper.DeleteRoomSetupImage(roomSetupImageId, user.ProviderID, user.LocationID);
 

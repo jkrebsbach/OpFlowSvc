@@ -21,7 +21,7 @@ namespace OpFlow.Service.Controllers
         [Route("api/analytics")]
         public async Task<HttpResponseMessage> GetAnalytics(int? tableId = null)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var analyticsSummary = await SqlHelper.GetAnalytics(user.ProviderID, user.LocationID, tableId);
             

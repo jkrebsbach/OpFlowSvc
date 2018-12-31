@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
@@ -16,11 +17,11 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("Get")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
-        public HttpResponseMessage Get(string itemType = null, int? trayId = null, bool? countNeeded = null)
+        public async Task<HttpResponseMessage> Get(string itemType = null, int? trayId = null, bool? countNeeded = null)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
-            var items = DataAccess.SqlHelper.GetItems(itemType, trayId, countNeeded, user.ProviderID, user.LocationID);
+            var items = await DataAccess.SqlHelper.GetItems(itemType, trayId, countNeeded, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, items);
         }
@@ -29,11 +30,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetTrayItems")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemTray>))]
         [Route("api/item/trayItems")]
-        public HttpResponseMessage GetTrayItems(int trayId)
+        public async Task<HttpResponseMessage> GetTrayItems(int trayId)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
-            var items = DataAccess.SqlHelper.GetTrayItems(trayId, user.ProviderID, user.LocationID);
+            var items = await DataAccess.SqlHelper.GetTrayItems(trayId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, items);
         }

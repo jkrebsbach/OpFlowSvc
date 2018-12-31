@@ -19,7 +19,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created)]
         public async Task<HttpResponseMessage> Post([FromBody]PatientCase newCase)
         {
-            var user = CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
 
             var caseId = await DataAccess.SqlHelper.CreateCase(newCase.PatientID, user.UserID, newCase.SpecialtyID,
                 user.ProviderID, user.LocationID, newCase.CaseNbr);

@@ -26,12 +26,23 @@ namespace OpFlow.Data.Administration
         public string Logic { get; set; }
     }
 
+    public class ImportMessage
+    {
+        public int ImportMessageID { get; set; }
+        public int ImportLogID { get; set; }
+        public string ErrorType { get; set; }
+        public string ErrorMessage { get; set; }
+        public string ErrorMRN { get; set; }
+    }
+
     public class ImportLog
     {
+        public int ImportLogID { get; set; }
         public int ImportID { get; set; }
         public int UserID { get; set; }
         public DateTime LoadDate { get; set; }
         public int RecordCount { get; set; }
+        public int MessageCount { get; set; }
         public string FileName { get; set; }
         public string UserName { get; set; }
     }
