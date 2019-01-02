@@ -177,6 +177,7 @@ namespace OpFlow.Data
     public class SurgeryCountItemPost
     {
         public int ItemID { get; set; }
+        public int TrayID { get; set; }
         public bool Pass1 { get; set; }
         public bool Pass2 { get; set; }
         public bool Pass3 { get; set; }
