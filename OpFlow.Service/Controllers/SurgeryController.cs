@@ -66,7 +66,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var schedules = SqlHelper.GetCase(caseId, user.ProviderID, user.LocationID);
+            var schedules = await SqlHelper.GetCase(caseId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -209,7 +209,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var schedules = SqlHelper.GetSurgeryVendorReps(surgeryId, user.ProviderID, user.LocationID);
+            var schedules = await SqlHelper.GetSurgeryVendorReps(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -222,7 +222,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var result = SqlHelper.GetSurgeryCardList(surgeryId, user.ProviderID, user.LocationID);
+            var result = await SqlHelper.GetSurgeryCardList(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -235,7 +235,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var result = SqlHelper.GetSurgeryFlowList(surgeryId, user.ProviderID, user.LocationID);
+            var result = await SqlHelper.GetSurgeryFlowList(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

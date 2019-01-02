@@ -192,7 +192,7 @@ namespace OpFlow.Service.Controllers
             var fileExtension = Path.GetExtension(fileName);
             var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
 
-            var flowImageId = SqlHelper.NewFlowImage(flowId, stepId, roleId, comment,
+            var flowImageId = await SqlHelper.NewFlowImage(flowId, stepId, roleId, comment,
                 user.ProviderID, user.LocationID);
 
             if (fileExtension == ".png" ||

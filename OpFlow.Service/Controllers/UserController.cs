@@ -196,7 +196,7 @@ namespace OpFlow.Service.Controllers
             if (authUserSecurity.ProviderID == userSecurity.ProviderID &&
                 authUserSecurity.LocationID == userSecurity.LocationID)
             {
-                var applicationUser = DataAccess.SqlHelper.UpdateUser(userId, (int)model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
+                var applicationUser = await DataAccess.SqlHelper.UpdateUser(userId, (int)model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
                     model.Email, model.CellPhone, model.Initials, model.Title, userSecurity.ProviderID, userSecurity.LocationID);
 
                 // make certain user auth matches what we sent
@@ -238,7 +238,7 @@ namespace OpFlow.Service.Controllers
                 var authResult = await userManager.RemovePasswordAsync(authenticationUser.Id);
             }
 
-            var applicationDeletion = DataAccess.SqlHelper.DeleteUser(userId, userSecurity.ProviderID, userSecurity.LocationID);
+            var applicationDeletion = await DataAccess.SqlHelper.DeleteUser(userId, userSecurity.ProviderID, userSecurity.LocationID);
 
             return Ok();
         }

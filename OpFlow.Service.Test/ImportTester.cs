@@ -71,7 +71,7 @@ namespace OpFlow.Service.Test
 
                 var user = SqlHelper.GetSecureUser(null, 1);
 
-                flowImageId = SqlHelper.NewFlowImage(1, 1, 1, "1", 1, 1);
+                flowImageId = await SqlHelper.NewFlowImage(1, 1, 1, "1", 1, 1);
                     
                 var folder = DataAccess.BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, 1);
                 await DataAccess.BlobStorageHelper.PutBlobBytes(folder, flowImageId.ToString(), fileContents);

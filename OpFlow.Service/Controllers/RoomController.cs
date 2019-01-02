@@ -150,7 +150,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            SqlHelper.UpdateRoom(roomId, room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
+            await SqlHelper.UpdateRoom(roomId, room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomId);
         }
@@ -165,7 +165,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var roomId = SqlHelper.InsertRoom(room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
+            var roomId = await SqlHelper.InsertRoom(room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomId);
         }
@@ -180,7 +180,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            SqlHelper.DeleteRoom(roomId, user.ProviderID, user.LocationID);
+            await SqlHelper.DeleteRoom(roomId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomId);
         }
