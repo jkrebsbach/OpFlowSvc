@@ -125,10 +125,7 @@ namespace OpFlow.Service.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
-                client.Send(ex);
-
+                LogHelper.LogException(ex);
                 if (logId != null)
                     await SqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "ERROR", ex.Message, null);
 

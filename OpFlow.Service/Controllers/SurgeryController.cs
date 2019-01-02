@@ -343,7 +343,7 @@ namespace OpFlow.Service.Controllers
             if (flow != null)
                 smartPhrases = SqlHelper.GetSmartPhrases(null, null, flow.OwnerUserID, user.ProviderID, user.LocationID);
 
-            var flowFeedback = SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
+            var flowFeedback = await SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
             var surgeonNotes = SqlHelper.GetSurgeonNotes(flowId, user.ProviderID, user.LocationID);
             var flowSteps = SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
             var messages =
@@ -895,8 +895,16 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            await SqlHelper.UpdateSurgeryCount(surgeryId, post.ItemCounts, user.ProviderID, user.LocationID);
-            await SqlHelper.UpdateSurgeryInstrumentCount(surgeryId, post.InstrumentCounts, user.ProviderID, user.LocationID);
+            try
+            {
+                await SqlHelper.UpdateSurgeryCount(surgeryId, post.ItemCounts, user.ProviderID, user.LocationID);
+                await SqlHelper.UpdateSurgeryInstrumentCount(surgeryId, post.InstrumentCounts, user.ProviderID, user.LocationID);
+            }
+            catch (Exception e)
+            {
+                LogHelper.LogException(e);
+                throw;
+            }
 
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }

@@ -282,6 +282,7 @@
     <Compile Include="Controllers\SamlController.cs" />
     <Compile Include="DataAccess\KeyVaultHelper.cs" />
     <Compile Include="DataAccess\SamlHelper.cs" />
+    <Compile Include="Models\LogHelper.cs" />
     <Compile Include="Models\PushNotification.cs" />
     <Compile Include="SignalR\AppHub.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />

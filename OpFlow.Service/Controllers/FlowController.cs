@@ -402,7 +402,7 @@ namespace OpFlow.Service.Controllers
             if (flow == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var feedback = SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
+            var feedback = await SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
             var notifications = SqlHelper.GetFlowNotifications(flowId, null, user.ProviderID, user.LocationID);
             var flowInstructions = SqlHelper.GetFlowInstructions(flowId, surgeryId, user.ProviderID, user.LocationID);
             var content = SqlHelper.GetFlowContent(flowId, 1, user.ProviderID, user.LocationID);
@@ -507,7 +507,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var result = SqlHelper.GetSteps(user.ProviderID, user.LocationID);
+            var result = await SqlHelper.GetSteps(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -520,7 +520,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var result = DataAccess.SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
+            var result = await SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -645,7 +645,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var result = SqlHelper.NewFlow(value.CardID, value.RoomSetupID, value.FlowDescription, user.UserID, value.DefaultFlow, user.ProviderID, user.LocationID);
+            var result = await SqlHelper.NewFlow(value.CardID, value.RoomSetupID, value.FlowDescription, user.UserID, value.DefaultFlow, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -658,7 +658,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var result = SqlHelper.UpdateFlow(id, value.CardID, value.RoomSetupID, value.FlowDescription, user.UserID, value.DefaultFlow, user.ProviderID, user.LocationID);
+            var result = await SqlHelper.UpdateFlow(id, value.CardID, value.RoomSetupID, value.FlowDescription, user.UserID, value.DefaultFlow, user.ProviderID, user.LocationID);
 
             return Ok();
         }

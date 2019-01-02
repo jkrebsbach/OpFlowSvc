@@ -438,9 +438,7 @@ namespace OpFlow.Service.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
-                client.Send(ex);
+                Models.LogHelper.LogException(ex);
                 throw;
             }
         }
@@ -470,9 +468,7 @@ namespace OpFlow.Service.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
-                client.Send(ex);
+                Models.LogHelper.LogException(ex);
                 throw;
             }
         }
@@ -511,9 +507,7 @@ namespace OpFlow.Service.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
-                client.Send(ex);
+                Models.LogHelper.LogException(ex);
                 throw;
             }
         }

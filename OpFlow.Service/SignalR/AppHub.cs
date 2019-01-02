@@ -48,11 +48,9 @@ namespace OpFlow.Service.SignalR
                     await PushNotificationMessage(sender, recipient.Email, message);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
-                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
-                client.Send(e);
+                Models.LogHelper.LogException(ex);
                 throw;
             }
             
@@ -166,11 +164,9 @@ namespace OpFlow.Service.SignalR
 
                 NotifySurgeryChange("FLOW", surgeryId);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
-                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
-                client.Send(e);
+                Models.LogHelper.LogException(ex);
                 throw;
             }
         }

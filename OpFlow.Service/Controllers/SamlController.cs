@@ -275,13 +275,12 @@ namespace OpFlow.Service.Controllers
                 #endregion
             }
 
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                RaygunClient client = new RaygunClient("f12C1dpwvycqBLOm2YT5rw==");
-                client.Send(exception);
+                Models.LogHelper.LogException(ex);
 
-                System.Diagnostics.Trace.Write("ServiceProvider - An Error occurred: " + exception.ToString());
-                throw exception;
+                System.Diagnostics.Trace.Write("ServiceProvider - An Error occurred: " + ex.ToString());
+                throw ex;
             }
 
             return View();
