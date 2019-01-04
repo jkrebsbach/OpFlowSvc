@@ -2376,13 +2376,15 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<SurgerySearchResult> SearchCases(int? userId, int? surgeonUserId, int? roomId, int? bundleId, int? procedureId, int? specialtyId,
+        public static async Task<List<SurgerySearchResult>> SearchCases(int? userId, int? surgeonUserId, 
+            int? roomGroupId, int? roomId, int? bundleId, int? procedureId, int? specialtyId,
             DateTime? begDate, DateTime? endDate, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("user_id", userId ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_user_id", surgeonUserId ?? (object)DBNull.Value),
+                new SqlParameter("room_group_id", roomGroupId ?? (object)DBNull.Value),
                 new SqlParameter("room_id", roomId ?? (object)DBNull.Value),
                 new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
@@ -2393,7 +2395,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
 
-            var dsSchedules = ExecuteCommand("SearchCases", parameters);
+            var dsSchedules = await ExecuteCommandAsync("SearchCases", parameters);
 
             var surgeries = dsSchedules.Tables[0].DataTableToList<SurgerySearchResult>();
             var surgeryUsers = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
