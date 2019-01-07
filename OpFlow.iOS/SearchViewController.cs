@@ -161,7 +161,7 @@ namespace OpFlow.iOS
             if (AppSettings.CurrentUser.SpecialtyID.HasValue) {
                 var specialty = specialties.FirstOrDefault(s => s.SpecialtyID == AppSettings.CurrentUser.SpecialtyID);
                 var index = specialties.IndexOf(specialty);
-                _specialtyPicker.DefaultSelection(index + 1);
+                _specialtyPicker.DefaultSelection(index);
 
                 await LoadSurgeons();
             }
