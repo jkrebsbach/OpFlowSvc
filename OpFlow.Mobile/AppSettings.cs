@@ -119,6 +119,18 @@ namespace OpFlow.Mobile
                 CurrentUser = await UserUtil.GetUser();
         }
 
+        public static async Task SSOAuthenticateUser(string authToken)
+        {
+            _authToken = new AuthToken()
+            {
+                AccessToken = authToken,
+                Expires = DateTime.Now.AddHours(12).ToString()
+            };
+
+            if (_authToken != null)
+                CurrentUser = await UserUtil.GetUser();
+        }
+
         public static string AuthenticationToken => _authToken?.AccessToken;
 
 

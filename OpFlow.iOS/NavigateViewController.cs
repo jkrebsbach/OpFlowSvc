@@ -112,10 +112,11 @@ namespace OpFlow.iOS
             if (txtCommunicator.Text == "")
                 return;
 
-            await AppDelegate.AppSocketClient.SendSurgeryMessage(AppSettings.CurrentSurgery.Value, txtCommunicator.Text);
-            txtCommunicator.ResignFirstResponder();
-
+            var message = txtCommunicator.Text;
             txtCommunicator.Text = string.Empty;
+
+            await AppDelegate.AppSocketClient.SendSurgeryMessage(AppSettings.CurrentSurgery.Value, message);
+            txtCommunicator.ResignFirstResponder();
 
             await LoadMessages();
         }

@@ -118,19 +118,16 @@ namespace OpFlow.iOS
                 if (txtMessage.Text == "")
                     return;
 
-                //await MessagingUtil.SendMessage(AppSettings.CurrentMessagingGroup, txtMessage.Text);
+                var message = txtMessage.Text;
+                txtMessage.Text = string.Empty;
 
                 if (AppSettings.CurrentMessagingGroup.SurgeryID.HasValue)
-                    await AppDelegate.AppSocketClient.SendSurgeryMessage(AppSettings.CurrentMessagingGroup.SurgeryID.Value, txtMessage.Text);
+                    await AppDelegate.AppSocketClient.SendSurgeryMessage(AppSettings.CurrentMessagingGroup.SurgeryID.Value, message);
                 else
-                    await AppDelegate.AppSocketClient.SendPrivateMessage(AppSettings.CurrentMessagingGroup.CommunicationUserID.Value, txtMessage.Text);
+                    await AppDelegate.AppSocketClient.SendPrivateMessage(AppSettings.CurrentMessagingGroup.CommunicationUserID.Value, message);
 
                 txtMessage.ResignFirstResponder();
 
-                txtMessage.Text = string.Empty;
-
-                //await LoadMessages();
-                
             }
             catch(Exception ex)
             {

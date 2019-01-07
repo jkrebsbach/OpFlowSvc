@@ -17,12 +17,13 @@ namespace OpFlow.Mobile
 
             return patient;
         }
-        public static async Task<List<Patient>> GetPatients(IEnumerable<int> patientIds)
+        public static async Task<List<Patient>> GetPatients(List<int> patientIds)
         {
-            var patientIdJson = JsonConvert.SerializeObject(patientIds);
+            var command = string.Format("api/patient/array");
+            var body = new Dictionary<string, List<int>>();
+            body["PatientArray"] = patientIds;
 
-            var command = string.Format("api/patient/array?patientIdArrayJson={0}", patientIdJson);
-            var patients = await WebUtility.WebRequest<List<Patient>>(command, HttpMethod.Get);
+            var patients = await WebUtility.SendBodyRequest<List<Patient>>(command, body, HttpMethod.Post);
 
             return patients;
         }
