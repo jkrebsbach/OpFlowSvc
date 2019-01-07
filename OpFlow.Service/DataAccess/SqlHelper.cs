@@ -2601,7 +2601,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<CardFlowRoom>> GetImportDefaultCardFlowRoom(int providerId, int locationId, int ownerUserId, string procedureCard)
+        public static async Task<CardFlowRoom> GetImportDefaultCardFlowRoom(int providerId, int locationId, int ownerUserId, string procedureCard)
         {
             var parameters = new[]
             {
@@ -2612,7 +2612,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("GetImportDefaultCardFlowRoom", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<CardFlowRoom>();
+            var result = dsSchedules.Tables[0].DataTableToList<CardFlowRoom>().FirstOrDefault();
 
             return result;
         }
@@ -3366,9 +3366,14 @@ namespace OpFlow.Service.DataAccess
                 CardFlowRoom cardFlowRoom = null;
                 if (surgery.SurgeonUserID != null)
                 {
-                    var cardFlows = await GetImportDefaultCardFlowRoom(providerId, locationId,
-                        surgery.SurgeonUserID.Value, schedule.ProcedureCard);
-                    cardFlowRoom = cardFlows.FirstOrDefault();
+                    foreach (var procedureCard in schedule.ProcedureCards)
+                    {
+                        if (cardFlowRoom == null)
+                        {
+                            cardFlowRoom = await GetImportDefaultCardFlowRoom(providerId, locationId,
+                                surgery.SurgeonUserID.Value, procedureCard);
+                        }
+                    }
                 }
 
                 if (surgery.RoomID == null)
@@ -3383,7 +3388,7 @@ namespace OpFlow.Service.DataAccess
                 }
                 if (cardFlowRoom == null)
                 {
-                    result.Messages.Add("Unable to find card: " + schedule.ProcedureCard);
+                    result.Messages.Add("Unable to find card: " + schedule.ProcedurePreferenceCards);
                     return result;
                 }
 
