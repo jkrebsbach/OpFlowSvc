@@ -28,6 +28,7 @@ namespace OpFlow.Data
     {
         public int FlowID { get; set; }
         public int? StepID { get; set; }
+        public int? StepDuration { get; set; }
         public int? PreviousStepID { get; set; }
     }
 
