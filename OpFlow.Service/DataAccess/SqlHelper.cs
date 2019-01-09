@@ -3378,7 +3378,9 @@ namespace OpFlow.Service.DataAccess
 
                 if (surgery.RoomID == null)
                 {
-                    result.Messages.Add("Unable to find room: " + schedule.Room);
+                    // Only log when the room is non-empty?...
+                    if (!string.IsNullOrEmpty(schedule.Room))
+                        result.Messages.Add("Unable to find room: " + schedule.Room);
                     return result;
                 }
                 if (surgery.SurgeonUserID == null)
@@ -3386,10 +3388,32 @@ namespace OpFlow.Service.DataAccess
                     result.Messages.Add("Unable to find primary surgeon: " + schedule.Surgeon);
                     return result;
                 }
+
                 if (cardFlowRoom == null)
                 {
-                    result.Messages.Add("Unable to find card: " + schedule.ProcedurePreferenceCards);
-                    return result;
+                    // attempt to find a card for any additional surgeons before failing
+                    foreach (var secondarySurgeon in schedule.SecondarySurgeons)
+                    {
+                        surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == secondarySurgeon.LastName && r.FirstName == secondarySurgeon.FirstName);
+
+                        if (surgeon != null)
+                        {
+                            foreach (var procedureCard in schedule.ProcedureCards)
+                            {
+                                if (cardFlowRoom == null)
+                                {
+                                    cardFlowRoom = await GetImportDefaultCardFlowRoom(providerId, locationId,
+                                        surgery.SurgeonUserID.Value, procedureCard);
+                                }
+                            }
+                        }
+                    }
+
+                    if (cardFlowRoom == null)
+                    {
+                        result.Messages.Add("Unable to find card: " + schedule.ProcedurePreferenceCards);
+                        return result;
+                    }
                 }
 
                 var caseId = await CreateCase(secureId ?? -1, surgery.SurgeonUserID, surgery.SpecialtyID, providerId,

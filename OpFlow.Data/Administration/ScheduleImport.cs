@@ -69,7 +69,7 @@ namespace OpFlow.Data.Administration
                 if (string.IsNullOrEmpty(PatientName))
                     return null;
 
-                var lnameRegex = "([A-Za-z\']+), ([A-Za-z]+)";
+                var lnameRegex = @"([A-Za-z\'-\.]+), ([A-Za-z]+)";
                 var match = Regex.Match(PatientName, lnameRegex);
 
                 if (match.Groups.Count > 2)
@@ -86,7 +86,7 @@ namespace OpFlow.Data.Administration
                 if (string.IsNullOrEmpty(PatientName))
                     return null;
 
-                var lnameRegex = "([A-Za-z\']+), ([A-Za-z]+)";
+                var lnameRegex = @"([A-Za-z\'-\.]+), ([A-Za-z]+)";
                 var match = Regex.Match(PatientName, lnameRegex);
 
                 if (match.Groups.Count > 1)
@@ -103,7 +103,7 @@ namespace OpFlow.Data.Administration
                 if (string.IsNullOrEmpty(PatientName))
                     return null;
 
-                var lnameRegex = "([A-Za-z\']+), ([A-Za-z]+) ([A-Za-z])";
+                var lnameRegex = @"([A-Za-z\'-\.]+), ([A-Za-z]+) ([A-Za-z])";
                 var match = Regex.Match(PatientName, lnameRegex);
 
                 if (match.Groups.Count > 3)
@@ -193,7 +193,7 @@ namespace OpFlow.Data.Administration
         {
             var result = new ImportSurgeon();
 
-            var regex = "([A-Za-z\']+), ([A-Za-z]+)";
+            var regex = @"([A-Za-z\'-\.]+), ([A-Za-z]+)";
             var match = Regex.Match(surgeonString, regex);
 
             if (match.Success && match.Groups.Count > 2)
