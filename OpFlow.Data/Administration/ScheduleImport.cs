@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -54,14 +55,23 @@ namespace OpFlow.Data.Administration
                     return result;
 
                 var surgeons = Surgeon.Split('\n');
-                for (var index = 1; index < surgeons.Length; index++)
+                for (var index = 0; index < surgeons.Length; index++)
                 {
-                    result.Add(ImportSurgeon.ParseSurgeon(surgeons[index]));
+                    surgeons[index] = surgeons[index].Trim();
+                }
+
+                var distinctSurgeons = surgeons.Distinct().ToList();
+                for (var index = 1; index < distinctSurgeons.Count; index++)
+                {
+                    var surgeon = ImportSurgeon.ParseSurgeon(distinctSurgeons[index].Trim());
+                    if (surgeon != null)
+                        result.Add(surgeon);
                 }
 
                 return result;
             }
         }
+
         public string PatientLastName
         {
             get
@@ -69,7 +79,7 @@ namespace OpFlow.Data.Administration
                 if (string.IsNullOrEmpty(PatientName))
                     return null;
 
-                var lnameRegex = @"([A-Za-z\'-\.]+), ([A-Za-z]+)";
+                var lnameRegex = @"([A-Za-z\'-\.\s]+), ([A-Za-z]+)";
                 var match = Regex.Match(PatientName, lnameRegex);
 
                 if (match.Groups.Count > 2)
@@ -86,7 +96,7 @@ namespace OpFlow.Data.Administration
                 if (string.IsNullOrEmpty(PatientName))
                     return null;
 
-                var lnameRegex = @"([A-Za-z\'-\.]+), ([A-Za-z]+)";
+                var lnameRegex = @"([A-Za-z\'-\.\s]+), ([A-Za-z]+)";
                 var match = Regex.Match(PatientName, lnameRegex);
 
                 if (match.Groups.Count > 1)
@@ -103,7 +113,7 @@ namespace OpFlow.Data.Administration
                 if (string.IsNullOrEmpty(PatientName))
                     return null;
 
-                var lnameRegex = @"([A-Za-z\'-\.]+), ([A-Za-z]+) ([A-Za-z])";
+                var lnameRegex = @"([A-Za-z\'-\.\s]+), ([A-Za-z]+) ([A-Za-z])";
                 var match = Regex.Match(PatientName, lnameRegex);
 
                 if (match.Groups.Count > 3)
@@ -112,6 +122,7 @@ namespace OpFlow.Data.Administration
                 return null;
             }
         }
+
         public decimal? BMI
         {
             get
@@ -153,11 +164,30 @@ namespace OpFlow.Data.Administration
             }
         }
 
-        public string[] ProcedureCards => string.IsNullOrEmpty(ProcedurePreferenceCards) ? 
-            new string[0] : ProcedurePreferenceCards.Split(';');
+        public List<ImportCard> ProcedureCards
+        {
+            get
+            {
+                var result = new List<ImportCard>();
 
+                if (string.IsNullOrEmpty(ProcedurePreferenceCards))
+                    return result;
 
-        public DateTime ScheduleDateTime
+                var cards = ProcedurePreferenceCards.Split('\n');
+                for (var index = 0; index < cards.Length; index++)
+                {
+                    cards[index] = cards[index].Trim();
+                }
+
+                var distinctCards = cards.Distinct().ToList();
+
+                result.AddRange(distinctCards.Select(distinctCard => ImportCard.ParseCard(distinctCard.Trim())));
+
+                return result;
+            }
+    }
+
+    public DateTime ScheduleDateTime
         {
             get
             {
@@ -184,25 +214,63 @@ namespace OpFlow.Data.Administration
         }
     }
 
+    public class ImportCard
+    {
+        public string CardName { get; set; }
+        public ImportSurgeon ImportSurgeon { get; set; }
+        public string Location { get; set; }
+
+        public static ImportCard ParseCard(string sourceCardString)
+        {
+            var result = new ImportCard();
+
+            var cardData = sourceCardString.Split(';');
+            result.CardName = cardData[0];
+            if (cardData.Length > 1)
+                result.ImportSurgeon = ImportSurgeon.ParseSurgeon(cardData[1].Trim());
+            if (cardData.Length > 2)
+                result.Location = cardData[2];
+
+            return result;
+        }
+    }
+
     public class ImportSurgeon
     {
         public string FirstName { get; set; }
+        public string MInit { get; set; }
         public string LastName { get; set; }
 
         public static ImportSurgeon ParseSurgeon(string surgeonString)
         {
             var result = new ImportSurgeon();
 
-            var regex = @"([A-Za-z\'-\.]+), ([A-Za-z]+)";
+            // Last, First
+            var regex = @"([A-Za-z\'-\.\s]+), ([A-Za-z]+)";
             var match = Regex.Match(surgeonString, regex);
 
             if (match.Success && match.Groups.Count > 2)
             {
                 result.LastName = match.Groups[1].Value;
                 result.FirstName = match.Groups[2].Value;
+
+                return result;
             }
 
-            return result;
+            // First M Last
+            regex = @"([A-Za-z]+) ([A-Za-z]?) ?([A-Za-z\'-\.\s]+)";
+            match = Regex.Match(surgeonString, regex);
+
+            if (match.Success && match.Groups.Count > 3)
+            {
+                result.FirstName = match.Groups[1].Value;
+                result.MInit = match.Groups[2].Value;
+                result.LastName = match.Groups[3].Value;
+
+                return result;
+            }
+
+            return null;
         }
     }
 

@@ -3363,19 +3363,6 @@ namespace OpFlow.Service.DataAccess
                 surgery.RoomID = room?.RoomID;
                 surgery.SurgeonUserID = surgeon?.UserID;
 
-                CardFlowRoom cardFlowRoom = null;
-                if (surgery.SurgeonUserID != null)
-                {
-                    foreach (var procedureCard in schedule.ProcedureCards)
-                    {
-                        if (cardFlowRoom == null)
-                        {
-                            cardFlowRoom = await GetImportDefaultCardFlowRoom(providerId, locationId,
-                                surgery.SurgeonUserID.Value, procedureCard);
-                        }
-                    }
-                }
-
                 if (surgery.RoomID == null)
                 {
                     // Only log when the room is non-empty?...
@@ -3389,36 +3376,24 @@ namespace OpFlow.Service.DataAccess
                     return result;
                 }
 
+                var procedureCards = await DetermineCards(surgery, schedule, relations, providerId, locationId);
+                
+                if (!procedureCards.Any())
+                {
+                    result.Messages.Add("Unable to find card: " + schedule.ProcedurePreferenceCards);
+                    return result;
+                }
+
+                var cardFlowRoom = await AggregateCards(surgery.SurgeonUserID.Value, procedureCards, providerId, locationId);
+
                 if (cardFlowRoom == null)
                 {
-                    // attempt to find a card for any additional surgeons before failing
-                    foreach (var secondarySurgeon in schedule.SecondarySurgeons)
-                    {
-                        surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == secondarySurgeon.LastName && r.FirstName == secondarySurgeon.FirstName);
-
-                        if (surgeon != null)
-                        {
-                            foreach (var procedureCard in schedule.ProcedureCards)
-                            {
-                                if (cardFlowRoom == null)
-                                {
-                                    cardFlowRoom = await GetImportDefaultCardFlowRoom(providerId, locationId,
-                                        surgery.SurgeonUserID.Value, procedureCard);
-                                }
-                            }
-                        }
-                    }
-
-                    if (cardFlowRoom == null)
-                    {
-                        result.Messages.Add("Unable to find card: " + schedule.ProcedurePreferenceCards);
-                        return result;
-                    }
+                    result.Messages.Add("Unable to find card: " + schedule.ProcedurePreferenceCards);
+                    return result;
                 }
 
                 var caseId = await CreateCase(secureId ?? -1, surgery.SurgeonUserID, surgery.SpecialtyID, providerId,
                     locationId, surgery.CaseNbr);
-
 
                 result.Identity = await CreateSurgery(surgery, providerId, locationId, secureId ?? -1, caseId,
                     cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID);
@@ -3435,6 +3410,139 @@ namespace OpFlow.Service.DataAccess
                     {
                         await AddSurgeryUser(result.Identity, surgeon.UserID, providerId, locationId);
                     }
+                }
+            }
+
+            return result;
+        }
+
+        private static async Task<CardFlowRoom> AggregateCards(int ownerUserId, List<CardFlowRoom> procedureCards, int providerId, int locationId)
+        {
+            if (procedureCards == null || !procedureCards.Any())
+                return null;
+
+            if (procedureCards.Count == 1)
+                return procedureCards[0];
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var customItem in procedureCards)
+            {
+                // prevent adding invalid data
+                if (customItem.CardID <= 0)
+                    continue;
+
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, customItem.CardID);
+            }
+
+            var cardData = table.OuterXml;
+
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("card_data", cardData)
+            };
+
+            var dsAnalyze = await ExecuteCommandAsync("GetCompositeCards", parameters);
+
+            var potentialSources = dsAnalyze.Tables[0].DataTableToList<CardSource>();
+            var desiredSources = dsAnalyze.Tables[1].DataTableToList<CardSource>();
+            
+            var match = AnalyzeSources(potentialSources, desiredSources);
+
+            if (match != null) return match;
+
+            var cardName = "COMPOSITE CARD: " + string.Join("|", desiredSources.Select(s => s.PreferenceCardName));
+            if (cardName.Length > 250)
+                cardName = cardName.Substring(0, 250);
+
+            parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("card_data", cardData),
+                new SqlParameter("card_name", cardName),
+                new SqlParameter("owner_user_id", ownerUserId),
+            };
+
+            // we haven't hit one quite like this yet - make one now
+            var dsImport = await ExecuteCommandAsync("InsertCompositeCard", parameters);
+            match = dsImport.Tables[0].DataTableToList<CardFlowRoom>().FirstOrDefault();
+
+            return match;
+        }
+
+        private static CardFlowRoom AnalyzeSources(List<CardSource> potentialSources, List<CardSource> desiredSources)
+        {
+            foreach (var source in potentialSources.GroupBy(s => s.CardID))
+            {
+                if (source.Count() != desiredSources.Count) continue;
+
+                var sameSources = true;
+                foreach (var desiredSource in desiredSources)
+                {
+                    var matching = source.FirstOrDefault(s =>
+                        s.PreferenceCardName == desiredSource.PreferenceCardName &&
+                        s.SurgeonName == desiredSource.SurgeonName);
+
+                    if (matching != null) continue;
+
+                    sameSources = false;
+                    break;
+                }
+
+                // the list of desired sources matches the card we found
+                if (sameSources)
+                {
+                    return new CardFlowRoom()
+                    {
+                        CardID = source.Key,
+                        TemplateFlowID = source.First().TemplateFlowID
+                    };
+                }
+            }
+
+            return null;
+        }
+
+        private static async Task<List<CardFlowRoom>> DetermineCards(SurgeryPost surgery, ScheduleImport schedule, FileParserRelations relations, int providerId, int locationId)
+        {
+            var result = new List<CardFlowRoom>();
+            foreach (var procedureCard in schedule.ProcedureCards)
+            {
+                var cardSurgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == procedureCard.ImportSurgeon?.LastName && r.FirstName == procedureCard.ImportSurgeon?.FirstName)?.UserID ?? surgery.SurgeonUserID;
+
+                CardFlowRoom cardFlowRoom = null;
+                if (cardSurgeon.HasValue)
+                    cardFlowRoom = await GetImportDefaultCardFlowRoom(providerId, locationId, cardSurgeon.Value, procedureCard.CardName);
+
+                if (cardFlowRoom != null)
+                {
+                    result.Add(cardFlowRoom);
+                    continue;
+                }
+
+                // attempt to find a card for using any additional surgeons before failing
+                foreach (var secondarySurgeon in schedule.SecondarySurgeons)
+                {
+                    var surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == secondarySurgeon.LastName && r.FirstName == secondarySurgeon.FirstName);
+
+                    if (surgeon == null) continue;
+                    if (cardFlowRoom == null)
+                    {
+                        cardFlowRoom = await GetImportDefaultCardFlowRoom(providerId, locationId,
+                            surgeon.UserID, procedureCard.CardName);
+                    }
+                }
+
+                if (cardFlowRoom != null)
+                {
+                    result.Add(cardFlowRoom);
                 }
             }
 

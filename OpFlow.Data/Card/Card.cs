@@ -46,14 +46,6 @@ namespace OpFlow.Data
         }
     }
 
-    public class CardSource
-    {
-        public int CardID { get; set; }
-        public string PreferenceCardName { get; set; }
-        public string SurgeonName { get; set; }
-    }
-
-
     public class CardDetail : Card
     {
         public List<SurgeryUser> CardUsers { get; set; }
