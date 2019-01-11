@@ -116,7 +116,8 @@ namespace OpFlow.Service.Controllers
                         var result = await SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
                         foreach (var message in result.Messages)
                         {
-                            await SqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message, (record as ScheduleImport)?.MRN);
+                            await SqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message, 
+                                (record as ScheduleImport)?.MRN, (record as ScheduleImport)?.ScheduleDate);
                         }
                     }
                 }
@@ -127,7 +128,7 @@ namespace OpFlow.Service.Controllers
             {
                 LogHelper.LogException(ex);
                 if (logId != null)
-                    await SqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "ERROR", ex.Message, null);
+                    await SqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "ERROR", ex.Message, null, null);
 
                 throw;
             }

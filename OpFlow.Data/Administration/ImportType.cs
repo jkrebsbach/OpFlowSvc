@@ -33,6 +33,7 @@ namespace OpFlow.Data.Administration
         public string ErrorType { get; set; }
         public string ErrorMessage { get; set; }
         public string ErrorMRN { get; set; }
+        public DateTime? ErrorServiceDate { get; set; }
     }
 
     public class ImportLog

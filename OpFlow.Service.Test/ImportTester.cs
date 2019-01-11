@@ -18,7 +18,7 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestImportFile()
         {
-            var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\OpFlowJan8.csv";
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\OpFlowJan10.csv";
             var importTypeId = 1;
 
             var user = await SqlHelper.GetSecureUser(null, 1);
@@ -38,13 +38,13 @@ namespace OpFlow.Service.Test
 
                     foreach (var record in fileParser.Records)
                     {
-
                         var secureId = await SecureSqlHelper.InsertStagingData(record, user.UserID, "TEST", "TEST", 1, user.DatabaseName);
 
                         var result = await SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
                         foreach (var message in result.Messages)
                         {
-                            await SqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message, (record as ScheduleImport)?.MRN);
+                            await SqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message, 
+                                (record as ScheduleImport)?.MRN, (record as ScheduleImport)?.ScheduleDate);
                         }
                     }
 

@@ -3366,7 +3366,7 @@ namespace OpFlow.Service.DataAccess
                 if (surgery.RoomID == null)
                 {
                     // Only log when the room is non-empty?...
-                    if (!string.IsNullOrEmpty(schedule.Room))
+                    if (!string.IsNullOrEmpty(schedule.Room) && schedule.Room != "ORW LITHO")
                         result.Messages.Add("Unable to find room: " + schedule.Room);
                     return result;
                 }
@@ -3568,7 +3568,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task InsertImportMessage(int providerId, int locationId, int logId, string logType, string logMessage, string logMrn)
+        public static async Task InsertImportMessage(int providerId, int locationId, int logId, string logType, string logMessage, string logMrn, DateTime? logServiceDate)
         {
             var parameters = new[]
             {
@@ -3577,7 +3577,8 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("import_log_id", logId),
                 new SqlParameter("error_type", logType),
                 new SqlParameter("error_message", logMessage),
-                new SqlParameter("error_mrn", logMrn)
+                new SqlParameter("error_mrn", logMrn ?? (object)DBNull.Value),
+                new SqlParameter("error_service_date", logServiceDate ?? (object)DBNull.Value)
             };
 
             await ExecuteNonQueryAsync("InsertImportMessage", parameters);
