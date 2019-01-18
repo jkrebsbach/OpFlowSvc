@@ -15,9 +15,10 @@ namespace OpFlow.Service
         private static readonly MemoryCache MemCache = MemoryCache.Default;
 
 
-        public static async Task<UserSecurity> GetUserSecurity()
+        public static async Task<UserSecurity> GetUserSecurity(string userAuthId = null)
         {
-            var userAuthId = HttpContext.Current.User.Identity.GetUserId();
+            if (userAuthId == null)
+                userAuthId = HttpContext.Current.User.Identity.GetUserId();
 
             if (MemCache.Contains(userAuthId))
                 return MemCache[userAuthId] as UserSecurity;
@@ -28,22 +29,6 @@ namespace OpFlow.Service
                 throw new Exception("Unable to locate authenticated user");
 
             MemCache.Add(userAuthId, secureUser, DateTimeOffset.UtcNow.AddHours(1));
-            return secureUser;
-        }
-
-        public static async Task<UserSecurity> GetUserByEmail(string userName = null)
-        {
-            if (userName == null)
-                userName = HttpContext.Current.User.Identity.GetUserName();
-
-            if (MemCache.Contains(userName))
-                return MemCache[userName] as UserSecurity;
-
-            var secureUser = await DataAccess.SqlHelper.GetSecureUser(null, null, userName);
-            if (secureUser == null)
-                throw new Exception("Unable to locate authenticated user");
-
-            MemCache.Add(userName, secureUser, DateTimeOffset.UtcNow.AddHours(1));
             return secureUser;
         }
     }

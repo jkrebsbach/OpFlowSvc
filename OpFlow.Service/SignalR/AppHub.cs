@@ -20,7 +20,8 @@ namespace OpFlow.Service.SignalR
         {
             try
             {
-                var user = await CacheUtil.GetUserByEmail(Context.User.Identity.Name);
+                var userAuthId = Context.User.Identity.GetUserId();
+                var user = await CacheUtil.GetUserSecurity(userAuthId);
                 var insertTimestamp = DateTime.Now;
 
                 await SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
@@ -59,7 +60,8 @@ namespace OpFlow.Service.SignalR
 
         public async Task SendPrivateMessage(int communicationUserId, string message)
         {
-            var user = await CacheUtil.GetUserByEmail(Context.User.Identity.Name);
+            var userAuthId = Context.User.Identity.GetUserId();
+            var user = await CacheUtil.GetUserSecurity(userAuthId);
             var insertTimestamp = DateTime.Now;
 
             await DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
@@ -143,7 +145,8 @@ namespace OpFlow.Service.SignalR
         {
             try
             {
-                var user = await CacheUtil.GetUserByEmail(Context.User.Identity.Name);
+                var userAuthId = Context.User.Identity.GetUserId();
+                var user = await CacheUtil.GetUserSecurity(userAuthId);
 
                 if (startSurgery)
                     await SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, stepTime);
@@ -183,7 +186,8 @@ namespace OpFlow.Service.SignalR
             if (startTime == null && endTime == null)
                 return;
 
-            var user = await CacheUtil.GetUserSecurity();
+            var userAuthId = Context.User.Identity.GetUserId();
+            var user = await CacheUtil.GetUserSecurity(userAuthId);
 
             if (customReason != null)
             {

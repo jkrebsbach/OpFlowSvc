@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.SignalR;
 
 namespace OpFlow.Service.SignalR
@@ -16,29 +17,29 @@ namespace OpFlow.Service.SignalR
 
         public override Task OnConnected()
         {
-            string name = Context.User.Identity.Name;
+            var userAuthId = Context.User.Identity.GetUserId();
 
-            _connections.Add(name, Context.ConnectionId);
+            _connections.Add(userAuthId, Context.ConnectionId);
 
             return base.OnConnected();
         }
 
         public override Task OnDisconnected(bool stopCalled)
         {
-            string name = Context.User.Identity.Name;
+            var userAuthId = Context.User.Identity.GetUserId();
 
-            _connections.Remove(name, Context.ConnectionId);
+            _connections.Remove(userAuthId, Context.ConnectionId);
 
             return base.OnDisconnected(stopCalled);
         }
 
         public override Task OnReconnected()
         {
-            string name = Context.User.Identity.Name;
+            var userAuthId = Context.User.Identity.GetUserId();
 
-            if (!_connections.GetConnections(name).Contains(Context.ConnectionId))
+            if (!_connections.GetConnections(userAuthId).Contains(Context.ConnectionId))
             {
-                _connections.Add(name, Context.ConnectionId);
+                _connections.Add(userAuthId, Context.ConnectionId);
             }
 
             return base.OnReconnected();
