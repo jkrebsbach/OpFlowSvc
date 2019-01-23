@@ -16,6 +16,10 @@ namespace OpFlow.Data
 
     public class TrayRationalization
     {
-        
+        public int TrayItemID { get; set; }
+        public string TrayName { get; set; }
+        public int CaseCount { get; set; }
+        public int InstrumentCount { get; set; }
+        public int AvgUsage { get; set; }
     }
 }

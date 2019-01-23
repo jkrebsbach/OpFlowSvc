@@ -3510,11 +3510,7 @@ namespace OpFlow.Service.DataAccess
             var result = new List<CardFlowRoom>();
             foreach (var procedureCard in schedule.ProcedureCards)
             {
-                var cardSurgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == procedureCard.ImportSurgeon?.LastName && r.FirstName == procedureCard.ImportSurgeon?.FirstName)?.UserID ?? surgery.SurgeonUserID;
-
-                CardFlowRoom cardFlowRoom = null;
-                if (cardSurgeon.HasValue)
-                    cardFlowRoom = await GetImportDefaultCardFlowRoom(providerId, locationId, cardSurgeon.Value, procedureCard.CardName);
+                var cardFlowRoom = await CheckCard(procedureCard.CardName, procedureCard, surgery, schedule, relations, providerId, locationId);
 
                 if (cardFlowRoom != null)
                 {
@@ -3522,18 +3518,8 @@ namespace OpFlow.Service.DataAccess
                     continue;
                 }
 
-                // attempt to find a card for using any additional surgeons before failing
-                foreach (var secondarySurgeon in schedule.SecondarySurgeons)
-                {
-                    var surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == secondarySurgeon.LastName && r.FirstName == secondarySurgeon.FirstName);
-
-                    if (surgeon == null) continue;
-                    if (cardFlowRoom == null)
-                    {
-                        cardFlowRoom = await GetImportDefaultCardFlowRoom(providerId, locationId,
-                            surgeon.UserID, procedureCard.CardName);
-                    }
-                }
+                // Sometimes card name appears where the surgeon should be
+                cardFlowRoom = await CheckCard(procedureCard.ImportSurgeon.RawText, procedureCard, surgery, schedule, relations, providerId, locationId);
 
                 if (cardFlowRoom != null)
                 {
@@ -3542,6 +3528,35 @@ namespace OpFlow.Service.DataAccess
             }
 
             return result;
+        }
+
+        private static async Task<CardFlowRoom> CheckCard(string cardName, ImportCard procedureCard, SurgeryPost surgery, ScheduleImport schedule, FileParserRelations relations, int providerId, int locationId)
+        {
+            var cardSurgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == procedureCard.ImportSurgeon?.LastName && r.FirstName == procedureCard.ImportSurgeon?.FirstName)?.UserID ?? surgery.SurgeonUserID;
+
+            CardFlowRoom cardFlowRoom = null;
+            if (cardSurgeon.HasValue)
+                cardFlowRoom = await GetImportDefaultCardFlowRoom(providerId, locationId, cardSurgeon.Value, cardName);
+
+            if (cardFlowRoom != null)
+            {
+                return cardFlowRoom;
+            }
+
+            // attempt to find a card for using any additional surgeons before failing
+            foreach (var secondarySurgeon in schedule.SecondarySurgeons)
+            {
+                var surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == secondarySurgeon.LastName && r.FirstName == secondarySurgeon.FirstName);
+
+                if (surgeon == null) continue;
+                if (cardFlowRoom == null)
+                {
+                    cardFlowRoom = await GetImportDefaultCardFlowRoom(providerId, locationId,
+                        surgeon.UserID, cardName);
+                }
+            }
+
+            return cardFlowRoom;
         }
 
         public static async Task<int> InsertImportLog(int providerId, int locationId, int importTypeId, int userId, int recordCount, string filename)

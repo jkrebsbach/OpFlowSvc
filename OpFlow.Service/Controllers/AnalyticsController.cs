@@ -17,8 +17,8 @@ namespace OpFlow.Service.Controllers
     {
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
         [SwaggerOperation("GetTrayRationalization")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(AnalyticsSummary))]
-        [Route("api/analytics/trayRatinalization")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalization>))]
+        [Route("api/analytics/trayRationalization")]
         public async Task<HttpResponseMessage> GetTrayRationalization()
         {
             var user = await CacheUtil.GetUserSecurity();

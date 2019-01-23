@@ -240,10 +240,14 @@ namespace OpFlow.Data.Administration
         public string FirstName { get; set; }
         public string MInit { get; set; }
         public string LastName { get; set; }
+        public string RawText { get; set; }
 
         public static ImportSurgeon ParseSurgeon(string surgeonString)
         {
-            var result = new ImportSurgeon();
+            var result = new ImportSurgeon()
+            {
+                RawText = surgeonString
+            };
 
             // Last, First
             var regex = @"([A-Za-z\'-\.\s]+), ([A-Za-z]+)";
