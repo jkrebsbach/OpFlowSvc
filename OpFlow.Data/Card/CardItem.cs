@@ -20,9 +20,6 @@ namespace OpFlow.Data
 
 
         public bool CustomUsage { get; set; }
-        public bool Pass1 { get; set; }
-        public bool Pass2 { get; set; }
-        public bool Pass3 { get; set; }
         public int Usage { get; set; }
     }
 

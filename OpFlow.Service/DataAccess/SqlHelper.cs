@@ -1519,30 +1519,6 @@ namespace OpFlow.Service.DataAccess
 
                 AddColumn(doc, row, customItem.ItemID);
                 AddColumn(doc, row, customItem.TrayID);
-                AddColumn(doc, row, "1");
-                AddColumn(doc, row, customItem.Pass1 ? 1 : 0);
-                
-                row = doc.CreateElement("row");
-                table.AppendChild(row);
-
-                AddColumn(doc, row, customItem.ItemID);
-                AddColumn(doc, row, customItem.TrayID);
-                AddColumn(doc, row, "2");
-                AddColumn(doc, row, customItem.Pass2 ? 1 : 0);
-                
-                row = doc.CreateElement("row");
-                table.AppendChild(row);
-
-                AddColumn(doc, row, customItem.ItemID);
-                AddColumn(doc, row, customItem.TrayID);
-                AddColumn(doc, row, "3");
-                AddColumn(doc, row, customItem.Pass3 ? 1 : 0);
-                
-                row = doc.CreateElement("row");
-                table.AppendChild(row);
-
-                AddColumn(doc, row, customItem.ItemID);
-                AddColumn(doc, row, customItem.TrayID);
                 AddColumn(doc, row, "U");
                 AddColumn(doc, row, customItem.Usage);
             }
