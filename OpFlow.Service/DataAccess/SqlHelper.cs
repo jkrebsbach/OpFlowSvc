@@ -330,18 +330,23 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<TrayUsageHistory>> GetCardUsageHistory(int cardId, int providerId, int locationId)
+        public static async Task<CardUsageHistory> GetCardUsageHistory(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("card_id", cardId),
+                new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetCardUsageHistory", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<TrayUsageHistory>();
-
+            var result = new CardUsageHistory()
+            {
+                Summary = dsSchedules.Tables[0].DataTableToList<CardSummary>().FirstOrDefault(),
+                TrayItems = dsSchedules.Tables[1].DataTableToList<ItemUsageHistory>(),
+                Supplies = dsSchedules.Tables[2].DataTableToList<ItemUsageHistory>(),
+            };
+            
             return result;
         }
 

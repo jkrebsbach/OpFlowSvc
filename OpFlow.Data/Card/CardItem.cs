@@ -49,9 +49,26 @@ namespace OpFlow.Data
         public List<CardItemCount> TrayItems { get; set; }
     }
 
-    public class TrayUsageHistory
+    public class CardUsageHistory
+    {
+        public CardSummary Summary { get; set; }
+        public List<ItemUsageHistory> TrayItems { get; set; }
+        public List<ItemUsageHistory> Supplies { get; set; }
+    }
+
+    public class CardSummary
+    {
+        public string ProcedureName { get; set; }
+        public string ProviderName { get; set; }
+        public string CardName { get; set; }
+        public int ProcedureCount { get; set; }
+        public int CardCount { get; set; }
+    }
+
+    public class ItemUsageHistory
     {
         public string TrayName { get; set; }
+        public string ItemType { get; set; }
         public string InstrumentDescription { get; set; }
         public int QtyOpen { get; set; }
     }

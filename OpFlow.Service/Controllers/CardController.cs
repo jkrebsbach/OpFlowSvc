@@ -54,12 +54,12 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetUsageHistory")]
         [Route("api/card/usageHistory")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayUsageHistory>))]
-        public async Task<HttpResponseMessage> GetUsageHistory(int cardId)
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardUsageHistory))]
+        public async Task<HttpResponseMessage> GetUsageHistory(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var result = await DataAccess.SqlHelper.GetCardUsageHistory(cardId, user.ProviderID, user.LocationID);
+            var result = await DataAccess.SqlHelper.GetCardUsageHistory(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
