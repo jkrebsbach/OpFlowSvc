@@ -16,14 +16,14 @@ namespace OpFlow.Service.Controllers
     public class AnalyticsController : ApiController
     {
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
-        [SwaggerOperation("GetAnalytics")]
+        [SwaggerOperation("GetTrayRationalization")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(AnalyticsSummary))]
-        [Route("api/analytics")]
-        public async Task<HttpResponseMessage> GetAnalytics(int? tableId = null)
+        [Route("api/analytics/trayRatinalization")]
+        public async Task<HttpResponseMessage> GetTrayRationalization()
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var analyticsSummary = await SqlHelper.GetAnalytics(user.ProviderID, user.LocationID, tableId);
+            var analyticsSummary = await SqlHelper.GetTrayRationalization(user.ProviderID, user.LocationID);
             
             return Request.CreateResponse(HttpStatusCode.OK, analyticsSummary);
         }

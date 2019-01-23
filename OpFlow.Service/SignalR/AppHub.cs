@@ -151,19 +151,26 @@ namespace OpFlow.Service.SignalR
                 if (startSurgery)
                     await SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, stepTime);
 
-                var flowStep = await SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
-                var notifications = SqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.ProviderID, user.LocationID);
+                var advanceSurgery = true;
+                while (advanceSurgery)
+                {
+                    var flowStep = await SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
+                    var notifications = SqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.ProviderID, user.LocationID);
 
-                var nextNotifications = notifications.Where(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
-                var prevNotifications = notifications.Where(n => n.StepID == flowStep.PreviousStepID && n.NotificationType == 2);
+                    var nextNotifications = notifications.Where(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
+                    var prevNotifications = notifications.Where(n => n.StepID == flowStep.PreviousStepID && n.NotificationType == 2);
 
-                var sender = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                    var sender = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
-                foreach (var nextNotification in nextNotifications)
-                    await SendNotification(user, sender, surgeryId, nextNotification); // Next step
+                    foreach (var nextNotification in nextNotifications)
+                        await SendNotification(user, sender, surgeryId, nextNotification); // Next step
 
-                foreach (var prevNotification in prevNotifications)
-                    await SendNotification(user, sender, surgeryId, prevNotification); // Previous step
+                    foreach (var prevNotification in prevNotifications)
+                        await SendNotification(user, sender, surgeryId, prevNotification); // Previous step
+
+                    // If the next step has no duration, auto-advance
+                    advanceSurgery = (flowStep.StepDuration ?? -1) == 0;
+                }
 
                 NotifySurgeryChange("FLOW", surgeryId);
             }

@@ -121,6 +121,20 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static async Task<List<TrayRationalization>> GetTrayRationalization(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetTrayRationalization", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
+
+            return result;
+        }
+
         public static async Task<List<ImportType>> GetImportTypes(int providerId, int locationId)
         {
             var parameters = new[]

@@ -13,4 +13,9 @@ namespace OpFlow.Data
         public string PowerBiLink { get; set; }
         public string InsTimestamp { get; set; }
     }
+
+    public class TrayRationalization
+    {
+        
+    }
 }
