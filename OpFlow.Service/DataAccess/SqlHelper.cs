@@ -3519,7 +3519,7 @@ namespace OpFlow.Service.DataAccess
                 }
 
                 // Sometimes card name appears where the surgeon should be
-                cardFlowRoom = await CheckCard(procedureCard.ImportSurgeon.RawText, procedureCard, surgery, schedule, relations, providerId, locationId);
+                cardFlowRoom = await CheckCard(procedureCard.ImportSurgeon?.RawText, procedureCard, surgery, schedule, relations, providerId, locationId);
 
                 if (cardFlowRoom != null)
                 {
@@ -3532,6 +3532,9 @@ namespace OpFlow.Service.DataAccess
 
         private static async Task<CardFlowRoom> CheckCard(string cardName, ImportCard procedureCard, SurgeryPost surgery, ScheduleImport schedule, FileParserRelations relations, int providerId, int locationId)
         {
+            if (string.IsNullOrEmpty(cardName))
+                return null;
+
             var cardSurgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == procedureCard.ImportSurgeon?.LastName && r.FirstName == procedureCard.ImportSurgeon?.FirstName)?.UserID ?? surgery.SurgeonUserID;
 
             CardFlowRoom cardFlowRoom = null;
