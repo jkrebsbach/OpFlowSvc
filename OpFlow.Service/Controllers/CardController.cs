@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Http;
 using Mindscape.Raygun4Net;
 using OpFlow.Data;
+using OpFlow.Service.DataAccess;
 using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
@@ -192,13 +193,15 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var result = await DataAccess.SqlHelper.GetBundleDefaultCardFlowRoom(bundleId, userId ?? user.UserID, user.ProviderID, user.LocationID) ??
+            var result = await SqlHelper.GetBundleDefaultCardFlowRoom(bundleId, userId ?? user.UserID, user.ProviderID, user.LocationID) ??
                 new CardFlowRoom()
                 {
                     CardDescription = "None",
                     FlowDescription = "None",
                     RoomDescription = "None"
                 };
+
+            result.Cards = await SqlHelper.GetCardList(userId, null, bundleId, false, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

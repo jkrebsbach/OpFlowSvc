@@ -259,9 +259,9 @@ namespace OpFlow.Service.Controllers
             foreach (var countType in itemCounts)
             {
                 if (countType.Key == "SUPPLY")
-                    result.Supplies = itemCounts.First(ic => ic.Key == "SUPPLY").ToList();
+                    result.Supplies = countType.ToList();
                 else if (countType.Key == "INSTRUMENT")
-                    result.Instruments = itemCounts.First(ic => ic.Key == "INSTRUMENT").ToList();
+                    result.Instruments = countType.ToList();
                 else
                 {
                     var trayItems = countType.ToList();
@@ -657,7 +657,7 @@ namespace OpFlow.Service.Controllers
                 (await SqlHelper.GetProcedureDefaultCardFlowRoom(secureUser.ProviderID, secureUser.LocationID, surgery.CptCode)).FirstOrDefault();
 
             var surgeryId = await SqlHelper.CreateSurgery(surgery, secureUser.ProviderID, secureUser.LocationID, patientId, caseId, 
-                cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID);
+                surgery.CardID ?? cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID);
 
             return Request.CreateResponse(HttpStatusCode.Created, surgeryId);
         }

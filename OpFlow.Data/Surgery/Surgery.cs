@@ -134,6 +134,7 @@ namespace OpFlow.Data
         public int? RoomID { get; set; }
 
         public int? BundleID { get; set; }
+        public int? CardID { get; set; }
         public int? LateralityID { get; set; }
         public string CptCode { get; set; }
         public DateTime ScheduleDate { get; set; }
@@ -178,6 +179,7 @@ namespace OpFlow.Data
     {
         public int ItemID { get; set; }
         public int TrayID { get; set; }
+        public int? UsageType { get; set; }
         public int Usage { get; set; }
     }
 

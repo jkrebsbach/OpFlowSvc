@@ -303,7 +303,6 @@
     <Compile Include="Controllers\ProcedureController.cs" />
     <Compile Include="Controllers\RoomController.cs" />
     <Compile Include="Controllers\SpecialtyController.cs" />
-    <Compile Include="Controllers\SurgeonController.cs" />
     <Compile Include="Controllers\SurgeryController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DataAccess\BlobStorageHelper.cs" />

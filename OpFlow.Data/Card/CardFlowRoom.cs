@@ -17,5 +17,7 @@ namespace OpFlow.Data
         public string CardDescription { get; set; }
         public string FlowDescription { get; set; }
         public string RoomDescription { get; set; }
+
+        public List<Card> Cards { get; set; }
     }
 }

@@ -21,6 +21,7 @@ namespace OpFlow.Data
 
         public bool CustomUsage { get; set; }
         public int Usage { get; set; }
+        public int? UsageType { get; set; }
     }
 
     public class SurgeryTrayOpen

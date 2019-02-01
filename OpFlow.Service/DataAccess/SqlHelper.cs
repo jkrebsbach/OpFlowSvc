@@ -1540,6 +1540,7 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, customItem.TrayID);
                 AddColumn(doc, row, "U");
                 AddColumn(doc, row, customItem.Usage);
+                AddColumn(doc, row, customItem.UsageType);
             }
 
             return table.OuterXml;
