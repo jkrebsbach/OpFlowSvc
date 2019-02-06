@@ -66,7 +66,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var setups = SqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID);
+            var setups = await SqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID);
 
             if (roomSetupId != null)
                 setups = setups.Where(s => s.RoomSetupID == roomSetupId).ToList();
@@ -82,13 +82,13 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var setups = SqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID)
+            var setups = (await SqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID))
                 .Where(s => s.RoomSetupID == roomSetupId).ToList();
             
             var roomTypes = await SqlHelper.GetRoomTypes(user.LocationID);
-            var patientPositions = SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
-            var lateralities = SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
-            var bedOrientations = SqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
+            var patientPositions = await SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
+            var lateralities = await SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
+            var bedOrientations = await SqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
 
             var equipment = await SqlHelper.GetItems("EQUIPMENT", null, null, user.ProviderID, user.LocationID);
             var instruments = await SqlHelper.GetItems("INSTRUMENT", null, null, user.ProviderID, user.LocationID);
@@ -115,7 +115,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            return SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
+            return await SqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
         }
 
         // GET api/values
@@ -126,7 +126,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            return SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
+            return await SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
         }
 
         // GET api/values
@@ -137,7 +137,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            return SqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
+            return await SqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
         }
 
         // PUT api/roomSetup/values/5

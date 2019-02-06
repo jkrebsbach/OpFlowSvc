@@ -36,7 +36,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var procedures = DataAccess.SqlHelper.GetBundleProcedures(bundleId, user.ProviderID, user.LocationID);
+            var procedures = await SqlHelper.GetBundleProcedures(bundleId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, procedures);
         }
@@ -48,7 +48,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var result = SqlHelper.NewBundle(value.BundleDescription, value.SpecialtyID, value.Procedures, user.ProviderID, user.LocationID);
+            var result = await SqlHelper.NewBundle(value.BundleDescription, value.SpecialtyID, value.Procedures, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -61,7 +61,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var result = SqlHelper.UpdateBundle(id, value.BundleDescription, value.SpecialtyID, value.Procedures, user.ProviderID, user.LocationID);
+            var result = await SqlHelper.UpdateBundle(id, value.BundleDescription, value.SpecialtyID, value.Procedures, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -74,7 +74,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var result = SqlHelper.DeleteBundle(id, user.ProviderID, user.LocationID);
+            var result = await SqlHelper.DeleteBundle(id, user.ProviderID, user.LocationID);
 
             return Ok();
         }

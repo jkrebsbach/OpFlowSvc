@@ -155,7 +155,7 @@ namespace OpFlow.Service.SignalR
                 while (advanceSurgery)
                 {
                     var flowStep = await SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
-                    var notifications = SqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.ProviderID, user.LocationID);
+                    var notifications = await SqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.ProviderID, user.LocationID);
 
                     var nextNotifications = notifications.Where(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
                     var prevNotifications = notifications.Where(n => n.StepID == flowStep.PreviousStepID && n.NotificationType == 2);

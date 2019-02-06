@@ -46,7 +46,7 @@ namespace OpFlow.Service.Controllers
 
             var rooms = await SqlHelper.GetRooms(user.LocationID);
             var specialties = await SqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
-            var lateralities = SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
+            var lateralities = await SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
 
             var result = new NewSurgerySetup()
             {
@@ -98,7 +98,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var schedules = SqlHelper.GetCaseNbr(caseNbr, user.ProviderID, user.LocationID);
+            var schedules = await SqlHelper.GetCaseNbr(caseNbr, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -111,7 +111,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var schedules = SqlHelper.GetSurgeonCases(surgeonUserId, begDate, endDate, user.ProviderID, user.LocationID);
+            var schedules = await SqlHelper.GetSurgeonCases(surgeonUserId, begDate, endDate, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -124,7 +124,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var schedules = SqlHelper.GetRoomCases(roomId, begDate, endDate, user.ProviderID, user.LocationID);
+            var schedules = await SqlHelper.GetRoomCases(roomId, begDate, endDate, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -141,7 +141,7 @@ namespace OpFlow.Service.Controllers
             if (roomId == null)
                 userId = user.UserID;
 
-            var surgeries = SqlHelper.GetScheduledSurgeries(userId, user.ProviderID, user.LocationID, scheduleDate, roomId);
+            var surgeries = await SqlHelper.GetScheduledSurgeries(userId, user.ProviderID, user.LocationID, scheduleDate, roomId);
             
             foreach (var surgery in surgeries)
             {
@@ -173,7 +173,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var procedures = SqlHelper.GetSurgeryProcedures(surgeryId, user.ProviderID, user.LocationID);
+            var procedures = await SqlHelper.GetSurgeryProcedures(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, procedures);
         }
@@ -322,7 +322,7 @@ namespace OpFlow.Service.Controllers
                 Users = await SqlHelper.SearchUsers(null, null, null, user.ProviderID, user.LocationID),
                 Specialties = await SqlHelper.GetSpecialties(user.ProviderID, user.LocationID),
                 Bundles = await SqlHelper.GetBundles(null, user.ProviderID, user.LocationID),
-                Procedures = SqlHelper.GetProcedures(null, user.ProviderID, user.LocationID)
+                Procedures = await SqlHelper.GetProcedures(null, user.ProviderID, user.LocationID)
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -342,11 +342,11 @@ namespace OpFlow.Service.Controllers
 
             var smartPhrases = new List<SmartPhrase>();
             if (flow != null)
-                smartPhrases = SqlHelper.GetSmartPhrases(null, null, flow.OwnerUserID, user.ProviderID, user.LocationID);
+                smartPhrases = await SqlHelper.GetSmartPhrases(null, null, flow.OwnerUserID, user.ProviderID, user.LocationID);
 
             var flowFeedback = await SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
-            var surgeonNotes = SqlHelper.GetSurgeonNotes(flowId, user.ProviderID, user.LocationID);
-            var flowSteps = SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
+            var surgeonNotes = await SqlHelper.GetSurgeonNotes(flowId, user.ProviderID, user.LocationID);
+            var flowSteps = await SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
             var messages =
                 await SqlHelper.GetMessaging(user.UserID, surgeryId, null, null, user.ProviderID, user.LocationID);
 

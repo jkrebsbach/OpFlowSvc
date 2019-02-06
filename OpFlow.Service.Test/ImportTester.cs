@@ -69,7 +69,7 @@ namespace OpFlow.Service.Test
 
                 var fileContents = File.ReadAllBytes(fileName);
 
-                var user = SqlHelper.GetSecureUser(null, 1);
+                var user = await SqlHelper.GetSecureUser(null, 1);
 
                 flowImageId = await SqlHelper.NewFlowImage(1, 1, 1, "1", 1, 1);
                     

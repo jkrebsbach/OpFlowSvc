@@ -4,9 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
-using System.Web;
 using System.Xml;
 using OpFlow.Data;
 using OpFlow.Data.Administration;
@@ -17,46 +15,6 @@ namespace OpFlow.Service.DataAccess
 {
     public static class SqlHelper 
     {
-        private static DataSet ExecuteCommand(string storedProcedure, SqlParameter[] dsParameters = null)
-        {
-            using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString))
-            using (var cmd = new SqlCommand(storedProcedure, conn) {CommandType = CommandType.StoredProcedure})
-            {
-                cmd.Parameters.AddRange(dsParameters);
-
-                conn.Open();
-
-                using (var dataAdapter = new SqlDataAdapter(cmd))
-                {
-                    var ds = new DataSet();
-
-                    dataAdapter.Fill(ds);
-
-                    cmd.Parameters.Clear();
-                    conn.Close();
-
-                    return ds;
-                }
-            }
-        }
-
-        private static int ExecuteNonQuery(string storedProcedure, SqlParameter[] dsParameters = null, CommandType commandType = CommandType.StoredProcedure)
-        {
-            using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString))
-            using (var cmd = new SqlCommand(storedProcedure, conn) {CommandType = commandType})
-            {
-                cmd.Parameters.AddRange(dsParameters);
-
-                conn.Open();
-
-                var result = cmd.ExecuteNonQuery();
-
-                cmd.Parameters.Clear();
-                conn.Close();
-
-                return result;
-            }
-        }
         private static async Task<DataSet> ExecuteCommandAsync(string storedProcedure, SqlParameter[] dsParameters = null)
         {
             try
@@ -104,21 +62,6 @@ namespace OpFlow.Service.DataAccess
 
                 return result;
             }
-        }
-
-        public static async Task<List<AnalyticsSummary>> GetAnalytics(int providerId, int locationId, int? tableId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
-                new SqlParameter("table_id", tableId ?? (object)DBNull.Value)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetPowerBIAnalytic", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<AnalyticsSummary>();
-            
-            return result;
         }
 
         public static async Task<List<TrayRationalization>> GetTrayRationalization(int providerId, int locationId)
@@ -1345,6 +1288,34 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateCardItemQty", dsParameters);
         }
 
+        public static async Task<int> UpdateCardQuantityRequest(int cardId, CardQuantityEdit quantity, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("item_id", quantity.ItemID),
+                new SqlParameter("qty_open", quantity.OpenQty),
+                new SqlParameter("qty_hold", quantity.HoldQty)
+            };
+            return await ExecuteNonQueryAsync("UpdateCardItemQtyRequest", dsParameters);
+        }
+
+        public static async Task<int> UpdateSurgeryItemQuantity(int surgeryId, CardQuantityEdit quantity, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("item_id", quantity.ItemID),
+                new SqlParameter("qty_open", quantity.OpenQty),
+                new SqlParameter("qty_hold", quantity.HoldQty)
+            };
+            return await ExecuteNonQueryAsync("UpdateSurgeryCardItemQty", dsParameters);
+        }
+
         public static async Task<int> CreateSurgery(SurgeryPost surgery, int providerId, int locationId, int patientId, int caseId, 
             int? defaultCardId, int? defaultFlowId, int? defaultRoomId)
         {
@@ -1729,7 +1700,7 @@ namespace OpFlow.Service.DataAccess
             return setups.FirstOrDefault(s => s.RoomSetupID == roomSetupId);
         }
 
-        public static List<RoomSetup> GetRoomSetups(int? roomSetupId, int providerId, int locationId)
+        public static async Task<List<RoomSetup>> GetRoomSetups(int? roomSetupId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1737,7 +1708,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("room_setup_id", roomSetupId ?? (object)DBNull.Value),
             };
-            var dsSchedules = ExecuteCommand("GetRoomSetups", dsParameters);
+            var dsSchedules = await ExecuteCommandAsync("GetRoomSetups", dsParameters);
 
             var setups = dsSchedules.Tables[0].DataTableToList<RoomSetup>();
             var setupEquipments = dsSchedules.Tables[1].DataTableToList<RoomSetupEquipment>();
@@ -1772,49 +1743,49 @@ namespace OpFlow.Service.DataAccess
             return setups;
         }
 
-        public static List<PatientPosition> GetPatientPositions(int providerId, int locationId)
+        public static async Task<List<PatientPosition>> GetPatientPositions(int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
-            var dsSchedules = ExecuteCommand("GetPatientPositions", dsParameters);
+            var dsSchedules = await ExecuteCommandAsync("GetPatientPositions", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<PatientPosition>();
 
             return result;
         }
 
-        public static List<BedOrientation> GetBedOrientations(int providerId, int locationId)
+        public static async Task<List<BedOrientation>> GetBedOrientations(int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
-            var dsSchedules = ExecuteCommand("GetBedOrientations", dsParameters);
+            var dsSchedules = await ExecuteCommandAsync("GetBedOrientations", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<BedOrientation>();
 
             return result;
         }
 
-        public static List<Laterality> GetLateralities(int providerId, int locationId)
+        public static async Task<List<Laterality>> GetLateralities(int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
-            var dsSchedules = ExecuteCommand("GetLateralities", dsParameters);
+            var dsSchedules = await ExecuteCommandAsync("GetLateralities", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Laterality>();
 
             return result;
         }
 
-        public static List<SmartPhrase> GetSmartPhrases(int? categoryId, int? specialtyId, int? userId, int providerId, int locationId)
+        public static async Task<List<SmartPhrase>> GetSmartPhrases(int? categoryId, int? specialtyId, int? userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1824,7 +1795,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("category_id", categoryId ?? (object)DBNull.Value)
             };
-            var dsSchedules = ExecuteCommand("GetPhrases", dsParameters);
+            var dsSchedules = await ExecuteCommandAsync("GetPhrases", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<SmartPhrase>();
 
@@ -1956,7 +1927,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<FlowSurgeonNote> GetSurgeonNotes(int flowId, int providerId, int locationId)
+        public static async Task<List<FlowSurgeonNote>> GetSurgeonNotes(int flowId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1964,7 +1935,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("flow_id", flowId)
             };
-            var dsSchedules = ExecuteCommand("GetFlowSurgeonNotes", dsParameters);
+            var dsSchedules = await ExecuteCommandAsync("GetFlowSurgeonNotes", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<FlowSurgeonNote>();
 
@@ -2031,7 +2002,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("bed_orientation_id", newRoomSetup.BedOrientationID),
             };
             var update = await ExecuteNonQueryAsync("UpdateRoomSetup", dsParameters);
-            var currentRoomSetup = GetRoomSetups(roomSetupId, providerId, locationId).FirstOrDefault();
+            var currentRoomSetup = (await GetRoomSetups(roomSetupId, providerId, locationId)).FirstOrDefault();
 
             await SyncRoomSetupAttributes(roomSetupId, providerId, locationId, newRoomSetup, currentRoomSetup);
 
@@ -2063,7 +2034,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("room_type_id", roomSetup.RoomTypeID),
                 new SqlParameter("bed_orientation_id", roomSetup.BedOrientationID)
             };
-            var insert = ExecuteCommand("InsertRoomSetup", dsParameters);
+            var insert = await ExecuteCommandAsync("InsertRoomSetup", dsParameters);
 
             var result = insert.Tables[0].DataTableToList<InsertionResult>();
 
@@ -2405,7 +2376,7 @@ namespace OpFlow.Service.DataAccess
             return surgeries;
         }
 
-        public static List<SurgerySearchResult> GetCaseNbr(string caseNbr, int providerId, int locationId)
+        public static async Task<List<SurgerySearchResult>> GetCaseNbr(string caseNbr, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2414,14 +2385,14 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
 
-            var dsSchedules = ExecuteCommand("SearchCaseNbr", parameters);
+            var dsSchedules = await ExecuteCommandAsync("SearchCaseNbr", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<SurgerySearchResult>();
 
             return result;
         }
 
-        public static List<SurgerySearchResult> GetSurgeonCases(int userId, DateTime begDate, DateTime endDate, int providerId, int locationId)
+        public static async Task<List<SurgerySearchResult>> GetSurgeonCases(int userId, DateTime begDate, DateTime endDate, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2432,14 +2403,14 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
 
-            var dsSchedules = ExecuteCommand("SearchSurgeonCases", parameters);
+            var dsSchedules = await ExecuteCommandAsync("SearchSurgeonCases", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<SurgerySearchResult>();
 
             return result;
         }
 
-        public static List<SurgerySearchResult> GetRoomCases(int roomId, DateTime begDate, DateTime endDate, int providerId, int locationId)
+        public static async Task<List<SurgerySearchResult>> GetRoomCases(int roomId, DateTime begDate, DateTime endDate, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2450,14 +2421,14 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
 
-            var dsSchedules = ExecuteCommand("SearchRoomCases", parameters);
+            var dsSchedules = await ExecuteCommandAsync("SearchRoomCases", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<SurgerySearchResult>();
 
             return result;
         }
 
-        public static List<SurgerySchedule> GetScheduledSurgeries(int? userID, int providerId, int locationId,
+        public static async Task<List<SurgerySchedule>> GetScheduledSurgeries(int? userID, int providerId, int locationId,
             DateTime? scheduleDate, int? roomId)
         {
             if (roomId.HasValue)
@@ -2471,7 +2442,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("SurgeryScheduleDate", scheduleDate ?? (object)DBNull.Value),
                 new SqlParameter("room_id", roomId ?? (object)DBNull.Value)
             };
-            var dsSchedules = ExecuteCommand("GetSurgeriesByUser", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeriesByUser", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<SurgerySchedule>();
 
@@ -2682,7 +2653,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<BundleProcedure> GetBundleProcedures(int bundleId, int providerId, int locationId)
+        public static async Task<List<BundleProcedure>> GetBundleProcedures(int bundleId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2690,14 +2661,14 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetBundleProcedures", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetBundleProcedures", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<BundleProcedure>();
 
             return result;
         }
 
-        public static int NewBundle(string description, int specialtyId, List<int> procedures, int providerId, int locationId)
+        public static async Task<int> NewBundle(string description, int specialtyId, List<int> procedures, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2706,18 +2677,18 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("description", description),
                 new SqlParameter("specialty_id", specialtyId)
             };
-            var dsSchedules = ExecuteCommand("InsertBundle", parameters);
+            var dsSchedules = await ExecuteCommandAsync("InsertBundle", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<InsertionResult>();
 
             var bundleId = result.FirstOrDefault()?.Identifier ?? 0;
 
-            UpdateBundleProcedures(bundleId, procedures, providerId, locationId);
+            await UpdateBundleProcedures(bundleId, procedures, providerId, locationId);
 
             return bundleId;
         }
 
-        public static int UpdateBundle(int bundleId, string description, int specialtyId, List<int> procedures, int providerId, int locationId)
+        public static async Task<int> UpdateBundle(int bundleId, string description, int specialtyId, List<int> procedures, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2727,14 +2698,14 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("description", description),
                 new SqlParameter("specialty_id", specialtyId)
             };
-            var result = ExecuteNonQuery("UpdateBundle", parameters);
+            var result = await ExecuteNonQueryAsync("UpdateBundle", parameters);
 
-            UpdateBundleProcedures(bundleId, procedures, providerId, locationId);
+            await UpdateBundleProcedures(bundleId, procedures, providerId, locationId);
 
             return result;
         }
 
-        private static int UpdateBundleProcedures(int bundleId, List<int> procedures, int providerId, int locationId)
+        private static async Task<int> UpdateBundleProcedures(int bundleId, List<int> procedures, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2742,7 +2713,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = ExecuteNonQuery("DeleteBundleProcedures", parameters);
+            var result = await ExecuteNonQueryAsync("DeleteBundleProcedures", parameters);
 
             foreach (var procedureId in procedures)
             {
@@ -2754,13 +2725,13 @@ namespace OpFlow.Service.DataAccess
                     new SqlParameter("location_id", locationId)
                 };
 
-                result = ExecuteNonQuery("InsertBundleProcedure", parameters);
+                result = await ExecuteNonQueryAsync("InsertBundleProcedure", parameters);
             }
 
             return result;
         }
 
-        public static int DeleteBundle(int bundleId, int providerId, int locationId)
+        public static async Task<int> DeleteBundle(int bundleId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2768,12 +2739,12 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = ExecuteNonQuery("DeleteBundle", parameters);
+            var result = await ExecuteNonQueryAsync("DeleteBundle", parameters);
 
             return result;
         }
 
-        public static List<BundleProcedure> GetSurgeryProcedures(int surgeryId, int providerId, int locationId)
+        public static async Task<List<BundleProcedure>> GetSurgeryProcedures(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2781,14 +2752,14 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetSurgeryProcedures", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeryProcedures", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<BundleProcedure>();
 
             return result;
         }
 
-        public static List<Procedure> GetProcedures(int? specialtyId, int providerId, int locationId)
+        public static async Task<List<Procedure>> GetProcedures(int? specialtyId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2796,7 +2767,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetProceduresBySpecialty", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetProceduresBySpecialty", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Procedure>();
 
@@ -2817,7 +2788,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static int UpdateSpecialty(int specialtyId, string name, string description, int providerId, int locationId)
+        public static async Task<int> UpdateSpecialty(int specialtyId, string name, string description, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2827,12 +2798,12 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = ExecuteNonQuery("UpdateSpecialty", parameters);
+            var result = await ExecuteNonQueryAsync("UpdateSpecialty", parameters);
 
             return result;
         }
 
-        public static int InsertSpecialty(string name, string description, int providerId, int locationId)
+        public static async Task<int> InsertSpecialty(string name, string description, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2841,14 +2812,14 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsResult = ExecuteCommand("InsertSpecialty", parameters);
+            var dsResult = await ExecuteCommandAsync("InsertSpecialty", parameters);
 
             var result = dsResult.Tables[0].DataTableToList<InsertionResult>();
 
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public static int DeleteSpecialty(int specialtyId, int providerId, int locationId)
+        public static async Task<int> DeleteSpecialty(int specialtyId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2856,7 +2827,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("specialty_id", specialtyId)
             };
-            var result = ExecuteNonQuery("DeleteSpecialty", dsParameters);
+            var result = await ExecuteNonQueryAsync("DeleteSpecialty", dsParameters);
 
             return result;
         }
@@ -2891,7 +2862,7 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault();
         }
 
-        public static List<Flow> GetCardFlowList(int cardId, int providerId, int locationId)
+        public static async Task<List<Flow>> GetCardFlowList(int cardId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2899,14 +2870,14 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetCardFlowList", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetCardFlowList", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Flow>();
 
             return result;
         }
 
-        public static List<FlowStepTiming> GetFlowTimings(int flowId, int providerId, int locationId)
+        public static async Task<List<FlowStepTiming>> GetFlowTimings(int flowId, int providerId, int locationId)
         {
             var parameters = new[]
                 {
@@ -2916,14 +2887,14 @@ namespace OpFlow.Service.DataAccess
                 };
 
 
-            var dsSchedules = ExecuteCommand("GetFlowTimings", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetFlowTimings", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<FlowStepTiming>();
 
             return result;
         }
 
-        public static List<FlowStepSurgeryTiming> GetFlowSurgeryTimings(int surgeryId, int providerId, int locationId)
+        public static async Task<List<FlowStepSurgeryTiming>> GetFlowSurgeryTimings(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2933,7 +2904,7 @@ namespace OpFlow.Service.DataAccess
             };
 
 
-            var dsSchedules = ExecuteCommand("GetFlowSurgeryTimings", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetFlowSurgeryTimings", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<FlowStepSurgeryTiming>();
 
@@ -2942,7 +2913,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<FlowStepInstructionResult> GetFlowInstructions(int flowId, int? surgeryId, int providerId, int locationId)
+        public static async Task<List<FlowStepInstructionResult>> GetFlowInstructions(int flowId, int? surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
                 {
@@ -2953,7 +2924,7 @@ namespace OpFlow.Service.DataAccess
                 };
 
 
-            var dsSchedules = ExecuteCommand("GetFlowInstructions", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetFlowInstructions", parameters);
 
             var instructions = dsSchedules.Tables[0].DataTableToList<FlowInstruction>();
             var result = new List<FlowStepInstructionResult>();
@@ -2984,7 +2955,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<FlowStep> GetFlowComments(int flowId, int surgeryId, int providerId, int locationId)
+        public static async Task<List<FlowStep>> GetFlowComments(int flowId, int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2993,7 +2964,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetFlowComments", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetFlowComments", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<FlowStep>();
 
@@ -3016,7 +2987,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static List<FlowContent> GetFlowContent(int flowId, int surgeryId, int providerId, int locationId)
+        public static async Task<List<FlowContent>> GetFlowContent(int flowId, int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3025,14 +2996,14 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetFlowContent", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetFlowContent", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<FlowContent>();
 
             return result;
         }
 
-        public static List<FlowNotification> GetFlowNotifications(int flowId, int? stepId, int providerId, int locationId)
+        public static async Task<List<FlowNotification>> GetFlowNotifications(int flowId, int? stepId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3041,7 +3012,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = ExecuteCommand("GetFlowStepNotifications", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetFlowStepNotifications", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<FlowNotification>();
 
@@ -3077,7 +3048,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static int DeleteFlowStep(int flowId, int providerId, int locationId)
+        public static async Task<int> DeleteFlowStep(int flowId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3085,12 +3056,12 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = ExecuteNonQuery("DeleteFlowStep", parameters);
+            var result = await ExecuteNonQueryAsync("DeleteFlowStep", parameters);
 
             return result;
         }
 
-        public static int InsertFlowStep(int flowId, int stepId, int stepSequence, decimal duration, int providerId, int locationId)
+        public static async Task<int> InsertFlowStep(int flowId, int stepId, int stepSequence, decimal duration, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3101,12 +3072,12 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = ExecuteNonQuery("NewFlowStep", parameters);
+            var result = await ExecuteNonQueryAsync("NewFlowStep", parameters);
 
             return result;
         }
 
-        public static int UpdateSurgeryStep(int stepId, string stepDescription, string notificationType, bool stepTiming, int providerId, int locationId)
+        public static async Task<int> UpdateSurgeryStep(int stepId, string stepDescription, string notificationType, bool stepTiming, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3117,12 +3088,12 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = ExecuteNonQuery("UpdateStep", parameters);
+            var result = await ExecuteNonQueryAsync("UpdateStep", parameters);
 
             return result;
         }
 
-        public static int AddSurgeryStep(string stepDescription, string notificationType, bool stepTiming, int providerId, int locationId)
+        public static async Task<int> AddSurgeryStep(string stepDescription, string notificationType, bool stepTiming, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3132,7 +3103,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsNotification = ExecuteCommand("InsertStep", parameters);
+            var dsNotification = await ExecuteCommandAsync("InsertStep", parameters);
 
             var result = dsNotification.Tables[0].DataTableToList<InsertionResult>().First().Identifier;
 
@@ -3152,7 +3123,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static int DeleteSurgeryStep(int stepId, int providerId, int locationId)
+        public static async Task<int> DeleteSurgeryStep(int stepId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3160,12 +3131,12 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = ExecuteNonQuery("DeleteStep", parameters);
+            var result = await ExecuteNonQueryAsync("DeleteStep", parameters);
 
             return result;
         }
 
-        public static int InsertFlowNotification(int flowId, int stepId, int notificationType, string message, 
+        public static async Task<int> InsertFlowNotification(int flowId, int stepId, int notificationType, string message, 
             string smsNumber, string emailAddress, int? messagingUserId, int? messagingRoleId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -3181,14 +3152,14 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsNotification = ExecuteCommand("InsertFlowNotification", parameters);
+            var dsNotification = await ExecuteCommandAsync("InsertFlowNotification", parameters);
 
             var result = dsNotification.Tables[0].DataTableToList<InsertionResult>().First().Identifier;
 
             return result;
         }
 
-        public static int EditFlowNotification(int flowNotificationId, string message, int stepId,
+        public static async Task<int> EditFlowNotification(int flowNotificationId, string message, int stepId,
             string smsNumber, string emailAddress, int? messagingUserId, int? messagingRoleId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -3203,12 +3174,12 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = ExecuteNonQuery("UpdateFlowNotification", parameters);
+            var result = await ExecuteNonQueryAsync("UpdateFlowNotification", parameters);
 
             return result;
         }
 
-        public static int DeleteFlowNotification(int flowNotificationId, int providerId, int locationId)
+        public static async Task<int> DeleteFlowNotification(int flowNotificationId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3216,7 +3187,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = ExecuteNonQuery("DeleteFlowNotification", parameters);
+            var result = await ExecuteNonQueryAsync("DeleteFlowNotification", parameters);
 
             return result;
         }
@@ -3293,7 +3264,7 @@ namespace OpFlow.Service.DataAccess
                     new SqlParameter("inventory_value", item.InventoryValue)
                 };
 
-                result.Identity = ExecuteNonQuery(@"INSERT stag_item (provider_id, location_id, location, location_name, from_loc, bin_seq, 
+                result.Identity = await ExecuteNonQueryAsync(@"INSERT stag_item (provider_id, location_id, location, location_name, from_loc, bin_seq, 
                     bin, item_nbr, description, manu_name, mfg_nbr, par_level, uom, item_cost, inventory_value)
                 VALUES (@provider_id, @location_id, @location, @location_name, @from_loc, @bin_seq,
                     @bin, @item_nbr, @description, @manu_name, @mfg_nbr, @par_level, @uom, @item_cost, @inventory_value)", parameters, CommandType.Text);
@@ -3320,7 +3291,7 @@ namespace OpFlow.Service.DataAccess
                     new SqlParameter("unit", card.Unit)
                 };
 
-                result.Identity = ExecuteNonQuery(@"INSERT stag_card (provider_id, location_id, location, surgeon, preference_card_name, type,
+                result.Identity = await ExecuteNonQueryAsync(@"INSERT stag_card (provider_id, location_id, location, surgeon, preference_card_name, type,
                     lawson_id, catalog_nbr, supply_description, manufacturer, open_amt, prn_required, cost_per_unit_ot, dosage, unit)
                         VALUES (@provider_id, @location_id, @location, @surgeon, @preference_card_name, @type,
                     @lawson_id, @catalog_nbr, @supply_description, @manufacturer, @open_amt, @prn_required, @cost_per_unit_ot, @dosage, @unit)", parameters, CommandType.Text);
@@ -3339,7 +3310,7 @@ namespace OpFlow.Service.DataAccess
                     new SqlParameter("manufacturer", tray.Manufacturer)
                 };
 
-                result.Identity = ExecuteNonQuery(@"INSERT stag_tray (provider_id, location_id, customer, tray_id, tray_name, instrument_name, quantity, manufacturer)
+                result.Identity = await ExecuteNonQueryAsync(@"INSERT stag_tray (provider_id, location_id, customer, tray_id, tray_name, instrument_name, quantity, manufacturer)
                 VALUES (@provider_id, @location_id, @customer, @tray_id, @tray_name, @instrument_name, @quantity, @manufacturer)", parameters, CommandType.Text);
             }
             else if(sourceData is ScheduleImport schedule)

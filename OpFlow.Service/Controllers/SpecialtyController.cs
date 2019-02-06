@@ -42,7 +42,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.UpdateSpecialty(specialtyId, specialty.Name, specialty.Description, user.ProviderID, user.LocationID);
+            await DataAccess.SqlHelper.UpdateSpecialty(specialtyId, specialty.Name, specialty.Description, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
         }
@@ -57,7 +57,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var specialtyId = DataAccess.SqlHelper.InsertSpecialty(specialty.Name, specialty.Description, user.ProviderID, user.LocationID);
+            var specialtyId = await DataAccess.SqlHelper.InsertSpecialty(specialty.Name, specialty.Description, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
         }
@@ -72,7 +72,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            DataAccess.SqlHelper.DeleteSpecialty(specialtyId, user.ProviderID, user.LocationID);
+            await DataAccess.SqlHelper.DeleteSpecialty(specialtyId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
         }
