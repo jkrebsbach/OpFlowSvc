@@ -469,6 +469,20 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static async Task<int> UpdateCardFeedback(int feedbackId, bool response, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("feedback_id", feedbackId),
+                new SqlParameter("response", response),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateCardFeedback", parameters);
+
+            return result;
+        }
+
         public static async Task<List<SurgeryCard>> GetSurgeryCardList(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]

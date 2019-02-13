@@ -6,6 +6,7 @@ namespace OpFlow.Data
 {
     public class CardItemFeedback
     {
+        public int CardFeedbackID { get; set; }
         public string SurgeonName { get; set; }
         public string SpecialtyName { get; set; }
         public string CardName { get; set; }
@@ -28,5 +29,10 @@ namespace OpFlow.Data
         public string QtyHoldOrig { get; set; }
         public string QtySource { get; set; }
         public DateTimeOffset? RequestDate { get; set; }
+    }
+
+    public class FeedbackRequest
+    {
+        public bool Response { get; set; }
     }
 }

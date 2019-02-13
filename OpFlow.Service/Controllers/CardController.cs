@@ -111,12 +111,27 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetEditFeedback")]
         [Route("api/card/feedback")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardItemFeedback>))]
+        [HttpGet]
         public async Task<HttpResponseMessage> GetEditFeedback()
         {
             var user = await CacheUtil.GetUserSecurity();
 
             var result = await SqlHelper.GetCardFeedback(user.ProviderID, user.LocationID);
             
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PostEditFeedback")]
+        [Route("api/card/feedback")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostEditFeedback(int feedbackId, [FromBody]FeedbackRequest post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var result = await SqlHelper.UpdateCardFeedback(feedbackId, post.Response, user.ProviderID, user.LocationID);
+
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
