@@ -108,67 +108,15 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("GetCardCountAvgClose")]
-        [Route("api/card/avgClose")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
-        public async Task<HttpResponseMessage> GetCardCountAvgClose(int cardId)
+        [SwaggerOperation("GetEditFeedback")]
+        [Route("api/card/feedback")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardItemFeedback>))]
+        public async Task<HttpResponseMessage> GetEditFeedback()
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var result = await SqlHelper.GetCardCountAvgClose(cardId, user.ProviderID, user.LocationID);
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
-        }
-
-        // GET api/values/5
-        [SwaggerOperation("GetCardSurgeryOpens")]
-        [Route("api/card/opens")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
-        public async Task<HttpResponseMessage> GetCardSurgeryOpens(int surgeryId)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-
-            var result = await SqlHelper.GetCardSurgeryOpens(surgeryId, user.ProviderID, user.LocationID);
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
-        }
-
-        // GET api/values/5
-        [SwaggerOperation("GetCardItemPulls")]
-        [Route("api/card/pulled")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardItem>))]
-        public async Task<HttpResponseMessage> GetCardItemPulls(int surgeryId)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-
-            var result = await SqlHelper.GetCardItemPulls(surgeryId, user.ProviderID, user.LocationID);
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
-        }
-
-        // GET api/values/5
-        [SwaggerOperation("GetCardSurgeryCloses")]
-        [Route("api/card/closes")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardItem>))]
-        public async Task<HttpResponseMessage> GetCardSurgeryCloses(int surgeryId)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-
-            var result = await SqlHelper.GetCardSurgeryCloses(surgeryId, user.ProviderID, user.LocationID);
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
-        }
-
-        // GET api/values/5
-        [SwaggerOperation("GetCardChecklist")]
-        [Route("api/card/checklist")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
-        public async Task<HttpResponseMessage> GetCardChecklist(int cardId)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-
-            var result = await SqlHelper.GetProviderCardChecklist(user.ProviderID, user.LocationID, cardId);
-
+            var result = await SqlHelper.GetCardFeedback(user.ProviderID, user.LocationID);
+            
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 

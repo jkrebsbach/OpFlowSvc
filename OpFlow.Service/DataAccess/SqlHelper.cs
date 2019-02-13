@@ -322,6 +322,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static async Task<List<SurgeryCardItem>> GetSurgeryCardItems(int surgeryId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeryCardItems", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<SurgeryCardItem>();
+
+            return result;
+        }
+
         public static async Task<List<SurgeryInstrumentCount>> GetCardAdditionalItems(int cardId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -436,6 +451,20 @@ namespace OpFlow.Service.DataAccess
                 if (card != null)
                     card.Sources = cardSource.ToList();
             }
+
+            return result;
+        }
+
+        public static async Task<List<CardItemFeedback>> GetCardFeedback(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetCardFeedback", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<CardItemFeedback>();
 
             return result;
         }

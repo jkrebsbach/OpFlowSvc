@@ -242,6 +242,19 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetCardItems")]
+        [Route("api/surgery/carditems")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryCardItem>))]
+        public async Task<HttpResponseMessage> GetCardItems(int surgeryId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var result = await SqlHelper.GetSurgeryCardItems(surgeryId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetCardItemCounts")]
         [Route("api/surgery/cardItemCounts")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardItemCountResult))]

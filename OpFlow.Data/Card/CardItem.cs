@@ -12,6 +12,15 @@ namespace OpFlow.Data
         public string QtyHold { get; set; }
     }
 
+    public class SurgeryCardItem : CardItem
+    {
+        public int? QtyOpenOrig { get; set; }
+        public string QtyHoldOrig { get; set; }
+        public string QtySource { get; set; }
+
+        public bool ValueChanged => QtyOpenOrig != QtyOpen || QtyHoldOrig != QtyHold;
+    }
+
     public class CardItemCount : ItemMaster
     {
         public int CardID { get; set; }
