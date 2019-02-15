@@ -262,8 +262,8 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var itemCounts = (await SqlHelper.GetSurgeryCardItemCounts(surgeryId, user.ProviderID, user.LocationID))
-                .GroupBy(ic => ic.ItemType);
+            var cardItemCounts = await SqlHelper.GetSurgeryCardItemCounts(surgeryId, user.ProviderID, user.LocationID);
+            var itemCounts = cardItemCounts.CardItemCounts.GroupBy(ic => ic.ItemType);
 
             var trayOpens = await SqlHelper.GetSurgeryTrayOpens(surgeryId, user.ProviderID, user.LocationID);
 
@@ -271,30 +271,43 @@ namespace OpFlow.Service.Controllers
 
             foreach (var countType in itemCounts)
             {
-                if (countType.Key == "SUPPLY")
-                    result.Supplies = countType.ToList();
-                else if (countType.Key == "INSTRUMENT")
-                    result.Instruments = countType.ToList();
-                else
+                switch (countType.Key)
                 {
-                    var trayItems = countType.ToList();
-                    var tray = trayItems.FirstOrDefault();
+                    case "SUPPLY":
+                        result.Supplies = countType.ToList();
+                        break;
+                    case "INSTRUMENT":
+                        result.Instruments = countType.ToList();
+                        break;
+                    case "COLLECTION":
+                        result.Collections = countType.ToList();
+                        break;
+                    default:
+                        var trayItems = countType.ToList();
+                        var tray = trayItems.FirstOrDefault();
 
-                    var trayUsage = result.Trays.FirstOrDefault(t => t.TrayID == tray.TrayID);
-                    if (trayUsage == null)
-                    {
-                        trayUsage = new TrayUsage()
+                        var trayUsage = result.Trays.FirstOrDefault(t => t.TrayID == tray.TrayID);
+                        if (trayUsage == null)
+                        {
+                            trayUsage = new TrayUsage()
                             {
                                 TrayID = tray.TrayID ?? 0,
                                 TrayItems = countType.ToList()
                             };
-                        result.Trays.Add(trayUsage);
-                    }
-                    else // error condition..
-                    {
-                        trayUsage.TrayItems = countType.ToList();
-                    }
+                            result.Trays.Add(trayUsage);
+                        }
+                        else // error condition..
+                        {
+                            trayUsage.TrayItems = countType.ToList();
+                        }
+                        break;
                 }
+            }
+
+            foreach (var collection in result.Collections)
+            {
+                collection.CollectionItems = cardItemCounts.TrayCollectionCounts
+                    .Where(c => c.CollectionID == collection.ItemID).ToList();
             }
 
             foreach (var trayOpen in trayOpens)
@@ -302,6 +315,8 @@ namespace OpFlow.Service.Controllers
                 var tray = result.Trays.FirstOrDefault(t => t.TrayID == trayOpen.TrayID);
                 tray.TrayOpened = trayOpen.TrayOpened;
             }
+
+            
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

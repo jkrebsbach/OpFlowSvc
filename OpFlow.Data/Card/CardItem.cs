@@ -21,16 +21,25 @@ namespace OpFlow.Data
         public bool ValueChanged => QtyOpenOrig != QtyOpen || QtyHoldOrig != QtyHold;
     }
 
+    public class CardItemCountQueryResult
+    {
+        public List<CardItemCount> CardItemCounts { get; set; }
+        public List<CardItemCount> TrayCollectionCounts { get; set; }
+    }
+
     public class CardItemCount : ItemMaster
     {
         public int CardID { get; set; }
         public int? TrayID { get; set; }
+        public int? CollectionID { get; set; }
         public int Quantity { get; set; }
 
 
         public bool CustomUsage { get; set; }
         public int Usage { get; set; }
         public int? UsageType { get; set; }
+
+        public List<CardItemCount> CollectionItems { get; set; }
     }
 
     public class SurgeryTrayOpen
@@ -44,6 +53,7 @@ namespace OpFlow.Data
     {
         public List<CardItemCount> Supplies { get; set; }
         public List<CardItemCount> Instruments { get; set; }
+        public List<CardItemCount> Collections { get; set; }
         public List<TrayUsage> Trays { get; set; }
 
         public CardItemCountResult()

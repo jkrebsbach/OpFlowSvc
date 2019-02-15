@@ -17,6 +17,9 @@ namespace OpFlow.Data
         public decimal BillableUnitCost { get; set; }
         public string Manufacturer { get; set; }
         public int VendorID { get; set; }
+
+        public int? TrayID { get; set; }
+        public string TrayName { get; set; }
     }
 
     public class ItemTray
