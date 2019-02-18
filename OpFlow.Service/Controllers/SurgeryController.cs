@@ -711,6 +711,20 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
 
+        // POST api/values
+        [SwaggerOperation("AddCustomSurgeryTrayCollection")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        [Route("api/surgery/addTrayCollection", Name = "AddCustomSurgeryTrayCollection")]
+        public async Task<HttpResponseMessage> AddCustomSurgeryTrayCollection(int surgeryId, int trayCollectionId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            await SqlHelper.AddCustomSurgeryTrayCollection(surgeryId, trayCollectionId, user.ProviderID, user.LocationID);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
 
         [SwaggerOperation("UpdateTeams")]
         [SwaggerResponse(HttpStatusCode.OK)]
