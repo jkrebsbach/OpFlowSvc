@@ -280,7 +280,11 @@ namespace OpFlow.Service.Controllers
                         result.Instruments = countType.ToList();
                         break;
                     case "COLLECTION":
-                        result.Collections = countType.ToList();
+                        result.Collections = new List<TrayCollection>();
+                        foreach (var c in countType)
+                        {
+                            result.Collections.Add(new TrayCollection(c));
+                        }
                         break;
                     default:
                         var trayItems = countType.ToList();
@@ -307,7 +311,10 @@ namespace OpFlow.Service.Controllers
             foreach (var collection in result.Collections)
             {
                 collection.CollectionItems = cardItemCounts.TrayCollectionCounts
-                    .Where(c => c.CollectionID == collection.ItemID).ToList();
+                    .Where(c => c.CollectionItemID == collection.ItemID).ToList();
+
+                collection.Questions = cardItemCounts.TrayQuestions
+                    .Where(c => c.CollectionItemID == collection.ItemID).ToList();
             }
 
             foreach (var trayOpen in trayOpens)
@@ -942,6 +949,11 @@ namespace OpFlow.Service.Controllers
             {
                 await SqlHelper.UpdateSurgeryCount(surgeryId, post.ItemCounts, user.ProviderID, user.LocationID);
                 await SqlHelper.UpdateSurgeryInstrumentCount(surgeryId, post.InstrumentCounts, user.ProviderID, user.LocationID);
+
+                if (post?.Answers.Any() == true)
+                {
+                    await SqlHelper.UpdateSurgeryQuestionAnswers(surgeryId, post.Answers, user.ProviderID, user.LocationID);
+                }
             }
             catch (Exception e)
             {

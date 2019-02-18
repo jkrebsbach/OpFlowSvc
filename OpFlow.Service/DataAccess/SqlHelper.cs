@@ -381,7 +381,8 @@ namespace OpFlow.Service.DataAccess
             var result = new CardItemCountQueryResult
             {
                 CardItemCounts = dsSchedules.Tables[0].DataTableToList<CardItemCount>(),
-                TrayCollectionCounts = dsSchedules.Tables[1].DataTableToList<CardItemCount>()
+                TrayCollectionCounts = dsSchedules.Tables[1].DataTableToList<CollectionItemCount>(),
+                TrayQuestions = dsSchedules.Tables[2].DataTableToList<TrayQuestion>()
             };
 
             return result;
@@ -1549,8 +1550,6 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
-
-
         private static string GetUsageSummary(List<SurgeryCountItemPost> countData)
         {
             if (!countData.Any())
@@ -1573,6 +1572,45 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, "U");
                 AddColumn(doc, row, customItem.Usage);
                 AddColumn(doc, row, customItem.UsageType);
+            }
+
+            return table.OuterXml;
+        }
+
+        public static async Task<int> UpdateSurgeryQuestionAnswers(int surgeryId, List<TrayQuestion> answers, int providerId, int locationId)
+        {
+            var answerSummary = GetAnswerSummary(answers);
+            var dsParameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("answer_summary", answerSummary ?? (object)DBNull.Value)
+            };
+            var update = await ExecuteNonQueryAsync("UpdateSurgeryQuestionAnswer", dsParameters);
+
+            return update;
+        }
+
+        private static string GetAnswerSummary(List<TrayQuestion> answers)
+        {
+            if (!answers.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var answer in answers)
+            {
+                // prevent adding invalid data
+                if (answer.QuestionID <= 0)
+                    continue;
+
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, answer.QuestionID);
+                AddColumn(doc, row, answer.Answer);
             }
 
             return table.OuterXml;

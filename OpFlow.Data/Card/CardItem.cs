@@ -24,22 +24,43 @@ namespace OpFlow.Data
     public class CardItemCountQueryResult
     {
         public List<CardItemCount> CardItemCounts { get; set; }
-        public List<CardItemCount> TrayCollectionCounts { get; set; }
+        public List<CollectionItemCount> TrayCollectionCounts { get; set; }
+        public List<TrayQuestion> TrayQuestions { get; set; }
     }
 
     public class CardItemCount : ItemMaster
     {
         public int CardID { get; set; }
-        public int? TrayID { get; set; }
-        public int? CollectionID { get; set; }
         public int Quantity { get; set; }
 
 
         public bool CustomUsage { get; set; }
         public int Usage { get; set; }
         public int? UsageType { get; set; }
+    }
 
-        public List<CardItemCount> CollectionItems { get; set; }
+    public class CollectionItemCount : CardItemCount
+    {
+        public int CollectionItemID { get; set; }
+    }
+
+    public class TrayCollection : CardItemCount
+    {
+        public TrayCollection(CardItemCount c)
+        {
+            CardID = c.CardID;
+            TrayID = c.TrayID;
+            Quantity = c.Quantity;
+            Usage = c.Usage;
+            UsageType = c.UsageType;
+            ItemDescription = c.ItemDescription;
+            ItemType = c.ItemType;
+            ItemID = c.ItemID;
+        }
+
+        public List<CollectionItemCount> CollectionItems { get; set; }
+        public List<TrayQuestion> Questions { get; set; }
+
     }
 
     public class SurgeryTrayOpen
@@ -53,20 +74,13 @@ namespace OpFlow.Data
     {
         public List<CardItemCount> Supplies { get; set; }
         public List<CardItemCount> Instruments { get; set; }
-        public List<CardItemCount> Collections { get; set; }
+        public List<TrayCollection> Collections { get; set; }
         public List<TrayUsage> Trays { get; set; }
 
         public CardItemCountResult()
         {
             Trays = new List<TrayUsage>();
         }
-    }
-
-    public class TrayUsage
-    {
-        public int TrayID { get; set; }
-        public bool TrayOpened { get; set; }
-        public List<CardItemCount> TrayItems { get; set; }
     }
 
     public class CardUsageHistory
