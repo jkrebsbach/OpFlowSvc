@@ -35,8 +35,12 @@ namespace OpFlow.Service.SignalR
 
                 var sender = userObject;
 
-
-                Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
+                var groups = new List<string>()
+                {
+                    user.ProviderID.ToString()
+                };
+                Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
+                //Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
 
                 // Prepend surgery descriptor to message
                 var surgeryText =
@@ -73,7 +77,12 @@ namespace OpFlow.Service.SignalR
             var sender =
                 await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
-            Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
+            var groups = new List<string>()
+            {
+                user.ProviderID.ToString()
+            };
+            Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
+            //Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
 
             // Send messages to communication target
             await PushNotificationMessage(sender, recipientUser.Email, message);
@@ -114,8 +123,12 @@ namespace OpFlow.Service.SignalR
 
             await PushNotificationMessage(sender, recipientUser.Email, message);
 
-            Clients.All.broadcastMessage(message,
-                (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), DateTime.Now, null, targetUserId);
+            var groups = new List<string>()
+            {
+                user.ProviderID.ToString()
+            };
+            Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), DateTime.Now, null, targetUserId);
+            //Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), DateTime.Now, null, targetUserId);
             await SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID, null, targetUserId, message);
 
         }
@@ -130,13 +143,6 @@ namespace OpFlow.Service.SignalR
             // Don't send push notification to yourself!
             if (recipientEmail != sender.Email)
                 await PushNotification.PostNotification(senderEmail, senderName, recipientEmail, message);
-
-            //Clients.All.broadcastMessage(message, senderRoleId, senderUserId, senderUserName, insertTimestamp, surgeryId, communicationUserId);
-
-            //foreach (var connectionId in Connections.GetConnections(who))
-            //{
-            //    Clients.Client(connectionId).broadcastMessage(message, senderRoleId, senderUserId, senderUserName, insertTimestamp, surgeryId, communicationUserId);
-            //}
         }
 
 
@@ -172,7 +178,7 @@ namespace OpFlow.Service.SignalR
                     advanceSurgery = (flowStep.StepDuration ?? -1) == 0;
                 }
 
-                NotifySurgeryChange("FLOW", surgeryId);
+                NotifySurgeryChange(user.ProviderID, "FLOW", surgeryId);
             }
             catch (Exception ex)
             {
@@ -200,12 +206,17 @@ namespace OpFlow.Service.SignalR
                     startTime, endTime, delayReasonId);
             }
 
-            NotifySurgeryChange("FLOW", surgeryId);
+            NotifySurgeryChange(user.ProviderID, "FLOW", surgeryId);
         }
 
-        private void NotifySurgeryChange(string property, int surgeryId)
+        private void NotifySurgeryChange(int providerId, string property, int surgeryId)
         {
-            Clients.All.surgeryChange(property, surgeryId);
+            var groups = new List<string>()
+            {
+                providerId.ToString()
+            };
+            Clients.Groups(groups).surgeryChange(property, surgeryId);
+            //Clients.All.surgeryChange(property, surgeryId);
         }
     }
 }

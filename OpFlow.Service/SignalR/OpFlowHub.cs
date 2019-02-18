@@ -10,39 +10,70 @@ namespace OpFlow.Service.SignalR
 {
     public abstract class OpFlowHub : Hub
     {
-        private readonly static ConnectionMapping<string> _connections =
-            new ConnectionMapping<string>();
+        protected static ConnectionMapping<string> Connections => new ConnectionMapping<string>();
 
-        protected static ConnectionMapping<string> Connections => _connections;
-
-        public override Task OnConnected()
+        public override async Task OnConnected()
         {
             var userAuthId = Context.User.Identity.GetUserId();
 
-            _connections.Add(userAuthId, Context.ConnectionId);
+            Connections.Add(userAuthId, Context.ConnectionId);
 
-            return base.OnConnected();
+            await ConnectUser(userAuthId);
+            await base.OnConnected();
         }
 
-        public override Task OnDisconnected(bool stopCalled)
+        private async Task ConnectUser(string userAuthId)
         {
-            var userAuthId = Context.User.Identity.GetUserId();
-
-            _connections.Remove(userAuthId, Context.ConnectionId);
-
-            return base.OnDisconnected(stopCalled);
-        }
-
-        public override Task OnReconnected()
-        {
-            var userAuthId = Context.User.Identity.GetUserId();
-
-            if (!_connections.GetConnections(userAuthId).Contains(Context.ConnectionId))
+            try
             {
-                _connections.Add(userAuthId, Context.ConnectionId);
+                var userTask = await CacheUtil.GetUserSecurity(userAuthId);
+                await Groups.Add(Context.ConnectionId, userTask.ProviderID.ToString());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private async Task DisconnectUser(string userAuthId)
+        {
+            try
+            {
+                var userTask = await CacheUtil.GetUserSecurity(userAuthId);
+
+                await Groups.Remove(Context.ConnectionId, userTask.ProviderID.ToString());
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public override async Task OnDisconnected(bool stopCalled)
+        {
+            var userAuthId = Context.User.Identity.GetUserId();
+
+            Connections.Remove(userAuthId, Context.ConnectionId);
+
+            await DisconnectUser(userAuthId);
+            await base.OnDisconnected(stopCalled);
+        }
+
+        public override async Task OnReconnected()
+        {
+            var userAuthId = Context.User.Identity.GetUserId();
+
+            if (!Connections.GetConnections(userAuthId).Contains(Context.ConnectionId))
+            {
+                Connections.Add(userAuthId, Context.ConnectionId);
             }
 
-            return base.OnReconnected();
+            await ConnectUser(userAuthId);
+
+            await base.OnReconnected();
         }
     }
 }
