@@ -27,7 +27,7 @@ namespace OpFlow.Service.Controllers
 
             var patient = await SecureSqlHelper.GetPatient(patientId,
                 user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
-                user.DatabaseName);
+                user.SecureDatabaseName);
 
             if (patient == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound, "Patient not found");
@@ -53,7 +53,7 @@ namespace OpFlow.Service.Controllers
             {
                 var patient = await SecureSqlHelper.GetPatient(patientId,
                     user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
-                    user.DatabaseName);
+                    user.SecureDatabaseName);
                 if (patient != null)
                     patients.Add(patient);
             }
@@ -82,7 +82,7 @@ namespace OpFlow.Service.Controllers
             { 
                 var patient = await SecureSqlHelper.GetPatient(patientId,
                     user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID,
-                    user.DatabaseName);
+                    user.SecureDatabaseName);
                 if (patient != null)
                     patients.Add(patient);
             }
@@ -102,7 +102,7 @@ namespace OpFlow.Service.Controllers
             var patientId = await SecureSqlHelper.CreatePatient(patient.PatientAcctNbr,
                 patient.BirthDate, patient.Gender, patient.FirstName, patient.LastName, patient.MiddleInitial, patient.BMI,
                 secureUser.UserID, user.FirstName, user.LastName, (int)user.RoleID,
-                    secureUser.DatabaseName);
+                    secureUser.SecureDatabaseName);
 
             return Request.CreateResponse(HttpStatusCode.Created, patientId);
         }

@@ -38,7 +38,7 @@ namespace OpFlow.Service.Test
 
                     foreach (var record in fileParser.Records)
                     {
-                        var secureId = await SecureSqlHelper.InsertStagingData(record, user.UserID, "TEST", "TEST", 1, user.DatabaseName);
+                        var secureId = await SecureSqlHelper.InsertStagingData(record, user.UserID, "TEST", "TEST", 1, user.SecureDatabaseName);
 
                         var result = await SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
                         foreach (var message in result.Messages)

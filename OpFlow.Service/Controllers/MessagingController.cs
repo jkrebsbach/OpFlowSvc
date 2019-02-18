@@ -49,7 +49,7 @@ namespace OpFlow.Service.Controllers
             {
                 var patient = await SecureSqlHelper.GetPatient(group.PatientID.Value, 
                     user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID,
-                    user.DatabaseName);
+                    user.SecureDatabaseName);
 
                 group.CommunicationTargetName = $"{patient.LastName} {group.CommunicationTargetName}";
             }
@@ -91,7 +91,7 @@ namespace OpFlow.Service.Controllers
                     var surgery = await SqlHelper.GetSurgery(surgeryId ?? -1, user.ProviderID, user.LocationID);
                     var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
                     var patient = await SecureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
-                        userObject.LastName, (int)userObject.RoleID, user.DatabaseName);
+                        userObject.LastName, (int)userObject.RoleID, user.SecureDatabaseName);
 
                     // Prepend surgery descriptor to message
                     var surgeryText =

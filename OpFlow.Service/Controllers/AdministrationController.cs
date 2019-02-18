@@ -111,7 +111,7 @@ namespace OpFlow.Service.Controllers
                     {
                         var secureId = await SecureSqlHelper.InsertStagingData(record, user.UserID, 
                             secureUser.FirstName, secureUser.LastName, (int)secureUser.RoleID,
-                            user.DatabaseName);
+                            user.SecureDatabaseName);
 
                         var result = await SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
                         foreach (var message in result.Messages)

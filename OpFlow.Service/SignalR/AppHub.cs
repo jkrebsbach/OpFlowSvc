@@ -31,7 +31,7 @@ namespace OpFlow.Service.SignalR
                 var surgery = await SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
                 var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
                 var patient = await SecureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
-                    userObject.LastName, (int)userObject.RoleID, user.DatabaseName);
+                    userObject.LastName, (int)userObject.RoleID, user.SecureDatabaseName);
 
                 var sender = userObject;
 
