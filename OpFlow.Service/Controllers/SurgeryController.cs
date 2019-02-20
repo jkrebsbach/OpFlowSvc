@@ -267,7 +267,10 @@ namespace OpFlow.Service.Controllers
 
             var trayOpens = await SqlHelper.GetSurgeryTrayOpens(surgeryId, user.ProviderID, user.LocationID);
 
-            var result = new CardItemCountResult();
+            var result = new CardItemCountResult()
+            {
+                Collections = new List<TrayCollection>()
+            };
 
             foreach (var countType in itemCounts)
             {
@@ -280,7 +283,6 @@ namespace OpFlow.Service.Controllers
                         result.Instruments = countType.ToList();
                         break;
                     case "COLLECTION":
-                        result.Collections = new List<TrayCollection>();
                         foreach (var c in countType)
                         {
                             result.Collections.Add(new TrayCollection(c));
