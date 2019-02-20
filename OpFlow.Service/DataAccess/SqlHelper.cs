@@ -461,12 +461,18 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<CardItemFeedback>> GetCardFeedback(int providerId, int locationId)
+        public static async Task<List<CardItemFeedback>> GetCardFeedback(int? specialtyId, int? userId, int? cardId, DateTime? beginDate, DateTime? endDate,
+            int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardId ?? (object)DBNull.Value),
+                new SqlParameter("begin_date", beginDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value)
             };
             var dsSchedules = await ExecuteCommandAsync("GetCardFeedback", parameters);
 
@@ -1433,16 +1439,16 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("InsertCustomSurgeryTrayInstrument", dsParameters);
         }
 
-        public static async Task<int> AddCustomSurgeryTrayCollection(int surgeryId, int trayCollectionId, int providerId, int locationId)
+        public static async Task<int> AddCustomSurgeryTray(int surgeryId, int itemId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("tray_collection_id", trayCollectionId)
+                new SqlParameter("tray_collection_id", itemId)
             };
-            return await ExecuteNonQueryAsync("InsertCustomSurgeryTrayCollection", dsParameters);
+            return await ExecuteNonQueryAsync("InsertCustomSurgeryTray", dsParameters);
         }
         
 

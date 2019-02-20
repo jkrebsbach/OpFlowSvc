@@ -112,11 +112,12 @@ namespace OpFlow.Service.Controllers
         [Route("api/card/feedback")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardItemFeedback>))]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetEditFeedback()
+        public async Task<HttpResponseMessage> GetEditFeedback(int? specialtyId = null, int? userId = null, int? cardId = null, DateTime? beginDate = null, DateTime? endDate = null)
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var result = await SqlHelper.GetCardFeedback(user.ProviderID, user.LocationID);
+            var result = await SqlHelper.GetCardFeedback(specialtyId, userId, cardId, beginDate, endDate,
+                user.ProviderID, user.LocationID);
             
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

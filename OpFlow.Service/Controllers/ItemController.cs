@@ -38,5 +38,19 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, items);
         }
+
+        // GET api/values/5
+        [SwaggerOperation("GetVendorTrayHistory")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemTray>))]
+        [Route("api/item/trayHistory")]
+        public async Task<HttpResponseMessage> GetVendorTrayHistory(int? specialtyId = null, int? userId = null, int? cardId = null,
+            DateTime? beginDate = null, DateTime? endDate = null, int? itemId = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var items = await DataAccess.SqlHelper.GetTrayItems(itemId ?? 0, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, items);
+        }
     }
 }
