@@ -273,6 +273,61 @@ namespace OpFlow.Service.DataAccess
             return dsItems.Tables[0].DataTableToList<ItemMaster>();
         }
 
+        public static async Task<List<TrayQuestion>> GetTrayQuestions(int itemId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("item_id", itemId)
+            };
+            var dsItems = await ExecuteCommandAsync("GetTrayQuestions", parameters);
+
+            return dsItems.Tables[0].DataTableToList<TrayQuestion>();
+        }
+
+        public static async Task<List<TrayHistory>> GetTrayHistory(int? specialtyId, int? userId, int? cardId, DateTime? beginDate, DateTime? endDate, int? itemId, 
+            List<TrayQuestion> questions, int providerId, int locationId)
+        {
+            var filters = GetQuestionSummary(questions);
+
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardId ?? (object)DBNull.Value),
+                new SqlParameter("begin_date", beginDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
+                new SqlParameter("item_id", itemId ?? (object)DBNull.Value),
+                new SqlParameter("filters", filters ?? (object)DBNull.Value)
+            };
+            var dsItems = await ExecuteCommandAsync("GetTrayHistory", parameters);
+
+            return dsItems.Tables[0].DataTableToList<TrayHistory>();
+        }
+
+        private static string GetQuestionSummary(List<TrayQuestion> questions)
+        {
+            if (!questions.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var question in questions)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, question.QuestionID);
+                AddColumn(doc, row, question.Answer);
+            }
+
+            return table.OuterXml;
+        }
+
         public static async Task<List<CardDetail>> GetCardData(int cardId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -381,8 +436,7 @@ namespace OpFlow.Service.DataAccess
             var result = new CardItemCountQueryResult
             {
                 CardItemCounts = dsSchedules.Tables[0].DataTableToList<CardItemCount>(),
-                TrayCollectionCounts = dsSchedules.Tables[1].DataTableToList<CollectionItemCount>(),
-                TrayQuestions = dsSchedules.Tables[2].DataTableToList<TrayQuestion>()
+                TrayQuestions = dsSchedules.Tables[1].DataTableToList<TrayQuestion>()
             };
 
             return result;

@@ -20,6 +20,24 @@ namespace OpFlow.Service.Controllers
     public class AdministrationController : ApiController
     {
         // GET api/values/5
+        [SwaggerOperation("VendorTrayHistory")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayHistory>))]
+        [Route("api/administration/trayHistory")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> VendorTrayHistory([FromBody] TrayHistoryRequest post, 
+            int? specialtyId = null, int? userId = null, int? cardId = null,
+            DateTime? beginDate = null, DateTime? endDate = null, int? itemId = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var questions = post?.Questions ?? new List<TrayQuestion>();
+
+            var trayHistory = await SqlHelper.GetTrayHistory(specialtyId, userId, cardId, beginDate, endDate, itemId, questions, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, trayHistory);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetImportType")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ImportType>))]
         [Route("api/administration/importTypes")]

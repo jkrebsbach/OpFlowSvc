@@ -263,18 +263,19 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var cardItemCounts = await SqlHelper.GetSurgeryCardItemCounts(surgeryId, user.ProviderID, user.LocationID);
-            var itemCounts = cardItemCounts.CardItemCounts.GroupBy(ic => ic.ItemType);
+            var itemCounts = cardItemCounts.CardItemCounts.GroupBy(ic => new { ic.ItemType, ic.TrayName, ic.TrayID});
 
             var trayOpens = await SqlHelper.GetSurgeryTrayOpens(surgeryId, user.ProviderID, user.LocationID);
 
             var result = new CardItemCountResult()
             {
-                Collections = new List<TrayCollection>()
+                Collections = new List<TrayCollection>(),
+                Trays = new List<TrayUsage>()
             };
 
             foreach (var countType in itemCounts)
             {
-                switch (countType.Key)
+                switch (countType.Key.ItemType)
                 {
                     case "SUPPLY":
                         result.Supplies = countType.ToList();
@@ -283,38 +284,26 @@ namespace OpFlow.Service.Controllers
                         result.Instruments = countType.ToList();
                         break;
                     case "COLLECTION":
-                        foreach (var c in countType)
+                        result.Collections.Add(new TrayCollection()
                         {
-                            result.Collections.Add(new TrayCollection(c));
-                        }
+                            ItemID = countType.Key.TrayID ?? 0,
+                            CollectionItems = countType.ToList()
+                        });
+                        break;
+                    case "TRAY":
+                        result.Trays.Add(new TrayUsage()
+                        {
+                            TrayID = countType.Key.TrayID ?? 0,
+                            TrayItems = countType.ToList()
+                        });
                         break;
                     default:
-                        var trayItems = countType.ToList();
-                        var tray = trayItems.FirstOrDefault();
-
-                        var trayUsage = result.Trays.FirstOrDefault(t => t.TrayID == tray.TrayID);
-                        if (trayUsage == null)
-                        {
-                            trayUsage = new TrayUsage()
-                            {
-                                TrayID = tray.TrayID ?? 0,
-                                TrayItems = countType.ToList()
-                            };
-                            result.Trays.Add(trayUsage);
-                        }
-                        else // error condition..
-                        {
-                            trayUsage.TrayItems = countType.ToList();
-                        }
                         break;
                 }
             }
 
             foreach (var collection in result.Collections)
             {
-                collection.CollectionItems = cardItemCounts.TrayCollectionCounts
-                    .Where(c => c.CollectionItemID == collection.ItemID).ToList();
-
                 collection.Questions = cardItemCounts.TrayQuestions
                     .Where(c => c.CollectionItemID == collection.ItemID).ToList();
             }
