@@ -24,6 +24,7 @@ namespace OpFlow.Data
     public class CardItemCountQueryResult
     {
         public List<CardItemCount> CardItemCounts { get; set; }
+        public List<CollectionItemCount> TrayCollectionCounts { get; set; }
         public List<TrayQuestion> TrayQuestions { get; set; }
     }
 
@@ -46,7 +47,8 @@ namespace OpFlow.Data
     public class TrayCollection 
     {
         public int ItemID { get; set; }
-        public List<CardItemCount> CollectionItems { get; set; }
+        public string ItemDescription { get; set; }
+        public List<CollectionItemCount> CollectionItems { get; set; }
         public List<TrayQuestion> Questions { get; set; }
 
     }

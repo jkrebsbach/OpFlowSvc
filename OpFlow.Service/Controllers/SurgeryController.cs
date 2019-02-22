@@ -284,11 +284,11 @@ namespace OpFlow.Service.Controllers
                         result.Instruments = countType.ToList();
                         break;
                     case "COLLECTION":
-                        result.Collections.Add(new TrayCollection()
+                        result.Collections.AddRange(countType.Select(c => new TrayCollection()
                         {
-                            ItemID = countType.Key.TrayID ?? 0,
-                            CollectionItems = countType.ToList()
-                        });
+                            ItemID = c.ItemID,
+                            ItemDescription = c.ItemDescription
+                        }));
                         break;
                     case "TRAY":
                         result.Trays.Add(new TrayUsage()
@@ -305,6 +305,9 @@ namespace OpFlow.Service.Controllers
             foreach (var collection in result.Collections)
             {
                 collection.Questions = cardItemCounts.TrayQuestions
+                    .Where(c => c.CollectionItemID == collection.ItemID).ToList();
+
+                collection.CollectionItems = cardItemCounts.TrayCollectionCounts
                     .Where(c => c.CollectionItemID == collection.ItemID).ToList();
             }
 

@@ -436,7 +436,8 @@ namespace OpFlow.Service.DataAccess
             var result = new CardItemCountQueryResult
             {
                 CardItemCounts = dsSchedules.Tables[0].DataTableToList<CardItemCount>(),
-                TrayQuestions = dsSchedules.Tables[1].DataTableToList<TrayQuestion>()
+                TrayCollectionCounts = dsSchedules.Tables[1].DataTableToList<CollectionItemCount>(),
+                TrayQuestions = dsSchedules.Tables[2].DataTableToList<TrayQuestion>()
             };
 
             return result;
