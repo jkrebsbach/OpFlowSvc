@@ -31,12 +31,21 @@ namespace OpFlow.Data
     public class CardItemCount : ItemMaster
     {
         public int CardID { get; set; }
-        public int Quantity { get; set; }
 
 
         public bool CustomUsage { get; set; }
         public int Usage { get; set; }
         public int? UsageType { get; set; }
+
+        public static string GetCsvHeader()
+        {
+            return "Tray,Item,Tray Quantity,Usage\r\n";
+        }
+
+        public string GetCsvExport()
+        {
+            return $"\"{TrayName}\",\"{ItemDescription}\",{Quantity},{Usage}\r\n";
+        }
     }
 
     public class CollectionItemCount : CardItemCount

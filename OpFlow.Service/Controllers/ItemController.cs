@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -41,6 +43,53 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetTrayExport")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/item/trayExport")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTrayExport(int surgeryId, int? trayId = null, string itemType = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var counts = await SqlHelper.GetSurgeryCardItemCounts(surgeryId, user.ProviderID, user.LocationID);
+
+            var items = counts.TrayCollectionCounts.Where(c => c.CollectionItemID == trayId && c.Usage > 0).ToList();
+
+            var csvExport = CardItemCount.GetCsvHeader();
+            csvExport = items.Aggregate(csvExport, (current, item) => current + item.GetCsvExport());
+
+            var exportBytes = System.Text.Encoding.UTF32.GetBytes(csvExport);
+            var memStream = new MemoryStream(exportBytes);
+
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                    { FileName = "TrayItems.DAT", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetCollectionTrays")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
+        [Route("api/item/collectionTrays")]
+        public async Task<HttpResponseMessage> GetCollectionTrays(int itemId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var result = await SqlHelper.GetCollectionTrays(itemId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetTrayQuestions")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayQuestionSummary>))]
         [Route("api/item/trayQuestions")]
@@ -59,6 +108,20 @@ namespace OpFlow.Service.Controllers
                     Answers = questionAnswers.ToList()
                 })
                 .ToList();
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PutTrayInstrument")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("api/item/trayInstrument")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutTrayInstrument(int trayId, [FromBody] TrayInstrumentPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var result = await SqlHelper.InsertTrayInstrument(post.InstrumentName, post.InstrumentNbr, trayId, post.Quantity, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

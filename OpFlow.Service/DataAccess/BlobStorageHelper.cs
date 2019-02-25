@@ -12,10 +12,10 @@ using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace OpFlow.Service.DataAccess
 {
-    public static class BlobStorageHelper
+    public class BlobStorageHelper
     {
         private const string CONTAINER_NAME = "images";
-        private static CloudStorageAccount _storageAccount;
+        private CloudStorageAccount _storageAccount;
 
         public enum ImageType
         {
@@ -25,33 +25,19 @@ namespace OpFlow.Service.DataAccess
             SurgeryImages
         }
 
-        private static CloudStorageAccount StorageAccount => _storageAccount ?? (_storageAccount = CloudStorageAccount.Parse(
-            ConfigurationManager.ConnectionStrings["BlobStorageConnection"].ConnectionString));
-
-
-        public static async Task<List<string>> ListBlobs(string folder)
+        private BlobStorageHelper(string connectionString)
         {
-            BlobContinuationToken continuationToken = null;
-            var results = new List<IListBlobItem>();
-            do
-            {
-                var response = await Container.ListBlobsSegmentedAsync(folder, continuationToken);
-                continuationToken = response.ContinuationToken;
-                results.AddRange(response.Results);
-            }
-            while (continuationToken != null);
-
-
-            var filenames = new List<string>();
-            foreach (var response in results)
-            {
-                filenames.Add(response.Uri.ToString());
-            }
-
-            return filenames;
+            _storageAccount = CloudStorageAccount.Parse(connectionString);
         }
 
-        public static async Task<byte[]> GetBlobBytes(string folder, string filename)
+        public static BlobStorageHelper GetHelper(Data.UserSecurity secureUser)
+        {
+            var result = new BlobStorageHelper(secureUser.BlobKey);
+
+            return result;
+        }
+
+        public async Task<byte[]> GetBlobBytes(string folder, string filename)
         {
             var filepath = Path.Combine(folder, filename);
 
@@ -76,7 +62,7 @@ namespace OpFlow.Service.DataAccess
             return memStream.ToArray();
         }
 
-        public static async Task RotateImage(string folder, string filename, int direction)
+        public async Task RotateImage(string folder, string filename, int direction)
         {
             var filepath = Path.Combine(folder, filename);
 
@@ -123,7 +109,7 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        public static async Task PutBlobBytes(string folder, string filename, byte[] bytes)
+        public async Task PutBlobBytes(string folder, string filename, byte[] bytes)
         {
             var filepath = Path.Combine(folder, filename);
 
@@ -133,7 +119,7 @@ namespace OpFlow.Service.DataAccess
             await blockBlob.UploadFromStreamAsync(memStream);
         }
 
-        public static async Task DeleteBlob(string folder, string filename)
+        public async Task DeleteBlob(string folder, string filename)
         {
             var filepath = Path.Combine(folder, filename);
 
@@ -154,11 +140,11 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        private static CloudBlobContainer Container 
+        private CloudBlobContainer Container 
         {
             get
             {
-                var blobClient = StorageAccount.CreateCloudBlobClient();
+                var blobClient = _storageAccount.CreateCloudBlobClient();
                 return blobClient.GetContainerReference(CONTAINER_NAME);
             }
         }

@@ -285,6 +285,38 @@ namespace OpFlow.Service.DataAccess
 
             return dsItems.Tables[0].DataTableToList<TrayQuestion>();
         }
+        
+        public static async Task<int> InsertTrayInstrument(string instrumentName, string instrumentNbr, 
+            int trayId, int trayQuantity, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("instrument_name", instrumentName),
+                new SqlParameter("instrument_nbr", instrumentNbr ?? (object)DBNull.Value),
+                new SqlParameter("tray_id", trayId),
+                new SqlParameter("tray_quantity", trayQuantity)
+            };
+            var dsItems = await ExecuteCommandAsync("InsertTrayInstrument", parameters);
+
+            var result = dsItems.Tables[0].DataTableToList<InsertionResult>().First();
+
+            return result.Identifier;
+        }
+
+        public static async Task<List<ItemMaster>> GetCollectionTrays(int itemId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("item_id", itemId)
+            };
+            var dsItems = await ExecuteCommandAsync("GetCollectionTrays", parameters);
+
+            return dsItems.Tables[0].DataTableToList<ItemMaster>();
+        }
 
         public static async Task<List<TrayHistory>> GetTrayHistory(int? specialtyId, int? userId, int? cardId, DateTime? beginDate, DateTime? endDate, int? itemId, 
             List<TrayQuestion> questions, int providerId, int locationId)

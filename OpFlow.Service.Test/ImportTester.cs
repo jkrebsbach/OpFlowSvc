@@ -73,9 +73,11 @@ namespace OpFlow.Service.Test
 
                 flowImageId = await SqlHelper.NewFlowImage(1, 1, 1, "1", 1, 1);
                     
-                var folder = DataAccess.BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, 1);
-                await DataAccess.BlobStorageHelper.PutBlobBytes(folder, flowImageId.ToString(), fileContents);
+                var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, 1);
 
+                var storageHelper = BlobStorageHelper.GetHelper(user);
+
+                await storageHelper.PutBlobBytes(folder, flowImageId.ToString(), fileContents);
             }
             catch (Exception e)
             {

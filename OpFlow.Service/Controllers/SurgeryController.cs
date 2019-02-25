@@ -859,7 +859,10 @@ namespace OpFlow.Service.Controllers
                 user.ProviderID, user.LocationID);
 
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.SurgeryImages, surgeryId);
-            await BlobStorageHelper.PutBlobBytes(folder, surgeryImageId.ToString(), fileContents);
+
+            var storageHelper = BlobStorageHelper.GetHelper(user);
+
+            await storageHelper.PutBlobBytes(folder, surgeryImageId.ToString(), fileContents);
 
             return Ok();
         }
@@ -893,7 +896,9 @@ namespace OpFlow.Service.Controllers
 
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.SurgeryImages, surgeryId);
 
-            await BlobStorageHelper.RotateImage(folder, surgeryImageId.ToString(), direction);
+            var storageHelper = BlobStorageHelper.GetHelper(user);
+
+            await storageHelper.RotateImage(folder, surgeryImageId.ToString(), direction);
 
             return Ok();
         }
@@ -910,7 +915,10 @@ namespace OpFlow.Service.Controllers
             await SqlHelper.DeleteSurgeryImage(surgeryImageId, user.ProviderID, user.LocationID);
 
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.SurgeryImages, surgeryId);
-            await BlobStorageHelper.DeleteBlob(folder, surgeryImageId.ToString());
+
+            var storageHelper = BlobStorageHelper.GetHelper(user);
+
+            await storageHelper.DeleteBlob(folder, surgeryImageId.ToString());
 
             return Ok();
         }

@@ -67,6 +67,7 @@ namespace OpFlow.Data
         public Guid UserAuthID { get; set; }
         public string CaseDatabaseName { get; set; }
         public string SecureDatabaseName { get; set; }
+        public string BlobKey { get; set; }
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
     }

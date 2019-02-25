@@ -202,8 +202,10 @@ namespace OpFlow.Service.Controllers
                 fileContents = BlobStorageHelper.CompressImage(fileContents);
             }
 
+            var storageHelper = BlobStorageHelper.GetHelper(user);
+
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, flowId);
-            await BlobStorageHelper.PutBlobBytes(folder, flowImageId.ToString(), fileContents);
+            await storageHelper.PutBlobBytes(folder, flowImageId.ToString(), fileContents);
 
             return Ok();
         }
@@ -237,7 +239,10 @@ namespace OpFlow.Service.Controllers
 
 
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, flowId);
-            await BlobStorageHelper.RotateImage(folder, flowImageId.ToString(), direction);
+
+            var storageHelper = BlobStorageHelper.GetHelper(user);
+
+            await storageHelper.RotateImage(folder, flowImageId.ToString(), direction);
 
             return Ok();
         }
@@ -254,7 +259,10 @@ namespace OpFlow.Service.Controllers
             await SqlHelper.DeleteFlowImage(flowImageId, user.ProviderID, user.LocationID);
 
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, flowId);
-            await BlobStorageHelper.DeleteBlob(folder, flowImageId.ToString());
+
+            var storageHelper = BlobStorageHelper.GetHelper(user);
+
+            await storageHelper.DeleteBlob(folder, flowImageId.ToString());
 
             return Ok();
         }

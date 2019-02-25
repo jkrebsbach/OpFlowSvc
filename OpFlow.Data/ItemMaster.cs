@@ -20,6 +20,7 @@ namespace OpFlow.Data
 
         public int? TrayID { get; set; }
         public string TrayName { get; set; }
+        public int Quantity { get; set; }
     }
 
     public class ItemTray

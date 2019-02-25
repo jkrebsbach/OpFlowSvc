@@ -31,7 +31,10 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, flowId);
-            var binary = await BlobStorageHelper.GetBlobBytes(folder, flowImageId.ToString());
+
+            var storageHelper = BlobStorageHelper.GetHelper(user);
+
+            var binary = await storageHelper.GetBlobBytes(folder, flowImageId.ToString());
 
             return binary == null ?
                 Request.CreateResponse(HttpStatusCode.NotFound) :
@@ -52,7 +55,10 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.SurgeryImages, surgeryId);
-            var binary = await BlobStorageHelper.GetBlobBytes(folder, surgeryImageId.ToString());
+
+            var storageHelper = BlobStorageHelper.GetHelper(user);
+
+            var binary = await storageHelper.GetBlobBytes(folder, surgeryImageId.ToString());
 
             return binary == null ?
                 Request.CreateResponse(HttpStatusCode.NotFound) :
@@ -66,8 +72,12 @@ namespace OpFlow.Service.Controllers
         [Route("api/image/patientPosition", Name = "GetPatientPositionImage")]
         public async Task<HttpResponseMessage> GetPatientPositionImage(int patientPositionId)
         {
+            var user = await CacheUtil.GetUserSecurity();
             var folder = "PatientPosition";
-            var binary = await BlobStorageHelper.GetBlobBytes(folder, patientPositionId.ToString());
+
+            var storageHelper = BlobStorageHelper.GetHelper(user);
+
+            var binary = await storageHelper.GetBlobBytes(folder, patientPositionId.ToString());
 
             return binary == null ?
                 Request.CreateResponse(HttpStatusCode.NotFound) :
@@ -89,7 +99,10 @@ namespace OpFlow.Service.Controllers
 
 
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.RoomSetupImages, roomSetupId);
-            var binary = await BlobStorageHelper.GetBlobBytes(folder, roomSetupImageId.ToString());
+
+            var storageHelper = BlobStorageHelper.GetHelper(user);
+
+            var binary = await storageHelper.GetBlobBytes(folder, roomSetupImageId.ToString());
 
             return binary == null ?
                 Request.CreateResponse(HttpStatusCode.NotFound) :
