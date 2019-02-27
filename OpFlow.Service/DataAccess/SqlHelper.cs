@@ -64,10 +64,21 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        public static async Task<List<TrayRationalization>> GetTrayRationalization(int providerId, int locationId)
+        public static async Task<List<TrayRationalization>> GetTrayRationalization(
+            List<int> specialties, List<int> trays, List<int> surgeons, List<int> cards,
+            int providerId, int locationId)
         {
+            var specialtyXml = GetIdentitySummary(specialties);
+            var trayXml = GetIdentitySummary(trays);
+            var surgeonXml = GetIdentitySummary(surgeons);
+            var cardXml = GetIdentitySummary(cards);
+
             var parameters = new[]
             {
+                new SqlParameter("specialties", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("trays", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeons", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("cards", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -76,6 +87,25 @@ namespace OpFlow.Service.DataAccess
             var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
 
             return result;
+        }
+
+        private static string GetIdentitySummary(List<int> identities)
+        {
+            if (identities == null || !identities.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var identity in identities)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, identity);
+            }
+
+            return table.OuterXml;
         }
 
         public static async Task<List<ImportType>> GetImportTypes(int providerId, int locationId)

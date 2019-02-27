@@ -105,14 +105,17 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
-        [SwaggerOperation("GetTrayRationalizationConfig")]
+        [SwaggerOperation("PutTrayRationalizationConfig")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalization>))]
         [Route("api/administration/trayRationalizationConfig")]
-        public async Task<HttpResponseMessage> GetTrayRationalizationConfig()
+        [HttpPost]
+        public async Task<HttpResponseMessage> PutTrayRationalizationConfig([FromBody] TrayRationalizationConfigPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var rationalization = await SqlHelper.GetTrayRationalization(user.ProviderID, user.LocationID);
+            var rationalization = await SqlHelper.GetTrayRationalization(
+                post.Specialties, post.Trays, post.Surgeons, post.Cards,
+                user.ProviderID, user.LocationID);
             
             return Request.CreateResponse(HttpStatusCode.OK, rationalization);
         }
