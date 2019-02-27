@@ -80,6 +80,43 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
+        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
+        [SwaggerOperation("GetTrayRationalization")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(TrayRationalizationHeader))]
+        [Route("api/administration/trayRationalization")]
+        public async Task<HttpResponseMessage> GetTrayRationalization()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var specialties = await SqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
+            var surgeons = await SqlHelper.SearchUsers(null, 1, null, user.ProviderID, user.LocationID);
+            var trays = await SqlHelper.GetItems("tray", null, null, user.ProviderID, user.LocationID);
+            var cards = await SqlHelper.GetCardList(null, null, null, false, user.ProviderID, user.LocationID);
+
+            var result = new TrayRationalizationHeader()
+            {
+                Specialties = specialties,
+                Surgeons = surgeons,
+                Trays = trays,
+                Cards = cards
+            };
+
+            
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
+        [SwaggerOperation("GetTrayRationalizationConfig")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalization>))]
+        [Route("api/administration/trayRationalizationConfig")]
+        public async Task<HttpResponseMessage> GetTrayRationalizationConfig()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var rationalization = await SqlHelper.GetTrayRationalization(user.ProviderID, user.LocationID);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, rationalization);
+        }
+
         // GET api/values/5
         [SwaggerOperation("GetCaseOverview")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(OverviewScreen))]

@@ -14,6 +14,14 @@ namespace OpFlow.Data
         public string InsTimestamp { get; set; }
     }
 
+    public class TrayRationalizationHeader
+    {
+        public List<Specialty> Specialties { get; set; }
+        public List<ItemMaster> Trays { get; set; }
+        public List<User> Surgeons { get; set; }
+        public List<Card> Cards { get; set; }
+    }
+
     public class TrayRationalization
     {
         public int TrayItemID { get; set; }
