@@ -121,7 +121,11 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var result = await SqlHelper.InsertTrayInstrument(post.InstrumentName, post.InstrumentNbr, trayId, post.Quantity, user.ProviderID, user.LocationID);
+            var result = 0;
+            foreach (var instrument in post.Instruments)
+            {
+                result = await SqlHelper.InsertTrayInstrument(instrument.InstrumentName, instrument.InstrumentNbr, trayId, instrument.Quantity, user.ProviderID, user.LocationID);
+            }
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

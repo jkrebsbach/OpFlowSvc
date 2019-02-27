@@ -43,6 +43,10 @@ namespace OpFlow.Data
 
     public class TrayInstrumentPost
     {
+        public List<NewTrayInstrument> Instruments { get; set; }
+    }
+    public class NewTrayInstrument
+    {
         public string InstrumentName { get; set; }
         public string InstrumentNbr { get; set; }
         public int Quantity { get; set; }

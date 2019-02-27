@@ -696,17 +696,20 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
         [Route("api/surgery/addSurgeryItemUse", Name = "AddCustomSurgeryItem")]
-        public async Task<HttpResponseMessage> AddCustomSurgeryItem(int surgeryId, [FromBody]SurgeryCustomItemPost customItem)
+        public async Task<HttpResponseMessage> AddCustomSurgeryItem(int surgeryId, [FromBody]SurgeryCustomItemPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            if (customItem.TrayID.HasValue)
+            foreach (var customItem in post.Items)
             {
-                await SqlHelper.AddCustomSurgeryTrayItem(surgeryId, customItem.TrayID ?? 0, customItem.ItemID, customItem.Quantity, user.ProviderID, user.LocationID);
-            }
-            else
-            {
-                await SqlHelper.AddCustomSurgeryItem(surgeryId, customItem.ItemID, customItem.Quantity, user.ProviderID, user.LocationID);
+                if (customItem.TrayID.HasValue)
+                {
+                    await SqlHelper.AddCustomSurgeryTrayItem(surgeryId, customItem.TrayID ?? 0, customItem.ItemID, customItem.Quantity, user.ProviderID, user.LocationID);
+                }
+                else
+                {
+                    await SqlHelper.AddCustomSurgeryItem(surgeryId, customItem.ItemID, customItem.Quantity, user.ProviderID, user.LocationID);
+                }
             }
         
             return Request.CreateResponse(HttpStatusCode.OK, 0);

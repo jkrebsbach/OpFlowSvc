@@ -149,6 +149,11 @@ namespace OpFlow.Data
 
     public class SurgeryCustomItemPost
     {
+        public List<NewSurgeryCustomItem> Items { get; set; }
+    }
+
+    public class NewSurgeryCustomItem
+    {
         public int ItemID { get; set; }
         public int Quantity { get; set; }
         public int? TrayID { get; set; }
