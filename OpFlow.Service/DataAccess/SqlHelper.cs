@@ -89,6 +89,42 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static async Task<List<TrayRationalizationCompare>> GetTrayRationalizationCompare(
+            int? trayId, decimal overlap, decimal buffer,
+            int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_item_id", trayId ?? (object)DBNull.Value),
+                new SqlParameter("overlap", overlap),
+                new SqlParameter("buffer", buffer),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetTrayRationalizationCompare", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationCompare>();
+
+            return result;
+        }
+
+        public static async Task<List<TrayRationalizationCompare>> GetTrayRationalizationDetail(
+            int cardId,
+            int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetTrayRationalizationDetail", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationCompare>();
+
+            return result;
+        }
+
         private static string GetIdentitySummary(List<int> identities)
         {
             if (identities == null || !identities.Any())
@@ -103,6 +139,91 @@ namespace OpFlow.Service.DataAccess
                 table.AppendChild(row);
 
                 AddColumn(doc, row, identity);
+            }
+
+            return table.OuterXml;
+        }
+
+        public static async Task<int> InsertProposedTray(int? proposedTrayId,
+            string trayName, List<ProposedTrayInstrumentPost> instruments, int providerId, int locationId)
+        {
+            var instrumentXml = GetInstrumentSummary(instruments);
+            
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", proposedTrayId ?? (object)DBNull.Value),
+                new SqlParameter("tray_name", trayName),
+                new SqlParameter("instruments", instrumentXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("InsertProposedTrayInstruments", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.First().Identifier;
+        }
+
+        public static async Task<List<ItemMaster>> GetProposedTrays(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrays", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
+
+            return result;
+        }
+
+        public static async Task<List<TrayRationalization>> GetProposedTrayInstruments(int proposedTrayId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("proposed_tray_id", proposedTrayId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayInstruments", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
+
+            return result;
+        }
+
+        public static async Task<List<TrayCardOverlap>> GetProposedTrayCardOverlap(int proposedTrayId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("proposed_tray_id", proposedTrayId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCardOverlap", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayCardOverlap>();
+
+            return result;
+        }
+
+        private static string GetInstrumentSummary(List<ProposedTrayInstrumentPost> instruments)
+        {
+            if (instruments == null || !instruments.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var instrument in instruments)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, instrument.InstrumentID);
+                AddColumn(doc, row, instrument.TrayItemID);
+                AddColumn(doc, row, instrument.Quantity);
             }
 
             return table.OuterXml;
@@ -271,6 +392,20 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("DeletePrivateConversation", parameters);
+        }
+
+        public static async Task<List<Card>> GetCards(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetCardList", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Card>();
+
+            return result;
         }
 
         public static async Task<List<ItemMaster>> GetItems(string itemType, int? trayId, bool? countNeeded, int providerId, int locationId)

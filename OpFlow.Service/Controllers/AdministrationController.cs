@@ -17,12 +17,13 @@ using Swashbuckle.Swagger.Annotations;
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
+    [RoutePrefix("api/administration")]
     public class AdministrationController : ApiController
     {
         // GET api/values/5
         [SwaggerOperation("VendorTrayHistory")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayHistory>))]
-        [Route("api/administration/trayHistory")]
+        [Route("trayHistory")]
         [HttpPost]
         public async Task<HttpResponseMessage> VendorTrayHistory([FromBody] TrayHistoryRequest post, 
             int? specialtyId = null, int? userId = null, int? cardId = null,
@@ -40,7 +41,7 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetImportType")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ImportType>))]
-        [Route("api/administration/importTypes")]
+        [Route("importTypes")]
         public async Task<HttpResponseMessage> GetImportTypes()
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -53,7 +54,7 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetImportDetails")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ImportDetail))]
-        [Route("api/administration/importDetails")]
+        [Route("importDetails")]
         public async Task<HttpResponseMessage> GetImportDetail(int importTypeId)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -70,7 +71,7 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetImportMessages")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ImportMessage>))]
-        [Route("api/administration/importMessages")]
+        [Route("importMessages")]
         public async Task<HttpResponseMessage> GetImportMessages(int importLogId)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -80,50 +81,12 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
-        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
-        [SwaggerOperation("GetTrayRationalization")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(TrayRationalizationHeader))]
-        [Route("api/administration/trayRationalization")]
-        public async Task<HttpResponseMessage> GetTrayRationalization()
-        {
-            var user = await CacheUtil.GetUserSecurity();
-
-            var specialties = await SqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
-            var surgeons = await SqlHelper.SearchUsers(null, 1, null, user.ProviderID, user.LocationID);
-            var trays = await SqlHelper.GetItems("tray", null, null, user.ProviderID, user.LocationID);
-            var cards = await SqlHelper.GetCardList(null, null, null, false, user.ProviderID, user.LocationID);
-
-            var result = new TrayRationalizationHeader()
-            {
-                Specialties = specialties,
-                Surgeons = surgeons,
-                Trays = trays,
-                Cards = cards
-            };
-
-            
-            return Request.CreateResponse(HttpStatusCode.OK, result);
-        }
-        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
-        [SwaggerOperation("PutTrayRationalizationConfig")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalization>))]
-        [Route("api/administration/trayRationalizationConfig")]
-        [HttpPost]
-        public async Task<HttpResponseMessage> PutTrayRationalizationConfig([FromBody] TrayRationalizationConfigPost post)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-
-            var rationalization = await SqlHelper.GetTrayRationalization(
-                post.Specialties, post.Trays, post.Surgeons, post.Cards,
-                user.ProviderID, user.LocationID);
-            
-            return Request.CreateResponse(HttpStatusCode.OK, rationalization);
-        }
+        
 
         // GET api/values/5
         [SwaggerOperation("GetCaseOverview")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(OverviewScreen))]
-        [Route("api/administration/caseOverview")]
+        [Route("caseOverview")]
         public async Task<HttpResponseMessage> GetCaseOverview(DateTime beginDate, DateTime endDate, int? specialtyId = null, int? bundleId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -136,7 +99,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("PutImportFile")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [HttpPut]
-        [Route("api/administration/importFile")]
+        [Route("importFile")]
         public async Task<HttpResponseMessage> PutImportFile(int importTypeId)
         {
             var user = await CacheUtil.GetUserSecurity();

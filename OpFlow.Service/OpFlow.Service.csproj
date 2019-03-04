@@ -279,6 +279,7 @@
   <ItemGroup>
     <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\SamlController.cs" />
+    <Compile Include="Controllers\TrayProposalController.cs" />
     <Compile Include="DataAccess\KeyVaultHelper.cs" />
     <Compile Include="DataAccess\SamlHelper.cs" />
     <Compile Include="Models\LogHelper.cs" />
