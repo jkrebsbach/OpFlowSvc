@@ -29,6 +29,7 @@ namespace OpFlow.Data
         public string QtyHoldOrig { get; set; }
         public string QtySource { get; set; }
         public DateTimeOffset? RequestDate { get; set; }
+        public bool DeleteItem { get; set; }
     }
 
     public class FeedbackRequest

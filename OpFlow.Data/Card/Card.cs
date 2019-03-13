@@ -63,15 +63,15 @@ namespace OpFlow.Data
     public class CardQuantityEditRequest
     {
         public string Target { get; set; }
-        public List<int> DeleteData { get; set; }
         public List<CardQuantityEdit> EditData { get; set; }
     }
 
     public class CardQuantityEdit
     {
         public int ItemID { get; set; }
-        public int OpenQty { get; set; }
+        public int? OpenQty { get; set; }
         public string HoldQty { get; set; }
+        public bool DeleteItem { get; set; }
     }
 
     public class CardPost

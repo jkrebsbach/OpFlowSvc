@@ -360,15 +360,6 @@ namespace OpFlow.Service.DataAccess
             var result = await ExecuteNonQueryAsync("InsertMessage", parameters);
         }
 
-        public static List<string> CalculateSurgeryMessageRecipients(
-            int surgeryId, int providerId, int locationId)
-        {
-            return new List<string>()
-            {
-                "ben@opflowtech.com"
-            };
-        }
-
         public static async Task AcknowledgeMessage(int userId, int providerId, int locationId, int messageId, bool hideMessages)
         {
             var parameters = new[]
@@ -1528,8 +1519,9 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("card_id", cardId),
                 new SqlParameter("item_id", quantity.ItemID),
-                new SqlParameter("qty_open", quantity.OpenQty),
-                new SqlParameter("qty_hold", quantity.HoldQty)
+                new SqlParameter("qty_open", quantity.OpenQty ?? (object)DBNull.Value),
+                new SqlParameter("qty_hold", quantity.HoldQty ?? (object)DBNull.Value),
+                new SqlParameter("delete_item", quantity.DeleteItem)
             };
             return await ExecuteNonQueryAsync("UpdateCardItemQtyRequest", dsParameters);
         }
@@ -1542,8 +1534,9 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("item_id", quantity.ItemID),
-                new SqlParameter("qty_open", quantity.OpenQty),
-                new SqlParameter("qty_hold", quantity.HoldQty)
+                new SqlParameter("qty_open", quantity.OpenQty ?? (object)DBNull.Value),
+                new SqlParameter("qty_hold", quantity.HoldQty ?? (object)DBNull.Value),
+                new SqlParameter("delete_item", quantity.DeleteItem)
             };
             return await ExecuteNonQueryAsync("UpdateSurgeryCardItemQty", dsParameters);
         }

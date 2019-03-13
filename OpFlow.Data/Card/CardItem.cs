@@ -17,7 +17,7 @@ namespace OpFlow.Data
         public int? QtyOpenOrig { get; set; }
         public string QtyHoldOrig { get; set; }
         public string QtySource { get; set; }
-
+        public bool DeleteItem { get; set; }
         public bool ValueChanged => QtyOpenOrig != QtyOpen || QtyHoldOrig != QtyHold;
     }
 
