@@ -97,7 +97,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Conflict)]
         [Route("api/flow/copyImage", Name = "CopyFlowImage")]
         [HttpPost]
-        public async Task<HttpResponseMessage> CopyFlowImage(int flowId, int flowImageId, int stepId)
+        public async Task<HttpResponseMessage> CopyFlowImage(int flowImageId, int flowId,int stepId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var flow = await SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
@@ -105,9 +105,7 @@ namespace OpFlow.Service.Controllers
             if (flow == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var storageHelper = BlobStorageHelper.GetHelper(user);
-
-            await CopyFlowImageBinary(user, flowId, flowImageId, stepId);
+            await CopyFlowImageBinary(user, flowImageId, flowId, stepId);
 
             return Request.CreateResponse(HttpStatusCode.OK, 200);
         }
@@ -127,7 +125,7 @@ namespace OpFlow.Service.Controllers
 
             foreach (var flowImageId in batch.IDList)
             {
-                await CopyFlowImageBinary(user, flowId, flowImageId, stepId);
+                await CopyFlowImageBinary(user, flowImageId, flowId, stepId);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, 200);

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -50,6 +52,39 @@ namespace OpFlow.Service.Controllers
                 Instruments = instruments,
                 Cards = cards
             });
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
+        [Route("proposedTray/csv/{proposedTrayId}", Name = "GetTrayCsv")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTrayCsv(int proposedTrayId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var instruments = await SqlHelper.GetProposedTrayInstruments(proposedTrayId, user.ProviderID, user.LocationID);
+
+            var extract = "Instrument Name, Source Tray, Avg Used, Quantity\r\n";
+            foreach (var instrument in instruments)
+            {
+                extract +=
+                    $"\"{instrument.InstrumentName?.Trim()}\",\"{instrument.TrayName?.Trim()}\",{instrument.AvgUsed},{instrument.Quantity}\r\n";
+            }
+
+            var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
+            var memStream = new MemoryStream(extractBytes);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                    { FileName = "TrayRationalization.csv", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
         }
 
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
