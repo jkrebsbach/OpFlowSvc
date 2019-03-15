@@ -7,6 +7,7 @@ namespace OpFlow.Data
     public class FlowImage
     {
         public int FlowImageID { get; set; }
+        public int FlowID { get; set; }
         public string FlowImagePath { get; set; }
         public int FlowStepID { get; set; }
         public int RoleID { get; set; }

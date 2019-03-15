@@ -2136,6 +2136,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static async Task<FlowImage> GetFlowImage(int flowImageId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("flow_image_id", flowImageId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetFlowImage", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<FlowImage>();
+
+            return result.FirstOrDefault();
+        }
+
         public static async Task<List<SurgeryImage>> GetSurgeryImages(int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]

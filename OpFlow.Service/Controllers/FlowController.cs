@@ -70,7 +70,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            foreach (var smartPhraseId in batch.SmartPhraseIDList)
+            foreach (var smartPhraseId in batch.IDList)
             {
                 try
                 {
@@ -89,6 +89,65 @@ namespace OpFlow.Service.Controllers
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, 200);
+        }
+
+        // POST api/values
+        [SwaggerOperation("CopyFlowImage")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.Conflict)]
+        [Route("api/flow/copyImage", Name = "CopyFlowImage")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> CopyFlowImage(int flowId, int flowImageId, int stepId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var flow = await SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
+
+            if (flow == null)
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var storageHelper = BlobStorageHelper.GetHelper(user);
+
+            await CopyFlowImageBinary(user, flowId, flowImageId, stepId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, 200);
+        }
+
+        // POST api/values
+        [SwaggerOperation("BulkCopyFlowImage")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("api/flow/copyImageBatch", Name = "BulkCopyFlowImage")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> CopyFlowImageBatch(int flowId, int stepId, [FromBody]BatchEditModel batch)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var flow = await SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
+
+            if (flow == null)
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            foreach (var flowImageId in batch.IDList)
+            {
+                await CopyFlowImageBinary(user, flowId, flowImageId, stepId);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, 200);
+        }
+
+        private async Task CopyFlowImageBinary(UserSecurity user, int sourceFlowImageId, int targetFlowId, int targetStepId)
+        {
+            
+            var storageHelper = BlobStorageHelper.GetHelper(user);
+
+            var sourceImage = await SqlHelper.GetFlowImage(sourceFlowImageId, user.ProviderID, user.LocationID);
+            var sourceFolder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, sourceImage.FlowID);
+            var targetFolder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, targetFlowId);
+
+            var binary = await storageHelper.GetBlobBytes(sourceFolder, sourceFlowImageId.ToString());
+
+            var targetFlowImageId = await SqlHelper.NewFlowImage(targetFlowId, targetStepId, sourceImage.RoleID, sourceImage.ImageComment,
+                user.ProviderID, user.LocationID);
+
+            await storageHelper.PutBlobBytes(targetFolder, targetFlowImageId.ToString(), binary);
         }
 
         // POST api/values
