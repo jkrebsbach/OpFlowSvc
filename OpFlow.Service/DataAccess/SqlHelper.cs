@@ -108,19 +108,20 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<TrayRationalizationCompare>> GetTrayRationalizationDetail(
-            int cardId,
+        public static async Task<List<TrayRationalizationDetail>> GetTrayRationalizationDetail(
+            int? cardId, int? trayId,
             int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("card_id", cardId),
+                new SqlParameter("card_id", cardId ?? (object)DBNull.Value),
+                new SqlParameter("tray_id", trayId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetTrayRationalizationDetail", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationCompare>();
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationDetail>();
 
             return result;
         }
@@ -164,6 +165,27 @@ namespace OpFlow.Service.DataAccess
             return result.First().Identifier;
         }
 
+        private static string GetInstrumentSummary(List<ProposedTrayInstrumentPost> instruments)
+        {
+            if (instruments == null || !instruments.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var instrument in instruments)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, instrument.InstrumentID);
+                AddColumn(doc, row, instrument.TrayItemID);
+                AddColumn(doc, row, instrument.Quantity);
+            }
+
+            return table.OuterXml;
+        }
+
         public static async Task<List<ItemMaster>> GetProposedTrays(int providerId, int locationId)
         {
             var parameters = new[]
@@ -193,6 +215,44 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static async Task<List<TrayRationalizationCard>> GetProposedTrayCards(int proposedTrayId, List<CardListTrayPost> trays, int providerId, int locationId)
+        {
+            var trayXml = GetCardTraySummary(trays);
+
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", proposedTrayId),
+                new SqlParameter("trays", trayXml),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCardInstruments", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationCard>();
+
+            return result;
+        }
+
+        private static string GetCardTraySummary(List<CardListTrayPost> trays)
+        {
+            if (trays == null || !trays.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var tray in trays)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, tray.CardID);
+                AddColumn(doc, row, tray.TrayID);
+            }
+
+            return table.OuterXml;
+        }
+
         public static async Task<List<TrayCardOverlap>> GetProposedTrayCardOverlap(int proposedTrayId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -206,27 +266,6 @@ namespace OpFlow.Service.DataAccess
             var result = dsSchedules.Tables[0].DataTableToList<TrayCardOverlap>();
 
             return result;
-        }
-
-        private static string GetInstrumentSummary(List<ProposedTrayInstrumentPost> instruments)
-        {
-            if (instruments == null || !instruments.Any())
-                return null;
-
-            var doc = new XmlDocument();
-            var table = doc.CreateElement("table");
-
-            foreach (var instrument in instruments)
-            {
-                var row = doc.CreateElement("row");
-                table.AppendChild(row);
-
-                AddColumn(doc, row, instrument.InstrumentID);
-                AddColumn(doc, row, instrument.TrayItemID);
-                AddColumn(doc, row, instrument.Quantity);
-            }
-
-            return table.OuterXml;
         }
 
         public static async Task<List<ImportType>> GetImportTypes(int providerId, int locationId)

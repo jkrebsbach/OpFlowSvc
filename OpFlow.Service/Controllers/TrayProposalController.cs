@@ -40,7 +40,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
         [Route("proposedTray/{proposedTrayId}")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetProposedTray(int proposedTrayId)
+        public async Task<HttpResponseMessage> GetProposedTray(int proposedTrayId, int? overlapPcnt = 0)
         {
             var user = await CacheUtil.GetUserSecurity();
 
@@ -50,7 +50,7 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 Instruments = instruments,
-                Cards = cards
+                Cards = cards.Where(i => i.Overlap >= (overlapPcnt ?? 0))
             });
         }
 
@@ -68,6 +68,74 @@ namespace OpFlow.Service.Controllers
             {
                 extract +=
                     $"\"{instrument.InstrumentName?.Trim()}\",\"{instrument.TrayName?.Trim()}\",{instrument.AvgUsed},{instrument.Quantity}\r\n";
+            }
+
+            var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
+            var memStream = new MemoryStream(extractBytes);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                    { FileName = "TrayRationalization.csv", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
+        [Route("cardList/csv/{proposedTrayId}", Name = "GetCardListCsv")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> GetCardListCsv(int proposedTrayId, [FromBody] CardListPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var trays = await SqlHelper.GetProposedTrayCards(proposedTrayId, post.Trays, user.ProviderID, user.LocationID);
+
+            var extract = "Surgeon, Card, Specialty, Old Tray, New Tray\r\n";
+            foreach (var tray in trays)
+            {
+                extract +=
+                    $"\"{tray.SurgeonName?.Trim()}\",\"{tray.CardName?.Trim()}\",\"{tray.SpecialtyName}\",\"{tray.SourceTrayName}\",\"{tray.NewTrayName}\"\r\n";
+            }
+
+            var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
+            var memStream = new MemoryStream(extractBytes);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                    { FileName = "CardListExport.csv", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
+        [Route("proposedTrayDetail/csv", Name = "GetTrayDetailCsv")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTrayDetailCsv(int? cardId, int? trayId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            
+            var rationalization = await SqlHelper.GetTrayRationalizationDetail(
+                cardId, trayId,
+                user.ProviderID, user.LocationID);
+
+            var extract = "Surgeon,Card,Tray,Instrument,Qty Open,Avg Used,Peel Pack Qty,Peel Pack Status\r\n";
+            foreach (var detail in rationalization)
+            {
+                extract +=
+                    $"\"{detail.SurgeonName?.Trim()}\",\"{detail.CardName?.Trim()}\",\"{detail.TrayName?.Trim()}\",{detail.InstrumentName?.Trim()},{detail.QtyOpen},{detail.AvgUsed},{detail.PeelPackQty},{detail.PeelPackStatus}\r\n";
             }
 
             var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
@@ -158,7 +226,7 @@ namespace OpFlow.Service.Controllers
                 post.TrayID, post.Overlap, post.Buffer,
                 user.ProviderID, user.LocationID);
 
-            return Request.CreateResponse(HttpStatusCode.OK, rationalization);
+            return Request.CreateResponse(HttpStatusCode.OK, rationalization.Where(r => r.OverlapPcnt > post.Overlap));
         }
 
         [SwaggerOperation("PostTrayRationalizationDetail")]
@@ -170,7 +238,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var rationalization = await SqlHelper.GetTrayRationalizationDetail(
-                post.CardID,
+                post.CardID, post.TrayID,
                 user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, rationalization);
