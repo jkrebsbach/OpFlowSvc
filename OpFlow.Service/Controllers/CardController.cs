@@ -287,6 +287,8 @@ namespace OpFlow.Service.Controllers
             {
                 if (cardQuantity.Target == "C")
                     await SqlHelper.UpdateCardQuantityRequest(cardId, editRequest, user.ProviderID, user.LocationID);
+                else if (editRequest.TrayID.HasValue)
+                    await SqlHelper.AddCustomSurgeryTrayItem(surgeryId, editRequest.TrayID.Value, editRequest.ItemID, editRequest.OpenQty ?? 0, user.ProviderID, user.LocationID);
                 else
                     await SqlHelper.UpdateSurgeryItemQuantity(surgeryId, editRequest, user.ProviderID, user.LocationID);
             }

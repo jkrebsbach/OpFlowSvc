@@ -1834,7 +1834,7 @@ namespace OpFlow.Service.DataAccess
         private static void AddColumn(XmlDocument doc, XmlElement row, object value)
         {
             var col = doc.CreateElement("col");
-            col.InnerText = String.Format("{0}", value);
+            col.InnerText = $"{value}";
             row.AppendChild(col);
         }
 

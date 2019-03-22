@@ -314,7 +314,15 @@ namespace OpFlow.Service.Controllers
             foreach (var trayOpen in trayOpens)
             {
                 var tray = result.Trays.FirstOrDefault(t => t.TrayID == trayOpen.TrayID);
-                tray.TrayOpened = trayOpen.TrayOpened;
+                if (tray == null)
+                {
+                    // If tray null, likely it was a vendor tray
+                    var coll = result.Collections.FirstOrDefault(c => c.ItemID == trayOpen.TrayID);
+                }
+                else
+                {
+                    tray.TrayOpened = trayOpen.TrayOpened;
+                }
             }
 
             

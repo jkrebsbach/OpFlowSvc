@@ -68,6 +68,7 @@ namespace OpFlow.Data
 
     public class CardQuantityEdit
     {
+        public int? TrayID { get; set; }
         public int ItemID { get; set; }
         public int? OpenQty { get; set; }
         public string HoldQty { get; set; }
