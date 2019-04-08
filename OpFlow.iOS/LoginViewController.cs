@@ -136,11 +136,14 @@ namespace OpFlow.iOS
         {
             if (!string.IsNullOrWhiteSpace(userName))
             {
-                var store = AccountStore.Create();
-                var account = (await store.FindAccountsForServiceAsync(_appId)).FirstOrDefault() ?? new Account();
+                //var store = AccountStore.Create();
+                //var account = (await store.FindAccountsForServiceAsync(_appId)).FirstOrDefault() ?? new Account();
+                var stores = await SecureStorageAccountStore.FindAccountsForServiceAsync(_appId);
+                var account = stores.FirstOrDefault() ?? new Account();
 
                 account.Username = userName;
-                await store.SaveAsync(account, _appId);
+                //await store.SaveAsync(account, _appId);
+                await SecureStorageAccountStore.SaveAsync(account, _appId);
             }
         }
 
@@ -157,16 +160,22 @@ namespace OpFlow.iOS
 
         private static async Task<Account> GetCurrentCredential()
         {
-            var store = AccountStore.Create();
-            var length = store.FindAccountsForService(_appId).Count();
-            var account = store.FindAccountsForService(_appId).FirstOrDefault();
+            //var store = AccountStore.Create();
+            //var length = store.FindAccountsForService(_appId).Count();
+            //var account = store.FindAccountsForService(_appId).FirstOrDefault();
+            var stores = await SecureStorageAccountStore.FindAccountsForServiceAsync(_appId);
+            var account = stores.FirstOrDefault();
 
-            while (length > 1)
+            while (stores.Count() > 1)
             {
-                await store.DeleteAsync(account, _appId);
+                await SecureStorageAccountStore.DeleteAccountAsync(account, _appId);
+                //await store.DeleteAsync(account, _appId);
 
-                length = store.FindAccountsForService(_appId).Count();
-                account = store.FindAccountsForService(_appId).FirstOrDefault();
+                //length = store.FindAccountsForService(_appId).Count();
+                //account = store.FindAccountsForService(_appId).FirstOrDefault();
+
+                stores = await SecureStorageAccountStore.FindAccountsForServiceAsync(_appId);
+                account = stores.FirstOrDefault();
             }
 
             return account;
