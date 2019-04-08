@@ -244,6 +244,81 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, rationalization);
         }
 
+        [SwaggerOperation("PostTrayRationalizationOverlap")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalizationDetail>))]
+        [Route("trayRationalizationOverlap")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostTrayRationalizationOverlap(int proposedTrayId, [FromBody] TrayRationalizationOverlapPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var proposed = await SqlHelper.GetProposedTrayInstruments(proposedTrayId, user.ProviderID, user.LocationID);
+            var shared = new List<ItemTray>();
+            var trays = new List<ItemTray>();
+
+            var traySummary = new List<TrayCardOverlapSummary>()
+            {
+                new TrayCardOverlapSummary()
+                {
+                    TrayName = "Proposed Tray",
+                    NbrInstruments = proposed.Sum(p => p.Quantity),
+                    CostPerTray = proposed.Sum(p => p.InstrumentCost * p.Quantity)
+                }
+            };
+
+            foreach (var proposal in proposed)
+            {
+                if (proposal.Quantity < proposal.AvgUsed)
+                    proposal.Warning = true;
+            }
+
+            foreach (var tray in post.Trays)
+            {
+                if (string.IsNullOrEmpty(tray))
+                    continue;
+
+                var trayId = int.Parse(tray);
+
+                var trayInstruments = await SqlHelper.GetTrayItemOverlaps(trayId, user.ProviderID, user.LocationID);
+
+                var commonInstruments = 0;
+                foreach (var instrument in trayInstruments)
+                {
+                    if (instrument.Quantity < instrument.AvgUsed)
+                        instrument.Warning = true;
+
+                    var matching = proposed.FirstOrDefault(p => p.InstrumentID == instrument.InstrumentID);
+                    if (matching != null)
+                    {
+                        // If item on selected tray has qty > item on proposed tray - warn
+                        instrument.Warning = instrument.Warning || (instrument.Quantity > matching.Quantity);
+                        shared.Add(instrument);
+                        commonInstruments++;
+                    }
+                    else
+                    {
+                        // If not added item has used qty - war
+                        instrument.Warning = instrument.Warning || (instrument.AvgUsed > 0);
+                        trays.Add(instrument);
+                    }
+                }
+
+                var overlapSummary = await SqlHelper.GetTrayOverlapSummary(trayId, user.ProviderID, user.LocationID);
+                overlapSummary.CommonInstruments = commonInstruments;
+
+                traySummary.Add(overlapSummary);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                TraySummary = traySummary,
+                Proposed = proposed.GroupBy(s => "Proposed Tray").Select(s => new { TrayName = s.Key, Instruments = s.OrderByDescending(p => p.Warning).ToList() }),
+                Shared = shared.GroupBy(s => s.TrayName).Select(s => new { TrayName = s.Key, Instruments = s.ToList()}),
+                Trays = trays.GroupBy(s => s.TrayName).Select(s => new { TrayName = s.Key, Instruments = s.ToList() })
+            });
+        }
+
+
         [SwaggerOperation("NewProposedTray")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalization>))]
         [Route("proposedTray")]

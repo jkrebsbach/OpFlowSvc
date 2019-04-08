@@ -25,7 +25,14 @@ namespace OpFlow.Data
 
     public class ItemTray
     {
-        public int TrayID { get; set; }
+        public int TrayItemID { get; set; }
+        public int InstrumentID { get; set; }
+        public int Quantity { get; set; }
         public string TrayName { get; set; }
+        public string ItemType { get; set; }
+        public string ItemCategory { get; set; }
+        public string ItemDescription { get; set; }
+        public string InstrumentName { get; set; }
+        public string Manufacturer { get; set; }
     }
 }

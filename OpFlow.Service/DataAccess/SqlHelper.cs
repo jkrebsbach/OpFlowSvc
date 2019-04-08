@@ -268,6 +268,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static async Task<TrayCardOverlapSummary> GetTrayOverlapSummary(int trayId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_id", trayId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetTrayOverlapSummary", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayCardOverlapSummary>().FirstOrDefault();
+
+            return result;
+        }
+
         public static async Task<List<ImportType>> GetImportTypes(int providerId, int locationId)
         {
             var parameters = new[]
@@ -455,7 +470,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<ItemMaster>> GetTrayItems(int trayId, int providerId, int locationId)
+        public static async Task<List<ItemTray>> GetTrayItems(int trayId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -465,7 +480,20 @@ namespace OpFlow.Service.DataAccess
             };
             var dsItems = await ExecuteCommandAsync("GetTrayItems", parameters);
 
-            return dsItems.Tables[0].DataTableToList<ItemMaster>();
+            return dsItems.Tables[0].DataTableToList<ItemTray>();
+        }
+
+        public static async Task<List<ItemTrayOverlap>> GetTrayItemOverlaps(int trayId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("tray_item_id", trayId)
+            };
+            var dsItems = await ExecuteCommandAsync("GetTrayItems", parameters);
+
+            return dsItems.Tables[0].DataTableToList<ItemTrayOverlap>();
         }
 
         public static async Task<List<TrayQuestion>> GetTrayQuestions(int itemId, int providerId, int locationId)

@@ -25,13 +25,16 @@ namespace OpFlow.Data
 
     public class TrayRationalization
     {
+        public int TrayProposalID { get; set; }
         public int InstrumentID { get; set; }
         public int TrayItemID { get; set; }
         public string InstrumentName { get; set; }
         public string TrayName { get; set; }
         public int InstrumentCount { get; set; }
+        public decimal InstrumentCost { get; set; }
         public int Quantity { get; set; }
         public int AvgUsed { get; set; }
+        public bool Warning { get; set; }
     }
 
     public class TrayRationalizationCard
@@ -97,8 +100,13 @@ namespace OpFlow.Data
 
     public class TrayRationalizationDetailPost
     {
-        public int? CardID { get; set; }
-        public int? TrayID { get; set; }
+        public int CardID { get; set; }
+        public int TrayID { get; set; }
+    }
+
+    public class TrayRationalizationOverlapPost
+    {
+        public List<string> Trays { get; set; }
     }
 
     public class TrayRationalizationDetail
@@ -112,6 +120,27 @@ namespace OpFlow.Data
         public int ProposedQty { get; set; }
         public int PeelPackQty { get; set; }
         public string PeelPackStatus { get; set; }
+    }
+
+    public class TrayCardOverlapSummary
+    {
+        public string TrayName { get; set; }
+        public int NbrInstances { get; set; }
+        public int NbrInstruments { get; set; }
+        public decimal CostPerTray { get; set; }
+        public decimal CostAllTrays { get; set; }
+        public int ProcessedAvg { get; set; }
+        public int ProcessedMin { get; set; }
+        public int ProcessedMax { get; set; }
+        public int CommonInstruments { get; set; }
+        public decimal? OverlapPcnt => (decimal)CommonInstruments / NbrInstruments * 100;
+    }
+
+    public class ItemTrayOverlap : ItemTray
+    {
+        public decimal InstrumentCost { get; set; }
+        public int AvgUsed { get; set; }
+        public bool Warning { get; set; }
     }
 
     public class TrayCardOverlap
