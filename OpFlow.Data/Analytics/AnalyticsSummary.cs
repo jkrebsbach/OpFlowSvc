@@ -17,7 +17,7 @@ namespace OpFlow.Data
     public class TrayRationalizationHeader
     {
         public List<Specialty> Specialties { get; set; }
-        public List<ItemMaster> Proposals { get; set; }
+        public List<TrayRationalization> Proposals { get; set; }
         public List<ItemMaster> Trays { get; set; }
         public List<Surgeon> Surgeons { get; set; }
         public List<Card> Cards { get; set; }
@@ -30,10 +30,13 @@ namespace OpFlow.Data
         public int TrayItemID { get; set; }
         public string InstrumentName { get; set; }
         public string TrayName { get; set; }
+        public string Status { get; set; }
+        public string StatusName { get; set; }
         public int InstrumentCount { get; set; }
         public decimal InstrumentCost { get; set; }
         public int Quantity { get; set; }
         public int AvgUsed { get; set; }
+        public string Reason { get; set; }
         public bool Warning { get; set; }
     }
 
@@ -68,6 +71,7 @@ namespace OpFlow.Data
     public class ProposedTrayPost
     {
         public string TrayName { get; set; }
+        public string Status { get; set; }
         public List<ProposedTrayInstrumentPost> Instruments { get; set; }
     }
 
@@ -76,6 +80,18 @@ namespace OpFlow.Data
         public int InstrumentID { get; set; }
         public int TrayItemID { get; set; }
         public int Quantity { get; set; }
+    }
+
+    public class ProposedTrayUpdatePost
+    {
+        public List<UpdateTrayInstrumentPost> Instruments { get; set; }
+    }
+
+    public class UpdateTrayInstrumentPost
+    {
+        public int InstrumentID { get; set; }
+        public int Quantity { get; set; }
+        public string Reason { get; set; }
     }
 
     public class TrayRationalizationComparePost
@@ -90,12 +106,13 @@ namespace OpFlow.Data
         public string ProposedTrayName { get; set; }
         public string ExistingTrayName { get; set; }
         public string InstrumentName { get; set; }
-        public int CommonInstruments { get; set; }
+        public int UsedInstruments { get; set; }
         public int CurrentCards { get; set; }
         public int SatisfiedCards { get; set; }
         public int BufferedCards { get; set; }
-        public int CurrentTrayItems { get; set; }
-        public decimal OverlapPcnt => (decimal)CommonInstruments / CurrentTrayItems * 100;
+        public int CommonInstruments { get; set; }
+        public decimal OverlapPcnt =>
+            (CommonInstruments == 0 ? 0 : (decimal)UsedInstruments / CommonInstruments * 100);
     }
 
     public class TrayRationalizationDetailPost
@@ -132,8 +149,10 @@ namespace OpFlow.Data
         public int ProcessedAvg { get; set; }
         public int ProcessedMin { get; set; }
         public int ProcessedMax { get; set; }
+        public int UsedInstruments { get; set; }
         public int CommonInstruments { get; set; }
-        public decimal? OverlapPcnt => (decimal)CommonInstruments / NbrInstruments * 100;
+        public decimal? OverlapPcnt => 
+            (CommonInstruments == 0 ? 0 : (decimal)UsedInstruments / CommonInstruments * 100);
     }
 
     public class ItemTrayOverlap : ItemTray
@@ -155,5 +174,10 @@ namespace OpFlow.Data
         public int CoveredInstruments { get; set; }
         public int CurrentTrayItems { get; set; }
         public decimal Overlap => (decimal)CoveredInstruments / CurrentTrayItems * 100;
+    }
+
+    public class TraySurgeryAudit : SurgerySearchResult
+    {
+        public bool Audited { get; set; }
     }
 }

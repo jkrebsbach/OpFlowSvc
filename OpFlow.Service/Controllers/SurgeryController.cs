@@ -84,7 +84,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var schedules = await SqlHelper.SearchCases(userId, surgeonUserId, roomGroupId, roomId,
-                bundleId, procedureId, specialtyId,
+                bundleId, procedureId, specialtyId, null, null,
                 begDate, endDate, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);

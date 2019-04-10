@@ -31,37 +31,70 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var trayId = await SqlHelper.GetProposedTrays(user.ProviderID, user.LocationID);
+            var trayId = await SqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }
 
         [SwaggerOperation("GetProposedTray")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
-        [Route("proposedTray/{proposedTrayId}")]
+        [Route("proposedTray/{trayProposalId}")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetProposedTray(int proposedTrayId, int? overlapPcnt = 0)
+        public async Task<HttpResponseMessage> GetProposedTray(int trayProposalId, int? overlapPcnt = 0)
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var instruments = await SqlHelper.GetProposedTrayInstruments(proposedTrayId, user.ProviderID, user.LocationID);
-            var cards = await SqlHelper.GetProposedTrayCardOverlap(proposedTrayId, user.ProviderID, user.LocationID);
+            var proposedTray = (await SqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).FirstOrDefault();
+            var instruments = await SqlHelper.GetProposedTrayInstruments(trayProposalId, user.ProviderID, user.LocationID);
+            var cards = await SqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
+            var audits = await SqlHelper.GetProposedTrayAudits(trayProposalId, user.ProviderID, user.LocationID);
             
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
+                ProposedTray = proposedTray,
                 Instruments = instruments,
-                Cards = cards.Where(i => i.Overlap >= (overlapPcnt ?? 0))
+                Cards = cards.Where(i => i.Overlap >= (overlapPcnt ?? 0)),
+                Audits = audits
             });
         }
 
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
-        [Route("proposedTray/csv/{proposedTrayId}", Name = "GetTrayCsv")]
+        [SwaggerOperation("SearchCases")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
+        [Route("searchCases")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetTrayCsv(int proposedTrayId)
+        public async Task<HttpResponseMessage> SearchCases(int? surgeonUserId = null, int? specialtyId = null, int? trayId = null, int? cardId = null, DateTime? serviceDate = null)
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var instruments = await SqlHelper.GetProposedTrayInstruments(proposedTrayId, user.ProviderID, user.LocationID);
+            var beginDate = serviceDate ?? (DateTime.Today.AddDays(-1));
+
+            var cases = await SqlHelper.SearchCases(null, surgeonUserId, null, null, null, null, specialtyId, trayId, cardId, beginDate,
+                serviceDate, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, cases);
+        }
+
+        [SwaggerOperation("UpdateCaseAudit")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("caseAudit")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateCaseAudit(int trayProposalId, int surgeryId, bool audited)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var result = await SqlHelper.UpdateProposedTrayAudit(trayProposalId, surgeryId, audited, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
+        [Route("proposedTray/csv/{trayProposalId}", Name = "GetTrayCsv")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTrayCsv(int trayProposalId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var instruments = await SqlHelper.GetProposedTrayInstruments(trayProposalId, user.ProviderID, user.LocationID);
 
             var extract = "Instrument Name, Source Tray, Avg Used, Quantity\r\n";
             foreach (var instrument in instruments)
@@ -88,13 +121,13 @@ namespace OpFlow.Service.Controllers
         }
 
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
-        [Route("cardList/csv/{proposedTrayId}", Name = "GetCardListCsv")]
+        [Route("cardList/csv/{trayProposalId}", Name = "GetCardListCsv")]
         [HttpPut]
-        public async Task<HttpResponseMessage> GetCardListCsv(int proposedTrayId, [FromBody] CardListPost post)
+        public async Task<HttpResponseMessage> GetCardListCsv(int trayProposalId, [FromBody] CardListPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var trays = await SqlHelper.GetProposedTrayCards(proposedTrayId, post.Trays, user.ProviderID, user.LocationID);
+            var trays = await SqlHelper.GetProposedTrayCards(trayProposalId, post.Trays, user.ProviderID, user.LocationID);
 
             var extract = "Surgeon, Card, Specialty, Old Tray, New Tray\r\n";
             foreach (var tray in trays)
@@ -165,7 +198,7 @@ namespace OpFlow.Service.Controllers
 
             var specialties = await SqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var surgeons = await SqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
-            var proposals = await SqlHelper.GetProposedTrays(user.ProviderID, user.LocationID);
+            var proposals = await SqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
             var trays = await SqlHelper.GetItems("tray", null, null, user.ProviderID, user.LocationID);
             var cards = await SqlHelper.GetCards(user.ProviderID, user.LocationID);
 
@@ -248,11 +281,11 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalizationDetail>))]
         [Route("trayRationalizationOverlap")]
         [HttpPost]
-        public async Task<HttpResponseMessage> PostTrayRationalizationOverlap(int proposedTrayId, [FromBody] TrayRationalizationOverlapPost post)
+        public async Task<HttpResponseMessage> PostTrayRationalizationOverlap(int trayProposalId, [FromBody] TrayRationalizationOverlapPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var proposed = await SqlHelper.GetProposedTrayInstruments(proposedTrayId, user.ProviderID, user.LocationID);
+            var proposed = await SqlHelper.GetProposedTrayInstruments(trayProposalId, user.ProviderID, user.LocationID);
             var shared = new List<ItemTray>();
             var trays = new List<ItemTray>();
 
@@ -281,6 +314,7 @@ namespace OpFlow.Service.Controllers
 
                 var trayInstruments = await SqlHelper.GetTrayItemOverlaps(trayId, user.ProviderID, user.LocationID);
 
+                var usedInstruments = 0;
                 var commonInstruments = 0;
                 foreach (var instrument in trayInstruments)
                 {
@@ -293,7 +327,9 @@ namespace OpFlow.Service.Controllers
                         // If item on selected tray has qty > item on proposed tray - warn
                         instrument.Warning = instrument.Warning || (instrument.Quantity > matching.Quantity);
                         shared.Add(instrument);
-                        commonInstruments++;
+
+                        usedInstruments += instrument.AvgUsed; // usage history
+                        commonInstruments += matching.Quantity; // proposed quantity
                     }
                     else
                     {
@@ -305,6 +341,7 @@ namespace OpFlow.Service.Controllers
 
                 var overlapSummary = await SqlHelper.GetTrayOverlapSummary(trayId, user.ProviderID, user.LocationID);
                 overlapSummary.CommonInstruments = commonInstruments;
+                overlapSummary.UsedInstruments = usedInstruments;
 
                 traySummary.Add(overlapSummary);
             }
@@ -320,14 +357,54 @@ namespace OpFlow.Service.Controllers
 
 
         [SwaggerOperation("NewProposedTray")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalization>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("proposedTray")]
         [HttpPost]
-        public async Task<HttpResponseMessage> NewProposedTray(int? proposedTrayId, [FromBody] ProposedTrayPost post)
+        public async Task<HttpResponseMessage> NewProposedTray(int? trayProposalId, [FromBody] ProposedTrayPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var trayId = await SqlHelper.InsertProposedTray(proposedTrayId, post.TrayName, post.Instruments, user.ProviderID, user.LocationID);
+            var trayId = await SqlHelper.InsertProposedTray(trayProposalId, post.TrayName, post.Instruments, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, trayId);
+        }
+
+
+        [SwaggerOperation("UpdateProposedTray")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("proposedTray")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> UpdateProposedTray(int trayProposalId, [FromBody] ProposedTrayPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var trayId = await SqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, trayId);
+        }
+
+        [SwaggerOperation("UpdateProposedTrayInstruments")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("proposedTrayInstruments")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> UpdateProposedTrayInstruments(int trayProposalId, [FromBody] ProposedTrayUpdatePost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var trayId = await SqlHelper.UpdateProposedTrayInstruments(trayProposalId, post.Instruments, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, trayId);
+        }
+
+        [SwaggerOperation("DeleteProposedTrayInstrument")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("proposedTrayInstruments")]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteProposedTrayInstrument(int trayProposalId, int instrumentId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var trayId = await SqlHelper.DeleteProposedTrayInstrument(trayProposalId, instrumentId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }

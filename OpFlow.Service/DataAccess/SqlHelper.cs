@@ -165,6 +165,53 @@ namespace OpFlow.Service.DataAccess
             return result.First().Identifier;
         }
 
+        public static async Task<int> UpdateProposedTrayInstruments(int proposedTrayId, List<UpdateTrayInstrumentPost> instruments, int providerId, int locationId)
+        {
+            var instrumentXml = GetInstrumentUpdateSummary(instruments);
+
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", proposedTrayId),
+                new SqlParameter("instruments", instrumentXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProposedTrayInstruments", parameters);
+
+            return result;
+        }
+
+        public static async Task<int> DeleteProposedTrayInstrument(int proposedTrayId, int instrumentId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", proposedTrayId),
+                new SqlParameter("instrument_id", instrumentId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("DeleteProposedTrayInstrument", parameters);
+
+            return result;
+        }
+
+        public static async Task<int> UpdateProposedTray(int proposedTrayId,
+            string trayName, string status, int statusUserId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", proposedTrayId),
+                new SqlParameter("tray_name", trayName),
+                new SqlParameter("status", status),
+                new SqlParameter("status_user_id", statusUserId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProposedTray", parameters);
+
+            return result;
+        }
+
         private static string GetInstrumentSummary(List<ProposedTrayInstrumentPost> instruments)
         {
             if (instruments == null || !instruments.Any())
@@ -186,16 +233,38 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public static async Task<List<ItemMaster>> GetProposedTrays(int providerId, int locationId)
+        private static string GetInstrumentUpdateSummary(List<UpdateTrayInstrumentPost> instruments)
+        {
+            if (instruments == null || !instruments.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var instrument in instruments)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, instrument.InstrumentID);
+                AddColumn(doc, row, instrument.Quantity);
+                AddColumn(doc, row, instrument.Reason);
+            }
+
+            return table.OuterXml;
+        }
+
+        public static async Task<List<TrayRationalization>> GetProposedTrays(int? proposedTrayId, int providerId, int locationId)
         {
             var parameters = new[]
             {
+                new SqlParameter("tray_proposal_id", proposedTrayId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetProposedTrays", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
 
             return result;
         }
@@ -253,11 +322,11 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public static async Task<List<TrayCardOverlap>> GetProposedTrayCardOverlap(int proposedTrayId, int providerId, int locationId)
+        public static async Task<List<TrayCardOverlap>> GetProposedTrayCardOverlap(int trayProposalId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("proposed_tray_id", proposedTrayId),
+                new SqlParameter("proposed_tray_id", trayProposalId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -268,6 +337,37 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static async Task<List<TraySurgeryAudit>> GetProposedTrayAudits(int trayProposalId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("proposed_tray_id", trayProposalId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayAudits", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TraySurgeryAudit>();
+
+            return result;
+        }
+
+        public static async Task<int> UpdateProposedTrayAudit(int trayProposalId, int surgeryId, bool audited, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("audited", audited),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProposedTrayAudit", parameters);
+
+            return result;
+
+        }
+        
         public static async Task<TrayCardOverlapSummary> GetTrayOverlapSummary(int trayId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -2701,7 +2801,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public static async Task<List<SurgerySearchResult>> SearchCases(int? userId, int? surgeonUserId, 
-            int? roomGroupId, int? roomId, int? bundleId, int? procedureId, int? specialtyId,
+            int? roomGroupId, int? roomId, int? bundleId, int? procedureId, int? specialtyId, int? trayId, int? cardId,
             DateTime? begDate, DateTime? endDate, int providerId, int locationId)
         {
             var parameters = new[]
@@ -2713,6 +2813,8 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("tray_id", trayId ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardId ?? (object)DBNull.Value),
                 new SqlParameter("beg_date", begDate ?? (object)DBNull.Value),
                 new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
