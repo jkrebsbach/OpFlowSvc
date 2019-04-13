@@ -96,6 +96,20 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
+        [SwaggerOperation("CleanupPatients")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpPut]
+        [Route("cleanupPatients")]
+        public async Task<HttpResponseMessage> CleanupPatients()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var patients = await SqlHelper.GetCleanupPatients(user.ProviderID, user.LocationID);
+            var result = await SecureSqlHelper.CleanupPatients(patients, user.SecureDatabaseName);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+        
         [SwaggerOperation("PutImportFile")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [HttpPut]

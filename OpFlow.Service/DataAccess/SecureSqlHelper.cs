@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
+using System.Xml;
 using OpFlow.Data;
 using OpFlow.Data.Administration;
 
@@ -49,8 +50,9 @@ namespace OpFlow.Service.DataAccess
                     secureDatabase);
 
             var conn = new SqlConnection(secureConnString);
-
+            
             var cmd = new SqlCommand(storedProcedure, conn) { CommandType = CommandType.StoredProcedure };
+            cmd.CommandTimeout = 60 * 3;
 
             cmd.Parameters.AddRange(dsParameters);
 
@@ -62,6 +64,13 @@ namespace OpFlow.Service.DataAccess
             conn.Close();
 
             return result;
+        }
+
+        private static void AddColumn(XmlDocument doc, XmlElement row, object value)
+        {
+            var col = doc.CreateElement("col");
+            col.InnerText = $"{value}";
+            row.AppendChild(col);
         }
 
         public static async Task<Patient> GetPatient(int patientId, 
@@ -115,6 +124,7 @@ namespace OpFlow.Service.DataAccess
 
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
+
         public static async Task<int?> InsertStagingData(IImportData sourceData,
             int userId, string userFirstName, string userLastName, int? userRoleId, string databaseName)
         {
@@ -147,6 +157,38 @@ namespace OpFlow.Service.DataAccess
             }
 
             return null;
+        }
+
+        public static async Task<int> CleanupPatients(List<Patient> ignorePatients, string databaseName)
+        {
+            var patientSummary = GetPatientSummary(ignorePatients);
+
+            var dsParameters = new[]
+            {
+                new SqlParameter("ignore_patients", patientSummary)
+            };
+            var result = await ExecuteNonQuery("CleanupPatients", databaseName, dsParameters);
+
+            return result;
+        }
+
+        private static string GetPatientSummary(List<Patient> patients)
+        {
+            if (!patients.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var patient in patients)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, patient.PatientID);
+            }
+
+            return table.OuterXml;
         }
     }
 }

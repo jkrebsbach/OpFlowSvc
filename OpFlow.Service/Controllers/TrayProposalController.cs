@@ -45,12 +45,14 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var proposedTray = (await SqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).FirstOrDefault();
+            var statusLog = await SqlHelper.GetProposedTrayStatusLog(trayProposalId, user.ProviderID, user.LocationID);
             var instruments = await SqlHelper.GetProposedTrayInstruments(trayProposalId, user.ProviderID, user.LocationID);
             var cards = await SqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
             var audits = await SqlHelper.GetProposedTrayAudits(trayProposalId, user.ProviderID, user.LocationID);
             
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
+                StatusLog = statusLog,
                 ProposedTray = proposedTray,
                 Instruments = instruments,
                 Cards = cards.Where(i => i.Overlap >= (overlapPcnt ?? 0)),
@@ -74,15 +76,27 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, cases);
         }
 
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TraySurgeryAudit>))]
+        [Route("auditSummary", Name = "GetAuditSummary")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetAuditSummary()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var audits = await SqlHelper.GetProposedTrayAuditSummary(user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, audits);
+        }
+
         [SwaggerOperation("UpdateCaseAudit")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("caseAudit")]
         [HttpPost]
-        public async Task<HttpResponseMessage> UpdateCaseAudit(int trayProposalId, int surgeryId, bool audited)
+        public async Task<HttpResponseMessage> UpdateCaseAudit(int trayProposalId, int surgeryId, int? scrubTechUserId)
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var result = await SqlHelper.UpdateProposedTrayAudit(trayProposalId, surgeryId, audited, user.ProviderID, user.LocationID);
+            var result = await SqlHelper.UpdateProposedTrayAudit(trayProposalId, surgeryId, scrubTechUserId, user.UserID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -129,14 +143,14 @@ namespace OpFlow.Service.Controllers
 
             var trays = await SqlHelper.GetProposedTrayCards(trayProposalId, post.Trays, user.ProviderID, user.LocationID);
 
-            var extract = "Surgeon, Card, Specialty, Old Tray, New Tray\r\n";
+            var extract = "Surgeon, Card, Specialty, Old Tray, New Tray, Intrument, Proposed\r\n";
             foreach (var tray in trays)
             {
                 extract +=
-                    $"\"{tray.SurgeonName?.Trim()}\",\"{tray.CardName?.Trim()}\",\"{tray.SpecialtyName}\",\"{tray.SourceTrayName}\",\"{tray.NewTrayName}\"\r\n";
+                    $"\"{tray.SurgeonName?.Trim().Replace("\"", "\"\"")}\",\"{tray.CardName?.Trim().Replace("\"", "\"\"")}\",\"{tray.SpecialtyName.Replace("\"", "\"\"")}\",\"{tray.SourceTrayName.Replace("\"", "\"\"")}\",\"{tray.NewTrayName.Replace("\"", "\"\"")}\",\"{tray.InstrumentName.Replace("\"", "\"\"")}\",\"{tray.Proposed}\"\r\n";
             }
 
-            var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
+            var extractBytes = System.Text.Encoding.Unicode.GetBytes(extract);
             var memStream = new MemoryStream(extractBytes);
             var result = new HttpResponseMessage(HttpStatusCode.OK)
             {

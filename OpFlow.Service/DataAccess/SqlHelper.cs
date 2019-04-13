@@ -269,6 +269,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static async Task<List<TrayRationalizationStatusLog>> GetProposedTrayStatusLog(int proposedTrayId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", proposedTrayId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayStatusLog", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationStatusLog>();
+
+            return result;
+        }
+
         public static async Task<List<TrayRationalization>> GetProposedTrayInstruments(int proposedTrayId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -348,17 +363,46 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetProposedTrayAudits", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<TraySurgeryAudit>();
+            var scrubTechs = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
+
+            foreach (var scrubTech in scrubTechs)
+            {
+                var surgery = result.FirstOrDefault(r => r.SurgeryID == scrubTech.SurgeryID);
+                surgery?.ScrubTechs.Add(scrubTech);
+            }
 
             return result;
         }
 
-        public static async Task<int> UpdateProposedTrayAudit(int trayProposalId, int surgeryId, bool audited, int providerId, int locationId)
+        public static async Task<List<TraySurgeryAudit>> GetProposedTrayAuditSummary(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayAuditSummary", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TraySurgeryAudit>();
+            var trays = dsSchedules.Tables[1].DataTableToList<SurgeryAuditSourceTray>();
+
+            foreach (var sourceTray in trays)
+            {
+                var audit = result.FirstOrDefault(r => r.TrayProposalID == sourceTray.TrayProposalID && r.SurgeryID == sourceTray.SurgeryID);
+                audit?.SourceTrays.Add(sourceTray);
+            }
+
+            return result;
+        }
+
+        public static async Task<int> UpdateProposedTrayAudit(int trayProposalId, int surgeryId, int? scrubTechUserId, int auditUserId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", trayProposalId),
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("audited", audited),
+                new SqlParameter("scrub_tech_user_id", scrubTechUserId ?? (object)DBNull.Value),
+                new SqlParameter("audit_user_id", auditUserId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -445,6 +489,20 @@ namespace OpFlow.Service.DataAccess
             result.CaseOverview = dsSchedules.Tables[0].DataTableToList<CaseOverview>().FirstOrDefault();
             result.CaseSurgeonOverview = dsSchedules.Tables[1].DataTableToList<CaseSurgeonOverview>();
             result.CaseBundleOverview = dsSchedules.Tables[2].DataTableToList<CaseBundleOverview>();
+
+            return result;
+        }
+
+        public static async Task<List<Patient>> GetCleanupPatients(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsPatient = await ExecuteCommandAsync("GetCleanupPatientList", parameters);
+
+            var result = dsPatient.Tables[0].DataTableToList<Patient>();
 
             return result;
         }

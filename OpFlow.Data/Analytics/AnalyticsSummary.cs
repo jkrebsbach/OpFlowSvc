@@ -38,6 +38,17 @@ namespace OpFlow.Data
         public int AvgUsed { get; set; }
         public string Reason { get; set; }
         public bool Warning { get; set; }
+        public string HistoryType { get; set; }
+        public DateTimeOffset? UpdTimestamp { get; set; }
+    }
+
+    public class TrayRationalizationStatusLog
+    {
+        public string Status { get; set; }
+        public string StatusName { get; set; }
+        public string StatusUser { get; set; }
+        public DateTimeOffset StatusDate { get; set; }
+
     }
 
     public class TrayRationalizationCard
@@ -47,6 +58,8 @@ namespace OpFlow.Data
         public string SpecialtyName { get; set; }
         public string SourceTrayName { get; set; }
         public string NewTrayName { get; set; }
+        public string InstrumentName { get; set; }
+        public int Proposed { get; set; }
     }
 
     public class TrayRationalizationConfigPost
@@ -173,11 +186,41 @@ namespace OpFlow.Data
         public string TrayName { get; set; }
         public int CoveredInstruments { get; set; }
         public int CurrentTrayItems { get; set; }
+        public int UsedInstruments { get; set; }
+        public int CommonInstruments { get; set; }
         public decimal Overlap => (decimal)CoveredInstruments / CurrentTrayItems * 100;
+        public decimal? OverlapPcnt =>
+            (CommonInstruments == 0 ? 0 : (decimal)UsedInstruments / CommonInstruments * 100);
     }
 
-    public class TraySurgeryAudit : SurgerySearchResult
+    public class TraySurgeryAudit 
     {
-        public bool Audited { get; set; }
+        public int TrayProposalID { get; set; }
+        public int SurgeryID { get; set; }
+        public int? AuditUserID { get; set; }
+        public string ProposedTrayName { get; set; }
+        public string SurgeonName { get; set; }
+        public string RoomDescription { get; set; }
+        public DateTimeOffset ? ScheduleTime { get; set; }
+        public string ScrubTechUser { get; set; }
+        public string AuditUser { get; set; }
+        public string TrayStatus { get; set; }
+
+        public List<SurgeryUser> ScrubTechs { get; set; }
+        public List<SurgeryAuditSourceTray> SourceTrays { get; set; }
+
+        public TraySurgeryAudit()
+        {
+            ScrubTechs = new List<SurgeryUser>();
+            SourceTrays = new List<SurgeryAuditSourceTray>();
+        }
+    }
+
+    public class SurgeryAuditSourceTray
+    {
+        public int TrayID { get; set; }
+        public int TrayProposalID { get; set; }
+        public int SurgeryID { get; set; }
+        public string TrayName { get; set; }
     }
 }
