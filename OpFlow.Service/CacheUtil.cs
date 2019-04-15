@@ -31,5 +31,12 @@ namespace OpFlow.Service
             MemCache.Add(userAuthId, secureUser, DateTimeOffset.UtcNow.AddHours(1));
             return secureUser;
         }
+
+        public static void RefreshUserCache()
+        {
+            var userAuthId = HttpContext.Current.User.Identity.GetUserId();
+
+            MemCache.Remove(userAuthId);
+        }
     }
 }

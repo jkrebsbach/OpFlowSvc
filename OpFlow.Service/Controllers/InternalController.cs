@@ -18,7 +18,7 @@ namespace OpFlow.Service.Controllers
     {
         // GET api/values/5
         [SwaggerOperation("GetSetup")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(OpFlowSetup))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<OpFlowProvider>))]
         [Route("setup")]
         [HttpGet]
         public async Task<HttpResponseMessage> GetSetup()
@@ -30,6 +30,25 @@ namespace OpFlow.Service.Controllers
 
             var result = await SqlHelper.GetOpFlowSetup();
             
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PutLocation")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("location")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutLocation(int locationId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var result = await SqlHelper.UpdateUserLocation(user.UserID, locationId);
+
+            CacheUtil.RefreshUserCache();
+
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
     }

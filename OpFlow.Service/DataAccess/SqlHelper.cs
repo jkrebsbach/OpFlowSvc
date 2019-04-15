@@ -1125,16 +1125,32 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault();
         }
 
-        public static async Task<OpFlowSetup> GetOpFlowSetup()
+        public static async Task<List<OpFlowProvider>> GetOpFlowSetup()
         {
             var dsParameters = new SqlParameter[0];
             var dsSchedules = await ExecuteCommandAsync("GetOpFlowSetup", dsParameters);
 
-            var result = new OpFlowSetup()
+
+            var providers = dsSchedules.Tables[0].DataTableToList<OpFlowProvider>();
+            var locations = dsSchedules.Tables[1].DataTableToList<OpFlowLocation>();
+
+            foreach (var location in locations)
             {
-                Providers = dsSchedules.Tables[0].DataTableToList<OpFlowProvider>(),
-                Locations = dsSchedules.Tables[1].DataTableToList<OpFlowLocation>()
+                var provider = providers.FirstOrDefault(p => p.ProviderID == location.ProviderID);
+                provider?.Locations.Add(location);
+            }
+
+            return providers;
+        }
+
+        public static async Task<int> UpdateUserLocation(int userId, int locationId)
+        {
+            var dsParameters = new []
+            {
+                new SqlParameter("user_id", userId),
+                new SqlParameter("location_id", locationId)
             };
+            var result = await ExecuteNonQueryAsync("UpdateUserLocation", dsParameters);
 
             return result;
         }
