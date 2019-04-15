@@ -236,6 +236,11 @@ namespace OpFlow.Data
         public string SurgeonName { get; set; }
 
         public List<SurgeryAuditTray> Trays { get; set; }
+
+        public SurgeryAuditSearchResult()
+        {
+            Trays = new List<SurgeryAuditTray>();
+        }
     }
 
     public class SurgeryAuditTray
