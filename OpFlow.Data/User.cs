@@ -21,6 +21,7 @@ namespace OpFlow.Data
         public string Specialty { get; set; }
         public string RoleName { get; set; }
         public string RoleType { get; set; }
+        public string LocationName { get; set; }
 
         public string DeriveInitials()
         {

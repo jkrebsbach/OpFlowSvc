@@ -414,21 +414,20 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> UpdateProposedTrayAudit(int trayProposalId, int surgeryId, int? scrubTechUserId, int auditUserId, int providerId, int locationId)
+        public static async Task<int> UpdateProposedTrayAudit(int trayProposalId, int surgeryId, int? scrubTechUserId, int? auditUserId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", trayProposalId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("scrub_tech_user_id", scrubTechUserId ?? (object)DBNull.Value),
-                new SqlParameter("audit_user_id", auditUserId),
+                new SqlParameter("audit_user_id", auditUserId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("UpdateProposedTrayAudit", parameters);
 
             return result;
-
         }
         
         public static async Task<TrayCardOverlapSummary> GetTrayOverlapSummary(int trayId, int providerId, int locationId)

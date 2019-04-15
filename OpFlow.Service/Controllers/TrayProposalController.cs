@@ -89,10 +89,27 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, audits);
         }
 
-        [SwaggerOperation("UpdateCaseAudit")]
+        [SwaggerOperation("AddCaseAudit")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("caseAudit")]
         [HttpPost]
+        public async Task<HttpResponseMessage> AddCaseAudit(int trayProposalId, [FromBody] AddCaseAuditPost auditPost)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var result = -1;
+            foreach (var surgeryId in auditPost.Surgeries)
+            {
+                result = await SqlHelper.UpdateProposedTrayAudit(trayProposalId, surgeryId, null, null, user.ProviderID, user.LocationID);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        [SwaggerOperation("UpdateCaseAudit")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("caseAudit")]
+        [HttpPut]
         public async Task<HttpResponseMessage> UpdateCaseAudit(int trayProposalId, int surgeryId, int? scrubTechUserId)
         {
             var user = await CacheUtil.GetUserSecurity();
