@@ -31,6 +31,9 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
+            if (user.RoleType != "Internal" && user.RoleType != "Admin")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
             var questions = post?.Questions ?? new List<TrayQuestion>();
 
             var trayHistory = await SqlHelper.GetTrayHistory(specialtyId, userId, cardId, beginDate, endDate, itemId, questions, user.ProviderID, user.LocationID);
@@ -46,6 +49,9 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
+            if (user.RoleType != "Internal" && user.RoleType != "Admin")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
             var importTypes = await SqlHelper.GetImportTypes(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, importTypes);
@@ -58,6 +64,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetImportDetail(int importTypeId)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal" && user.RoleType != "Admin")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
 
             var result = new ImportDetail()
             {
@@ -76,6 +85,9 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
+            if (user.RoleType != "Internal" && user.RoleType != "Admin")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
             var result = await SqlHelper.GetImportMessages(importLogId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -90,7 +102,10 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCaseOverview(DateTime beginDate, DateTime endDate, int? specialtyId = null, int? bundleId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            
+
+            if (user.RoleType != "Internal" && user.RoleType != "Admin")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
             var result = await SqlHelper.GetCaseOverview(user.ProviderID, user.LocationID, beginDate, endDate, specialtyId, bundleId);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -103,6 +118,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> CleanupPatients()
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal" && user.RoleType != "Admin")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
 
             var patients = await SqlHelper.GetCleanupPatients(user.ProviderID, user.LocationID);
             var result = await SecureSqlHelper.CleanupPatients(patients, user.SecureDatabaseName);
@@ -117,6 +135,10 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutImportFile(int importTypeId)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal" && user.RoleType != "Admin")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
             int? logId = null;
 
             try

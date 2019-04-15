@@ -1125,6 +1125,20 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault();
         }
 
+        public static async Task<OpFlowSetup> GetOpFlowSetup()
+        {
+            var dsParameters = new SqlParameter[0];
+            var dsSchedules = await ExecuteCommandAsync("GetOpFlowSetup", dsParameters);
+
+            var result = new OpFlowSetup()
+            {
+                Providers = dsSchedules.Tables[0].DataTableToList<OpFlowProvider>(),
+                Locations = dsSchedules.Tables[1].DataTableToList<OpFlowLocation>()
+            };
+
+            return result;
+        }
+
         public static async Task<int> CheckInUser(User user, int surgeryId)
         {
             var dsParameters = new[]
