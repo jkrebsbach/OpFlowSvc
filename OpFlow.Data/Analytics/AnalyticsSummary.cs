@@ -35,10 +35,11 @@ namespace OpFlow.Data
         public int InstrumentCount { get; set; }
         public decimal InstrumentCost { get; set; }
         public int Quantity { get; set; }
-        public int AvgUsed { get; set; }
+        public decimal AvgUsed { get; set; }
         public string Reason { get; set; }
         public bool Warning { get; set; }
         public string HistoryType { get; set; }
+        public int Proposed { get; set; }
         public DateTimeOffset? UpdTimestamp { get; set; }
     }
 
@@ -216,10 +217,29 @@ namespace OpFlow.Data
         }
     }
 
+    public class ProposedTrayExport
+    {
+        public List<TrayRationalization> ProposedInstruments { get; set; }
+        public List<TrayRationalization> SourceInstruments { get; set; }
+    }
+
     public class SurgeryAuditSourceTray
     {
         public int TrayID { get; set; }
         public int TrayProposalID { get; set; }
+        public int SurgeryID { get; set; }
+        public string TrayName { get; set; }
+    }
+
+    public class SurgeryAuditSearchResult : SurgerySearchResult
+    {
+        public string SurgeonName { get; set; }
+
+        public List<SurgeryAuditTray> Trays { get; set; }
+    }
+
+    public class SurgeryAuditTray
+    {
         public int SurgeryID { get; set; }
         public string TrayName { get; set; }
     }

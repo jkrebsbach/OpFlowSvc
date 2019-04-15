@@ -61,17 +61,18 @@ namespace OpFlow.Service.Controllers
         }
 
         [SwaggerOperation("SearchCases")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryAuditSearchResult>))]
         [Route("searchCases")]
         [HttpGet]
-        public async Task<HttpResponseMessage> SearchCases(int? surgeonUserId = null, int? specialtyId = null, int? trayId = null, int? cardId = null, DateTime? serviceDate = null)
+        public async Task<HttpResponseMessage> SearchCases(int? surgeonUserId = null, int? specialtyId = null, int? trayId = null, int? cardId = null, 
+            DateTime? beginDate = null, DateTime? endDate = null)
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var beginDate = serviceDate ?? (DateTime.Today.AddDays(-1));
+            beginDate = beginDate ?? (DateTime.Today.AddDays(-1));
 
-            var cases = await SqlHelper.SearchCases(null, surgeonUserId, null, null, null, null, specialtyId, trayId, cardId, beginDate,
-                serviceDate, user.ProviderID, user.LocationID);
+            var cases = await SqlHelper.GetProposedTrayAuditSearch(surgeonUserId, specialtyId, trayId, cardId, beginDate,
+                endDate, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, cases);
         }
@@ -108,13 +109,23 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var instruments = await SqlHelper.GetProposedTrayInstruments(trayProposalId, user.ProviderID, user.LocationID);
+            var export = await SqlHelper.GetProposedTrayInstrumentExport(trayProposalId, user.ProviderID, user.LocationID);
 
-            var extract = "Instrument Name, Source Tray, Avg Used, Quantity\r\n";
-            foreach (var instrument in instruments)
+            var proposed = export.ProposedInstruments;
+            
+            foreach (var sourceInstrument in export.SourceInstruments)
+            {
+                if (export.ProposedInstruments.All(p => p.InstrumentID != sourceInstrument.InstrumentID))
+                {
+                    proposed.Add(sourceInstrument);
+                }
+            }
+
+            var extract = "Instrument Name, Source Tray, Avg Used, Quantity, Proposed\r\n";
+            foreach (var instrument in proposed)
             {
                 extract +=
-                    $"\"{instrument.InstrumentName?.Trim()}\",\"{instrument.TrayName?.Trim()}\",{instrument.AvgUsed},{instrument.Quantity}\r\n";
+                    $"\"{instrument.InstrumentName?.Trim().Replace("\"", "\"\"")}\",\"{instrument.TrayName?.Trim().Replace("\"", "\"\"")}\",{instrument.AvgUsed},{instrument.Quantity},{instrument.Proposed}\r\n";
             }
 
             var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
@@ -302,6 +313,8 @@ namespace OpFlow.Service.Controllers
             var proposed = await SqlHelper.GetProposedTrayInstruments(trayProposalId, user.ProviderID, user.LocationID);
             var shared = new List<ItemTray>();
             var trays = new List<ItemTray>();
+
+            proposed = proposed.Where(p => p.HistoryType == null).ToList();
 
             var traySummary = new List<TrayCardOverlapSummary>()
             {

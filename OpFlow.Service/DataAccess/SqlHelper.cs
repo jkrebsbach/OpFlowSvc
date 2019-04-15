@@ -299,6 +299,25 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static async Task<ProposedTrayExport> GetProposedTrayInstrumentExport(int proposedTrayId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("proposed_tray_id", proposedTrayId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayInstrumentExport", parameters);
+
+            var result = new ProposedTrayExport()
+            {
+                ProposedInstruments = dsSchedules.Tables[0].DataTableToList<TrayRationalization>(),
+                SourceInstruments = dsSchedules.Tables[1].DataTableToList<TrayRationalization>()
+            };
+
+            return result;
+        }
+
         public static async Task<List<TrayRationalizationCard>> GetProposedTrayCards(int proposedTrayId, List<CardListTrayPost> trays, int providerId, int locationId)
         {
             var trayXml = GetCardTraySummary(trays);
@@ -2859,7 +2878,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public static async Task<List<SurgerySearchResult>> SearchCases(int? userId, int? surgeonUserId, 
-            int? roomGroupId, int? roomId, int? bundleId, int? procedureId, int? specialtyId, int? trayId, int? cardId,
+            int? roomGroupId, int? roomId, int? bundleId, int? procedureId, int? specialtyId, 
             DateTime? begDate, DateTime? endDate, int providerId, int locationId)
         {
             var parameters = new[]
@@ -2871,8 +2890,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
-                new SqlParameter("tray_id", trayId ?? (object)DBNull.Value),
-                new SqlParameter("card_id", cardId ?? (object)DBNull.Value),
                 new SqlParameter("beg_date", begDate ?? (object)DBNull.Value),
                 new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
@@ -2888,6 +2905,36 @@ namespace OpFlow.Service.DataAccess
             {
                 var surgery = surgeries.FirstOrDefault(s => s.SurgeryID == surgeryUser.SurgeryID);
                 surgery?.SurgeryUsers?.Add(surgeryUser);
+            }
+
+            return surgeries;
+        }
+
+        public static async Task<List<SurgeryAuditSearchResult>> GetProposedTrayAuditSearch(int? surgeonUserId,
+            int? specialtyId, int? trayId, int? cardId,
+            DateTime? begDate, DateTime? endDate, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgeon_user_id", surgeonUserId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("tray_id", trayId ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardId ?? (object)DBNull.Value),
+                new SqlParameter("beg_date", begDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayAuditSearch", parameters);
+
+            var surgeries = dsSchedules.Tables[0].DataTableToList<SurgeryAuditSearchResult>();
+            var auditTrays = dsSchedules.Tables[1].DataTableToList<SurgeryAuditTray>();
+
+            foreach (var auditTray in auditTrays)
+            {
+                var surgery = surgeries.FirstOrDefault(s => s.SurgeryID == auditTray.SurgeryID);
+                surgery?.Trays?.Add(auditTray);
             }
 
             return surgeries;
