@@ -13,58 +13,13 @@ using OpFlow.Data.Debrief;
 
 namespace OpFlow.Service.DataAccess
 {
-    public static class SqlHelper 
+    public class SqlHelper : SqlBase
     {
-        private static async Task<DataSet> ExecuteCommandAsync(string storedProcedure, SqlParameter[] dsParameters = null)
+        public SqlHelper(string secureDatabase) : base(secureDatabase)
         {
-            try
-            {
-                using (var conn =
-                    new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString))
-                using (var cmd = new SqlCommand(storedProcedure, conn) {CommandType = CommandType.StoredProcedure})
-                {
-                    cmd.Parameters.AddRange(dsParameters);
-
-                    await conn.OpenAsync();
-
-                    using (var dataAdapter = new SqlDataAdapter(cmd))
-                    {
-                        var ds = new DataSet();
-
-                        await Task.Run(() => dataAdapter.Fill(ds));
-
-                        cmd.Parameters.Clear();
-                        conn.Close();
-
-                        return ds;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
         }
 
-        private static async Task<int> ExecuteNonQueryAsync(string storedProcedure, SqlParameter[] dsParameters = null, CommandType commandType = CommandType.StoredProcedure)
-        {
-            using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["OpFlowConnection"].ConnectionString))
-            using (var cmd = new SqlCommand(storedProcedure, conn) { CommandType = commandType })
-            { 
-                cmd.Parameters.AddRange(dsParameters);
-
-                await conn.OpenAsync();
-
-                var result = await cmd.ExecuteNonQueryAsync();
-
-                cmd.Parameters.Clear();
-                conn.Close();
-
-                return result;
-            }
-        }
-
-        public static async Task<List<TrayRationalization>> GetTrayRationalization(
+        public async Task<List<TrayRationalization>> GetTrayRationalization(
             List<int> specialties, List<int> trays, List<int> surgeons, List<int> cards,
             int providerId, int locationId)
         {
@@ -89,7 +44,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<TrayRationalizationCompare>> GetTrayRationalizationCompare(
+        public async Task<List<TrayRationalizationCompare>> GetTrayRationalizationCompare(
             int? trayId, decimal overlap, decimal buffer,
             int providerId, int locationId)
         {
@@ -108,7 +63,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<TrayRationalizationDetail>> GetTrayRationalizationDetail(
+        public async Task<List<TrayRationalizationDetail>> GetTrayRationalizationDetail(
             int? cardId, int? trayId,
             int providerId, int locationId)
         {
@@ -126,7 +81,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        private static string GetIdentitySummary(List<int> identities)
+        private string GetIdentitySummary(List<int> identities)
         {
             if (identities == null || !identities.Any())
                 return null;
@@ -145,7 +100,7 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public static async Task<int> InsertProposedTray(int? proposedTrayId,
+        public async Task<int> InsertProposedTray(int? proposedTrayId,
             string trayName, List<ProposedTrayInstrumentPost> instruments, int providerId, int locationId)
         {
             var instrumentXml = GetInstrumentSummary(instruments);
@@ -165,7 +120,7 @@ namespace OpFlow.Service.DataAccess
             return result.First().Identifier;
         }
 
-        public static async Task<int> UpdateProposedTrayInstruments(int proposedTrayId, List<UpdateTrayInstrumentPost> instruments, int providerId, int locationId)
+        public async Task<int> UpdateProposedTrayInstruments(int proposedTrayId, List<UpdateTrayInstrumentPost> instruments, int providerId, int locationId)
         {
             var instrumentXml = GetInstrumentUpdateSummary(instruments);
 
@@ -181,7 +136,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> DeleteProposedTrayInstrument(int proposedTrayId, int instrumentId, int providerId, int locationId)
+        public async Task<int> DeleteProposedTrayInstrument(int proposedTrayId, int instrumentId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -195,7 +150,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> UpdateProposedTray(int proposedTrayId,
+        public async Task<int> UpdateProposedTray(int proposedTrayId,
             string trayName, string status, int statusUserId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -212,7 +167,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        private static string GetInstrumentSummary(List<ProposedTrayInstrumentPost> instruments)
+        private string GetInstrumentSummary(List<ProposedTrayInstrumentPost> instruments)
         {
             if (instruments == null || !instruments.Any())
                 return null;
@@ -233,7 +188,7 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        private static string GetInstrumentUpdateSummary(List<UpdateTrayInstrumentPost> instruments)
+        private string GetInstrumentUpdateSummary(List<UpdateTrayInstrumentPost> instruments)
         {
             if (instruments == null || !instruments.Any())
                 return null;
@@ -254,7 +209,7 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public static async Task<List<TrayRationalization>> GetProposedTrays(int? proposedTrayId, int providerId, int locationId)
+        public async Task<List<TrayRationalization>> GetProposedTrays(int? proposedTrayId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -269,7 +224,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<TrayRationalizationStatusLog>> GetProposedTrayStatusLog(int proposedTrayId, int providerId, int locationId)
+        public async Task<List<TrayRationalizationStatusLog>> GetProposedTrayStatusLog(int proposedTrayId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -284,7 +239,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<TrayRationalization>> GetProposedTrayInstruments(int proposedTrayId, int providerId, int locationId)
+        public async Task<List<TrayRationalization>> GetProposedTrayInstruments(int proposedTrayId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -299,7 +254,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<ProposedTrayExport> GetProposedTrayInstrumentExport(int proposedTrayId, int providerId, int locationId)
+        public async Task<ProposedTrayExport> GetProposedTrayInstrumentExport(int proposedTrayId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -318,7 +273,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<TrayRationalizationCard>> GetProposedTrayCards(int proposedTrayId, List<CardListTrayPost> trays, int providerId, int locationId)
+        public async Task<List<TrayRationalizationCard>> GetProposedTrayCards(int proposedTrayId, List<CardListTrayPost> trays, int providerId, int locationId)
         {
             var trayXml = GetCardTraySummary(trays);
 
@@ -336,7 +291,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        private static string GetCardTraySummary(List<CardListTrayPost> trays)
+        private string GetCardTraySummary(List<CardListTrayPost> trays)
         {
             if (trays == null || !trays.Any())
                 return null;
@@ -356,7 +311,7 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public static async Task<List<TrayCardOverlap>> GetProposedTrayCardOverlap(int trayProposalId, int providerId, int locationId)
+        public async Task<List<TrayCardOverlap>> GetProposedTrayCardOverlap(int trayProposalId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -371,7 +326,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<TraySurgeryAudit>> GetProposedTrayAudits(int trayProposalId, int providerId, int locationId)
+        public async Task<List<TraySurgeryAudit>> GetProposedTrayAudits(int trayProposalId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -393,7 +348,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<TraySurgeryAudit>> GetProposedTrayAuditSummary(int providerId, int locationId)
+        public async Task<List<TraySurgeryAudit>> GetProposedTrayAuditSummary(int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -414,7 +369,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> UpdateProposedTrayAudit(int trayProposalId, int surgeryId, int? scrubTechUserId, int? auditUserId, int providerId, int locationId)
+        public async Task<int> UpdateProposedTrayAudit(int trayProposalId, int surgeryId, int? scrubTechUserId, int? auditUserId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -430,7 +385,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
         
-        public static async Task<TrayCardOverlapSummary> GetTrayOverlapSummary(int trayId, int providerId, int locationId)
+        public async Task<TrayCardOverlapSummary> GetTrayOverlapSummary(int trayId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -445,7 +400,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<ImportType>> GetImportTypes(int providerId, int locationId)
+        public async Task<List<ImportType>> GetImportTypes(int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -459,7 +414,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<ImportDefinition>> GetImportDefinition(int importTypeId, int providerId, int locationId)
+        public async Task<List<ImportDefinition>> GetImportDefinition(int importTypeId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -474,7 +429,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<ImportMessage>> GetImportMessages(int importLogId, int providerId, int locationId)
+        public async Task<List<ImportMessage>> GetImportMessages(int importLogId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -489,7 +444,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<OverviewScreen> GetCaseOverview(int providerId, int locationId, DateTime beginDate, DateTime endDate, int? specialtyId, int? bundleId)
+        public async Task<OverviewScreen> GetCaseOverview(int providerId, int locationId, DateTime beginDate, DateTime endDate, int? specialtyId, int? bundleId)
         {
             var parameters = new[]
             {
@@ -511,7 +466,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<Patient>> GetCleanupPatients(int providerId, int locationId)
+        public async Task<List<Patient>> GetCleanupPatients(int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -525,7 +480,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<ImportLog>> GetImportLog(int importTypeId, int providerId, int locationId)
+        public async Task<List<ImportLog>> GetImportLog(int importTypeId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -540,7 +495,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<Messaging>> GetMessaging(int userId, int? surgeryId, int? caseGroupId, int? recipientId, int providerId, int locationId)
+        public async Task<List<Messaging>> GetMessaging(int userId, int? surgeryId, int? caseGroupId, int? recipientId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -558,7 +513,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<MessagingGroup>> GetMessageGroups(int userId, DateTime? startDate, DateTime? endDate, int providerId, int locationId)
+        public async Task<List<MessagingGroup>> GetMessageGroups(int userId, DateTime? startDate, DateTime? endDate, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -575,7 +530,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task SendMessage(int userId, int providerId, int locationId,
+        public async Task SendMessage(int userId, int providerId, int locationId,
             int? surgeryId, int? communicationUserId, string message)
         {
             var parameters = new[]
@@ -590,7 +545,7 @@ namespace OpFlow.Service.DataAccess
             var result = await ExecuteNonQueryAsync("InsertMessage", parameters);
         }
 
-        public static async Task AcknowledgeMessage(int userId, int providerId, int locationId, int messageId, bool hideMessages)
+        public async Task AcknowledgeMessage(int userId, int providerId, int locationId, int messageId, bool hideMessages)
         {
             var parameters = new[]
             {
@@ -603,7 +558,7 @@ namespace OpFlow.Service.DataAccess
             var result = await ExecuteNonQueryAsync("InsertMessageAcknowledgement", parameters);
         }
 
-        public static async Task DeletePrivateConversation(int communicationUserId, int userId, int providerId, int locationId)
+        public async Task DeletePrivateConversation(int communicationUserId, int userId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -615,7 +570,7 @@ namespace OpFlow.Service.DataAccess
             var result = await ExecuteNonQueryAsync("DeletePrivateConversation", parameters);
         }
 
-        public static async Task<List<Card>> GetCards(int providerId, int locationId)
+        public async Task<List<Card>> GetCards(int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -629,7 +584,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<ItemMaster>> GetItems(string itemType, int? trayId, bool? countNeeded, int providerId, int locationId)
+        public async Task<List<ItemMaster>> GetItems(string itemType, int? trayId, bool? countNeeded, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -646,7 +601,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<ItemTray>> GetTrayItems(int trayId, int providerId, int locationId)
+        public async Task<List<ItemTray>> GetTrayItems(int trayId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -659,7 +614,7 @@ namespace OpFlow.Service.DataAccess
             return dsItems.Tables[0].DataTableToList<ItemTray>();
         }
 
-        public static async Task<List<ItemTrayOverlap>> GetTrayItemOverlaps(int trayId, int providerId, int locationId)
+        public async Task<List<ItemTrayOverlap>> GetTrayItemOverlaps(int trayId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -672,7 +627,7 @@ namespace OpFlow.Service.DataAccess
             return dsItems.Tables[0].DataTableToList<ItemTrayOverlap>();
         }
 
-        public static async Task<List<TrayQuestion>> GetTrayQuestions(int itemId, int providerId, int locationId)
+        public async Task<List<TrayQuestion>> GetTrayQuestions(int itemId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -685,7 +640,7 @@ namespace OpFlow.Service.DataAccess
             return dsItems.Tables[0].DataTableToList<TrayQuestion>();
         }
         
-        public static async Task<int> InsertTrayInstrument(string instrumentName, string instrumentNbr, 
+        public async Task<int> InsertTrayInstrument(string instrumentName, string instrumentNbr, 
             int trayId, int trayQuantity, int providerId, int locationId)
         {
             var parameters = new[]
@@ -704,7 +659,7 @@ namespace OpFlow.Service.DataAccess
             return result.Identifier;
         }
 
-        public static async Task<List<ItemMaster>> GetCollectionTrays(int itemId, int providerId, int locationId)
+        public async Task<List<ItemMaster>> GetCollectionTrays(int itemId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -717,7 +672,7 @@ namespace OpFlow.Service.DataAccess
             return dsItems.Tables[0].DataTableToList<ItemMaster>();
         }
 
-        public static async Task<List<TrayHistory>> GetTrayHistory(int? specialtyId, int? userId, int? cardId, DateTime? beginDate, DateTime? endDate, int? itemId, 
+        public async Task<List<TrayHistory>> GetTrayHistory(int? specialtyId, int? userId, int? cardId, DateTime? beginDate, DateTime? endDate, int? itemId, 
             List<TrayQuestion> questions, int providerId, int locationId)
         {
             var filters = GetQuestionSummary(questions);
@@ -739,7 +694,7 @@ namespace OpFlow.Service.DataAccess
             return dsItems.Tables[0].DataTableToList<TrayHistory>();
         }
 
-        private static string GetQuestionSummary(List<TrayQuestion> questions)
+        private string GetQuestionSummary(List<TrayQuestion> questions)
         {
             if (!questions.Any())
                 return null;
@@ -759,7 +714,7 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public static async Task<List<CardDetail>> GetCardData(int cardId, int providerId, int locationId)
+        public async Task<List<CardDetail>> GetCardData(int cardId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -774,7 +729,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<CardUsageHistory> GetCardUsageHistory(int surgeryId, int providerId, int locationId)
+        public async Task<CardUsageHistory> GetCardUsageHistory(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -794,7 +749,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<CardItem>> GetCardItems(int cardId, int providerId, int locationId)
+        public async Task<List<CardItem>> GetCardItems(int cardId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -809,7 +764,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<SurgeryCardItem>> GetSurgeryCardItems(int surgeryId, int providerId, int locationId)
+        public async Task<List<SurgeryCardItem>> GetSurgeryCardItems(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -824,7 +779,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<SurgeryInstrumentCount>> GetCardAdditionalItems(int cardId, int providerId, int locationId)
+        public async Task<List<SurgeryInstrumentCount>> GetCardAdditionalItems(int cardId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -839,7 +794,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<Procedure>> GetCardProcedures(int cardId, int providerId, int locationId)
+        public async Task<List<Procedure>> GetCardProcedures(int cardId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -854,7 +809,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<CardItemCountQueryResult> GetSurgeryCardItemCounts(int surgeryId, int providerId, int locationId)
+        public async Task<CardItemCountQueryResult> GetSurgeryCardItemCounts(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -874,7 +829,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<SurgeryTrayOpen>> GetSurgeryTrayOpens(int surgeryId, int providerId, int locationId)
+        public async Task<List<SurgeryTrayOpen>> GetSurgeryTrayOpens(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -889,7 +844,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> UpdateSurgeryTrayOpens(int surgeryId, int providerId, int locationId, int trayId, bool trayOpened)
+        public async Task<int> UpdateSurgeryTrayOpens(int surgeryId, int providerId, int locationId, int trayId, bool trayOpened)
         {
             var parameters = new[]
             {
@@ -904,7 +859,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<Card>> GetCardSurgeryDelays(int surgeryId, int providerId, int locationId)
+        public async Task<List<Card>> GetCardSurgeryDelays(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -919,7 +874,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<Card>> GetCardList(int? userId, int? procedureId, int? bundleId, bool defaultCardOnly, int providerId, int locationId)
+        public async Task<List<Card>> GetCardList(int? userId, int? procedureId, int? bundleId, bool defaultCardOnly, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -947,7 +902,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<CardItemFeedback>> GetCardFeedback(int? specialtyId, int? userId, int? cardId, DateTime? beginDate, DateTime? endDate,
+        public async Task<List<CardItemFeedback>> GetCardFeedback(int? specialtyId, int? userId, int? cardId, DateTime? beginDate, DateTime? endDate,
             int providerId, int locationId)
         {
             var parameters = new[]
@@ -967,7 +922,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> UpdateCardFeedback(int feedbackId, bool response, int providerId, int locationId)
+        public async Task<int> UpdateCardFeedback(int feedbackId, bool response, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -981,7 +936,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<SurgeryCard>> GetSurgeryCardList(int surgeryId, int providerId, int locationId)
+        public async Task<List<SurgeryCard>> GetSurgeryCardList(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -1002,7 +957,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<SurgeryFlow>> GetSurgeryFlowList(int surgeryId, int providerId, int locationId)
+        public async Task<List<SurgeryFlow>> GetSurgeryFlowList(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -1023,7 +978,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<SurgeryUser>> GetCardUsers(int cardId, int providerId, int locationId, int? typeId)
+        public async Task<List<SurgeryUser>> GetCardUsers(int cardId, int providerId, int locationId, int? typeId)
         {
             var command = typeId == null ? "GetCardUsers" : "GetCardUsersType";
 
@@ -1047,7 +1002,7 @@ namespace OpFlow.Service.DataAccess
 
         }
 
-        public static async Task<User> GetUser(int providerId, int locationId, Guid userAuthId)
+        public async Task<User> GetUser(int providerId, int locationId, Guid userAuthId)
         {
             var dsParameters = new[]
             {
@@ -1063,7 +1018,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<User> GetUser(int providerId, int locationId, int userId)
+        public async Task<User> GetUser(int providerId, int locationId, int userId)
         {
             var dsParameters = new[]
             {
@@ -1079,7 +1034,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<User>> SearchUsers(string searchString, int? roleId, int? specialtyId, int providerId, int locationId)
+        public async Task<List<User>> SearchUsers(string searchString, int? roleId, int? specialtyId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1096,7 +1051,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<Role>> GetRoles(int providerId, int locationId)
+        public async Task<List<Role>> GetRoles(int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1110,7 +1065,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<UserSecurity> GetSecureUser(Guid? userAuthId, int? userId = null, string email = null)
+        public async Task<UserSecurity> GetSecureUser(Guid? userAuthId, int? userId = null, string email = null)
         {
             var dsParameters = new[]
             {
@@ -1125,7 +1080,7 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault();
         }
 
-        public static async Task<List<OpFlowProvider>> GetOpFlowSetup()
+        public async Task<List<OpFlowProvider>> GetOpFlowSetup()
         {
             var dsParameters = new SqlParameter[0];
             var dsSchedules = await ExecuteCommandAsync("GetOpFlowSetup", dsParameters);
@@ -1143,7 +1098,7 @@ namespace OpFlow.Service.DataAccess
             return providers;
         }
 
-        public static async Task<int> UpdateUserLocation(int userId, int locationId)
+        public async Task<int> UpdateUserLocation(int userId, int locationId)
         {
             var dsParameters = new []
             {
@@ -1155,7 +1110,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> CheckInUser(User user, int surgeryId)
+        public async Task<int> CheckInUser(User user, int surgeryId)
         {
             var dsParameters = new[]
             {
@@ -1168,7 +1123,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("CheckinUserToCase", dsParameters);
         }
 
-        public static async Task<int> CheckOutUser(User user, int surgeryId)
+        public async Task<int> CheckOutUser(User user, int surgeryId)
         {
             var dsParameters = new[]
             {
@@ -1181,7 +1136,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("CheckoutOfCase", dsParameters);
         }
 
-        public static async Task<int> WorkupReviewed(User user, int surgeryId)
+        public async Task<int> WorkupReviewed(User user, int surgeryId)
         {
             var dsParameters = new[]
             {
@@ -1194,7 +1149,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UserSurgeryWorkupReviewed", dsParameters);
         }
 
-        public static async Task<int> CreateUser(Guid userAuthId, int? roleId, int? specialtyId, string firstName, string lastName,
+        public async Task<int> CreateUser(Guid userAuthId, int? roleId, int? specialtyId, string firstName, string lastName,
             string email, string cellPhone, string initials, string title, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -1218,7 +1173,7 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public static async Task<int> UpdateUser(int userId, int? roleId, int? specialtyId, string firstName, string lastName,
+        public async Task<int> UpdateUser(int userId, int? roleId, int? specialtyId, string firstName, string lastName,
             string email, string cellPhone, string initials, string title, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -1238,7 +1193,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateUser", dsParameters);
         }
 
-        public static async Task<int> DeleteUser(int userId, int providerId, int locationId)
+        public async Task<int> DeleteUser(int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1249,7 +1204,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteUser", dsParameters);
         }
 
-        public static async Task<int> AddSurgerySmartPhrase(int surgeryId, int smartPhraseId, int providerId, int locationId)
+        public async Task<int> AddSurgerySmartPhrase(int surgeryId, int smartPhraseId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1261,7 +1216,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("InsertSurgeryPhrase", dsParameters);
         }
 
-        public static async Task<int> AddFlowSmartPhrase(int flowId, int smartPhraseId, int? stepId, int providerId, int locationId)
+        public async Task<int> AddFlowSmartPhrase(int flowId, int smartPhraseId, int? stepId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1274,7 +1229,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("InsertFlowPhrase", dsParameters);
         }
 
-        public static async Task<int> NewSmartPhrase(string phrase, int categoryId, int stepId, int roleId, int userId, int providerId, int locationId)
+        public async Task<int> NewSmartPhrase(string phrase, int categoryId, int stepId, int roleId, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1293,7 +1248,7 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public static async Task<int> EditSmartPhrase(int smartPhraseId, string phrase, 
+        public async Task<int> EditSmartPhrase(int smartPhraseId, string phrase, 
             int categoryId, int userId, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -1310,7 +1265,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateSmartPhrase", dsParameters);
         }
 
-        public static async Task<int> DeleteSmartPhrase(int smartPhraseId, int providerId, int locationId)
+        public async Task<int> DeleteSmartPhrase(int smartPhraseId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1321,7 +1276,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteSmartPhrase", dsParameters);
         }
 
-        public static async Task<int> NewFlowImage(int flowId, int stepId, int roleId, string comment, int providerId, int locationId)
+        public async Task<int> NewFlowImage(int flowId, int stepId, int roleId, string comment, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1338,7 +1293,7 @@ namespace OpFlow.Service.DataAccess
             return result.First().Identifier;
         }
 
-        public static async Task<int> UpdateFlowImage(int flowImageId, string comments, int stepId, int roleId, int providerId, int locationId)
+        public async Task<int> UpdateFlowImage(int flowImageId, string comments, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1352,7 +1307,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateFlowImage", dsParameters);
         }
 
-        public static async Task<int> DeleteFlowImage(int flowImageId, int providerId, int locationId)
+        public async Task<int> DeleteFlowImage(int flowImageId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1363,7 +1318,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteFlowImage", dsParameters);
         }
 
-        public static async Task<int> NewSurgeryImage(int surgeryId, int stepId, int roleId, string comment, int providerId, int locationId)
+        public async Task<int> NewSurgeryImage(int surgeryId, int stepId, int roleId, string comment, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1380,7 +1335,7 @@ namespace OpFlow.Service.DataAccess
             return result.First().Identifier;
         }
 
-        public static async Task<int> UpdateSurgeryImage(int surgeryImageId, string comments, int stepId, int roleId, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryImage(int surgeryImageId, string comments, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1394,7 +1349,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateSurgeryImage", dsParameters);
         }
 
-        public static async Task<int> DeleteSurgeryImage(int surgeryImageId, int providerId, int locationId)
+        public async Task<int> DeleteSurgeryImage(int surgeryImageId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1405,7 +1360,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteSurgeryImage", dsParameters);
         }
 
-        public static async Task<int> AddFlowFeedback(int flowId, string feedback, int userId, int providerId, int locationId)
+        public async Task<int> AddFlowFeedback(int flowId, string feedback, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1418,7 +1373,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("InsertFlowFeedback", dsParameters);
         }
 
-        public static async Task<int> DeleteFlowFeedback(int flowFeedbackId, int providerId, int locationId)
+        public async Task<int> DeleteFlowFeedback(int flowFeedbackId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1429,7 +1384,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteFlowFeedback", dsParameters);
         }
 
-        public static async Task<int> UpdateFlowPhrase(int flowId, int smartPhraseId, string comments, int stepId, int roleId, int providerId, int locationId)
+        public async Task<int> UpdateFlowPhrase(int flowId, int smartPhraseId, string comments, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1444,7 +1399,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateFlowPhrase", dsParameters);
         }
 
-        public static async Task<int> DeleteFlowPhrase(int flowId, int smartPhraseId, int providerId, int locationId)
+        public async Task<int> DeleteFlowPhrase(int flowId, int smartPhraseId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1456,7 +1411,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteFlowPhrase", dsParameters);
         }
 
-        public static async Task<int> UpdateSurgeryPhrase(int surgeryId, int surgeryPhraseId, string comments, int stepId, int roleId, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryPhrase(int surgeryId, int surgeryPhraseId, string comments, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1471,7 +1426,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateSurgeryPhrase", dsParameters);
         }
 
-        public static async Task<int> DeleteSurgeryPhrase(int surgeryId, int smartPhraseId, int providerId, int locationId)
+        public async Task<int> DeleteSurgeryPhrase(int surgeryId, int smartPhraseId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1483,7 +1438,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteSurgeryPhrase", dsParameters);
         }
 
-        public static async Task<int> NewSurgeonNote(string phrase, int flowId, int stepId, int roleId, int providerId, int locationId)
+        public async Task<int> NewSurgeonNote(string phrase, int flowId, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1497,7 +1452,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("InsertFlowSurgeonNote", dsParameters);
         }
 
-        public static async Task<int> UpdateSurgeonNote(int surgeonNoteId, string comments, int stepId, int roleId, int providerId, int locationId)
+        public async Task<int> UpdateSurgeonNote(int surgeonNoteId, string comments, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1511,7 +1466,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateSurgeonNote", dsParameters);
         }
 
-        public static async Task<int> DeleteSurgeonNote(int surgeonNoteId, int providerId, int locationId)
+        public async Task<int> DeleteSurgeonNote(int surgeonNoteId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1522,7 +1477,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteSurgeonNote", dsParameters);
         }
 
-        public static async Task<int> SurgeryPhraseDebrief(int surgeryPhraseId, int stepId, int roleId, int providerId, int locationId)
+        public async Task<int> SurgeryPhraseDebrief(int surgeryPhraseId, int stepId, int roleId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1536,7 +1491,7 @@ namespace OpFlow.Service.DataAccess
         }
 
 
-        public static async Task<int> SurgeryUpdateCaseNotes(int surgeryId, string caseNotes, int providerId, int locationId)
+        public async Task<int> SurgeryUpdateCaseNotes(int surgeryId, string caseNotes, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1547,7 +1502,7 @@ namespace OpFlow.Service.DataAccess
             };
             return await ExecuteNonQueryAsync("UpdateSurgeryCaseNotes", dsParameters);
         }
-        public static async Task<int> AssignCardToCase(int cardId, int surgeryId, int providerId, int locationId)
+        public async Task<int> AssignCardToCase(int cardId, int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1559,7 +1514,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("AssignCardToCase", dsParameters);
         }
 
-        public static async Task<int> AssignFlowToCase(int flowId, int surgeryId, int providerId, int locationId)
+        public async Task<int> AssignFlowToCase(int flowId, int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1571,7 +1526,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("AssignFlowToCase", dsParameters);
         }
 
-        public static async Task<int> AssignRoomSetupToCase(int roomSetupId, int surgeryId, int providerId, int locationId)
+        public async Task<int> AssignRoomSetupToCase(int roomSetupId, int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1583,7 +1538,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("AssignRoomSetupToCase", dsParameters);
         }
 
-        public static async Task<int> AssignFlowToCard(int flowId, int cardId, int providerId, int locationId)
+        public async Task<int> AssignFlowToCard(int flowId, int cardId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1595,7 +1550,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("AssignFlowToCard", dsParameters);
         }
 
-        public static async Task<int> AssignRoomSetupToCard(int roomSetupId, int cardId, int providerId, int locationId)
+        public async Task<int> AssignRoomSetupToCard(int roomSetupId, int cardId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1607,7 +1562,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("AssignRoomSetupToCard", dsParameters);
         }
 
-        public static async Task<int> AssignUserToCard(int cardId, int userId, int providerId, int locationId)
+        public async Task<int> AssignUserToCard(int cardId, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1619,7 +1574,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("InsertCardUser", dsParameters);
         }
 
-        public static async Task<int> RemoveUserFromCard(int cardId, int userId, int providerId, int locationId)
+        public async Task<int> RemoveUserFromCard(int cardId, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1631,7 +1586,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteCardUser", dsParameters);
         }
 
-        public static async Task<int> DeleteCardItem(int cardId, int itemId, int providerId, int locationId)
+        public async Task<int> DeleteCardItem(int cardId, int itemId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1643,7 +1598,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteCardItem", dsParameters);
         }
 
-        public static async Task<int> UpdateCardItem(int cardId, int itemId, int qtyOpen, int qtyHold, int providerId, int locationId)
+        public async Task<int> UpdateCardItem(int cardId, int itemId, int qtyOpen, int qtyHold, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1657,7 +1612,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateCardItem", dsParameters);
         }
 
-        public static async Task<int> UpdateCardProcedure(int cardId, int procedureId, int providerId, int locationId)
+        public async Task<int> UpdateCardProcedure(int cardId, int procedureId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1669,7 +1624,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateCardProcedure", dsParameters);
         }
 
-        public static async Task<int> DeleteCardProcedure(int cardId, int procedureId, int providerId, int locationId)
+        public async Task<int> DeleteCardProcedure(int cardId, int procedureId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1681,7 +1636,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteCardProcedure", dsParameters);
         }
 
-        public static async Task<int> InsertCard(string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
+        public async Task<int> InsertCard(string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
             bool? defaultFlag, bool? specialtyDefaultFlag, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -1705,7 +1660,7 @@ namespace OpFlow.Service.DataAccess
             return result.First().Identifier;
         }
 
-        public static async Task<int> InsertCardItemFromStage(int cardId, int providerId, int locationId, string procedure, string surgeon)
+        public async Task<int> InsertCardItemFromStage(int cardId, int providerId, int locationId, string procedure, string surgeon)
         {
             var dsParameters = new[]
             {
@@ -1720,7 +1675,7 @@ namespace OpFlow.Service.DataAccess
             return insert;
         }
 
-        public static async Task<int> UpdateCard(int cardId, string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
+        public async Task<int> UpdateCard(int cardId, string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
             bool? defaultFlag, bool? specialtyDefaultFlag, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -1743,7 +1698,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateCard", dsParameters);
         }
 
-        public static async Task<int> InitializeCard(int cardId, int providerId, int locationId)
+        public async Task<int> InitializeCard(int cardId, int providerId, int locationId)
         {
 
             var dsParameters = new[]
@@ -1758,7 +1713,7 @@ namespace OpFlow.Service.DataAccess
         }
 
 
-        public static async Task<int> DeleteCard(int cardId, int providerId, int locationId)
+        public async Task<int> DeleteCard(int cardId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1769,7 +1724,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteCard", dsParameters);
         }
 
-        public static async Task<int> UpdateCardQuantity(int cardId, CardQuantityEdit quantity, int providerId, int locationId)
+        public async Task<int> UpdateCardQuantity(int cardId, CardQuantityEdit quantity, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1784,7 +1739,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateCardItemQty", dsParameters);
         }
 
-        public static async Task<int> UpdateCardQuantityRequest(int cardId, CardQuantityEdit quantity, int providerId, int locationId)
+        public async Task<int> UpdateCardQuantityRequest(int cardId, CardQuantityEdit quantity, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1799,7 +1754,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateCardItemQtyRequest", dsParameters);
         }
 
-        public static async Task<int> UpdateSurgeryItemQuantity(int surgeryId, CardQuantityEdit quantity, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryItemQuantity(int surgeryId, CardQuantityEdit quantity, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1814,7 +1769,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateSurgeryCardItemQty", dsParameters);
         }
 
-        public static async Task<int> CreateSurgery(SurgeryPost surgery, int providerId, int locationId, int patientId, int caseId, 
+        public async Task<int> CreateSurgery(SurgeryPost surgery, int providerId, int locationId, int patientId, int caseId, 
             int? defaultCardId, int? defaultFlowId, int? defaultRoomId)
         {
             var dsParameters = new[]
@@ -1842,7 +1797,7 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public static async Task<int> AddCustomSurgeryItem(int surgeryId, int itemId, int quantity, int providerId, int locationId)
+        public async Task<int> AddCustomSurgeryItem(int surgeryId, int itemId, int quantity, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1855,7 +1810,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("InsertCustomSurgeryItem", dsParameters);
         }
 
-        public static async Task<int> AddSurgeryUser(int surgeryId, int userId, int providerId, int locationId)
+        public async Task<int> AddSurgeryUser(int surgeryId, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1867,7 +1822,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("InsertSurgeryUser", dsParameters);
         }
 
-        public static async Task<int> DeleteSurgeryUser(int surgeryId, int userId, int providerId, int locationId)
+        public async Task<int> DeleteSurgeryUser(int surgeryId, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1879,7 +1834,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteSurgeryUser", dsParameters);
         }
 
-        public static async Task<int> AddSurgeryProcedure(int surgeryId, int procedureId, int providerId, int locationId)
+        public async Task<int> AddSurgeryProcedure(int surgeryId, int procedureId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1891,7 +1846,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("InsertSurgeryProcedure", dsParameters);
         }
 
-        public static async Task<int> UpdateSurgeryProcedure(int surgeryId, string cptCode, string performedFlag, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryProcedure(int surgeryId, string cptCode, string performedFlag, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1904,7 +1859,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateSurgeryProcedure", dsParameters);
         }
 
-        public static async Task<int> DeleteSurgeryProcedure(int surgeryId, string cptCode, int providerId, int locationId)
+        public async Task<int> DeleteSurgeryProcedure(int surgeryId, string cptCode, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1916,7 +1871,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteSurgeryProcedure", dsParameters);
         }
 
-        public static async Task<int> UpdateSurgeryHeaderCounts(int surgeryId, int sharpCount, int needleCount, int lapCount, int specimenCount, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryHeaderCounts(int surgeryId, int sharpCount, int needleCount, int lapCount, int specimenCount, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1931,7 +1886,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateSurgeryHeaderCounts", dsParameters);
         }
 
-        public static async Task<int> UpdateStaffChange(int surgeryId, string staffChange, int providerId, int locationId)
+        public async Task<int> UpdateStaffChange(int surgeryId, string staffChange, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1943,7 +1898,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateSurgeryStaffChange", dsParameters);
         }
 
-        public static async Task<int> AddCustomSurgeryTrayItem(int surgeryId, int trayId, int itemId, int quantity, int providerId, int locationId)
+        public async Task<int> AddCustomSurgeryTrayItem(int surgeryId, int trayId, int itemId, int quantity, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1957,7 +1912,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("InsertCustomSurgeryTrayInstrument", dsParameters);
         }
 
-        public static async Task<int> AddCustomSurgeryTray(int surgeryId, int itemId, int providerId, int locationId)
+        public async Task<int> AddCustomSurgeryTray(int surgeryId, int itemId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1970,7 +1925,7 @@ namespace OpFlow.Service.DataAccess
         }
         
 
-        public static async Task<int> UpdateSurgeryCount(int surgeryId, List<SurgeryCountItemPost> itemUsage, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryCount(int surgeryId, List<SurgeryCountItemPost> itemUsage, int providerId, int locationId)
         {
             var usageSummary = GetUsageSummary(itemUsage);
             var dsParameters = new[]
@@ -1984,7 +1939,7 @@ namespace OpFlow.Service.DataAccess
 
             return update;
         }
-        public static async Task<int> UpdateSurgeryInstrumentCount(int surgeryId, List<SurgeryCountItemPost> instrumentUsage, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryInstrumentCount(int surgeryId, List<SurgeryCountItemPost> instrumentUsage, int providerId, int locationId)
         {
             var usageSummary = GetUsageSummary(instrumentUsage);
             var dsParameters = new[]
@@ -1999,7 +1954,7 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
-        private static string GetUsageSummary(List<SurgeryCountItemPost> countData)
+        private string GetUsageSummary(List<SurgeryCountItemPost> countData)
         {
             if (!countData.Any())
                 return null;
@@ -2026,7 +1981,7 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public static async Task<int> UpdateSurgeryQuestionAnswers(int surgeryId, List<TrayQuestion> answers, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryQuestionAnswers(int surgeryId, List<TrayQuestion> answers, int providerId, int locationId)
         {
             var answerSummary = GetAnswerSummary(answers);
             var dsParameters = new[]
@@ -2041,7 +1996,7 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
-        private static string GetAnswerSummary(List<TrayQuestion> answers)
+        private string GetAnswerSummary(List<TrayQuestion> answers)
         {
             if (!answers.Any())
                 return null;
@@ -2065,14 +2020,7 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        private static void AddColumn(XmlDocument doc, XmlElement row, object value)
-        {
-            var col = doc.CreateElement("col");
-            col.InnerText = $"{value}";
-            row.AppendChild(col);
-        }
-
-        public static async Task<int> StartSurgery(int surgeryId, int providerId, int locationId, DateTime startTime)
+        public async Task<int> StartSurgery(int surgeryId, int providerId, int locationId, DateTime startTime)
         {
             var dsParameters = new[]
             {
@@ -2094,7 +2042,7 @@ namespace OpFlow.Service.DataAccess
         /// <param name="locationId"></param>
         /// <param name="startTime"></param>
         /// <returns>Current flow step after advancing</returns>
-        public static async Task<FlowStepResult> SurgeryMoveNextStep(int surgeryId, int providerId, int locationId, DateTime startTime)
+        public async Task<FlowStepResult> SurgeryMoveNextStep(int surgeryId, int providerId, int locationId, DateTime startTime)
         {
             var dsParameters = new[]
             {
@@ -2111,7 +2059,7 @@ namespace OpFlow.Service.DataAccess
             return flowStep;
         }
 
-        public static async Task<int> SurgeryToggleDelay(int surgeryId, int providerId, int locationId, DateTime? startTime, DateTime? endTime, int? delayReasonId)
+        public async Task<int> SurgeryToggleDelay(int surgeryId, int providerId, int locationId, DateTime? startTime, DateTime? endTime, int? delayReasonId)
         {
             var dsParameters = new[]
             {
@@ -2127,7 +2075,7 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
-        public static async Task<int> SurgeryToggleDelayCustom(int surgeryId, int providerId, int locationId, DateTime? startTime, DateTime? endTime, string customReason)
+        public async Task<int> SurgeryToggleDelayCustom(int surgeryId, int providerId, int locationId, DateTime? startTime, DateTime? endTime, string customReason)
         {
             var dsParameters = new[]
             {
@@ -2145,7 +2093,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> SurgeryReviewComplete(int surgeryId, DateTime reviewComplete, int userId, int providerId, int locationId)
+        public async Task<int> SurgeryReviewComplete(int surgeryId, DateTime reviewComplete, int userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2160,7 +2108,7 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
-        public static async Task<int> SurgeryEditProperties(int surgeryId, int roomId, DateTime surgeryScheduleDate, int providerId, int locationId)
+        public async Task<int> SurgeryEditProperties(int surgeryId, int roomId, DateTime surgeryScheduleDate, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2176,7 +2124,7 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
-        public static async Task<int> CreateCase(int patientId, int? userId, int? specialtyId, int providerId, int locationId, string caseNbr)
+        public async Task<int> CreateCase(int patientId, int? userId, int? specialtyId, int providerId, int locationId, string caseNbr)
         {
             var dsParameters = new[]
             {
@@ -2194,7 +2142,7 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public static async Task<List<Room>> GetRooms(int locationId)
+        public async Task<List<Room>> GetRooms(int locationId)
         {
             var dsParameters = new[]
             {
@@ -2207,7 +2155,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<RoomType>> GetRoomTypes(int locationId)
+        public async Task<List<RoomType>> GetRoomTypes(int locationId)
         {
             var dsParameters = new[]
             {
@@ -2220,7 +2168,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<RoomGroup>> GetRoomGroups(int providerId, int locationId)
+        public async Task<List<RoomGroup>> GetRoomGroups(int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2233,7 +2181,7 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public static async Task<RoomSetup> GetRoomSetup(int roomSetupId, int providerId, int locationId)
+        public async Task<RoomSetup> GetRoomSetup(int roomSetupId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2248,7 +2196,7 @@ namespace OpFlow.Service.DataAccess
             return setups.FirstOrDefault(s => s.RoomSetupID == roomSetupId);
         }
 
-        public static async Task<List<RoomSetup>> GetRoomSetups(int? roomSetupId, int providerId, int locationId)
+        public async Task<List<RoomSetup>> GetRoomSetups(int? roomSetupId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2291,7 +2239,7 @@ namespace OpFlow.Service.DataAccess
             return setups;
         }
 
-        public static async Task<List<PatientPosition>> GetPatientPositions(int providerId, int locationId)
+        public async Task<List<PatientPosition>> GetPatientPositions(int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2305,7 +2253,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<BedOrientation>> GetBedOrientations(int providerId, int locationId)
+        public async Task<List<BedOrientation>> GetBedOrientations(int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2319,7 +2267,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<Laterality>> GetLateralities(int providerId, int locationId)
+        public async Task<List<Laterality>> GetLateralities(int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2333,7 +2281,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<SmartPhrase>> GetSmartPhrases(int? categoryId, int? specialtyId, int? userId, int providerId, int locationId)
+        public async Task<List<SmartPhrase>> GetSmartPhrases(int? categoryId, int? specialtyId, int? userId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2350,7 +2298,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
         
-        public static async Task<List<SmartPhraseCategory>> GetSmartPhraseCategories(int providerId, int locationId)
+        public async Task<List<SmartPhraseCategory>> GetSmartPhraseCategories(int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2364,7 +2312,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<FlowPhrase>> GetFlowPhrases(int flowId, int providerId, int locationId)
+        public async Task<List<FlowPhrase>> GetFlowPhrases(int flowId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2379,7 +2327,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<SurgeryPhrase>> GetSurgeryPhrases(int surgeryId, int providerId, int locationId)
+        public async Task<List<SurgeryPhrase>> GetSurgeryPhrases(int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2394,7 +2342,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<FlowImage>> GetFlowImages(int flowId, int providerId, int locationId)
+        public async Task<List<FlowImage>> GetFlowImages(int flowId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2409,7 +2357,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<FlowImage> GetFlowImage(int flowImageId, int providerId, int locationId)
+        public async Task<FlowImage> GetFlowImage(int flowImageId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2424,7 +2372,7 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault();
         }
 
-        public static async Task<List<SurgeryImage>> GetSurgeryImages(int surgeryId, int providerId, int locationId)
+        public async Task<List<SurgeryImage>> GetSurgeryImages(int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2439,7 +2387,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<RoomSummary>> GetSurgeryRoomSummary(int surgeryId, int providerId, int locationId)
+        public async Task<List<RoomSummary>> GetSurgeryRoomSummary(int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2454,7 +2402,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<RoomSummary>> GetSurgeryRoomOverview(
+        public async Task<List<RoomSummary>> GetSurgeryRoomOverview(
             int? specialtyId, int? roomGroupId, int? roomId, int? surgeonId, 
             DateTime surgeryDate, int providerId, int locationId)
         {
@@ -2475,7 +2423,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<SurgeryDelay>> GetFlowSurgeryDelays(int flowId, int providerId, int locationId)
+        public async Task<List<SurgeryDelay>> GetFlowSurgeryDelays(int flowId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2490,7 +2438,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<FlowSurgeonNote>> GetSurgeonNotes(int flowId, int providerId, int locationId)
+        public async Task<List<FlowSurgeonNote>> GetSurgeonNotes(int flowId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2505,7 +2453,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> UpdateRoom(int roomId, string description, int typeId, int groupId, int providerId, int locationId)
+        public async Task<int> UpdateRoom(int roomId, string description, int typeId, int groupId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2521,7 +2469,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> InsertRoom(string description, int typeId, int groupId, int providerId, int locationId)
+        public async Task<int> InsertRoom(string description, int typeId, int groupId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2538,7 +2486,7 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public static async Task<int> DeleteRoom(int roomId, int providerId, int locationId)
+        public async Task<int> DeleteRoom(int roomId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2551,7 +2499,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> UpdateRoomSetup(int roomSetupId, int providerId, int locationId, RoomSetup newRoomSetup)
+        public async Task<int> UpdateRoomSetup(int roomSetupId, int providerId, int locationId, RoomSetup newRoomSetup)
         {
             var dsParameters = new[]
             {
@@ -2572,7 +2520,7 @@ namespace OpFlow.Service.DataAccess
             return roomSetupId;
         }
 
-        public static async Task<int> DeleteRoomSetup(int roomSetupId, int providerId, int locationId)
+        public async Task<int> DeleteRoomSetup(int roomSetupId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2585,7 +2533,7 @@ namespace OpFlow.Service.DataAccess
             return insert;
         }
 
-        public static async Task<int> CreateRoomSetup(RoomSetup roomSetup, int providerId, int locationId)
+        public async Task<int> CreateRoomSetup(RoomSetup roomSetup, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2608,7 +2556,7 @@ namespace OpFlow.Service.DataAccess
             return roomSetupId;
         }
 
-        private static async Task SyncRoomSetupAttributes(int roomSetupId, int providerId, int locationId, RoomSetup newRoomSetup, RoomSetup currentRoomSetup)
+        private async Task SyncRoomSetupAttributes(int roomSetupId, int providerId, int locationId, RoomSetup newRoomSetup, RoomSetup currentRoomSetup)
         {
             foreach (var roomSetupEquipment in newRoomSetup.SetupEquipment)
             {
@@ -2698,7 +2646,7 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        public static async Task<int> NewRoomSetupImage(int roomSetupId, string label, int providerId, int locationId)
+        public async Task<int> NewRoomSetupImage(int roomSetupId, string label, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2713,7 +2661,7 @@ namespace OpFlow.Service.DataAccess
             return result.First().Identifier;
         }
 
-        public static async Task<int> UpdateRoomSetupImage(int roomSetupImageId, string label, int providerId, int locationId)
+        public async Task<int> UpdateRoomSetupImage(int roomSetupImageId, string label, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2725,7 +2673,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateRoomSetupImage", dsParameters);
         }
 
-        public static async Task<int> DeleteRoomSetupImage(int roomSetupImageId, int providerId, int locationId)
+        public async Task<int> DeleteRoomSetupImage(int roomSetupImageId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2736,7 +2684,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteRoomSetupImage", dsParameters);
         }
 
-        public static async Task<int> InsertRoomSetupEquipment(int roomSetupId, RoomSetupEquipment roomSetupEquipment, int providerId, int locationId)
+        public async Task<int> InsertRoomSetupEquipment(int roomSetupId, RoomSetupEquipment roomSetupEquipment, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2755,7 +2703,7 @@ namespace OpFlow.Service.DataAccess
             return roomSetupEquipmentId;
         }
 
-        public static async Task<int> InsertRoomSetupItem(int roomSetupId, RoomSetupItem roomSetupItem, int providerId, int locationId)
+        public async Task<int> InsertRoomSetupItem(int roomSetupId, RoomSetupItem roomSetupItem, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2774,7 +2722,7 @@ namespace OpFlow.Service.DataAccess
             return roomSetupItemId;
         }
 
-        public static async Task<int> InsertRoomSetupStaffPosition(int roomSetupId, RoomSetupStaffPosition roomSetupStaffPosition, int providerId, int locationId)
+        public async Task<int> InsertRoomSetupStaffPosition(int roomSetupId, RoomSetupStaffPosition roomSetupStaffPosition, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2788,7 +2736,7 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public static async Task<int> UpdateRoomSetupEquipment(RoomSetupEquipment roomSetupEquipment, int providerId, int locationId)
+        public async Task<int> UpdateRoomSetupEquipment(RoomSetupEquipment roomSetupEquipment, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2804,7 +2752,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> UpdateRoomSetupItem(RoomSetupItem roomSetupItem, int providerId, int locationId)
+        public async Task<int> UpdateRoomSetupItem(RoomSetupItem roomSetupItem, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2819,7 +2767,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> UpdateRoomSetupStaffPosition(RoomSetupStaffPosition roomSetupStaffPosition, int providerId, int locationId)
+        public async Task<int> UpdateRoomSetupStaffPosition(RoomSetupStaffPosition roomSetupStaffPosition, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2833,7 +2781,7 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public static async Task<int> DeleteRoomSetupEquipment(int roomSetupEquipmentId, int providerId, int locationId)
+        public async Task<int> DeleteRoomSetupEquipment(int roomSetupEquipmentId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2846,7 +2794,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> DeleteRoomSetupItem(int roomSetupItemId, int providerId, int locationId)
+        public async Task<int> DeleteRoomSetupItem(int roomSetupItemId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2859,7 +2807,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> DeleteRoomSetupStaffPosition(RoomSetupStaffPosition roomSetupStaffPosition, int providerId, int locationId)
+        public async Task<int> DeleteRoomSetupStaffPosition(RoomSetupStaffPosition roomSetupStaffPosition, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2873,7 +2821,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<PatientSurgery> GetSurgery(int surgeryId, int providerId, int locationId)
+        public async Task<PatientSurgery> GetSurgery(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2890,7 +2838,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<Surgery> GetCase(int caseId, int providerId, int locationId)
+        public async Task<Surgery> GetCase(int caseId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2906,7 +2854,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<SurgerySearchResult>> SearchCases(int? userId, int? surgeonUserId, 
+        public async Task<List<SurgerySearchResult>> SearchCases(int? userId, int? surgeonUserId, 
             int? roomGroupId, int? roomId, int? bundleId, int? procedureId, int? specialtyId, 
             DateTime? begDate, DateTime? endDate, int providerId, int locationId)
         {
@@ -2939,7 +2887,7 @@ namespace OpFlow.Service.DataAccess
             return surgeries;
         }
 
-        public static async Task<List<SurgeryAuditSearchResult>> GetProposedTrayAuditSearch(int? surgeonUserId,
+        public async Task<List<SurgeryAuditSearchResult>> GetProposedTrayAuditSearch(int? surgeonUserId,
             int? specialtyId, int? trayId, int? cardId,
             DateTime? begDate, DateTime? endDate, int providerId, int locationId)
         {
@@ -2969,7 +2917,7 @@ namespace OpFlow.Service.DataAccess
             return surgeries;
         }
 
-        public static async Task<List<SurgerySearchResult>> GetCaseNbr(string caseNbr, int providerId, int locationId)
+        public async Task<List<SurgerySearchResult>> GetCaseNbr(string caseNbr, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -2985,7 +2933,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<SurgerySearchResult>> GetSurgeonCases(int userId, DateTime begDate, DateTime endDate, int providerId, int locationId)
+        public async Task<List<SurgerySearchResult>> GetSurgeonCases(int userId, DateTime begDate, DateTime endDate, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3003,7 +2951,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<SurgerySearchResult>> GetRoomCases(int roomId, DateTime begDate, DateTime endDate, int providerId, int locationId)
+        public async Task<List<SurgerySearchResult>> GetRoomCases(int roomId, DateTime begDate, DateTime endDate, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3021,7 +2969,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<SurgerySchedule>> GetScheduledSurgeries(int? userID, int providerId, int locationId,
+        public async Task<List<SurgerySchedule>> GetScheduledSurgeries(int? userID, int providerId, int locationId,
             DateTime? scheduleDate, int? roomId)
         {
             if (roomId.HasValue)
@@ -3042,7 +2990,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<Surgery>> GetSurgeryAlerts(int surgeryId, int providerId, int locationId)
+        public async Task<List<Surgery>> GetSurgeryAlerts(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3057,7 +3005,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task <List<SurgeryDelayReason>> GetSurgeryDelayReasons(int providerId, int locationId)
+        public async Task <List<SurgeryDelayReason>> GetSurgeryDelayReasons(int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3071,7 +3019,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<SurgeryUser>> GetSurgeryUsers(int surgeryId, int providerId, int locationId)
+        public async Task<List<SurgeryUser>> GetSurgeryUsers(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3086,7 +3034,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<SurgeryVendorRep>> GetSurgeryVendorReps(int surgeryId, int locationId, int providerId)
+        public async Task<List<SurgeryVendorRep>> GetSurgeryVendorReps(int surgeryId, int locationId, int providerId)
         {
             var parameters = new[]
             {
@@ -3101,7 +3049,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<CardFlowRoom> GetBundleDefaultCardFlowRoom(int bundleId, int userId, int providerId, int locationId)
+        public async Task<CardFlowRoom> GetBundleDefaultCardFlowRoom(int bundleId, int userId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3117,7 +3065,7 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault();
         }
 
-        public static async Task<List<Surgeon>> GetImportSurgeons(int providerId, int locationId)
+        public async Task<List<Surgeon>> GetImportSurgeons(int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3131,7 +3079,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<Procedure>> GetImportProcedures(string importSurgeon, int providerId, int locationId)
+        public async Task<List<Procedure>> GetImportProcedures(string importSurgeon, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3146,7 +3094,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<CardFlowRoom>> GetProcedureDefaultCardFlowRoom(int providerId, int locationId, string cptCode)
+        public async Task<List<CardFlowRoom>> GetProcedureDefaultCardFlowRoom(int providerId, int locationId, string cptCode)
         {
             var parameters = new[]
             {
@@ -3161,7 +3109,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<CardFlowRoom> GetImportDefaultCardFlowRoom(int providerId, int locationId, int ownerUserId, string procedureCard)
+        public async Task<CardFlowRoom> GetImportDefaultCardFlowRoom(int providerId, int locationId, int ownerUserId, string procedureCard)
         {
             var parameters = new[]
             {
@@ -3177,7 +3125,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<CardFlowRoom>> GetSpecialtyProcedureDefaultCardFlowRoom(int providerId, int locationId, string cptCode)
+        public async Task<List<CardFlowRoom>> GetSpecialtyProcedureDefaultCardFlowRoom(int providerId, int locationId, string cptCode)
         {
             var parameters = new[]
             {
@@ -3192,7 +3140,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<CardFlowRoom>> GetMultipleProceduresDefaultCardFlowRoom(int providerId, int locationId, int specialtyId, string cptCodes)
+        public async Task<List<CardFlowRoom>> GetMultipleProceduresDefaultCardFlowRoom(int providerId, int locationId, int specialtyId, string cptCodes)
         {
             var parameters = new[]
             {
@@ -3208,7 +3156,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<CardFlowRoom>> GetSpecialtyMultipleProceduresDefaultCardFlowRoom(int providerId, int locationId, int specialtyId, string cptCodes)
+        public async Task<List<CardFlowRoom>> GetSpecialtyMultipleProceduresDefaultCardFlowRoom(int providerId, int locationId, int specialtyId, string cptCodes)
         {
             var parameters = new[]
             {
@@ -3224,7 +3172,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<CardBundle>> GetBundles(int? specialtyId, int providerId, int locationId)
+        public async Task<List<CardBundle>> GetBundles(int? specialtyId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3246,7 +3194,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<BundleProcedure>> GetBundleProcedures(int bundleId, int providerId, int locationId)
+        public async Task<List<BundleProcedure>> GetBundleProcedures(int bundleId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3261,7 +3209,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> NewBundle(string description, int specialtyId, List<int> procedures, int providerId, int locationId)
+        public async Task<int> NewBundle(string description, int specialtyId, List<int> procedures, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3281,7 +3229,7 @@ namespace OpFlow.Service.DataAccess
             return bundleId;
         }
 
-        public static async Task<int> UpdateBundle(int bundleId, string description, int specialtyId, List<int> procedures, int providerId, int locationId)
+        public async Task<int> UpdateBundle(int bundleId, string description, int specialtyId, List<int> procedures, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3298,7 +3246,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        private static async Task<int> UpdateBundleProcedures(int bundleId, List<int> procedures, int providerId, int locationId)
+        private async Task<int> UpdateBundleProcedures(int bundleId, List<int> procedures, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3324,7 +3272,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> DeleteBundle(int bundleId, int providerId, int locationId)
+        public async Task<int> DeleteBundle(int bundleId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3337,7 +3285,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<BundleProcedure>> GetSurgeryProcedures(int surgeryId, int providerId, int locationId)
+        public async Task<List<BundleProcedure>> GetSurgeryProcedures(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3352,7 +3300,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<Procedure>> GetProcedures(int? specialtyId, int providerId, int locationId)
+        public async Task<List<Procedure>> GetProcedures(int? specialtyId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3367,7 +3315,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<Specialty>> GetSpecialties(int providerId, int locationId)
+        public async Task<List<Specialty>> GetSpecialties(int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3381,7 +3329,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> UpdateSpecialty(int specialtyId, string name, string description, int providerId, int locationId)
+        public async Task<int> UpdateSpecialty(int specialtyId, string name, string description, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3396,7 +3344,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> InsertSpecialty(string name, string description, int providerId, int locationId)
+        public async Task<int> InsertSpecialty(string name, string description, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3412,7 +3360,7 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public static async Task<int> DeleteSpecialty(int specialtyId, int providerId, int locationId)
+        public async Task<int> DeleteSpecialty(int specialtyId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -3425,7 +3373,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<Surgeon>> GetSurgeons(int? specialtyId, int providerId, int locationId)
+        public async Task<List<Surgeon>> GetSurgeons(int? specialtyId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3440,7 +3388,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<Flow> GetFlow(int flowId, int providerId, int locationId)
+        public async Task<Flow> GetFlow(int flowId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3455,7 +3403,7 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault();
         }
 
-        public static async Task<List<Flow>> GetCardFlowList(int cardId, int providerId, int locationId)
+        public async Task<List<Flow>> GetCardFlowList(int cardId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3470,7 +3418,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<FlowStepTiming>> GetFlowTimings(int flowId, int providerId, int locationId)
+        public async Task<List<FlowStepTiming>> GetFlowTimings(int flowId, int providerId, int locationId)
         {
             var parameters = new[]
                 {
@@ -3487,7 +3435,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<FlowStepSurgeryTiming>> GetFlowSurgeryTimings(int surgeryId, int providerId, int locationId)
+        public async Task<List<FlowStepSurgeryTiming>> GetFlowSurgeryTimings(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3506,7 +3454,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<FlowStepInstructionResult>> GetFlowInstructions(int flowId, int? surgeryId, int providerId, int locationId)
+        public async Task<List<FlowStepInstructionResult>> GetFlowInstructions(int flowId, int? surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
                 {
@@ -3548,7 +3496,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<FlowStep>> GetFlowComments(int flowId, int surgeryId, int providerId, int locationId)
+        public async Task<List<FlowStep>> GetFlowComments(int flowId, int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3564,7 +3512,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<FlowMessaging>> GetFlowMessaging(int flowId, int providerId, int locationId, int stepId)
+        public async Task<List<FlowMessaging>> GetFlowMessaging(int flowId, int providerId, int locationId, int stepId)
         {
             var parameters = new[]
             {
@@ -3580,7 +3528,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<FlowContent>> GetFlowContent(int flowId, int surgeryId, int providerId, int locationId)
+        public async Task<List<FlowContent>> GetFlowContent(int flowId, int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3596,7 +3544,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<FlowNotification>> GetFlowNotifications(int flowId, int? stepId, int providerId, int locationId)
+        public async Task<List<FlowNotification>> GetFlowNotifications(int flowId, int? stepId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3612,7 +3560,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<Step>> GetSteps(int providerId, int locationId)
+        public async Task<List<Step>> GetSteps(int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3626,7 +3574,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<List<FlowFeedback>> GetFlowFeedback(int flowId, int providerId, int locationId)
+        public async Task<List<FlowFeedback>> GetFlowFeedback(int flowId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3641,7 +3589,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> DeleteFlowStep(int flowId, int providerId, int locationId)
+        public async Task<int> DeleteFlowStep(int flowId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3654,7 +3602,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> InsertFlowStep(int flowId, int stepId, int stepSequence, decimal duration, int providerId, int locationId)
+        public async Task<int> InsertFlowStep(int flowId, int stepId, int stepSequence, decimal duration, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3670,7 +3618,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> UpdateSurgeryStep(int stepId, string stepDescription, string notificationType, bool stepTiming, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryStep(int stepId, string stepDescription, string notificationType, bool stepTiming, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3686,7 +3634,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> AddSurgeryStep(string stepDescription, string notificationType, bool stepTiming, int providerId, int locationId)
+        public async Task<int> AddSurgeryStep(string stepDescription, string notificationType, bool stepTiming, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3703,7 +3651,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> DeleteSurgery(int surgeryId, int providerId, int locationId)
+        public async Task<int> DeleteSurgery(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3716,7 +3664,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> DeleteSurgeryStep(int stepId, int providerId, int locationId)
+        public async Task<int> DeleteSurgeryStep(int stepId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3729,7 +3677,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> InsertFlowNotification(int flowId, int stepId, int notificationType, string message, 
+        public async Task<int> InsertFlowNotification(int flowId, int stepId, int notificationType, string message, 
             string smsNumber, string emailAddress, int? messagingUserId, int? messagingRoleId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -3752,7 +3700,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> EditFlowNotification(int flowNotificationId, string message, int stepId,
+        public async Task<int> EditFlowNotification(int flowNotificationId, string message, int stepId,
             string smsNumber, string emailAddress, int? messagingUserId, int? messagingRoleId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -3772,7 +3720,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> DeleteFlowNotification(int flowNotificationId, int providerId, int locationId)
+        public async Task<int> DeleteFlowNotification(int flowNotificationId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3785,7 +3733,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> NewFlow(int cardId, int roomSetupId, string description, int userId, bool defaultFlow, int providerId, int locationId)
+        public async Task<int> NewFlow(int cardId, int roomSetupId, string description, int userId, bool defaultFlow, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3804,7 +3752,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task<int> UpdateFlow(int flowId, int cardId, int roomSetupId, string description, int userId, bool defaultFlow, int providerId, int locationId)
+        public async Task<int> UpdateFlow(int flowId, int cardId, int roomSetupId, string description, int userId, bool defaultFlow, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3821,7 +3769,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateFlow", parameters);
         }
 
-        public static async Task<int> DeleteFlow(int flowId, int providerId, int locationId)
+        public async Task<int> DeleteFlow(int flowId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3832,7 +3780,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteFlow", parameters);
         }
 
-        public static async Task<ImportResult> InsertStagingData(int providerId, int locationId, int? secureId, IImportData sourceData, FileParserRelations relations)
+        public async Task<ImportResult> InsertStagingData(int providerId, int locationId, int? secureId, IImportData sourceData, FileParserRelations relations)
         {
             var result = new ImportResult();
 
@@ -3976,7 +3924,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        private static async Task<CardFlowRoom> AggregateCards(int ownerUserId, List<CardFlowRoom> procedureCards, int providerId, int locationId)
+        private async Task<CardFlowRoom> AggregateCards(int ownerUserId, List<CardFlowRoom> procedureCards, int providerId, int locationId)
         {
             if (procedureCards == null || !procedureCards.Any())
                 return null;
@@ -4037,7 +3985,7 @@ namespace OpFlow.Service.DataAccess
             return match;
         }
 
-        private static CardFlowRoom AnalyzeSources(List<CardSource> potentialSources, List<CardSource> desiredSources)
+        private CardFlowRoom AnalyzeSources(List<CardSource> potentialSources, List<CardSource> desiredSources)
         {
             foreach (var source in potentialSources.GroupBy(s => s.CardID))
             {
@@ -4070,7 +4018,7 @@ namespace OpFlow.Service.DataAccess
             return null;
         }
 
-        private static async Task<List<CardFlowRoom>> DetermineCards(SurgeryPost surgery, ScheduleImport schedule, FileParserRelations relations, int providerId, int locationId)
+        private async Task<List<CardFlowRoom>> DetermineCards(SurgeryPost surgery, ScheduleImport schedule, FileParserRelations relations, int providerId, int locationId)
         {
             var result = new List<CardFlowRoom>();
             foreach (var procedureCard in schedule.ProcedureCards)
@@ -4095,7 +4043,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        private static async Task<CardFlowRoom> CheckCard(string cardName, ImportCard procedureCard, SurgeryPost surgery, ScheduleImport schedule, FileParserRelations relations, int providerId, int locationId)
+        private async Task<CardFlowRoom> CheckCard(string cardName, ImportCard procedureCard, SurgeryPost surgery, ScheduleImport schedule, FileParserRelations relations, int providerId, int locationId)
         {
             if (string.IsNullOrEmpty(cardName))
                 return null;
@@ -4127,7 +4075,7 @@ namespace OpFlow.Service.DataAccess
             return cardFlowRoom;
         }
 
-        public static async Task<int> InsertImportLog(int providerId, int locationId, int importTypeId, int userId, int recordCount, string filename)
+        public async Task<int> InsertImportLog(int providerId, int locationId, int importTypeId, int userId, int recordCount, string filename)
         {
             var parameters = new[]
             {
@@ -4146,7 +4094,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public static async Task InsertImportMessage(int providerId, int locationId, int logId, string logType, string logMessage, string logMrn, DateTime? logServiceDate)
+        public async Task InsertImportMessage(int providerId, int locationId, int logId, string logType, string logMessage, string logMrn, DateTime? logServiceDate)
         {
             var parameters = new[]
             {

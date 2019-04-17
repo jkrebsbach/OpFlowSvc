@@ -36,7 +36,8 @@ namespace OpFlow.Service.Controllers
 
             var questions = post?.Questions ?? new List<TrayQuestion>();
 
-            var trayHistory = await SqlHelper.GetTrayHistory(specialtyId, userId, cardId, beginDate, endDate, itemId, questions, user.ProviderID, user.LocationID);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var trayHistory = await sqlHelper.GetTrayHistory(specialtyId, userId, cardId, beginDate, endDate, itemId, questions, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayHistory);
         }
@@ -52,7 +53,8 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal" && user.RoleType != "Admin")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var importTypes = await SqlHelper.GetImportTypes(user.ProviderID, user.LocationID);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var importTypes = await sqlHelper.GetImportTypes(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, importTypes);
         }
@@ -68,10 +70,11 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal" && user.RoleType != "Admin")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
             var result = new ImportDetail()
             {
-                ImportDefinitions = await SqlHelper.GetImportDefinition(importTypeId, user.ProviderID, user.LocationID),
-                ImportLogs = await SqlHelper.GetImportLog(importTypeId, user.ProviderID, user.LocationID)
+                ImportDefinitions = await sqlHelper.GetImportDefinition(importTypeId, user.ProviderID, user.LocationID),
+                ImportLogs = await sqlHelper.GetImportLog(importTypeId, user.ProviderID, user.LocationID)
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -88,7 +91,8 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal" && user.RoleType != "Admin")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var result = await SqlHelper.GetImportMessages(importLogId, user.ProviderID, user.LocationID);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var result = await sqlHelper.GetImportMessages(importLogId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -106,7 +110,8 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal" && user.RoleType != "Admin")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var result = await SqlHelper.GetCaseOverview(user.ProviderID, user.LocationID, beginDate, endDate, specialtyId, bundleId);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var result = await sqlHelper.GetCaseOverview(user.ProviderID, user.LocationID, beginDate, endDate, specialtyId, bundleId);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -122,8 +127,11 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal" && user.RoleType != "Admin")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var patients = await SqlHelper.GetCleanupPatients(user.ProviderID, user.LocationID);
-            var result = await SecureSqlHelper.CleanupPatients(patients, user.SecureDatabaseName);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
+
+            var patients = await sqlHelper.GetCleanupPatients(user.ProviderID, user.LocationID);
+            var result = await secureSqlHelper.CleanupPatients(patients);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -139,6 +147,7 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal" && user.RoleType != "Admin")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
             int? logId = null;
 
             try
@@ -155,25 +164,25 @@ namespace OpFlow.Service.Controllers
 
                 var fileParser = new FileParser(fileName, fileContents);
 
-                await fileParser.ParseFile(importTypeId, user.ProviderID, user.LocationID);
+                await fileParser.ParseFile(sqlHelper, importTypeId, user.ProviderID, user.LocationID);
 
 
-                logId = await SqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, fileParser.Records.Count, fileName);
+                var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
+                logId = await sqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, fileParser.Records.Count, fileName);
 
                 if (fileParser.Records != null)
                 {
-                    var secureUser = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                    var secureUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
                     foreach (var record in fileParser.Records)
                     {
-                        var secureId = await SecureSqlHelper.InsertStagingData(record, user.UserID, 
-                            secureUser.FirstName, secureUser.LastName, (int)secureUser.RoleID,
-                            user.SecureDatabaseName);
+                        var secureId = await secureSqlHelper.InsertStagingData(record, user.UserID, 
+                            secureUser.FirstName, secureUser.LastName, (int)secureUser.RoleID);
 
-                        var result = await SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
+                        var result = await sqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
                         foreach (var message in result.Messages)
                         {
-                            await SqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message, 
+                            await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message, 
                                 (record as ScheduleImport)?.MRN, (record as ScheduleImport)?.ScheduleDate);
                         }
                     }
@@ -185,7 +194,7 @@ namespace OpFlow.Service.Controllers
             {
                 LogHelper.LogException(ex);
                 if (logId != null)
-                    await SqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "ERROR", ex.Message, null, null);
+                    await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "ERROR", ex.Message, null, null);
 
                 throw;
             }

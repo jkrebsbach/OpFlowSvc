@@ -23,8 +23,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Get(int cardId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var cards = await SqlHelper.GetCardData(cardId, user.ProviderID, user.LocationID);
+            var cards = await sqlHelper.GetCardData(cardId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, cards);
         }
@@ -35,8 +36,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetDetails(int cardId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var cards = await SqlHelper.GetCardData(cardId, user.ProviderID, user.LocationID);
+            var cards = await sqlHelper.GetCardData(cardId, user.ProviderID, user.LocationID);
 
             var card = cards.FirstOrDefault();
             if (card == null)
@@ -44,10 +46,10 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             }
 
-            card.CardUsers = await SqlHelper.GetCardUsers(cardId, user.ProviderID, user.LocationID, 1);
-            card.CardItems = await SqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
-            card.SurgeryAdditionalItems = await SqlHelper.GetCardAdditionalItems(cardId, user.ProviderID, user.LocationID);
-            card.CardProcedures = await SqlHelper.GetCardProcedures(cardId, user.ProviderID, user.LocationID);
+            card.CardUsers = await sqlHelper.GetCardUsers(cardId, user.ProviderID, user.LocationID, 1);
+            card.CardItems = await sqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
+            card.SurgeryAdditionalItems = await sqlHelper.GetCardAdditionalItems(cardId, user.ProviderID, user.LocationID);
+            card.CardProcedures = await sqlHelper.GetCardProcedures(cardId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, card);
         }
@@ -59,8 +61,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetUsageHistory(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.GetCardUsageHistory(surgeryId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetCardUsageHistory(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -72,8 +75,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCardItems(int cardId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -85,8 +89,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCardSurgeryDelays(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.GetCardSurgeryDelays(surgeryId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetCardSurgeryDelays(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -98,9 +103,10 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCardList(int? userId = null, int? procedureId = null, int? bundleId = null, bool? defaultFilter = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             var defaultCardOnly = defaultFilter ?? false;
-            var cardList = await SqlHelper.GetCardList(userId, procedureId, bundleId, defaultCardOnly,
+            var cardList = await sqlHelper.GetCardList(userId, procedureId, bundleId, defaultCardOnly,
                 user.ProviderID, user.LocationID);
             var result = cardList.OrderBy(c => c.CardDescription).ToList();
 
@@ -115,8 +121,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetEditFeedback(int? specialtyId = null, int? userId = null, int? cardId = null, DateTime? beginDate = null, DateTime? endDate = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.GetCardFeedback(specialtyId, userId, cardId, beginDate, endDate,
+            var result = await sqlHelper.GetCardFeedback(specialtyId, userId, cardId, beginDate, endDate,
                 user.ProviderID, user.LocationID);
             
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -130,8 +137,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PostEditFeedback(int feedbackId, [FromBody]FeedbackRequest post)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.UpdateCardFeedback(feedbackId, post.Response, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.UpdateCardFeedback(feedbackId, post.Response, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -143,8 +151,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCardUsers(int cardId, int? typeId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.GetCardUsers(cardId, user.ProviderID, user.LocationID, typeId);
+            var result = await sqlHelper.GetCardUsers(cardId, user.ProviderID, user.LocationID, typeId);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -156,8 +165,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetBundleDefaultCardFlowRoom(int bundleId, int? userId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.GetBundleDefaultCardFlowRoom(bundleId, userId ?? user.UserID, user.ProviderID, user.LocationID) ??
+            var result = await sqlHelper.GetBundleDefaultCardFlowRoom(bundleId, userId ?? user.UserID, user.ProviderID, user.LocationID) ??
                 new CardFlowRoom()
                 {
                     CardDescription = "None",
@@ -165,7 +175,7 @@ namespace OpFlow.Service.Controllers
                     RoomDescription = "None"
                 };
 
-            result.Cards = await SqlHelper.GetCardList(userId, null, bundleId, false, user.ProviderID, user.LocationID);
+            result.Cards = await sqlHelper.GetCardList(userId, null, bundleId, false, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -177,8 +187,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetImportSurgeons()
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.GetImportSurgeons(user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetImportSurgeons(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -190,8 +201,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetImportProcedures(string importSurgeon)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.GetImportProcedures(importSurgeon, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetImportProcedures(importSurgeon, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -204,8 +216,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetProcedureDefaultCardFlowRoom(string cptCode)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var cards = await SqlHelper.GetProcedureDefaultCardFlowRoom(
+            var cards = await sqlHelper.GetProcedureDefaultCardFlowRoom(
                 user.ProviderID, user.LocationID, cptCode);
             var result = cards.FirstOrDefault();
 
@@ -221,8 +234,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSpecialtyProcedureDefaultCardFlowRoom(string cptCode)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.GetSpecialtyProcedureDefaultCardFlowRoom(user.ProviderID, user.LocationID, cptCode);
+            var result = await sqlHelper.GetSpecialtyProcedureDefaultCardFlowRoom(user.ProviderID, user.LocationID, cptCode);
 
             return Request.CreateResponse(HttpStatusCode.OK, result.FirstOrDefault());
         }
@@ -234,12 +248,13 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetMultipleProceduresDefaultCardFlowRoom(List<string> cptCodes)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             var result = new List<CardFlowRoom>();
 
             foreach (var cptCode in cptCodes)
             {
-                var procedures = await SqlHelper.GetProcedureDefaultCardFlowRoom(user.ProviderID, user.LocationID, cptCode);
+                var procedures = await sqlHelper.GetProcedureDefaultCardFlowRoom(user.ProviderID, user.LocationID, cptCode);
 
                 result.AddRange(procedures);
             }
@@ -254,8 +269,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSpecialtyMultipleProceduresDefaultCardFlowRoom(int specialtyId, string cptCodes)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.GetSpecialtyMultipleProceduresDefaultCardFlowRoom(user.ProviderID, user.LocationID, specialtyId, cptCodes);
+            var result = await sqlHelper.GetSpecialtyMultipleProceduresDefaultCardFlowRoom(user.ProviderID, user.LocationID, specialtyId, cptCodes);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -268,8 +284,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> UpdateItemQty(int cardId, [FromBody]CardQuantityEdit cardQuantity)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.UpdateCardQuantity(cardId, cardQuantity, user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateCardQuantity(cardId, cardQuantity, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -282,15 +299,16 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> UpdateItemQtyRequest(int cardId, int surgeryId, [FromBody]CardQuantityEditRequest cardQuantity)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             foreach (var editRequest in cardQuantity.EditData)
             {
                 if (cardQuantity.Target == "C")
-                    await SqlHelper.UpdateCardQuantityRequest(cardId, editRequest, user.ProviderID, user.LocationID);
+                    await sqlHelper.UpdateCardQuantityRequest(cardId, editRequest, user.ProviderID, user.LocationID);
                 else if (editRequest.TrayID.HasValue)
-                    await SqlHelper.AddCustomSurgeryTrayItem(surgeryId, editRequest.TrayID.Value, editRequest.ItemID, editRequest.OpenQty ?? 0, user.ProviderID, user.LocationID);
+                    await sqlHelper.AddCustomSurgeryTrayItem(surgeryId, editRequest.TrayID.Value, editRequest.ItemID, editRequest.OpenQty ?? 0, user.ProviderID, user.LocationID);
                 else
-                    await SqlHelper.UpdateSurgeryItemQuantity(surgeryId, editRequest, user.ProviderID, user.LocationID);
+                    await sqlHelper.UpdateSurgeryItemQuantity(surgeryId, editRequest, user.ProviderID, user.LocationID);
             }
 
             return Ok();
@@ -303,8 +321,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> AssignToCard(int cardId, int flowId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.AssignFlowToCard(flowId, cardId, user.ProviderID, user.LocationID);
+            await sqlHelper.AssignFlowToCard(flowId, cardId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, 418);
         }
@@ -316,8 +335,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> AssignRoomSetupToCard(int cardId, int roomSetupId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await DataAccess.SqlHelper.AssignRoomSetupToCard(roomSetupId, cardId, user.ProviderID, user.LocationID);
+            await sqlHelper.AssignRoomSetupToCard(roomSetupId, cardId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, 418);
         }
@@ -329,8 +349,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> AssignCardUser(int cardId, int userId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.AssignUserToCard(cardId, userId, user.ProviderID, user.LocationID);
+            await sqlHelper.AssignUserToCard(cardId, userId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -342,8 +363,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> DeleteCardUser(int cardId, int userId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.RemoveUserFromCard(cardId, userId, user.ProviderID, user.LocationID);
+            await sqlHelper.RemoveUserFromCard(cardId, userId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -356,8 +378,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeleteCardItem(int cardId, int itemId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.DeleteCardItem(cardId, itemId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.DeleteCardItem(cardId, itemId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK);
         }
@@ -370,8 +393,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutCardItem(int cardId, int itemId, [FromBody]CardItemPost value)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.UpdateCardItem(cardId, itemId, value.OpenQty, value.HoldQty, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.UpdateCardItem(cardId, itemId, value.OpenQty, value.HoldQty, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK);
         }
@@ -386,8 +410,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutCardProcedure(int cardId, int procedureId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.UpdateCardProcedure(cardId, procedureId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.UpdateCardProcedure(cardId, procedureId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -401,8 +426,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeleteCardProcedure(int cardId, int procedureId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.DeleteCardProcedure(cardId, procedureId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.DeleteCardProcedure(cardId, procedureId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -415,13 +441,14 @@ namespace OpFlow.Service.Controllers
             try
             {
                 var user = await CacheUtil.GetUserSecurity();
+                var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-                var cardId = await SqlHelper.InsertCard(value.Description, value.OwnerUserID,
+                var cardId = await sqlHelper.InsertCard(value.Description, value.OwnerUserID,
                     value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
                     value.BundleID, value.BundleFlag, value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1",
                     user.ProviderID, user.LocationID);
 
-                await InitializeCardProcedures(cardId, user, value.Procedures);
+                await InitializeCardProcedures(sqlHelper, cardId, user, value.Procedures);
 
                 return Request.CreateResponse(HttpStatusCode.Created, cardId);
             }
@@ -441,14 +468,15 @@ namespace OpFlow.Service.Controllers
             try
             {
                 var user = await CacheUtil.GetUserSecurity();
+                var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
                 if (value.Procedures != null)
                 {
-                    await InitializeCardProcedures(id, user, value.Procedures);
+                    await InitializeCardProcedures(sqlHelper, id, user, value.Procedures);
                 }
                 else
                 {
-                    await SqlHelper.UpdateCard(id, value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
+                    await sqlHelper.UpdateCard(id, value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
                         value.BundleID, value.BundleFlag, value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1",
                         user.UserID, user.ProviderID, user.LocationID);
                 }
@@ -462,17 +490,17 @@ namespace OpFlow.Service.Controllers
             }
         }
 
-        private async Task InitializeCardProcedures(int cardId, UserSecurity user, List<CardPostImportProcedure> procedures)
+        private async Task InitializeCardProcedures(SqlHelper sqlHelper, int cardId, UserSecurity user, List<CardPostImportProcedure> procedures)
         {
             if (procedures != null)
             {
-                await SqlHelper.InitializeCard(cardId, user.ProviderID, user.LocationID);
+                await sqlHelper.InitializeCard(cardId, user.ProviderID, user.LocationID);
 
                 foreach (var procedure in procedures)
                 {
                     if (!string.IsNullOrEmpty(procedure.ImportSurgeon) && !string.IsNullOrEmpty(procedure.ImportProcedure))
                     {
-                        await DataAccess.SqlHelper.InsertCardItemFromStage(cardId, user.ProviderID, user.LocationID,
+                        await sqlHelper.InsertCardItemFromStage(cardId, user.ProviderID, user.LocationID,
                             procedure.ImportProcedure, procedure.ImportSurgeon);
                     }
 
@@ -489,8 +517,9 @@ namespace OpFlow.Service.Controllers
             try
             {
             var user = await CacheUtil.GetUserSecurity();
+                var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.DeleteCard(id, user.ProviderID, user.LocationID);
+                await sqlHelper.DeleteCard(id, user.ProviderID, user.LocationID);
 
             return Ok();
             }

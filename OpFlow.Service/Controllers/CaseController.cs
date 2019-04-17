@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
+using OpFlow.Service.DataAccess;
 using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
@@ -20,8 +21,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Post([FromBody]PatientCase newCase)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var caseId = await DataAccess.SqlHelper.CreateCase(newCase.PatientID, user.UserID, newCase.SpecialtyID,
+            var caseId = await sqlHelper.CreateCase(newCase.PatientID, user.UserID, newCase.SpecialtyID,
                 user.ProviderID, user.LocationID, newCase.CaseNbr);
 
             return Request.CreateResponse(HttpStatusCode.Created, caseId);

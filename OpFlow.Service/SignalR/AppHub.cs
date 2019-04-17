@@ -22,16 +22,19 @@ namespace OpFlow.Service.SignalR
             {
                 var userAuthId = Context.User.Identity.GetUserId();
                 var user = await CacheUtil.GetUserSecurity(userAuthId);
+                var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+                var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
+
                 var insertTimestamp = DateTime.Now;
 
-                await SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
+                await sqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
                     surgeryId, null, message);
 
-                var recipients = await SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
-                var surgery = await SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
-                var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
-                var patient = await SecureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
-                    userObject.LastName, (int)userObject.RoleID, user.SecureDatabaseName);
+                var recipients = await sqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
+                var surgery = await sqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+                var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                var patient = await secureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
+                    userObject.LastName, (int)userObject.RoleID);
 
                 var sender = userObject;
 
@@ -66,16 +69,18 @@ namespace OpFlow.Service.SignalR
         {
             var userAuthId = Context.User.Identity.GetUserId();
             var user = await CacheUtil.GetUserSecurity(userAuthId);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
             var insertTimestamp = DateTime.Now;
 
-            await DataAccess.SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
+            await sqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
                 null, communicationUserId, message);
 
             var recipientUser = 
-                await SqlHelper.GetUser(user.ProviderID, user.LocationID,  communicationUserId);
+                await sqlHelper.GetUser(user.ProviderID, user.LocationID,  communicationUserId);
 
             var sender =
-                await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+                await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
             var groups = new List<string>()
             {
@@ -100,6 +105,7 @@ namespace OpFlow.Service.SignalR
             await SendSurgeryMessage(surgeryId, flowNotification.FlowMessage);
 
             SmsNotification.NotifyUser(flowNotification.CellPhone, flowNotification.FlowMessage);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             if (flowNotification.MessagingUserID.HasValue)
             {
@@ -108,7 +114,7 @@ namespace OpFlow.Service.SignalR
 
             if (flowNotification.MessagingRoleID.HasValue)
             {
-                var surgeryUsers = await SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
+                var surgeryUsers = await sqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
 
                 foreach (var surgeryUser in surgeryUsers)
                 {
@@ -119,7 +125,8 @@ namespace OpFlow.Service.SignalR
 
         private async Task SendNotification(UserSecurity user, User sender, int targetUserId, string message)
         {
-            var recipientUser = await SqlHelper.GetUser(user.ProviderID, user.LocationID, targetUserId);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var recipientUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID, targetUserId);
 
             await PushNotificationMessage(sender, recipientUser.Email, message);
 
@@ -129,7 +136,7 @@ namespace OpFlow.Service.SignalR
             };
             Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), DateTime.Now, null, targetUserId);
             //Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), DateTime.Now, null, targetUserId);
-            await SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID, null, targetUserId, message);
+            await sqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID, null, targetUserId, message);
 
         }
 
@@ -153,20 +160,21 @@ namespace OpFlow.Service.SignalR
             {
                 var userAuthId = Context.User.Identity.GetUserId();
                 var user = await CacheUtil.GetUserSecurity(userAuthId);
+                var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
                 if (startSurgery)
-                    await SqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, stepTime);
+                    await sqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, stepTime);
 
                 var advanceSurgery = true;
                 while (advanceSurgery)
                 {
-                    var flowStep = await SqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
-                    var notifications = await SqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.ProviderID, user.LocationID);
+                    var flowStep = await sqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
+                    var notifications = await sqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.ProviderID, user.LocationID);
 
                     var nextNotifications = notifications.Where(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
                     var prevNotifications = notifications.Where(n => n.StepID == flowStep.PreviousStepID && n.NotificationType == 2);
 
-                    var sender = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                    var sender = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
                     foreach (var nextNotification in nextNotifications)
                         await SendNotification(user, sender, surgeryId, nextNotification); // Next step
@@ -194,15 +202,16 @@ namespace OpFlow.Service.SignalR
 
             var userAuthId = Context.User.Identity.GetUserId();
             var user = await CacheUtil.GetUserSecurity(userAuthId);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             if (customReason != null)
             {
-                var surgeryDelayReasonId = await SqlHelper.SurgeryToggleDelayCustom(surgeryId, user.ProviderID, user.LocationID,
+                var surgeryDelayReasonId = await sqlHelper.SurgeryToggleDelayCustom(surgeryId, user.ProviderID, user.LocationID,
                     startTime, endTime, customReason);
             }
             else
             {
-                var success = await SqlHelper.SurgeryToggleDelay(surgeryId, user.ProviderID, user.LocationID,
+                var success = await sqlHelper.SurgeryToggleDelay(surgeryId, user.ProviderID, user.LocationID,
                     startTime, endTime, delayReasonId);
             }
 

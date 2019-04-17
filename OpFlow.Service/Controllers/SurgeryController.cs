@@ -24,14 +24,15 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgery(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
-            var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
-            var patientSurgery = await SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+            var patientSurgery = await sqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
             patientSurgery.Patient =
-                await SecureSqlHelper.GetPatient(patientSurgery.PatientID,
-                user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
-                user.SecureDatabaseName);
+                await secureSqlHelper.GetPatient(patientSurgery.PatientID,
+                user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
 
             return Request.CreateResponse(HttpStatusCode.OK, patientSurgery);
         }
@@ -43,10 +44,11 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetNewSurgerySetup()
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var rooms = await SqlHelper.GetRooms(user.LocationID);
-            var specialties = await SqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
-            var lateralities = await SqlHelper.GetLateralities(user.ProviderID, user.LocationID);
+            var rooms = await sqlHelper.GetRooms(user.LocationID);
+            var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
+            var lateralities = await sqlHelper.GetLateralities(user.ProviderID, user.LocationID);
 
             var result = new NewSurgerySetup()
             {
@@ -65,8 +67,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCase(int caseId, int? providerId = null, int? locationId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var schedules = await SqlHelper.GetCase(caseId, user.ProviderID, user.LocationID);
+            var schedules = await sqlHelper.GetCase(caseId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -82,8 +85,9 @@ namespace OpFlow.Service.Controllers
             DateTime? begDate = null, DateTime? endDate = null, int? providerId = null, int? locationId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var schedules = await SqlHelper.SearchCases(userId, surgeonUserId, roomGroupId, roomId,
+            var schedules = await sqlHelper.SearchCases(userId, surgeonUserId, roomGroupId, roomId,
                 bundleId, procedureId, specialtyId, 
                 begDate, endDate, user.ProviderID, user.LocationID);
 
@@ -97,8 +101,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCaseNbr(string caseNbr, int? providerId = null, int? locationId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var schedules = await SqlHelper.GetCaseNbr(caseNbr, user.ProviderID, user.LocationID);
+            var schedules = await sqlHelper.GetCaseNbr(caseNbr, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -110,8 +115,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgeonCases(int surgeonUserId, DateTime begDate, DateTime endDate, int? providerId = null, int? locationId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var schedules = await SqlHelper.GetSurgeonCases(surgeonUserId, begDate, endDate, user.ProviderID, user.LocationID);
+            var schedules = await sqlHelper.GetSurgeonCases(surgeonUserId, begDate, endDate, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -123,8 +129,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetRoomCases(int roomId, DateTime begDate, DateTime endDate, int? providerId = null, int? locationId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var schedules = await SqlHelper.GetRoomCases(roomId, begDate, endDate, user.ProviderID, user.LocationID);
+            var schedules = await sqlHelper.GetRoomCases(roomId, begDate, endDate, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -136,17 +143,18 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgerySchedule(DateTime? scheduleDate = null, int? roomId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             int? userId = null;
             if (roomId == null)
                 userId = user.UserID;
 
-            var surgeries = await SqlHelper.GetScheduledSurgeries(userId, user.ProviderID, user.LocationID, scheduleDate, roomId);
+            var surgeries = await sqlHelper.GetScheduledSurgeries(userId, user.ProviderID, user.LocationID, scheduleDate, roomId);
             
             foreach (var surgery in surgeries)
             {
                 surgery.SurgeryUsers =
-                    await SqlHelper.GetSurgeryUsers(surgery.CaseID, user.ProviderID, user.LocationID);
+                    await sqlHelper.GetSurgeryUsers(surgery.CaseID, user.ProviderID, user.LocationID);
             }
             
             return Request.CreateResponse(HttpStatusCode.OK, surgeries);
@@ -159,8 +167,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgeryAlerts(int surgeryId, int? providerId = null, int? locationId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var schedules = await SqlHelper.GetSurgeryAlerts(surgeryId, user.ProviderID, user.LocationID);
+            var schedules = await sqlHelper.GetSurgeryAlerts(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -172,8 +181,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgeryProcedures(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var procedures = await SqlHelper.GetSurgeryProcedures(surgeryId, user.ProviderID, user.LocationID);
+            var procedures = await sqlHelper.GetSurgeryProcedures(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, procedures);
         }
@@ -185,8 +195,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgeryDelayReasons()
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var reasons = await SqlHelper.GetSurgeryDelayReasons(user.ProviderID, user.LocationID);
+            var reasons = await sqlHelper.GetSurgeryDelayReasons(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, reasons);
         }
@@ -197,8 +208,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgeryUsers(int surgeryId, int? providerId = null, int? locationId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var schedules = await SqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
+            var schedules = await sqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -209,8 +221,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgeryVendorReps(int surgeryId, int? providerId = null, int? locationId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var schedules = await SqlHelper.GetSurgeryVendorReps(surgeryId, user.ProviderID, user.LocationID);
+            var schedules = await sqlHelper.GetSurgeryVendorReps(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -222,8 +235,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgeryCardList(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.GetSurgeryCardList(surgeryId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetSurgeryCardList(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -235,8 +249,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgeryFlowList(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.GetSurgeryFlowList(surgeryId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetSurgeryFlowList(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -248,8 +263,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCardItems(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.GetSurgeryCardItems(surgeryId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetSurgeryCardItems(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -261,11 +277,12 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgeryCardItemCounts(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var cardItemCounts = await SqlHelper.GetSurgeryCardItemCounts(surgeryId, user.ProviderID, user.LocationID);
+            var cardItemCounts = await sqlHelper.GetSurgeryCardItemCounts(surgeryId, user.ProviderID, user.LocationID);
             var itemCounts = cardItemCounts.CardItemCounts.GroupBy(ic => new { ic.ItemType, ic.TrayName, ic.TrayID});
 
-            var trayOpens = await SqlHelper.GetSurgeryTrayOpens(surgeryId, user.ProviderID, user.LocationID);
+            var trayOpens = await sqlHelper.GetSurgeryTrayOpens(surgeryId, user.ProviderID, user.LocationID);
 
             var result = new CardItemCountResult()
             {
@@ -337,8 +354,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> UpdateSurgeryTrayOpen(int surgeryId, int trayId, bool trayOpened)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.UpdateSurgeryTrayOpens(surgeryId, user.ProviderID, user.LocationID, trayId, trayOpened);
+            var result = await sqlHelper.UpdateSurgeryTrayOpens(surgeryId, user.ProviderID, user.LocationID, trayId, trayOpened);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
 
@@ -351,15 +369,16 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSearchScreen()
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             var result = new SearchScreen
             {
-                Rooms = await SqlHelper.GetRooms(user.LocationID),
-                RoomGroups = await SqlHelper.GetRoomGroups(user.ProviderID, user.LocationID),
-                Users = await SqlHelper.SearchUsers(null, null, null, user.ProviderID, user.LocationID),
-                Specialties = await SqlHelper.GetSpecialties(user.ProviderID, user.LocationID),
-                Bundles = await SqlHelper.GetBundles(null, user.ProviderID, user.LocationID),
-                Procedures = await SqlHelper.GetProcedures(null, user.ProviderID, user.LocationID)
+                Rooms = await sqlHelper.GetRooms(user.LocationID),
+                RoomGroups = await sqlHelper.GetRoomGroups(user.ProviderID, user.LocationID),
+                Users = await sqlHelper.SearchUsers(null, null, null, user.ProviderID, user.LocationID),
+                Specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID),
+                Bundles = await sqlHelper.GetBundles(null, user.ProviderID, user.LocationID),
+                Procedures = await sqlHelper.GetProcedures(null, user.ProviderID, user.LocationID)
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -372,30 +391,31 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetDebriefScreen(int flowId, int? surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var flow = await SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
-            var categories = await SqlHelper.GetSmartPhraseCategories(user.ProviderID, user.LocationID);
-            var flowPhrases = await SqlHelper.GetFlowPhrases(flowId, user.ProviderID, user.LocationID);
+            var flow = await sqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
+            var categories = await sqlHelper.GetSmartPhraseCategories(user.ProviderID, user.LocationID);
+            var flowPhrases = await sqlHelper.GetFlowPhrases(flowId, user.ProviderID, user.LocationID);
 
             var smartPhrases = new List<SmartPhrase>();
             if (flow != null)
-                smartPhrases = await SqlHelper.GetSmartPhrases(null, null, flow.OwnerUserID, user.ProviderID, user.LocationID);
+                smartPhrases = await sqlHelper.GetSmartPhrases(null, null, flow.OwnerUserID, user.ProviderID, user.LocationID);
 
-            var flowFeedback = await SqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
-            var surgeonNotes = await SqlHelper.GetSurgeonNotes(flowId, user.ProviderID, user.LocationID);
-            var flowSteps = await SqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
+            var flowFeedback = await sqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
+            var surgeonNotes = await sqlHelper.GetSurgeonNotes(flowId, user.ProviderID, user.LocationID);
+            var flowSteps = await sqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
             var messages =
-                await SqlHelper.GetMessaging(user.UserID, surgeryId, null, null, user.ProviderID, user.LocationID);
+                await sqlHelper.GetMessaging(user.UserID, surgeryId, null, null, user.ProviderID, user.LocationID);
 
-            var flowImages = await SqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
+            var flowImages = await sqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
 
             var surgeryPhrases = new List<SurgeryPhrase>();
             var surgeryImages = new List<SurgeryImage>();
             
             if (surgeryId.HasValue)
             {
-                surgeryPhrases = await SqlHelper.GetSurgeryPhrases(surgeryId.Value, user.ProviderID, user.LocationID);
-                surgeryImages = await SqlHelper.GetSurgeryImages(surgeryId.Value, user.ProviderID, user.LocationID);
+                surgeryPhrases = await sqlHelper.GetSurgeryPhrases(surgeryId.Value, user.ProviderID, user.LocationID);
+                surgeryImages = await sqlHelper.GetSurgeryImages(surgeryId.Value, user.ProviderID, user.LocationID);
             }
 
             var result = new DebriefResult()
@@ -423,15 +443,17 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgeryRoomSummary(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
-            var result = await SqlHelper.GetSurgeryRoomSummary(surgeryId, user.ProviderID, user.LocationID);
+            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+
+            var result = await sqlHelper.GetSurgeryRoomSummary(surgeryId, user.ProviderID, user.LocationID);
 
             foreach (var surgery in result)
             {
-                surgery.Patient = await SecureSqlHelper.GetPatient(surgery.PatientID,
-                    user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID,
-                    user.SecureDatabaseName);
+                surgery.Patient = await secureSqlHelper.GetPatient(surgery.PatientID,
+                    user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
 
                 if (surgery.TotalMinutes == null)
                     continue;
@@ -460,20 +482,22 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgeryRoomOverview(DateTime surgeryDate, int? specialtyId = null, int? roomGroupId = null, int? roomId = null, int? surgeonId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
+
+            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
             int? bundleId = null;
             int? procedureId = null;
 
-            var surgeries = await SqlHelper.GetSurgeryRoomOverview(
+            var surgeries = await sqlHelper.GetSurgeryRoomOverview(
                 specialtyId, roomGroupId, roomId, surgeonId, 
                 surgeryDate, user.ProviderID, user.LocationID);
 
             foreach (var surgery in surgeries)
             {
-                surgery.Patient = await SecureSqlHelper.GetPatient(surgery.PatientID,
-                    user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID,
-                    user.SecureDatabaseName);
+                surgery.Patient = await secureSqlHelper.GetPatient(surgery.PatientID,
+                    user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
 
                 if (surgery.TotalMinutes == null)
                     continue;
@@ -512,8 +536,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> UpdateDebrief(int surgeryPhraseId, int stepId, int roleId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.SurgeryPhraseDebrief(surgeryPhraseId, stepId, roleId, user.ProviderID, user.LocationID);
+            await sqlHelper.SurgeryPhraseDebrief(surgeryPhraseId, stepId, roleId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -526,8 +551,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> UpdateCaseNotes(int surgeryId, [FromBody]DebriefUpdatePost update)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.SurgeryUpdateCaseNotes(surgeryId, update.CaseNotes, user.ProviderID, user.LocationID);
+            await sqlHelper.SurgeryUpdateCaseNotes(surgeryId, update.CaseNotes, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -541,10 +567,11 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> AddSurgerySmartPhrase(int surgeryId, int smartPhraseId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             try
             {
-                await SqlHelper.AddSurgerySmartPhrase(surgeryId, smartPhraseId,
+                await sqlHelper.AddSurgerySmartPhrase(surgeryId, smartPhraseId,
                     user.ProviderID, user.LocationID);
             }
             catch (SqlException sqlEx)
@@ -569,8 +596,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> UpdateSurgeryPhrase(int surgeryId, int surgeryPhraseId, [FromBody]PhraseUpdatePost debriefUpdate)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.UpdateSurgeryPhrase(surgeryId, surgeryPhraseId,
+            await sqlHelper.UpdateSurgeryPhrase(surgeryId, surgeryPhraseId,
                 debriefUpdate.Comments, debriefUpdate.StepID, debriefUpdate.RoleID, user.ProviderID, user.LocationID);
 
             return Ok();
@@ -584,8 +612,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> DeleteSurgeryPhrase(int surgeryId, int smartPhraseId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.DeleteSurgeryPhrase(surgeryId, smartPhraseId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteSurgeryPhrase(surgeryId, smartPhraseId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -598,8 +627,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> NewSurgeonNote([FromBody]SurgeonNotePost smartPhrase)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.NewSurgeonNote(smartPhrase.Phrase, smartPhrase.FlowID, smartPhrase.StepID, smartPhrase.RoleID,
+            await sqlHelper.NewSurgeonNote(smartPhrase.Phrase, smartPhrase.FlowID, smartPhrase.StepID, smartPhrase.RoleID,
                 user.ProviderID, user.LocationID);
 
             return Ok();
@@ -613,8 +643,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> UpdateSurgeonNote(int surgeonNoteId, [FromBody]PhraseUpdatePost debriefUpdate)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.UpdateSurgeonNote(surgeonNoteId,
+            await sqlHelper.UpdateSurgeonNote(surgeonNoteId,
                 debriefUpdate.Comments, debriefUpdate.StepID, debriefUpdate.RoleID, user.ProviderID, user.LocationID);
 
             return Ok();
@@ -628,8 +659,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> DeleteSurgeonNote(int surgeonNoteId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.DeleteSurgeonNote(surgeonNoteId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteSurgeonNote(surgeonNoteId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -641,8 +673,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> AssignToCard(int surgeryId, int cardId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.AssignCardToCase(cardId, surgeryId, user.ProviderID, user.LocationID);
+            await sqlHelper.AssignCardToCase(cardId, surgeryId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -654,8 +687,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> AssignRoomSetupToCase(int surgeryId, int roomSetupId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.AssignRoomSetupToCase(roomSetupId, surgeryId, user.ProviderID, user.LocationID);
+            await sqlHelper.AssignRoomSetupToCase(roomSetupId, surgeryId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -667,8 +701,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> AssignToFlowCase(int surgeryId, int flowId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.AssignFlowToCase(flowId, surgeryId, user.ProviderID, user.LocationID);
+            await sqlHelper.AssignFlowToCase(flowId, surgeryId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -679,21 +714,23 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Post([FromBody]SurgeryPost surgery)
         {
             var secureUser = await CacheUtil.GetUserSecurity();
-            var user = await SqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID,  secureUser.UserID);
+            var sqlHelper = new SqlHelper(secureUser.CaseDatabaseName);
+            var secureSqlHelper = new SecureSqlHelper(secureUser.SecureDatabaseName);
 
-            var patientId = await SecureSqlHelper.CreatePatient(surgery.PtAcctNbr,
+            var user = await sqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID,  secureUser.UserID);
+            
+            var patientId = await secureSqlHelper.CreatePatient(surgery.PtAcctNbr,
                 surgery.PtDOB, surgery.PtGender, surgery.PtFirstName, surgery.PtLastName, surgery.PtMiddleInitial, surgery.PtBMI, 
-                user.UserID, user.FirstName, user.LastName, (int)user.RoleID,
-                secureUser.SecureDatabaseName);
+                user.UserID, user.FirstName, user.LastName, (int)user.RoleID);
 
-            var caseId = await SqlHelper.CreateCase(patientId, secureUser.UserID, surgery.SpecialtyID, secureUser.ProviderID,
+            var caseId = await sqlHelper.CreateCase(patientId, secureUser.UserID, surgery.SpecialtyID, secureUser.ProviderID,
                 secureUser.LocationID, surgery.CaseNbr);
 
             var cardFlowRoom = (surgery.BundleID.HasValue && surgery.SurgeonUserID.HasValue) ? 
-                await SqlHelper.GetBundleDefaultCardFlowRoom(surgery.BundleID.Value, surgery.SurgeonUserID.Value, secureUser.ProviderID, secureUser.LocationID) : 
-                (await SqlHelper.GetProcedureDefaultCardFlowRoom(secureUser.ProviderID, secureUser.LocationID, surgery.CptCode)).FirstOrDefault();
+                await sqlHelper.GetBundleDefaultCardFlowRoom(surgery.BundleID.Value, surgery.SurgeonUserID.Value, secureUser.ProviderID, secureUser.LocationID) : 
+                (await sqlHelper.GetProcedureDefaultCardFlowRoom(secureUser.ProviderID, secureUser.LocationID, surgery.CptCode)).FirstOrDefault();
 
-            var surgeryId = await SqlHelper.CreateSurgery(surgery, secureUser.ProviderID, secureUser.LocationID, patientId, caseId, 
+            var surgeryId = await sqlHelper.CreateSurgery(surgery, secureUser.ProviderID, secureUser.LocationID, patientId, caseId, 
                 surgery.CardID ?? cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID);
 
             return Request.CreateResponse(HttpStatusCode.Created, surgeryId);
@@ -707,16 +744,17 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> AddCustomSurgeryItem(int surgeryId, [FromBody]SurgeryCustomItemPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             foreach (var customItem in post.Items)
             {
                 if (customItem.TrayID.HasValue)
                 {
-                    await SqlHelper.AddCustomSurgeryTrayItem(surgeryId, customItem.TrayID ?? 0, customItem.ItemID, customItem.Quantity, user.ProviderID, user.LocationID);
+                    await sqlHelper.AddCustomSurgeryTrayItem(surgeryId, customItem.TrayID ?? 0, customItem.ItemID, customItem.Quantity, user.ProviderID, user.LocationID);
                 }
                 else
                 {
-                    await SqlHelper.AddCustomSurgeryItem(surgeryId, customItem.ItemID, customItem.Quantity, user.ProviderID, user.LocationID);
+                    await sqlHelper.AddCustomSurgeryItem(surgeryId, customItem.ItemID, customItem.Quantity, user.ProviderID, user.LocationID);
                 }
             }
         
@@ -730,6 +768,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> UpdateTeams([FromBody]SurgeryTeamUpdate teamUpdate)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             foreach (var surgeryId in teamUpdate.Surgeries)
             {
@@ -737,11 +776,11 @@ namespace OpFlow.Service.Controllers
                 {
                     if (edit.Assign)
                     {
-                        await SqlHelper.AddSurgeryUser(surgeryId, edit.UserID, user.ProviderID, user.LocationID);
+                        await sqlHelper.AddSurgeryUser(surgeryId, edit.UserID, user.ProviderID, user.LocationID);
                     }
                     else
                     {
-                        await SqlHelper.DeleteSurgeryUser(surgeryId, edit.UserID, user.ProviderID, user.LocationID);
+                        await sqlHelper.DeleteSurgeryUser(surgeryId, edit.UserID, user.ProviderID, user.LocationID);
                     }
                 }
             }
@@ -757,8 +796,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> AddSurgeryUser(int surgeryId, int userId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.AddSurgeryUser(surgeryId, userId, user.ProviderID, user.LocationID);
+            await sqlHelper.AddSurgeryUser(surgeryId, userId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
@@ -771,8 +811,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> NotifyAdministrator(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var surgery = await SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+            var surgery = await sqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
             if (surgery == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound, 0);
 
@@ -792,8 +833,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeleteSurgeryUser(int surgeryId, int userId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.DeleteSurgeryUser(surgeryId, userId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteSurgeryUser(surgeryId, userId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
@@ -806,8 +848,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> AddSurgeryProcedure(int surgeryId, int procedureId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.AddSurgeryProcedure(surgeryId, procedureId, user.ProviderID, user.LocationID);
+            await sqlHelper.AddSurgeryProcedure(surgeryId, procedureId, user.ProviderID, user.LocationID);
         
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
@@ -820,8 +863,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> UpdateSurgeryProcedure(int surgeryId, string cptCode, [FromBody]SurgeryProcedureEditPost procedureEdit)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.UpdateSurgeryProcedure(surgeryId, cptCode, procedureEdit.IsPerformed ? "Y" : "N", user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateSurgeryProcedure(surgeryId, cptCode, procedureEdit.IsPerformed ? "Y" : "N", user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
@@ -834,8 +878,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeleteSurgeryProcedure(int surgeryId, string cptCode)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.DeleteSurgeryProcedure(surgeryId, cptCode, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteSurgeryProcedure(surgeryId, cptCode, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
@@ -848,6 +893,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> NewSurgeryImage(int surgeryId, int stepId, int roleId, string comment)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             var provider = new MultipartMemoryStreamProvider();
             await Request.Content.ReadAsMultipartAsync(provider);
@@ -866,7 +912,7 @@ namespace OpFlow.Service.Controllers
                 fileContents = BlobStorageHelper.CompressImage(fileContents);
             }
 
-            var surgeryImageId = await SqlHelper.NewSurgeryImage(surgeryId, stepId, roleId, comment,
+            var surgeryImageId = await sqlHelper.NewSurgeryImage(surgeryId, stepId, roleId, comment,
                 user.ProviderID, user.LocationID);
 
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.SurgeryImages, surgeryId);
@@ -886,8 +932,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> UpdateSurgeryImage(int surgeryImageId, [FromBody]FlowImagePost surgeryImage)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.UpdateSurgeryImage(surgeryImageId, surgeryImage.Comment, surgeryImage.StepID, surgeryImage.RoleID, user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateSurgeryImage(surgeryImageId, surgeryImage.Comment, surgeryImage.StepID, surgeryImage.RoleID, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -922,8 +969,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> DeleteSurgeryImage(int surgeryImageId, int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.DeleteSurgeryImage(surgeryImageId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteSurgeryImage(surgeryImageId, user.ProviderID, user.LocationID);
 
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.SurgeryImages, surgeryId);
 
@@ -942,15 +990,16 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> UpdateSurgeryCountsUsages(int surgeryId, [FromBody]SurgeryCountPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             try
             {
-                await SqlHelper.UpdateSurgeryCount(surgeryId, post.ItemCounts, user.ProviderID, user.LocationID);
-                await SqlHelper.UpdateSurgeryInstrumentCount(surgeryId, post.InstrumentCounts, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateSurgeryCount(surgeryId, post.ItemCounts, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateSurgeryInstrumentCount(surgeryId, post.InstrumentCounts, user.ProviderID, user.LocationID);
 
                 if (post?.Answers.Any() == true)
                 {
-                    await SqlHelper.UpdateSurgeryQuestionAnswers(surgeryId, post.Answers, user.ProviderID, user.LocationID);
+                    await sqlHelper.UpdateSurgeryQuestionAnswers(surgeryId, post.Answers, user.ProviderID, user.LocationID);
                 }
             }
             catch (Exception e)
@@ -970,8 +1019,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> UpdateSurgeryCounts(int surgeryId, int sharpCount, int needleCount, int lapCount, int specimenCount)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.UpdateSurgeryHeaderCounts(surgeryId, sharpCount, needleCount, lapCount, specimenCount, user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateSurgeryHeaderCounts(surgeryId, sharpCount, needleCount, lapCount, specimenCount, user.ProviderID, user.LocationID);
             
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
@@ -984,8 +1034,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> UpdateStaffChange(int surgeryId, string staffChange)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.UpdateStaffChange(surgeryId, staffChange, user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateStaffChange(surgeryId, staffChange, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
@@ -998,8 +1049,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> SurgeryReviewComplete(int surgeryId, DateTime reviewComplete)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var success = await SqlHelper.SurgeryReviewComplete(surgeryId, reviewComplete, user.UserID, user.ProviderID, user.LocationID);
+            var success = await sqlHelper.SurgeryReviewComplete(surgeryId, reviewComplete, user.UserID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, success);
         }
@@ -1012,22 +1064,24 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> EditSurgeryProperties(int surgeryId, [FromBody]SurgeryEditPost surgeryEditPost)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var success = await SqlHelper.SurgeryEditProperties(surgeryId,
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
+
+            var success = await sqlHelper.SurgeryEditProperties(surgeryId,
                 surgeryEditPost.RoomID, surgeryEditPost.ScheduleDateTime, user.ProviderID, user.LocationID);
 
             if (!surgeryEditPost.NotificationUser.HasValue) return Request.CreateResponse(HttpStatusCode.OK, success);
 
 
-            var surgery = await SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
-            var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+            var surgery = await sqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
-            var patient = await SecureSqlHelper.GetPatient(surgery.PatientID,
-                user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
-                user.SecureDatabaseName);
+            var patient = await secureSqlHelper.GetPatient(surgery.PatientID,
+                user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
 
             var message = $"Surgery #{surgery.CaseNumber} patient {patient.LastName} room {surgery.RoomDescription} {surgery.ScheduleTime:hh\\:mm} modified - please review schedule";
 
-            var notificationUser = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  surgeryEditPost.NotificationUser.Value);
+            var notificationUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  surgeryEditPost.NotificationUser.Value);
             if (notificationUser?.CellPhone != null)
                 SmsNotification.NotifyUser(notificationUser.CellPhone, message);
 
@@ -1049,8 +1103,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Delete(int id)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var success = await SqlHelper.DeleteSurgery(id, user.ProviderID, user.LocationID);
+            var success = await sqlHelper.DeleteSurgery(id, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, success);
         }

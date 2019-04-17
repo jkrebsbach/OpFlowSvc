@@ -73,7 +73,9 @@ namespace OpFlow.Service.Controllers
             var ret = HttpStatusCode.InternalServerError;
 
             var user = await CacheUtil.GetUserSecurity();
-            var sender = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var sender = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
             var senderName = $"{sender.LastName}, {sender.FirstName}";
             var outcome = await PushNotification.PostNotification(sendingUser, senderName, message.UserName, message.Message);

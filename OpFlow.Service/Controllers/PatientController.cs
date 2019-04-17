@@ -23,11 +23,13 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Get(int patientId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
-            var patient = await SecureSqlHelper.GetPatient(patientId,
-                user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
-                user.SecureDatabaseName);
+            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+
+            var patient = await secureSqlHelper.GetPatient(patientId,
+                user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
 
             if (patient == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound, "Patient not found");
@@ -47,13 +49,15 @@ namespace OpFlow.Service.Controllers
             if (post?.PatientArray == null) return Request.CreateResponse(HttpStatusCode.OK, patients);
 
             var user = await CacheUtil.GetUserSecurity();
-            var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
+
+            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
             foreach (var patientId in post?.PatientArray)
             {
-                var patient = await SecureSqlHelper.GetPatient(patientId,
-                    user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID, 
-                    user.SecureDatabaseName);
+                var patient = await secureSqlHelper.GetPatient(patientId,
+                    user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
                 if (patient != null)
                     patients.Add(patient);
             }
@@ -76,13 +80,15 @@ namespace OpFlow.Service.Controllers
             if (patientIds == null) return Request.CreateResponse(HttpStatusCode.OK, patients);
         
             var user = await CacheUtil.GetUserSecurity();
-            var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
+
+            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
             foreach (var patientId in patientIds)
             { 
-                var patient = await SecureSqlHelper.GetPatient(patientId,
-                    user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID,
-                    user.SecureDatabaseName);
+                var patient = await secureSqlHelper.GetPatient(patientId,
+                    user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
                 if (patient != null)
                     patients.Add(patient);
             }
@@ -97,12 +103,14 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Post([FromBody]PatientPost patient)
         {
             var secureUser = await CacheUtil.GetUserSecurity();
-            var user = await SqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID,  secureUser.UserID);
+            var sqlHelper = new SqlHelper(secureUser.CaseDatabaseName);
+            var secureSqlHelper = new SecureSqlHelper(secureUser.SecureDatabaseName);
 
-            var patientId = await SecureSqlHelper.CreatePatient(patient.PatientAcctNbr,
+            var user = await sqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID,  secureUser.UserID);
+
+            var patientId = await secureSqlHelper.CreatePatient(patient.PatientAcctNbr,
                 patient.BirthDate, patient.Gender, patient.FirstName, patient.LastName, patient.MiddleInitial, patient.BMI,
-                secureUser.UserID, user.FirstName, user.LastName, (int)user.RoleID,
-                    secureUser.SecureDatabaseName);
+                secureUser.UserID, user.FirstName, user.LastName, (int)user.RoleID);
 
             return Request.CreateResponse(HttpStatusCode.Created, patientId);
         }

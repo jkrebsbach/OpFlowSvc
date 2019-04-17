@@ -27,8 +27,9 @@ namespace OpFlow.Service.Controllers
             int? surgeryId = null, int? caseGroupId = null, int? recipientId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.GetMessaging(userId ?? user.UserID, 
+            var result = await sqlHelper.GetMessaging(userId ?? user.UserID, 
                 surgeryId, caseGroupId, recipientId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -41,15 +42,17 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCaseMessageGroups(int? userId = null, DateTime? startDate = null, DateTime? endDate = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
-            var groups = await SqlHelper.GetMessageGroups(userId ?? user.UserID, startDate, endDate, user.ProviderID, user.LocationID);
+            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+
+            var groups = await sqlHelper.GetMessageGroups(userId ?? user.UserID, startDate, endDate, user.ProviderID, user.LocationID);
 
             foreach (var group in groups.Where(g => g.PatientID.HasValue))
             {
-                var patient = await SecureSqlHelper.GetPatient(group.PatientID.Value, 
-                    user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID,
-                    user.SecureDatabaseName);
+                var patient = await secureSqlHelper.GetPatient(group.PatientID.Value, 
+                    user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
 
                 group.CommunicationTargetName = $"{patient.LastName} {group.CommunicationTargetName}";
             }
@@ -67,20 +70,22 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Put([FromBody]MessagePost messagePost, int? surgeryId = null, int? communicationUserId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
             if ((surgeryId == null && communicationUserId == null) || messagePost == null)
                 return Request.CreateResponse(HttpStatusCode.Ambiguous);
 
-            await SqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
+            await sqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
                 surgeryId, communicationUserId, messagePost.Message);
 
             NotificationOutcome notificationOutcome = null;
 
             if (surgeryId != null)
             {
-                var recipients = await SqlHelper.GetSurgeryUsers(surgeryId.Value, user.ProviderID, user.LocationID);
+                var recipients = await sqlHelper.GetSurgeryUsers(surgeryId.Value, user.ProviderID, user.LocationID);
 
-                var sender = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+                var sender = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
                 foreach (var recipient in recipients)
                 {
@@ -88,10 +93,10 @@ namespace OpFlow.Service.Controllers
                     if (recipient.Email == sender.Email)
                         continue;
 
-                    var surgery = await SqlHelper.GetSurgery(surgeryId ?? -1, user.ProviderID, user.LocationID);
-                    var userObject = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
-                    var patient = await SecureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
-                        userObject.LastName, (int)userObject.RoleID, user.SecureDatabaseName);
+                    var surgery = await sqlHelper.GetSurgery(surgeryId ?? -1, user.ProviderID, user.LocationID);
+                    var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+                    var patient = await secureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
+                        userObject.LastName, (int)userObject.RoleID);
 
                     // Prepend surgery descriptor to message
                     var surgeryText =
@@ -104,9 +109,9 @@ namespace OpFlow.Service.Controllers
             }
             else if (communicationUserId != null)
             {
-                var recipientUser = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  communicationUserId ?? -1);
+                var recipientUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  communicationUserId ?? -1);
 
-                var sender = await SqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+                var sender = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
                 var senderName = $"{sender.LastName}, {sender.FirstName}";
                 notificationOutcome = await PushNotification.PostNotification(sender.Email, senderName, recipientUser.Email, messagePost.Message);
@@ -124,8 +129,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> AcknowledgeMessage(int messageId, bool hideMessages = false)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.AcknowledgeMessage(user.UserID, user.ProviderID, user.LocationID, messageId, hideMessages);
+            await sqlHelper.AcknowledgeMessage(user.UserID, user.ProviderID, user.LocationID, messageId, hideMessages);
 
             return Request.CreateResponse(HttpStatusCode.OK, 200);
         }
@@ -138,8 +144,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeletePrivateConversation(int communicationUserId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await SqlHelper.DeletePrivateConversation(communicationUserId, user.UserID, user.ProviderID, user.LocationID);
+            await sqlHelper.DeletePrivateConversation(communicationUserId, user.UserID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, 200);
         }

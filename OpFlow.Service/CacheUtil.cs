@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using OpFlow.Data;
+using OpFlow.Service.App_Start;
 
 namespace OpFlow.Service
 {
@@ -24,7 +26,19 @@ namespace OpFlow.Service
                 return MemCache[userAuthId] as UserSecurity;
 
             var userAuthGuid = Guid.Parse(userAuthId);
-            var secureUser = await DataAccess.SqlHelper.GetSecureUser(userAuthGuid, null);
+
+            var owinContext = HttpContext.Current.GetOwinContext();
+            var userManager = owinContext.GetUserManager<ApplicationUserManager>();
+
+            var roles = await userManager.GetRolesAsync(userAuthId);
+            var role = roles?.FirstOrDefault();
+
+            if (role == null)
+                throw new Exception("Unable to locate authenticated user");
+
+            var sqlHelper = new DataAccess.SqlHelper(role);
+
+            var secureUser = await sqlHelper.GetSecureUser(userAuthGuid, null);
             if (secureUser == null)
                 throw new Exception("Unable to locate authenticated user");
 

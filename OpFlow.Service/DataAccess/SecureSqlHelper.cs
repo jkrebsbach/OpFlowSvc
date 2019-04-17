@@ -13,69 +13,14 @@ using OpFlow.Data.Administration;
 
 namespace OpFlow.Service.DataAccess
 {
-    public static class SecureSqlHelper 
+    public class SecureSqlHelper : SqlBase
     {
-        private static async Task<DataSet> ExecuteCommandAsync(string storedProcedure, string secureDatabase, SqlParameter[] dsParameters = null)
+        public SecureSqlHelper(string secureDatabase) : base(secureDatabase)
         {
-            var secureConnString =
-                string.Format(ConfigurationManager.ConnectionStrings["SecureConnection"].ConnectionString,
-                    secureDatabase);
-
-            var conn = new SqlConnection(secureConnString);
-
-            var cmd = new SqlCommand(storedProcedure, conn) { CommandType = CommandType.StoredProcedure };
-
-            if (dsParameters != null)
-                cmd.Parameters.AddRange(dsParameters);
-
-            await conn.OpenAsync();
-
-            using (var dataAdapter = new SqlDataAdapter(cmd))
-            {
-                var ds = new DataSet();
-
-                dataAdapter.Fill(ds);
-
-                cmd.Parameters.Clear();
-                conn.Close();
-
-                return ds;
-            }
         }
 
-        private static async Task<int> ExecuteNonQuery(string storedProcedure, string secureDatabase, SqlParameter[] dsParameters = null)
-        {
-            var secureConnString =
-                string.Format(ConfigurationManager.ConnectionStrings["SecureConnection"].ConnectionString,
-                    secureDatabase);
-
-            var conn = new SqlConnection(secureConnString);
-            
-            var cmd = new SqlCommand(storedProcedure, conn) { CommandType = CommandType.StoredProcedure };
-            cmd.CommandTimeout = 60 * 3;
-
-            cmd.Parameters.AddRange(dsParameters);
-
-            await conn.OpenAsync();
-
-            var result = cmd.ExecuteNonQuery();
-
-            cmd.Parameters.Clear();
-            conn.Close();
-
-            return result;
-        }
-
-        private static void AddColumn(XmlDocument doc, XmlElement row, object value)
-        {
-            var col = doc.CreateElement("col");
-            col.InnerText = $"{value}";
-            row.AppendChild(col);
-        }
-
-        public static async Task<Patient> GetPatient(int patientId, 
-            int userId, string userFirstName, string userLastName, int userRole,
-            string databaseName)
+        public async Task<Patient> GetPatient(int patientId, 
+            int userId, string userFirstName, string userLastName, int userRole)
         {
             var parameters = new[]
             {
@@ -85,7 +30,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("user_last_name", userLastName),
                 new SqlParameter("user_role", userRole)
             };
-            var dsSchedules = await ExecuteCommandAsync("GetPatient", databaseName, parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetPatient", parameters);
 
             var patients = dsSchedules.Tables[0].DataTableToList<Patient>();
             var demos = dsSchedules.Tables[1].DataTableToList<PatientDemo>();
@@ -100,9 +45,9 @@ namespace OpFlow.Service.DataAccess
             return patients.FirstOrDefault();
         }
 
-        public static async Task<int> CreatePatient(string ptAcctNbr, DateTime? birthDate, string gender, 
+        public async Task<int> CreatePatient(string ptAcctNbr, DateTime? birthDate, string gender, 
             string firstName, string lastName, string middleInitial, decimal? bmi, 
-            int userId, string userFirstName, string userLastName, int? userRoleId, string databaseName)
+            int userId, string userFirstName, string userLastName, int? userRoleId)
         {
             var dsParameters = new[]
             {
@@ -118,15 +63,15 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("user_last_name", userLastName ?? (object)DBNull.Value),
                 new SqlParameter("user_role", userRoleId ?? (object)DBNull.Value),
             };
-            var insert = await ExecuteCommandAsync("NewPatient", databaseName, dsParameters);
+            var insert = await ExecuteCommandAsync("NewPatient", dsParameters);
 
             var result = insert.Tables[0].DataTableToList<InsertionResult>();
 
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public static async Task<int?> InsertStagingData(IImportData sourceData,
-            int userId, string userFirstName, string userLastName, int? userRoleId, string databaseName)
+        public async Task<int?> InsertStagingData(IImportData sourceData,
+            int userId, string userFirstName, string userLastName, int? userRoleId)
         {
             if (sourceData is ScheduleImport schedule)
             {
@@ -149,7 +94,7 @@ namespace OpFlow.Service.DataAccess
                     new SqlParameter("user_last_name", userLastName ?? (object)DBNull.Value),
                     new SqlParameter("user_role", userRoleId ?? (object)DBNull.Value),
                 };
-                var insert = await ExecuteCommandAsync("NewPatient_Staging", databaseName, dsParameters);
+                var insert = await ExecuteCommandAsync("NewPatient_Staging", dsParameters);
 
                 var result = insert.Tables[0].DataTableToList<InsertionResult>();
 
@@ -159,7 +104,7 @@ namespace OpFlow.Service.DataAccess
             return null;
         }
 
-        public static async Task<int> CleanupPatients(List<Patient> ignorePatients, string databaseName)
+        public async Task<int> CleanupPatients(List<Patient> ignorePatients)
         {
             var patientSummary = GetPatientSummary(ignorePatients);
 
@@ -167,12 +112,12 @@ namespace OpFlow.Service.DataAccess
             {
                 new SqlParameter("ignore_patients", patientSummary)
             };
-            var result = await ExecuteNonQuery("CleanupPatients", databaseName, dsParameters);
+            var result = await ExecuteNonQueryAsync("CleanupPatients", dsParameters);
 
             return result;
         }
 
-        private static string GetPatientSummary(List<Patient> patients)
+        private string GetPatientSummary(List<Patient> patients)
         {
             if (!patients.Any())
                 return null;

@@ -22,8 +22,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetBundles(int? specialtyId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var bundles = await DataAccess.SqlHelper.GetBundles(specialtyId, user.ProviderID, user.LocationID);
+            var bundles = await sqlHelper.GetBundles(specialtyId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, bundles);
         }
@@ -35,8 +36,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetBundleProcedures(int bundleId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var procedures = await SqlHelper.GetBundleProcedures(bundleId, user.ProviderID, user.LocationID);
+            var procedures = await sqlHelper.GetBundleProcedures(bundleId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, procedures);
         }
@@ -47,8 +49,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Post([FromBody]BundlePost value)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.NewBundle(value.BundleDescription, value.SpecialtyID, value.Procedures, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.NewBundle(value.BundleDescription, value.SpecialtyID, value.Procedures, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -60,8 +63,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> Put(int id, [FromBody]BundlePost value)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.UpdateBundle(id, value.BundleDescription, value.SpecialtyID, value.Procedures, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.UpdateBundle(id, value.BundleDescription, value.SpecialtyID, value.Procedures, user.ProviderID, user.LocationID);
 
             return Ok();
         }
@@ -73,8 +77,9 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> Delete(int id)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await SqlHelper.DeleteBundle(id, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.DeleteBundle(id, user.ProviderID, user.LocationID);
 
             return Ok();
         }

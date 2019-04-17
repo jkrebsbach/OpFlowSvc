@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OpFlow.Data;
+using OpFlow.Service.DataAccess;
 using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
@@ -20,8 +21,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetProcedures(int? specialtyId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            
-            var procedures = await DataAccess.SqlHelper.GetProcedures(specialtyId, user.ProviderID, user.LocationID);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var procedures = await sqlHelper.GetProcedures(specialtyId, user.ProviderID, user.LocationID);
 
             return procedures == null ?
                 Request.CreateResponse(HttpStatusCode.NotFound) :

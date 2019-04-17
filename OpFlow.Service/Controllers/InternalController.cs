@@ -24,11 +24,12 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSetup()
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             if (user.RoleType != "Internal")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var result = await SqlHelper.GetOpFlowSetup();
+            var result = await sqlHelper.GetOpFlowSetup();
             
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -41,11 +42,12 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutLocation(int locationId)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             if (user.RoleType != "Internal")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var result = await SqlHelper.UpdateUserLocation(user.UserID, locationId);
+            var result = await sqlHelper.UpdateUserLocation(user.UserID, locationId);
 
             CacheUtil.RefreshUserCache();
 

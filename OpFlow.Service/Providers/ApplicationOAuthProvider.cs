@@ -57,7 +57,7 @@ namespace OpFlow.Service.Providers
                 var userManager = owinContext.GetUserManager<ApplicationUserManager>();
 
                 var user = await userManager.FindByNameAsync(username);
-
+                
                 if (user == null)
                 {
                     int? roleId = null;
@@ -114,7 +114,10 @@ namespace OpFlow.Service.Providers
                         throw new Exception("Unable to create new user");
 
                     var userAuthId = new Guid(user.Id);
-                    var userId = await SqlHelper.CreateUser(userAuthId, roleId, null, firstName, lastName,
+
+                    // SAML hard coded to UNC
+                    var sqlHelper = new SqlHelper("OpFlowConnection");
+                    var userId = await sqlHelper.CreateUser(userAuthId, roleId, null, firstName, lastName,
                         username, null, null, "", 1, 1);
                 }
 

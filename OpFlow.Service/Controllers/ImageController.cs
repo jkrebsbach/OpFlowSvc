@@ -25,7 +25,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetFlowImage(int flowId, int flowImageId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var flow = await SqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var flow = await sqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
 
             if (flow == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
@@ -49,7 +51,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgeryImage(int surgeryId, int surgeryImageId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var surgery = await SqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var surgery = await sqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
 
             if (surgery == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
@@ -92,7 +96,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetRoomSetupImage(int roomSetupId, int roomSetupImageId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var roomSetup = await SqlHelper.GetRoomSetup(roomSetupId, user.ProviderID, user.LocationID);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var roomSetup = await sqlHelper.GetRoomSetup(roomSetupId, user.ProviderID, user.LocationID);
 
             if (roomSetup == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);

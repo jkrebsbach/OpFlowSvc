@@ -26,7 +26,7 @@ namespace OpFlow.Service.Models
             _fileContents = filecontents;
         }
 
-        public async Task ParseFile(int importTypeId, int providerId, int locationId)
+        public async Task ParseFile(SqlHelper sqlHelper, int importTypeId, int providerId, int locationId)
         {
             if (Path.GetExtension(_filename) == ".csv")
             {
@@ -45,8 +45,8 @@ namespace OpFlow.Service.Models
             Relations = new FileParserRelations();
             if (importTypeId == 1)
             {
-                Relations.Rooms = await SqlHelper.GetRooms(locationId);
-                Relations.Surgeons = await SqlHelper.GetSurgeons(null, providerId, locationId);
+                Relations.Rooms = await sqlHelper.GetRooms(locationId);
+                Relations.Surgeons = await sqlHelper.GetSurgeons(null, providerId, locationId);
             }
         }
     }

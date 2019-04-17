@@ -12,6 +12,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using OpFlow.Data;
 using OpFlow.Service.App_Start;
+using OpFlow.Service.DataAccess;
 using OpFlow.Service.Models;
 
 namespace OpFlow.Service.Controllers
@@ -32,8 +33,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Get()
         {
             var user = await CacheUtil.GetUserSecurity();
-            
-            var result = await DataAccess.SqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserAuthID);
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var result = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserAuthID);
 
             return result == null ? Request.CreateResponse(HttpStatusCode.NotFound, "User not found") : Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -47,9 +49,10 @@ namespace OpFlow.Service.Controllers
         [Route("api/User/SearchUsers", Name = "SearchUsers")]
         public async Task<HttpResponseMessage> GetUsers(string nameSearchText = null, int? roleId = null, int? specialtyId = null)
         {
-            var userSecurity = await CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var users = await DataAccess.SqlHelper.SearchUsers(nameSearchText, roleId, specialtyId, userSecurity.ProviderID, userSecurity.LocationID);
+            var users = await sqlHelper.SearchUsers(nameSearchText, roleId, specialtyId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, users);
         }
@@ -62,9 +65,10 @@ namespace OpFlow.Service.Controllers
         [Route("api/User/Roles", Name = "GetRoles")]
         public async Task<HttpResponseMessage> GetRoles(string nameSearchText = null, int? roleId = null, int? specialtyId = null)
         {
-            var userSecurity = await CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var roles = await DataAccess.SqlHelper.GetRoles(userSecurity.ProviderID, userSecurity.LocationID);
+            var roles = await sqlHelper.GetRoles(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, roles);
         }
@@ -75,7 +79,10 @@ namespace OpFlow.Service.Controllers
         [Route("api/User/Checkin", Name = "Checkin")]
         public async Task<IHttpActionResult> CheckinUser(int surgeryId, [FromBody]User user)
         {
-            await DataAccess.SqlHelper.CheckInUser(user, surgeryId);
+            var userSecurity = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(userSecurity.CaseDatabaseName);
+
+            await sqlHelper.CheckInUser(user, surgeryId);
 
             return Ok();
         }
@@ -86,7 +93,10 @@ namespace OpFlow.Service.Controllers
         [Route("api/User/Checkout", Name = "Checkout")]
         public async Task<IHttpActionResult> CheckoutUser(int surgeryId, [FromBody]User user)
         {
-            await DataAccess.SqlHelper.CheckOutUser(user, surgeryId);
+            var userSecurity = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(userSecurity.CaseDatabaseName);
+
+            await sqlHelper.CheckOutUser(user, surgeryId);
 
             return Ok();
         }
@@ -98,7 +108,10 @@ namespace OpFlow.Service.Controllers
         [Route("api/User/Reviewed", Name = "Reviewed")]
         public async Task<IHttpActionResult> WorkupReviewed(int surgeryId, [FromBody]User user)
         {
-            await DataAccess.SqlHelper.WorkupReviewed(user, surgeryId);
+            var userSecurity = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(userSecurity.CaseDatabaseName);
+
+            await sqlHelper.WorkupReviewed(user, surgeryId);
 
             return Ok();
         }
@@ -107,6 +120,9 @@ namespace OpFlow.Service.Controllers
         [Route("api/User/ResetPassword")]
         public async Task<IHttpActionResult> ResetPassword(int userId, [FromBody]SetPasswordBindingModel model)
         {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -115,12 +131,11 @@ namespace OpFlow.Service.Controllers
             if (model.NewPassword != model.ConfirmPassword)
                 return BadRequest("Passwords do not match");
 
-            var userSecurity = await CacheUtil.GetUserSecurity();
             var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
-            var secureUser = await DataAccess.SqlHelper.GetSecureUser(null, userId);
+            var secureUser = await sqlHelper.GetSecureUser(null, userId);
             
-            if (secureUser != null && secureUser.ProviderID == userSecurity.ProviderID && secureUser.LocationID == userSecurity.LocationID)
+            if (secureUser != null && secureUser.ProviderID == user.ProviderID && secureUser.LocationID == user.LocationID)
             {
                 var code = await userManager.GeneratePasswordResetTokenAsync(secureUser.UserAuthID.ToString());
 
@@ -146,7 +161,8 @@ namespace OpFlow.Service.Controllers
                 return BadRequest(ModelState);
             }
 
-            var userSecurity = await CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
             var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
             var authenticationUser = new ApplicationUser() { UserName = model.Email, Email = model.Email };
@@ -162,10 +178,10 @@ namespace OpFlow.Service.Controllers
 
             try
             {
-                var applicationUserId = await DataAccess.SqlHelper.CreateUser(userAuthId, model.RoleID, model.SpecialtyID,
+                var applicationUserId = await sqlHelper.CreateUser(userAuthId, model.RoleID, model.SpecialtyID,
                     model.FirstName, model.LastName,
-                    model.Email, model.CellPhone, model.Initials, model.Title, userSecurity.ProviderID,
-                    userSecurity.LocationID);
+                    model.Email, model.CellPhone, model.Initials, model.Title, user.ProviderID,
+                    user.LocationID);
 
                 return Ok(applicationUserId);
             }
@@ -184,20 +200,21 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.NotFound)]
         public async Task<IHttpActionResult> Put(int userId, [FromBody]UserEdit model)
         {
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var userSecurity = await CacheUtil.GetUserSecurity();
-            var authUserSecurity = await DataAccess.SqlHelper.GetSecureUser(null, userId);
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            if (authUserSecurity.ProviderID == userSecurity.ProviderID &&
-                authUserSecurity.LocationID == userSecurity.LocationID)
+            var authUserSecurity = await sqlHelper.GetSecureUser(null, userId);
+
+            if (authUserSecurity.ProviderID == user.ProviderID &&
+                authUserSecurity.LocationID == user.LocationID)
             {
-                var applicationUser = await DataAccess.SqlHelper.UpdateUser(userId, (int)model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
-                    model.Email, model.CellPhone, model.Initials, model.Title, userSecurity.ProviderID, userSecurity.LocationID);
+                var applicationUser = await sqlHelper.UpdateUser(userId, (int)model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
+                    model.Email, model.CellPhone, model.Initials, model.Title, user.ProviderID, user.LocationID);
 
                 // make certain user auth matches what we sent
                 var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -226,10 +243,12 @@ namespace OpFlow.Service.Controllers
                 return BadRequest(ModelState);
             }
 
-            var userSecurity = await CacheUtil.GetUserSecurity();
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
             var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
-            var applicationUser = await DataAccess.SqlHelper.GetUser(userSecurity.ProviderID, userSecurity.LocationID,  userId);
+            var applicationUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  userId);
 
             var authenticationUser = await userManager.FindByEmailAsync(applicationUser.Email);
 
@@ -238,7 +257,7 @@ namespace OpFlow.Service.Controllers
                 var authResult = await userManager.RemovePasswordAsync(authenticationUser.Id);
             }
 
-            var applicationDeletion = await DataAccess.SqlHelper.DeleteUser(userId, userSecurity.ProviderID, userSecurity.LocationID);
+            var applicationDeletion = await sqlHelper.DeleteUser(userId, user.ProviderID, user.LocationID);
 
             return Ok();
         }
