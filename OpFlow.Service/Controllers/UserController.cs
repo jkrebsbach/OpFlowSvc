@@ -152,7 +152,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // PUT api/values/5
-        [SwaggerOperation("Update")]
+        [SwaggerOperation("Create")]
         [SwaggerResponse(HttpStatusCode.OK, Type=typeof(int))]
         public async Task<IHttpActionResult> Post([FromBody]UserPost model)
         {
@@ -168,6 +168,16 @@ namespace OpFlow.Service.Controllers
             var authenticationUser = new ApplicationUser() { UserName = model.Email, Email = model.Email };
 
             var result = await userManager.CreateAsync(authenticationUser, model.Password);
+
+            // Whatever role the current user is in - they can only add users to this role
+            var currentAuthId = HttpContext.Current.User.Identity.GetUserId();
+            var currentRoles = await userManager.GetRolesAsync(currentAuthId);
+            var currentRole = currentRoles?.FirstOrDefault();
+
+            if (currentRole == null)
+                throw new Exception("Unable to locate authenticated user");
+
+            userManager.AddToRole(authenticationUser.Id, currentRole);
 
             if (!result.Succeeded)
             {
