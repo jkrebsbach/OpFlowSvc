@@ -6,7 +6,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using OpFlow.Data;
+using OpFlow.Service.App_Start;
 using OpFlow.Service.DataAccess;
 using Swashbuckle.Swagger.Annotations;
 
@@ -16,6 +19,8 @@ namespace OpFlow.Service.Controllers
     [RoutePrefix("api/internal")]
     public class InternalController : ApiController
     {
+        private string[] _roles = new[] { "CommonConnection", "RexConnection" };
+
         // GET api/values/5
         [SwaggerOperation("GetSetup")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<OpFlowProvider>))]
@@ -24,13 +29,20 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSetup()
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-
+            
             if (user.RoleType != "Internal")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var result = await sqlHelper.GetOpFlowSetup();
-            
+            var result = new List<OpFlowProvider>();
+            foreach (var role in _roles)
+            {
+                var sqlHelper = new SqlHelper(role);
+                var providers = await sqlHelper.GetOpFlowSetup();
+
+                providers.ForEach(p => p.RoleName = role);
+                result.AddRange(providers);
+            }
+
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
@@ -39,19 +51,53 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("location")]
         [HttpPut]
-        public async Task<HttpResponseMessage> PutLocation(int locationId)
+        public async Task<HttpResponseMessage> PutLocation(int providerId, int locationId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-
+            
             if (user.RoleType != "Internal")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var result = await sqlHelper.UpdateUserLocation(user.UserID, locationId);
+            foreach (var role in _roles)
+            {
+                var sqlHelper = new SqlHelper(role);
+                var providers = await sqlHelper.GetOpFlowSetup();
+
+                // Try to find the provider in the various databases
+                var provider = providers.FirstOrDefault(p => p.ProviderID == providerId);
+                if (provider != null)
+                {
+                    // Remove user from other roles, get user into correct role
+                    var userAuthId = HttpContext.Current.User.Identity.GetUserId();
+                    var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                    var roles = await userManager.GetRolesAsync(userAuthId);
+
+                    bool inNewRole = false;
+                    foreach (var currRole in roles)
+                    {
+                        if (currRole == role)
+                        {
+                            inNewRole = true;
+                        }
+                        else
+                        {
+                            await userManager.RemoveFromRoleAsync(userAuthId, currRole);
+                        }
+                    }
+
+                    if (!inNewRole)
+                        await userManager.AddToRoleAsync(userAuthId, role);
+
+                    // Update user location as needed
+                    await sqlHelper.UpdateUserLocation(Guid.Parse(userAuthId), locationId);
+                    break;
+                }
+            }
+
 
             CacheUtil.RefreshUserCache();
 
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            return Request.CreateResponse(HttpStatusCode.OK);
         }
     }
 }

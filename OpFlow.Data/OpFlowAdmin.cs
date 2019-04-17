@@ -8,6 +8,7 @@ namespace OpFlow.Data
     {
         public int ProviderID { get; set; }
         public string ProviderName { get; set; }
+        public string RoleName { get; set; }
 
         public List<OpFlowLocation> Locations { get; set; }
 

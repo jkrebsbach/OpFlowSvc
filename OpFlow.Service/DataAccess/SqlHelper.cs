@@ -1098,11 +1098,11 @@ namespace OpFlow.Service.DataAccess
             return providers;
         }
 
-        public async Task<int> UpdateUserLocation(int userId, int locationId)
+        public async Task<int> UpdateUserLocation(Guid userAuthId, int locationId)
         {
             var dsParameters = new []
             {
-                new SqlParameter("user_id", userId),
+                new SqlParameter("user_auth_id", userAuthId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("UpdateUserLocation", dsParameters);

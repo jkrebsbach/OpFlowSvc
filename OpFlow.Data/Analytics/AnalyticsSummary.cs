@@ -36,6 +36,7 @@ namespace OpFlow.Data
         public decimal InstrumentCost { get; set; }
         public int Quantity { get; set; }
         public decimal AvgUsed { get; set; }
+        public decimal AvgPerCase { get; set; }
         public string Reason { get; set; }
         public bool Warning { get; set; }
         public string HistoryType { get; set; }
