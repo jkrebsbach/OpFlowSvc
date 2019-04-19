@@ -24,4 +24,10 @@ namespace OpFlow.Data
         public int LocationID { get; set; }
         public string LocationName { get; set; }
     }
+
+    public class LocationPost
+    {
+        public string Provider { get; set; }
+        public string Location { get; set; }
+    }
 }

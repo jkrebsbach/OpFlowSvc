@@ -19,6 +19,21 @@ namespace OpFlow.Service.DataAccess
         {
         }
 
+        public async Task<int> CreateLocation(int? providerId, string providerName, string locationName)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId ?? (object)DBNull.Value),
+                new SqlParameter("provider_name", providerName),
+                new SqlParameter("location_name", locationName)
+            };
+            var dsSchedules = await ExecuteCommandAsync("InsertLocation", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<InsertionResult>().First().Identifier;
+
+            return result;
+        }
+
         public async Task<List<TrayRationalization>> GetTrayRationalization(
             List<int> specialties, List<int> trays, List<int> surgeons, List<int> cards,
             int providerId, int locationId)

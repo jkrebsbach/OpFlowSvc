@@ -54,7 +54,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutLocation(int providerId, int locationId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            
+
             if (user.RoleType != "Internal")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
@@ -94,9 +94,42 @@ namespace OpFlow.Service.Controllers
                 }
             }
 
+            return Request.CreateResponse(HttpStatusCode.OK);
+        }
 
-            CacheUtil.RefreshUserCache();
+        // GET api/values/5
+        [SwaggerOperation("PostLocation")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("location")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostLocation([FromBody] LocationPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
 
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            int? providerId = null;
+            var newLocationRole = "CommonConnection";
+            foreach (var role in _roles)
+            {
+                var sqlHelper = new SqlHelper(role);
+                var providers = await sqlHelper.GetOpFlowSetup();
+
+                // Try to find the provider in the various databases
+                var provider = providers.FirstOrDefault(p => p.ProviderName.ToLower() == post.Provider.ToLower());
+                if (provider != null)
+                {
+                    newLocationRole = role;
+                    providerId = provider.ProviderID;
+                    break;
+                }
+            }
+
+            var createHelper = new SqlHelper(newLocationRole);
+
+            var locationId = await createHelper.CreateLocation(providerId, post.Provider, post.Location);
+            
             return Request.CreateResponse(HttpStatusCode.OK);
         }
     }
