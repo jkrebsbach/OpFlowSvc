@@ -125,10 +125,24 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
+        [SwaggerOperation("DeleteCaseAudit")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("caseAudit")]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteCaseAudit(int trayProposalId, int surgeryId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var result = await sqlHelper.DeleteProposedTrayAudit(trayProposalId, surgeryId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
         [Route("proposedTray/csv/{trayProposalId}", Name = "GetTrayCsv")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetTrayCsv(int trayProposalId)
+        public async Task<HttpResponseMessage> GetTrayCsv(int trayProposalId, string type)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
@@ -145,11 +159,44 @@ namespace OpFlow.Service.Controllers
                 }
             }
 
-            var extract = "Instrument Name, Source Tray, Avg Used, Quantity, Proposed\r\n";
+            var required = new List<TrayRationalizationExport>();
+            var review = new List<TrayRationalizationExport>();
+            var removed = new List<TrayRationalizationExport>();
+
             foreach (var instrument in proposed)
             {
-                extract +=
-                    $"\"{instrument.InstrumentName?.Trim().Replace("\"", "\"\"")}\",\"{instrument.TrayName?.Trim().Replace("\"", "\"\"")}\",{instrument.AvgUsed},{instrument.Quantity},{instrument.Proposed}\r\n";
+                if (instrument.AvgPerCase == 0)
+                {
+                    removed.Add(instrument);
+                    continue;
+                }
+                var radix = instrument.AvgPerCase - (int) instrument.AvgPerCase;
+                if (radix <= 0.10M)
+                {
+                    review.Add(instrument);
+                    continue;
+                }
+                
+                required.Add(instrument);
+            }
+
+            var categories = new string[] {"REQUIRED", "NEEDS REVIEW", "REMOVED"};
+            var lists = new List<List<TrayRationalizationExport>>() {required, review, removed};
+
+            var extract = string.Empty;
+            for (var index = 0; index < 3; index++)
+            {
+                extract += $"{categories[index]}\r\n";
+                extract += type == "surgical"
+                    ? "Instrument Name, Quantity, Reason for Adding\r\n"
+                    : "Instrument Name, Original Quantity, Avg when used, Avg per case, Proposed Quantity, Reason for Adding\r\n";
+
+                foreach (var instrument in lists[index].OrderByDescending(r => r.SourceQuantity))
+                {
+                    extract += type == "surgical"
+                        ? $"\"{instrument.InstrumentName?.Trim().Replace("\"", "\"\"")}\",{instrument.ProposedQuantity},\r\n"
+                        : $"\"{instrument.InstrumentName?.Trim().Replace("\"", "\"\"")}\",{instrument.SourceQuantity},{instrument.AvgPerCase:#.00},{instrument.ProposedQuantity},\r\n";
+                }
             }
 
             var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);

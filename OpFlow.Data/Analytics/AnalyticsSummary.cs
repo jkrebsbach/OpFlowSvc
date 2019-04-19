@@ -37,11 +37,15 @@ namespace OpFlow.Data
         public int Quantity { get; set; }
         public decimal AvgUsed { get; set; }
         public decimal AvgPerCase { get; set; }
+        public int TrayCases { get; set; }
+        public int UsedCases { get; set; }
         public string Reason { get; set; }
         public bool Warning { get; set; }
         public string HistoryType { get; set; }
         public int Proposed { get; set; }
         public DateTimeOffset? UpdTimestamp { get; set; }
+
+        public decimal CaseUsagePcnt => TrayCases == 0 ? 0 : (UsedCases / (decimal) TrayCases * 100);
     }
 
     public class TrayRationalizationStatusLog
@@ -203,7 +207,7 @@ namespace OpFlow.Data
         public string ProposedTrayName { get; set; }
         public string SurgeonName { get; set; }
         public string RoomDescription { get; set; }
-        public DateTimeOffset ? ScheduleTime { get; set; }
+        public DateTime? ScheduleTime { get; set; }
         public string ScrubTechUser { get; set; }
         public string AuditUser { get; set; }
         public string TrayStatus { get; set; }
@@ -218,10 +222,16 @@ namespace OpFlow.Data
         }
     }
 
+    public class TrayRationalizationExport : TrayRationalization
+    {
+        public int ProposedQuantity { get; set; }
+        public int SourceQuantity { get; set; }
+    }
+
     public class ProposedTrayExport
     {
-        public List<TrayRationalization> ProposedInstruments { get; set; }
-        public List<TrayRationalization> SourceInstruments { get; set; }
+        public List<TrayRationalizationExport> ProposedInstruments { get; set; }
+        public List<TrayRationalizationExport> SourceInstruments { get; set; }
     }
 
     public class SurgeryAuditSourceTray

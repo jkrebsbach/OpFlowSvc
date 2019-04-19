@@ -281,8 +281,8 @@ namespace OpFlow.Service.DataAccess
 
             var result = new ProposedTrayExport()
             {
-                ProposedInstruments = dsSchedules.Tables[0].DataTableToList<TrayRationalization>(),
-                SourceInstruments = dsSchedules.Tables[1].DataTableToList<TrayRationalization>()
+                ProposedInstruments = dsSchedules.Tables[0].DataTableToList<TrayRationalizationExport>(),
+                SourceInstruments = dsSchedules.Tables[1].DataTableToList<TrayRationalizationExport>()
             };
 
             return result;
@@ -399,7 +399,21 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        
+
+        public async Task<int> DeleteProposedTrayAudit(int trayProposalId, int surgeryId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("DeleteProposedTrayAudit", parameters);
+
+            return result;
+        }
+
         public async Task<TrayCardOverlapSummary> GetTrayOverlapSummary(int trayId, int providerId, int locationId)
         {
             var parameters = new[]
