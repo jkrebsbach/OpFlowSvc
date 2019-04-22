@@ -115,6 +115,21 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
+        public async Task<List<AnalyticsSummary>> GetPowerBIReports(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("table_id", DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetPowerBIAnalytics", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<AnalyticsSummary>();
+
+            return result;
+        }
+
         public async Task<int> InsertProposedTray(int? proposedTrayId,
             string trayName, List<ProposedTrayInstrumentPost> instruments, int providerId, int locationId)
         {

@@ -277,6 +277,7 @@
     <Content Include="Scripts\jquery-3.3.1-vsdoc.js" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AnalyticsController.cs" />
     <Compile Include="Controllers\InternalController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\SamlController.cs" />

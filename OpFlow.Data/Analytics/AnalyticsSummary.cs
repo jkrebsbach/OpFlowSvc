@@ -10,8 +10,8 @@ namespace OpFlow.Data
         public string TableName { get; set; }
         public string Category { get; set; }
         public int RoleID { get; set; }
-        public string PowerBiLink { get; set; }
-        public string InsTimestamp { get; set; }
+        public string PowerBILink { get; set; }
+        public DateTime InsTimestamp { get; set; }
     }
 
     public class TrayRationalizationHeader

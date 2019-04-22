@@ -189,13 +189,13 @@ namespace OpFlow.Service.Controllers
                 extract += $"{categories[index]}\r\n";
                 extract += type == "surgical"
                     ? "Instrument Name, Quantity, Reason for Adding\r\n"
-                    : "Instrument Name, Original Quantity, Avg when used, Avg per case, Proposed Quantity, Reason for Adding\r\n";
+                    : "Instrument Name, Original Quantity, Avg when used, Case Usage Pcnt, Proposed Quantity, Reason for Adding\r\n";
 
                 foreach (var instrument in lists[index].OrderByDescending(r => r.SourceQuantity))
                 {
                     extract += type == "surgical"
                         ? $"\"{instrument.InstrumentName?.Trim().Replace("\"", "\"\"")}\",{instrument.ProposedQuantity},\r\n"
-                        : $"\"{instrument.InstrumentName?.Trim().Replace("\"", "\"\"")}\",{instrument.SourceQuantity},{instrument.AvgPerCase:#.00},{instrument.ProposedQuantity},\r\n";
+                        : $"\"{instrument.InstrumentName?.Trim().Replace("\"", "\"\"")}\",{instrument.SourceQuantity},{instrument.AvgUsed:#.00},{instrument.CaseUsagePcnt:#.00}%,{instrument.ProposedQuantity},\r\n";
                 }
             }
 
