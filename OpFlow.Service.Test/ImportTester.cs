@@ -21,7 +21,9 @@ namespace OpFlow.Service.Test
             var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\OpFlowJan23.csv";
             var importTypeId = 1;
 
-            var user = await SqlHelper.GetSecureUser(null, 1);
+            var sqlHelper = new SqlHelper("CommonOpflow");
+            var secureSqlHelper = new SecureSqlHelper("CommonOpflow");
+            var user = await sqlHelper.GetSecureUser(null, 1);
             int? logId = null;
 
             try
@@ -30,20 +32,20 @@ namespace OpFlow.Service.Test
 
                 var fileParser = new FileParser(fileName, fileContents);
 
-                await fileParser.ParseFile(importTypeId, 1, 1);
+                await fileParser.ParseFile(sqlHelper, importTypeId, 1, 1);
 
                 if (fileParser.Records != null)
                 {
-                    logId = await SqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, fileParser.Records.Count, fileName);
+                    logId = await sqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, fileParser.Records.Count, fileName);
 
                     foreach (var record in fileParser.Records)
                     {
-                        var secureId = await SecureSqlHelper.InsertStagingData(record, user.UserID, "TEST", "TEST", 1, user.SecureDatabaseName);
+                        var secureId = await secureSqlHelper.InsertStagingData(record, user.UserID, "TEST", "TEST", 1);
 
-                        var result = await SqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
+                        var result = await sqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
                         foreach (var message in result.Messages)
                         {
-                            await SqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message, 
+                            await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message, 
                                 (record as ScheduleImport)?.MRN, (record as ScheduleImport)?.ScheduleDate);
                         }
                     }
@@ -68,10 +70,11 @@ namespace OpFlow.Service.Test
                 var flowImageId = 0;
 
                 var fileContents = File.ReadAllBytes(fileName);
+                var sqlHelper = new SqlHelper("OpFlowCommon");
 
-                var user = await SqlHelper.GetSecureUser(null, 1);
+                var user = await sqlHelper.GetSecureUser(null, 1);
 
-                flowImageId = await SqlHelper.NewFlowImage(1, 1, 1, "1", 1, 1);
+                flowImageId = await sqlHelper.NewFlowImage(1, 1, 1, "1", 1, 1);
                     
                 var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, 1);
 

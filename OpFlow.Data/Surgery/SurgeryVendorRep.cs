@@ -7,7 +7,7 @@ namespace OpFlow.Data
     public class SurgeryVendorRep
     {
         public int SurgeryID { get; set; }
-        public int VendorID { get; set; }
+        public string VendorID { get; set; }
         public int VendorRepID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

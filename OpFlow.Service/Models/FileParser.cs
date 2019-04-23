@@ -33,7 +33,8 @@ namespace OpFlow.Service.Models
                 var csvData = System.Text.Encoding.UTF8.GetString(_fileContents);
 
                 var parser = new CsvParser(csvData);
-                Records = parser.ParseCSV(importTypeId);
+
+                Records = parser.ParseCSV((CsvParser.ImportType)importTypeId);
 
                 Status = "good to go";
             }

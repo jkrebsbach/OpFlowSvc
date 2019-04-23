@@ -20,7 +20,7 @@ namespace OpFlow.Data
         public decimal UnitCost { get; set; }
         public decimal BillableUnitCost { get; set; }
         public string Manufacturer { get; set; }
-        public int VendorID { get; set; }
+        public string VendorID { get; set; }
         public int CardID { get; set; }
         public int QtyOpen { get; set; }
         public decimal QtyOpenCost { get; set; }

@@ -10,13 +10,21 @@ namespace OpFlow.Service.Models
     {
         private CsvReader _csv;
 
+        public enum ImportType
+        {
+            Schedule = 1,
+            Item = 2,
+            Tray = 3,
+            Card = 4
+        }
+
         public CsvParser(string contents)
         {
             var reader = new StringReader(contents);
             _csv = new CsvReader(reader);
         }
 
-        public List<IImportData> ParseCSV(int importTypeId)
+        public List<IImportData> ParseCSV(ImportType importType)
         {
             try
             {
@@ -31,9 +39,9 @@ namespace OpFlow.Service.Models
                     if (checkField == string.Empty)
                         continue;
 
-                    switch (importTypeId)
+                    switch (importType)
                     {
-                        case 1:
+                        case ImportType.Schedule:
                             result.Add(new ScheduleImport
                             {
                                 MRN = _csv.GetField(0),
@@ -55,34 +63,23 @@ namespace OpFlow.Service.Models
                                 Notes = _csv.GetField(16)
                             });
                             break;
-                        case 2:
+                        case ImportType.Item:
                             result.Add(new ItemImport
                             {
-                                Location = _csv.GetField(0),
-                                LocationName = _csv.GetField(1),
-                                FromLoc = _csv.GetField(2),
-                                BinSeq = _csv.GetField(3),
-                                Bin = _csv.GetField(4),
-                                ItemNbr = _csv.GetField(5),
-                                Desc = _csv.GetField(6),
-                                ManuName = _csv.GetField(7),
-                                MfgNbr = _csv.GetField(8),
-                                ParLevel = _csv.GetField(9),
-                                UOM = _csv.GetField(10),
-                                ItemCost = _csv.GetField(11),
-                                InventoryValue = _csv.GetField(12)
+                                Catalog = _csv.GetField(0),
+                                EHR_ID = _csv.GetField(1),
+                                ItemType = _csv.GetField(2),
+                                Category = _csv.GetField(3),
+                                Description = _csv.GetField(4),
+                                UnitOfMeasure = _csv.GetField(5),
+                                Manufacturer = _csv.GetField(6),
+                                Cost = _csv.GetField(7)
                             });
                             break;
-                        case 3:
-                            result.Add(new UserImport
-                            {
-                                UserName = _csv.GetField(0)
-                            });
-                            break;
-                        case 4:
+                        case ImportType.Tray:
                             result.Add(new TrayImport
                             {
-                                Customer = _csv.GetField(0),
+                                InstrumentType = _csv.GetField(0),
                                 TrayID = _csv.GetField(1),
                                 TrayName = _csv.GetField(2),
                                 InstrumentName = _csv.GetField(3),
@@ -90,13 +87,13 @@ namespace OpFlow.Service.Models
                                 Manufacturer = _csv.GetField(5)
                             });
                             break;
-                        case 5:
+                        case ImportType.Card:
                             result.Add(new CardImport
                             {
                                 Location = _csv.GetField(0),
                                 Surgeon = _csv.GetField(1),
                                 PreferenceCardName = _csv.GetField(2),
-                                Type = _csv.GetField(3),
+                                ItemType = _csv.GetField(3),
                                 LawsonID = _csv.GetField(4),
                                 CatalogNbr = _csv.GetField(5),
                                 SupplyDescription = _csv.GetField(6),

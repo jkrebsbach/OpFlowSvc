@@ -6,20 +6,14 @@ namespace OpFlow.Data.Administration
 {
     public class ItemImport : IImportData
     {
-        public string Location { get; set; }
-        public string LocationName { get; set; }
-        public string FromLoc { get; set; }
-        public string BinSeq { get; set; }
-        public string Bin { get; set; }
-        public string ItemNbr { get; set; }
-        public string Desc { get; set; }
-        public string ManuName { get; set; }
-        public string MfgNbr { get; set; }
-
-        public string ParLevel { get; set; }
-        public string UOM { get; set; }
-        public string ItemCost { get; set; }
-        public string InventoryValue { get; set; }
+        public string Catalog { get; set; }
+        public string EHR_ID { get; set; }
+        public string ItemType { get; set; }
+        public string Category { get; set; }
+        public string Description { get; set; }
+        public string UnitOfMeasure { get; set; }
+        public string Manufacturer { get; set; }
+        public string Cost { get; set; }
 
     }
 }

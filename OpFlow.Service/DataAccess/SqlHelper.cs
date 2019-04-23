@@ -3834,25 +3834,17 @@ namespace OpFlow.Service.DataAccess
                 {
                     new SqlParameter("provider_id", providerId),
                     new SqlParameter("location_id", locationId),
-                    new SqlParameter("location", item.Location),
-                    new SqlParameter("location_name", item.LocationName),
-                    new SqlParameter("from_loc", item.FromLoc),
-                    new SqlParameter("bin_seq", item.BinSeq),
-                    new SqlParameter("bin", item.Bin),
-                    new SqlParameter("item_nbr", item.ItemNbr),
-                    new SqlParameter("description", item.Desc),
-                    new SqlParameter("manu_name", item.ManuName),
-                    new SqlParameter("mfg_nbr", item.MfgNbr),
-                    new SqlParameter("par_level", item.ParLevel),
-                    new SqlParameter("uom", item.UOM),
-                    new SqlParameter("item_cost", item.ItemCost),
-                    new SqlParameter("inventory_value", item.InventoryValue)
+                    new SqlParameter("catalog_id", item.Catalog),
+                    new SqlParameter("ehr_id", item.EHR_ID),
+                    new SqlParameter("item_type", item.ItemType),
+                    new SqlParameter("category", item.Category),
+                    new SqlParameter("item_description", item.Description),
+                    new SqlParameter("unit_of_measure", item.UnitOfMeasure),
+                    new SqlParameter("manufacturer", item.Manufacturer),
+                    new SqlParameter("unit_cost", item.Cost)
                 };
 
-                result.Identity = await ExecuteNonQueryAsync(@"INSERT stag_item (provider_id, location_id, location, location_name, from_loc, bin_seq, 
-                    bin, item_nbr, description, manu_name, mfg_nbr, par_level, uom, item_cost, inventory_value)
-                VALUES (@provider_id, @location_id, @location, @location_name, @from_loc, @bin_seq,
-                    @bin, @item_nbr, @description, @manu_name, @mfg_nbr, @par_level, @uom, @item_cost, @inventory_value)", parameters, CommandType.Text);
+                result.Identity = await ExecuteNonQueryAsync(@"UpdateItemImport", parameters);
 
             }
             else if (sourceData is CardImport card)
@@ -3864,7 +3856,7 @@ namespace OpFlow.Service.DataAccess
                     new SqlParameter("location", card.Location),
                     new SqlParameter("surgeon", card.Surgeon),
                     new SqlParameter("preference_card_name", card.PreferenceCardName),
-                    new SqlParameter("type", card.Type),
+                    new SqlParameter("item_type", card.ItemType),
                     new SqlParameter("lawson_id", card.LawsonID),
                     new SqlParameter("catalog_nbr", card.CatalogNbr),
                     new SqlParameter("supply_description", card.SupplyDescription),
@@ -3876,10 +3868,7 @@ namespace OpFlow.Service.DataAccess
                     new SqlParameter("unit", card.Unit)
                 };
 
-                result.Identity = await ExecuteNonQueryAsync(@"INSERT stag_card (provider_id, location_id, location, surgeon, preference_card_name, type,
-                    lawson_id, catalog_nbr, supply_description, manufacturer, open_amt, prn_required, cost_per_unit_ot, dosage, unit)
-                        VALUES (@provider_id, @location_id, @location, @surgeon, @preference_card_name, @type,
-                    @lawson_id, @catalog_nbr, @supply_description, @manufacturer, @open_amt, @prn_required, @cost_per_unit_ot, @dosage, @unit)", parameters, CommandType.Text);
+                result.Identity = await ExecuteNonQueryAsync(@"UpdateStagCardItem", parameters);
             }
             else if (sourceData is TrayImport tray)
             {
@@ -3887,16 +3876,14 @@ namespace OpFlow.Service.DataAccess
                 {
                     new SqlParameter("provider_id", providerId),
                     new SqlParameter("location_id", locationId),
-                    new SqlParameter("customer", tray.Customer),
                     new SqlParameter("tray_id", tray.TrayID),
                     new SqlParameter("tray_name", tray.TrayName),
                     new SqlParameter("instrument_name", tray.InstrumentName),
-                    new SqlParameter("quantity", tray.Quantity),
-                    new SqlParameter("manufacturer", tray.Manufacturer)
+                    new SqlParameter("manufacturer", tray.Manufacturer),
+                    new SqlParameter("quantity", tray.Quantity)
                 };
 
-                result.Identity = await ExecuteNonQueryAsync(@"INSERT stag_tray (provider_id, location_id, customer, tray_id, tray_name, instrument_name, quantity, manufacturer)
-                VALUES (@provider_id, @location_id, @customer, @tray_id, @tray_name, @instrument_name, @quantity, @manufacturer)", parameters, CommandType.Text);
+                result.Identity = await ExecuteNonQueryAsync(@"UpdateTrayImport", parameters);
             }
             else if(sourceData is ScheduleImport schedule)
             {

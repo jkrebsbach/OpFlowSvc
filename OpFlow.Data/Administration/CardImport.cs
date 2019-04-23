@@ -9,7 +9,7 @@ namespace OpFlow.Data.Administration
         public string Location { get; set; }
         public string Surgeon { get; set; }
         public string PreferenceCardName { get; set; }
-        public string Type { get; set; }
+        public string ItemType { get; set; }
         public string LawsonID { get; set; }
         public string CatalogNbr { get; set; }
         public string SupplyDescription { get; set; }
