@@ -287,7 +287,8 @@ namespace OpFlow.Service.Controllers
             var result = new CardItemCountResult()
             {
                 Collections = new List<TrayCollection>(),
-                Trays = new List<TrayUsage>()
+                Trays = new List<TrayUsage>(),
+                CptCodes = await sqlHelper.GetSurgeryCPTCodes(surgeryId, user.ProviderID, user.LocationID)
             };
 
             foreach (var countType in itemCounts)
@@ -1001,6 +1002,8 @@ namespace OpFlow.Service.Controllers
                 {
                     await sqlHelper.UpdateSurgeryQuestionAnswers(surgeryId, post.Answers, user.ProviderID, user.LocationID);
                 }
+
+                await sqlHelper.UpdateSurgeryCPTs(surgeryId, post.SurgeryCpts, user.ProviderID, user.LocationID);
             }
             catch (Exception e)
             {

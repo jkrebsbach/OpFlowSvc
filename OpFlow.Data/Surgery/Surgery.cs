@@ -145,6 +145,12 @@ namespace OpFlow.Data
         public List<SurgeryCountItemPost> ItemCounts { get; set; }
         public List<SurgeryCountItemPost> InstrumentCounts { get; set; }
         public List<TrayQuestion> Answers { get; set; }
+        public List<string> SurgeryCpts { get; set; }
+    }
+
+    public class SurgeryCPTCode
+    {
+        public string CptCode { get; set; }
     }
 
     public class SurgeryCustomItemPost

@@ -2040,6 +2040,69 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
+        public async Task<int> UpdateSurgeryCPTs(int surgeryId, List<string> surgeryCpts, int providerId, int locationId)
+        {
+            var codes = await GetSurgeryCPTCodes(surgeryId, providerId, locationId);
+
+            foreach (var surgeryCpt in surgeryCpts)
+            {
+                var existing = codes.FirstOrDefault(c => c.CptCode == surgeryCpt);
+                if (existing == null && !string.IsNullOrEmpty(surgeryCpt))
+                    await InsertSurgeryCPTCode(surgeryId, surgeryCpt, providerId, locationId);
+            }
+
+            foreach (var code in codes)
+            {
+                var desired = surgeryCpts.FirstOrDefault(c => code.CptCode == c);
+                if (desired == null)
+                    await DeleteSurgeryCPTCode(surgeryId, code.CptCode, providerId, locationId);
+            }
+
+            return surgeryCpts.Count;
+        }
+
+        public async Task<List<SurgeryCPTCode>> GetSurgeryCPTCodes(int surgeryId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsResults = await ExecuteCommandAsync("GetSurgeryCPTCodes", dsParameters);
+            var codes = dsResults.Tables[0].DataTableToList<SurgeryCPTCode>();
+            
+            return codes;
+        }
+
+        public async Task<int> InsertSurgeryCPTCode(int surgeryId, string cptCode, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("cpt_code", cptCode),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("AssignCPTCodestoSurgery", dsParameters);
+            
+            return result;
+        }
+
+        public async Task<int> DeleteSurgeryCPTCode(int surgeryId, string cptCode, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("cpt_code", cptCode)
+            };
+            var result = await ExecuteNonQueryAsync("DeleteSurgeryProcedure", dsParameters);
+            
+            return result;
+        }
+
         private string GetAnswerSummary(List<TrayQuestion> answers)
         {
             if (!answers.Any())

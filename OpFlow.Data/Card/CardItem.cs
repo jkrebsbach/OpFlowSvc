@@ -75,6 +75,7 @@ namespace OpFlow.Data
         public List<CardItemCount> Instruments { get; set; }
         public List<TrayCollection> Collections { get; set; }
         public List<TrayUsage> Trays { get; set; }
+        public List<SurgeryCPTCode> CptCodes { get; set; }
 
         public CardItemCountResult()
         {
