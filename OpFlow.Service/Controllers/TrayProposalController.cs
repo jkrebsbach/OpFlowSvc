@@ -48,10 +48,10 @@ namespace OpFlow.Service.Controllers
 
             var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).FirstOrDefault();
             var statusLog = await sqlHelper.GetProposedTrayStatusLog(trayProposalId, user.ProviderID, user.LocationID);
-            var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, user.ProviderID, user.LocationID);
+            var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, true, user.ProviderID, user.LocationID);
             var cards = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
             var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, user.ProviderID, user.LocationID);
-            
+
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 StatusLog = statusLog,
@@ -300,6 +300,7 @@ namespace OpFlow.Service.Controllers
             var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
             var trays = await sqlHelper.GetItems("tray", null, null, user.ProviderID, user.LocationID);
             var cards = await sqlHelper.GetCards(user.ProviderID, user.LocationID);
+            var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
 
             var result = new TrayRationalizationHeader()
             {
@@ -307,7 +308,8 @@ namespace OpFlow.Service.Controllers
                 Surgeons = surgeons,
                 Trays = trays,
                 Proposals = proposals,
-                Cards = cards
+                Cards = cards,
+                StandardizedTrays = proposedTrays.Where(p => p.Status == "D").ToList()
             };
 
 
@@ -389,11 +391,9 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var proposed = await sqlHelper.GetProposedTrayInstruments(trayProposalId, user.ProviderID, user.LocationID);
-            var shared = new List<ItemTray>();
+            var proposed = await sqlHelper.GetProposedTrayInstruments(trayProposalId, false, user.ProviderID, user.LocationID);
+            var shared = new List<ItemTrayOverlap>();
             var trays = new List<ItemTray>();
-
-            proposed = proposed.Where(p => p.HistoryType == null).ToList();
 
             var traySummary = new List<TrayCardOverlapSummary>()
             {
@@ -420,7 +420,7 @@ namespace OpFlow.Service.Controllers
 
                 var trayInstruments = await sqlHelper.GetTrayItemOverlaps(trayId, user.ProviderID, user.LocationID);
 
-                var usedInstruments = 0;
+                decimal usedInstruments = 0;
                 var commonInstruments = 0;
                 foreach (var instrument in trayInstruments)
                 {
@@ -448,6 +448,48 @@ namespace OpFlow.Service.Controllers
                 var overlapSummary = await sqlHelper.GetTrayOverlapSummary(trayId, user.ProviderID, user.LocationID);
                 overlapSummary.CommonInstruments = commonInstruments;
                 overlapSummary.UsedInstruments = usedInstruments;
+
+                traySummary.Add(overlapSummary);
+            }
+
+
+            if (post.StandardizedTrayID.HasValue)
+            {
+                var standardized = await sqlHelper.GetProposedTrayInstruments(post.StandardizedTrayID.Value, false, user.ProviderID, user.LocationID);
+
+                decimal usedInstruments = 0;
+                var commonInstruments = 0;
+                foreach (var instrument in standardized)
+                {
+                    if (instrument.Quantity < instrument.AvgUsed)
+                        instrument.Warning = true;
+
+                    var matching = proposed.FirstOrDefault(p => p.InstrumentID == instrument.InstrumentID);
+                    if (matching != null)
+                    {
+                        // If item on selected tray has qty > item on proposed tray - warn
+                        instrument.Warning = instrument.Warning || (instrument.Quantity > matching.Quantity);
+                        shared.Add(instrument);
+
+                        usedInstruments += instrument.AvgUsed; // usage history
+                        commonInstruments += matching.Quantity; // proposed quantity
+                    }
+                    else
+                    {
+                        // If not added item has used qty - war
+                        instrument.Warning = instrument.Warning || (instrument.AvgUsed > 0);
+                        trays.Add(instrument);
+                    }
+                }
+
+                var overlapSummary = new TrayCardOverlapSummary
+                {
+                    TrayName = "Standardized Tray",
+                    NbrInstruments = standardized.Sum(p => p.Quantity),
+                    CostPerTray = standardized.Sum(p => p.InstrumentCost * p.Quantity),
+                    CommonInstruments = commonInstruments,
+                    UsedInstruments = usedInstruments
+                };
 
                 traySummary.Add(overlapSummary);
             }
@@ -517,6 +559,25 @@ namespace OpFlow.Service.Controllers
             var trayId = await sqlHelper.DeleteProposedTrayInstrument(trayProposalId, instrumentId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
+        }
+
+
+        [SwaggerOperation("UpdateAuditDetails")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("auditDetails")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> UpdateAuditDetails(int trayProposalId, [FromBody] AuditDetailPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            foreach (var audit in post.Audits)
+            {
+                await sqlHelper.UpdateSurgeryCPTs(audit.SurgeryID, audit.SurgeryCpts, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateProposedTrayAuditComments(trayProposalId, audit.SurgeryID, audit.Comments, user.ProviderID, user.LocationID);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, trayProposalId);
         }
     }
 }

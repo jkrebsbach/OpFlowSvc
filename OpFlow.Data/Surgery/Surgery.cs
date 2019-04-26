@@ -150,6 +150,7 @@ namespace OpFlow.Data
 
     public class SurgeryCPTCode
     {
+        public int SurgeryID { get; set; }
         public string CptCode { get; set; }
     }
 

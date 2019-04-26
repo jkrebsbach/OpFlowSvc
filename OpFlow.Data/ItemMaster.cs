@@ -35,4 +35,11 @@ namespace OpFlow.Data
         public string InstrumentName { get; set; }
         public string Manufacturer { get; set; }
     }
+
+    public class ItemTrayOverlap : ItemTray
+    {
+        public decimal InstrumentCost { get; set; }
+        public decimal AvgUsed { get; set; }
+        public bool Warning { get; set; }
+    }
 }

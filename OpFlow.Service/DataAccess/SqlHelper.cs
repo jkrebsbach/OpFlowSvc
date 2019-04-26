@@ -180,6 +180,22 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> UpdateProposedTrayAuditComments(int proposedTrayId, int surgeryId, string comments, int providerId,
+            int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", proposedTrayId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("comments", comments ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProposedTrayAuditComments", parameters);
+
+            return result;
+        }
+
         public async Task<int> UpdateProposedTray(int proposedTrayId,
             string trayName, string status, int statusUserId, int providerId, int locationId)
         {
@@ -234,6 +250,7 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, instrument.InstrumentID);
                 AddColumn(doc, row, instrument.Quantity);
                 AddColumn(doc, row, instrument.Reason);
+                AddColumn(doc, row, instrument.Comments);
             }
 
             return table.OuterXml;
@@ -269,11 +286,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayRationalization>> GetProposedTrayInstruments(int proposedTrayId, int providerId, int locationId)
+        public async Task<List<TrayRationalization>> GetProposedTrayInstruments(int proposedTrayId, bool showHistory, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("proposed_tray_id", proposedTrayId),
+                new SqlParameter("show_history", showHistory),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -368,11 +386,18 @@ namespace OpFlow.Service.DataAccess
 
             var result = dsSchedules.Tables[0].DataTableToList<TraySurgeryAudit>();
             var scrubTechs = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
+            var cptCodes = dsSchedules.Tables[2].DataTableToList<SurgeryCPTCode>();
 
             foreach (var scrubTech in scrubTechs)
             {
                 var surgery = result.FirstOrDefault(r => r.SurgeryID == scrubTech.SurgeryID);
                 surgery?.ScrubTechs.Add(scrubTech);
+            }
+
+            foreach (var cptCode in cptCodes)
+            {
+                var surgery = result.FirstOrDefault(r => r.SurgeryID == cptCode.SurgeryID);
+                surgery?.CptCodes.Add(cptCode);
             }
 
             return result;

@@ -21,26 +21,20 @@ namespace OpFlow.Data
         public List<ItemMaster> Trays { get; set; }
         public List<Surgeon> Surgeons { get; set; }
         public List<Card> Cards { get; set; }
+        public List<TrayRationalization> StandardizedTrays { get; set; }
     }
 
-    public class TrayRationalization
+    public class TrayRationalization : ItemTrayOverlap
     {
         public int TrayProposalID { get; set; }
-        public int InstrumentID { get; set; }
-        public int TrayItemID { get; set; }
-        public string InstrumentName { get; set; }
-        public string TrayName { get; set; }
         public string Status { get; set; }
         public string StatusName { get; set; }
         public int InstrumentCount { get; set; }
-        public decimal InstrumentCost { get; set; }
-        public int Quantity { get; set; }
-        public decimal AvgUsed { get; set; }
         public decimal AvgPerCase { get; set; }
         public int TrayCases { get; set; }
         public int UsedCases { get; set; }
         public string Reason { get; set; }
-        public bool Warning { get; set; }
+        public string Comments { get; set; }
         public string HistoryType { get; set; }
         public int Proposed { get; set; }
         public DateTimeOffset? UpdTimestamp { get; set; }
@@ -111,6 +105,19 @@ namespace OpFlow.Data
         public int InstrumentID { get; set; }
         public int Quantity { get; set; }
         public string Reason { get; set; }
+        public string Comments { get; set; }
+    }
+
+    public class AuditDetailPost
+    {
+        public List<UpdateAuditDetail> Audits { get; set; }
+    }
+
+    public class UpdateAuditDetail
+    {
+        public int SurgeryID { get; set; }
+        public List<string> SurgeryCpts { get; set; }
+        public string Comments { get; set; }
     }
 
     public class TrayRationalizationComparePost
@@ -143,6 +150,7 @@ namespace OpFlow.Data
     public class TrayRationalizationOverlapPost
     {
         public List<string> Trays { get; set; }
+        public int? StandardizedTrayID { get; set; }
     }
 
     public class TrayRationalizationDetail
@@ -168,17 +176,10 @@ namespace OpFlow.Data
         public int ProcessedAvg { get; set; }
         public int ProcessedMin { get; set; }
         public int ProcessedMax { get; set; }
-        public int UsedInstruments { get; set; }
+        public decimal UsedInstruments { get; set; }
         public int CommonInstruments { get; set; }
         public decimal? OverlapPcnt => 
             (CommonInstruments == 0 ? 0 : (decimal)UsedInstruments / CommonInstruments * 100);
-    }
-
-    public class ItemTrayOverlap : ItemTray
-    {
-        public decimal InstrumentCost { get; set; }
-        public int AvgUsed { get; set; }
-        public bool Warning { get; set; }
     }
 
     public class TrayCardOverlap
@@ -203,6 +204,7 @@ namespace OpFlow.Data
     {
         public int TrayProposalID { get; set; }
         public int SurgeryID { get; set; }
+        public int SpecialtyID { get; set; }
         public int? AuditUserID { get; set; }
         public string ProposedTrayName { get; set; }
         public string SurgeonName { get; set; }
@@ -211,14 +213,21 @@ namespace OpFlow.Data
         public string ScrubTechUser { get; set; }
         public string AuditUser { get; set; }
         public string TrayStatus { get; set; }
+        public string AuditComments { get; set; }
+
+        public string CptCode1 => CptCodes.Count > 0 ? CptCodes[0]?.CptCode : null;
+        public string CptCode2 => CptCodes.Count > 1 ? CptCodes[1]?.CptCode : null;
+        public string CptCode3 => CptCodes.Count > 2 ? CptCodes[2]?.CptCode : null;
 
         public List<SurgeryUser> ScrubTechs { get; set; }
         public List<SurgeryAuditSourceTray> SourceTrays { get; set; }
+        public List<SurgeryCPTCode> CptCodes { get; set; }
 
         public TraySurgeryAudit()
         {
             ScrubTechs = new List<SurgeryUser>();
             SourceTrays = new List<SurgeryAuditSourceTray>();
+            CptCodes = new List<SurgeryCPTCode>();
         }
     }
 
