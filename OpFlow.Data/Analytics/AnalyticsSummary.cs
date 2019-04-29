@@ -68,6 +68,7 @@ namespace OpFlow.Data
         public List<int> Trays { get; set; }
         public List<int> Surgeons { get; set; }
         public List<int> Cards { get; set; }
+        public string CptCode { get; set; }
     }
 
     public class CardListPost

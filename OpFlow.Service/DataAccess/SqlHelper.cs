@@ -35,7 +35,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<List<TrayRationalization>> GetTrayRationalization(
-            List<int> specialties, List<int> trays, List<int> surgeons, List<int> cards,
+            List<int> specialties, List<int> trays, List<int> surgeons, List<int> cards, string cptCode,
             int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialties);
@@ -49,6 +49,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("trays", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("surgeons", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("cards", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("cpt_code", cptCode ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

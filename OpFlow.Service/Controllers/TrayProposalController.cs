@@ -344,7 +344,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             var rationalization = await sqlHelper.GetTrayRationalization(
-                post.Specialties, post.Trays, post.Surgeons, post.Cards,
+                post.Specialties, post.Trays, post.Surgeons, post.Cards, post.CptCode,
                 user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, rationalization);
