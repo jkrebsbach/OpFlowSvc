@@ -131,6 +131,24 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<AnalyticTrayRationalization>> GetAnalyticsTrayRationalization(int? specialtyId, int? surgeonId, int? trayId, int providerId,
+            int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonId ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayId ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayRationalization", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<AnalyticTrayRationalization>();
+
+            return result;
+        }
+
         public async Task<int> InsertProposedTray(int? proposedTrayId,
             string trayName, List<ProposedTrayInstrumentPost> instruments, int providerId, int locationId)
         {
