@@ -94,6 +94,8 @@ namespace OpFlow.Service.Controllers
                 }
             }
 
+            // Dropped cache user object so system refreshes maped location
+            CacheUtil.RefreshUserCache();
             return Request.CreateResponse(HttpStatusCode.OK);
         }
 

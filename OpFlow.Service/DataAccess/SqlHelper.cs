@@ -251,6 +251,7 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, instrument.Quantity);
                 AddColumn(doc, row, instrument.Reason);
                 AddColumn(doc, row, instrument.Comments);
+                AddColumn(doc, row, instrument.Sequence);
             }
 
             return table.OuterXml;
@@ -298,6 +299,15 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetProposedTrayInstruments", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
+
+            var sequence = 0;
+            foreach (var item in result.Where(r => r.HistoryType == null))
+            {
+                if (item.Sequence == null)
+                    item.Sequence = (++sequence);
+
+                sequence = item.Sequence ?? 0;
+            }
 
             return result;
         }

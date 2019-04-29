@@ -106,6 +106,7 @@ namespace OpFlow.Data
         public int Quantity { get; set; }
         public string Reason { get; set; }
         public string Comments { get; set; }
+        public int Sequence { get; set; }
     }
 
     public class AuditDetailPost
