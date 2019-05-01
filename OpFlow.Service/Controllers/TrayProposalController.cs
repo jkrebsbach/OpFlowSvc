@@ -343,6 +343,9 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
+            if (post.CptCode == string.Empty)
+                post.CptCode = null;
+
             var rationalization = await sqlHelper.GetTrayRationalization(
                 post.Specialties, post.Trays, post.Surgeons, post.Cards, post.CptCode,
                 user.ProviderID, user.LocationID);

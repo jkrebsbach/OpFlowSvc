@@ -20,5 +20,14 @@ namespace OpFlow.Data
         public int CaseCount { get; set; }
         public int InstrumentCount { get; set; }
         public int UsageQuantity { get; set; }
+        public int TrayOpened { get; set; }
+    }
+
+    public class AnalyticsCountSummary
+    {
+        public string Card { get; set; }
+        public string Specialty { get; set; }
+        public int TrayCount { get; set; }
+        public int CardCount { get; set; }
     }
 }

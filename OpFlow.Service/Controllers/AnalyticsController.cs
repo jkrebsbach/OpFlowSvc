@@ -28,6 +28,7 @@ namespace OpFlow.Service.Controllers
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
             var trays = await sqlHelper.GetItems("TRAY", null, null, user.ProviderID, user.LocationID);
+            var roomGroups = await sqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -37,6 +38,7 @@ namespace OpFlow.Service.Controllers
                     Specialties = specialties,
                     Surgeons = surgeons,
                     Trays = trays,   
+                    RoomGroups = roomGroups
                 }
             });
         }
@@ -59,7 +61,48 @@ namespace OpFlow.Service.Controllers
                 Trays = analytics.Select(t => t.TrayName),
                 CaseCount = analytics.Select(t => t.CaseCount),
                 InstrumentCount = analytics.Select(t => t.InstrumentCount),
-                UsageQuantity = analytics.Select(t => t.UsageQuantity)
+                UsageQuantity = analytics.Select(t => t.UsageQuantity),
+                TrayOpened = analytics.Select(t => t.TrayOpened)
+            });
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetCountSummary")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
+        [HttpGet]
+        [Route("countSummary")]
+        public async Task<HttpResponseMessage> GetCountSummary(int? specialtyId, int? surgeonId, int? cardId, int? roomGroupId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var analytics = await sqlHelper.GetAnalyticsCountSummary(specialtyId, surgeonId, cardId, roomGroupId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Specialties = analytics.Select(t => t.Specialty),
+                TrayCount = analytics.Select(t => t.TrayCount),
+                CardCount = analytics.Select(t => t.CardCount)
+            });
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetCountSummaryByCard")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
+        [HttpGet]
+        [Route("countSummaryByCard")]
+        public async Task<HttpResponseMessage> GetCountSummaryByCard(int? specialtyId, int? surgeonId, int? cardId, int? roomGroupId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var analytics = await sqlHelper.GetAnalyticsCountSummaryByCard(specialtyId, surgeonId, cardId, roomGroupId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Cards = analytics.Select(t => t.Card),
+                TrayCount = analytics.Select(t => t.TrayCount),
+                CardCount = analytics.Select(t => t.CardCount)
             });
         }
     }
