@@ -51,6 +51,7 @@ namespace OpFlow.Service.Controllers
             var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, true, user.ProviderID, user.LocationID);
             var cards = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
             var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, user.ProviderID, user.LocationID);
+            var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -58,7 +59,8 @@ namespace OpFlow.Service.Controllers
                 ProposedTray = proposedTray,
                 Instruments = instruments,
                 Cards = cards.Where(i => i.Overlap >= (overlapPcnt ?? 0)),
-                Audits = audits
+                Audits = audits,
+                Counts = counts
             });
         }
 
@@ -105,7 +107,10 @@ namespace OpFlow.Service.Controllers
             var result = -1;
             foreach (var surgeryId in auditPost.Surgeries)
             {
-                result = await sqlHelper.UpdateProposedTrayAudit(trayProposalId, surgeryId, null, null, user.ProviderID, user.LocationID);
+                if (auditPost.Target == "A")
+                    result = await sqlHelper.UpdateProposedTrayAudit(trayProposalId, surgeryId, null, null, user.ProviderID, user.LocationID);
+                else
+                    result = await sqlHelper.UpdateProposedTrayCount(trayProposalId, surgeryId, null, null, user.ProviderID, user.LocationID);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -115,12 +120,16 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("caseAudit")]
         [HttpPut]
-        public async Task<HttpResponseMessage> UpdateCaseAudit(int trayProposalId, int surgeryId, int? scrubTechUserId)
+        public async Task<HttpResponseMessage> UpdateCaseAudit(int trayProposalId, int surgeryId, int? scrubTechUserId, string target)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await sqlHelper.UpdateProposedTrayAudit(trayProposalId, surgeryId, scrubTechUserId, user.UserID, user.ProviderID, user.LocationID);
+            var result = -1;
+            if (target == "A")
+                result = await sqlHelper.UpdateProposedTrayAudit(trayProposalId, surgeryId, scrubTechUserId, user.UserID, user.ProviderID, user.LocationID);
+            else
+                result = await sqlHelper.UpdateProposedTrayCount(trayProposalId, surgeryId, scrubTechUserId, user.UserID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
