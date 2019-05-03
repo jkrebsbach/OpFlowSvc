@@ -98,6 +98,7 @@ namespace OpFlow.Data
     public class RoomSummary : Surgery
     {
         public int? IdleMinutes { get; set; }
+        public bool AuditSurgery { get; set; }
 
         public Patient Patient { get; set; }
     }
@@ -245,6 +246,7 @@ namespace OpFlow.Data
         public string FlowStepDescription { get; set; }
         public string LateralityDescription { get; set; }
         public string StaffChange { get; set; }
+        public bool AuditSurgery { get; set; }
 
         public List<SurgeryUser> SurgeryUsers { get; set; }
 
