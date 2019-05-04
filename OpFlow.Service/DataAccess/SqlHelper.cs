@@ -237,14 +237,15 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProposedTrayAuditComments(int proposedTrayId, int surgeryId, string comments, int providerId,
-            int locationId)
+        public async Task<int> UpdateProposedTrayAuditComments(int proposedTrayId, int surgeryId, string comments, string target,
+            int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", proposedTrayId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("comments", comments ?? (object)DBNull.Value),
+                new SqlParameter("target", target),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -441,11 +442,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TraySurgeryAudit>> GetProposedTrayAudits(int trayProposalId, int providerId, int locationId)
+        public async Task<List<TraySurgeryAudit>> GetProposedTrayAudits(int? trayProposalId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("proposed_tray_id", trayProposalId),
+                new SqlParameter("proposed_tray_id", trayProposalId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -470,17 +471,17 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TraySurgeryCount>> GetProposedTrayCounts(int trayProposalId, int providerId, int locationId)
+        public async Task<List<TraySurgeryAudit>> GetProposedTrayCounts(int? trayProposalId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("proposed_tray_id", trayProposalId),
+                new SqlParameter("proposed_tray_id", trayProposalId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCounts", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<TraySurgeryCount>();
+            var result = dsSchedules.Tables[0].DataTableToList<TraySurgeryAudit>();
             var scrubTechs = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
             var cptCodes = dsSchedules.Tables[2].DataTableToList<SurgeryCPTCode>();
 

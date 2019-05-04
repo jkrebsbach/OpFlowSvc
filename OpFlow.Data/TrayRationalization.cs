@@ -207,6 +207,7 @@ namespace OpFlow.Data
         public string AuditUser { get; set; }
         public string TrayStatus { get; set; }
         public string AuditComments { get; set; }
+        public string AuditType { get; set; }
 
         public string CptCode1 => CptCodes.Count > 0 ? CptCodes[0]?.CptCode : null;
         public string CptCode2 => CptCodes.Count > 1 ? CptCodes[1]?.CptCode : null;
@@ -217,37 +218,6 @@ namespace OpFlow.Data
         public List<SurgeryCPTCode> CptCodes { get; set; }
 
         public TraySurgeryAudit()
-        {
-            ScrubTechs = new List<SurgeryUser>();
-            SourceTrays = new List<SurgeryAuditSourceTray>();
-            CptCodes = new List<SurgeryCPTCode>();
-        }
-    }
-
-    public class TraySurgeryCount
-    {
-        public int TrayProposalID { get; set; }
-        public int SurgeryID { get; set; }
-        public int SpecialtyID { get; set; }
-        public int? CountUserID { get; set; }
-        public string ProposedTrayName { get; set; }
-        public string SurgeonName { get; set; }
-        public string RoomDescription { get; set; }
-        public DateTime? ScheduleTime { get; set; }
-        public string ScrubTechUser { get; set; }
-        public string CountUser { get; set; }
-        public string TrayStatus { get; set; }
-        public string CountComments { get; set; }
-
-        public string CptCode1 => CptCodes.Count > 0 ? CptCodes[0]?.CptCode : null;
-        public string CptCode2 => CptCodes.Count > 1 ? CptCodes[1]?.CptCode : null;
-        public string CptCode3 => CptCodes.Count > 2 ? CptCodes[2]?.CptCode : null;
-
-        public List<SurgeryUser> ScrubTechs { get; set; }
-        public List<SurgeryAuditSourceTray> SourceTrays { get; set; }
-        public List<SurgeryCPTCode> CptCodes { get; set; }
-
-        public TraySurgeryCount()
         {
             ScrubTechs = new List<SurgeryUser>();
             SourceTrays = new List<SurgeryAuditSourceTray>();

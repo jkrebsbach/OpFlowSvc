@@ -91,6 +91,9 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             var audits = await sqlHelper.GetProposedTrayAuditSummary(user.ProviderID, user.LocationID);
+            var counts = await sqlHelper.GetProposedTrayCounts(null, user.ProviderID, user.LocationID);
+
+            audits.AddRange(counts);
 
             return Request.CreateResponse(HttpStatusCode.OK, audits);
         }
@@ -252,6 +255,49 @@ namespace OpFlow.Service.Controllers
             result.Content.Headers.ContentDisposition =
                 new ContentDispositionHeaderValue("attachment")
                     { FileName = "CardListExport.csv", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
+        [Route("trayAudit/csv", Name = "GetTrayAuditCsv")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTrayAuditCsv(int? trayProposalId, string filter)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var audits = new List<TraySurgeryAudit>();
+            var extract = "Surgery Date, OR, Status at Audit, CPT Code 1, CPT Code 2, CPT Code 3, Surgeon, Scrub Tech, Comments\r\n";
+            if (filter == null || filter == "A")
+            {
+                audits.AddRange(await sqlHelper.GetProposedTrayAudits(trayProposalId, user.ProviderID, user.LocationID));
+            }
+            if (filter == null || filter == "C")
+            {
+                audits.AddRange(await sqlHelper.GetProposedTrayCounts(trayProposalId, user.ProviderID, user.LocationID));
+            }
+
+            foreach (var audit in audits)
+            {
+                extract +=
+                    $"\"{audit.ScheduleTime?.ToString("M/d/yyyy HH:mm")}\",\"{audit.RoomDescription?.Trim().Replace("\"", "\"\"")}\",\"{audit.TrayStatus?.Replace("\"", "\"\"")}\"," +
+                    $"\"{audit.CptCode1?.Replace("\"", "\"\"")}\",\"{audit.CptCode2?.Replace("\"", "\"\"")}\",\"{audit.CptCode3?.Replace("\"", "\"\"")}\",\"{audit.SurgeonName}\",\"{audit.ScrubTechUser}\",\"{audit.AuditComments?.Replace("\"", "\"\"")}\"\r\n";
+            }
+
+            var extractBytes = System.Text.Encoding.Unicode.GetBytes(extract);
+            var memStream = new MemoryStream(extractBytes);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                    { FileName = "TrayAuditExport.csv", };
 
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
             result.Content.Headers.ContentLength = memStream.Length;
@@ -578,7 +624,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("auditDetails")]
         [HttpPut]
-        public async Task<HttpResponseMessage> UpdateAuditDetails(int trayProposalId, [FromBody] AuditDetailPost post)
+        public async Task<HttpResponseMessage> UpdateAuditDetails(int trayProposalId, string target, [FromBody] AuditDetailPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
@@ -586,7 +632,7 @@ namespace OpFlow.Service.Controllers
             foreach (var audit in post.Audits)
             {
                 await sqlHelper.UpdateSurgeryCPTs(audit.SurgeryID, audit.SurgeryCpts, user.ProviderID, user.LocationID);
-                await sqlHelper.UpdateProposedTrayAuditComments(trayProposalId, audit.SurgeryID, audit.Comments, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateProposedTrayAuditComments(trayProposalId, audit.SurgeryID, audit.Comments, target, user.ProviderID, user.LocationID);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, trayProposalId);
