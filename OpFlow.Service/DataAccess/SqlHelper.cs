@@ -308,6 +308,10 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, instrument.InstrumentID);
                 AddColumn(doc, row, instrument.Quantity);
                 AddColumn(doc, row, instrument.Reason);
+                AddColumn(doc, row, instrument.CategoryID);
+                AddColumn(doc, row, instrument.SubCategory);
+                AddColumn(doc, row, instrument.Description);
+                AddColumn(doc, row, instrument.Range);
                 AddColumn(doc, row, instrument.Comments);
                 AddColumn(doc, row, instrument.Sequence);
             }
@@ -438,6 +442,20 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCardOverlap", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<TrayCardOverlap>();
+
+            return result;
+        }
+
+        public async Task<List<GetProposedTrayInstrumentCategories>> GetProposedTrayInstrumentCategories(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCategories", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<GetProposedTrayInstrumentCategories>();
 
             return result;
         }
@@ -3132,18 +3150,21 @@ namespace OpFlow.Service.DataAccess
             return surgeries;
         }
 
-        public async Task<List<SurgeryAuditSearchResult>> GetProposedTrayAuditSearch(int? surgeonUserId,
+        public async Task<List<SurgeryAuditSearchResult>> GetProposedTrayAuditSearch(int trayProposalId,
+            int? surgeonUserId,
             int? specialtyId, int? trayId, int? cardId,
-            DateTime? begDate, DateTime? endDate, int providerId, int locationId)
+            DateTime? begDate, DateTime? endDate, string target, int providerId, int locationId)
         {
             var parameters = new[]
             {
+                new SqlParameter("tray_proposal_id", trayProposalId),
                 new SqlParameter("surgeon_user_id", surgeonUserId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("tray_id", trayId ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardId ?? (object)DBNull.Value),
                 new SqlParameter("beg_date", begDate ?? (object)DBNull.Value),
                 new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
+                new SqlParameter("target", target),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

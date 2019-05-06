@@ -9,6 +9,7 @@ namespace OpFlow.Data
     {
         public List<Specialty> Specialties { get; set; }
         public List<TrayRationalization> Proposals { get; set; }
+        public List<GetProposedTrayInstrumentCategories> Categories { get; set; }
         public List<ItemMaster> Trays { get; set; }
         public List<Surgeon> Surgeons { get; set; }
         public List<Card> Cards { get; set; }
@@ -22,6 +23,10 @@ namespace OpFlow.Data
         public string StatusName { get; set; }
         public int InstrumentCount { get; set; }
         public decimal AvgPerCase { get; set; }
+        public int TrayProposalCategoryID { get; set; }
+        public string SubCategory { get; set; }
+        public string Description { get; set; }
+        public string Range { get; set; }
         public int TrayCases { get; set; }
         public int UsedCases { get; set; }
         public string Reason { get; set; }
@@ -97,6 +102,10 @@ namespace OpFlow.Data
         public int InstrumentID { get; set; }
         public int Quantity { get; set; }
         public string Reason { get; set; }
+        public int? CategoryID { get; set; }
+        public string SubCategory { get; set; }
+        public string Description { get; set; }
+        public string Range { get; set; }
         public string Comments { get; set; }
         public int Sequence { get; set; }
     }
@@ -175,6 +184,12 @@ namespace OpFlow.Data
             (CommonInstruments == 0 ? 0 : (decimal)UsedInstruments / CommonInstruments * 100);
     }
 
+    public class GetProposedTrayInstrumentCategories
+    {
+        public int CategoryID { get; set; }
+        public string CategoryDescription { get; set; }
+    }
+
     public class TrayCardOverlap
     {
         public int CardID { get; set; }
@@ -248,6 +263,7 @@ namespace OpFlow.Data
     public class SurgeryAuditSearchResult : SurgerySearchResult
     {
         public string SurgeonName { get; set; }
+        public int? AuditID { get; set; }
 
         public List<SurgeryAuditTray> Trays { get; set; }
 

@@ -68,7 +68,8 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryAuditSearchResult>))]
         [Route("searchCases")]
         [HttpGet]
-        public async Task<HttpResponseMessage> SearchCases(int? surgeonUserId = null, int? specialtyId = null, int? trayId = null, int? cardId = null, 
+        public async Task<HttpResponseMessage> SearchCases(int trayProposalId, string target, 
+            int ? surgeonUserId = null, int? specialtyId = null, int? trayId = null, int? cardId = null, 
             DateTime? beginDate = null, DateTime? endDate = null)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -76,8 +77,8 @@ namespace OpFlow.Service.Controllers
 
             beginDate = beginDate ?? (DateTime.Today.AddDays(-1));
 
-            var cases = await sqlHelper.GetProposedTrayAuditSearch(surgeonUserId, specialtyId, trayId, cardId, beginDate,
-                endDate, user.ProviderID, user.LocationID);
+            var cases = await sqlHelper.GetProposedTrayAuditSearch(trayProposalId, surgeonUserId, specialtyId, trayId, cardId, beginDate, endDate, 
+                target, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, cases);
         }
@@ -91,9 +92,6 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             var audits = await sqlHelper.GetProposedTrayAuditSummary(user.ProviderID, user.LocationID);
-            var counts = await sqlHelper.GetProposedTrayCounts(null, user.ProviderID, user.LocationID);
-
-            audits.AddRange(counts);
 
             return Request.CreateResponse(HttpStatusCode.OK, audits);
         }
@@ -271,7 +269,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             var audits = new List<TraySurgeryAudit>();
-            var extract = "Surgery Date, OR, Status at Audit, CPT Code 1, CPT Code 2, CPT Code 3, Surgeon, Scrub Tech, Comments\r\n";
+            var extract = "Type, Surgery Date, OR, Status at Audit, CPT Code 1, CPT Code 2, CPT Code 3, Surgeon, Scrub Tech, Comments\r\n";
             if (filter == null || filter == "A")
             {
                 audits.AddRange(await sqlHelper.GetProposedTrayAudits(trayProposalId, user.ProviderID, user.LocationID));
@@ -284,7 +282,7 @@ namespace OpFlow.Service.Controllers
             foreach (var audit in audits)
             {
                 extract +=
-                    $"\"{audit.ScheduleTime?.ToString("M/d/yyyy HH:mm")}\",\"{audit.RoomDescription?.Trim().Replace("\"", "\"\"")}\",\"{audit.TrayStatus?.Replace("\"", "\"\"")}\"," +
+                    $"\"{audit.AuditType}\",\"{audit.ScheduleTime?.ToString("M/d/yyyy HH:mm")}\",\"{audit.RoomDescription?.Trim().Replace("\"", "\"\"")}\",\"{audit.TrayStatus?.Replace("\"", "\"\"")}\"," +
                     $"\"{audit.CptCode1?.Replace("\"", "\"\"")}\",\"{audit.CptCode2?.Replace("\"", "\"\"")}\",\"{audit.CptCode3?.Replace("\"", "\"\"")}\",\"{audit.SurgeonName}\",\"{audit.ScrubTechUser}\",\"{audit.AuditComments?.Replace("\"", "\"\"")}\"\r\n";
             }
 
@@ -353,6 +351,7 @@ namespace OpFlow.Service.Controllers
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
             var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
+            var instrumentCategories = await sqlHelper.GetProposedTrayInstrumentCategories(user.ProviderID, user.LocationID);
             var trays = await sqlHelper.GetItems("tray", null, null, user.ProviderID, user.LocationID);
             var cards = await sqlHelper.GetCards(user.ProviderID, user.LocationID);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
@@ -361,6 +360,7 @@ namespace OpFlow.Service.Controllers
             {
                 Specialties = specialties,
                 Surgeons = surgeons,
+                Categories = instrumentCategories,
                 Trays = trays,
                 Proposals = proposals,
                 Cards = cards,
