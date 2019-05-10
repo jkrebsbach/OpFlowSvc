@@ -139,12 +139,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("caseAudit")]
         [HttpDelete]
-        public async Task<HttpResponseMessage> DeleteCaseAudit(int trayProposalId, int surgeryId)
+        public async Task<HttpResponseMessage> DeleteCaseAudit(int trayProposalId, int surgeryId, string target)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await sqlHelper.DeleteProposedTrayAudit(trayProposalId, surgeryId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.DeleteProposedTrayAudit(trayProposalId, surgeryId, target, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

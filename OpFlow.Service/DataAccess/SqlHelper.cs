@@ -571,12 +571,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> DeleteProposedTrayAudit(int trayProposalId, int surgeryId, int providerId, int locationId)
+        public async Task<int> DeleteProposedTrayAudit(int trayProposalId, int surgeryId, string target, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", trayProposalId),
                 new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("target", target),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
