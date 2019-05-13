@@ -30,4 +30,20 @@ namespace OpFlow.Data
         public int TrayCount { get; set; }
         public int CardCount { get; set; }
     }
+
+    public class AnalyticsInstrumentUsage
+    {
+        public string Instrument { get; set; }
+        public int QtyOpen { get; set; }
+    }
+
+    public class InstrumentUsagePost
+    {
+        public int? SpecialtyID { get; set; }
+        public int? SurgeonID { get; set; }
+        public int? CategoryID { get; set; }
+        public int? ProcedureID { get; set; }
+        public int? TrayID { get; set; }
+        public List<string> Cpt { get; set; }
+    }
 }

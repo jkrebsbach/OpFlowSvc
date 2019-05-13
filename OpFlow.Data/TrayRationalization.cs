@@ -23,6 +23,7 @@ namespace OpFlow.Data
         public string StatusName { get; set; }
         public int InstrumentCount { get; set; }
         public decimal AvgPerCase { get; set; }
+        public int SourceQty { get; set; }
         public int TrayProposalCategoryID { get; set; }
         public string SubCategory { get; set; }
         public string Description { get; set; }

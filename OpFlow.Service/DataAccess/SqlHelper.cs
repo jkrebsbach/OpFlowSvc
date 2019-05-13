@@ -149,6 +149,47 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<AnalyticsInstrumentUsage>> GetInstrumentUsageReport(int? specialtyId, int? surgeonId, int? categoryId,
+            int? procedureId, List<string> cptList, int? trayId, int providerId, int locationId)
+        {
+            var cptXml = GetCptSummary(cptList);
+            
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonId ?? (object)DBNull.Value),
+                new SqlParameter("category_id", categoryId ?? (object)DBNull.Value),
+                new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
+                new SqlParameter("cpts", cptXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayId ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsInstrumentUsage", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<AnalyticsInstrumentUsage>();
+
+            return result;
+        }
+        private string GetCptSummary(List<string> cptList)
+        {
+            if (cptList == null || !cptList.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var cpt in cptList)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, cpt);
+            }
+
+            return table.OuterXml;
+        }
+
         public async Task<List<AnalyticsCountSummary>> GetAnalyticsCountSummary(int? specialtyId, int? surgeonId, int? cardId, int? roomGroupId, 
                 int providerId, int locationId)
         {
@@ -267,6 +308,20 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("UpdateProposedTray", parameters);
+
+            return result;
+        }
+
+        public async Task<int> DeleteProposedTray(int proposedTrayId, int statusUserId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", proposedTrayId),
+                new SqlParameter("status_user_id", statusUserId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("DeleteProposedTray", parameters);
 
             return result;
         }
@@ -2216,6 +2271,19 @@ namespace OpFlow.Service.DataAccess
             }
 
             return surgeryCpts.Count;
+        }
+
+        public async Task<List<SurgeryCPTCode>> GetKnownCPTCodes(int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsResults = await ExecuteCommandAsync("GetKnownCPTCodes", dsParameters);
+            var codes = dsResults.Tables[0].DataTableToList<SurgeryCPTCode>();
+
+            return codes;
         }
 
         public async Task<List<SurgeryCPTCode>> GetSurgeryCPTCodes(int surgeryId, int providerId, int locationId)

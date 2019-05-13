@@ -27,8 +27,11 @@ namespace OpFlow.Service.Controllers
             var reports = await sqlHelper.GetPowerBIReports(user.ProviderID, user.LocationID);
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
+            var procedures = await sqlHelper.GetProcedures(null, user.ProviderID, user.LocationID);
             var trays = await sqlHelper.GetItems("TRAY", null, null, user.ProviderID, user.LocationID);
+            var categories = await sqlHelper.GetProposedTrayInstrumentCategories(user.ProviderID, user.LocationID);
             var roomGroups = await sqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
+            var cpts = await sqlHelper.GetKnownCPTCodes(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -38,11 +41,32 @@ namespace OpFlow.Service.Controllers
                     Specialties = specialties,
                     Surgeons = surgeons,
                     Trays = trays,   
-                    RoomGroups = roomGroups
+                    Procedures = procedures,
+                    RoomGroups = roomGroups,
+                    Categories = categories,
+                    CPTs = cpts
                 }
             });
         }
 
+        // GET api/values/5
+        [SwaggerOperation("InstrumentUsageReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsInstrumentUsage>))]
+        [HttpPost]
+        [Route("instrumentUsage")]
+        public async Task<HttpResponseMessage> InstrumentUsageReport([FromBody] InstrumentUsagePost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var analytics = await sqlHelper.GetInstrumentUsageReport(post.SpecialtyID, post.SurgeonID, post.CategoryID, post.ProcedureID, post.Cpt, post.TrayID, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Instruments = analytics.Select(t => t.Instrument),
+                QtyOpen = analytics.Select(t => t.QtyOpen)
+            });
+        }
 
         // GET api/values/5
         [SwaggerOperation("GetTrayRationalization")]

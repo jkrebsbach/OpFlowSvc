@@ -576,7 +576,6 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }
 
-
         [SwaggerOperation("UpdateProposedTray")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("proposedTray")]
@@ -587,6 +586,20 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             var trayId = await sqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, trayId);
+        }
+
+        [SwaggerOperation("DeleteProposedTray")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("proposedTray")]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteProposedTray(int trayProposalId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var trayId = await sqlHelper.DeleteProposedTray(trayProposalId, user.UserID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }
