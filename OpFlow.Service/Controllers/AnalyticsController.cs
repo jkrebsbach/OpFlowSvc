@@ -51,7 +51,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values/5
         [SwaggerOperation("InstrumentUsageReport")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsInstrumentUsage>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
         [HttpPost]
         [Route("instrumentUsage")]
         public async Task<HttpResponseMessage> InstrumentUsageReport([FromBody] InstrumentUsagePost post)
@@ -59,13 +59,30 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            var analytics = await sqlHelper.GetInstrumentUsageReport(post.SpecialtyID, post.SurgeonID, post.CategoryID, post.ProcedureID, post.Cpt, post.TrayID, user.ProviderID, user.LocationID);
-
-            return Request.CreateResponse(HttpStatusCode.OK, new
+            var analytics = new List<AnalyticsInstrumentUsage>();
+            if (post.SpecialtyID != null ||
+                post.SurgeonID != null ||
+                post.CategoryID != null ||
+                post.ProcedureID != null ||
+                (post.Cpt != null && post.Cpt.Any()) ||
+                post.TrayID != null)
             {
-                Instruments = analytics.Select(t => t.Instrument),
-                QtyOpen = analytics.Select(t => t.QtyOpen)
-            });
+                analytics = await sqlHelper.GetInstrumentUsageReport(post.SpecialtyID, post.SurgeonID, post.CategoryID, post.ProcedureID, post.Cpt, post.TrayID, user.ProviderID, user.LocationID);
+            }
+
+            var trays = analytics.GroupBy(a => a.TrayName);
+            var result = trays.Select(tray => new InstrumentUsageSummaryResult()
+                {
+                    TrayName = tray.Key,
+                    RowSize = tray.Count() * 25 + 50,
+                    InstrumentCount = tray.Sum(t => t.QtyOpen),
+                    CaseCount = tray.Max(t => t.TrayCases),
+                    Instruments = tray.Select(t => t.Instrument).ToList(),
+                    QtyOpen = tray.Select(t => t.QtyOpen).ToList()
+                })
+                .ToList();
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // GET api/values/5

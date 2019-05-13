@@ -315,6 +315,13 @@ namespace OpFlow.Service.Controllers
                             TrayItems = countType.ToList()
                         });
                         break;
+                    case "PROPOSAL":
+                        result.ProposedTrays.Add(new TrayUsage()
+                        {
+                            TrayID = countType.Key.TrayID ?? 0,
+                            TrayItems = countType.ToList()
+                        });
+                        break;
                     default:
                         break;
                 }
@@ -762,6 +769,21 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
 
+        // POST api/values
+        [SwaggerOperation("AddProposedTray")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        [Route("api/surgery/addProposedTray", Name = "AddProposedTray")]
+        public async Task<HttpResponseMessage> AddProposedTray(int surgeryId, int trayProposalId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            await sqlHelper.AddSurgeryProposedTray(surgeryId, trayProposalId, user.ProviderID, user.LocationID);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
         [SwaggerOperation("UpdateTeams")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [Route("api/Surgery/updateTeams")]
@@ -997,6 +1019,7 @@ namespace OpFlow.Service.Controllers
             {
                 await sqlHelper.UpdateSurgeryCount(surgeryId, post.ItemCounts, user.ProviderID, user.LocationID);
                 await sqlHelper.UpdateSurgeryInstrumentCount(surgeryId, post.InstrumentCounts, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateSurgeryProposedCount(surgeryId, post.ProposedCounts, user.ProviderID, user.LocationID);
 
                 if (post?.Answers.Any() == true)
                 {

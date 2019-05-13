@@ -32,7 +32,6 @@ namespace OpFlow.Data
     {
         public int CardID { get; set; }
 
-
         public bool CustomUsage { get; set; }
         public int Usage { get; set; }
         public int? UsageType { get; set; }
@@ -76,10 +75,12 @@ namespace OpFlow.Data
         public List<TrayCollection> Collections { get; set; }
         public List<TrayUsage> Trays { get; set; }
         public List<SurgeryCPTCode> CptCodes { get; set; }
+        public List<TrayUsage> ProposedTrays { get; set; }
 
         public CardItemCountResult()
         {
             Trays = new List<TrayUsage>();
+            ProposedTrays = new List<TrayUsage>();
         }
     }
 

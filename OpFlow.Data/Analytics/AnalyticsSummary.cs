@@ -33,8 +33,11 @@ namespace OpFlow.Data
 
     public class AnalyticsInstrumentUsage
     {
+        public string TrayName { get; set; }
+        public string Category { get; set; }
         public string Instrument { get; set; }
-        public int QtyOpen { get; set; }
+        public decimal QtyOpen { get; set; }
+        public int TrayCases { get; set; }
     }
 
     public class InstrumentUsagePost
@@ -45,5 +48,15 @@ namespace OpFlow.Data
         public int? ProcedureID { get; set; }
         public int? TrayID { get; set; }
         public List<string> Cpt { get; set; }
+    }
+
+    public class InstrumentUsageSummaryResult
+    {
+        public string TrayName { get; set; }
+        public int RowSize { get; set; }
+        public decimal InstrumentCount { get; set; }
+        public int CaseCount { get; set; }
+        public List<string> Instruments { get; set; }
+        public List<decimal> QtyOpen { get; set; }
     }
 }

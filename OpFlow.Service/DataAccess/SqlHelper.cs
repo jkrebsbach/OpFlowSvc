@@ -2066,6 +2066,17 @@ namespace OpFlow.Service.DataAccess
             };
             return await ExecuteNonQueryAsync("InsertCustomSurgeryItem", dsParameters);
         }
+        public async Task<int> AddSurgeryProposedTray(int surgeryId, int trayProposalId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("tray_proposal_id", trayProposalId)
+            };
+            return await ExecuteNonQueryAsync("InsertSurgeryProposedTray", dsParameters);
+        }
 
         public async Task<int> AddSurgeryUser(int surgeryId, int userId, int providerId, int locationId)
         {
@@ -2207,6 +2218,20 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("usage_summary", usageSummary ?? (object)DBNull.Value)
             };
             var update = await ExecuteNonQueryAsync("UpdateSurgeryInstrumentCount", dsParameters);
+
+            return update;
+        }
+        public async Task<int> UpdateSurgeryProposedCount(int surgeryId, List<SurgeryCountItemPost> proposedUsage, int providerId, int locationId)
+        {
+            var usageSummary = GetUsageSummary(proposedUsage);
+            var dsParameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("usage_summary", usageSummary ?? (object)DBNull.Value)
+            };
+            var update = await ExecuteNonQueryAsync("UpdateSurgeryProposedCount", dsParameters);
 
             return update;
         }
