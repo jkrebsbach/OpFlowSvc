@@ -19,6 +19,7 @@ namespace OpFlow.Data
     public class TrayRationalization : ItemTrayOverlap
     {
         public int TrayProposalID { get; set; }
+        public int? CurrentInstrumentID { get; set; }
         public string Status { get; set; }
         public string StatusName { get; set; }
         public int InstrumentCount { get; set; }
