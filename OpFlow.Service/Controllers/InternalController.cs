@@ -134,5 +134,46 @@ namespace OpFlow.Service.Controllers
             
             return Request.CreateResponse(HttpStatusCode.OK);
         }
+
+        /// <summary>
+        /// Search users
+        /// </summary>
+        /// <param name="nameSearchText">Will filter based on first/last name string match</param>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<User>))]
+        [Route("SearchUsers", Name = "SearchInternalUsers")]
+        public async Task<HttpResponseMessage> GetUsers(string nameSearchText = null, int? roleId = null, int? specialtyId = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var users = await sqlHelper.SearchInternalUsers(nameSearchText, roleId, specialtyId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, users);
+        }
+
+        /// <summary>
+        /// List roles
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<User>))]
+        [Route("Roles", Name = "GetInternalRoles")]
+        public async Task<HttpResponseMessage> GetRoles(string nameSearchText = null, int? roleId = null, int? specialtyId = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var roles = await sqlHelper.GetInternalRoles(user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, roles);
+        }
     }
 }

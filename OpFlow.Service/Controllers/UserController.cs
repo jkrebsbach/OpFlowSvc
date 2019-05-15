@@ -21,6 +21,7 @@ namespace OpFlow.Service.Controllers
     /// Interact with Users entities
     /// </summary>
     [Authorize]
+    [RoutePrefix("api/user")]
     public class UserController : ApiController
     {
         /// <summary>
@@ -29,7 +30,7 @@ namespace OpFlow.Service.Controllers
         /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type=typeof(User))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("api/User/AuthorizedUser", Name = "AuthorizedUser")]
+        [Route("AuthorizedUser", Name = "AuthorizedUser")]
         public async Task<HttpResponseMessage> Get()
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -46,7 +47,7 @@ namespace OpFlow.Service.Controllers
         /// <param name="nameSearchText">Will filter based on first/last name string match</param>
         /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<User>))]
-        [Route("api/User/SearchUsers", Name = "SearchUsers")]
+        [Route("SearchUsers", Name = "SearchUsers")]
         public async Task<HttpResponseMessage> GetUsers(string nameSearchText = null, int? roleId = null, int? specialtyId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -62,7 +63,7 @@ namespace OpFlow.Service.Controllers
         /// </summary>
         /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<User>))]
-        [Route("api/User/Roles", Name = "GetRoles")]
+        [Route("Roles", Name = "GetRoles")]
         public async Task<HttpResponseMessage> GetRoles(string nameSearchText = null, int? roleId = null, int? specialtyId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -76,7 +77,7 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("CheckIn")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/User/Checkin", Name = "Checkin")]
+        [Route("Checkin", Name = "Checkin")]
         public async Task<IHttpActionResult> CheckinUser(int surgeryId, [FromBody]User user)
         {
             var userSecurity = await CacheUtil.GetUserSecurity();
@@ -90,7 +91,7 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("CheckOut")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/User/Checkout", Name = "Checkout")]
+        [Route("Checkout", Name = "Checkout")]
         public async Task<IHttpActionResult> CheckoutUser(int surgeryId, [FromBody]User user)
         {
             var userSecurity = await CacheUtil.GetUserSecurity();
@@ -105,7 +106,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("CheckOut")]
         
         [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/User/Reviewed", Name = "Reviewed")]
+        [Route("Reviewed", Name = "Reviewed")]
         public async Task<IHttpActionResult> WorkupReviewed(int surgeryId, [FromBody]User user)
         {
             var userSecurity = await CacheUtil.GetUserSecurity();
@@ -117,7 +118,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/Account/ResetPassword
-        [Route("api/User/ResetPassword")]
+        [Route("ResetPassword")]
         public async Task<IHttpActionResult> ResetPassword(int userId, [FromBody]SetPasswordBindingModel model)
         {
             var user = await CacheUtil.GetUserSecurity();

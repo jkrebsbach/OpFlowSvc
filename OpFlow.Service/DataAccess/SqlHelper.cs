@@ -1308,6 +1308,23 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<User>> SearchInternalUsers(string searchString, int? roleId, int? specialtyId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("role_id", roleId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("search", searchString ?? (object)DBNull.Value),
+            };
+            var dsSchedules = await ExecuteCommandAsync("SearchInternalUsers", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<User>();
+
+            return result;
+        }
+
         public async Task<List<Role>> GetRoles(int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -1316,6 +1333,20 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetRoles", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Role>();
+
+            return result;
+        }
+
+        public async Task<List<Role>> GetInternalRoles(int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetInternalRoles", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Role>();
 
