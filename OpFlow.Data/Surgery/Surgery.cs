@@ -99,6 +99,7 @@ namespace OpFlow.Data
     {
         public int? IdleMinutes { get; set; }
         public bool AuditSurgery { get; set; }
+        public bool CountSurgery { get; set; }
 
         public Patient Patient { get; set; }
     }
@@ -248,6 +249,7 @@ namespace OpFlow.Data
         public string LateralityDescription { get; set; }
         public string StaffChange { get; set; }
         public bool AuditSurgery { get; set; }
+        public bool CountSurgery { get; set; }
 
         public List<SurgeryUser> SurgeryUsers { get; set; }
 

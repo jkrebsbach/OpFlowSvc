@@ -516,11 +516,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TraySurgeryAudit>> GetProposedTrayAudits(int? trayProposalId, int providerId, int locationId)
+        public async Task<List<TraySurgeryAudit>> GetProposedTrayAudits(int? trayProposalId, DateTime? startDate, DateTime? endDate, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("proposed_tray_id", trayProposalId ?? (object)DBNull.Value),
+                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -545,11 +547,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TraySurgeryAudit>> GetProposedTrayCounts(int? trayProposalId, int providerId, int locationId)
+        public async Task<List<TraySurgeryAudit>> GetProposedTrayCounts(int? trayProposalId, DateTime? startDate, DateTime? endDate, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("proposed_tray_id", trayProposalId ?? (object)DBNull.Value),
+                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -574,10 +578,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TraySurgeryAudit>> GetProposedTrayAuditSummary(int providerId, int locationId)
+        public async Task<List<TraySurgeryAudit>> GetProposedTrayAuditSummary(DateTime startDate, DateTime endDate,
+            int providerId, int locationId)
         {
             var parameters = new[]
             {
+                new SqlParameter("start_date", startDate),
+                new SqlParameter("end_date", endDate),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

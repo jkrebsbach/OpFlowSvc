@@ -50,8 +50,8 @@ namespace OpFlow.Service.Controllers
             var statusLog = await sqlHelper.GetProposedTrayStatusLog(trayProposalId, user.ProviderID, user.LocationID);
             var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, true, user.ProviderID, user.LocationID);
             var cards = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
-            var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, user.ProviderID, user.LocationID);
-            var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, user.ProviderID, user.LocationID);
+            var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.ProviderID, user.LocationID);
+            var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -86,14 +86,18 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TraySurgeryAudit>))]
         [Route("auditSummary", Name = "GetAuditSummary")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetAuditSummary()
+        public async Task<HttpResponseMessage> GetAuditSummary(string auditType, int? trayId, int? specialtyId, DateTime startDate, DateTime endDate)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var audits = await sqlHelper.GetProposedTrayAuditSummary(user.ProviderID, user.LocationID);
+            var audits = await sqlHelper.GetProposedTrayAuditSummary(startDate, endDate, user.ProviderID, user.LocationID);
 
-            return Request.CreateResponse(HttpStatusCode.OK, audits);
+            var filter = audits.Where(a => (auditType == null || a.AuditType == auditType) &&
+                                           (trayId == null || a.SourceTrays.Any(t => t.TrayID == trayId)) &&
+                                           (specialtyId == null || a.SpecialtyID == specialtyId));
+
+            return Request.CreateResponse(HttpStatusCode.OK, filter);
         }
 
         [SwaggerOperation("AddCaseAudit")]
@@ -199,13 +203,13 @@ namespace OpFlow.Service.Controllers
                 extract += $"{categories[index]}\r\n";
                 extract += type == "surgical"
                     ? "Instrument Name, Quantity, Reason for Adding\r\n"
-                    : "Instrument Name, Original Quantity, Avg when used, Case Usage Pcnt, Proposed Quantity, Reason for Adding\r\n";
+                    : "Instrument Name, Avg when used, Case Usage Pcnt, Original Quantity, Proposed Quantity, Reason for Adding\r\n";
 
                 foreach (var instrument in lists[index].OrderByDescending(r => r.SourceQuantity))
                 {
                     extract += type == "surgical"
                         ? $"\"{instrument.InstrumentName?.Trim().Replace("\"", "\"\"")}\",{instrument.ProposedQuantity},\r\n"
-                        : $"\"{instrument.InstrumentName?.Trim().Replace("\"", "\"\"")}\",{instrument.SourceQuantity},{instrument.AvgUsed:#.00},{instrument.CaseUsagePcnt:#.00}%,{instrument.ProposedQuantity},\r\n";
+                        : $"\"{instrument.InstrumentName?.Trim().Replace("\"", "\"\"")}\",{instrument.AvgUsed:#.00},{instrument.CaseUsagePcnt:#.00}%,{instrument.SourceQuantity},{instrument.ProposedQuantity},\r\n";
                 }
             }
 
@@ -263,7 +267,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
         [Route("trayAudit/csv", Name = "GetTrayAuditCsv")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetTrayAuditCsv(int? trayProposalId, string filter)
+        public async Task<HttpResponseMessage> GetTrayAuditCsv(int? trayProposalId, string filter, DateTime? startDate, DateTime? endDate)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
@@ -272,11 +276,11 @@ namespace OpFlow.Service.Controllers
             var extract = "Type, Surgery Date, OR, Status at Audit, CPT Code 1, CPT Code 2, CPT Code 3, Surgeon, Scrub Tech, Comments\r\n";
             if (filter == null || filter == "A")
             {
-                audits.AddRange(await sqlHelper.GetProposedTrayAudits(trayProposalId, user.ProviderID, user.LocationID));
+                audits.AddRange(await sqlHelper.GetProposedTrayAudits(trayProposalId, startDate, endDate, user.ProviderID, user.LocationID));
             }
             if (filter == null || filter == "C")
             {
-                audits.AddRange(await sqlHelper.GetProposedTrayCounts(trayProposalId, user.ProviderID, user.LocationID));
+                audits.AddRange(await sqlHelper.GetProposedTrayCounts(trayProposalId, startDate, endDate, user.ProviderID, user.LocationID));
             }
 
             foreach (var audit in audits)
