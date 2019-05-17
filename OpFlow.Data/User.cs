@@ -37,6 +37,12 @@ namespace OpFlow.Data
         }
     }
 
+    public class InternalUser : User
+    {
+        public int VendorID { get; set; }   
+        public string Vendor { get; set; }
+    }
+
     public class UserPost
     {
         public int RoleID { get; set; }
@@ -53,6 +59,7 @@ namespace OpFlow.Data
     public class UserEdit
     {
         public RoleEnum RoleID { get; set; }
+        public int? VendorID { get; set; }
         public int? SpecialtyID { get; set; }
         public string Initials { get; set; }
         public string FirstName { get; set; }
@@ -65,6 +72,7 @@ namespace OpFlow.Data
     public class UserSecurity
     {
         public int UserID { get; set; }
+        public int? VendorID { get; set; }
         public Guid UserAuthID { get; set; }
         public string CaseDatabaseName { get; set; }
         public string SecureDatabaseName { get; set; }

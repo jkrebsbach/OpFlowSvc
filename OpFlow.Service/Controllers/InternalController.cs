@@ -160,7 +160,7 @@ namespace OpFlow.Service.Controllers
         /// List roles
         /// </summary>
         /// <returns></returns>
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<User>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Role>))]
         [Route("Roles", Name = "GetInternalRoles")]
         public async Task<HttpResponseMessage> GetRoles(string nameSearchText = null, int? roleId = null, int? specialtyId = null)
         {
@@ -172,6 +172,26 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             var roles = await sqlHelper.GetInternalRoles(user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, roles);
+        }
+
+        /// <summary>
+        /// List vendors
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Vendor>))]
+        [Route("Vendors", Name = "GetVendors")]
+        public async Task<HttpResponseMessage> GetVendors(string nameSearchText = null, int? roleId = null, int? specialtyId = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var roles = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, roles);
         }

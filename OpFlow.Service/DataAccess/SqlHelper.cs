@@ -297,7 +297,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<int> UpdateProposedTray(int proposedTrayId,
-            string trayName, string status, int statusUserId, int providerId, int locationId)
+            string trayName, string status, int statusUserId, int? vendorId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -305,6 +305,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("tray_name", trayName),
                 new SqlParameter("status", status),
                 new SqlParameter("status_user_id", statusUserId),
+                new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -1315,7 +1316,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<User>> SearchInternalUsers(string searchString, int? roleId, int? specialtyId, int providerId, int locationId)
+        public async Task<List<InternalUser>> SearchInternalUsers(string searchString, int? roleId, int? specialtyId, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -1327,7 +1328,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("SearchInternalUsers", dsParameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<User>();
+            var result = dsSchedules.Tables[0].DataTableToList<InternalUser>();
 
             return result;
         }
@@ -1359,7 +1360,20 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+        public async Task<List<Vendor>> GetVendors(int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetVendors", dsParameters);
 
+            var result = dsSchedules.Tables[0].DataTableToList<Vendor>();
+
+            return result;
+        }
+        
         public async Task<UserSecurity> GetSecureUser(Guid? userAuthId, int? userId = null, string email = null)
         {
             var dsParameters = new[]
@@ -1468,7 +1482,7 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public async Task<int> UpdateUser(int userId, int? roleId, int? specialtyId, string firstName, string lastName,
+        public async Task<int> UpdateUser(int userId, int? roleId, int? vendorId, int? specialtyId, string firstName, string lastName,
             string email, string cellPhone, string initials, string title, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -1477,6 +1491,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("role_id", roleId ?? (object)DBNull.Value),
+                new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("first_name", firstName ?? (object)DBNull.Value),
                 new SqlParameter("last_name", lastName ?? (object)DBNull.Value),

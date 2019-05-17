@@ -49,16 +49,17 @@ namespace OpFlow.Service.Controllers
             var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).FirstOrDefault();
             var statusLog = await sqlHelper.GetProposedTrayStatusLog(trayProposalId, user.ProviderID, user.LocationID);
             var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, true, user.ProviderID, user.LocationID);
-            var cards = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
+            var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
             var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.ProviderID, user.LocationID);
             var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
+                ReadOnly = (user.VendorID.HasValue && proposedTray?.VendorID != user.VendorID),
                 StatusLog = statusLog,
                 ProposedTray = proposedTray,
                 Instruments = instruments,
-                Cards = cards.Where(i => i.Overlap >= (overlapPcnt ?? 0)),
+                Cards = cardOverlaps.Where(i => i.Overlap >= (overlapPcnt ?? 0)),
                 Audits = audits,
                 Counts = counts
             });
@@ -359,6 +360,7 @@ namespace OpFlow.Service.Controllers
             var trays = await sqlHelper.GetItems("tray", null, null, user.ProviderID, user.LocationID);
             var cards = await sqlHelper.GetCards(user.ProviderID, user.LocationID);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
+            var vendors = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
 
             var result = new TrayRationalizationHeader()
             {
@@ -368,6 +370,7 @@ namespace OpFlow.Service.Controllers
                 Trays = trays,
                 Proposals = proposals,
                 Cards = cards,
+                Vendors = vendors,
                 StandardizedTrays = proposedTrays.Where(p => p.Status == "D").ToList()
             };
 
@@ -589,7 +592,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var trayId = await sqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, user.ProviderID, user.LocationID);
+            var trayId = await sqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, post.VendorID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }

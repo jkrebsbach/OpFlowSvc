@@ -224,7 +224,7 @@ namespace OpFlow.Service.Controllers
             if (authUserSecurity.ProviderID == user.ProviderID &&
                 authUserSecurity.LocationID == user.LocationID)
             {
-                var applicationUser = await sqlHelper.UpdateUser(userId, (int)model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
+                var applicationUser = await sqlHelper.UpdateUser(userId, (int)model.RoleID, model.VendorID, model.SpecialtyID, model.FirstName, model.LastName,
                     model.Email, model.CellPhone, model.Initials, model.Title, user.ProviderID, user.LocationID);
 
                 // make certain user auth matches what we sent

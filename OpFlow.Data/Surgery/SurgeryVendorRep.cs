@@ -15,4 +15,10 @@ namespace OpFlow.Data
         public string CellPhone { get; set; }
         public string HomeState { get; set; }
     }
+
+    public class Vendor
+    {
+        public int VendorID { get; set; }
+        public string VendorDescription { get; set; }
+    }
 }

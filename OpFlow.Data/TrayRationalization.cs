@@ -13,6 +13,7 @@ namespace OpFlow.Data
         public List<ItemMaster> Trays { get; set; }
         public List<Surgeon> Surgeons { get; set; }
         public List<Card> Cards { get; set; }
+        public List<Vendor> Vendors { get; set; }
         public List<TrayRationalization> StandardizedTrays { get; set; }
     }
 
@@ -20,6 +21,8 @@ namespace OpFlow.Data
     {
         public int TrayProposalID { get; set; }
         public int? CurrentInstrumentID { get; set; }
+        public int? VendorID { get; set; }
+        public string Vendor { get; set; }
         public string Status { get; set; }
         public string StatusName { get; set; }
         public int InstrumentCount { get; set; }
@@ -82,6 +85,7 @@ namespace OpFlow.Data
 
     public class ProposedTrayPost
     {
+        public int? VendorID { get; set; }
         public string TrayName { get; set; }
         public string Status { get; set; }
         public List<ProposedTrayInstrumentPost> Instruments { get; set; }
