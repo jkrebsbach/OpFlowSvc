@@ -35,13 +35,14 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<List<TrayRationalization>> GetTrayRationalization(int trayProposalId,
-            List<int> specialties, List<int> trays, List<int> surgeons, List<int> cards, string cptCode,
+            List<int> specialties, List<int> trays, List<int> surgeons, List<int> cards, string cptCode, List<TrayQuestion> questions,
             int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialties);
             var trayXml = GetIdentitySummary(trays);
             var surgeonXml = GetIdentitySummary(surgeons);
             var cardXml = GetIdentitySummary(cards);
+            var questionXml = GetQuestionSummary(questions);
 
             var parameters = new[]
             {
@@ -51,6 +52,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgeons", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("cards", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("cpt_code", cptCode ?? (object)DBNull.Value),
+                new SqlParameter("questions", questionXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -892,17 +894,28 @@ namespace OpFlow.Service.DataAccess
             return dsItems.Tables[0].DataTableToList<ItemTrayOverlap>();
         }
 
-        public async Task<List<TrayQuestion>> GetTrayQuestions(int itemId, int providerId, int locationId)
+        public async Task<List<TrayQuestionSummary>> GetTrayQuestions(int? itemId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("item_id", itemId)
+                new SqlParameter("item_id", itemId ?? (object)DBNull.Value)
             };
             var dsItems = await ExecuteCommandAsync("GetTrayQuestions", parameters);
+            var answers = dsItems.Tables[0].DataTableToList<TrayQuestion>();
 
-            return dsItems.Tables[0].DataTableToList<TrayQuestion>();
+            var summary = answers.GroupBy(r => r.QuestionID);
+
+            var questions = summary.Select(questionAnswers => new TrayQuestionSummary
+                {
+                    QuestionID = questionAnswers.Key,
+                    Question = questionAnswers.First().Question,
+                    Answers = questionAnswers.ToList()
+                })
+                .ToList();
+
+            return questions;
         }
         
         public async Task<int> InsertTrayInstrument(string instrumentName, string instrumentNbr, 

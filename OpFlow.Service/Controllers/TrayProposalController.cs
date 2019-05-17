@@ -23,6 +23,43 @@ namespace OpFlow.Service.Controllers
     public class TrayProposalController : ApiController
     {
 
+        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
+        [SwaggerOperation("GetTrayRationalization")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(TrayRationalizationHeader))]
+        [Route("trayRationalization")]
+        public async Task<HttpResponseMessage> GetTrayRationalization()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
+            var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
+            var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
+            var instrumentCategories = await sqlHelper.GetProposedTrayInstrumentCategories(user.ProviderID, user.LocationID);
+            var trays = await sqlHelper.GetItems("tray", null, null, user.ProviderID, user.LocationID);
+            var cards = await sqlHelper.GetCards(user.ProviderID, user.LocationID);
+            var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
+            var vendors = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
+            var questions = await sqlHelper.GetTrayQuestions(null, user.ProviderID, user.LocationID);
+
+            var result = new TrayRationalizationHeader()
+            {
+                Specialties = specialties,
+                Surgeons = surgeons,
+                Categories = instrumentCategories,
+                Trays = trays,
+                Proposals = proposals,
+                Cards = cards,
+                Vendors = vendors,
+                StandardizedTrays = proposedTrays.Where(p => p.Status == "D").ToList(),
+                Vendor = user.RoleType == "External",
+                Questions = questions
+            };
+
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
         [SwaggerOperation("GetProposedTrays")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
         [Route("proposedTray")]
@@ -344,40 +381,6 @@ namespace OpFlow.Service.Controllers
             return result;
         }
 
-        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
-        [SwaggerOperation("GetTrayRationalization")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(TrayRationalizationHeader))]
-        [Route("trayRationalization")]
-        public async Task<HttpResponseMessage> GetTrayRationalization()
-        {
-            var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-
-            var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
-            var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
-            var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
-            var instrumentCategories = await sqlHelper.GetProposedTrayInstrumentCategories(user.ProviderID, user.LocationID);
-            var trays = await sqlHelper.GetItems("tray", null, null, user.ProviderID, user.LocationID);
-            var cards = await sqlHelper.GetCards(user.ProviderID, user.LocationID);
-            var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
-            var vendors = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
-
-            var result = new TrayRationalizationHeader()
-            {
-                Specialties = specialties,
-                Surgeons = surgeons,
-                Categories = instrumentCategories,
-                Trays = trays,
-                Proposals = proposals,
-                Cards = cards,
-                Vendors = vendors,
-                StandardizedTrays = proposedTrays.Where(p => p.Status == "D").ToList()
-            };
-
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
-        }
-
         [SwaggerOperation("PostSurgeonCards")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
         [Route("surgeonCards")]
@@ -409,7 +412,7 @@ namespace OpFlow.Service.Controllers
                 post.CptCode = null;
 
             var rationalization = await sqlHelper.GetTrayRationalization(trayProposalId,
-                post.Specialties, post.Trays, post.Surgeons, post.Cards, post.CptCode,
+                post.Specialties, post.Trays, post.Surgeons, post.Cards, post.CptCode, post.Questions,
                 user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, rationalization);

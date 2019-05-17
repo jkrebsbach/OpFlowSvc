@@ -78,6 +78,7 @@ namespace OpFlow.Data
         public string SecureDatabaseName { get; set; }
         public string RoleType { get; set; }
         public string BlobKey { get; set; }
+        public string BlobContainer { get; set; }
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
     }

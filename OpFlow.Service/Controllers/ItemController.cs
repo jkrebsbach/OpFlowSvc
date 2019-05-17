@@ -102,19 +102,10 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var answers = await sqlHelper.GetTrayQuestions(itemId, user.ProviderID, user.LocationID);
+            var questions = await sqlHelper.GetTrayQuestions(itemId, user.ProviderID, user.LocationID);
 
-            var summary = answers.GroupBy(r => r.QuestionID);
 
-            var result = summary.Select(questionAnswers => new TrayQuestionSummary
-                {
-                    QuestionID = questionAnswers.Key,
-                    Question = questionAnswers.First().Question,
-                    Answers = questionAnswers.ToList()
-                })
-                .ToList();
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            return Request.CreateResponse(HttpStatusCode.OK, questions);
         }
 
         // GET api/values/5

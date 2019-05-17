@@ -14,7 +14,7 @@ namespace OpFlow.Service.DataAccess
 {
     public class BlobStorageHelper
     {
-        private const string CONTAINER_NAME = "images";
+        private string _containerName;
         private CloudStorageAccount _storageAccount;
 
         public enum ImageType
@@ -25,14 +25,15 @@ namespace OpFlow.Service.DataAccess
             SurgeryImages
         }
 
-        private BlobStorageHelper(string connectionString)
+        private BlobStorageHelper(string connectionString, string containerName)
         {
             _storageAccount = CloudStorageAccount.Parse(connectionString);
+            _containerName = containerName;
         }
 
         public static BlobStorageHelper GetHelper(Data.UserSecurity secureUser)
         {
-            var result = new BlobStorageHelper(secureUser.BlobKey);
+            var result = new BlobStorageHelper(secureUser.BlobKey, secureUser.BlobContainer);
 
             return result;
         }
@@ -145,7 +146,7 @@ namespace OpFlow.Service.DataAccess
             get
             {
                 var blobClient = _storageAccount.CreateCloudBlobClient();
-                return blobClient.GetContainerReference(CONTAINER_NAME);
+                return blobClient.GetContainerReference(_containerName);
             }
         }
     

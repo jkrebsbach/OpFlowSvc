@@ -15,6 +15,8 @@ namespace OpFlow.Data
         public List<Card> Cards { get; set; }
         public List<Vendor> Vendors { get; set; }
         public List<TrayRationalization> StandardizedTrays { get; set; }
+        public List<TrayQuestionSummary> Questions { get; set; }
+        public bool Vendor { get; set; }
     }
 
     public class TrayRationalization : ItemTrayOverlap
@@ -69,6 +71,7 @@ namespace OpFlow.Data
         public List<int> Trays { get; set; }
         public List<int> Surgeons { get; set; }
         public List<int> Cards { get; set; }
+        public List<TrayQuestion> Questions { get; set; }
         public string CptCode { get; set; }
     }
 
