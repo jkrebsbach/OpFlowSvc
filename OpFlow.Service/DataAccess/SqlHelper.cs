@@ -1316,6 +1316,20 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<User>> GetSurgeryUsers(int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeryUsers", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<User>();
+
+            return result;
+        }
+
         public async Task<List<InternalUser>> SearchInternalUsers(string searchString, int? roleId, int? specialtyId, int providerId, int locationId)
         {
             var dsParameters = new[]

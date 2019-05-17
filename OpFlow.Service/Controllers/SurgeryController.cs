@@ -383,7 +383,7 @@ namespace OpFlow.Service.Controllers
             {
                 Rooms = await sqlHelper.GetRooms(user.LocationID),
                 RoomGroups = await sqlHelper.GetRoomGroups(user.ProviderID, user.LocationID),
-                Users = await sqlHelper.SearchUsers(null, null, null, user.ProviderID, user.LocationID),
+                Users = await sqlHelper.GetSurgeryUsers(user.ProviderID, user.LocationID),
                 Specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID),
                 Bundles = await sqlHelper.GetBundles(null, user.ProviderID, user.LocationID),
                 Procedures = await sqlHelper.GetProcedures(null, user.ProviderID, user.LocationID)
