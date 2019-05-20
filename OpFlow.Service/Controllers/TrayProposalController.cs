@@ -400,7 +400,7 @@ namespace OpFlow.Service.Controllers
         }
 
         [SwaggerOperation("PostTrayRationalizationConfig")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalization>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalizationItem>))]
         [Route("trayRationalizationConfig")]
         [HttpPost]
         public async Task<HttpResponseMessage> PostTrayRationalizationConfig(int trayProposalId, [FromBody] TrayRationalizationConfigPost post)

@@ -166,6 +166,10 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
             var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
+            var existing = await userManager.FindByEmailAsync(model.Email);
+            if (existing != null)
+                return Conflict();
+
             var authenticationUser = new ApplicationUser() { UserName = model.Email, Email = model.Email };
 
             var result = await userManager.CreateAsync(authenticationUser, model.Password);

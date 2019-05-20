@@ -34,7 +34,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayRationalization>> GetTrayRationalization(int trayProposalId,
+        public async Task<List<TrayRationalizationItem>> GetTrayRationalization(int trayProposalId,
             List<int> specialties, List<int> trays, List<int> surgeons, List<int> cards, string cptCode, List<TrayQuestion> questions,
             int providerId, int locationId)
         {
@@ -58,7 +58,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("GetTrayRationalization", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationItem>();
 
             return result;
         }
@@ -408,7 +408,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayRationalization>> GetProposedTrayInstruments(int trayProposalId, bool showHistory, int providerId, int locationId)
+        public async Task<List<TrayRationalizationItem>> GetProposedTrayInstruments(int trayProposalId, bool showHistory, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -419,7 +419,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("GetProposedTrayInstruments", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationItem>();
 
             var sequence = 0;
             foreach (var item in result.Where(r => r.HistoryType == null))

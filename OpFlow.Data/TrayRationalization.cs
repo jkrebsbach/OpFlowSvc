@@ -19,14 +19,26 @@ namespace OpFlow.Data
         public bool Vendor { get; set; }
     }
 
-    public class TrayRationalization : ItemTrayOverlap
+    public class TrayRationalization
     {
         public int TrayProposalID { get; set; }
-        public int? CurrentInstrumentID { get; set; }
         public int? VendorID { get; set; }
         public string Vendor { get; set; }
         public string Status { get; set; }
         public string StatusName { get; set; }
+        public string TrayName { get; set; }
+
+        public int CountsComplete { get; set; }
+        public int CountsScheduled { get; set; }
+        public int AuditsComplete { get; set; }
+        public int AuditsScheduled { get; set; }
+
+    }
+
+    public class TrayRationalizationItem : ItemTrayOverlap
+    {
+        public int TrayProposalID { get; set; }
+        public int? CurrentInstrumentID { get; set; }
         public int InstrumentCount { get; set; }
         public decimal AvgPerCase { get; set; }
         public int SourceQty { get; set; }
@@ -249,7 +261,7 @@ namespace OpFlow.Data
         }
     }
 
-    public class TrayRationalizationExport : TrayRationalization
+    public class TrayRationalizationExport : TrayRationalizationItem
     {
         public int ProposedQuantity { get; set; }
         public int SourceQuantity { get; set; }
