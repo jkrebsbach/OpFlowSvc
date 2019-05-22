@@ -239,7 +239,7 @@ namespace OpFlow.Service.DataAccess
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", proposedTrayId ?? (object)DBNull.Value),
-                new SqlParameter("tray_name", trayName),
+                new SqlParameter("tray_name", trayName ?? (object)DBNull.Value),
                 new SqlParameter("instruments", instrumentXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
