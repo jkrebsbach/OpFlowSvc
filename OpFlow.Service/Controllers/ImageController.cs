@@ -15,13 +15,14 @@ using Swashbuckle.Swagger.Annotations;
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
+    [RoutePrefix("api/image")]
     public class ImageController : ApiController
     {
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
         [SwaggerOperation("GetFlowImage")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(byte[]))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("api/image/flowImage", Name = "GetFlowImage")]
+        [Route("flowImage", Name = "GetFlowImage")]
         public async Task<HttpResponseMessage> GetFlowImage(int flowId, int flowImageId)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -47,7 +48,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSurgeryImage")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(byte[]))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("api/image/surgeryImage", Name = "GetSurgeryImage")]
+        [Route("surgeryImage", Name = "GetSurgeryImage")]
         public async Task<HttpResponseMessage> GetSurgeryImage(int surgeryId, int surgeryImageId)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -73,7 +74,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetPatientPositionImage")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(byte[]))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("api/image/patientPosition", Name = "GetPatientPositionImage")]
+        [Route("patientPosition", Name = "GetPatientPositionImage")]
         public async Task<HttpResponseMessage> GetPatientPositionImage(int patientPositionId)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -92,7 +93,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetRoomSetupImage")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(SecureImage))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("api/image/roomSetup", Name = "GetRoomSetupImage")]
+        [Route("roomSetup", Name = "GetRoomSetupImage")]
         public async Task<HttpResponseMessage> GetRoomSetupImage(int roomSetupId, int roomSetupImageId)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -120,7 +121,7 @@ namespace OpFlow.Service.Controllers
         //[SwaggerOperation("UpdatePatientPositionImage")]
         //[SwaggerResponse(HttpStatusCode.OK)]
         //[HttpPost]
-        //[Route("api/image/patientPosition", Name = "UpdatePatientPositionImage")]
+        //[Route("patientPosition", Name = "UpdatePatientPositionImage")]
         //public async Task<IHttpActionResult> PutPatientPositionImage(int patientPositionId)
         //{
         //    var provider = new MultipartMemoryStreamProvider();

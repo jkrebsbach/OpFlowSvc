@@ -14,6 +14,7 @@ namespace OpFlow.Data
         public List<Surgeon> Surgeons { get; set; }
         public List<Card> Cards { get; set; }
         public List<Vendor> Vendors { get; set; }
+        public List<TrayProposalPhase> Phases { get; set; }
         public List<TrayRationalization> StandardizedTrays { get; set; }
         public List<TrayQuestionSummary> Questions { get; set; }
         public bool Vendor { get; set; }
@@ -23,16 +24,29 @@ namespace OpFlow.Data
     {
         public int TrayProposalID { get; set; }
         public int? VendorID { get; set; }
+        public int? TrayProposalPhaseID { get; set; }
+        public int? SpecialtyID { get; set; }
         public string Vendor { get; set; }
         public string Status { get; set; }
         public string StatusName { get; set; }
         public string TrayName { get; set; }
+        public string TrayProposalPhase { get; set; }
+        public string Specialty { get; set; }
+    }
 
+    public class SourceTraySummary
+    {
+        public string TrayName { get; set; }
         public int CountsComplete { get; set; }
         public int CountsScheduled { get; set; }
         public int AuditsComplete { get; set; }
         public int AuditsScheduled { get; set; }
+    }
 
+    public class TrayProposalPhase
+    {
+        public int TrayProposalPhaseID { get; set; }
+        public string TrayProposalPhaseDescription { get; set; }
     }
 
     public class TrayRationalizationItem : ItemTrayOverlap
@@ -101,6 +115,7 @@ namespace OpFlow.Data
     public class ProposedTrayPost
     {
         public int? VendorID { get; set; }
+        public int? PhaseID { get; set; }
         public string TrayName { get; set; }
         public string Status { get; set; }
         public List<ProposedTrayInstrumentPost> Instruments { get; set; }

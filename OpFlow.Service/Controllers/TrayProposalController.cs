@@ -41,6 +41,7 @@ namespace OpFlow.Service.Controllers
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
             var vendors = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
             var questions = await sqlHelper.GetTrayQuestions(null, user.ProviderID, user.LocationID);
+            var phases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
 
             var result = new TrayRationalizationHeader()
             {
@@ -53,7 +54,8 @@ namespace OpFlow.Service.Controllers
                 Vendors = vendors,
                 StandardizedTrays = proposedTrays.Where(p => p.Status == "D").ToList(),
                 Vendor = user.RoleType == "External",
-                Questions = questions
+                Questions = questions,
+                Phases = phases
             };
 
 
@@ -89,6 +91,7 @@ namespace OpFlow.Service.Controllers
             var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
             var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.ProviderID, user.LocationID);
             var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
+            var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -98,7 +101,8 @@ namespace OpFlow.Service.Controllers
                 Instruments = instruments,
                 Cards = cardOverlaps.Where(i => i.Overlap >= (overlapPcnt ?? 0)),
                 Audits = audits,
-                Counts = counts
+                Counts = counts,
+                SourceTrays = sourceTrays
             });
         }
 
@@ -595,7 +599,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var trayId = await sqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, post.VendorID, user.ProviderID, user.LocationID);
+            var trayId = await sqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, post.VendorID, post.PhaseID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }

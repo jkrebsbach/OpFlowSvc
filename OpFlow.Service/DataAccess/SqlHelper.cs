@@ -299,7 +299,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<int> UpdateProposedTray(int proposedTrayId,
-            string trayName, string status, int statusUserId, int? vendorId, int providerId, int locationId)
+            string trayName, string status, int statusUserId, int? vendorId, int? phaseId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -308,6 +308,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("status", status),
                 new SqlParameter("status_user_id", statusUserId),
                 new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
+                new SqlParameter("phase_id", phaseId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -577,6 +578,20 @@ namespace OpFlow.Service.DataAccess
                 var surgery = result.FirstOrDefault(r => r.SurgeryID == cptCode.SurgeryID);
                 surgery?.CptCodes.Add(cptCode);
             }
+
+            return result;
+        }
+
+        public async Task<List<SourceTraySummary>> GetSourceTraySummary(int trayProposalId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTraySummary", parameters);
+            var result = dsSchedules.Tables[0].DataTableToList<SourceTraySummary>();
 
             return result;
         }
@@ -916,6 +931,19 @@ namespace OpFlow.Service.DataAccess
                 .ToList();
 
             return questions;
+        }
+
+        public async Task<List<TrayProposalPhase>> GetTrayProposalPhases(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsItems = await ExecuteCommandAsync("GetTrayProposalPhases", parameters);
+            var phases = dsItems.Tables[0].DataTableToList<TrayProposalPhase>();
+
+            return phases;
         }
         
         public async Task<int> InsertTrayInstrument(string instrumentName, string instrumentNbr, 
