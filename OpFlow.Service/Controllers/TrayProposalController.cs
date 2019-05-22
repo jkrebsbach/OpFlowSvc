@@ -86,7 +86,6 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).FirstOrDefault();
-            var statusLog = await sqlHelper.GetProposedTrayStatusLog(trayProposalId, user.ProviderID, user.LocationID);
             var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, true, user.ProviderID, user.LocationID);
             var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
             var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.ProviderID, user.LocationID);
@@ -96,7 +95,6 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 ReadOnly = (user.VendorID.HasValue && proposedTray?.VendorID != user.VendorID),
-                StatusLog = statusLog,
                 ProposedTray = proposedTray,
                 Instruments = instruments,
                 Cards = cardOverlaps.Where(i => i.Overlap >= (overlapPcnt ?? 0)),
@@ -104,6 +102,20 @@ namespace OpFlow.Service.Controllers
                 Counts = counts,
                 SourceTrays = sourceTrays
             });
+        }
+
+        [SwaggerOperation("GetStatusLog")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalizationStatusLog>))]
+        [Route("statusLog/{trayProposalId}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetStatusLog(int trayProposalId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var statusLog = await sqlHelper.GetProposedTrayStatusLog(trayProposalId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, statusLog);
         }
 
         [SwaggerOperation("SearchCases")]
@@ -599,7 +611,8 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var trayId = await sqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, post.VendorID, post.PhaseID, user.ProviderID, user.LocationID);
+            var trayId = await sqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, post.VendorID, 
+                post.SpecialtyID, post.PhaseID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }

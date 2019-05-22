@@ -299,7 +299,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<int> UpdateProposedTray(int proposedTrayId,
-            string trayName, string status, int statusUserId, int? vendorId, int? phaseId, int providerId, int locationId)
+            string trayName, string status, int statusUserId, int? vendorId, int? specialtyId, int? phaseId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -308,6 +308,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("status", status),
                 new SqlParameter("status_user_id", statusUserId),
                 new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("phase_id", phaseId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)

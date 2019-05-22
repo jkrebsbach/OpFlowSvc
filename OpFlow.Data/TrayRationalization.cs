@@ -74,6 +74,7 @@ namespace OpFlow.Data
     public class TrayRationalizationStatusLog
     {
         public string Status { get; set; }
+        public string Phase { get; set; }
         public string StatusName { get; set; }
         public string StatusUser { get; set; }
         public DateTimeOffset StatusDate { get; set; }
@@ -116,6 +117,7 @@ namespace OpFlow.Data
     {
         public int? VendorID { get; set; }
         public int? PhaseID { get; set; }
+        public int? SpecialtyID { get; set; }
         public string TrayName { get; set; }
         public string Status { get; set; }
         public List<ProposedTrayInstrumentPost> Instruments { get; set; }
