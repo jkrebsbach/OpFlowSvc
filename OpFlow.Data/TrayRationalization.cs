@@ -259,6 +259,8 @@ namespace OpFlow.Data
         public string ScrubTechUser { get; set; }
         public string AuditUser { get; set; }
         public string TrayStatus { get; set; }
+        public string ResearchStatus { get; set; }
+        public string TrayProposalPhase { get; set; }
         public string AuditComments { get; set; }
         public string AuditType { get; set; }
 

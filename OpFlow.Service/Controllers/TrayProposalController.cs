@@ -340,7 +340,7 @@ namespace OpFlow.Service.Controllers
             foreach (var audit in audits)
             {
                 extract +=
-                    $"\"{audit.AuditType}\",\"{audit.ScheduleTime?.ToString("M/d/yyyy HH:mm")}\",\"{audit.RoomDescription?.Trim().Replace("\"", "\"\"")}\",\"{audit.TrayStatus?.Replace("\"", "\"\"")}\"," +
+                    $"\"{audit.AuditType}\",\"{audit.ScheduleTime?.ToString("M/d/yyyy HH:mm")}\",\"{audit.RoomDescription?.Trim().Replace("\"", "\"\"")}\",\"{audit.ResearchStatus?.Replace("\"", "\"\"")}\"," +
                     $"\"{audit.CptCode1?.Replace("\"", "\"\"")}\",\"{audit.CptCode2?.Replace("\"", "\"\"")}\",\"{audit.CptCode3?.Replace("\"", "\"\"")}\",\"{audit.SurgeonName}\",\"{audit.ScrubTechUser}\",\"{audit.AuditComments?.Replace("\"", "\"\"")}\"\r\n";
             }
 
