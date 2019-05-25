@@ -18,6 +18,8 @@ namespace OpFlow.Service
             var config = new HubConfiguration();
             config.EnableJSONP = true;
 
+            WebSupergoo.ABCpdf11.XSettings.InstallLicense(Licensing.ABCPDF);
+
             app.Map("/signalr", map =>
             {
                 //map.UseCors(CorsOptions.AllowAll);

@@ -137,6 +137,51 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, cases);
         }
 
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
+        [Route("traySummary/{trayProposalId}", Name = "GetTraySummary")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTraySummary(int trayProposalId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).FirstOrDefault();
+            var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, true, user.ProviderID, user.LocationID);
+            var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.ProviderID, user.LocationID);
+            var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
+            var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
+
+            var imageBytes = ImageHelper.GenerateSummaryPDF(proposedTray, instruments, audits, counts, sourceTrays);
+
+            var memStream = new MemoryStream(imageBytes);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                    { FileName = "TrayRationalization.csv", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
+        [Route("trayApproval/{trayProposalId}", Name = "GetTrayApproval")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTrayApproval(int trayProposalId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var filter = 1;
+
+            return Request.CreateResponse(HttpStatusCode.OK, filter);
+        }
+
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TraySurgeryAudit>))]
         [Route("auditSummary", Name = "GetAuditSummary")]
         [HttpGet]
