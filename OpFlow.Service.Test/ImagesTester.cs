@@ -83,9 +83,9 @@ namespace OpFlow.Service.Test
                 var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
                 var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
 
-                var imageBytes = ImageHelper.GenerateSummaryPDF(proposedTray, instruments, audits, counts, sourceTrays);
+                //var imageBytes = ImageHelper.GenerateSummaryPDF(proposedTray, instruments, audits, counts, sourceTrays);
 
-                File.WriteAllBytes(@"C:\temp\test.pdf", imageBytes);
+                //File.WriteAllBytes(@"C:\temp\test.pdf", imageBytes);
             }
             catch (Exception e)
             {

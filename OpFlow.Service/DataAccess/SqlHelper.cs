@@ -621,6 +621,18 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> UpdateProposedTrayApproval(int trayProposalId, string filename)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("filename", filename)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProposedTrayApproval", parameters);
+
+            return result;
+        }
+
         public async Task<int> UpdateProposedTrayAudit(int trayProposalId, int surgeryId, int? scrubTechUserId, int? auditUserId, int providerId, int locationId)
         {
             var parameters = new[]

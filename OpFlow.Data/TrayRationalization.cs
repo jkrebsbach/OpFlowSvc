@@ -32,6 +32,8 @@ namespace OpFlow.Data
         public string TrayName { get; set; }
         public string TrayProposalPhase { get; set; }
         public string Specialty { get; set; }
+        public string ApprovalFilename { get; set; }
+        public DateTimeOffset? ApprovalUpload { get; set; }
     }
 
     public class SourceTraySummary

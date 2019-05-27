@@ -210,11 +210,11 @@ namespace OpFlow.Service.Controllers
             return result;
         }
 
-        [SwaggerOperation("PutTraySummary")]
+        [SwaggerOperation("PutTrayApproval")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [HttpPut]
-        [Route("traySummary/{trayProposalId}", Name = "PutTraySummary")]
-        public async Task<HttpResponseMessage> PutTraySummary(int trayProposalId)
+        [Route("trayApproval/{trayProposalId}", Name = "PutTrayApproval")]
+        public async Task<HttpResponseMessage> PutTrayApproval(int trayProposalId)
         {
             var user = await CacheUtil.GetUserSecurity();
 
@@ -233,6 +233,14 @@ namespace OpFlow.Service.Controllers
                 var fileName = fileNameParam?.Value.Trim('"') ?? "";
                 var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
 
+                await sqlHelper.UpdateProposedTrayApproval(trayProposalId, fileName);
+
+                var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.ApprovalImages, trayProposalId);
+
+                var storageHelper = BlobStorageHelper.GetHelper(user);
+
+                await storageHelper.PutBlobBytes(folder, trayProposalId.ToString(), fileContents);
+
                 return Request.CreateResponse(HttpStatusCode.OK, 200);
             }
             catch (Exception ex)
@@ -248,11 +256,27 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetTrayApproval(int trayProposalId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            
+            var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.ApprovalImages, trayProposalId);
 
-            var filter = 1;
+            var storageHelper = BlobStorageHelper.GetHelper(user);
 
-            return Request.CreateResponse(HttpStatusCode.OK, filter);
+            var binary = await storageHelper.GetBlobBytes(folder, trayProposalId.ToString());
+
+            var memStream = new MemoryStream(binary);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                    { FileName = "TrayRationalization.pdf", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
         }
 
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TraySurgeryAudit>))]

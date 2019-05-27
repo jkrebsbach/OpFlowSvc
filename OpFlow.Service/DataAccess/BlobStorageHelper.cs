@@ -20,6 +20,7 @@ namespace OpFlow.Service.DataAccess
         public enum ImageType
         {
             PatientPosition,
+            ApprovalImages,
             FlowImages,
             RoomSetupImages,
             SurgeryImages
