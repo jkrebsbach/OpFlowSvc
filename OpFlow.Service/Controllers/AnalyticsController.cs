@@ -90,12 +90,32 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsSummary>))]
         [HttpGet]
         [Route("trayRationalization")]
-        public async Task<HttpResponseMessage> GetTrayRationalization(int? specialtyId, int? surgeonId, int? trayId)
+        public async Task<HttpResponseMessage> GetTrayRationalization(int? specialtyId, int? surgeonId, int? trayId, string order)
         {
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
             var analytics = await sqlHelper.GetAnalyticsTrayRationalization(specialtyId, surgeonId, trayId, user.ProviderID, user.LocationID);
+
+            switch (order)
+            {
+                case "instrument_nbr":
+                    analytics = analytics.OrderBy(a => a.InstrumentCount).ToList();
+                    break;
+                case "instrument_avg":
+                    analytics = analytics.OrderBy(a => a.UsageQuantity).ToList();
+                    break;
+                case "tray_open":
+                    analytics = analytics.OrderBy(a => a.TrayOpened).ToList();
+                    break;
+                case "tray_name":
+                    analytics = analytics.OrderBy(a => a.TrayName).ToList();
+                    break;
+                case "count":
+                default:
+                    analytics = analytics.OrderBy(a => a.CaseCount).ToList();
+                    break;
+            }
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -112,12 +132,26 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
         [HttpGet]
         [Route("countSummary")]
-        public async Task<HttpResponseMessage> GetCountSummary(int? specialtyId, int? surgeonId, int? cardId, int? roomGroupId)
+        public async Task<HttpResponseMessage> GetCountSummary(int? specialtyId, int? surgeonId, int? cardId, int? roomGroupId, string order)
         {
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
             var analytics = await sqlHelper.GetAnalyticsCountSummary(specialtyId, surgeonId, cardId, roomGroupId, user.ProviderID, user.LocationID);
+
+            switch (order)
+            {
+                case "specialty":
+                    analytics = analytics.OrderBy(a => a.Specialty).ToList();
+                    break;
+                case "card":
+                    analytics = analytics.OrderBy(a => a.Card).ToList();
+                    break;
+                case "count":
+                default:
+                    analytics = analytics.OrderBy(a => a.TrayCount).ToList();
+                    break;
+            }
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -132,12 +166,26 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
         [HttpGet]
         [Route("countSummaryByCard")]
-        public async Task<HttpResponseMessage> GetCountSummaryByCard(int? specialtyId, int? surgeonId, int? cardId, int? roomGroupId)
+        public async Task<HttpResponseMessage> GetCountSummaryByCard(int? specialtyId, int? surgeonId, int? cardId, int? roomGroupId, string order)
         {
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
             var analytics = await sqlHelper.GetAnalyticsCountSummaryByCard(specialtyId, surgeonId, cardId, roomGroupId, user.ProviderID, user.LocationID);
+
+            switch (order)
+            {
+                case "specialty":
+                    analytics = analytics.OrderBy(a => a.Specialty).ToList();
+                    break;
+                case "card":
+                    analytics = analytics.OrderBy(a => a.Card).ToList();
+                    break;
+                case "count":
+                default:
+                    analytics = analytics.OrderBy(a => a.TrayCount).ToList();
+                    break;
+            }
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
