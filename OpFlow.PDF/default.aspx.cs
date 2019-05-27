@@ -2,22 +2,51 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Web;
-using OpFlow.Data;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using Newtonsoft.Json;
 using WebSupergoo.ABCpdf11;
 
-namespace OpFlow.Service.DataAccess
+namespace OpFlow.PDF
 {
-    public class ImageHelper
+    public partial class _default : System.Web.UI.Page
     {
-        public static byte[] GenerateSummaryPDF(TrayRationalization proposedTray, 
-            List<TrayRationalizationItem> instruments, List<TraySurgeryAudit> audits, List<TraySurgeryAudit> counts, List<SourceTraySummary> sourceTrays)
+        protected void Page_Load(object sender, EventArgs e)
         {
-            
+            if (HttpContext.Current.Request.HttpMethod == HttpMethod.Post.Method)
+            {
+                string content;
+
+                using (var reader = new StreamReader(Request.InputStream))
+                    content = reader.ReadToEnd();
+
+                var traySummary = JsonConvert.DeserializeObject<TraySummary>(content);
+
+                byte[] imageBytes = GenerateSummaryPDF(traySummary);
+
+                Response.ClearHeaders();
+                Response.Clear();
+                Response.ContentType = "application/pdf";
+                Response.AddHeader("content-disposition", "attachment; filename=TraySummary.PDF");
+                Response.AddHeader("content-length", imageBytes.Length.ToString());
+
+                Response.BinaryWrite(imageBytes);
+                Response.End();
+            }
+        }
+
+        private static byte[] GenerateSummaryPDF(TraySummary traySummary)
+        {
+
             var memoryStream = new MemoryStream();
 
             using (Doc pdfDoc = new Doc())
             {
+                pdfDoc.HtmlOptions.Engine = EngineType.Gecko;
                 pdfDoc.FontSize = 12;
 
                 var logoPath = HttpContext.Current.Server.MapPath("~/Resources/opflow_logo.png");
@@ -30,6 +59,54 @@ namespace OpFlow.Service.DataAccess
                 pdfDoc.AddImageObject(xImage, true);
 
                 pdfDoc.Rect.Left = 40;
+                pdfDoc.Rect.Bottom = 40;
+                pdfDoc.Rect.Width = 500;
+                pdfDoc.Rect.Height = 650;
+
+                var imageHtml = $"<div>Tray Name: {traySummary.ProposedTray.TrayName}</div>";
+                imageHtml += "<hr />";
+                imageHtml += $"<div>Source Trays:</div>";
+                foreach (var tray in traySummary.SourceTrays)
+                {
+                    imageHtml += $"<div>{tray.TrayName}</div>";
+                }
+                imageHtml += "<hr />";
+                imageHtml += "<div>Instruments</div>";
+                imageHtml += "<table><thead><tr><th>Instrument</th><th>Quantity</th></tr></thead><tbody>";
+
+                foreach (var instrument in traySummary.Instruments)
+                {
+                    imageHtml += $"<tr><td>{instrument.InstrumentName}</td><td>{instrument.Quantity}</td></tr>";
+                }
+
+                imageHtml += "</tbody></table>";
+                imageHtml += "<hr />";
+                imageHtml += "<div>Counts</div>";
+
+                imageHtml += "<table><thead><tr><th>Surgeon</th><th>Procedure</th><th>Date</th><th>Used</th></tr></thead><tbody>";
+
+                foreach (var count in traySummary.Counts)
+                {
+                    imageHtml += $"<tr><td>{count.SurgeonName}</td><td>{count.Procedure} {count.CptCode1} {count.CptCode2} {count.CptCode3}</td><td>{count.ScheduleTime?.ToString("M/d/yyyy")}</td><td>{count.UsedInstruments}</td></tr>";
+                }
+
+                imageHtml += "</tbody></table>";
+                imageHtml += "<hr />";
+                imageHtml += "<div>Audits</div>";
+
+                imageHtml += "<table><thead><tr><th>Auditor</th><th>Surgeon</th><th>Procedure</th><th>Date</th><th>Used</th></tr></thead><tbody>";
+
+                foreach (var audit in traySummary.Audits)
+                {
+                    imageHtml += $"<tr><td>{audit.AuditUser}</td><td>{audit.SurgeonName}</td><td>{audit.Procedure} {audit.CptCode1} {audit.CptCode2} {audit.CptCode3}</td><td>{audit.ScheduleTime?.ToString("M/d/yyyy")}</td><td>{audit.UsedInstruments}</td></tr>";
+                }
+
+                imageHtml += "</tbody></table>";
+                imageHtml += "<hr />";
+
+                pdfDoc.AddImageHtml(imageHtml);
+
+                /*pdfDoc.Rect.Left = 40;
                 pdfDoc.Rect.Bottom = 40;
                 pdfDoc.Rect.Width = 500;
                 pdfDoc.Rect.Height = 650;
@@ -132,7 +209,7 @@ namespace OpFlow.Service.DataAccess
 
                     index++;
                 }
-                auditsTable.NextCell();
+                auditsTable.NextCell();*/
 
                 pdfDoc.Save(memoryStream);
                 pdfDoc.Clear();
@@ -141,18 +218,5 @@ namespace OpFlow.Service.DataAccess
             return memoryStream.GetBuffer();
         }
 
-        private static void AddLine(Doc pdfDoc, string line)
-        {
-            pdfDoc.AddText($"{line}\r\n");
-
-            if (!(pdfDoc.Pos.Y < 100)) return;
-            pdfDoc.AddPage();
-            pdfDoc.PageNumber = pdfDoc.PageNumber + 1;
-
-            pdfDoc.Rect.Left = 40;
-            pdfDoc.Rect.Bottom = 40;
-            pdfDoc.Rect.Width = 500;
-            pdfDoc.Rect.Height = 650;
-        }
     }
 }

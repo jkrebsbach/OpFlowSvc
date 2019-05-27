@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using Mindscape.Raygun4Net;
+using Newtonsoft.Json;
 using OpFlow.Data;
 using OpFlow.Data.Administration;
 using OpFlow.Data.Analytics;
@@ -151,9 +153,48 @@ namespace OpFlow.Service.Controllers
             var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
             var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
 
-            var imageBytes = ImageHelper.GenerateSummaryPDF(proposedTray, instruments, audits, counts, sourceTrays);
+            //var imageBytes = ImageHelper.GenerateSummaryPDF(proposedTray, instruments, audits, counts, sourceTrays);
+            var imageSummary = new
+            {
+                ProposedTray = proposedTray,
+                Instruments = instruments,
+                Audits = audits,
+                Counts = counts,
+                SourceTrays = sourceTrays
+            };
+            var json = JsonConvert.SerializeObject(imageSummary);
 
-            var memStream = new MemoryStream(imageBytes);
+            var opflowPdf = ConfigurationManager.AppSettings["OpFlowPDF"];
+            var request = (HttpWebRequest) WebRequest.Create(opflowPdf);
+            request.ContentType = "application/json";
+            request.Method = HttpMethod.Post.Method;
+
+            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+            {
+                streamWriter.Write(json);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+
+            byte[] buffer = new byte[1024];
+            long received = 0;
+            var memStream = new MemoryStream();
+            var httpResponse = (HttpWebResponse) request.GetResponse();
+            using (var input = httpResponse.GetResponseStream())
+            {
+                long size = input.Read(buffer, 0, buffer.Length);
+                while (size > 0)
+                {
+                    memStream.Write(buffer, 0, (int)size);
+                    received += size;
+
+                    size = input.Read(buffer, 0, buffer.Length);
+                }
+            }
+
+            memStream.Position = 0;
+            //byte[] imageBytes = null;
+            //var memStream = new MemoryStream(imageBytes);
             var result = new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new StreamContent(memStream)
@@ -161,12 +202,44 @@ namespace OpFlow.Service.Controllers
 
             result.Content.Headers.ContentDisposition =
                 new ContentDispositionHeaderValue("attachment")
-                    { FileName = "TrayRationalization.csv", };
+                    { FileName = "TrayRationalization.pdf", };
 
-            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
             result.Content.Headers.ContentLength = memStream.Length;
 
             return result;
+        }
+
+        [SwaggerOperation("PutTraySummary")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpPut]
+        [Route("traySummary/{trayProposalId}", Name = "PutTraySummary")]
+        public async Task<HttpResponseMessage> PutTraySummary(int trayProposalId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            int? logId = null;
+
+            try
+            {
+
+                var provider = new MultipartMemoryStreamProvider();
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                // extract file name and file contents
+                var fileNameParam = provider.Contents[0].Headers.ContentDisposition.Parameters
+                    .FirstOrDefault(p => p.Name.ToLower() == "filename");
+                var fileName = fileNameParam?.Value.Trim('"') ?? "";
+                var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, 200);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.LogException(ex);
+                throw;
+            }
         }
 
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
