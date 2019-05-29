@@ -80,8 +80,6 @@ namespace OpFlow.PDF
                 imageHtml += "</tbody></table>";
                 imageHtml += "<hr />";
 
-                imageHtml += "<hr />";
-
                 imageHtml += "<div>Configuration</div>";
                 imageHtml += "<table><thead><tr><th>Seq</th><th>Instrument</th><th>Source Tray</th><th>Source Qty</th><th>Avg Qty Used</th><th>Reason Code</th><th>Proposed Quantity</th><th>Comments</th></tr></thead><tbody>";
 
@@ -91,6 +89,19 @@ namespace OpFlow.PDF
                 }
 
                 imageHtml += "</tbody></table>";
+
+                imageHtml += "<br />";
+                imageHtml += "<br />";
+
+
+                imageHtml += "<table style=\"width:100%\"><thead><tr><th style=\"width:33%\"><hr /></th><th style=\"width:33%\"><hr /></th><th style=\"width:33%\"><hr /></th></th></tr>";
+                imageHtml += "<tr><th>Lead</th><th>Signature</th><th>Date</th></tr><tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr>";
+
+                imageHtml += "<tr><th><hr /></th><th><hr /></th><th><hr /></th></th></tr>";
+                imageHtml += "<tr><th>Surgeon</th><th>Signature</th><th>Date</th></tr><tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr>";
+
+                imageHtml += "<tr><th><hr /></th><th><hr /></th><th><hr /></th></th></tr>";
+                imageHtml += "<tr><th>Administration Delegate</th><th>Signature</th><th>Date</th></tr><tr></tr></thead></table>";
 
                 var chainId = pdfDoc.AddImageHtml(imageHtml);
                 //pdfDoc.AddImageHtml(imageHtml, true, 700, false);
