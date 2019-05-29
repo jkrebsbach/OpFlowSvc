@@ -92,8 +92,18 @@ namespace OpFlow.PDF
 
                 imageHtml += "</tbody></table>";
 
-                //pdfDoc.AddImageHtml(imageHtml);
-                pdfDoc.AddImageHtml(imageHtml, true, 700, false);
+                var chainId = pdfDoc.AddImageHtml(imageHtml);
+                //pdfDoc.AddImageHtml(imageHtml, true, 700, false);
+
+                while (true)
+                {
+                    //pdfDoc.FrameRect();
+                    if (!pdfDoc.Chainable(chainId))
+                        break;
+
+                    pdfDoc.Page = pdfDoc.AddPage();
+                    chainId = pdfDoc.AddImageToChain(chainId);
+                }
 
                 pdfDoc.Save(memoryStream);
                 pdfDoc.Clear();
