@@ -100,7 +100,7 @@ namespace OpFlow.Service.Controllers
             switch (order)
             {
                 case "instrument_nbr":
-                    analytics = analytics.OrderBy(a => a.InstrumentCount).ToList();
+                    analytics = analytics.OrderByDescending(a => a.InstrumentCount).ToList();
                     break;
                 case "instrument_avg":
                     analytics = analytics.OrderBy(a => a.UsageQuantity).ToList();
@@ -113,7 +113,7 @@ namespace OpFlow.Service.Controllers
                     break;
                 case "count":
                 default:
-                    analytics = analytics.OrderBy(a => a.CaseCount).ToList();
+                    analytics = analytics.OrderByDescending(a => a.CaseCount).ToList();
                     break;
             }
 
@@ -149,7 +149,7 @@ namespace OpFlow.Service.Controllers
                     break;
                 case "count":
                 default:
-                    analytics = analytics.OrderBy(a => a.TrayCount).ToList();
+                    analytics = analytics.OrderByDescending(a => a.TrayCount).ToList();
                     break;
             }
 
@@ -183,7 +183,7 @@ namespace OpFlow.Service.Controllers
                     break;
                 case "count":
                 default:
-                    analytics = analytics.OrderBy(a => a.TrayCount).ToList();
+                    analytics = analytics.OrderByDescending(a => a.TrayCount).ToList();
                     break;
             }
 
