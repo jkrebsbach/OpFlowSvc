@@ -102,8 +102,8 @@ namespace OpFlow.Service.Controllers
                 Cards = cardOverlaps.Where(i => i.Overlap >= (overlapPcnt ?? 0)),
                 Audits = audits,
                 Counts = counts,
-                ApprovalAudits = audits.OrderBy(a => a.SurgeonName).ToList(),
-                ApprovalCounts = counts.OrderBy(c => c.SurgeonName).ToList(),
+                ApprovalAudits = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList(),
+                ApprovalCounts = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList(),
                 SourceTrays = sourceTrays
             });
         }
@@ -156,13 +156,12 @@ namespace OpFlow.Service.Controllers
             var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
             var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
 
-            //var imageBytes = ImageHelper.GenerateSummaryPDF(proposedTray, instruments, audits, counts, sourceTrays);
             var imageSummary = new
             {
                 ProposedTray = proposedTray,
                 Instruments = instruments,
-                Audits = audits.OrderBy(a => a.SurgeonName).ToList(),
-                Counts = counts.OrderBy(c => c.SurgeonName).ToList(),
+                Audits = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList(),
+                Counts = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList(),
                 SourceTrays = sourceTrays,
                 Cards = cardOverlaps.Where(c => c.ReplaceCard).ToList()
             };
