@@ -19,6 +19,8 @@ namespace OpFlow.PDF
         {
             if (HttpContext.Current.Request.HttpMethod == HttpMethod.Post.Method)
             {
+                XSettings.InstallLicense(Licensing.ABCPDF);
+
                 string content;
 
                 using (var reader = new StreamReader(Request.InputStream))

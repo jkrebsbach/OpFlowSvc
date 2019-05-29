@@ -537,6 +537,11 @@ namespace OpFlow.Service.DataAccess
             var scrubTechs = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
             var cptCodes = dsSchedules.Tables[2].DataTableToList<SurgeryCPTCode>();
 
+            foreach (var audit in result)
+            {
+                audit.SurgeonAuditCount = result.Count(r => r.SurgeonName == audit.SurgeonName);
+            }
+
             foreach (var scrubTech in scrubTechs)
             {
                 var surgery = result.FirstOrDefault(r => r.SurgeryID == scrubTech.SurgeryID);
@@ -567,6 +572,11 @@ namespace OpFlow.Service.DataAccess
             var result = dsSchedules.Tables[0].DataTableToList<TraySurgeryAudit>();
             var scrubTechs = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
             var cptCodes = dsSchedules.Tables[2].DataTableToList<SurgeryCPTCode>();
+
+            foreach (var audit in result)
+            {
+                audit.SurgeonAuditCount = result.Count(r => r.SurgeonName == audit.SurgeonName);
+            }
 
             foreach (var scrubTech in scrubTechs)
             {

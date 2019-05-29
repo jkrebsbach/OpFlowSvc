@@ -102,6 +102,8 @@ namespace OpFlow.Service.Controllers
                 Cards = cardOverlaps.Where(i => i.Overlap >= (overlapPcnt ?? 0)),
                 Audits = audits,
                 Counts = counts,
+                ApprovalAudits = audits.OrderBy(a => a.SurgeonName).ToList(),
+                ApprovalCounts = counts.OrderBy(c => c.SurgeonName).ToList(),
                 SourceTrays = sourceTrays
             });
         }
@@ -158,8 +160,8 @@ namespace OpFlow.Service.Controllers
             {
                 ProposedTray = proposedTray,
                 Instruments = instruments,
-                Audits = audits,
-                Counts = counts,
+                Audits = audits.OrderBy(a => a.SurgeonName).ToList(),
+                Counts = counts.OrderBy(c => c.SurgeonName).ToList(),
                 SourceTrays = sourceTrays
             };
             var json = JsonConvert.SerializeObject(imageSummary);

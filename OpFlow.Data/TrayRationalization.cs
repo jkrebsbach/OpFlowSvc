@@ -270,6 +270,7 @@ namespace OpFlow.Data
         public string AuditType { get; set; }
         public string Procedure { get; set; }
         public int? UsedInstruments { get; set; }
+        public int SurgeonAuditCount { get; set; }
 
         public string CptCode1 => CptCodes.Count > 0 ? CptCodes[0]?.CptCode : null;
         public string CptCode2 => CptCodes.Count > 1 ? CptCodes[1]?.CptCode : null;

@@ -70,11 +70,11 @@ namespace OpFlow.PDF
                 imageHtml += "<hr />";
                 imageHtml += "<div>Audits</div>";
 
-                imageHtml += "<table><thead><tr><th>Auditor</th><th>Surgeon</th><th>Procedure</th><th>Date</th><th>Used</th></tr></thead><tbody>";
+                imageHtml += "<table><thead><tr><th>Auditor</th><th>Surgeon</th><th>Procedure</th><th>Date</th><th>Used</th><th>Comments</th></tr></thead><tbody>";
 
                 foreach (var audit in traySummary.Audits)
                 {
-                    imageHtml += $"<tr><td>{audit.AuditUser}</td><td>{audit.SurgeonName}</td><td>{audit.Procedure} {audit.CptCode1} {audit.CptCode2} {audit.CptCode3}</td><td>{audit.ScheduleTime?.ToString("M/d/yyyy")}</td><td>{audit.UsedInstruments}</td></tr>";
+                    imageHtml += $"<tr><td>{audit.AuditUser}</td><td>{audit.SurgeonName}</td><td>{audit.Procedure} {audit.CptCode1} {audit.CptCode2} {audit.CptCode3}</td><td>{audit.ScheduleTime?.ToString("M/d/yyyy")}</td><td>{audit.UsedInstruments}</td><td>{audit.AuditComments}</td></tr>";
                 }
 
                 imageHtml += "</tbody></table>";
