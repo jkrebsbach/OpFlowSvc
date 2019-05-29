@@ -186,6 +186,10 @@
       <Project>{4ea94324-00f6-4ea2-b6e0-1908a5a385f0}</Project>
       <Name>OpFlow.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpFlow.PDF\OpFlow.PDF.csproj">
+      <Project>{4829b56c-c920-4507-9c68-a84e8ed0ed8f}</Project>
+      <Name>OpFlow.PDF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpFlow.Service\OpFlow.Service.csproj">
       <Project>{4c473b90-38d7-4212-9f07-2cf0000a29a4}</Project>
       <Name>OpFlow.Service</Name>

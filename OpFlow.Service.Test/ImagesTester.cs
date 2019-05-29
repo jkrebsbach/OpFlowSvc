@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpFlow.PDF;
 using OpFlow.Service.Controllers;
 using OpFlow.Service.DataAccess;
 
@@ -83,9 +84,18 @@ namespace OpFlow.Service.Test
                 var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
                 var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
 
-                //var imageBytes = ImageHelper.GenerateSummaryPDF(proposedTray, instruments, audits, counts, sourceTrays);
+                var traySummary = new TraySummary()
+                {
+                    ProposedTray = proposedTray,
+                    Audits = audits,
+                    Counts = counts,
+                    Instruments = instruments,
+                    SourceTrays = sourceTrays
+                };
+                var logoImage = @"C:\temp\opflow_logo.png";
+                var imageBytes = ApprovalSummary.GenerateSummaryPDF(traySummary, logoImage);
 
-                //File.WriteAllBytes(@"C:\temp\test.pdf", imageBytes);
+                File.WriteAllBytes(@"C:\temp\test.pdf", imageBytes);
             }
             catch (Exception e)
             {

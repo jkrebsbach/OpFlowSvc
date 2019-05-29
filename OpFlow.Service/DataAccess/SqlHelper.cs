@@ -593,6 +593,12 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("GetProposedTraySummary", parameters);
             var result = dsSchedules.Tables[0].DataTableToList<SourceTraySummary>();
+            var instruments = dsSchedules.Tables[1].DataTableToList<ItemTray>();
+
+            foreach (var tray in result)
+            {
+                tray.Instruments = instruments.Where(i => i.TrayItemID == tray.TrayItemID).ToList();
+            }
 
             return result;
         }

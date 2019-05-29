@@ -38,11 +38,14 @@ namespace OpFlow.Data
 
     public class SourceTraySummary
     {
+        public int TrayItemID { get; set; }
         public string TrayName { get; set; }
         public int CountsComplete { get; set; }
         public int CountsScheduled { get; set; }
         public int AuditsComplete { get; set; }
         public int AuditsScheduled { get; set; }
+
+        public List<ItemTray> Instruments { get; set; }
     }
 
     public class TrayProposalPhase
