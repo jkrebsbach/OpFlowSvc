@@ -34,6 +34,8 @@ namespace OpFlow.Data
         public string Specialty { get; set; }
         public string ApprovalFilename { get; set; }
         public DateTimeOffset? ApprovalUpload { get; set; }
+        public string RolloutFilename { get; set; }
+        public DateTimeOffset? RolloutUpload { get; set; }
     }
 
     public class SourceTraySummary
@@ -246,6 +248,7 @@ namespace OpFlow.Data
         public int CurrentTrayItems { get; set; }
         public int UsedInstruments { get; set; }
         public int CommonInstruments { get; set; }
+        public bool ReplaceCard { get; set; }
         public decimal Overlap => (decimal)CoveredInstruments / CurrentTrayItems * 100;
         public decimal? OverlapPcnt =>
             (CommonInstruments == 0 ? 0 : (decimal)UsedInstruments / CommonInstruments * 100);

@@ -12,6 +12,7 @@
     <AssemblyName>OpFlow.Service.PDF</AssemblyName>
     <StartDevelopmentStorage>True</StartDevelopmentStorage>
     <Name>OpFlow.Service.PDF</Name>
+    <PackageEnableRemoteDebugger>False</PackageEnableRemoteDebugger>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,7 +54,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PublishProfile Include="Profiles\opflowpdftestProduction.azurePubxml" />
+    <PublishProfile Include="Profiles\Test.azurePubxml" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>

@@ -29,7 +29,7 @@ namespace OpFlow.PDF
 
                 pdfDoc.Rect.Left = 40;
                 pdfDoc.Rect.Bottom = 40;
-                pdfDoc.Rect.Width = 500;
+                pdfDoc.Rect.Width = 550;
                 pdfDoc.Rect.Height = 650;
 
                 var imageHtml = $"<div>Tray Name: {traySummary.ProposedTray.TrayName}</div>";
@@ -85,7 +85,32 @@ namespace OpFlow.PDF
 
                 foreach (var instrument in traySummary.Instruments)
                 {
-                    imageHtml += $"<tr><td>{instrument.Sequence}</td><td>{instrument.InstrumentName}</td><td>{instrument.TrayName}</td><td>{instrument.SourceQty}</td><td>{instrument.AvgUsed}</td><td>{instrument.Reason}</td><td>{instrument.Quantity}</td><td>{instrument.Comments}</td></tr>";
+                    string reason = string.Empty;
+                    switch (instrument.Reason)
+                    {
+                        case "U":
+                            reason = "Usage";
+                            break;
+                        case "S":
+                            reason = "Safety";
+                            break;
+                        case "B":
+                            reason = "Buffer";
+                            break;
+                    }
+
+                    imageHtml += $"<tr><td>{instrument.Sequence}</td><td>{instrument.InstrumentName}</td><td>{instrument.TrayName}</td><td>{instrument.SourceQty}</td><td>{instrument.AvgUsed}</td><td>{reason}</td><td>{instrument.Quantity}</td><td>{instrument.Comments}</td></tr>";
+                }
+
+                imageHtml += "</tbody></table>";
+                imageHtml += "<hr />";
+
+                imageHtml += "<div>Cards</div>";
+                imageHtml += "<table><thead><tr><th>Service Line</th><th>Card</th><th>Surgeon</th><th>Tray</th></tr></thead><tbody>";
+
+                foreach (var card in traySummary.Cards)
+                {
+                    imageHtml += $"<tr><td>{card.SpecialtyName}</td><td>{card.CardDescription}</td><td>{card.SurgeonName}</td><td>{card.TrayName}</td></tr>";
                 }
 
                 imageHtml += "</tbody></table>";

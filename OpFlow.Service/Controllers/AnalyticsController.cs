@@ -103,10 +103,10 @@ namespace OpFlow.Service.Controllers
                     analytics = analytics.OrderByDescending(a => a.InstrumentCount).ToList();
                     break;
                 case "instrument_avg":
-                    analytics = analytics.OrderBy(a => a.UsageQuantity).ToList();
+                    analytics = analytics.OrderByDescending(a => a.UsageQuantity).ToList();
                     break;
                 case "tray_open":
-                    analytics = analytics.OrderBy(a => a.TrayOpened).ToList();
+                    analytics = analytics.OrderByDescending(a => a.TrayOpened).ToList();
                     break;
                 case "tray_name":
                     analytics = analytics.OrderBy(a => a.TrayName).ToList();

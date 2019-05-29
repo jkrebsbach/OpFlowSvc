@@ -454,6 +454,22 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> PutProposedTrayCards(int proposedTrayId, List<CardListTrayPost> trays, int providerId, int locationId)
+        {
+            var trayXml = GetCardTraySummary(trays);
+
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", proposedTrayId),
+                new SqlParameter("trays", trayXml),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("PutProposedTrayCards", parameters);
+
+            return result;
+        }
+
         public async Task<List<TrayRationalizationCard>> GetProposedTrayCards(int proposedTrayId, List<CardListTrayPost> trays, int providerId, int locationId)
         {
             var trayXml = GetCardTraySummary(trays);
@@ -637,12 +653,15 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProposedTrayApproval(int trayProposalId, string filename)
+        public async Task<int> UpdateProposedTrayApproval(int trayProposalId, string filename, string type, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", trayProposalId),
-                new SqlParameter("filename", filename)
+                new SqlParameter("filename", filename),
+                new SqlParameter("type", type),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("UpdateProposedTrayApproval", parameters);
 

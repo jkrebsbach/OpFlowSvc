@@ -154,6 +154,7 @@ namespace OpFlow.Service.Controllers
             var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.ProviderID, user.LocationID);
             var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
             var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
+            var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
 
             //var imageBytes = ImageHelper.GenerateSummaryPDF(proposedTray, instruments, audits, counts, sourceTrays);
             var imageSummary = new
@@ -162,7 +163,8 @@ namespace OpFlow.Service.Controllers
                 Instruments = instruments,
                 Audits = audits.OrderBy(a => a.SurgeonName).ToList(),
                 Counts = counts.OrderBy(c => c.SurgeonName).ToList(),
-                SourceTrays = sourceTrays
+                SourceTrays = sourceTrays,
+                Cards = cardOverlaps.Where(c => c.ReplaceCard).ToList()
             };
             var json = JsonConvert.SerializeObject(imageSummary);
 
@@ -215,8 +217,8 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("PutTrayApproval")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [HttpPut]
-        [Route("trayApproval/{trayProposalId}", Name = "PutTrayApproval")]
-        public async Task<HttpResponseMessage> PutTrayApproval(int trayProposalId)
+        [Route("trayApproval/{trayProposalId}/{type}", Name = "PutTrayApproval")]
+        public async Task<HttpResponseMessage> PutTrayApproval(int trayProposalId, string type)
         {
             var user = await CacheUtil.GetUserSecurity();
 
@@ -235,13 +237,14 @@ namespace OpFlow.Service.Controllers
                 var fileName = fileNameParam?.Value.Trim('"') ?? "";
                 var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
 
-                await sqlHelper.UpdateProposedTrayApproval(trayProposalId, fileName);
+                await sqlHelper.UpdateProposedTrayApproval(trayProposalId, fileName, type, user.ProviderID, user.LocationID);
 
                 var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.ApprovalImages, trayProposalId);
 
                 var storageHelper = BlobStorageHelper.GetHelper(user);
 
-                await storageHelper.PutBlobBytes(folder, trayProposalId.ToString(), fileContents);
+                var filename = (type == "A" ? "Approval" : "Rollout");
+                await storageHelper.PutBlobBytes(folder, filename, fileContents);
 
                 return Request.CreateResponse(HttpStatusCode.OK, 200);
             }
@@ -255,7 +258,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
         [Route("trayApproval/{trayProposalId}", Name = "GetTrayApproval")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetTrayApproval(int trayProposalId)
+        public async Task<HttpResponseMessage> GetTrayApproval(int trayProposalId, string type)
         {
             var user = await CacheUtil.GetUserSecurity();
             
@@ -263,7 +266,8 @@ namespace OpFlow.Service.Controllers
 
             var storageHelper = BlobStorageHelper.GetHelper(user);
 
-            var binary = await storageHelper.GetBlobBytes(folder, trayProposalId.ToString());
+            var filename = (type == "A" ? "Approval" : "Rollout");
+            var binary = await storageHelper.GetBlobBytes(folder, filename);
 
             var memStream = new MemoryStream(binary);
             var result = new HttpResponseMessage(HttpStatusCode.OK)
@@ -426,6 +430,19 @@ namespace OpFlow.Service.Controllers
             result.Content.Headers.ContentLength = memStream.Length;
 
             return result;
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("cardList/{trayProposalId}", Name = "PutCardTrayList")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutCardTrayList(int trayProposalId, [FromBody] CardListPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var result = await sqlHelper.PutProposedTrayCards(trayProposalId, post.Trays, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]

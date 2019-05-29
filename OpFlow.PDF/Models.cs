@@ -13,5 +13,6 @@ namespace OpFlow.PDF
         public List<TraySurgeryAudit> Audits {get;set;}
         public List<TraySurgeryAudit> Counts { get; set; }
         public List<SourceTraySummary> SourceTrays { get; set; }
+        public List<TrayCardOverlap> Cards { get; set; }
     }
 }
