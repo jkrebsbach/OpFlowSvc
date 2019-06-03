@@ -70,7 +70,24 @@ namespace OpFlow.Service.Controllers
                 analytics = await sqlHelper.GetInstrumentUsageReport(post.SpecialtyID, post.SurgeonID, post.CategoryID, post.ProcedureID, post.Cpt, post.TrayID, user.ProviderID, user.LocationID);
             }
 
+            switch (post.Order)
+            {
+                case "instrument":
+                    analytics = analytics.OrderBy(a => a.Instrument).ToList();
+                    break;
+                case "qty":
+                default:
+                    analytics = analytics.OrderByDescending(a => a.QtyOpen).ToList();
+                    break;
+            }
+
             var trays = analytics.GroupBy(a => a.TrayName);
+
+            if (post.Order == "case")
+            {
+                trays = trays.OrderByDescending(t => t.Max(u => u.TrayCases));
+            }
+
             var result = trays.Select(tray => new InstrumentUsageSummaryResult()
                 {
                     TrayName = tray.Key,
@@ -86,18 +103,58 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("GetTrayRationalization")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsSummary>))]
-        [HttpGet]
-        [Route("trayRationalization")]
-        public async Task<HttpResponseMessage> GetTrayRationalization(int? specialtyId, int? surgeonId, int? trayId, string order)
+        [SwaggerOperation("ConcordanceReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
+        [HttpPost]
+        [Route("concordanceReport")]
+        public async Task<HttpResponseMessage> ConcordanceReport([FromBody] InstrumentUsagePost post)
         {
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            var analytics = await sqlHelper.GetAnalyticsTrayRationalization(specialtyId, surgeonId, trayId, user.ProviderID, user.LocationID);
+            var analytics = new List<AnalyticsConcordance>();
+            if (post.SpecialtyID != null ||
+                post.SurgeonID != null ||
+                post.CategoryID != null ||
+                post.ProcedureID != null ||
+                (post.Cpt != null && post.Cpt.Any()) ||
+                post.TrayID != null)
+            {
+                analytics = await sqlHelper.GetConcordanceReport(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, user.ProviderID, user.LocationID);
+            }
 
-            switch (order)
+            switch (post.Order)
+            {
+                case "instrument":
+                    analytics = analytics.OrderBy(a => a.InstrumentName).ToList();
+                    break;
+                case "qty":
+                default:
+                    analytics = analytics.OrderByDescending(a => a.NumberUsed).ToList();
+                    break;
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new 
+            {
+                Instruments = analytics.Select(a => a.InstrumentName),
+                Surgeons = analytics.Select(a => a.SurgeonName),
+                NumberUsed = analytics.Select(a => a.NumberUsed),
+            });
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("TrayRationalizationReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsSummary>))]
+        [HttpPost]
+        [Route("trayRationalization")]
+        public async Task<HttpResponseMessage> TrayRationalizationReport([FromBody] TrayRationalizationReportPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var analytics = await sqlHelper.GetAnalyticsTrayRationalization(post.SpecialtyId, post.SurgeonId, post.TrayId, user.ProviderID, user.LocationID);
+
+            switch (post.Order)
             {
                 case "instrument_nbr":
                     analytics = analytics.OrderByDescending(a => a.InstrumentCount).ToList();
@@ -128,18 +185,18 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("GetCountSummary")]
+        [SwaggerOperation("CountSummaryReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
-        [HttpGet]
+        [HttpPost]
         [Route("countSummary")]
-        public async Task<HttpResponseMessage> GetCountSummary(int? specialtyId, int? surgeonId, int? cardId, int? roomGroupId, string order)
+        public async Task<HttpResponseMessage> CountSummaryReport([FromBody] CountSummaryReportPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            var analytics = await sqlHelper.GetAnalyticsCountSummary(specialtyId, surgeonId, cardId, roomGroupId, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetAnalyticsCountSummary(post.SpecialtyId, post.SurgeonId, post.CardId, post.RoomGroupId, user.ProviderID, user.LocationID);
 
-            switch (order)
+            switch (post.Order)
             {
                 case "specialty":
                     analytics = analytics.OrderBy(a => a.Specialty).ToList();
@@ -162,18 +219,18 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("GetCountSummaryByCard")]
+        [SwaggerOperation("CountSummaryByCardReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
-        [HttpGet]
+        [HttpPost]
         [Route("countSummaryByCard")]
-        public async Task<HttpResponseMessage> GetCountSummaryByCard(int? specialtyId, int? surgeonId, int? cardId, int? roomGroupId, string order)
+        public async Task<HttpResponseMessage> CountSummaryByCardReport([FromBody] CountSummaryReportPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            var analytics = await sqlHelper.GetAnalyticsCountSummaryByCard(specialtyId, surgeonId, cardId, roomGroupId, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetAnalyticsCountSummaryByCard(post.SpecialtyId, post.SurgeonId, post.CardId, post.RoomGroupId, user.ProviderID, user.LocationID);
 
-            switch (order)
+            switch (post.Order)
             {
                 case "specialty":
                     analytics = analytics.OrderBy(a => a.Specialty).ToList();

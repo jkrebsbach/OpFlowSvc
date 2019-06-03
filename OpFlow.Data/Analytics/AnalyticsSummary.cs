@@ -40,14 +40,39 @@ namespace OpFlow.Data
         public int TrayCases { get; set; }
     }
 
+    public class AnalyticsConcordance
+    {
+        public string InstrumentName { get; set; }
+        public string SurgeonName { get; set; }
+        public int NumberUsed { get; set; }
+    }
+
     public class InstrumentUsagePost
     {
-        public int? SpecialtyID { get; set; }
-        public int? SurgeonID { get; set; }
-        public int? CategoryID { get; set; }
-        public int? ProcedureID { get; set; }
-        public int? TrayID { get; set; }
+        public List<int> SpecialtyID { get; set; }
+        public List<int> SurgeonID { get; set; }
+        public List<int> CategoryID { get; set; }
+        public List<int> ProcedureID { get; set; }
+        public List<int> TrayID { get; set; }
         public List<string> Cpt { get; set; }
+        public string Order { get; set; }
+    }
+
+    public class TrayRationalizationReportPost
+    {
+        public List<int> SpecialtyId { get; set; }
+        public List<int> SurgeonId { get; set; }
+        public List<int> TrayId { get; set; }
+        public string Order {get;set;}
+    }
+
+    public class CountSummaryReportPost
+    {
+        public List<int> SpecialtyId { get; set; }
+        public List<int> SurgeonId { get; set; }
+        public List<int> CardId { get; set; }
+        public List<int> RoomGroupId { get; set; }
+        public string Order { get; set; }
     }
 
     public class InstrumentUsageSummaryResult
