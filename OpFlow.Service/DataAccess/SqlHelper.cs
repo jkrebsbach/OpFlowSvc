@@ -201,7 +201,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = await ExecuteCommandAsync("GetConcordanceReport", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsConcordanceReport", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<AnalyticsConcordance>();
 

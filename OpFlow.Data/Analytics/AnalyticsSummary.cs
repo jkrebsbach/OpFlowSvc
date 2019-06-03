@@ -44,7 +44,25 @@ namespace OpFlow.Data
     {
         public string InstrumentName { get; set; }
         public string SurgeonName { get; set; }
-        public int NumberUsed { get; set; }
+        public decimal QtyOpen { get; set; }
+    }
+
+    public class AnalyticsConcordanceResult
+    {
+        public List<string> Instruments { get; set; }
+        public List<AnalyticsConcordanceSurgon> Surgeons { get; set; }
+
+        public AnalyticsConcordanceResult()
+        {
+            Instruments = new List<string>();
+            Surgeons = new List<AnalyticsConcordanceSurgon>();
+        }
+    }
+
+    public class AnalyticsConcordanceSurgon
+    {
+        public string SurgeonName { get; set; }
+        public List<decimal> QtyOpen { get; set; }
     }
 
     public class InstrumentUsagePost

@@ -115,9 +115,7 @@ namespace OpFlow.Service.Controllers
             var analytics = new List<AnalyticsConcordance>();
             if (post.SpecialtyID != null ||
                 post.SurgeonID != null ||
-                post.CategoryID != null ||
                 post.ProcedureID != null ||
-                (post.Cpt != null && post.Cpt.Any()) ||
                 post.TrayID != null)
             {
                 analytics = await sqlHelper.GetConcordanceReport(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, user.ProviderID, user.LocationID);
@@ -130,16 +128,34 @@ namespace OpFlow.Service.Controllers
                     break;
                 case "qty":
                 default:
-                    analytics = analytics.OrderByDescending(a => a.NumberUsed).ToList();
+                    analytics = analytics.OrderByDescending(a => a.QtyOpen).ToList();
                     break;
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, new 
+            var result = new AnalyticsConcordanceResult();
+            foreach (var ins in analytics.GroupBy(a => a.InstrumentName))
             {
-                Instruments = analytics.Select(a => a.InstrumentName),
-                Surgeons = analytics.Select(a => a.SurgeonName),
-                NumberUsed = analytics.Select(a => a.NumberUsed),
-            });
+                result.Instruments.Add(ins.Key);
+
+                foreach (var surg in analytics.GroupBy(a => a.SurgeonName))
+                {
+                    var token = result.Surgeons.FirstOrDefault(s => s.SurgeonName == surg.Key);
+                    if (token == null)
+                    {
+                        token = new AnalyticsConcordanceSurgon()
+                        {
+                            SurgeonName = surg.Key,
+                            QtyOpen = new List<decimal>()
+                        };
+                        result.Surgeons.Add(token);
+                    }
+
+                    token.QtyOpen.Add(analytics.Where(a => a.InstrumentName == ins.Key && a.SurgeonName == surg.Key)
+                        .Sum(a => a.QtyOpen));
+                }
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // GET api/values/5
