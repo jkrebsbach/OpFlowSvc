@@ -22,9 +22,9 @@ namespace OpFlow.PDF
                 var xImage = XImage.FromFile(logoPath, new XReadOptions());
 
                 pdfDoc.Rect.Left = 200;
-                pdfDoc.Rect.Bottom = 700;
+                pdfDoc.Rect.Bottom = 600;
                 pdfDoc.Rect.Width = 250;
-                pdfDoc.Rect.Height = 50;
+                pdfDoc.Rect.Height = 250;
                 pdfDoc.AddImageObject(xImage, true);
 
                 pdfDoc.Rect.Left = 40;

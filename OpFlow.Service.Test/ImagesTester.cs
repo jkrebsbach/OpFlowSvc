@@ -83,6 +83,7 @@ namespace OpFlow.Service.Test
                 var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.ProviderID, user.LocationID);
                 var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
                 var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
+                var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
 
                 var traySummary = new TraySummary()
                 {
@@ -90,7 +91,8 @@ namespace OpFlow.Service.Test
                     Audits = audits,
                     Counts = counts,
                     Instruments = instruments,
-                    SourceTrays = sourceTrays
+                    SourceTrays = sourceTrays,
+                    Cards = cardOverlaps
                 };
                 var logoImage = @"C:\temp\opflow_logo.png";
                 var imageBytes = ApprovalSummary.GenerateSummaryPDF(traySummary, logoImage);

@@ -561,7 +561,26 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCardOverlap", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<TrayCardOverlap>();
+            var instruments = dsSchedules.Tables[0].DataTableToList<TrayCardOverlap>();
+
+            var result = new List<TrayCardOverlap>();
+            foreach (var grp in instruments.GroupBy(i => new { i.CardID, i.TrayID }))
+            {
+                var overlap = new TrayCardOverlap()
+                {
+                    CardDescription = grp.First().CardDescription,
+                    TrayName = grp.First().TrayName,
+                    ReplaceCard = grp.First().ReplaceCard,
+                    SpecialtyName = grp.First().SpecialtyName,
+                    SurgeonName = grp.First().SurgeonName,
+                    TimesUsed = grp.First().TimesUsed,
+                    CommonInstruments = grp.Sum(g => g.CommonInstruments),
+                    UsedInstruments = grp.Sum(g => g.UsedInstruments),
+                    CurrentTrayItems = grp.Sum(g => g.CurrentTrayItems)
+                };
+
+                result.Add(overlap);
+            }
 
             return result;
         }

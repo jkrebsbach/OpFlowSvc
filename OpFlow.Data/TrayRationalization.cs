@@ -246,12 +246,12 @@ namespace OpFlow.Data
         public string TrayName { get; set; }
         public int CoveredInstruments { get; set; }
         public int CurrentTrayItems { get; set; }
-        public int UsedInstruments { get; set; }
+        public decimal UsedInstruments { get; set; }
         public int CommonInstruments { get; set; }
         public bool ReplaceCard { get; set; }
         public decimal Overlap => (decimal)CoveredInstruments / CurrentTrayItems * 100;
         public decimal? OverlapPcnt =>
-            (CommonInstruments == 0 ? 0 : (decimal)UsedInstruments / CommonInstruments * 100);
+            (CurrentTrayItems == 0 ? 0 : UsedInstruments / CurrentTrayItems * 100);
     }
 
     public class TraySurgeryAudit
