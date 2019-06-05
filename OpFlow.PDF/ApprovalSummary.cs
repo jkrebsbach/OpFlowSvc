@@ -19,6 +19,23 @@ namespace OpFlow.PDF
                 pdfDoc.HtmlOptions.Engine = EngineType.Gecko;
                 pdfDoc.FontSize = 12;
 
+                foreach (var report in traySummary.Reports ?? new List<string>())
+                {
+                    var reportBytes = Convert.FromBase64String(report);
+
+                    XImage pdfImg = new XImage();
+                    pdfImg.SetData(reportBytes);
+                    for (int i = 1; i <= pdfImg.FrameCount; i++)
+                    {
+                        pdfImg.Frame = i;
+                        pdfDoc.Page = pdfDoc.AddPage();
+                        pdfDoc.AddImageObject(pdfImg, false);
+                    }
+                    pdfImg.Clear();
+
+                    pdfDoc.Page = pdfDoc.AddPage();
+                }
+
                 var xImage = XImage.FromFile(logoPath, new XReadOptions());
 
                 pdfDoc.Rect.Left = 200;

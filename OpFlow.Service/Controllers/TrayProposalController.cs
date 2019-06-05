@@ -246,6 +246,18 @@ namespace OpFlow.Service.Controllers
                 sourceTray.ProposedInstrumentCount = instruments.Sum(i => i.Quantity);
             }
 
+            // Something strange about how jquery & api controllers working here...
+            if (post.SpecialtyId != null && post.SpecialtyId.Count == 1 && post.SpecialtyId[0] == 0)
+                post.SpecialtyId = null;
+
+            if (post.TrayId != null && post.TrayId.Count == 1 && post.TrayId[0] == 0)
+                post.TrayId = null;
+
+            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId,
+                user.ProviderID, user.LocationID);
+
+            var trayRationalization = ReportHelper.GetTrayRationalizationBase64("TrayRationalization", analytics);
+            
             var imageSummary = new
             {
                 ProposedTray = proposedTray,
@@ -253,7 +265,8 @@ namespace OpFlow.Service.Controllers
                 Audits = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList(),
                 Counts = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList(),
                 SourceTrays = sourceTrays,
-                Cards = cardOverlaps.Where(c => c.ReplaceCard).ToList()
+                Cards = cardOverlaps.Where(c => c.ReplaceCard).ToList(),
+                Reports = new [] { trayRationalization }
             };
             var json = JsonConvert.SerializeObject(imageSummary);
 

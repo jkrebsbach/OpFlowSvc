@@ -29,5 +29,12 @@ namespace OpFlow.Service.DataAccess
             
             return bytes;
         }
+
+        public static string GetTrayRationalizationBase64(string reportName, DataSet analytics)
+        {
+            var bytes = GetTrayRationalization(reportName, analytics);
+
+            return Convert.ToBase64String(bytes);
+        }
     }
 }
