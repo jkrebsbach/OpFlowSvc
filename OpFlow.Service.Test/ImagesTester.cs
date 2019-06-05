@@ -60,50 +60,5 @@ namespace OpFlow.Service.Test
             }
         }
 
-
-        [TestMethod]
-        public async Task TestTraySummary()
-        {
-            try
-            {
-                WebSupergoo.ABCpdf11.XSettings.InstallLicense(Licensing.ABCPDF);
-                var patientId = 1;
-
-                var sqlHelper = new SqlHelper("OpFlowConnection");
-
-                var trayProposalId = 1;
-                var user = new Data.UserSecurity()
-                {
-                    ProviderID = 1,
-                    LocationID = 1
-                };
-
-                var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).FirstOrDefault();
-                var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, true, user.ProviderID, user.LocationID);
-                var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.ProviderID, user.LocationID);
-                var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
-                var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
-                var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
-
-                var traySummary = new TraySummary()
-                {
-                    ProposedTray = proposedTray,
-                    Audits = audits,
-                    Counts = counts,
-                    Instruments = instruments,
-                    SourceTrays = sourceTrays,
-                    Cards = cardOverlaps
-                };
-                var logoImage = @"C:\temp\opflow_logo.png";
-                var imageBytes = ApprovalSummary.GenerateSummaryPDF(traySummary, logoImage);
-
-                File.WriteAllBytes(@"C:\temp\test.pdf", imageBytes);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
     }
 }
