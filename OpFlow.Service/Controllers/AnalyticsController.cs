@@ -201,6 +201,49 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("TrayRationalizationReportImage")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsSummary>))]
+        [HttpPost]
+        [Route("trayRationalizationImage")]
+        public async Task<HttpResponseMessage> TrayRationalizationReportImage([FromBody] TrayRationalizationReportPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, user.ProviderID, user.LocationID);
+            /*
+            switch (post.Order)
+            {
+                case "instrument_nbr":
+                    analytics = analytics.OrderByDescending(a => a.InstrumentCount).ToList();
+                    break;
+                case "instrument_avg":
+                    analytics = analytics.OrderByDescending(a => a.UsageQuantity).ToList();
+                    break;
+                case "tray_open":
+                    analytics = analytics.OrderByDescending(a => a.TrayOpened).ToList();
+                    break;
+                case "tray_name":
+                    analytics = analytics.OrderBy(a => a.TrayName).ToList();
+                    break;
+                case "count":
+                default:
+                    analytics = analytics.OrderByDescending(a => a.CaseCount).ToList();
+                    break;
+            }*/
+
+            var payloadBytes = ReportHelper.GetTrayRationalization("TrayRationalization", analytics);
+
+            var result = Request.CreateResponse(HttpStatusCode.OK,
+                new SecureImage()
+                {
+                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(payloadBytes)
+                });
+
+            return result;
+        }
+
+        // GET api/values/5
         [SwaggerOperation("CountSummaryReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
         [HttpPost]

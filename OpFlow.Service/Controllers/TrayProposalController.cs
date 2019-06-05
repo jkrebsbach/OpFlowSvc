@@ -221,8 +221,50 @@ namespace OpFlow.Service.Controllers
             };
             var json = JsonConvert.SerializeObject(imageSummary);
 
+            return PdfResponse(json);
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
+        [Route("trayAnalyticSummary/{trayProposalId}", Name = "GetTrayAnalyticSummary")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> GetTrayAnalyticSummary(int trayProposalId, [FromBody] TrayRationalizationReportPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).FirstOrDefault();
+            var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, true, user.ProviderID, user.LocationID);
+            var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.ProviderID, user.LocationID);
+            var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
+            var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
+            var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
+
+            proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
+            foreach (var sourceTray in sourceTrays)
+            {
+                sourceTray.InstrumentCount = sourceTray.Instruments.Sum(i => i.Quantity);
+                sourceTray.ProposedInstrumentCount = instruments.Sum(i => i.Quantity);
+            }
+
+            var imageSummary = new
+            {
+                ProposedTray = proposedTray,
+                Instruments = instruments,
+                Audits = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList(),
+                Counts = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList(),
+                SourceTrays = sourceTrays,
+                Cards = cardOverlaps.Where(c => c.ReplaceCard).ToList()
+            };
+            var json = JsonConvert.SerializeObject(imageSummary);
+
+            return PdfResponse(json);
+        }
+
+        private HttpResponseMessage PdfResponse(string json)
+        {
+
             var opflowPdf = ConfigurationManager.AppSettings["OpFlowPDF"];
-            var request = (HttpWebRequest) WebRequest.Create(opflowPdf);
+            var request = (HttpWebRequest)WebRequest.Create(opflowPdf);
             request.ContentType = "application/json";
             request.Method = HttpMethod.Post.Method;
 
@@ -236,7 +278,7 @@ namespace OpFlow.Service.Controllers
             byte[] buffer = new byte[1024];
             long received = 0;
             var memStream = new MemoryStream();
-            var httpResponse = (HttpWebResponse) request.GetResponse();
+            var httpResponse = (HttpWebResponse)request.GetResponse();
             using (var input = httpResponse.GetResponseStream())
             {
                 long size = input.Read(buffer, 0, buffer.Length);

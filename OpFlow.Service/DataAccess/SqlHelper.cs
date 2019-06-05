@@ -156,6 +156,26 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<DataSet> GetAnalyticsTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId,
+            int providerId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+            var trayXml = GetIdentitySummary(trayId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayRationalization", parameters);
+
+            return dsSchedules;
+        }
+
         public async Task<List<AnalyticsInstrumentUsage>> GetInstrumentUsageReport(List<int> specialtyId, List<int> surgeonId, List<int> categoryId,
             List<int> procedureId, List<string> cptList, List<int> trayId, int providerId, int locationId)
         {
