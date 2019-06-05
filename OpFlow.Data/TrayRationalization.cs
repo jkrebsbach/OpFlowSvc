@@ -36,6 +36,7 @@ namespace OpFlow.Data
         public DateTimeOffset? ApprovalUpload { get; set; }
         public string RolloutFilename { get; set; }
         public DateTimeOffset? RolloutUpload { get; set; }
+        public int InstrumentCount { get; set; }
     }
 
     public class SourceTraySummary
@@ -47,7 +48,12 @@ namespace OpFlow.Data
         public int AuditsComplete { get; set; }
         public int AuditsScheduled { get; set; }
 
-        public List<ItemTray> Instruments { get; set; }
+        public int InstrumentCount { get; set; }
+        public int ProposedInstrumentCount { get; set; }
+        public int CountChange => InstrumentCount - ProposedInstrumentCount;
+        public decimal PcntChange => InstrumentCount == 0 ? 0 : ((decimal)CountChange / InstrumentCount * 100);
+
+        public List<ItemTrayOverlap> Instruments { get; set; }
     }
 
     public class TrayProposalPhase
@@ -243,6 +249,7 @@ namespace OpFlow.Data
         public string CardDescription { get; set; }
         public string SurgeonName { get; set; }
         public int TimesUsed { get; set; }
+        public int AuditsComplete { get; set; }
         public string TrayName { get; set; }
         public int CoveredInstruments { get; set; }
         public int CurrentTrayItems { get; set; }

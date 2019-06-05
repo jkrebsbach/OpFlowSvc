@@ -39,6 +39,7 @@ namespace OpFlow.Data
 
     public class ItemTrayOverlap : ItemTray
     {
+        public int ProposedInstrumentCount { get; set; }
         public decimal InstrumentCost { get; set; }
         public decimal AvgUsed { get; set; }
         public bool Warning { get; set; }

@@ -12,8 +12,6 @@ using System.Web.Http;
 using Mindscape.Raygun4Net;
 using Newtonsoft.Json;
 using OpFlow.Data;
-using OpFlow.Data.Administration;
-using OpFlow.Data.Analytics;
 using OpFlow.Service.DataAccess;
 using OpFlow.Service.Models;
 using Swashbuckle.Swagger.Annotations;
@@ -94,6 +92,13 @@ namespace OpFlow.Service.Controllers
             var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
             var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
 
+            proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
+            foreach (var sourceTray in sourceTrays)
+            {
+                sourceTray.InstrumentCount = sourceTray.Instruments.Sum(i => i.Quantity);
+                sourceTray.ProposedInstrumentCount = instruments.Sum(i => i.Quantity);
+            }
+
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 ReadOnly = (user.VendorID.HasValue && proposedTray?.VendorID != user.VendorID),
@@ -120,6 +125,48 @@ namespace OpFlow.Service.Controllers
             var statusLog = await sqlHelper.GetProposedTrayStatusLog(trayProposalId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, statusLog);
+        }
+
+        [SwaggerOperation("GetCardOverlap")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
+        [Route("cardOverlap/{trayProposalId}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetCardOverlap(int trayProposalId, string orderBy, string sortBy, int? overlapPcnt = 0)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            
+            var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
+
+            switch (sortBy)
+            {
+                case "specialty":
+                    cardOverlaps = sortBy == "asc" ? cardOverlaps.OrderBy(c => c.SpecialtyName).ToList() : cardOverlaps.OrderByDescending(c => c.SpecialtyName).ToList();
+                    break;
+                case "card":
+                    cardOverlaps = sortBy == "asc" ? cardOverlaps.OrderBy(c => c.CardDescription).ToList() : cardOverlaps.OrderByDescending(c => c.CardDescription).ToList();
+                    break;
+                case "surgeon":
+                    cardOverlaps = sortBy == "asc" ? cardOverlaps.OrderBy(c => c.SurgeonName).ToList() : cardOverlaps.OrderByDescending(c => c.SurgeonName).ToList();
+                    break;
+                case "tray":
+                    cardOverlaps = sortBy == "asc" ? cardOverlaps.OrderBy(c => c.TrayName).ToList() : cardOverlaps.OrderByDescending(c => c.TrayName).ToList();
+                    break;
+                case "overlapPcnt":
+                    cardOverlaps = sortBy == "asc" ? cardOverlaps.OrderBy(c => c.OverlapPcnt).ToList() : cardOverlaps.OrderByDescending(c => c.OverlapPcnt).ToList();
+                    break;
+                case "audit":
+                    cardOverlaps = sortBy == "asc" ? cardOverlaps.OrderBy(c => c.AuditsComplete).ToList() : cardOverlaps.OrderByDescending(c => c.AuditsComplete).ToList();
+                    break;
+                case "count":
+                    cardOverlaps = sortBy == "asc" ? cardOverlaps.OrderBy(c => c.TimesUsed).ToList() : cardOverlaps.OrderByDescending(c => c.TimesUsed).ToList();
+                    break;
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Cards = cardOverlaps.Where(i => i.Overlap >= (overlapPcnt ?? 0))
+            });
         }
 
         [SwaggerOperation("SearchCases")]
@@ -155,6 +202,13 @@ namespace OpFlow.Service.Controllers
             var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
             var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
             var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
+
+            proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
+            foreach (var sourceTray in sourceTrays)
+            {
+                sourceTray.InstrumentCount = sourceTray.Instruments.Sum(i => i.Quantity);
+                sourceTray.ProposedInstrumentCount = instruments.Sum(i => i.Quantity);
+            }
 
             var imageSummary = new
             {

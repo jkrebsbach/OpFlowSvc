@@ -568,6 +568,8 @@ namespace OpFlow.Service.DataAccess
             {
                 var overlap = new TrayCardOverlap()
                 {
+                    CardID = grp.Key.CardID,
+                    TrayID = grp.Key.TrayID,
                     CardDescription = grp.First().CardDescription,
                     TrayName = grp.First().TrayName,
                     ReplaceCard = grp.First().ReplaceCard,
@@ -681,7 +683,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("GetProposedTraySummary", parameters);
             var result = dsSchedules.Tables[0].DataTableToList<SourceTraySummary>();
-            var instruments = dsSchedules.Tables[1].DataTableToList<ItemTray>();
+            var instruments = dsSchedules.Tables[1].DataTableToList<ItemTrayOverlap>();
 
             foreach (var tray in result)
             {

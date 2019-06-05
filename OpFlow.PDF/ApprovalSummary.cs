@@ -32,12 +32,12 @@ namespace OpFlow.PDF
                 pdfDoc.Rect.Width = 550;
                 pdfDoc.Rect.Height = 650;
 
-                var imageHtml = $"<div>Tray Name: {traySummary.ProposedTray.TrayName}</div>";
+                var imageHtml = $"<div>Tray Name: {traySummary.ProposedTray.TrayName} - Total Instruments: {traySummary.ProposedTray.InstrumentCount}</div>";
                 imageHtml += "<hr />";
                 imageHtml += $"<div>Source Trays:</div>";
                 foreach (var tray in traySummary.SourceTrays)
                 {
-                    imageHtml += $"<div>{tray.TrayName}</div>";
+                    imageHtml += $"<div>{tray.TrayName} - Total Instruments: {tray.InstrumentCount} Decrease: {tray.CountChange} ({tray.PcntChange:#.00} %)</div>";
                 }
 
                 imageHtml += "<hr />";
