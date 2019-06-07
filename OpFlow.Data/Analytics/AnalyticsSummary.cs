@@ -34,6 +34,7 @@ namespace OpFlow.Data
     public class AnalyticsInstrumentUsage
     {
         public string TrayName { get; set; }
+        public string CardName { get; set; }
         public string Category { get; set; }
         public string Instrument { get; set; }
         public decimal QtyOpen { get; set; }
@@ -74,6 +75,7 @@ namespace OpFlow.Data
         public List<int> TrayID { get; set; }
         public List<string> Cpt { get; set; }
         public string Order { get; set; }
+        public string Group { get; set; }
     }
 
     public class TrayRationalizationReportPost

@@ -256,8 +256,9 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId,
                 user.ProviderID, user.LocationID);
 
-            var trayRationalization = ReportHelper.GetTrayRationalizationBase64("TrayRationalization", analytics);
-            
+            var trayRationalizationBytes = ReportHelper.GetReport("TrayRationalization", analytics);
+            var trayRationalization = Convert.ToBase64String(trayRationalizationBytes);
+
             var imageSummary = new
             {
                 ProposedTray = proposedTray,

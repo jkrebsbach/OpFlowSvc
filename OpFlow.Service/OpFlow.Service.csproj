@@ -313,6 +313,9 @@
     <Content Include="Resources\TrayRationalization.rdlc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\InstrumentUsage.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -327,6 +330,7 @@
     <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\SamlController.cs" />
     <Compile Include="Controllers\TrayProposalController.cs" />
+    <Compile Include="DataAccess\ImageHelper.cs" />
     <Compile Include="DataAccess\KeyVaultHelper.cs" />
     <Compile Include="DataAccess\ReportHelper.cs" />
     <Compile Include="DataAccess\SamlHelper.cs" />

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Microsoft.Reporting.WebForms;
 using OpFlow.Data;
 using OpFlow.Service.DataAccess;
 using Swashbuckle.Swagger.Annotations;
@@ -59,47 +61,31 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            var analytics = new List<AnalyticsInstrumentUsage>();
-            if (post.SpecialtyID != null ||
-                post.SurgeonID != null ||
-                post.CategoryID != null ||
-                post.ProcedureID != null ||
-                (post.Cpt != null && post.Cpt.Any()) ||
+            if (post.SpecialtyID != null &&
+                post.SurgeonID != null &&
+                post.CategoryID != null &&
+                post.ProcedureID != null &&
+                (post.Cpt == null || !post.Cpt.Any()) &&
                 post.TrayID != null)
             {
-                analytics = await sqlHelper.GetInstrumentUsageReport(post.SpecialtyID, post.SurgeonID, post.CategoryID, post.ProcedureID, post.Cpt, post.TrayID, user.ProviderID, user.LocationID);
+                return Request.CreateResponse(HttpStatusCode.OK, 0);
             }
 
-            switch (post.Order)
+            var analytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyID, post.SurgeonID, post.CategoryID, post.ProcedureID, post.Cpt, post.TrayID, user.ProviderID, user.LocationID);
+            
+            var parameters = new []
             {
-                case "instrument":
-                    analytics = analytics.OrderBy(a => a.Instrument).ToList();
-                    break;
-                case "qty":
-                default:
-                    analytics = analytics.OrderByDescending(a => a.QtyOpen).ToList();
-                    break;
-            }
+                new ReportParameter("Group", post.Group)
+            };
+            var result = ReportHelper.GetReport("InstrumentUsage", analytics, parameters);
 
-            var trays = analytics.GroupBy(a => a.TrayName);
+            var pngResult = ImageHelper.CreateWebImage(result);
 
-            if (post.Order == "case")
-            {
-                trays = trays.OrderByDescending(t => t.Max(u => u.TrayCases));
-            }
-
-            var result = trays.Select(tray => new InstrumentUsageSummaryResult()
+            return Request.CreateResponse(HttpStatusCode.OK,
+                new SecureImage()
                 {
-                    TrayName = tray.Key,
-                    RowSize = tray.Count() * 25 + 50,
-                    InstrumentCount = tray.Sum(t => t.QtyOpen),
-                    CaseCount = tray.Max(t => t.TrayCases),
-                    Instruments = tray.Select(t => t.Instrument).ToList(),
-                    QtyOpen = tray.Select(t => t.QtyOpen).ToList()
-                })
-                .ToList();
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(pngResult)
+                });
         }
 
         // GET api/values/5
@@ -232,7 +218,7 @@ namespace OpFlow.Service.Controllers
                     break;
             }*/
 
-            var payloadBytes = ReportHelper.GetTrayRationalization("TrayRationalization", analytics);
+            var payloadBytes = ReportHelper.GetReport("TrayRationalization", analytics);
 
             var result = Request.CreateResponse(HttpStatusCode.OK,
                 new SecureImage()

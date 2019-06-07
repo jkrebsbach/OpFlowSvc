@@ -204,6 +204,32 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<DataSet> GetInstrumentUsageReportData(List<int> specialtyId, List<int> surgeonId, List<int> categoryId,
+            List<int> procedureId, List<string> cptList, List<int> trayId, int providerId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+            var categoryXml = GetIdentitySummary(categoryId);
+            var procedureXml = GetIdentitySummary(procedureId);
+            var trayXml = GetIdentitySummary(trayId);
+            var cptXml = GetCptSummary(cptList);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("category_id", categoryXml ?? (object)DBNull.Value),
+                new SqlParameter("procedure_id", procedureXml ?? (object)DBNull.Value),
+                new SqlParameter("cpts", cptXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("GetAnalyticsInstrumentUsage", parameters);
+
+            return result;
+        }
+
         public async Task<List<AnalyticsConcordance>> GetConcordanceReport(List<int> specialtyId, List<int> surgeonId, 
             List<int> procedureId, List<int> trayId, int providerId, int locationId)
         {

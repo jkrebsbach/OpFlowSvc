@@ -11,7 +11,7 @@ namespace OpFlow.Service.DataAccess
 {
     public class ReportHelper
     {
-        public static byte[] GetTrayRationalization(string reportName, DataSet analytics)
+        public static byte[] GetReport(string reportName, DataSet analytics, ReportParameter[] parameters = null)
         {
             Warning[] warnings;
             string[] streamids;
@@ -19,22 +19,18 @@ namespace OpFlow.Service.DataAccess
             string encoding;
             string filenameExtension;
 
-            ReportDataSource rdsAct = new ReportDataSource("TrayRationalization", analytics.Tables[0]);
+            ReportDataSource rdsAct = new ReportDataSource(reportName, analytics.Tables[0]);
             ReportViewer viewer = new ReportViewer();
             viewer.LocalReport.Refresh();
             viewer.LocalReport.ReportPath = $"Resources/{reportName}.rdlc"; //This is your rdlc name.
-            //viewer.LocalReport.SetParameters(param);
+
+            if (parameters != null)
+                viewer.LocalReport.SetParameters(parameters);
+
             viewer.LocalReport.DataSources.Add(rdsAct); // Add  datasource here         
             byte[] bytes = viewer.LocalReport.Render("Image", null, out mimeType, out encoding, out filenameExtension, out streamids, out warnings);
             
             return bytes;
-        }
-
-        public static string GetTrayRationalizationBase64(string reportName, DataSet analytics)
-        {
-            var bytes = GetTrayRationalization(reportName, analytics);
-
-            return Convert.ToBase64String(bytes);
         }
     }
 }

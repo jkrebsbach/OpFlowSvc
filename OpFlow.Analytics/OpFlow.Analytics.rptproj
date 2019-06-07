@@ -49,7 +49,11 @@
     <Reports>@(Report)</Reports>
   </PropertyGroup>
   <ItemGroup>
+    <DataSource Include="OpFlow.rds" />
+  </ItemGroup>
+  <ItemGroup>
     <Report Include="CountSummary.rdl" />
+    <Report Include="InstrumentUsage.rdl" />
     <Report Include="TrayRationalization.rdl" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Reporting Services\Microsoft.ReportingServices.MSBuilder.targets" />
