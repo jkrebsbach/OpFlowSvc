@@ -139,7 +139,7 @@ namespace OpFlow.Data
     public class ProposedTrayInstrumentPost
     {
         public int InstrumentID { get; set; }
-        public int TrayItemID { get; set; }
+        public int? TrayItemID { get; set; }
         public int Quantity { get; set; }
     }
 

@@ -15,6 +15,7 @@ using Swashbuckle.Swagger.Annotations;
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
+    [RoutePrefix("api/item")]
     public class ItemController : ApiController
     {
         // GET api/values/5
@@ -31,9 +32,23 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetInstruments")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
+        [Route("instruments")]
+        public async Task<HttpResponseMessage> GetInstruments()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var instruments = await sqlHelper.GetInstruments(user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, instruments);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetTrayItems")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemTray>))]
-        [Route("api/item/trayItems")]
+        [Route("trayItems")]
         public async Task<HttpResponseMessage> GetTrayItems(int trayId)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -47,7 +62,7 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetTrayExport")]
         [SwaggerResponse(HttpStatusCode.OK)]
-        [Route("api/item/trayExport")]
+        [Route("trayExport")]
         [HttpGet]
         public async Task<HttpResponseMessage> GetTrayExport(int surgeryId, int? trayId = null, string itemType = null)
         {
@@ -82,7 +97,7 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetCollectionTrays")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
-        [Route("api/item/collectionTrays")]
+        [Route("collectionTrays")]
         public async Task<HttpResponseMessage> GetCollectionTrays(int itemId)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -96,7 +111,7 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetTrayQuestions")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayQuestionSummary>))]
-        [Route("api/item/trayQuestions")]
+        [Route("trayQuestions")]
         public async Task<HttpResponseMessage> GetTrayQuestions(int itemId)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -111,7 +126,7 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("PutTrayInstrument")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [Route("api/item/trayInstrument")]
+        [Route("trayInstrument")]
         [HttpPut]
         public async Task<HttpResponseMessage> PutTrayInstrument(int trayId, [FromBody] TrayInstrumentPost post)
         {

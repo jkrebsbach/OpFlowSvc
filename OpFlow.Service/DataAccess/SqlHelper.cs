@@ -409,7 +409,7 @@ namespace OpFlow.Service.DataAccess
                 table.AppendChild(row);
 
                 AddColumn(doc, row, instrument.InstrumentID);
-                AddColumn(doc, row, instrument.TrayItemID);
+                AddColumn(doc, row, instrument.TrayItemID?.ToString() ?? "");
                 AddColumn(doc, row, instrument.Quantity);
             }
 
@@ -1009,6 +1009,20 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetItems", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
+
+            return result;
+        }
+
+        public async Task<List<ItemMaster>> GetInstruments(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetInstruments", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
 
