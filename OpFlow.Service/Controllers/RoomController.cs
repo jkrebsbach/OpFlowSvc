@@ -15,11 +15,11 @@ using Swashbuckle.Swagger.Annotations;
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
+    [RoutePrefix("api/room")]
     public class RoomController : ApiController
     {
         // GET api/values
         [SwaggerOperation("GetByLocationId")]
-        [Route("api/room")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Room>))]
         [HttpGet]
         public async Task<IEnumerable<Room>> Get(int? roomId = null, int? roomGroupId = null)
@@ -39,7 +39,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values
         [SwaggerOperation("GetTypes")]
-        [Route("api/room/types")]
+        [Route("types")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<RoomType>))]
         public async Task<IEnumerable<RoomType>> GetTypes()
         {
@@ -51,7 +51,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values
         [SwaggerOperation("GetGroups")]
-        [Route("api/room/groups")]
+        [Route("groups")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<RoomGroup>))]
         public async Task<IEnumerable<RoomGroup>> GetGroups()
         {
@@ -63,7 +63,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values
         [SwaggerOperation("GetSetups")]
-        [Route("api/room/setups")]
+        [Route("setups")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<RoomSetup>))]
         public async Task<IEnumerable<RoomSetup>> GetSetups(int? roomSetupId = null, int? locationId = null)
         {
@@ -80,7 +80,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values
         [SwaggerOperation("GetSetupDetail")]
-        [Route("api/room/setupDetail")]
+        [Route("setupDetail")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(RoomSetupDetail))]
         public async Task<RoomSetupDetail> GetSetupDetail(int? roomSetupId = null)
         {
@@ -114,7 +114,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values
         [SwaggerOperation("GetPatientPositions")]
-        [Route("api/room/patientPositions")]
+        [Route("patientPositions")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<PatientPosition>))]
         public async Task<IEnumerable<PatientPosition>> GetPatientPositions()
         {
@@ -126,7 +126,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values
         [SwaggerOperation("GetLateralities")]
-        [Route("api/room/lateralities")]
+        [Route("lateralities")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Laterality>))]
         public async Task<IEnumerable<Laterality>> GetLateralities()
         {
@@ -138,7 +138,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values
         [SwaggerOperation("GetBedOrientations")]
-        [Route("api/room/bedOrientations")]
+        [Route("bedOrientations")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<BedOrientation>))]
         public async Task<IEnumerable<BedOrientation>> GetBedOrientations()
         {
@@ -150,7 +150,6 @@ namespace OpFlow.Service.Controllers
 
         // PUT api/roomSetup/values/5
         [SwaggerOperation("Update")]
-        [Route("api/room")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpPut]
@@ -166,7 +165,6 @@ namespace OpFlow.Service.Controllers
 
         // PUT api/roomSetup/values/5
         [SwaggerOperation("Create")]
-        [Route("api/room")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpPost]
@@ -182,7 +180,6 @@ namespace OpFlow.Service.Controllers
 
         // PUT api/roomSetup/values/5
         [SwaggerOperation("Delete")]
-        [Route("api/room")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpDelete]
@@ -198,7 +195,7 @@ namespace OpFlow.Service.Controllers
 
         // POST api/roomSetup/values
         [SwaggerOperation("CreateSetup")]
-        [Route("api/room/roomSetup")]
+        [Route("roomSetup")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [HttpPost]
         public async Task<HttpResponseMessage> Post([FromBody]RoomSetup roomSetup)
@@ -213,7 +210,7 @@ namespace OpFlow.Service.Controllers
 
         // PUT api/roomSetup/values/5
         [SwaggerOperation("UpdateSetup")]
-        [Route("api/room/roomSetup/{roomsetupId}")]
+        [Route("roomSetup/{roomsetupId}")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpPut]
@@ -229,7 +226,7 @@ namespace OpFlow.Service.Controllers
 
         // PUT api/roomSetup/values/5
         [SwaggerOperation("DeleteSetup")]
-        [Route("api/room/roomSetup/{roomsetupId}")]
+        [Route("roomSetup/{roomsetupId}")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpDelete]
@@ -246,7 +243,7 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("NewRoomSetupImage")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/room/roomSetupImage", Name = "NewRoomSetupImage")]
+        [Route("roomSetupImage", Name = "NewRoomSetupImage")]
         [HttpPut]
         public async Task<IHttpActionResult> NewRoomSetupImage(int roomSetupId, string label = null)
         {
@@ -290,7 +287,7 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("UpdateRoomSetupImage")]
         [SwaggerResponse(HttpStatusCode.OK)]
-        [Route("api/room/roomSetupImage", Name = "UpdateRoomSetupImage")]
+        [Route("roomSetupImage", Name = "UpdateRoomSetupImage")]
         [HttpPost]
         public async Task<IHttpActionResult> UpdateRoomSetupImage(int roomSetupImageId, [FromBody]FlowImagePost flowImage)
         {
@@ -305,7 +302,7 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("RotateRoomSetupImage")]
         [SwaggerResponse(HttpStatusCode.OK)]
-        [Route("api/room/rotateRoomSetupImage", Name = "RotateRoomSetupImage")]
+        [Route("rotateRoomSetupImage", Name = "RotateRoomSetupImage")]
         [HttpPut]
         public async Task<IHttpActionResult> RotateRoomSetupImage(int roomSetupImageId, int roomSetupId, int direction)
         {
@@ -328,7 +325,7 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("DeleteRoomSetupImage")]
         [SwaggerResponse(HttpStatusCode.OK)]
-        [Route("api/room/roomSetupImage", Name = "DeleteRoomSetupImage")]
+        [Route("roomSetupImage", Name = "DeleteRoomSetupImage")]
         [HttpDelete]
         public async Task<IHttpActionResult> DeleteRoomSetupImage(int roomSetupImageId, int roomSetupId)
         {

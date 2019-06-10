@@ -333,6 +333,7 @@
   <ItemGroup>
     <Compile Include="Controllers\AnalyticsController.cs" />
     <Compile Include="Controllers\InternalController.cs" />
+    <Compile Include="Controllers\LookupController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\SamlController.cs" />
     <Compile Include="Controllers\TrayProposalController.cs" />
