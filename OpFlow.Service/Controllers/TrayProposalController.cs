@@ -9,6 +9,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using Microsoft.Reporting.WebForms;
 using Mindscape.Raygun4Net;
 using Newtonsoft.Json;
 using OpFlow.Data;
@@ -253,11 +254,30 @@ namespace OpFlow.Service.Controllers
             if (post.TrayId != null && post.TrayId.Count == 1 && post.TrayId[0] == 0)
                 post.TrayId = null;
 
-            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId,
+            var countAnalytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, null, null, null,
+                user.ProviderID, user.LocationID);
+            var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, null, null, null,
+                null, post.TrayId,
+                user.ProviderID, user.LocationID);
+            var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId,
                 user.ProviderID, user.LocationID);
 
-            var trayRationalizationBytes = ReportHelper.GetReport("TrayRationalization", analytics);
-            var trayRationalization = Convert.ToBase64String(trayRationalizationBytes);
+
+            var parameters = new[]
+            {
+                new ReportParameter("Group", "t")
+            };
+            var countSummaryBytes = ReportHelper.GetReport("CountSummary", countAnalytics, parameters);
+            var instrumentUsageBytes = ReportHelper.GetReport("InstrumentUsage", instrumentAnalytics);
+            var trayRationalizationBytes = ReportHelper.GetReport("TrayRationalization", trayAnalytics);
+
+            var reports = new[]
+            {
+                Convert.ToBase64String(countSummaryBytes),
+                Convert.ToBase64String(instrumentUsageBytes),
+                Convert.ToBase64String(trayRationalizationBytes)
+            };
+            
 
             var imageSummary = new
             {
@@ -267,7 +287,7 @@ namespace OpFlow.Service.Controllers
                 Counts = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList(),
                 SourceTrays = sourceTrays,
                 Cards = cardOverlaps.Where(c => c.ReplaceCard).ToList(),
-                Reports = new [] { trayRationalization }
+                Reports = reports
             };
             var json = JsonConvert.SerializeObject(imageSummary);
 
