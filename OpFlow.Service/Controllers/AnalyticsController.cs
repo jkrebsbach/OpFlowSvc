@@ -129,8 +129,8 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            var analytics = await sqlHelper.GetAnalyticsTrayRationalization(post.SpecialtyId, post.SurgeonId, post.TrayId, user.ProviderID, user.LocationID);
-
+            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, user.ProviderID, user.LocationID);
+            /*
             switch (post.Order)
             {
                 case "instrument_nbr":
@@ -149,16 +149,19 @@ namespace OpFlow.Service.Controllers
                 default:
                     analytics = analytics.OrderByDescending(a => a.CaseCount).ToList();
                     break;
-            }
+            }*/
 
-            return Request.CreateResponse(HttpStatusCode.OK, new
-            {
-                Trays = analytics.Select(t => t.TrayName),
-                CaseCount = analytics.Select(t => t.CaseCount),
-                InstrumentCount = analytics.Select(t => t.InstrumentCount),
-                UsageQuantity = analytics.Select(t => t.UsageQuantity),
-                TrayOpened = analytics.Select(t => t.TrayOpened)
-            });
+            var payloadBytes = ReportHelper.GetReport("TrayRationalization", analytics);
+
+            var pngResult = ImageHelper.CreateWebImage(payloadBytes);
+
+            var result = Request.CreateResponse(HttpStatusCode.OK,
+                new SecureImage()
+                {
+                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(pngResult)
+                });
+
+            return result;
         }
 
         // GET api/values/5
@@ -214,9 +217,9 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            var analytics = await sqlHelper.GetAnalyticsCountSummary(post.SpecialtyId, post.SurgeonId, post.CardId, post.RoomGroupId, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.RoomGroupId, user.ProviderID, user.LocationID);
 
-            switch (post.Order)
+            /*switch (post.Order)
             {
                 case "specialty":
                     analytics = analytics.OrderBy(a => a.Specialty).ToList();
@@ -228,14 +231,21 @@ namespace OpFlow.Service.Controllers
                 default:
                     analytics = analytics.OrderByDescending(a => a.TrayCount).ToList();
                     break;
-            }
+            }*/
 
-            return Request.CreateResponse(HttpStatusCode.OK, new
+            var parameters = new[]
             {
-                Specialties = analytics.Select(t => t.Specialty),
-                TrayCount = analytics.Select(t => t.TrayCount),
-                CardCount = analytics.Select(t => t.CardCount)
-            });
+                new ReportParameter("Group", "t")
+            };
+            var result = ReportHelper.GetReport("CountSummary", analytics, parameters);
+
+            var pngResult = ImageHelper.CreateWebImage(result);
+
+            return Request.CreateResponse(HttpStatusCode.OK,
+                new SecureImage()
+                {
+                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(pngResult)
+                });
         }
 
         // GET api/values/5
@@ -248,9 +258,9 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            var analytics = await sqlHelper.GetAnalyticsCountSummaryByCard(post.SpecialtyId, post.SurgeonId, post.CardId, post.RoomGroupId, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.RoomGroupId, user.ProviderID, user.LocationID);
 
-            switch (post.Order)
+            /*            switch (post.Order)
             {
                 case "specialty":
                     analytics = analytics.OrderBy(a => a.Specialty).ToList();
@@ -262,14 +272,20 @@ namespace OpFlow.Service.Controllers
                 default:
                     analytics = analytics.OrderByDescending(a => a.TrayCount).ToList();
                     break;
-            }
-
-            return Request.CreateResponse(HttpStatusCode.OK, new
+            }*/
+            var parameters = new[]
             {
-                Cards = analytics.Select(t => t.Card),
-                TrayCount = analytics.Select(t => t.TrayCount),
-                CardCount = analytics.Select(t => t.CardCount)
-            });
+                new ReportParameter("Group", "c")
+            };
+            var result = ReportHelper.GetReport("CountSummary", analytics, parameters);
+
+            var pngResult = ImageHelper.CreateWebImage(result);
+
+            return Request.CreateResponse(HttpStatusCode.OK,
+                new SecureImage()
+                {
+                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(pngResult)
+                });
         }
     }
 }
