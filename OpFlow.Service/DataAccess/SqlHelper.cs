@@ -253,6 +253,28 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+
+        public async Task<DataSet> GetConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
+            List<int> procedureId, List<int> trayId, int providerId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+            var procedureXml = GetIdentitySummary(procedureId);
+            var trayXml = GetIdentitySummary(trayId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("procedure_id", procedureXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("GetAnalyticsConcordanceReport", parameters);
+
+            return result;
+        }
         private string GetCptSummary(List<string> cptList)
         {
             if (cptList == null || !cptList.Any())

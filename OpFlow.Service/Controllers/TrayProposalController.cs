@@ -104,7 +104,7 @@ namespace OpFlow.Service.Controllers
                 ReadOnly = (user.VendorID.HasValue && proposedTray?.VendorID != user.VendorID),
                 ProposedTray = proposedTray,
                 Instruments = instruments,
-                Cards = cardOverlaps.Where(i => i.Overlap >= (overlapPcnt ?? 0)),
+                Cards = cardOverlaps.Where(i => i.OverlapPcnt >= (overlapPcnt ?? 0)),
                 Audits = audits,
                 Counts = counts,
                 ApprovalAudits = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList(),
@@ -165,7 +165,7 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
-                Cards = cardOverlaps.Where(i => i.Overlap >= (overlapPcnt ?? 0))
+                Cards = cardOverlaps.Where(i => i.OverlapPcnt >= (overlapPcnt ?? 0))
             });
         }
 

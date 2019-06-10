@@ -52,6 +52,7 @@
     <DataSource Include="OpFlow.rds" />
   </ItemGroup>
   <ItemGroup>
+    <Report Include="ConcordanceReport.rdl" />
     <Report Include="CountSummary.rdl" />
     <Report Include="InstrumentUsage.rdl" />
     <Report Include="TrayRationalization.rdl" />

@@ -256,7 +256,7 @@ namespace OpFlow.Data
         public decimal UsedInstruments { get; set; }
         public int CommonInstruments { get; set; }
         public bool ReplaceCard { get; set; }
-        public decimal Overlap => (decimal)CoveredInstruments / CurrentTrayItems * 100;
+        //public decimal Overlap => (decimal)CoveredInstruments / CurrentTrayItems * 100;
         public decimal? OverlapPcnt =>
             (CurrentTrayItems == 0 ? 0 : UsedInstruments / CurrentTrayItems * 100);
     }

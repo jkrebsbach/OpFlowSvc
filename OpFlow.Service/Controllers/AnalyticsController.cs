@@ -61,12 +61,12 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            if (post.SpecialtyID != null &&
-                post.SurgeonID != null &&
-                post.CategoryID != null &&
-                post.ProcedureID != null &&
+            if (post.SpecialtyID == null &&
+                post.SurgeonID == null &&
+                post.CategoryID == null &&
+                post.ProcedureID == null &&
                 (post.Cpt == null || !post.Cpt.Any()) &&
-                post.TrayID != null)
+                post.TrayID == null)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, 0);
             }
@@ -98,50 +98,25 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            var analytics = new List<AnalyticsConcordance>();
-            if (post.SpecialtyID != null ||
-                post.SurgeonID != null ||
-                post.ProcedureID != null ||
-                post.TrayID != null)
+            if (post.SpecialtyID == null &&
+                post.SurgeonID == null &&
+                post.ProcedureID == null &&
+                post.TrayID == null)
             {
-                analytics = await sqlHelper.GetConcordanceReport(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, user.ProviderID, user.LocationID);
+                return Request.CreateResponse(HttpStatusCode.OK, 0);
             }
 
-            switch (post.Order)
-            {
-                case "instrument":
-                    analytics = analytics.OrderBy(a => a.InstrumentName).ToList();
-                    break;
-                case "qty":
-                default:
-                    analytics = analytics.OrderByDescending(a => a.QtyOpen).ToList();
-                    break;
-            }
+            var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, user.ProviderID, user.LocationID);
 
-            var result = new AnalyticsConcordanceResult();
-            foreach (var ins in analytics.GroupBy(a => a.InstrumentName))
-            {
-                result.Instruments.Add(ins.Key);
+            var result = ReportHelper.GetReport("ConcordanceReport", analytics);
 
-                foreach (var surg in analytics.GroupBy(a => a.SurgeonName))
+            var pngResult = ImageHelper.CreateWebImage(result);
+
+            return Request.CreateResponse(HttpStatusCode.OK,
+                new SecureImage()
                 {
-                    var token = result.Surgeons.FirstOrDefault(s => s.SurgeonName == surg.Key);
-                    if (token == null)
-                    {
-                        token = new AnalyticsConcordanceSurgon()
-                        {
-                            SurgeonName = surg.Key,
-                            QtyOpen = new List<decimal>()
-                        };
-                        result.Surgeons.Add(token);
-                    }
-
-                    token.QtyOpen.Add(analytics.Where(a => a.InstrumentName == ins.Key && a.SurgeonName == surg.Key)
-                        .Sum(a => a.QtyOpen));
-                }
-            }
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(pngResult)
+                });
         }
 
         // GET api/values/5
