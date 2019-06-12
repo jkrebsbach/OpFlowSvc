@@ -19,5 +19,9 @@ namespace OpFlow.Data.Sales
         public int? Depreciation { get; set; }
         public int? TrayCount { get; set; }
         public int? InstrumentAvg { get; set; }
+        public int? TrayYear { get; set; }
+        public int? VendorYear { get; set; }
+        public int? CardYear { get; set; }
+        public int? ImproveYear { get; set; }
     }
 }

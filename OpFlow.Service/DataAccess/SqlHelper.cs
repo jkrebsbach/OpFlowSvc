@@ -136,7 +136,8 @@ namespace OpFlow.Service.DataAccess
 
         public async Task<DataSet> GetAnalyticsSalesToolSummary(string systemName, string hospitalName, string city, string state,
             string contactName, string salesperson, int? caseCount, int? spdLaborRate, int? contractDuration, int? annualMaintenance,
-            int? depreciation, int? trayCount, int? instrumentAvg)
+            int? depreciation, int? trayCount, int? instrumentAvg,
+            int? trayYear, int? vendorYear, int? cardYear, int? improveYear)
         {
             var parameters = new[]
             {
@@ -152,7 +153,11 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("annual_maintenance", annualMaintenance ?? (object)DBNull.Value),
                 new SqlParameter("depreciation", depreciation ?? (object)DBNull.Value),
                 new SqlParameter("tray_count", trayCount ?? (object)DBNull.Value),
-                new SqlParameter("instrument_avg", instrumentAvg ?? (object)DBNull.Value)
+                new SqlParameter("instrument_avg", instrumentAvg ?? (object)DBNull.Value),
+                new SqlParameter("tray_year", trayYear ?? (object)DBNull.Value),
+                new SqlParameter("vendor_year", vendorYear ?? (object)DBNull.Value),
+                new SqlParameter("card_year", cardYear ?? (object)DBNull.Value),
+                new SqlParameter("improve_year", improveYear ?? (object)DBNull.Value)
             };
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsSalesToolSummary", parameters);
 

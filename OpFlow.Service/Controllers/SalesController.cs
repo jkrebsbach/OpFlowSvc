@@ -29,8 +29,8 @@ namespace OpFlow.Service.Controllers
             var dataSet = await sqlHelper.GetAnalyticsSalesToolSummary(post.SystemName, post.HospitalName, post.City,
                 post.State,
                 post.ContactName, post.Salesperson, post.CaseCount, post.SpdLaborRate, post.ContractDuration,
-                post.AnnualMaintenance,
-                post.Depreciation, post.TrayCount, post.InstrumentAvg);
+                post.AnnualMaintenance, post.Depreciation, post.TrayCount, post.InstrumentAvg,
+                post.TrayYear, post.VendorYear, post.CardYear, post.ImproveYear);
 
             var datasets = new Dictionary<string, DataTable>
             {

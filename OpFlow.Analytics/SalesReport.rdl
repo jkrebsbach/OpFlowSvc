@@ -1807,12 +1807,12 @@ where sales_tool_id = 1</CommandText>
         <Height>6.10417in</Height>
         <Style />
       </Body>
-      <Width>8.04042in</Width>
+      <Width>8in</Width>
       <Page>
         <LeftMargin>0.25in</LeftMargin>
         <RightMargin>0.25in</RightMargin>
         <TopMargin>0.25in</TopMargin>
-        <BottomMargin>25in</BottomMargin>
+        <BottomMargin>0.25in</BottomMargin>
         <Style />
       </Page>
     </ReportSection>
