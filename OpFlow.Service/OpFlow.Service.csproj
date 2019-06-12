@@ -335,11 +335,13 @@
     <Compile Include="Controllers\InternalController.cs" />
     <Compile Include="Controllers\LookupController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
+    <Compile Include="Controllers\SalesController.cs" />
     <Compile Include="Controllers\SamlController.cs" />
     <Compile Include="Controllers\TrayProposalController.cs" />
     <Compile Include="DataAccess\ImageHelper.cs" />
     <Compile Include="DataAccess\KeyVaultHelper.cs" />
     <Compile Include="DataAccess\ReportHelper.cs" />
+    <Compile Include="DataAccess\ResponseHelper.cs" />
     <Compile Include="DataAccess\SamlHelper.cs" />
     <Compile Include="DataAccess\SqlBase.cs" />
     <Compile Include="Licensing.cs" />
