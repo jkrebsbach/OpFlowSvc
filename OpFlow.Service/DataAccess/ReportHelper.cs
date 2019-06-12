@@ -13,6 +13,11 @@ namespace OpFlow.Service.DataAccess
     {
         public static byte[] GetReport(string reportName, DataSet analytics, ReportParameter[] parameters = null)
         {
+            return GetReport(reportName, "IMAGE", analytics, parameters);
+        }
+
+        public static byte[] GetReport(string reportName, string format, DataSet analytics, ReportParameter[] parameters = null)
+        {
             Warning[] warnings;
             string[] streamids;
             string mimeType;
@@ -28,7 +33,7 @@ namespace OpFlow.Service.DataAccess
                 viewer.LocalReport.SetParameters(parameters);
 
             viewer.LocalReport.DataSources.Add(rdsAct); // Add  datasource here         
-            byte[] bytes = viewer.LocalReport.Render("Image", null, out mimeType, out encoding, out filenameExtension, out streamids, out warnings);
+            byte[] bytes = viewer.LocalReport.Render(format, null, out mimeType, out encoding, out filenameExtension, out streamids, out warnings);
             
             return bytes;
         }

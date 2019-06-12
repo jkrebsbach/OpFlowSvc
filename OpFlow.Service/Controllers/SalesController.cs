@@ -23,8 +23,15 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> ExportPDF([FromBody] SalesModel post)
         {
             var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            byte[] pdfBytes = new byte[0];
+            var dataSet = await sqlHelper.GetAnalyticsSalesToolSummary(post.SystemName, post.HospitalName, post.City,
+                post.State,
+                post.ContactName, post.Salesperson, post.CaseCount, post.SpdLaborRate, post.ContractDuration,
+                post.AnnualMaintenance,
+                post.Depreciation, post.TrayCount, post.InstrumentAvg);
+
+            var pdfBytes = ReportHelper.GetReport("SalesReport", "PDF", dataSet);
 
             return ResponseHelper.PdfResponse(pdfBytes);
         }

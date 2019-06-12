@@ -134,6 +134,31 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<DataSet> GetAnalyticsSalesToolSummary(string systemName, string hospitalName, string city, string state,
+            string contactName, string salesperson, int? caseCount, int? spdLaborRate, int? contractDuration, int? annualMaintenance,
+            int? depreciation, int? trayCount, int? instrumentAvg)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("system_name", systemName ?? (object)DBNull.Value),
+                new SqlParameter("hospital_name", hospitalName ?? (object)DBNull.Value),
+                new SqlParameter("city", city ?? (object)DBNull.Value),
+                new SqlParameter("state", state ?? (object)DBNull.Value),
+                new SqlParameter("contact_name", contactName ?? (object)DBNull.Value),
+                new SqlParameter("salesperson", salesperson ?? (object)DBNull.Value),
+                new SqlParameter("case_count", caseCount ?? (object)DBNull.Value),
+                new SqlParameter("spd_labor_rate", spdLaborRate ?? (object)DBNull.Value),
+                new SqlParameter("contract_duration", contractDuration ?? (object)DBNull.Value),
+                new SqlParameter("annual_maintenance", annualMaintenance ?? (object)DBNull.Value),
+                new SqlParameter("depreciation", depreciation ?? (object)DBNull.Value),
+                new SqlParameter("tray_count", trayCount ?? (object)DBNull.Value),
+                new SqlParameter("instrument_avg", instrumentAvg ?? (object)DBNull.Value)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsSalesToolSummary", parameters);
+
+            return dsSchedules;
+        }
+
         public async Task<List<AnalyticTrayRationalization>> GetAnalyticsTrayRationalization(List<int> specialtyId, List<int> surgeonId, List<int> trayId, 
             int providerId, int locationId)
         {
