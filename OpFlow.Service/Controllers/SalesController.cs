@@ -35,7 +35,8 @@ namespace OpFlow.Service.Controllers
             var datasets = new Dictionary<string, DataTable>
             {
                 ["SalesReport"] = dataSet.Tables[0],
-                ["Subscription"] = dataSet.Tables[1]
+                ["Subscription"] = dataSet.Tables[1],
+                ["ValueSavings"] = dataSet.Tables[2]
             };
 
             var pdfBytes = ReportHelper.GetReport("SalesReport", "PDF", datasets);
