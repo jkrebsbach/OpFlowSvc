@@ -11,31 +11,26 @@ namespace OpFlow.Service.DataAccess
 {
     public class ReportHelper
     {
-        public static byte[] GetReport(string reportName, DataSet analytics, ReportParameter[] parameters = null)
+        public static byte[] GetReport(string reportName, Dictionary<string, DataTable> datasets, ReportParameter[] parameters = null)
         {
-            return GetReport(reportName, "IMAGE", analytics, parameters);
+            return GetReport(reportName, "IMAGE", datasets, parameters);
         }
 
-        public static byte[] GetReport(string reportName, string format, DataSet analytics, ReportParameter[] parameters = null)
+        public static byte[] GetReport(string reportName, string format, Dictionary<string, DataTable> datasets, ReportParameter[] parameters = null)
         {
-            Warning[] warnings;
-            string[] streamids;
-            string mimeType;
-            string encoding;
-            string filenameExtension;
-
-            ReportDataSource rdsAct = new ReportDataSource(reportName, analytics.Tables[0]);
-            ReportViewer viewer = new ReportViewer();
+            var viewer = new ReportViewer();
             viewer.LocalReport.Refresh();
             viewer.LocalReport.ReportPath = $"Resources/{reportName}.rdlc"; //This is your rdlc name.
 
             if (parameters != null)
                 viewer.LocalReport.SetParameters(parameters);
 
-            viewer.LocalReport.DataSources.Add(rdsAct); // Add  datasource here         
-            byte[] bytes = viewer.LocalReport.Render(format, null, out mimeType, out encoding, out filenameExtension, out streamids, out warnings);
-            
-            return bytes;
+            foreach (var dataset in datasets.Keys)
+            {
+                viewer.LocalReport.DataSources.Add(new ReportDataSource(dataset, datasets[dataset])); 
+            }
+
+            return viewer.LocalReport.Render(format, null, out var mimeType, out var encoding, out var filenameExtension, out var streamids, out var warnings);
         }
     }
 }

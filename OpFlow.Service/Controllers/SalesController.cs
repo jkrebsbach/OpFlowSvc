@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -31,7 +32,13 @@ namespace OpFlow.Service.Controllers
                 post.AnnualMaintenance,
                 post.Depreciation, post.TrayCount, post.InstrumentAvg);
 
-            var pdfBytes = ReportHelper.GetReport("SalesReport", "PDF", dataSet);
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["SalesReport"] = dataSet.Tables[0],
+                ["Subscription"] = dataSet.Tables[1]
+            };
+
+            var pdfBytes = ReportHelper.GetReport("SalesReport", "PDF", datasets);
 
             return ResponseHelper.PdfResponse(pdfBytes);
         }

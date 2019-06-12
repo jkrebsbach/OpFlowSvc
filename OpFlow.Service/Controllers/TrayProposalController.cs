@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -267,9 +268,21 @@ namespace OpFlow.Service.Controllers
             {
                 new ReportParameter("Group", "t")
             };
-            var countSummaryBytes = ReportHelper.GetReport("CountSummary", countAnalytics, parameters);
-            var instrumentUsageBytes = ReportHelper.GetReport("InstrumentUsage", instrumentAnalytics);
-            var trayRationalizationBytes = ReportHelper.GetReport("TrayRationalization", trayAnalytics);
+            var countDatasets = new Dictionary<string, DataTable>
+            {
+                ["CountSummary"] = countAnalytics.Tables[0]
+            };
+            var countSummaryBytes = ReportHelper.GetReport("CountSummary", countDatasets, parameters);
+            var instrumentDatasets = new Dictionary<string, DataTable>
+            {
+                ["InstrumentUsage"] = instrumentAnalytics.Tables[0]
+            };
+            var instrumentUsageBytes = ReportHelper.GetReport("InstrumentUsage", instrumentDatasets);
+            var trayDatasets = new Dictionary<string, DataTable>
+            {
+                ["TrayRationalization"] = trayAnalytics.Tables[0]
+            };
+            var trayRationalizationBytes = ReportHelper.GetReport("TrayRationalization", trayDatasets);
 
             var reports = new[]
             {

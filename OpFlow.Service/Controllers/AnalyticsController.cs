@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -77,7 +78,11 @@ namespace OpFlow.Service.Controllers
             {
                 new ReportParameter("Group", post.Group)
             };
-            var result = ReportHelper.GetReport("InstrumentUsage", analytics, parameters);
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["InstrumentUsage"] = analytics.Tables[0]
+            };
+            var result = ReportHelper.GetReport("InstrumentUsage", datasets, parameters);
 
             var pngResult = ImageHelper.CreateWebImage(result);
 
@@ -108,7 +113,11 @@ namespace OpFlow.Service.Controllers
 
             var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, user.ProviderID, user.LocationID);
 
-            var result = ReportHelper.GetReport("ConcordanceReport", analytics);
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["ConcordanceReport"] = analytics.Tables[0]
+            };
+            var result = ReportHelper.GetReport("ConcordanceReport", datasets);
 
             var pngResult = ImageHelper.CreateWebImage(result);
 
@@ -151,7 +160,11 @@ namespace OpFlow.Service.Controllers
                     break;
             }*/
 
-            var payloadBytes = ReportHelper.GetReport("TrayRationalization", analytics);
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["TrayRationalization"] = analytics.Tables[0]
+            };
+            var payloadBytes = ReportHelper.GetReport("TrayRationalization", datasets);
 
             var pngResult = ImageHelper.CreateWebImage(payloadBytes);
 
@@ -196,7 +209,11 @@ namespace OpFlow.Service.Controllers
                     break;
             }*/
 
-            var payloadBytes = ReportHelper.GetReport("TrayRationalization", analytics);
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["TrayRationalization"] = analytics.Tables[0]
+            };
+            var payloadBytes = ReportHelper.GetReport("TrayRationalization", datasets);
 
             var result = Request.CreateResponse(HttpStatusCode.OK,
                 new SecureImage()
@@ -237,7 +254,11 @@ namespace OpFlow.Service.Controllers
             {
                 new ReportParameter("Group", "t")
             };
-            var result = ReportHelper.GetReport("CountSummary", analytics, parameters);
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["CountSummary"] = analytics.Tables[0]
+            };
+            var result = ReportHelper.GetReport("CountSummary", datasets, parameters);
 
             var pngResult = ImageHelper.CreateWebImage(result);
 
@@ -277,7 +298,11 @@ namespace OpFlow.Service.Controllers
             {
                 new ReportParameter("Group", "c")
             };
-            var result = ReportHelper.GetReport("CountSummary", analytics, parameters);
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["CountSummary"] = analytics.Tables[0]
+            };
+            var result = ReportHelper.GetReport("CountSummary", datasets, parameters);
 
             var pngResult = ImageHelper.CreateWebImage(result);
 
