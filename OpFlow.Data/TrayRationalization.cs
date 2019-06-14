@@ -9,7 +9,9 @@ namespace OpFlow.Data
     {
         public List<Specialty> Specialties { get; set; }
         public List<TrayRationalization> Proposals { get; set; }
-        public List<GetProposedTrayInstrumentCategories> Categories { get; set; }
+        public List<TrayInstrumentCategory> Categories { get; set; }
+        public List<TrayInstrumentEponym> Eponyms { get; set; }
+        public List<TrayInstrumentType> Types { get; set; }
         public List<ItemMaster> Trays { get; set; }
         public List<Surgeon> Surgeons { get; set; }
         public List<Card> Cards { get; set; }
@@ -154,7 +156,8 @@ namespace OpFlow.Data
         public int Quantity { get; set; }
         public string Reason { get; set; }
         public int? CategoryID { get; set; }
-        public string SubCategory { get; set; }
+        public int? EponymID { get; set; }
+        public int? TypeID { get; set; }
         public string Description { get; set; }
         public string Range { get; set; }
         public string Comments { get; set; }
@@ -235,10 +238,30 @@ namespace OpFlow.Data
             (CommonInstruments == 0 ? 0 : (decimal)UsedInstruments / CommonInstruments * 100);
     }
 
-    public class GetProposedTrayInstrumentCategories
+    public class InstrumentLookup
+    {
+        public List<TrayInstrumentCategory> Categories { get; set; }
+        public List<TrayInstrumentEponym> Eponyms { get; set; }
+        public List<TrayInstrumentType> Types { get; set; }
+    }
+    
+    public class TrayInstrumentCategory
     {
         public int CategoryID { get; set; }
+        public int SpecialtyID { get; set; }
         public string CategoryDescription { get; set; }
+    }
+
+    public class TrayInstrumentEponym
+    {
+        public int EponymID { get; set; }
+        public string EponymDescription { get; set; }
+    }
+
+    public class TrayInstrumentType
+    {
+        public int TypeID { get; set; }
+        public string TypeDescription { get; set; }
     }
 
     public class TrayCardOverlap

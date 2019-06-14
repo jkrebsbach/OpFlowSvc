@@ -37,7 +37,7 @@ namespace OpFlow.Service.Controllers
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
             var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
-            var instrumentCategories = await sqlHelper.GetProposedTrayInstrumentCategories(user.ProviderID, user.LocationID);
+            var instrumentLookups = await sqlHelper.GetTrayInstrumentLookups(user.ProviderID, user.LocationID);
             var trays = await sqlHelper.GetItems("tray", null, null, user.ProviderID, user.LocationID);
             var cards = await sqlHelper.GetCards(user.ProviderID, user.LocationID);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
@@ -49,7 +49,9 @@ namespace OpFlow.Service.Controllers
             {
                 Specialties = specialties,
                 Surgeons = surgeons,
-                Categories = instrumentCategories,
+                Categories = instrumentLookups.Categories,
+                Eponyms = instrumentLookups.Eponyms,
+                Types = instrumentLookups.Types,
                 Trays = trays,
                 Proposals = proposals,
                 Cards = cards,

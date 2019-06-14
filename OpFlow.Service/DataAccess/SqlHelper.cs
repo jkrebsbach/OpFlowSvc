@@ -533,7 +533,8 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, instrument.Quantity);
                 AddColumn(doc, row, instrument.Reason);
                 AddColumn(doc, row, instrument.CategoryID);
-                AddColumn(doc, row, instrument.SubCategory);
+                AddColumn(doc, row, instrument.EponymID);
+                AddColumn(doc, row, instrument.TypeID);
                 AddColumn(doc, row, instrument.Description);
                 AddColumn(doc, row, instrument.Range);
                 AddColumn(doc, row, instrument.Comments);
@@ -707,16 +708,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<GetProposedTrayInstrumentCategories>> GetProposedTrayInstrumentCategories(int providerId, int locationId)
+        public async Task<InstrumentLookup> GetTrayInstrumentLookups(int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCategories", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetInstrumentLookups", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<GetProposedTrayInstrumentCategories>();
+            var result = new InstrumentLookup()
+            {
+                Categories = dsSchedules.Tables[0].DataTableToList<TrayInstrumentCategory>(),
+                Eponyms = dsSchedules.Tables[1].DataTableToList<TrayInstrumentEponym>(),
+                Types = dsSchedules.Tables[2].DataTableToList<TrayInstrumentType>()
+            };
 
             return result;
         }
