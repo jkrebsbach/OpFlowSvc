@@ -71,10 +71,11 @@ namespace OpFlow.Data
         public int InstrumentCount { get; set; }
         public decimal AvgPerCase { get; set; }
         public int SourceQty { get; set; }
-        public int TrayProposalCategoryID { get; set; }
-        public string SubCategory { get; set; }
+        public int? TrayProposalCategoryID { get; set; }
+        public int? EponymID { get; set; }
+        public int? TypeID { get; set; }
         public string Description { get; set; }
-        public string Range { get; set; }
+        public string Size { get; set; }
         public int TrayCases { get; set; }
         public int UsedCases { get; set; }
         public string Reason { get; set; }
@@ -159,7 +160,7 @@ namespace OpFlow.Data
         public int? EponymID { get; set; }
         public int? TypeID { get; set; }
         public string Description { get; set; }
-        public string Range { get; set; }
+        public string Size { get; set; }
         public string Comments { get; set; }
         public int Sequence { get; set; }
     }

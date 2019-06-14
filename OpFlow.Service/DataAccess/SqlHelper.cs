@@ -536,7 +536,7 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, instrument.EponymID);
                 AddColumn(doc, row, instrument.TypeID);
                 AddColumn(doc, row, instrument.Description);
-                AddColumn(doc, row, instrument.Range);
+                AddColumn(doc, row, instrument.Size);
                 AddColumn(doc, row, instrument.Comments);
                 AddColumn(doc, row, instrument.Sequence);
             }
