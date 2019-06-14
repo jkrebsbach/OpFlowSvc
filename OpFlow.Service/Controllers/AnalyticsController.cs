@@ -69,28 +69,43 @@ namespace OpFlow.Service.Controllers
                 (post.Cpt == null || !post.Cpt.Any()) &&
                 post.TrayID == null)
             {
-                return Request.CreateResponse(HttpStatusCode.OK, 0);
+                return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
             var analytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyID, post.SurgeonID, post.CategoryID, post.ProcedureID, post.Cpt, post.TrayID, user.ProviderID, user.LocationID);
-            
+
+            var usage = analytics.Tables[0].DefaultView;
+            switch (post.Order)
+            {
+                case "qty":
+                    usage.Sort = "QtyOpen DESC";
+                    break;
+                case "tray":
+                    usage.Sort = "TrayName DESC";
+                    break;
+                case "instrument":
+                default:
+                    usage.Sort = "Instrument";
+                    break;
+            }
+
             var parameters = new []
             {
                 new ReportParameter("Group", post.Group)
             };
             var datasets = new Dictionary<string, DataTable>
             {
-                ["InstrumentUsage"] = analytics.Tables[0]
+                ["InstrumentUsage"] = usage.ToTable()
             };
             var result = ReportHelper.GetReport("InstrumentUsage", datasets, parameters);
 
             var pngResult = ImageHelper.CreateWebImage(result);
 
             return Request.CreateResponse(HttpStatusCode.OK,
-                new SecureImage()
+                pngResult.Select(img => new SecureImage()
                 {
-                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(pngResult)
-                });
+                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(img)
+                }));
         }
 
         // GET api/values/5
@@ -108,24 +123,36 @@ namespace OpFlow.Service.Controllers
                 post.ProcedureID == null &&
                 post.TrayID == null)
             {
-                return Request.CreateResponse(HttpStatusCode.OK, 0);
+                return Request.CreateResponse(HttpStatusCode.OK, new { Error= true});
             }
 
             var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, user.ProviderID, user.LocationID);
 
+            var concordance = analytics.Tables[0].DefaultView;
+            switch (post.Order)
+            {
+                case "instrument_avg":
+                    concordance.Sort = "QtyOpen DESC";
+                    break;
+                case "instrument_name":
+                default:
+                    concordance.Sort = "InstrumentName";
+                    break;
+            }
+
             var datasets = new Dictionary<string, DataTable>
             {
-                ["ConcordanceReport"] = analytics.Tables[0]
+                ["ConcordanceReport"] = concordance.ToTable()
             };
             var result = ReportHelper.GetReport("ConcordanceReport", datasets);
 
             var pngResult = ImageHelper.CreateWebImage(result);
 
             return Request.CreateResponse(HttpStatusCode.OK,
-                new SecureImage()
+                pngResult.Select(img => new SecureImage()
                 {
-                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(pngResult)
-                });
+                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(img)
+                }));
         }
 
         // GET api/values/5
@@ -139,40 +166,43 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
             var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, user.ProviderID, user.LocationID);
-            /*
+
+            var rationalization = new DataView(analytics.Tables[0]);
+            
             switch (post.Order)
             {
                 case "instrument_nbr":
-                    analytics = analytics.OrderByDescending(a => a.InstrumentCount).ToList();
+                    rationalization.Sort = "InstrumentCount";
                     break;
                 case "instrument_avg":
-                    analytics = analytics.OrderByDescending(a => a.UsageQuantity).ToList();
+                    rationalization.Sort = "UsageQuantityESC";
                     break;
                 case "tray_open":
-                    analytics = analytics.OrderByDescending(a => a.TrayOpened).ToList();
+                    rationalization.Sort = "TrayOpened";
                     break;
                 case "tray_name":
-                    analytics = analytics.OrderBy(a => a.TrayName).ToList();
+                    rationalization.Sort = "TrayName DESC";
                     break;
                 case "count":
                 default:
-                    analytics = analytics.OrderByDescending(a => a.CaseCount).ToList();
+                    rationalization.Sort = "CaseCount";
                     break;
-            }*/
+            }
+
 
             var datasets = new Dictionary<string, DataTable>
             {
-                ["TrayRationalization"] = analytics.Tables[0]
+                ["TrayRationalization"] = rationalization.ToTable()
             };
             var payloadBytes = ReportHelper.GetReport("TrayRationalization", datasets);
 
             var pngResult = ImageHelper.CreateWebImage(payloadBytes);
 
             var result = Request.CreateResponse(HttpStatusCode.OK,
-                new SecureImage()
+                pngResult.Select(img => new SecureImage()
                 {
-                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(pngResult)
-                });
+                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(img)
+                }));
 
             return result;
         }
@@ -263,10 +293,10 @@ namespace OpFlow.Service.Controllers
             var pngResult = ImageHelper.CreateWebImage(result);
 
             return Request.CreateResponse(HttpStatusCode.OK,
-                new SecureImage()
+                pngResult.Select(img => new SecureImage()
                 {
-                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(pngResult)
-                });
+                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(img)
+                }));
         }
 
         // GET api/values/5
@@ -307,10 +337,10 @@ namespace OpFlow.Service.Controllers
             var pngResult = ImageHelper.CreateWebImage(result);
 
             return Request.CreateResponse(HttpStatusCode.OK,
-                new SecureImage()
+                pngResult.Select(img => new SecureImage()
                 {
-                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(pngResult)
-                });
+                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(img)
+                }));
         }
     }
 }

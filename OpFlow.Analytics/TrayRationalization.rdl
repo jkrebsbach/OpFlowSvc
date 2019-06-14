@@ -65,11 +65,6 @@ ORDER BY TrayName</CommandText>
                       <GroupExpression>=Fields!TrayName.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
-                  <SortExpressions>
-                    <SortExpression>
-                      <Value>=Fields!TrayName.Value</Value>
-                    </SortExpression>
-                  </SortExpressions>
                   <Label>=Fields!TrayName.Value</Label>
                 </ChartMember>
               </ChartMembers>
@@ -100,6 +95,8 @@ ORDER BY TrayName</CommandText>
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
@@ -134,6 +131,8 @@ ORDER BY TrayName</CommandText>
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
@@ -168,6 +167,8 @@ ORDER BY TrayName</CommandText>
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
@@ -202,6 +203,8 @@ ORDER BY TrayName</CommandText>
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
@@ -513,7 +516,7 @@ ORDER BY TrayName</CommandText>
               </Style>
             </ChartNoDataMessage>
             <DataSetName>TrayRationalization</DataSetName>
-            <Height>6.26958in</Height>
+            <Height>10in</Height>
             <Width>7.28in</Width>
             <Style>
               <Border>
@@ -525,7 +528,7 @@ ORDER BY TrayName</CommandText>
             </Style>
           </Chart>
         </ReportItems>
-        <Height>6.26958in</Height>
+        <Height>10in</Height>
         <Style />
       </Body>
       <Width>7.28in</Width>

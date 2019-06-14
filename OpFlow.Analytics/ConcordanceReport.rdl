@@ -48,11 +48,6 @@
                       <GroupExpression>=Fields!InstrumentName.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
-                  <SortExpressions>
-                    <SortExpression>
-                      <Value>=Fields!InstrumentName.Value</Value>
-                    </SortExpression>
-                  </SortExpressions>
                   <Label>=Fields!InstrumentName.Value</Label>
                 </ChartMember>
               </ChartMembers>
@@ -84,6 +79,8 @@
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
@@ -401,8 +398,8 @@
               </Style>
             </ChartNoDataMessage>
             <DataSetName>ConcordanceReport</DataSetName>
-            <Height>5.80083in</Height>
-            <Width>6.5in</Width>
+            <Height>10in</Height>
+            <Width>7.5in</Width>
             <Style>
               <Border>
                 <Color>LightGrey</Color>
@@ -413,10 +410,10 @@
             </Style>
           </Chart>
         </ReportItems>
-        <Height>5.80083in</Height>
+        <Height>10in</Height>
         <Style />
       </Body>
-      <Width>6.5in</Width>
+      <Width>7.5in</Width>
       <Page>
         <LeftMargin>0.25in</LeftMargin>
         <RightMargin>25in</RightMargin>

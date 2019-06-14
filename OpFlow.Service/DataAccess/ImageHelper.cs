@@ -8,15 +8,24 @@ namespace OpFlow.Service.DataAccess
 {
     public class ImageHelper
     {
-        public static byte[] CreateWebImage(byte[] tiffImage)
+        public static List<byte[]> CreateWebImage(byte[] tiffBytes)
         {
-            var tiffStream = new MemoryStream(tiffImage);
-            var pngStream = new MemoryStream();
+            var result = new List<byte[]>();
 
-            Image.FromStream(tiffStream)
-                .Save(pngStream, ImageFormat.Png);
+            var tiffStream = new MemoryStream(tiffBytes);
+            
+            var tiffImage = Image.FromStream(tiffStream);
+            
+            for (var index = 0; index < tiffImage.GetFrameCount(FrameDimension.Page); index++)
+            {
+                tiffImage.SelectActiveFrame(FrameDimension.Page, index);
 
-            return pngStream.GetBuffer();
+                var pngStream = new MemoryStream();
+                tiffImage.Save(pngStream, ImageFormat.Png);
+                result.Add(pngStream.GetBuffer());
+            }
+
+            return result;
         }
     }
 }
