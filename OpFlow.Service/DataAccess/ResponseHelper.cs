@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
+using OpFlow.Data;
 
 namespace OpFlow.Service.DataAccess
 {
@@ -30,17 +31,33 @@ namespace OpFlow.Service.DataAccess
             byte[] buffer = new byte[1024];
             long received = 0;
             var memStream = new MemoryStream();
-            var httpResponse = (HttpWebResponse)request.GetResponse();
-            using (var input = httpResponse.GetResponseStream())
+            try
             {
-                long size = input.Read(buffer, 0, buffer.Length);
-                while (size > 0)
+                var httpResponse = (HttpWebResponse) request.GetResponse();
+                using (var input = httpResponse.GetResponseStream())
                 {
-                    memStream.Write(buffer, 0, (int)size);
-                    received += size;
+                    long size = input.Read(buffer, 0, buffer.Length);
+                    while (size > 0)
+                    {
+                        memStream.Write(buffer, 0, (int) size);
+                        received += size;
 
-                    size = input.Read(buffer, 0, buffer.Length);
+                        size = input.Read(buffer, 0, buffer.Length);
+                    }
                 }
+            }
+            catch (WebException webEx)
+            {
+                WebResponse errResp = webEx.Response;
+                using (Stream respStream = errResp.GetResponseStream())
+                {
+                    StreamReader reader = new StreamReader(respStream);
+                    string text = reader.ReadToEnd();
+                }
+            }
+            catch (Exception ex)
+            {
+                var tmpInt = 0;
             }
 
             return PdfResponse(memStream);
@@ -62,7 +79,7 @@ namespace OpFlow.Service.DataAccess
             {
                 Content = new StreamContent(memStream)
             };
-
+            
             result.Content.Headers.ContentDisposition =
                 new ContentDispositionHeaderValue("attachment")
                     { FileName = "TrayRationalization.pdf", };
@@ -71,6 +88,15 @@ namespace OpFlow.Service.DataAccess
             result.Content.Headers.ContentLength = memStream.Length;
 
             return result;
+        }
+
+        public static HttpResponseMessage ImageResponse(HttpRequestMessage request, List<byte[]> pngResult)
+        {
+            return request.CreateResponse(HttpStatusCode.OK,
+                pngResult.Select(img => new SecureImage()
+                {
+                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(img)
+                }));
         }
     }
 }

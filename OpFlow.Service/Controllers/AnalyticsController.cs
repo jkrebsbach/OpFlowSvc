@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Reporting.WebForms;
+using Newtonsoft.Json;
 using OpFlow.Data;
 using OpFlow.Service.DataAccess;
 using Swashbuckle.Swagger.Annotations;
@@ -55,11 +56,15 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("InstrumentUsageReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
+        [HttpPut]
         [HttpPost]
         [Route("instrumentUsage")]
-        public async Task<HttpResponseMessage> InstrumentUsageReport([FromBody] InstrumentUsagePost post)
+        [Route("instrumentUsage/{format}")]
+        public async Task<HttpResponseMessage> InstrumentUsageReport([FromBody] InstrumentUsagePost post, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
             if (post.SpecialtyID == null &&
@@ -89,33 +94,49 @@ namespace OpFlow.Service.Controllers
                     break;
             }
 
-            var parameters = new []
-            {
-                new ReportParameter("Group", post.Group)
-            };
             var datasets = new Dictionary<string, DataTable>
             {
                 ["InstrumentUsage"] = usage.ToTable()
             };
-            var result = ReportHelper.GetReport("InstrumentUsage", datasets, parameters);
 
-            var pngResult = ImageHelper.CreateWebImage(result);
-
-            return Request.CreateResponse(HttpStatusCode.OK,
-                pngResult.Select(img => new SecureImage()
+            byte[] result = null;
+            if (post.Group == "c")
+            {
+                result = ReportHelper.GetReport("InstrumentUsageCard", format, datasets);
+            }
+            else
+            {
+                var parameters = new[]
                 {
-                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(img)
-                }));
+                    new ReportParameter("Group", post.Group)
+                };
+                result = ReportHelper.GetReport("InstrumentUsage", format, datasets, parameters);
+            }
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
         }
 
         // GET api/values/5
         [SwaggerOperation("ConcordanceReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
+        [HttpPut]
         [HttpPost]
         [Route("concordanceReport")]
-        public async Task<HttpResponseMessage> ConcordanceReport([FromBody] InstrumentUsagePost post)
+        [Route("concordanceReport/{format}")]
+        public async Task<HttpResponseMessage> ConcordanceReport([FromBody] InstrumentUsagePost post, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
             if (post.SpecialtyID == null &&
@@ -144,25 +165,32 @@ namespace OpFlow.Service.Controllers
             {
                 ["ConcordanceReport"] = concordance.ToTable()
             };
-            var result = ReportHelper.GetReport("ConcordanceReport", datasets);
+            var result = ReportHelper.GetReport("ConcordanceReport", format, datasets);
+            
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
 
-            var pngResult = ImageHelper.CreateWebImage(result);
-
-            return Request.CreateResponse(HttpStatusCode.OK,
-                pngResult.Select(img => new SecureImage()
-                {
-                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(img)
-                }));
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
         }
 
         // GET api/values/5
         [SwaggerOperation("TrayRationalizationReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsSummary>))]
+        [HttpPut]
         [HttpPost]
         [Route("trayRationalization")]
-        public async Task<HttpResponseMessage> TrayRationalizationReport([FromBody] TrayRationalizationReportPost post)
+        [Route("trayRationalization/{format}")]
+        public async Task<HttpResponseMessage> TrayRationalizationReport([FromBody] TrayRationalizationReportPost post, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
             var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, user.ProviderID, user.LocationID);
@@ -194,27 +222,32 @@ namespace OpFlow.Service.Controllers
             {
                 ["TrayRationalization"] = rationalization.ToTable()
             };
-            var payloadBytes = ReportHelper.GetReport("TrayRationalization", datasets);
+            var result = ReportHelper.GetReport("TrayRationalization", format, datasets);
+            
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
 
-            var pngResult = ImageHelper.CreateWebImage(payloadBytes);
-
-            var result = Request.CreateResponse(HttpStatusCode.OK,
-                pngResult.Select(img => new SecureImage()
-                {
-                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(img)
-                }));
-
-            return result;
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
         }
 
         // GET api/values/5
         [SwaggerOperation("TrayRationalizationReportImage")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsSummary>))]
+        [HttpPut]
         [HttpPost]
         [Route("trayRationalizationImage")]
-        public async Task<HttpResponseMessage> TrayRationalizationReportImage([FromBody] TrayRationalizationReportPost post)
+        [Route("trayRationalizationImage/{format}")]
+        public async Task<HttpResponseMessage> TrayRationalizationReportImage([FromBody] TrayRationalizationReportPost post, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
             var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, user.ProviderID, user.LocationID);
@@ -243,25 +276,32 @@ namespace OpFlow.Service.Controllers
             {
                 ["TrayRationalization"] = analytics.Tables[0]
             };
-            var payloadBytes = ReportHelper.GetReport("TrayRationalization", datasets);
+            var result = ReportHelper.GetReport("TrayRationalization", format, datasets);
 
-            var result = Request.CreateResponse(HttpStatusCode.OK,
-                new SecureImage()
-                {
-                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(payloadBytes)
-                });
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
 
-            return result;
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
         }
 
         // GET api/values/5
         [SwaggerOperation("CountSummaryReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
+        [HttpPut]
         [HttpPost]
         [Route("countSummary")]
-        public async Task<HttpResponseMessage> CountSummaryReport([FromBody] CountSummaryReportPost post)
+        [Route("countSummary/{format}")]
+        public async Task<HttpResponseMessage> CountSummaryReport([FromBody] CountSummaryReportPost post, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
             var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.RoomGroupId, user.ProviderID, user.LocationID);
@@ -288,26 +328,33 @@ namespace OpFlow.Service.Controllers
             {
                 ["CountSummary"] = analytics.Tables[0]
             };
-            var result = ReportHelper.GetReport("CountSummary", datasets, parameters);
+            var result = ReportHelper.GetReport("CountSummary", format, datasets, parameters);
 
-            var pngResult = ImageHelper.CreateWebImage(result);
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
 
-            return Request.CreateResponse(HttpStatusCode.OK,
-                pngResult.Select(img => new SecureImage()
-                {
-                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(img)
-                }));
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
         }
 
         // GET api/values/5
         [SwaggerOperation("CountSummaryByCardReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
+        [HttpPut]
         [HttpPost]
         [Route("countSummaryByCard")]
-        public async Task<HttpResponseMessage> CountSummaryByCardReport([FromBody] CountSummaryReportPost post)
+        [Route("countSummaryByCard/{format}")]
+        public async Task<HttpResponseMessage> CountSummaryByCardReport([FromBody] CountSummaryReportPost post, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
 
+            format = format ?? "IMAGE";
+            
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
             var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.RoomGroupId, user.ProviderID, user.LocationID);
 
@@ -324,6 +371,7 @@ namespace OpFlow.Service.Controllers
                     analytics = analytics.OrderByDescending(a => a.TrayCount).ToList();
                     break;
             }*/
+
             var parameters = new[]
             {
                 new ReportParameter("Group", "c")
@@ -332,15 +380,18 @@ namespace OpFlow.Service.Controllers
             {
                 ["CountSummary"] = analytics.Tables[0]
             };
-            var result = ReportHelper.GetReport("CountSummary", datasets, parameters);
+            var result = ReportHelper.GetReport("CountSummary", format, datasets, parameters);
 
-            var pngResult = ImageHelper.CreateWebImage(result);
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
 
-            return Request.CreateResponse(HttpStatusCode.OK,
-                pngResult.Select(img => new SecureImage()
-                {
-                    DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(img)
-                }));
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
         }
     }
 }

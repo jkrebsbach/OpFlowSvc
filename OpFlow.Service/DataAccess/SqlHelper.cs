@@ -102,7 +102,7 @@ namespace OpFlow.Service.DataAccess
 
         private string GetIdentitySummary(List<int> identities)
         {
-            if (identities == null || !identities.Any())
+            if (identities == null || !identities.Any() || (identities.Count == 1 && identities[0] == 0))
                 return null;
 
             var doc = new XmlDocument();
@@ -214,7 +214,7 @@ namespace OpFlow.Service.DataAccess
             var categoryXml = GetIdentitySummary(categoryId);
             var procedureXml = GetIdentitySummary(procedureId);
             var trayXml = GetIdentitySummary(trayId);
-            var cptXml = GetCptSummary(cptList);
+            var cptXml = GetStringSummary(cptList);
             
             var parameters = new[]
             {
@@ -242,7 +242,7 @@ namespace OpFlow.Service.DataAccess
             var categoryXml = GetIdentitySummary(categoryId);
             var procedureXml = GetIdentitySummary(procedureId);
             var trayXml = GetIdentitySummary(trayId);
-            var cptXml = GetCptSummary(cptList);
+            var cptXml = GetStringSummary(cptList);
 
             var parameters = new[]
             {
@@ -305,9 +305,9 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        private string GetCptSummary(List<string> cptList)
+        private string GetStringSummary(List<string> cptList)
         {
-            if (cptList == null || !cptList.Any())
+            if (cptList == null || !cptList.Any() || (cptList.Count == 1 && string.IsNullOrEmpty(cptList[0])))
                 return null;
 
             var doc = new XmlDocument();

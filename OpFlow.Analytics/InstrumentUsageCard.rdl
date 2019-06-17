@@ -5,45 +5,32 @@
   <DataSources>
     <DataSource Name="OpFlow">
       <DataSourceReference>OpFlow</DataSourceReference>
-      <rd:SecurityType>DataBase</rd:SecurityType>
-      <rd:DataSourceID>aaf72f52-fbd2-4a83-9ee0-c295afd65466</rd:DataSourceID>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>3b15641f-2c29-4bf8-992b-1eddeefd8a72</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
-    <DataSet Name="TrayRationalization">
+    <DataSet Name="InstrumentUsage">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>
-SELECT TrayName,
-	SUM(CaseCount) CaseCount,
-	MAX(InstrumentCount) InstrumentCount,
-	AVG(UsageQuantity ) UsageQuantity,
-	SUM(TrayOpened) TrayOpened
-FROM tray_rationalization_view
-WHERE SpecialtyID=1
-GROUP BY TrayName
-ORDER BY TrayName</CommandText>
+        <CommandText>exec [GetAnalyticsInstrumentUsage] '&lt;table&gt;&lt;row&gt;&lt;col&gt;1&lt;/col&gt;&lt;/row&gt;&lt;/table&gt;', null, null, null, null, null, 1,1</CommandText>
       </Query>
       <Fields>
         <Field Name="TrayName">
           <DataField>TrayName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="CaseCount">
-          <DataField>CaseCount</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
+        <Field Name="CardName">
+          <DataField>CardName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="InstrumentCount">
-          <DataField>InstrumentCount</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
+        <Field Name="Instrument">
+          <DataField>Instrument</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="UsageQuantity">
-          <DataField>UsageQuantity</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="TrayOpened">
-          <DataField>TrayOpened</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
+        <Field Name="QtyOpen">
+          <DataField>QtyOpen</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
@@ -58,147 +45,47 @@ ORDER BY TrayName</CommandText>
                 <ChartMember>
                   <Group Name="Chart2_CategoryGroup">
                     <GroupExpressions>
-                      <GroupExpression>=Fields!TrayName.Value</GroupExpression>
+                      <GroupExpression>=Fields!Instrument.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
-                  <Label>=Fields!TrayName.Value</Label>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!Instrument.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
+                  <Label>=Fields!Instrument.Value</Label>
                 </ChartMember>
               </ChartMembers>
             </ChartCategoryHierarchy>
             <ChartSeriesHierarchy>
               <ChartMembers>
                 <ChartMember>
-                  <Label>Case Count</Label>
-                </ChartMember>
-                <ChartMember>
-                  <Label>Instrument Count</Label>
-                </ChartMember>
-                <ChartMember>
-                  <Label>Usage Quantity</Label>
-                </ChartMember>
-                <ChartMember>
-                  <Label>Tray Opened</Label>
+                  <Group Name="Chart2_SeriesGroup">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!CardName.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!CardName.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
+                  <Label>=Fields!CardName.Value</Label>
                 </ChartMember>
               </ChartMembers>
             </ChartSeriesHierarchy>
             <ChartData>
               <ChartSeriesCollection>
-                <ChartSeries Name="CaseCount">
+                <ChartSeries Name="QtyOpen">
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
-                        <Y>=Sum(Fields!CaseCount.Value)</Y>
+                        <Y>=Sum(Fields!QtyOpen.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
-                        <Style />
-                        <UseValueAsLabel>true</UseValueAsLabel>
-                        <Visible>true</Visible>
-                      </ChartDataLabel>
-                      <Style />
-                      <ChartMarker>
-                        <Style />
-                      </ChartMarker>
-                      <DataElementOutput>Output</DataElementOutput>
-                    </ChartDataPoint>
-                  </ChartDataPoints>
-                  <Type>Bar</Type>
-                  <Style />
-                  <ChartEmptyPoints>
-                    <Style />
-                    <ChartMarker>
-                      <Style />
-                    </ChartMarker>
-                    <ChartDataLabel>
-                      <Style />
-                    </ChartDataLabel>
-                  </ChartEmptyPoints>
-                  <ValueAxisName>Primary</ValueAxisName>
-                  <CategoryAxisName>Primary</CategoryAxisName>
-                  <ChartSmartLabel>
-                    <CalloutLineColor>Black</CalloutLineColor>
-                    <MinMovingDistance>0pt</MinMovingDistance>
-                  </ChartSmartLabel>
-                </ChartSeries>
-                <ChartSeries Name="InstrumentCount">
-                  <ChartDataPoints>
-                    <ChartDataPoint>
-                      <ChartDataPointValues>
-                        <Y>=Max(Fields!InstrumentCount.Value)</Y>
-                      </ChartDataPointValues>
-                      <ChartDataLabel>
-                        <Style />
-                        <UseValueAsLabel>true</UseValueAsLabel>
-                        <Visible>true</Visible>
-                      </ChartDataLabel>
-                      <Style />
-                      <ChartMarker>
-                        <Style />
-                      </ChartMarker>
-                      <DataElementOutput>Output</DataElementOutput>
-                    </ChartDataPoint>
-                  </ChartDataPoints>
-                  <Type>Bar</Type>
-                  <Style />
-                  <ChartEmptyPoints>
-                    <Style />
-                    <ChartMarker>
-                      <Style />
-                    </ChartMarker>
-                    <ChartDataLabel>
-                      <Style />
-                    </ChartDataLabel>
-                  </ChartEmptyPoints>
-                  <ValueAxisName>Primary</ValueAxisName>
-                  <CategoryAxisName>Primary</CategoryAxisName>
-                  <ChartSmartLabel>
-                    <CalloutLineColor>Black</CalloutLineColor>
-                    <MinMovingDistance>0pt</MinMovingDistance>
-                  </ChartSmartLabel>
-                </ChartSeries>
-                <ChartSeries Name="UsageQuantity">
-                  <ChartDataPoints>
-                    <ChartDataPoint>
-                      <ChartDataPointValues>
-                        <Y>=Avg(Fields!UsageQuantity.Value)</Y>
-                      </ChartDataPointValues>
-                      <ChartDataLabel>
-                        <Style />
-                        <UseValueAsLabel>true</UseValueAsLabel>
-                        <Visible>true</Visible>
-                      </ChartDataLabel>
-                      <Style />
-                      <ChartMarker>
-                        <Style />
-                      </ChartMarker>
-                      <DataElementOutput>Output</DataElementOutput>
-                    </ChartDataPoint>
-                  </ChartDataPoints>
-                  <Type>Bar</Type>
-                  <Style />
-                  <ChartEmptyPoints>
-                    <Style />
-                    <ChartMarker>
-                      <Style />
-                    </ChartMarker>
-                    <ChartDataLabel>
-                      <Style />
-                    </ChartDataLabel>
-                  </ChartEmptyPoints>
-                  <ValueAxisName>Primary</ValueAxisName>
-                  <CategoryAxisName>Primary</CategoryAxisName>
-                  <ChartSmartLabel>
-                    <CalloutLineColor>Black</CalloutLineColor>
-                    <MinMovingDistance>0pt</MinMovingDistance>
-                  </ChartSmartLabel>
-                </ChartSeries>
-                <ChartSeries Name="TrayOpened">
-                  <ChartDataPoints>
-                    <ChartDataPoint>
-                      <ChartDataPointValues>
-                        <Y>=Max(Fields!TrayOpened.Value)</Y>
-                      </ChartDataPointValues>
-                      <ChartDataLabel>
-                        <Style />
+                        <Style>
+                          <Format>0.#</Format>
+                        </Style>
                         <UseValueAsLabel>true</UseValueAsLabel>
                         <Visible>true</Visible>
                       </ChartDataLabel>
@@ -272,7 +159,6 @@ ORDER BY TrayName</CommandText>
                           <Style>None</Style>
                         </Border>
                       </Style>
-                      <Interval>1</Interval>
                     </ChartMajorTickMarks>
                     <ChartMinorTickMarks>
                       <Style>
@@ -461,6 +347,12 @@ ORDER BY TrayName</CommandText>
                   <BackgroundColor>#00ffffff</BackgroundColor>
                   <BackgroundGradientType>None</BackgroundGradientType>
                 </Style>
+                <ChartElementPosition>
+                  <Top>2</Top>
+                  <Left>3</Left>
+                  <Height>95</Height>
+                  <Width>94</Width>
+                </ChartElementPosition>
               </ChartArea>
             </ChartAreas>
             <ChartLegends>
@@ -470,6 +362,8 @@ ORDER BY TrayName</CommandText>
                   <FontSize>8pt</FontSize>
                 </Style>
                 <Position>TopCenter</Position>
+                <DockToChartArea>Default</DockToChartArea>
+                <DockOutsideChartArea>true</DockOutsideChartArea>
                 <ChartLegendTitle>
                   <Caption />
                   <Style>
@@ -480,23 +374,11 @@ ORDER BY TrayName</CommandText>
                 </ChartLegendTitle>
                 <HeaderSeparatorColor>Black</HeaderSeparatorColor>
                 <ColumnSeparatorColor>Black</ColumnSeparatorColor>
+                <MaxAutoSize>5</MaxAutoSize>
               </ChartLegend>
             </ChartLegends>
-            <ChartTitles>
-              <ChartTitle Name="Default">
-                <Caption>Tray Rationalization</Caption>
-                <Style>
-                  <BackgroundGradientType>None</BackgroundGradientType>
-                  <FontSize>9pt</FontSize>
-                  <FontWeight>Normal</FontWeight>
-                  <TextAlign>Left</TextAlign>
-                  <VerticalAlign>Top</VerticalAlign>
-                  <Color>#a6a6a6</Color>
-                </Style>
-                <Position>TopLeft</Position>
-              </ChartTitle>
-            </ChartTitles>
             <Palette>Pacific</Palette>
+            <DynamicHeight>=(3 + CountDistinct(Fields!Instrument.Value, "InstrumentUsage") / 2) &amp; " in"</DynamicHeight>
             <ChartBorderSkin>
               <Style>
                 <BackgroundColor>Gray</BackgroundColor>
@@ -513,9 +395,9 @@ ORDER BY TrayName</CommandText>
                 <VerticalAlign>Top</VerticalAlign>
               </Style>
             </ChartNoDataMessage>
-            <DataSetName>TrayRationalization</DataSetName>
-            <Height>10in</Height>
-            <Width>7.28in</Width>
+            <DataSetName>InstrumentUsage</DataSetName>
+            <Height>7.5in</Height>
+            <Width>7.75in</Width>
             <Style>
               <Border>
                 <Color>LightGrey</Color>
@@ -526,15 +408,11 @@ ORDER BY TrayName</CommandText>
             </Style>
           </Chart>
         </ReportItems>
-        <Height>10in</Height>
+        <Height>7.5in</Height>
         <Style />
       </Body>
-      <Width>7.28in</Width>
+      <Width>7.75in</Width>
       <Page>
-        <LeftMargin>0.25in</LeftMargin>
-        <RightMargin>0.25in</RightMargin>
-        <TopMargin>0.25in</TopMargin>
-        <BottomMargin>0.25in</BottomMargin>
         <Style />
       </Page>
     </ReportSection>
@@ -546,5 +424,5 @@ ORDER BY TrayName</CommandText>
     </GridLayoutDefinition>
   </ReportParametersLayout>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
-  <rd:ReportID>16f7d035-f5e1-4aae-aa67-a9d858e8c895</rd:ReportID>
+  <rd:ReportID>cf8dc214-12c9-44ef-8e4e-ade4fe4fc9ee</rd:ReportID>
 </Report>
