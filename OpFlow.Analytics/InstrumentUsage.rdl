@@ -83,7 +83,9 @@
                         <Y>=Avg(Fields!QtyOpen.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
-                        <Style />
+                        <Style>
+                          <Format>0.#</Format>
+                        </Style>
                         <UseValueAsLabel>true</UseValueAsLabel>
                         <Visible>true</Visible>
                       </ChartDataLabel>
@@ -354,7 +356,7 @@
                   <BackgroundGradientType>None</BackgroundGradientType>
                   <FontSize>8pt</FontSize>
                 </Style>
-                <Position>TopLeft</Position>
+                <DockOutsideChartArea>true</DockOutsideChartArea>
                 <ChartLegendTitle>
                   <Caption />
                   <Style>
@@ -378,10 +380,11 @@
                   <VerticalAlign>Top</VerticalAlign>
                   <Color>#a6a6a6</Color>
                 </Style>
-                <Position>TopLeft</Position>
+                <DockOutsideChartArea>true</DockOutsideChartArea>
               </ChartTitle>
             </ChartTitles>
             <Palette>Pacific</Palette>
+            <DynamicHeight>=(3 + CountDistinct(Fields!Instrument.Value, "InstrumentUsage") / 4) &amp; " in"</DynamicHeight>
             <ChartBorderSkin>
               <Style>
                 <BackgroundColor>Gray</BackgroundColor>
@@ -457,7 +460,9 @@
                         <Y>=Avg(Fields!QtyOpen.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
-                        <Style />
+                        <Style>
+                          <Format>0.#</Format>
+                        </Style>
                         <UseValueAsLabel>true</UseValueAsLabel>
                         <Visible>true</Visible>
                       </ChartDataLabel>
@@ -755,6 +760,7 @@
               </ChartTitle>
             </ChartTitles>
             <Palette>Pacific</Palette>
+            <DynamicHeight>=(3 + CountDistinct(Fields!Instrument.Value, "InstrumentUsage") / 4) &amp; " in"</DynamicHeight>
             <ChartBorderSkin>
               <Style>
                 <BackgroundColor>Gray</BackgroundColor>
@@ -845,7 +851,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!CardName.Value</Value>
+                                  <Value>="Card: " &amp; Fields!CardName.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                   </Style>
@@ -919,7 +925,9 @@
                                       <Y>=Avg(Fields!QtyOpen.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
-                                      <Style />
+                                      <Style>
+                                        <Format>0.#</Format>
+                                      </Style>
                                       <UseValueAsLabel>true</UseValueAsLabel>
                                       <Visible>true</Visible>
                                     </ChartDataLabel>
@@ -1202,20 +1210,6 @@
                               <ColumnSeparatorColor>Black</ColumnSeparatorColor>
                             </ChartLegend>
                           </ChartLegends>
-                          <ChartTitles>
-                            <ChartTitle Name="Default">
-                              <Caption />
-                              <Style>
-                                <BackgroundGradientType>None</BackgroundGradientType>
-                                <FontSize>9pt</FontSize>
-                                <FontWeight>Normal</FontWeight>
-                                <TextAlign>Left</TextAlign>
-                                <VerticalAlign>Top</VerticalAlign>
-                                <Color>#a6a6a6</Color>
-                              </Style>
-                              <Position>TopLeft</Position>
-                            </ChartTitle>
-                          </ChartTitles>
                           <Palette>Pacific</Palette>
                           <ChartBorderSkin>
                             <Style>
@@ -1345,7 +1339,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!TrayName.Value</Value>
+                                  <Value>="Tray: " &amp; Fields!TrayName.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                   </Style>
@@ -1434,7 +1428,9 @@
                                       <Y>=Avg(Fields!QtyOpen.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
-                                      <Style />
+                                      <Style>
+                                        <Format>0.#</Format>
+                                      </Style>
                                       <UseValueAsLabel>true</UseValueAsLabel>
                                       <Visible>true</Visible>
                                     </ChartDataLabel>
@@ -1717,20 +1713,6 @@
                               <ColumnSeparatorColor>Black</ColumnSeparatorColor>
                             </ChartLegend>
                           </ChartLegends>
-                          <ChartTitles>
-                            <ChartTitle Name="Default">
-                              <Caption />
-                              <Style>
-                                <BackgroundGradientType>None</BackgroundGradientType>
-                                <FontSize>9pt</FontSize>
-                                <FontWeight>Normal</FontWeight>
-                                <TextAlign>Left</TextAlign>
-                                <VerticalAlign>Top</VerticalAlign>
-                                <Color>#a6a6a6</Color>
-                              </Style>
-                              <Position>TopLeft</Position>
-                            </ChartTitle>
-                          </ChartTitles>
                           <Palette>Pacific</Palette>
                           <ChartBorderSkin>
                             <Style>

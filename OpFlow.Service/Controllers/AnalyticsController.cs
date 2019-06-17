@@ -175,7 +175,7 @@ namespace OpFlow.Service.Controllers
                     rationalization.Sort = "InstrumentCount";
                     break;
                 case "instrument_avg":
-                    rationalization.Sort = "UsageQuantityESC";
+                    rationalization.Sort = "UsageQuantity DESC";
                     break;
                 case "tray_open":
                     rationalization.Sort = "TrayOpened";

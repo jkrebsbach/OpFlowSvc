@@ -162,6 +162,7 @@
                         <Color>#5c5c5c</Color>
                       </Style>
                     </ChartAxisTitle>
+                    <Interval>1</Interval>
                     <ChartMajorGridLines>
                       <Enabled>False</Enabled>
                       <Style>
@@ -396,7 +397,7 @@
             </ChartLegends>
             <ChartTitles>
               <ChartTitle Name="Default">
-                <Caption>Chart Title</Caption>
+                <Caption>Count Summary</Caption>
                 <Style>
                   <BackgroundGradientType>None</BackgroundGradientType>
                   <FontSize>9pt</FontSize>
@@ -563,6 +564,7 @@
                         <Color>#5c5c5c</Color>
                       </Style>
                     </ChartAxisTitle>
+                    <Interval>1</Interval>
                     <ChartMajorGridLines>
                       <Enabled>False</Enabled>
                       <Style>
@@ -797,7 +799,7 @@
             </ChartLegends>
             <ChartTitles>
               <ChartTitle Name="Default">
-                <Caption>Chart Title</Caption>
+                <Caption>Count Summary by Card</Caption>
                 <Style>
                   <BackgroundGradientType>None</BackgroundGradientType>
                   <FontSize>9pt</FontSize>
@@ -810,6 +812,7 @@
               </ChartTitle>
             </ChartTitles>
             <Palette>Pacific</Palette>
+            <DynamicHeight>=(2.0 + Convert.ToDecimal(CountDistinct(Fields!Card.Value, "CountSummary")) / 2) &amp; " in"</DynamicHeight>
             <ChartBorderSkin>
               <Style>
                 <BackgroundColor>Gray</BackgroundColor>
@@ -828,7 +831,7 @@
             </ChartNoDataMessage>
             <DataSetName>CountSummary</DataSetName>
             <Top>6.35291in</Top>
-            <Height>4.45833in</Height>
+            <Height>10in</Height>
             <Width>7.53125in</Width>
             <ZIndex>1</ZIndex>
             <Visibility>
@@ -844,7 +847,7 @@
             </Style>
           </Chart>
         </ReportItems>
-        <Height>10.81125in</Height>
+        <Height>16.35291in</Height>
         <Style />
       </Body>
       <Width>7.53125in</Width>

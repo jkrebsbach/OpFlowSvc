@@ -4,11 +4,7 @@
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
     <DataSource Name="OpFlow">
-      <ConnectionProperties>
-        <DataProvider>SQL</DataProvider>
-        <ConnectString>Data Source=opflow.database.windows.net;Initial Catalog=OpFlow</ConnectString>
-        <Prompt>Specify a user name and password for data source OpFlow:</Prompt>
-      </ConnectionProperties>
+      <DataSourceReference>OpFlow</DataSourceReference>
       <rd:SecurityType>DataBase</rd:SecurityType>
       <rd:DataSourceID>aaf72f52-fbd2-4a83-9ee0-c295afd65466</rd:DataSourceID>
     </DataSource>
@@ -252,6 +248,7 @@ ORDER BY TrayName</CommandText>
                         <Color>#5c5c5c</Color>
                       </Style>
                     </ChartAxisTitle>
+                    <Interval>1</Interval>
                     <ChartMajorGridLines>
                       <Enabled>False</Enabled>
                       <Style>
@@ -275,6 +272,7 @@ ORDER BY TrayName</CommandText>
                           <Style>None</Style>
                         </Border>
                       </Style>
+                      <Interval>1</Interval>
                     </ChartMajorTickMarks>
                     <ChartMinorTickMarks>
                       <Style>
