@@ -13,6 +13,7 @@ namespace OpFlow.Data
         public List<TrayInstrumentEponym> Eponyms { get; set; }
         public List<TrayInstrumentType> Types { get; set; }
         public List<ItemMaster> Trays { get; set; }
+        public List<ItemMaster> Collections { get; set; }
         public List<Surgeon> Surgeons { get; set; }
         public List<Card> Cards { get; set; }
         public List<Vendor> Vendors { get; set; }
@@ -200,8 +201,14 @@ namespace OpFlow.Data
 
     public class TrayRationalizationDetailPost
     {
-        public int CardID { get; set; }
-        public int TrayID { get; set; }
+        public int? CardID { get; set; }
+        public List<TrayDetailPost> TrayIDs { get; set; }
+    }
+
+    public class TrayDetailPost
+    {
+        public int? ID { get; set; }
+        public string Type { get; set; }
     }
 
     public class TrayRationalizationOverlapPost

@@ -83,13 +83,14 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<List<TrayRationalizationDetail>> GetTrayRationalizationDetail(
-            int? cardId, int? trayId,
+            int? cardId, string type, int? itemId,
             int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("card_id", cardId ?? (object)DBNull.Value),
-                new SqlParameter("tray_id", trayId ?? (object)DBNull.Value),
+                new SqlParameter("type", type ?? (object)DBNull.Value),
+                new SqlParameter("item_id", itemId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

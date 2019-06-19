@@ -39,6 +39,7 @@ namespace OpFlow.Service.Controllers
             var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
             var instrumentLookups = await sqlHelper.GetTrayInstrumentLookups(user.ProviderID, user.LocationID);
             var trays = await sqlHelper.GetItems("tray", null, null, user.ProviderID, user.LocationID);
+            var collections = await sqlHelper.GetItems("collection", null, null, user.ProviderID, user.LocationID);
             var cards = await sqlHelper.GetCards(user.ProviderID, user.LocationID);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
             var vendors = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
@@ -53,6 +54,7 @@ namespace OpFlow.Service.Controllers
                 Eponyms = instrumentLookups.Eponyms,
                 Types = instrumentLookups.Types,
                 Trays = trays,
+                Collections = collections,
                 Proposals = proposals,
                 Cards = cards,
                 Vendors = vendors,
@@ -619,15 +621,25 @@ namespace OpFlow.Service.Controllers
 
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
         [Route("proposedTrayDetail/csv", Name = "GetTrayDetailCsv")]
-        [HttpGet]
-        public async Task<HttpResponseMessage> GetTrayDetailCsv(int? cardId, int? trayId)
+        [HttpPut]
+        public async Task<HttpResponseMessage> GetTrayDetailCsv([FromBody] TrayRationalizationDetailPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var rationalization = await sqlHelper.GetTrayRationalizationDetail(
-                cardId, trayId,
-                user.ProviderID, user.LocationID);
+            var rationalization = new List<TrayRationalizationDetail>();
+
+            if (post.TrayIDs == null || !post.TrayIDs.Any())
+                post.TrayIDs = new List<TrayDetailPost>() { new TrayDetailPost() { Type = "I" } };
+
+            foreach (var trayId in post.TrayIDs)
+            {
+                var search = await sqlHelper.GetTrayRationalizationDetail(
+                    post.CardID, trayId.Type, trayId.ID,
+                    user.ProviderID, user.LocationID);
+
+                rationalization.AddRange(search);
+            }
 
             var extract = "Surgeon,Card,Tray,Instrument,Qty Open,Avg Used,Peel Pack Qty,Peel Pack Status\r\n";
             foreach (var detail in rationalization)
@@ -651,6 +663,32 @@ namespace OpFlow.Service.Controllers
             result.Content.Headers.ContentLength = memStream.Length;
 
             return result;
+        }
+
+        [SwaggerOperation("PostTrayRationalizationDetail")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalizationDetail>))]
+        [Route("trayRationalizationDetail")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostTrayRationalizationDetail([FromBody] TrayRationalizationDetailPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var result = new List<TrayRationalizationDetail>();
+
+            if (post.TrayIDs == null || !post.TrayIDs.Any())
+                post.TrayIDs = new List<TrayDetailPost>() { new TrayDetailPost() { Type = "I" } };
+
+            foreach (var trayId in post.TrayIDs)
+            {
+                var rationalization = await sqlHelper.GetTrayRationalizationDetail(
+                    post.CardID, trayId.Type, trayId.ID,
+                    user.ProviderID, user.LocationID);
+
+                result.AddRange(rationalization);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         [SwaggerOperation("PostSurgeonCards")]
@@ -704,22 +742,6 @@ namespace OpFlow.Service.Controllers
                 user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, rationalization.Where(r => r.OverlapPcnt > post.Overlap));
-        }
-
-        [SwaggerOperation("PostTrayRationalizationDetail")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalizationDetail>))]
-        [Route("trayRationalizationDetail")]
-        [HttpPost]
-        public async Task<HttpResponseMessage> PostTrayRationalizationDetail([FromBody] TrayRationalizationDetailPost post)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-
-            var rationalization = await sqlHelper.GetTrayRationalizationDetail(
-                post.CardID, post.TrayID,
-                user.ProviderID, user.LocationID);
-
-            return Request.CreateResponse(HttpStatusCode.OK, rationalization);
         }
 
         [SwaggerOperation("PostTrayRationalizationOverlap")]

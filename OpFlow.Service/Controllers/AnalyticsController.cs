@@ -8,7 +8,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Reporting.WebForms;
-using Newtonsoft.Json;
 using OpFlow.Data;
 using OpFlow.Service.DataAccess;
 using Swashbuckle.Swagger.Annotations;
