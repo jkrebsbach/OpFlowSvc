@@ -285,12 +285,13 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
-            List<int> procedureId, List<int> trayId, int providerId, int locationId)
+            List<int> procedureId, List<int> trayId, List<int> cardId, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
             var procedureXml = GetIdentitySummary(procedureId);
             var trayXml = GetIdentitySummary(trayId);
+            var cardXml = GetIdentitySummary(cardId);
 
             var parameters = new[]
             {
@@ -298,6 +299,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

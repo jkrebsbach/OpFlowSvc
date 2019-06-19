@@ -94,6 +94,11 @@ namespace OpFlow.Service.Controllers
                     break;
             }
 
+            if (format == "CSV")
+            {
+                return ResponseHelper.CsvResponse(usage.ToTable());
+            }
+
             var datasets = new Dictionary<string, DataTable>
             {
                 ["InstrumentUsage"] = usage.ToTable()
@@ -142,12 +147,13 @@ namespace OpFlow.Service.Controllers
             if (post.SpecialtyID == null &&
                 post.SurgeonID == null &&
                 post.ProcedureID == null &&
-                post.TrayID == null)
+                post.TrayID == null &&
+                post.CardID == null)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error= true});
             }
 
-            var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, post.CardID, user.ProviderID, user.LocationID);
 
             var concordance = analytics.Tables[0].DefaultView;
             switch (post.Order)

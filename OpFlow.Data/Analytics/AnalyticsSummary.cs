@@ -73,6 +73,7 @@ namespace OpFlow.Data
         public List<int> CategoryID { get; set; }
         public List<int> ProcedureID { get; set; }
         public List<int> TrayID { get; set; }
+        public List<int> CardID { get; set; }
         public List<string> Cpt { get; set; }
         public string Order { get; set; }
         public string Group { get; set; }

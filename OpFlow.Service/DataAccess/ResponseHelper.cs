@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -85,6 +86,46 @@ namespace OpFlow.Service.DataAccess
                     { FileName = "TrayRationalization.pdf", };
 
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
+        }
+
+        public static HttpResponseMessage CsvResponse(DataTable sourceTable)
+        {
+            var extract = string.Empty;
+            var strDelim = string.Empty;
+            for (var index = 0; index < sourceTable.Columns.Count; index++)
+            {
+                extract += $"{strDelim}{sourceTable.Columns[index].ColumnName}";
+                strDelim = ",";
+            }
+
+            foreach (DataRow dataRow in sourceTable.Rows)
+            {
+                extract += "\r\n";
+                strDelim = string.Empty;
+
+                for (var index = 0; index < sourceTable.Columns.Count; index++)
+                {
+                    var cellData = dataRow[index].ToString().Trim().Replace("\"", "\"\"");
+                    extract += $"{strDelim}\"{cellData}\"";
+                    strDelim = ",";
+                }
+            }
+
+            var extractBytes = System.Text.Encoding.Unicode.GetBytes(extract);
+            var memStream = new MemoryStream(extractBytes);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                    { FileName = "CardListExport.csv", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
             result.Content.Headers.ContentLength = memStream.Length;
 
             return result;
