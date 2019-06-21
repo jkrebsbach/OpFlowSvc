@@ -165,28 +165,6 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
-        public async Task<List<AnalyticTrayRationalization>> GetAnalyticsTrayRationalization(List<int> specialtyId, List<int> surgeonId, List<int> trayId, 
-            int providerId, int locationId)
-        {
-            var specialtyXml = GetIdentitySummary(specialtyId);
-            var surgeonXml = GetIdentitySummary(surgeonId);
-            var trayXml = GetIdentitySummary(trayId);
-
-            var parameters = new[]
-            {
-                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
-                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
-                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayRationalization", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<AnalyticTrayRationalization>();
-
-            return result;
-        }
-
         public async Task<DataSet> GetAnalyticsTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId,
             int providerId, int locationId)
         {
@@ -205,34 +183,6 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayRationalization", parameters);
 
             return dsSchedules;
-        }
-
-        public async Task<List<AnalyticsInstrumentUsage>> GetInstrumentUsageReport(List<int> specialtyId, List<int> surgeonId, List<int> categoryId,
-            List<int> procedureId, List<string> cptList, List<int> trayId, int providerId, int locationId)
-        {
-            var specialtyXml = GetIdentitySummary(specialtyId);
-            var surgeonXml = GetIdentitySummary(surgeonId);
-            var categoryXml = GetIdentitySummary(categoryId);
-            var procedureXml = GetIdentitySummary(procedureId);
-            var trayXml = GetIdentitySummary(trayId);
-            var cptXml = GetStringSummary(cptList);
-            
-            var parameters = new[]
-            {
-                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
-                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
-                new SqlParameter("category_id", categoryXml ?? (object)DBNull.Value),
-                new SqlParameter("procedure_id", procedureXml ?? (object)DBNull.Value),
-                new SqlParameter("cpts", cptXml ?? (object)DBNull.Value),
-                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsInstrumentUsage", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<AnalyticsInstrumentUsage>();
-
-            return result;
         }
 
         public async Task<DataSet> GetInstrumentUsageReportData(List<int> specialtyId, List<int> surgeonId, List<int> categoryId,
@@ -261,32 +211,8 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<AnalyticsConcordance>> GetConcordanceReport(List<int> specialtyId, List<int> surgeonId, 
-            List<int> procedureId, List<int> trayId, int providerId, int locationId)
-        {
-            var specialtyXml = GetIdentitySummary(specialtyId);
-            var surgeonXml = GetIdentitySummary(surgeonId);
-            var procedureXml = GetIdentitySummary(procedureId);
-            var trayXml = GetIdentitySummary(trayId);
-            
-            var parameters = new[]
-            {
-                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
-                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
-                new SqlParameter("procedure_id", procedureXml ?? (object)DBNull.Value),
-                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsConcordanceReport", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<AnalyticsConcordance>();
-
-            return result;
-        }
-
         public async Task<DataSet> GetConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
-            List<int> procedureId, List<int> trayId, List<int> cardId, int providerId, int locationId)
+            List<int> procedureId, List<int> trayId, List<int> cardId, string instruments, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -301,6 +227,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("procedure_id", procedureXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("instruments", instruments),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -327,30 +254,6 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public async Task<List<AnalyticsCountSummary>> GetAnalyticsCountSummary(List<int> specialtyId, List<int> surgeonId, List<int> cardId, List<int> roomGroupId, 
-                int providerId, int locationId)
-        {
-            var specialtyXml = GetIdentitySummary(specialtyId);
-            var surgeonXml = GetIdentitySummary(surgeonId);
-            var cardXml = GetIdentitySummary(cardId);
-            var roomGroupXml = GetIdentitySummary(roomGroupId);
-
-            var parameters = new[]
-            {
-                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
-                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
-                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
-                new SqlParameter("room_group_id", roomGroupXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsCountSummary", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<AnalyticsCountSummary>();
-
-            return result;
-        }
-
         public async Task<DataSet> GetAnalyticsCountSummaryData(List<int> specialtyId, List<int> surgeonId, List<int> cardId, List<int> roomGroupId,
             int providerId, int locationId)
         {
@@ -371,30 +274,6 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsCountSummary", parameters);
 
             return dsSchedules;
-        }
-
-        public async Task<List<AnalyticsCountSummary>> GetAnalyticsCountSummaryByCard(List<int> specialtyId, List<int> surgeonId, List<int> cardId, List<int> roomGroupId,
-            int providerId, int locationId)
-        {
-            var specialtyXml = GetIdentitySummary(specialtyId);
-            var surgeonXml = GetIdentitySummary(surgeonId);
-            var cardXml = GetIdentitySummary(cardId);
-            var roomGroupXml = GetIdentitySummary(roomGroupId);
-
-            var parameters = new[]
-            {
-                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
-                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
-                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
-                new SqlParameter("room_group_id", roomGroupXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsCountSummaryByCard", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<AnalyticsCountSummary>();
-
-            return result;
         }
 
         public async Task<int> InsertProposedTray(int? proposedTrayId,

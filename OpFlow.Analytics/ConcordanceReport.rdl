@@ -369,7 +369,7 @@
             </ChartLegends>
             <ChartTitles>
               <ChartTitle Name="Default">
-                <Caption>Chart Title</Caption>
+                <Caption>Concordance Report</Caption>
                 <Style>
                   <BackgroundGradientType>None</BackgroundGradientType>
                   <FontSize>9pt</FontSize>
@@ -382,7 +382,7 @@
               </ChartTitle>
             </ChartTitles>
             <Palette>Pacific</Palette>
-            <DynamicWidth>=(2 + CountDistinct(Fields!InstrumentName.Value, "ConcordanceReport") / 6) &amp; " in"</DynamicWidth>
+            <DynamicWidth>=(2 + CountDistinct(Fields!InstrumentName.Value, "ConcordanceReport") / 3) &amp; " in"</DynamicWidth>
             <ChartBorderSkin>
               <Style>
                 <BackgroundColor>Gray</BackgroundColor>

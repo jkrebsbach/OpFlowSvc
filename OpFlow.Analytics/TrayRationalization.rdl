@@ -184,6 +184,9 @@ ORDER BY TrayName</CommandText>
                       <Style />
                     </ChartDataLabel>
                   </ChartEmptyPoints>
+                  <ChartItemInLegend>
+                    <LegendText>Avg Usage Quantity</LegendText>
+                  </ChartItemInLegend>
                   <ValueAxisName>Primary</ValueAxisName>
                   <CategoryAxisName>Primary</CategoryAxisName>
                   <ChartSmartLabel>
@@ -497,6 +500,7 @@ ORDER BY TrayName</CommandText>
               </ChartTitle>
             </ChartTitles>
             <Palette>Pacific</Palette>
+            <DynamicHeight>=(3 + CountDistinct(Fields!TrayName.Value, "TrayRationalization")) &amp; " in"</DynamicHeight>
             <ChartBorderSkin>
               <Style>
                 <BackgroundColor>Gray</BackgroundColor>
@@ -533,8 +537,6 @@ ORDER BY TrayName</CommandText>
       <Page>
         <LeftMargin>0.25in</LeftMargin>
         <RightMargin>0.25in</RightMargin>
-        <TopMargin>0.25in</TopMargin>
-        <BottomMargin>0.25in</BottomMargin>
         <Style />
       </Page>
     </ReportSection>

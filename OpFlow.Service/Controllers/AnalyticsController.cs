@@ -152,7 +152,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error= true});
             }
 
-            var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, post.CardID, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, post.CardID, post.Instruments, user.ProviderID, user.LocationID);
 
             var concordance = analytics.Tables[0].DefaultView;
             switch (post.Order)

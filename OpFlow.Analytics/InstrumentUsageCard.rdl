@@ -80,7 +80,7 @@
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
-                        <Y>=Sum(Fields!QtyOpen.Value)</Y>
+                        <Y>=Avg(Fields!QtyOpen.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style>
@@ -97,6 +97,7 @@
                     </ChartDataPoint>
                   </ChartDataPoints>
                   <Type>Bar</Type>
+                  <Subtype>Stacked</Subtype>
                   <Style />
                   <ChartEmptyPoints>
                     <Style />
@@ -348,7 +349,7 @@
                   <BackgroundGradientType>None</BackgroundGradientType>
                 </Style>
                 <ChartElementPosition>
-                  <Top>2</Top>
+                  <Top>3</Top>
                   <Left>3</Left>
                   <Height>95</Height>
                   <Width>94</Width>
@@ -364,6 +365,11 @@
                 <Position>TopCenter</Position>
                 <DockToChartArea>Default</DockToChartArea>
                 <DockOutsideChartArea>true</DockOutsideChartArea>
+                <ChartElementPosition>
+                  <Left>39.313</Left>
+                  <Height>3.616</Height>
+                  <Width>90</Width>
+                </ChartElementPosition>
                 <ChartLegendTitle>
                   <Caption />
                   <Style>
@@ -397,7 +403,7 @@
             </ChartNoDataMessage>
             <DataSetName>InstrumentUsage</DataSetName>
             <Height>7.5in</Height>
-            <Width>7.75in</Width>
+            <Width>10.78125in</Width>
             <Style>
               <Border>
                 <Color>LightGrey</Color>
@@ -411,8 +417,10 @@
         <Height>7.5in</Height>
         <Style />
       </Body>
-      <Width>7.75in</Width>
+      <Width>10.78125in</Width>
       <Page>
+        <PageHeight>8.5in</PageHeight>
+        <PageWidth>11in</PageWidth>
         <Style />
       </Page>
     </ReportSection>

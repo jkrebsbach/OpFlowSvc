@@ -97,6 +97,7 @@
                     </ChartDataPoint>
                   </ChartDataPoints>
                   <Type>Bar</Type>
+                  <Subtype>Stacked</Subtype>
                   <Style />
                   <ChartEmptyPoints>
                     <Style />
@@ -348,6 +349,17 @@
                   <BackgroundColor>#00ffffff</BackgroundColor>
                   <BackgroundGradientType>None</BackgroundGradientType>
                 </Style>
+                <ChartElementPosition>
+                  <Top>13.949</Top>
+                  <Left>75</Left>
+                  <Height>95</Height>
+                  <Width>94</Width>
+                </ChartElementPosition>
+                <ChartInnerPlotPosition>
+                  <Left>90</Left>
+                  <Height>93.736</Height>
+                  <Width>90.003</Width>
+                </ChartInnerPlotPosition>
               </ChartArea>
             </ChartAreas>
             <ChartLegends>
@@ -356,7 +368,14 @@
                   <BackgroundGradientType>None</BackgroundGradientType>
                   <FontSize>8pt</FontSize>
                 </Style>
+                <Position>TopCenter</Position>
                 <DockOutsideChartArea>true</DockOutsideChartArea>
+                <ChartElementPosition>
+                  <Top>2</Top>
+                  <Left>39.725</Left>
+                  <Height>2.711</Height>
+                  <Width>80</Width>
+                </ChartElementPosition>
                 <ChartLegendTitle>
                   <Caption />
                   <Style>
@@ -367,6 +386,7 @@
                 </ChartLegendTitle>
                 <HeaderSeparatorColor>Black</HeaderSeparatorColor>
                 <ColumnSeparatorColor>Black</ColumnSeparatorColor>
+                <MaxAutoSize>20</MaxAutoSize>
               </ChartLegend>
             </ChartLegends>
             <ChartTitles>
@@ -381,10 +401,15 @@
                   <Color>#a6a6a6</Color>
                 </Style>
                 <DockOutsideChartArea>true</DockOutsideChartArea>
+                <ChartElementPosition>
+                  <Left>3</Left>
+                  <Height>2.238</Height>
+                  <Width>94</Width>
+                </ChartElementPosition>
               </ChartTitle>
             </ChartTitles>
             <Palette>Pacific</Palette>
-            <DynamicHeight>=(3 + CountDistinct(Fields!Instrument.Value, "InstrumentUsage") / 4) &amp; " in"</DynamicHeight>
+            <DynamicHeight>=(3 + CountDistinct(Fields!Instrument.Value, "InstrumentUsage") / 2) &amp; " in"</DynamicHeight>
             <ChartBorderSkin>
               <Style>
                 <BackgroundColor>Gray</BackgroundColor>
@@ -403,7 +428,7 @@
             </ChartNoDataMessage>
             <DataSetName>InstrumentUsage</DataSetName>
             <Height>10in</Height>
-            <Width>7.75in</Width>
+            <Width>11.01042in</Width>
             <Visibility>
               <Hidden>=Parameters!Group.Value &lt;&gt; "t"</Hidden>
             </Visibility>
@@ -1794,12 +1819,10 @@
         <Height>38.2625in</Height>
         <Style />
       </Body>
-      <Width>7.75in</Width>
+      <Width>11.01042in</Width>
       <Page>
-        <LeftMargin>0.25in</LeftMargin>
-        <RightMargin>0.25in</RightMargin>
-        <TopMargin>0.25in</TopMargin>
-        <BottomMargin>0.25in</BottomMargin>
+        <PageHeight>8.5in</PageHeight>
+        <PageWidth>11in</PageWidth>
         <Style />
       </Page>
     </ReportSection>
