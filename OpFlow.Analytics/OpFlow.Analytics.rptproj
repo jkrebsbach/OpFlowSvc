@@ -56,6 +56,8 @@
     <Report Include="CountSummary.rdl" />
     <Report Include="InstrumentUsage.rdl" />
     <Report Include="InstrumentUsageCard.rdl" />
+    <Report Include="InstrumentUsageCardTray.rdl" />
+    <Report Include="InstrumentUsageTrayCard.rdl" />
     <Report Include="SalesReport.rdl" />
     <Report Include="TrayRationalization.rdl" />
   </ItemGroup>

@@ -103,19 +103,21 @@ namespace OpFlow.Service.Controllers
                 ["InstrumentUsage"] = usage.ToTable()
             };
 
-            byte[] result = null;
-            if (post.Group == "c")
+            var reportName = "InstrumentUsage";
+            switch (post.Group)
             {
-                result = ReportHelper.GetReport("InstrumentUsageCard", format, datasets);
+                case "c":
+                    reportName = "InstrumentUsageCard";
+                    break;
+                case "t_c":
+                    reportName = "InstrumentUsageTrayCard";
+                    break;
+                case "c_t":
+                    reportName = "InstrumentUsageCardTray";
+                    break;
             }
-            else
-            {
-                var parameters = new[]
-                {
-                    new ReportParameter("Group", post.Group)
-                };
-                result = ReportHelper.GetReport("InstrumentUsage", format, datasets, parameters);
-            }
+
+            var result = ReportHelper.GetReport("InstrumentUsage", format, datasets);
 
             if (format?.ToUpper() == "PDF")
             {
