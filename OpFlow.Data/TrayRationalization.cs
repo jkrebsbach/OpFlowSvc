@@ -23,6 +23,11 @@ namespace OpFlow.Data
         public bool Vendor { get; set; }
     }
 
+    public class SurgeryTrayAudit : TrayRationalization
+    {
+        public List<TrayRationalizationItem> Instruments { get; set; }
+    }
+
     public class TrayRationalization
     {
         public int TrayProposalID { get; set; }
@@ -215,6 +220,13 @@ namespace OpFlow.Data
     {
         public List<string> Trays { get; set; }
         public int? StandardizedTrayID { get; set; }
+    }
+
+    public class TrayRationalizationDetailInstrument
+    {
+        public string InstrumentName { get; set; }
+        public int ProposedQty { get; set; }
+        public List<TrayRationalizationDetail> Details { get; set; }
     }
 
     public class TrayRationalizationDetail

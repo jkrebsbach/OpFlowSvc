@@ -688,7 +688,14 @@ namespace OpFlow.Service.Controllers
                 result.AddRange(rationalization);
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            var instruments = result.GroupBy(r => r.InstrumentName).Select(r => new TrayRationalizationDetailInstrument()
+            {
+                InstrumentName = r.Key,
+                ProposedQty = r.First().ProposedQty,
+                Details = r.ToList()
+            });
+
+            return Request.CreateResponse(HttpStatusCode.OK, instruments);
         }
 
         [SwaggerOperation("PostSurgeonCards")]

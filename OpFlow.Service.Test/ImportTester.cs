@@ -18,11 +18,11 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestImportFile()
         {
-            var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\OpFlowJan23.csv";
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\OpFlowJul1.csv";
             var importTypeId = 1;
 
-            var sqlHelper = new SqlHelper("CommonOpflow");
-            var secureSqlHelper = new SecureSqlHelper("CommonOpflow");
+            var sqlHelper = new SqlHelper("OpflowConnection");
+            var secureSqlHelper = new SecureSqlHelper("SecureConnection");
             var user = await sqlHelper.GetSecureUser(null, 1);
             int? logId = null;
 

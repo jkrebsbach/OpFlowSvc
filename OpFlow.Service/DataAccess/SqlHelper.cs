@@ -2987,6 +2987,36 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<SurgeryTrayAudit>> GetSurgeryProposedTrays(int surgeryId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeryProposedTrays", dsParameters);
+
+            var audits = dsSchedules.Tables[0].DataTableToList<SurgeryTrayAudit>();
+            var items = dsSchedules.Tables[1].DataTableToList<TrayRationalizationItem>();
+
+            foreach (var proposalItem in items.GroupBy(i => i.TrayProposalID))
+            {
+                var sequence = 0;
+                foreach (var item in proposalItem.Where(r => r.HistoryType == null))
+                {
+                    if (item.Sequence == null)
+                        item.Sequence = (++sequence);
+
+                    sequence = item.Sequence ?? 0;
+                }
+
+                audits.First(a => a.TrayProposalID == proposalItem.Key).Instruments = proposalItem.ToList();
+            }
+
+            return audits;
+        }
+
         public async Task<List<RoomSummary>> GetSurgeryRoomSummary(int surgeryId, int providerId, int locationId)
         {
             var dsParameters = new[]
@@ -4474,22 +4504,23 @@ namespace OpFlow.Service.DataAccess
                     return result;
                 }
 
+                CardFlowRoom cardFlowRoom = null;
                 var procedureCards = await DetermineCards(surgery, schedule, relations, providerId, locationId);
+
+                if (procedureCards.Any())
+                {
+                    cardFlowRoom = await AggregateCards(surgery.SurgeonUserID.Value, procedureCards, providerId, locationId);
+
+                    if (cardFlowRoom == null)
+                    {
+                        result.Messages.Add("Unable to find card: " + schedule.ProcedurePreferenceCards);
+                    }
+                }
+                else
+                {
+                    result.Messages.Add("Unable to find card: " + schedule.ProcedurePreferenceCards);
+                }
                 
-                if (!procedureCards.Any())
-                {
-                    result.Messages.Add("Unable to find card: " + schedule.ProcedurePreferenceCards);
-                    return result;
-                }
-
-                var cardFlowRoom = await AggregateCards(surgery.SurgeonUserID.Value, procedureCards, providerId, locationId);
-
-                if (cardFlowRoom == null)
-                {
-                    result.Messages.Add("Unable to find card: " + schedule.ProcedurePreferenceCards);
-                    return result;
-                }
-
                 var caseId = await CreateCase(secureId ?? -1, surgery.SurgeonUserID, surgery.SpecialtyID, providerId,
                     locationId, surgery.CaseNbr);
 
