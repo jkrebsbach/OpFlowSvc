@@ -635,6 +635,7 @@ namespace OpFlow.Service.Controllers
             foreach (var trayId in post.TrayIDs)
             {
                 var search = await sqlHelper.GetTrayRationalizationDetail(
+                    post.TrayProposalID,
                     post.CardID, trayId.Type, trayId.ID,
                     user.ProviderID, user.LocationID);
 
@@ -682,15 +683,17 @@ namespace OpFlow.Service.Controllers
             foreach (var trayId in post.TrayIDs)
             {
                 var rationalization = await sqlHelper.GetTrayRationalizationDetail(
+                    post.TrayProposalID,
                     post.CardID, trayId.Type, trayId.ID,
                     user.ProviderID, user.LocationID);
 
                 result.AddRange(rationalization);
             }
 
-            var instruments = result.GroupBy(r => r.InstrumentName).Select(r => new TrayRationalizationDetailInstrument()
+            var instruments = result.GroupBy(r => r.InstrumentID).Select(r => new TrayRationalizationDetailInstrument()
             {
-                InstrumentName = r.Key,
+                InstrumentID = r.Key,
+                InstrumentName = r.First().InstrumentName,
                 ProposedQty = r.First().ProposedQty,
                 Details = r.ToList()
             });
@@ -926,6 +929,20 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             var trayId = await sqlHelper.UpdateProposedTrayInstruments(trayProposalId, post.Instruments, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, trayId);
+        }
+
+        [SwaggerOperation("UpdateProposedTrayQuantities")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("proposedTrayQuantities")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> UpdateProposedTrayQuantities(int trayProposalId, [FromBody] ProposedTrayUpdatePost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var trayId = await sqlHelper.UpdateProposedTrayQuantities(trayProposalId, post.Instruments, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }

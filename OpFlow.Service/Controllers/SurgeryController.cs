@@ -462,7 +462,8 @@ namespace OpFlow.Service.Controllers
                 Categories = instrumentLookups.Categories,
                 Eponyms = instrumentLookups.Eponyms,
                 Types = instrumentLookups.Types,
-                Audits = audits
+                Audits = audits.Audits,
+                ScrubTechs = audits.ScrubTechs
             });
         }
 

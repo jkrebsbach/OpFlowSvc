@@ -23,8 +23,16 @@ namespace OpFlow.Data
         public bool Vendor { get; set; }
     }
 
+    public class SurgeryAudits
+    {
+        public List<User> ScrubTechs { get; set; }
+        public List<SurgeryTrayAudit> Audits { get; set; }
+    }
+
     public class SurgeryTrayAudit : TrayRationalization
     {
+        public string ScrubTechUser { get; set; }
+        public string AuditUser { get; set; }
         public List<TrayRationalizationItem> Instruments { get; set; }
     }
 
@@ -206,6 +214,7 @@ namespace OpFlow.Data
 
     public class TrayRationalizationDetailPost
     {
+        public int TrayProposalID { get; set; }
         public int? CardID { get; set; }
         public List<TrayDetailPost> TrayIDs { get; set; }
     }
@@ -224,6 +233,7 @@ namespace OpFlow.Data
 
     public class TrayRationalizationDetailInstrument
     {
+        public int InstrumentID { get; set; }
         public string InstrumentName { get; set; }
         public int ProposedQty { get; set; }
         public List<TrayRationalizationDetail> Details { get; set; }
@@ -234,6 +244,7 @@ namespace OpFlow.Data
         public string SurgeonName { get; set; }
         public string CardName { get; set; }
         public string TrayName { get; set; }
+        public int InstrumentID { get; set; }
         public string InstrumentName { get; set; }
         public int QtyOpen { get; set; }
         public int AvgUsed { get; set; }
