@@ -1358,6 +1358,22 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<Card>> GetUsedCardList(int? userId, int? trayId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayId ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetUsedCardList", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Card>();
+            
+            return result;
+        }
+
         public async Task<List<CardItemFeedback>> GetCardFeedback(int? specialtyId, int? userId, int? cardId, DateTime? beginDate, DateTime? endDate,
             int providerId, int locationId)
         {

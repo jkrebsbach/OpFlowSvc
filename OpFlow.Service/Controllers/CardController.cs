@@ -114,6 +114,22 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetUsedCardList")]
+        [Route("api/card/listUsed")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
+        public async Task<HttpResponseMessage> GetUsedCardList(int? userId = null, int? trayId = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var cardList = await sqlHelper.GetUsedCardList(userId, trayId,
+                user.ProviderID, user.LocationID);
+            var result = cardList.OrderBy(c => c.CardDescription).ToList();
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetEditFeedback")]
         [Route("api/card/feedback")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardItemFeedback>))]
