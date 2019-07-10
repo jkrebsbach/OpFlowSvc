@@ -40,7 +40,6 @@ namespace OpFlow.Service.Controllers
             var instrumentLookups = await sqlHelper.GetTrayInstrumentLookups(user.ProviderID, user.LocationID);
             var trays = await sqlHelper.GetItems("tray", null, null, user.ProviderID, user.LocationID);
             var collections = await sqlHelper.GetItems("collection", null, null, user.ProviderID, user.LocationID);
-            var cards = await sqlHelper.GetCards(user.ProviderID, user.LocationID);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
             var vendors = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
             var questions = await sqlHelper.GetTrayQuestions(null, user.ProviderID, user.LocationID);
@@ -56,7 +55,6 @@ namespace OpFlow.Service.Controllers
                 Trays = trays,
                 Collections = collections,
                 Proposals = proposals,
-                Cards = cards,
                 Vendors = vendors,
                 StandardizedTrays = proposedTrays.Where(p => p.Status == "D").ToList(),
                 Vendor = user.RoleType == "External",
@@ -636,7 +634,7 @@ namespace OpFlow.Service.Controllers
             {
                 var search = await sqlHelper.GetTrayRationalizationDetail(
                     post.TrayProposalID,
-                    post.CardID, trayId.Type, trayId.ID,
+                    trayId.Type, trayId.ID,
                     user.ProviderID, user.LocationID);
 
                 rationalization.AddRange(search);
@@ -684,7 +682,7 @@ namespace OpFlow.Service.Controllers
             {
                 var rationalization = await sqlHelper.GetTrayRationalizationDetail(
                     post.TrayProposalID,
-                    post.CardID, trayId.Type, trayId.ID,
+                    trayId.Type, trayId.ID,
                     user.ProviderID, user.LocationID);
 
                 result.AddRange(rationalization);
@@ -723,7 +721,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalizationItem>))]
         [Route("trayRationalizationConfig")]
         [HttpPost]
-        public async Task<HttpResponseMessage> PostTrayRationalizationConfig(int trayProposalId, [FromBody] TrayRationalizationConfigPost post)
+        public async Task<HttpResponseMessage> PostTrayRationalizationConfig([FromBody] TrayRationalizationConfigPost post, int? trayProposalId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);

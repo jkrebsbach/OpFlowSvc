@@ -34,7 +34,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayRationalizationItem>> GetTrayRationalization(int trayProposalId,
+        public async Task<List<TrayRationalizationItem>> GetTrayRationalization(int? trayProposalId,
             List<int> specialties, List<int> trays, List<int> surgeons, List<int> cards, string cptCode, List<TrayQuestion> questions,
             int providerId, int locationId)
         {
@@ -46,7 +46,7 @@ namespace OpFlow.Service.DataAccess
 
             var parameters = new[]
             {
-                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
                 new SqlParameter("specialties", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("trays", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("surgeons", surgeonXml ?? (object)DBNull.Value),
@@ -83,13 +83,12 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<List<TrayRationalizationDetail>> GetTrayRationalizationDetail(int trayProposalId,
-            int? cardId, string type, int? itemId,
+            string type, int? itemId,
             int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", trayProposalId),
-                new SqlParameter("card_id", cardId ?? (object)DBNull.Value),
                 new SqlParameter("type", type ?? (object)DBNull.Value),
                 new SqlParameter("item_id", itemId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
