@@ -13,6 +13,7 @@ namespace OpFlow.Data
         public int SurgeonID { get; set; }
         public int? ProcedureID { get; set; }
         public int? BundleID { get; set; }
+        public int? CardCategoryID { get; set; }
         public int SpecialtyID { get; set; }
         public int OwnerUserID { get; set; }
         public int TemplateFlowID { get; set; }
@@ -87,6 +88,7 @@ namespace OpFlow.Data
         public string BundleFlag { get; set; }
         public string DefaultFlag { get; set; }
         public string SpecialtyDefaultFlag { get; set; }
+        public string CardCategory { get; set; }
         public int? TemplateFlowID { get; set; }
         public int? TemplateRoomSetupID { get; set; }
         public List<CardPostImportProcedure> Procedures { get; set; }

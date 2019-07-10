@@ -1358,12 +1358,17 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<Card>> GetUsedCardList(int? userId, int? trayId, int providerId, int locationId)
+        public async Task<List<Card>> GetUsedCardList(List<int> userIds, List<int> trayIds, List<int> categoryIds, int providerId, int locationId)
         {
+            var userXml = GetIdentitySummary(userIds);
+            var trayXml = GetIdentitySummary(trayIds);
+            var categoryXml = GetIdentitySummary(categoryIds);
+
             var parameters = new[]
             {
-                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
-                new SqlParameter("tray_item_id", trayId ?? (object)DBNull.Value),
+                new SqlParameter("user_id", userXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("category_id", categoryXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -1390,6 +1395,20 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetCardFeedback", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<CardItemFeedback>();
+
+            return result;
+        }
+
+        public async Task<List<CardCategory>> GetCardCategories(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetCardCategories", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<CardCategory>();
 
             return result;
         }
@@ -2168,7 +2187,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<int> InsertCard(string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
-            bool? defaultFlag, bool? specialtyDefaultFlag, int providerId, int locationId)
+            int? cardCategoryId, bool? defaultFlag, bool? specialtyDefaultFlag, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2181,11 +2200,33 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("template_flow_id", templateFlowId ?? (object)DBNull.Value),
                 new SqlParameter("template_room_setup_id", templateRoomId ?? (object)DBNull.Value),
                 new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryId ?? (object)DBNull.Value),
                 new SqlParameter("bundle_flag", bundleFlag ?? (object)DBNull.Value),
                 new SqlParameter("default_flag", defaultFlag ?? (object)DBNull.Value),
                 new SqlParameter("specialty_default_flag", specialtyDefaultFlag ?? (object)DBNull.Value)
             };
             var insert = await ExecuteCommandAsync("NewCard", dsParameters);
+            var result = insert.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.First().Identifier;
+        }
+
+        public async Task<int?> ParseCardCategory(string cardCategory, int providerId, int locationId)
+        {
+            if (string.IsNullOrEmpty(cardCategory))
+                return null;
+
+            if (int.TryParse(cardCategory, out var cardCategoryId))
+                return cardCategoryId;
+
+            var dsParameters = new[]
+            {
+                new SqlParameter("card_category", cardCategory),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+
+            var insert = await ExecuteCommandAsync("InsertCardCategory", dsParameters);
             var result = insert.Tables[0].DataTableToList<InsertionResult>();
 
             return result.First().Identifier;
@@ -2206,8 +2247,8 @@ namespace OpFlow.Service.DataAccess
             return insert;
         }
 
-        public async Task<int> UpdateCard(int cardId, string description, int ownerUserId, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
-            bool? defaultFlag, bool? specialtyDefaultFlag, int userId, int providerId, int locationId)
+        public async Task<int> UpdateCard(int cardId, string description, int? specialtyId, int? procedureId, int? templateFlowId, int? templateRoomId, int? bundleId, string bundleFlag,
+            int? cardCategoryId, bool? defaultFlag, bool? specialtyDefaultFlag, int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -2215,13 +2256,12 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("description", description ?? (object)DBNull.Value),
-                new SqlParameter("owner_user_id", ownerUserId),
-                new SqlParameter("user_id", userId),
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("template_flow_id", templateFlowId ?? (object)DBNull.Value),
                 new SqlParameter("template_room_setup_id", templateRoomId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryId ?? (object)DBNull.Value),
                 new SqlParameter("bundle_flag", bundleFlag ?? (object)DBNull.Value),
                 new SqlParameter("default_flag", defaultFlag ?? (object)DBNull.Value),
                 new SqlParameter("specialty_default_flag", specialtyDefaultFlag ?? (object)DBNull.Value)

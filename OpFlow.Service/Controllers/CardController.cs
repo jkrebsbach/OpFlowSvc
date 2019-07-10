@@ -117,12 +117,13 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetUsedCardList")]
         [Route("api/card/listUsed")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
-        public async Task<HttpResponseMessage> GetUsedCardList(int? userId = null, int? trayId = null)
+        [HttpPost]
+        public async Task<HttpResponseMessage> GetUsedCardList([FromBody] UsedCardSearchPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var cardList = await sqlHelper.GetUsedCardList(userId, trayId,
+            var cardList = await sqlHelper.GetUsedCardList(post.UserIDs, post.TrayIDs, post.CategoryIDs,
                 user.ProviderID, user.LocationID);
             var result = cardList.OrderBy(c => c.CardDescription).ToList();
 
@@ -142,6 +143,20 @@ namespace OpFlow.Service.Controllers
             var result = await sqlHelper.GetCardFeedback(specialtyId, userId, cardId, beginDate, endDate,
                 user.ProviderID, user.LocationID);
             
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetCardCategories")]
+        [Route("api/card/cardCategories")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardUser>))]
+        public async Task<HttpResponseMessage> GetCardCategories()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var result = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
+
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
@@ -459,9 +474,12 @@ namespace OpFlow.Service.Controllers
                 var user = await CacheUtil.GetUserSecurity();
                 var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
+                var cardCategoryId = await sqlHelper.ParseCardCategory(value.CardCategory, user.ProviderID, user.LocationID);
+
                 var cardId = await sqlHelper.InsertCard(value.Description, value.OwnerUserID,
                     value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
-                    value.BundleID, value.BundleFlag, value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1",
+                    value.BundleID, value.BundleFlag, cardCategoryId,
+                    value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1",
                     user.ProviderID, user.LocationID);
 
                 await InitializeCardProcedures(sqlHelper, cardId, user, value.Procedures);
@@ -486,15 +504,18 @@ namespace OpFlow.Service.Controllers
                 var user = await CacheUtil.GetUserSecurity();
                 var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
+                var cardCategoryId = await sqlHelper.ParseCardCategory(value.CardCategory, user.ProviderID, user.LocationID);
+
                 if (value.Procedures != null)
                 {
                     await InitializeCardProcedures(sqlHelper, id, user, value.Procedures);
                 }
                 else
                 {
-                    await sqlHelper.UpdateCard(id, value.Description, value.OwnerUserID, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
-                        value.BundleID, value.BundleFlag, value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1",
-                        user.UserID, user.ProviderID, user.LocationID);
+                    await sqlHelper.UpdateCard(id, value.Description, value.SpecialtyID, value.ProcedureID, value.TemplateFlowID, value.TemplateRoomSetupID,
+                        value.BundleID, value.BundleFlag, cardCategoryId,
+                        value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1",
+                        user.ProviderID, user.LocationID);
                 }
 
                 return Ok();

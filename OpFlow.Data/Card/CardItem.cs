@@ -91,6 +91,12 @@ namespace OpFlow.Data
         public List<ItemUsageHistory> Supplies { get; set; }
     }
 
+    public class CardCategory
+    {
+        public int CategoryID { get; set; }
+        public string CategoryName { get; set; }
+    }
+
     public class CardSummary
     {
         public string ProcedureName { get; set; }
@@ -106,5 +112,12 @@ namespace OpFlow.Data
         public string ItemType { get; set; }
         public string InstrumentDescription { get; set; }
         public int QtyOpen { get; set; }
+    }
+
+    public class UsedCardSearchPost
+    {
+        public List<int> UserIDs { get; set; }
+        public List<int> TrayIDs { get; set; }
+        public List<int> CategoryIDs { get; set; }
     }
 }

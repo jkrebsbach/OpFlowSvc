@@ -32,6 +32,7 @@ namespace OpFlow.Service.Controllers
             var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
             var procedures = await sqlHelper.GetProcedures(null, user.ProviderID, user.LocationID);
             var trays = await sqlHelper.GetItems("TRAY", null, null, user.ProviderID, user.LocationID);
+            var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
             var lookups = await sqlHelper.GetTrayInstrumentLookups(user.ProviderID, user.LocationID);
             var roomGroups = await sqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
             var cpts = await sqlHelper.GetKnownCPTCodes(user.ProviderID, user.LocationID);
@@ -46,7 +47,8 @@ namespace OpFlow.Service.Controllers
                     Trays = trays,   
                     Procedures = procedures,
                     RoomGroups = roomGroups,
-                    Categories = lookups.Categories,
+                    InstrumentCategories = lookups.Categories,
+                    CardCategories = cardCategories,
                     CPTs = cpts
                 }
             });
