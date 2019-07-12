@@ -82,7 +82,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayRationalizationDetail>> GetTrayRationalizationDetail(int trayProposalId,
+        public async Task<TrayRationalizationDetailResult> GetTrayRationalizationDetail(int trayProposalId,
             string type, int? itemId,
             int providerId, int locationId)
         {
@@ -96,7 +96,11 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("GetTrayRationalizationDetail", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationDetail>();
+            var result = new TrayRationalizationDetailResult();
+            var trayNameTable = dsSchedules.Tables[0].DataTableToList<TrayRationalizationDetail>();
+
+            result.TrayName = trayNameTable.First().TrayName;
+            result.Instruments = dsSchedules.Tables[1].DataTableToList<TrayRationalizationDetail>();
 
             return result;
         }

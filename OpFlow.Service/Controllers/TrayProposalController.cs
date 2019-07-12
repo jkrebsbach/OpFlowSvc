@@ -625,26 +625,45 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var rationalization = new List<TrayRationalizationDetail>();
-
             if (post.TrayIDs == null || !post.TrayIDs.Any())
                 post.TrayIDs = new List<TrayDetailPost>() { new TrayDetailPost() { Type = "I" } };
 
+            var instruments = await sqlHelper.GetProposedTrayInstruments(post.TrayProposalID, false, user.ProviderID, user.LocationID);
+            var details = new Dictionary<string, List<TrayRationalizationDetail>>();
+
+            var trays = new List<string>();
             foreach (var trayId in post.TrayIDs)
             {
-                var search = await sqlHelper.GetTrayRationalizationDetail(
+                var rationalization = await sqlHelper.GetTrayRationalizationDetail(
                     post.TrayProposalID,
                     trayId.Type, trayId.ID,
                     user.ProviderID, user.LocationID);
 
-                rationalization.AddRange(search);
+                details[$"{trayId.Type}-{trayId.ID}"] = rationalization.Instruments;
+                trays.Add(rationalization.TrayName);
             }
 
-            var extract = "Surgeon,Card,Tray,Instrument,Qty Open,Avg Used,Peel Pack Qty,Peel Pack Status\r\n";
-            foreach (var detail in rationalization)
+            var extract = "Instrument,Proposed Qty";
+
+            foreach (var tray in trays)
             {
-                extract +=
-                    $"\"{detail.SurgeonName?.Trim()}\",\"{detail.CardName?.Trim()}\",\"{detail.TrayName?.Trim()}\",{detail.InstrumentName?.Trim()},{detail.QtyOpen},{detail.AvgUsed},{detail.PeelPackQty},{detail.PeelPackStatus}\r\n";
+                extract += $",{tray} - Qty,{tray} - Avg Used";
+            }
+            extract +="\r\n";
+
+            foreach (var instrument in instruments)
+            {
+                extract += $"\"{instrument.InstrumentName?.Trim()},{instrument.Quantity}";
+
+                foreach (var trayId in post.TrayIDs)
+                {
+                    var rationalization = details[$"{trayId.Type}-{trayId.ID}"];
+                    var mapping = rationalization.FirstOrDefault(r => r.InstrumentID == instrument.InstrumentID);
+
+                    extract += $",{mapping?.QtyOpen},{mapping?.AvgUsed}";
+                }
+
+                extract += "\r\n";
             }
 
             var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
@@ -665,7 +684,7 @@ namespace OpFlow.Service.Controllers
         }
 
         [SwaggerOperation("PostTrayRationalizationDetail")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalizationDetail>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalizationDetailItem>))]
         [Route("trayRationalizationDetail")]
         [HttpPost]
         public async Task<HttpResponseMessage> PostTrayRationalizationDetail([FromBody] TrayRationalizationDetailPost post)
@@ -673,11 +692,14 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = new List<TrayRationalizationDetail>();
-
             if (post.TrayIDs == null || !post.TrayIDs.Any())
                 post.TrayIDs = new List<TrayDetailPost>() { new TrayDetailPost() { Type = "I" } };
 
+            var result = new List<TrayRationalizationDetailItem>();
+            var instruments = await sqlHelper.GetProposedTrayInstruments(post.TrayProposalID, false, user.ProviderID, user.LocationID);
+            var details = new Dictionary<string, List<TrayRationalizationDetail>>();
+
+            var trays = new List<string>();
             foreach (var trayId in post.TrayIDs)
             {
                 var rationalization = await sqlHelper.GetTrayRationalizationDetail(
@@ -685,18 +707,32 @@ namespace OpFlow.Service.Controllers
                     trayId.Type, trayId.ID,
                     user.ProviderID, user.LocationID);
 
-                result.AddRange(rationalization);
+                details[$"{trayId.Type}-{trayId.ID}"] = rationalization.Instruments;
+                trays.Add(rationalization.TrayName);
             }
 
-            var instruments = result.GroupBy(r => r.InstrumentID).Select(r => new TrayRationalizationDetailInstrument()
+            foreach (var instrument in instruments)
             {
-                InstrumentID = r.Key,
-                InstrumentName = r.First().InstrumentName,
-                ProposedQty = r.First().ProposedQty,
-                Details = r.ToList()
-            });
+                var detail = new TrayRationalizationDetailItem()
+                {
+                    Instrument = instrument
+                };
 
-            return Request.CreateResponse(HttpStatusCode.OK, instruments);
+                foreach (var trayId in post.TrayIDs)
+                {
+                    var rationalization = details[$"{trayId.Type}-{trayId.ID}"];
+                    detail.TrayInstruments.Add(
+                        rationalization.FirstOrDefault(r => r.InstrumentID == instrument.InstrumentID));
+                }
+
+                result.Add(detail);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Details = result,
+                Trays = trays
+            });
         }
 
         [SwaggerOperation("PostSurgeonCards")]

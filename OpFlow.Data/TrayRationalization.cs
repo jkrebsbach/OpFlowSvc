@@ -218,9 +218,25 @@ namespace OpFlow.Data
         public List<TrayDetailPost> TrayIDs { get; set; }
     }
 
+    public class TrayDetailResult
+    {
+        public List<TrayRationalizationItem> Instruments { get; set; }
+    }
+
+    public class TrayRationalizationDetailItem
+    {
+        public TrayRationalizationItem Instrument { get; set; }
+        public List<TrayRationalizationDetail> TrayInstruments { get; set; }
+
+        public TrayRationalizationDetailItem()
+        {
+            TrayInstruments = new List<TrayRationalizationDetail>();
+        }
+    }
+
     public class TrayDetailPost
     {
-        public int? ID { get; set; }
+        public int ID { get; set; }
         public string Type { get; set; }
     }
 
@@ -230,12 +246,10 @@ namespace OpFlow.Data
         public int? StandardizedTrayID { get; set; }
     }
 
-    public class TrayRationalizationDetailInstrument
+    public class TrayRationalizationDetailResult
     {
-        public int InstrumentID { get; set; }
-        public string InstrumentName { get; set; }
-        public int ProposedQty { get; set; }
-        public List<TrayRationalizationDetail> Details { get; set; }
+        public string TrayName { get; set; }
+        public List<TrayRationalizationDetail> Instruments { get; set; }
     }
 
     public class TrayRationalizationDetail
@@ -245,6 +259,7 @@ namespace OpFlow.Data
         public string TrayName { get; set; }
         public int InstrumentID { get; set; }
         public string InstrumentName { get; set; }
+        public string InstrumentCategory { get; set; }
         public int QtyOpen { get; set; }
         public int AvgUsed { get; set; }
         public int ProposedQty { get; set; }
@@ -302,6 +317,7 @@ namespace OpFlow.Data
         public string CardDescription { get; set; }
         public string SurgeonName { get; set; }
         public int TimesUsed { get; set; }
+        public int CountsComplete { get; set; }
         public int AuditsComplete { get; set; }
         public string TrayName { get; set; }
         public int CoveredInstruments { get; set; }

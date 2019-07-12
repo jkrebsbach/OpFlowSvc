@@ -123,11 +123,11 @@ namespace OpFlow.PDF
                 imageHtml += "<hr />";
 
                 imageHtml += "<div>Cards</div>";
-                imageHtml += "<table><thead><tr><th>Service Line</th><th>Card</th><th>Surgeon</th><th>Tray</th></tr></thead><tbody>";
+                imageHtml += "<table><thead><tr><th>Service Line</th><th>Card</th><th>Surgeon</th><th>Tray</th><th>Counts</th><th>Audits</th></tr></thead><tbody>";
 
                 foreach (var card in traySummary.Cards)
                 {
-                    imageHtml += $"<tr><td>{card.SpecialtyName}</td><td>{card.CardDescription}</td><td>{card.SurgeonName}</td><td>{card.TrayName}</td></tr>";
+                    imageHtml += $"<tr><td>{card.SpecialtyName}</td><td>{card.CardDescription}</td><td>{card.SurgeonName}</td><td>{card.TrayName}</td><td>{card.CountsComplete}</td><td>{card.AuditsComplete}</td></tr>";
                 }
 
                 imageHtml += "</tbody></table>";
