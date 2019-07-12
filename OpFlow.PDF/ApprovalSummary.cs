@@ -75,11 +75,11 @@ namespace OpFlow.PDF
                 imageHtml += "<hr />";
                 imageHtml += "<div>Counts</div>";
 
-                imageHtml += "<table><thead><tr><th>Surgeon</th><th>Procedure</th><th>Date</th><th>Used</th></tr></thead><tbody>";
+                imageHtml += "<table><thead><tr><th>Tray</th><th>Surgeon</th><th<Times</th><th>Procedure</th><th>Date</th><th>Used</th></tr></thead><tbody>";
 
-                foreach (var count in traySummary.Counts)
+                foreach (var count in traySummary.TrayCounts)
                 {
-                    imageHtml += $"<tr><td>{count.SurgeonName}</td><td>{count.Procedure} {count.CptCode1} {count.CptCode2} {count.CptCode3}</td><td>{count.ScheduleTime?.ToString("M/d/yyyy")}</td><td>{count.UsedInstruments}</td></tr>";
+                    imageHtml += $"<tr><td>{count.TrayName}</td><td>{count.Surgeon}</td><td>{count.Times}</td><td>{count.Procedure} {count.CptCodes}</td><td>{count.SurgeryDate.ToString("M/d/yyyy")}</td><td>{count.QtyUsed}</td></tr>";
                 }
 
                 imageHtml += "</tbody></table>";

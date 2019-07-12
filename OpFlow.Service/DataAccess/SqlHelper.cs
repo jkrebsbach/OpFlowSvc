@@ -701,6 +701,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<TrayCountSummary>> GetTrayCountSummary(int trayProposalId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("proposed_tray_id", trayProposalId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetTrayCountSummary", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayCountSummary>();
+            
+            return result;
+        }
+
         public async Task<List<SourceTraySummary>> GetSourceTraySummary(int trayProposalId, int providerId, int locationId)
         {
             var parameters = new[]

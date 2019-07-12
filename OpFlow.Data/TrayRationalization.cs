@@ -328,6 +328,19 @@ namespace OpFlow.Data
         //public decimal Overlap => (decimal)CoveredInstruments / CurrentTrayItems * 100;
         public decimal? OverlapPcnt =>
             (CurrentTrayItems == 0 ? 0 : UsedInstruments / CurrentTrayItems * 100);
+
+        public bool UncountedCard => CountsComplete == 0 && AuditsComplete == 0;
+    }
+
+    public class TrayCountSummary
+    {
+        public string TrayName { get; set; }
+        public string Surgeon { get; set; }
+        public int Times { get; set; }
+        public string Procedure { get; set; }
+        public string CptCodes { get; set; }
+        public DateTime SurgeryDate { get; set; }
+        public int QtyUsed { get; set; }
     }
 
     public class TraySurgeryAudit

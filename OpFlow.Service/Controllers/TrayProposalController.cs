@@ -94,6 +94,7 @@ namespace OpFlow.Service.Controllers
             var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
             var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.ProviderID, user.LocationID);
             var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
+            var trayCounts = await sqlHelper.GetTrayCountSummary(trayProposalId, user.ProviderID, user.LocationID);
             var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
 
             proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
@@ -111,6 +112,7 @@ namespace OpFlow.Service.Controllers
                 Cards = cardOverlaps.Where(i => i.OverlapPcnt >= (overlapPcnt ?? 0)),
                 Audits = audits,
                 Counts = counts,
+                TrayCounts = trayCounts,
                 ApprovalAudits = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList(),
                 ApprovalCounts = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList(),
                 SourceTrays = sourceTrays
