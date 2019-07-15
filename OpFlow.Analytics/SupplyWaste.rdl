@@ -13,17 +13,31 @@
     <DataSet Name="SupplyWaste">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>select top 10 instrument_master.description InstrumentName,
+        <CommandText>select card.description + '\n' +
+	instrument_master.description InstrumentName,
 	instrument_master.instrument_cost InstrumentCost,
 	card.description CardName,
 	ti.quantity TrayQuantity,
-	vw.total_used TotalUsed
-from card_instrument_usage_view vw
-join tray_instruments ti ON ti.instrument_id = vw.instrument_id AND
-	ti.tray_item_id = vw.tray_item_id
-join card ON vw.card_id = card.card_id
-join instrument_master ON vw.instrument_id = instrument_master.instrument_id
-</CommandText>
+	scic.qty_open TotalUsed
+from surgery_tray
+JOIN surgery_card_instrument_counts scic ON surgery_tray.surgery_id = scic.surgery_id
+	AND scic.tray_id = surgery_tray.tray_item_id
+	AND scic.type = 'U'
+join tray_instruments ti ON ti.instrument_id = scic.instrument_id AND
+	ti.tray_item_id = scic.tray_id
+join surgery s ON scic.surgery_id = s.surgery_id
+join users surgeon ON s.user_id = surgeon.user_id
+join card ON s.card_id = card.card_id
+join card_item ON card.card_id = card_item.card_id
+	AND card_item.item_id = surgery_tray.tray_item_id
+join instrument_master ON scic.instrument_id = instrument_master.instrument_id
+WHERE surgery_tray.tray_opened = 1
+	AND surgeon.specialty_id = 1
+	AND surgeon.user_id = 6
+	AND s.card_id = 195
+	AND 1 = surgeon.provider_id
+	AND 1 = surgeon.location_id
+	</CommandText>
       </Query>
       <Fields>
         <Field Name="InstrumentName">
@@ -465,6 +479,7 @@ join instrument_master ON vw.instrument_id = instrument_master.instrument_id
               </ChartTitle>
             </ChartTitles>
             <Palette>Pacific</Palette>
+            <DynamicHeight>=(3 + CountDistinct(Fields!InstrumentName.Value, "SupplyWaste")) &amp; " in"</DynamicHeight>
             <ChartBorderSkin>
               <Style>
                 <BackgroundColor>Gray</BackgroundColor>
@@ -483,7 +498,7 @@ join instrument_master ON vw.instrument_id = instrument_master.instrument_id
             </ChartNoDataMessage>
             <DataSetName>SupplyWaste</DataSetName>
             <Height>7.46875in</Height>
-            <Width>6.5in</Width>
+            <Width>6.91667in</Width>
             <Style>
               <Border>
                 <Color>LightGrey</Color>
@@ -497,12 +512,12 @@ join instrument_master ON vw.instrument_id = instrument_master.instrument_id
         <Height>7.46875in</Height>
         <Style />
       </Body>
-      <Width>6.5in</Width>
+      <Width>6.91667in</Width>
       <Page>
-        <LeftMargin>1in</LeftMargin>
-        <RightMargin>1in</RightMargin>
-        <TopMargin>1in</TopMargin>
-        <BottomMargin>1in</BottomMargin>
+        <LeftMargin>0.25in</LeftMargin>
+        <RightMargin>0.25in</RightMargin>
+        <TopMargin>0.25in</TopMargin>
+        <BottomMargin>0.25in</BottomMargin>
         <Style />
       </Page>
     </ReportSection>
