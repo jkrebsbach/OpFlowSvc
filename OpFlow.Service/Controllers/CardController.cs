@@ -131,22 +131,6 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("UsedInstrumentList")]
-        [Route("api/card/listUsedInstrument")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
-        [HttpPost]
-        public async Task<HttpResponseMessage> UsedInstrumentList([FromBody] UsedInstrumentSearchPost post)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-
-            var instrumentList = await sqlHelper.GetUsedInstrumentList(post.CardIDs,
-                user.ProviderID, user.LocationID);
-            
-            return Request.CreateResponse(HttpStatusCode.OK, instrumentList);
-        }
-
-        // GET api/values/5
         [SwaggerOperation("GetEditFeedback")]
         [Route("api/card/feedback")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardItemFeedback>))]

@@ -241,19 +241,20 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetSupplyWasteReportDate(List<int> specialtyId, List<int> surgeonId,
-            List<int> cardId, List<int>instrumentId, int providerId, int locationId)
+            List<int> cardId, List<int>itemId, string groupBy, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
             var cardXml = GetIdentitySummary(cardId);
-            var instrumentXml = GetIdentitySummary(instrumentId);
+            var itemXml = GetIdentitySummary(itemId);
 
             var parameters = new[]
             {
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
-                new SqlParameter("instrument_id", instrumentXml ?? (object)DBNull.Value),
+                new SqlParameter("item_id", itemXml ?? (object)DBNull.Value),
+                new SqlParameter("group_by", groupBy),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -1418,23 +1419,6 @@ namespace OpFlow.Service.DataAccess
 
             var result = dsSchedules.Tables[0].DataTableToList<Card>();
             
-            return result;
-        }
-        
-        public async Task<List<ItemMaster>> GetUsedInstrumentList(List<int> cardIds, int providerId, int locationId)
-        {
-            var cardXml = GetIdentitySummary(cardIds);
-            
-            var parameters = new[]
-            {
-                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetUsedInstrumentList", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
-
             return result;
         }
 

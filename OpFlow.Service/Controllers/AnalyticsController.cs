@@ -34,6 +34,7 @@ namespace OpFlow.Service.Controllers
             var trays = await sqlHelper.GetItems("TRAY", null, null, user.ProviderID, user.LocationID);
             var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
             var lookups = await sqlHelper.GetTrayInstrumentLookups(user.ProviderID, user.LocationID);
+            var items = await sqlHelper.GetItems(null, null, true, user.ProviderID, user.LocationID);
             var roomGroups = await sqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
             var cpts = await sqlHelper.GetKnownCPTCodes(user.ProviderID, user.LocationID);
 
@@ -48,6 +49,7 @@ namespace OpFlow.Service.Controllers
                     Procedures = procedures,
                     RoomGroups = roomGroups,
                     InstrumentCategories = lookups.Categories,
+                    Items = items,
                     CardCategories = cardCategories,
                     CPTs = cpts
                 }
@@ -205,12 +207,12 @@ namespace OpFlow.Service.Controllers
             if (post.SpecialtyID == null &&
                 post.SurgeonID == null &&
                 post.CardID == null &&
-                post.InstrumentID == null)
+                post.ItemID == null)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
-            var analytics = await sqlHelper.GetSupplyWasteReportDate(post.SpecialtyID, post.SurgeonID, post.CardID, post.InstrumentID, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetSupplyWasteReportDate(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID, post.Group, user.ProviderID, user.LocationID);
 
             var supplyWaste = analytics.Tables[0].DefaultView;
             
