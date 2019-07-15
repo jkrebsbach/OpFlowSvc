@@ -120,4 +120,9 @@ namespace OpFlow.Data
         public List<int> TrayIDs { get; set; }
         public List<int> CategoryIDs { get; set; }
     }
+
+    public class UsedInstrumentSearchPost
+    {
+        public List<int> CardIDs { get; set; }
+    }
 }

@@ -330,6 +330,9 @@
     </Content>
     <Content Include="Resources\InstrumentUsageCardTray.rdlc" />
     <Content Include="Resources\InstrumentUsageTrayCard.rdlc" />
+    <Content Include="Resources\SupplyWaste.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />

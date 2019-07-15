@@ -114,11 +114,11 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("GetUsedCardList")]
+        [SwaggerOperation("UsedCardList")]
         [Route("api/card/listUsed")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
         [HttpPost]
-        public async Task<HttpResponseMessage> GetUsedCardList([FromBody] UsedCardSearchPost post)
+        public async Task<HttpResponseMessage> UsedCardList([FromBody] UsedCardSearchPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
@@ -128,6 +128,22 @@ namespace OpFlow.Service.Controllers
             var result = cardList.OrderBy(c => c.CardDescription).ToList();
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("UsedInstrumentList")]
+        [Route("api/card/listUsedInstrument")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UsedInstrumentList([FromBody] UsedInstrumentSearchPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var instrumentList = await sqlHelper.GetUsedInstrumentList(post.CardIDs,
+                user.ProviderID, user.LocationID);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, instrumentList);
         }
 
         // GET api/values/5
