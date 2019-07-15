@@ -90,10 +90,12 @@ join instrument_master ON vw.instrument_id = instrument_master.instrument_id
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
-                        <Y>=Sum(Fields!TotalUsed.Value)</Y>
+                        <Y>=Avg(Fields!TotalUsed.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
@@ -113,6 +115,9 @@ join instrument_master ON vw.instrument_id = instrument_master.instrument_id
                       <Style />
                     </ChartDataLabel>
                   </ChartEmptyPoints>
+                  <ChartItemInLegend>
+                    <LegendText>Avg Used</LegendText>
+                  </ChartItemInLegend>
                   <ValueAxisName>Primary</ValueAxisName>
                   <CategoryAxisName>Primary</CategoryAxisName>
                   <ChartSmartLabel>
@@ -128,6 +133,8 @@ join instrument_master ON vw.instrument_id = instrument_master.instrument_id
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
@@ -162,6 +169,8 @@ join instrument_master ON vw.instrument_id = instrument_master.instrument_id
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
@@ -473,7 +482,7 @@ join instrument_master ON vw.instrument_id = instrument_master.instrument_id
               </Style>
             </ChartNoDataMessage>
             <DataSetName>SupplyWaste</DataSetName>
-            <Height>4.3125in</Height>
+            <Height>7.46875in</Height>
             <Width>6.5in</Width>
             <Style>
               <Border>
@@ -485,7 +494,7 @@ join instrument_master ON vw.instrument_id = instrument_master.instrument_id
             </Style>
           </Chart>
         </ReportItems>
-        <Height>4.3125in</Height>
+        <Height>7.46875in</Height>
         <Style />
       </Body>
       <Width>6.5in</Width>
