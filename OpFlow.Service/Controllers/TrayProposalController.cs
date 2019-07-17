@@ -701,16 +701,27 @@ namespace OpFlow.Service.Controllers
             var instruments = await sqlHelper.GetProposedTrayInstruments(post.TrayProposalID, false, user.ProviderID, user.LocationID);
             var details = new Dictionary<string, List<TrayRationalizationDetail>>();
 
+            string source = null;
             var trays = new List<string>();
-            foreach (var trayId in post.TrayIDs)
+            for (var index = 0; index < post.TrayIDs.Count; index++)
             {
+                var trayId = post.TrayIDs[index];
+
                 var rationalization = await sqlHelper.GetTrayRationalizationDetail(
                     post.TrayProposalID,
                     trayId.Type, trayId.ID,
                     user.ProviderID, user.LocationID);
 
                 details[$"{trayId.Type}-{trayId.ID}"] = rationalization.Instruments;
-                trays.Add(rationalization.TrayName);
+
+                if (index == 0)
+                {
+                    source = rationalization.TrayName;
+                }
+                else
+                {
+                    trays.Add(rationalization.TrayName);
+                }
             }
 
             foreach (var instrument in instruments)
@@ -720,11 +731,20 @@ namespace OpFlow.Service.Controllers
                     Instrument = instrument
                 };
 
-                foreach (var trayId in post.TrayIDs)
+                for (var index = 0; index < post.TrayIDs.Count; index++)
                 {
+                    var trayId = post.TrayIDs[index];
                     var rationalization = details[$"{trayId.Type}-{trayId.ID}"];
-                    detail.TrayInstruments.Add(
-                        rationalization.FirstOrDefault(r => r.InstrumentID == instrument.InstrumentID));
+
+                    var compare = rationalization.FirstOrDefault(r => r.InstrumentID == instrument.InstrumentID);
+                    if (index == 0)
+                    {
+                        detail.SourceInstrument = compare;
+                    }
+                    else
+                    {
+                        detail.TrayInstruments.Add(compare);
+                    }
                 }
 
                 result.Add(detail);
@@ -733,6 +753,7 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 Details = result,
+                Source = source,
                 Trays = trays
             });
         }

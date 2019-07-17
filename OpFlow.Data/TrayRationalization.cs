@@ -226,6 +226,7 @@ namespace OpFlow.Data
     public class TrayRationalizationDetailItem
     {
         public TrayRationalizationItem Instrument { get; set; }
+        public TrayRationalizationDetail SourceInstrument { get; set; }
         public List<TrayRationalizationDetail> TrayInstruments { get; set; }
 
         public TrayRationalizationDetailItem()
@@ -261,10 +262,10 @@ namespace OpFlow.Data
         public string InstrumentName { get; set; }
         public string InstrumentCategory { get; set; }
         public int QtyOpen { get; set; }
-        public int AvgUsed { get; set; }
+        public decimal AvgUsed { get; set; }
         public int ProposedQty { get; set; }
-        public int PeelPackQty { get; set; }
-        public string PeelPackStatus { get; set; }
+
+        public string HighlightClass => (QtyOpen - ProposedQty == 0 ? "" : "highlight-tray");
     }
 
     public class TrayCardOverlapSummary
