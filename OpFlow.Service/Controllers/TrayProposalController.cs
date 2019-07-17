@@ -694,19 +694,19 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            if (post.TrayIDs == null || !post.TrayIDs.Any())
-                post.TrayIDs = new List<TrayDetailPost>() { new TrayDetailPost() { Type = "I" } };
+            if (post.TrayIDs == null)
+                post.TrayIDs = new List<TrayDetailPost>();
 
             var result = new List<TrayRationalizationDetailItem>();
             var instruments = await sqlHelper.GetProposedTrayInstruments(post.TrayProposalID, false, user.ProviderID, user.LocationID);
             var details = new Dictionary<string, List<TrayRationalizationDetail>>();
 
-            string source = null;
-            var trays = new List<string>();
-            for (var index = 0; index < post.TrayIDs.Count; index++)
-            {
-                var trayId = post.TrayIDs[index];
+            var comparableTrays = new List<string>();
+            var sourceTrays = instruments.GroupBy(i => new {i.TrayItemID, i.TrayName})
+                .Select(sourceTray => sourceTray.Key.TrayName).ToList();
 
+            foreach (var trayId in post.TrayIDs)
+            {
                 var rationalization = await sqlHelper.GetTrayRationalizationDetail(
                     post.TrayProposalID,
                     trayId.Type, trayId.ID,
@@ -714,37 +714,28 @@ namespace OpFlow.Service.Controllers
 
                 details[$"{trayId.Type}-{trayId.ID}"] = rationalization.Instruments;
 
-                if (index == 0)
-                {
-                    source = rationalization.TrayName;
-                }
-                else
-                {
-                    trays.Add(rationalization.TrayName);
-                }
+                comparableTrays.Add(rationalization.TrayName);
             }
 
             foreach (var instrument in instruments)
             {
                 var detail = new TrayRationalizationDetailItem()
                 {
-                    Instrument = instrument
+                    ProposedInstrument = instrument
                 };
 
-                for (var index = 0; index < post.TrayIDs.Count; index++)
+                foreach (var sourceTray in sourceTrays)
                 {
-                    var trayId = post.TrayIDs[index];
+                    detail.SourceInstruments.Add(
+                        instrument.TrayName == sourceTray ? instrument : null);
+                }
+
+                foreach (var trayId in post.TrayIDs)
+                {
                     var rationalization = details[$"{trayId.Type}-{trayId.ID}"];
 
                     var compare = rationalization.FirstOrDefault(r => r.InstrumentID == instrument.InstrumentID);
-                    if (index == 0)
-                    {
-                        detail.SourceInstrument = compare;
-                    }
-                    else
-                    {
-                        detail.TrayInstruments.Add(compare);
-                    }
+                    detail.TrayInstruments.Add(compare);
                 }
 
                 result.Add(detail);
@@ -753,8 +744,8 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 Details = result,
-                Source = source,
-                Trays = trays
+                SourceTrays = sourceTrays.Select(s => s ?? "No Source"),
+                ComparableTrays = comparableTrays
             });
         }
 

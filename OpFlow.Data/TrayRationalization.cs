@@ -99,6 +99,8 @@ namespace OpFlow.Data
         public DateTimeOffset? UpdTimestamp { get; set; }
 
         public decimal CaseUsagePcnt => TrayCases == 0 ? 0 : (UsedCases / (decimal)TrayCases * 100);
+
+        public string HighlightClass => (SourceQty - Quantity == 0 ? "" : "highlight-tray");
     }
 
     public class TrayRationalizationStatusLog
@@ -225,12 +227,13 @@ namespace OpFlow.Data
 
     public class TrayRationalizationDetailItem
     {
-        public TrayRationalizationItem Instrument { get; set; }
-        public TrayRationalizationDetail SourceInstrument { get; set; }
+        public TrayRationalizationItem ProposedInstrument { get; set; }
+        public List<TrayRationalizationItem> SourceInstruments { get; set; }
         public List<TrayRationalizationDetail> TrayInstruments { get; set; }
 
         public TrayRationalizationDetailItem()
         {
+            SourceInstruments = new List<TrayRationalizationItem>();
             TrayInstruments = new List<TrayRationalizationDetail>();
         }
     }
@@ -264,8 +267,6 @@ namespace OpFlow.Data
         public int QtyOpen { get; set; }
         public decimal AvgUsed { get; set; }
         public int ProposedQty { get; set; }
-
-        public string HighlightClass => (QtyOpen - ProposedQty == 0 ? "" : "highlight-tray");
     }
 
     public class TrayCardOverlapSummary
