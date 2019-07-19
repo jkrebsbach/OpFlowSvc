@@ -214,6 +214,13 @@ namespace OpFlow.Data
             (CommonInstruments == 0 ? 0 : (decimal)UsedInstruments / CommonInstruments * 100);
     }
 
+    public class TrayRationalizationSummary
+    {
+        public string TrayName { get; set; }
+        public int Quantity { get; set; }
+        public int Delta { get; set; }
+    }
+
     public class TrayRationalizationDetailPost
     {
         public int TrayProposalID { get; set; }
@@ -253,6 +260,7 @@ namespace OpFlow.Data
     public class TrayRationalizationDetailResult
     {
         public string TrayName { get; set; }
+        public int Quantity { get; set; }
         public List<TrayRationalizationDetail> Instruments { get; set; }
     }
 

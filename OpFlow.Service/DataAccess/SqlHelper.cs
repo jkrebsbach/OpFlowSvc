@@ -34,6 +34,31 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<ItemRationalization>> GetItemRationalization(int specialtyId,
+            decimal? minCost, decimal? maxCost, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("min_cost", minCost ?? (object)DBNull.Value),
+                new SqlParameter("max_cost", maxCost ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetItemRationalization", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ItemRationalization>();
+            var cards = dsSchedules.Tables[1].DataTableToList<ItemCard>();
+
+            foreach (var card in cards)
+            {
+                var item = result.FirstOrDefault(i => i.ItemID == card.ItemID);
+                item?.Cards.Add(card);
+            }
+
+            return result;
+        }
+
         public async Task<List<TrayRationalizationItem>> GetTrayRationalization(int? trayProposalId,
             List<int> specialties, List<int> trays, List<int> surgeons, List<int> cards, string cptCode, List<TrayQuestion> questions,
             int providerId, int locationId)
@@ -100,6 +125,7 @@ namespace OpFlow.Service.DataAccess
             var trayNameTable = dsSchedules.Tables[0].DataTableToList<TrayRationalizationDetail>();
 
             result.TrayName = trayNameTable.First().TrayName;
+            result.Quantity = trayNameTable.First().QtyOpen;
             result.Instruments = dsSchedules.Tables[1].DataTableToList<TrayRationalizationDetail>();
 
             return result;

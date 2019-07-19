@@ -627,13 +627,16 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            if (post.TrayIDs == null || !post.TrayIDs.Any())
-                post.TrayIDs = new List<TrayDetailPost>() { new TrayDetailPost() { Type = "I" } };
+            if (post.TrayIDs == null)
+                post.TrayIDs = new List<TrayDetailPost>();
 
             var instruments = await sqlHelper.GetProposedTrayInstruments(post.TrayProposalID, false, user.ProviderID, user.LocationID);
             var details = new Dictionary<string, List<TrayRationalizationDetail>>();
 
-            var trays = new List<string>();
+            var comparableTrays = new List<string>();
+            var sourceTrays = instruments.GroupBy(i => new { i.TrayItemID, i.TrayName })
+                .Select(sourceTray => sourceTray.Key.TrayName).ToList();
+
             foreach (var trayId in post.TrayIDs)
             {
                 var rationalization = await sqlHelper.GetTrayRationalizationDetail(
@@ -642,20 +645,33 @@ namespace OpFlow.Service.Controllers
                     user.ProviderID, user.LocationID);
 
                 details[$"{trayId.Type}-{trayId.ID}"] = rationalization.Instruments;
-                trays.Add(rationalization.TrayName);
+
+                comparableTrays.Add(rationalization.TrayName);
             }
 
-            var extract = "Instrument,Proposed Qty";
+            var extract = "Instrument";
 
-            foreach (var tray in trays)
+            foreach (var tray in sourceTrays)
             {
-                extract += $",{tray} - Qty,{tray} - Avg Used";
+                extract += $",{tray} - Qty,{tray} - Avg Used,{tray} - Usage %";
             }
-            extract +="\r\n";
+            extract += "Proposed Qty, Proposed Avg Used,";
+            foreach (var tray in comparableTrays)
+            {
+                extract += $",{tray ?? "No Source"} - Qty,{tray ?? "No Source"} - Avg Used";
+            }
+            extract += "\r\n";
 
             foreach (var instrument in instruments)
             {
-                extract += $"\"{instrument.InstrumentName?.Trim()},{instrument.Quantity}";
+                extract += $"\"{instrument.InstrumentName?.Trim()?.Replace("\"", "\"\"")}\"";
+                foreach (var tray in sourceTrays)
+                {
+                    extract += instrument.TrayName == tray ?
+                        $",{instrument.SourceQty},{instrument.AvgUsed},{instrument.CaseUsagePcnt}({instrument.UsedCases}/{instrument.TrayCases})" :
+                        ",,,";
+                }
+                extract += $",{ instrument.Quantity},0";
 
                 foreach (var trayId in post.TrayIDs)
                 {
@@ -701,9 +717,22 @@ namespace OpFlow.Service.Controllers
             var instruments = await sqlHelper.GetProposedTrayInstruments(post.TrayProposalID, false, user.ProviderID, user.LocationID);
             var details = new Dictionary<string, List<TrayRationalizationDetail>>();
 
-            var comparableTrays = new List<string>();
-            var sourceTrays = instruments.GroupBy(i => new {i.TrayItemID, i.TrayName})
-                .Select(sourceTray => sourceTray.Key.TrayName).ToList();
+            var comparableTrays = new List<TrayRationalizationSummary>();
+            var sourceTrays = new List<TrayRationalizationSummary>();
+            var sources = instruments.GroupBy(i => new {i.TrayItemID, i.TrayName});
+            foreach (var source in sources)
+            {
+                var trayDetail = await sqlHelper.GetTrayItems(source.Key.TrayItemID, user.ProviderID, user.LocationID);
+
+                var sourceTray = new TrayRationalizationSummary()
+                {
+                    TrayName = source.Key.TrayName,
+                    Quantity = trayDetail.Sum(s => s.Quantity),
+                    Delta = trayDetail.Sum(s => s.Quantity) - instruments.Sum(i => i.Quantity)
+                };
+
+                sourceTrays.Add(sourceTray);
+            }
 
             foreach (var trayId in post.TrayIDs)
             {
@@ -714,7 +743,11 @@ namespace OpFlow.Service.Controllers
 
                 details[$"{trayId.Type}-{trayId.ID}"] = rationalization.Instruments;
 
-                comparableTrays.Add(rationalization.TrayName);
+                comparableTrays.Add(new TrayRationalizationSummary() {
+                    TrayName = rationalization.TrayName,
+                    Quantity = rationalization.Quantity,
+                    Delta = rationalization.Quantity - instruments.Sum(i => i.Quantity)
+                });
             }
 
             foreach (var instrument in instruments)
@@ -727,7 +760,7 @@ namespace OpFlow.Service.Controllers
                 foreach (var sourceTray in sourceTrays)
                 {
                     detail.SourceInstruments.Add(
-                        instrument.TrayName == sourceTray ? instrument : null);
+                        instrument.TrayName == sourceTray.TrayName ? instrument : null);
                 }
 
                 foreach (var trayId in post.TrayIDs)
@@ -741,10 +774,13 @@ namespace OpFlow.Service.Controllers
                 result.Add(detail);
             }
 
+            foreach (var s in sourceTrays.Where(s => s.TrayName == null))
+                s.TrayName = "No Source";
+
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 Details = result,
-                SourceTrays = sourceTrays.Select(s => s ?? "No Source"),
+                SourceTrays = sourceTrays,
                 ComparableTrays = comparableTrays
             });
         }

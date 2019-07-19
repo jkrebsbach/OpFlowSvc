@@ -19,14 +19,14 @@ namespace OpFlow.Service.Controllers
 
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
         [SwaggerOperation("GetItemRationalizations")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemRationalization>))]
         [Route("item")]
         public async Task<HttpResponseMessage> GetItemRationalizations(int specialtyId, decimal? minCost, decimal? maxCost)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var items = await sqlHelper.GetItems(null, null, true, user.ProviderID, user.LocationID);
+            var items = await sqlHelper.GetItemRationalization(specialtyId, minCost, maxCost, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, items);
         }
