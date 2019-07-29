@@ -195,6 +195,7 @@ namespace OpFlow.Data
     {
         public int ItemID { get; set; }
         public int TrayID { get; set; }
+        public int? RoleID { get; set; }
         public int? UsageType { get; set; }
         public int Usage { get; set; }
     }

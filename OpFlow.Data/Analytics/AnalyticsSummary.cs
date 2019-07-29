@@ -86,6 +86,7 @@ namespace OpFlow.Data
         public List<int> SpecialtyId { get; set; }
         public List<int> SurgeonId { get; set; }
         public List<int> TrayId { get; set; }
+        public int? MinSize { get; set; }
         public string Order {get;set;}
     }
 

@@ -195,7 +195,7 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
-        public async Task<DataSet> GetAnalyticsTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId,
+        public async Task<DataSet> GetAnalyticsTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId, int? minSize,
             int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
@@ -207,6 +207,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("min_size", minSize ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -625,6 +626,22 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
+        public async Task<List<TrayApproval>> GetProposedTrayApprovalDocuments(int trayProposalId, int providerId,
+            int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayApprovalDocuments", parameters);
+
+            var documents = dsSchedules.Tables[0].DataTableToList<TrayApproval>();
+
+            return documents;
+        }
+
         public async Task<List<TrayCardOverlap>> GetProposedTrayCardOverlap(int trayProposalId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -811,13 +828,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProposedTrayApproval(int trayProposalId, string filename, string type, int providerId, int locationId)
+        public async Task<int> UpdateProposedTrayApproval(int trayProposalId, string filename, int typeId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", trayProposalId),
                 new SqlParameter("filename", filename),
-                new SqlParameter("type", type),
+                new SqlParameter("type_id", typeId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -2642,6 +2659,7 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, "U");
                 AddColumn(doc, row, customItem.Usage);
                 AddColumn(doc, row, customItem.UsageType);
+                AddColumn(doc, row, customItem.RoleID);
             }
 
             return table.OuterXml;

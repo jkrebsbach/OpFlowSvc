@@ -48,11 +48,17 @@ namespace OpFlow.Data
         public string TrayName { get; set; }
         public string TrayProposalPhase { get; set; }
         public string Specialty { get; set; }
+        public int InstrumentCount { get; set; }
+
+        public List<TrayApproval> TrayApprovals { get; set; }
+    }
+
+    public class TrayApproval
+    {
+        public int DocumentTypeID { get; set; }
+        public string ApprovalDescription { get; set; }
         public string ApprovalFilename { get; set; }
         public DateTimeOffset? ApprovalUpload { get; set; }
-        public string RolloutFilename { get; set; }
-        public DateTimeOffset? RolloutUpload { get; set; }
-        public int InstrumentCount { get; set; }
     }
 
     public class SourceTraySummary

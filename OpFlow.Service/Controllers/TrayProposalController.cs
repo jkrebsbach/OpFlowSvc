@@ -92,6 +92,7 @@ namespace OpFlow.Service.Controllers
             var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).FirstOrDefault();
             var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, true, user.ProviderID, user.LocationID);
             var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
+            var documents = await sqlHelper.GetProposedTrayApprovalDocuments(trayProposalId, user.ProviderID, user.LocationID);
             var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.ProviderID, user.LocationID);
             var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
             var trayCounts = await sqlHelper.GetTrayCountSummary(trayProposalId, user.ProviderID, user.LocationID);
@@ -110,6 +111,7 @@ namespace OpFlow.Service.Controllers
                 ProposedTray = proposedTray,
                 Instruments = instruments,
                 Cards = cardOverlaps.Where(i => i.OverlapPcnt >= (overlapPcnt ?? 0)),
+                ApprovalDocuments = documents,
                 Audits = audits,
                 Counts = counts,
                 TrayCounts = trayCounts,
@@ -264,7 +266,7 @@ namespace OpFlow.Service.Controllers
             var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, null, null, null,
                 null, post.TrayId,
                 user.ProviderID, user.LocationID);
-            var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId,
+            var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId, null,
                 user.ProviderID, user.LocationID);
 
 
@@ -314,8 +316,8 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("PutTrayApproval")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [HttpPut]
-        [Route("trayApproval/{trayProposalId}/{type}", Name = "PutTrayApproval")]
-        public async Task<HttpResponseMessage> PutTrayApproval(int trayProposalId, string type)
+        [Route("trayApproval/{trayProposalId}/{typeId}", Name = "PutTrayApproval")]
+        public async Task<HttpResponseMessage> PutTrayApproval(int trayProposalId, int typeId)
         {
             var user = await CacheUtil.GetUserSecurity();
 
@@ -334,14 +336,13 @@ namespace OpFlow.Service.Controllers
                 var fileName = fileNameParam?.Value.Trim('"') ?? "";
                 var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
 
-                await sqlHelper.UpdateProposedTrayApproval(trayProposalId, fileName, type, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateProposedTrayApproval(trayProposalId, fileName, typeId, user.ProviderID, user.LocationID);
 
                 var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.ApprovalImages, trayProposalId);
 
                 var storageHelper = BlobStorageHelper.GetHelper(user);
 
-                var filename = (type == "A" ? "Approval" : "Rollout");
-                await storageHelper.PutBlobBytes(folder, filename, fileContents);
+                await storageHelper.PutBlobBytes(folder, typeId.ToString(), fileContents);
 
                 return Request.CreateResponse(HttpStatusCode.OK, 200);
             }
@@ -355,7 +356,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
         [Route("trayApproval/{trayProposalId}", Name = "GetTrayApproval")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetTrayApproval(int trayProposalId, string type)
+        public async Task<HttpResponseMessage> GetTrayApproval(int trayProposalId, int typeId)
         {
             var user = await CacheUtil.GetUserSecurity();
             
@@ -363,8 +364,7 @@ namespace OpFlow.Service.Controllers
 
             var storageHelper = BlobStorageHelper.GetHelper(user);
 
-            var filename = (type == "A" ? "Approval" : "Rollout");
-            var binary = await storageHelper.GetBlobBytes(folder, filename);
+            var binary = await storageHelper.GetBlobBytes(folder, typeId.ToString());
 
             var memStream = new MemoryStream(binary);
             var result = new HttpResponseMessage(HttpStatusCode.OK)
