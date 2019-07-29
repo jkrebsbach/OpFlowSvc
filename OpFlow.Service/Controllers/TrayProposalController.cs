@@ -726,13 +726,15 @@ namespace OpFlow.Service.Controllers
 
                 var sourceTray = new TrayRationalizationSummary()
                 {
+                    TrayItemID = (source.Key.TrayItemID == 0 ? (int?)null : source.Key.TrayItemID),
                     TrayName = source.Key.TrayName,
-                    Quantity = trayDetail.Sum(s => s.Quantity),
-                    Delta = trayDetail.Sum(s => s.Quantity) - instruments.Sum(i => i.Quantity)
+                    Quantity = trayDetail.Sum(s => s.Quantity)
                 };
 
                 sourceTrays.Add(sourceTray);
             }
+
+            var sourceQty = sourceTrays.FirstOrDefault()?.Quantity ?? 0;
 
             foreach (var trayId in post.TrayIDs)
             {
@@ -746,7 +748,7 @@ namespace OpFlow.Service.Controllers
                 comparableTrays.Add(new TrayRationalizationSummary() {
                     TrayName = rationalization.TrayName,
                     Quantity = rationalization.Quantity,
-                    Delta = rationalization.Quantity - instruments.Sum(i => i.Quantity)
+                    SourceQty = sourceQty
                 });
             }
 
@@ -774,11 +776,18 @@ namespace OpFlow.Service.Controllers
                 result.Add(detail);
             }
 
+            var proposedTray = new TrayRationalizationSummary()
+            {
+                Quantity = instruments.Sum(i => i.Quantity),
+                SourceQty = sourceQty
+            };
+
             foreach (var s in sourceTrays.Where(s => s.TrayName == null))
                 s.TrayName = "No Source";
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
+                ProposedTray = proposedTray,
                 Details = result,
                 SourceTrays = sourceTrays,
                 ComparableTrays = comparableTrays

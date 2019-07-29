@@ -94,6 +94,7 @@ namespace OpFlow.Data
         public int UsedCases { get; set; }
         public string Reason { get; set; }
         public string Comments { get; set; }
+        public string ConfigurationNotes { get; set; }
         public string HistoryType { get; set; }
         public int Proposed { get; set; }
         public DateTimeOffset? UpdTimestamp { get; set; }
@@ -178,6 +179,7 @@ namespace OpFlow.Data
         public string Description { get; set; }
         public string Size { get; set; }
         public string Comments { get; set; }
+        public string Notes { get; set; }
         public int Sequence { get; set; }
     }
 
@@ -216,9 +218,11 @@ namespace OpFlow.Data
 
     public class TrayRationalizationSummary
     {
+        public int? TrayItemID { get; set; }
         public string TrayName { get; set; }
         public int Quantity { get; set; }
-        public int Delta { get; set; }
+        public int SourceQty { get; set; }
+        public decimal Ratio => 100 - (SourceQty == 0 ? 0 : (decimal)Quantity / SourceQty * 100);
     }
 
     public class TrayRationalizationDetailPost

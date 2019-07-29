@@ -491,6 +491,7 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, instrument.Size);
                 AddColumn(doc, row, instrument.Comments);
                 AddColumn(doc, row, instrument.Sequence);
+                AddColumn(doc, row, instrument.Notes);
             }
 
             return table.OuterXml;
