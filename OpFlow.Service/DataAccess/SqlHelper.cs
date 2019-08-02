@@ -268,7 +268,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetSupplyWasteReportDate(List<int> specialtyId, List<int> surgeonId,
-            List<int> cardId, List<int>itemId, string groupBy, int providerId, int locationId)
+            List<int> cardId, List<int>itemId, int? minCost, string groupBy, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -281,6 +281,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("item_id", itemXml ?? (object)DBNull.Value),
+                new SqlParameter("min_cost", minCost ?? (object)DBNull.Value),
                 new SqlParameter("group_by", groupBy),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)

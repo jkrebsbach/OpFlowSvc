@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -8,7 +7,6 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
 using Microsoft.Reporting.WebForms;
 using Mindscape.Raygun4Net;
@@ -732,6 +730,17 @@ namespace OpFlow.Service.Controllers
                 };
 
                 sourceTrays.Add(sourceTray);
+
+                foreach (var missingInstrument in trayDetail.Where(t => instruments.All(i => i.InstrumentID != t.InstrumentID)))
+                {
+                    var addedInstrument = new TrayRationalizationItem()
+                    {
+                        InstrumentID = missingInstrument.InstrumentID,
+                        InstrumentName = missingInstrument.InstrumentName,
+                        SourceQty = missingInstrument.Quantity
+                    };
+                    instruments.Add(addedInstrument);
+                }
             }
 
             var sourceQty = sourceTrays.FirstOrDefault()?.Quantity ?? 0;
@@ -752,7 +761,7 @@ namespace OpFlow.Service.Controllers
                 });
             }
 
-            foreach (var instrument in instruments)
+            foreach (var instrument in instruments.OrderBy(i => i.InstrumentName))
             {
                 var detail = new TrayRationalizationDetailItem()
                 {
