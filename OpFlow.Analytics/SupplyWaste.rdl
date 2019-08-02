@@ -28,7 +28,20 @@
 		WHEN card_item.qty_open &lt; scic.qty_open THEN 0
 		ELSE card_item.qty_open - scic.qty_open
 	END TotalAdded,
-	scic.qty_open TotalUsed
+	scic.qty_open TotalUsed,
+	1 Bleeding ,
+	1 Anatomy ,
+	1 Preference ,
+	1 CirculatorOpened,
+	1 ScrubRequest,
+	1 Error,
+	1 Extra,
+	1 Needed,
+	1 NoTrust,
+	1 Miscommunication,
+	1 Surgeon,
+	1 Circulator,
+	1 Scrub 
 from surgery s
 JOIN surgery_card_item_counts scic ON s.surgery_id = scic.surgery_id
 	AND scic.type = 'U'
@@ -73,6 +86,58 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
         </Field>
         <Field Name="TotalAdded">
           <DataField>TotalAdded</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Bleeding">
+          <DataField>Bleeding</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Anatomy">
+          <DataField>Anatomy</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Preference">
+          <DataField>Preference</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="CirculatorOpened">
+          <DataField>CirculatorOpened</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="ScrubRequest">
+          <DataField>ScrubRequest</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Error">
+          <DataField>Error</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Extra">
+          <DataField>Extra</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Needed">
+          <DataField>Needed</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="NoTrust">
+          <DataField>NoTrust</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Miscommunication">
+          <DataField>Miscommunication</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Surgeon">
+          <DataField>Surgeon</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Circulator">
+          <DataField>Circulator</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Scrub">
+          <DataField>Scrub</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
       </Fields>
@@ -169,6 +234,12 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                               </ChartMember>
                               <ChartMember>
                                 <Label>Total Added</Label>
+                              </ChartMember>
+                              <ChartMember>
+                                <Label>Bleeding</Label>
+                              </ChartMember>
+                              <ChartMember>
+                                <Label>Surgeon</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartSeriesHierarchy>
@@ -402,6 +473,95 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 </ChartEmptyPoints>
                                 <ChartItemInLegend>
                                   <LegendText>Avg Added</LegendText>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="Types">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Sum(Fields!Bleeding.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style />
+                                      <Label>= Cstr(Sum(Fields!Bleeding.Value)) + "/" +
+Cstr(Sum(Fields!Anatomy.Value)) + "/" +
+Cstr(Sum(Fields!Preference.Value)) + "/" +
+Cstr(Sum(Fields!CirculatorOpened.Value)) + "/" +
+Cstr(Sum(Fields!ScrubRequest.Value)) + "/" +
+Cstr(Sum(Fields!Error.Value)) + "/" +
+Cstr(Sum(Fields!Extra.Value)) + "/" +
+Cstr(Sum(Fields!Needed.Value)) + "/" +
+Cstr(Sum(Fields!NoTrust.Value)) + "/" +
+Cstr(Sum(Fields!Miscommunication.Value))</Label>
+                                      <Visible>true</Visible>
+                                    </ChartDataLabel>
+                                    <Style />
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Bar</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>Types</LegendText>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="Requestor">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Sum(Fields!Surgeon.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style />
+                                      <Label>= Cstr(Sum(Fields!Surgeon.Value)) + "/" +
+Cstr(Sum(Fields!Circulator.Value)) + "/" +
+Cstr(Sum(Fields!Scrub.Value))</Label>
+                                      <Visible>true</Visible>
+                                    </ChartDataLabel>
+                                    <Style />
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Bar</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>Requestor</LegendText>
                                 </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
@@ -665,7 +825,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             </ChartLegend>
                           </ChartLegends>
                           <Palette>Pacific</Palette>
-                          <DynamicHeight>=(2 + CountDistinct(Fields!ItemName.Value) * 0.75) &amp; " in"</DynamicHeight>
+                          <DynamicHeight>=(2 + CountDistinct(Fields!ItemName.Value)) &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>
