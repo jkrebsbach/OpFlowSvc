@@ -78,6 +78,8 @@ namespace OpFlow.Data
         public List<string> Cpt { get; set; }
         public string Instruments { get; set; }
         public int? MinCost { get; set; }
+        public decimal? MinOpen { get; set; }
+        public decimal? MinHold { get; set; }
         public string Order { get; set; }
         public string Group { get; set; }
     }

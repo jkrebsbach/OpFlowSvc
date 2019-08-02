@@ -21,6 +21,13 @@
 	item_master.unit_cost ItemCost,
 	card.description CardName,
 	card_item.qty_open CardQuantity,
+	CASE WHEN IsNull(card_item.qty_hold, '0') = '0' THEN 0
+		WHEN card_item.qty_open &lt; scic.qty_open THEN 0
+		ELSE card_item.qty_open - scic.qty_open END HoldUsed,
+	CASE WHEN IsNull(card_item.qty_hold, '0') &lt;&gt; '0' THEN 0
+		WHEN card_item.qty_open &lt; scic.qty_open THEN 0
+		ELSE card_item.qty_open - scic.qty_open
+	END TotalAdded,
 	scic.qty_open TotalUsed
 from surgery s
 JOIN surgery_card_item_counts scic ON s.surgery_id = scic.surgery_id
@@ -56,8 +63,16 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
           <DataField>CardQuantity</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
+        <Field Name="HoldUsed">
+          <DataField>HoldUsed</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
         <Field Name="TotalUsed">
           <DataField>TotalUsed</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="TotalAdded">
+          <DataField>TotalAdded</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
       </Fields>
@@ -149,6 +164,12 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                               <ChartMember>
                                 <Label>Item Name</Label>
                               </ChartMember>
+                              <ChartMember>
+                                <Label>Hold Used</Label>
+                              </ChartMember>
+                              <ChartMember>
+                                <Label>Total Added</Label>
+                              </ChartMember>
                             </ChartMembers>
                           </ChartSeriesHierarchy>
                           <ChartData>
@@ -160,10 +181,8 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                       <Y>=Avg(Fields!TotalUsed.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
-                                      <Style>
-                                        <Format>0.#</Format>
-                                      </Style>
-                                      <UseValueAsLabel>true</UseValueAsLabel>
+                                      <Style />
+                                      <Label>=Format(Avg(Fields!TotalUsed.Value), "0.#") + " (" + CStr(Sum(Fields!TotalUsed.Value)) + "/" + CStr(Sum(Fields!CardQuantity.Value)) + ")"</Label>
                                       <Visible>true</Visible>
                                     </ChartDataLabel>
                                     <Style />
@@ -301,6 +320,88 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 </ChartEmptyPoints>
                                 <ChartItemInLegend>
                                   <LegendText>Nbr Counts</LegendText>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="AvgHold">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Avg(Fields!HoldUsed.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style>
+                                        <Format>0.##</Format>
+                                      </Style>
+                                      <UseValueAsLabel>true</UseValueAsLabel>
+                                      <Visible>true</Visible>
+                                    </ChartDataLabel>
+                                    <Style />
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Bar</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>Avg Hold</LegendText>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="AvgAdded">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Avg(Fields!TotalAdded.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style>
+                                        <Format>0.##</Format>
+                                      </Style>
+                                      <UseValueAsLabel>true</UseValueAsLabel>
+                                      <Visible>true</Visible>
+                                    </ChartDataLabel>
+                                    <Style />
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Bar</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>Avg Added</LegendText>
                                 </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
@@ -564,7 +665,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             </ChartLegend>
                           </ChartLegends>
                           <Palette>Pacific</Palette>
-                          <DynamicHeight>=(3 + CountDistinct(Fields!ItemName.Value) / 2) &amp; " in"</DynamicHeight>
+                          <DynamicHeight>=(2 + CountDistinct(Fields!ItemName.Value) * 0.75) &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>
