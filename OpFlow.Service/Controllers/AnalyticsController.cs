@@ -236,6 +236,50 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("SupplyCostReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("supplyCost")]
+        [Route("supplyCost/{format}")]
+        public async Task<HttpResponseMessage> SupplyCostReport([FromBody] InstrumentUsagePost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            if (post.SpecialtyID == null &&
+                post.SurgeonID == null &&
+                post.CardID == null &&
+                post.ItemID == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
+            }
+
+            var analytics = await sqlHelper.GetSupplyCostReportDate(post.SpecialtyID, post.SurgeonID, user.ProviderID, user.LocationID);
+
+            var supplyWaste = analytics.Tables[0].DefaultView;
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["SupplyCost"] = supplyWaste.ToTable()
+            };
+            var result = ReportHelper.GetReport("SupplyCost", format, datasets);
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
+        }
+
+        // GET api/values/5
         [SwaggerOperation("TrayRationalizationReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsSummary>))]
         [HttpPut]
@@ -280,6 +324,42 @@ namespace OpFlow.Service.Controllers
             };
             var result = ReportHelper.GetReport("TrayRationalization", format, datasets);
             
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("TrayScopeReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsSummary>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("trayScope")]
+        [Route("trayScope/{format}")]
+        public async Task<HttpResponseMessage> TrayScopeReport([FromBody] TrayRationalizationReportPost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var analytics = await sqlHelper.GetAnalyticsTrayScopeData(post.SpecialtyId, post.TrayId, user.ProviderID, user.LocationID);
+
+            var rationalization = new DataView(analytics.Tables[0]);
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["TrayScope"] = rationalization.ToTable()
+            };
+            var result = ReportHelper.GetReport("TrayScope", format, datasets);
+
             if (format?.ToUpper() == "PDF")
             {
                 return ResponseHelper.PdfResponse(result);

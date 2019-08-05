@@ -216,6 +216,23 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
+        public async Task<DataSet> GetAnalyticsTrayScopeData(List<int> specialtyId, List<int> trayId, int providerId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var trayXml = GetIdentitySummary(trayId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayScope", parameters);
+
+            return dsSchedules;
+        }
+
         public async Task<DataSet> GetInstrumentUsageReportData(List<int> specialtyId, List<int> surgeonId, List<int> categoryId,
             List<int> procedureId, List<string> cptList, List<int> trayId, int providerId, int locationId)
         {
@@ -292,7 +309,24 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        
+
+        public async Task<DataSet> GetSupplyCostReportDate(List<int> specialtyId, List<int> surgeonId, int providerId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("GetAnalyticsSupplyCost", parameters);
+
+            return result;
+        }
+
         private string GetStringSummary(List<string> cptList)
         {
             if (cptList == null || !cptList.Any() || (cptList.Count == 1 && string.IsNullOrEmpty(cptList[0])))
@@ -2663,6 +2697,7 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, customItem.Usage);
                 AddColumn(doc, row, customItem.UsageType);
                 AddColumn(doc, row, customItem.RoleID);
+                AddColumn(doc, row, customItem.Setup);
             }
 
             return table.OuterXml;

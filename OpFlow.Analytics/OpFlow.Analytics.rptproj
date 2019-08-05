@@ -59,8 +59,10 @@
     <Report Include="InstrumentUsageCardTray.rdl" />
     <Report Include="InstrumentUsageTrayCard.rdl" />
     <Report Include="SalesReport.rdl" />
+    <Report Include="SupplyCost.rdl" />
     <Report Include="SupplyWaste.rdl" />
     <Report Include="TrayRationalization.rdl" />
+    <Report Include="TrayScope.rdl" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Reporting Services\Microsoft.ReportingServices.MSBuilder.targets" />
 </Project>

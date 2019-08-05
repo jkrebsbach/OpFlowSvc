@@ -34,6 +34,7 @@ namespace OpFlow.Data
 
         public bool CustomUsage { get; set; }
         public int Usage { get; set; }
+        public int? Setup { get; set; }
         public int? UsageType { get; set; }
 
         public static string GetCsvHeader()
