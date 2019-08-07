@@ -33,9 +33,11 @@ namespace OpFlow.Data
         public int CardID { get; set; }
 
         public bool CustomUsage { get; set; }
-        public int Usage { get; set; }
+        public int? Usage { get; set; }
         public int? Setup { get; set; }
         public int? UsageType { get; set; }
+        public int UsageEncoded => Usage ?? -1;
+        public int SetupEncoded => Setup ?? -1;
 
         public static string GetCsvHeader()
         {
