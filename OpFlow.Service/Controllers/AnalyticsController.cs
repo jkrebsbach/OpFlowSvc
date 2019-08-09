@@ -302,7 +302,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
-            var analytics = await sqlHelper.GetCardRedundancyReport(post.SpecialtyID, post.CardID, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetCardRedundancyReport(post.SpecialtyID, post.SurgeonID, post.CardID, user.ProviderID, user.LocationID);
 
             var cardRedundancy = analytics.Tables[0].DefaultView;
 

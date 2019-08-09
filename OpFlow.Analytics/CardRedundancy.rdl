@@ -13,7 +13,7 @@
     <DataSet Name="CardRedundancy">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>select 'aaaabc' as CardName, 'zzz' as IntrumentName, 'ddd' as TrayName, 5 as Quantity</CommandText>
+        <CommandText>select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'ddd' as TrayName, 5 as Quantity</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -21,8 +21,8 @@
           <DataField>CardName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="IntrumentName">
-          <DataField>IntrumentName</DataField>
+        <Field Name="InstrumentName">
+          <DataField>InstrumentName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="TrayName">
@@ -60,7 +60,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!CardName.Value</Value>
+                                  <Value>="Card: " + Fields!CardName.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                   </Style>
@@ -97,7 +97,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!IntrumentName.Value</Value>
+                                  <Value>=Fields!InstrumentName.Value</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -121,7 +121,7 @@
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>4.64458in</Height>
+                  <Height>3.155in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -439,20 +439,6 @@
                               <ColumnSeparatorColor>Black</ColumnSeparatorColor>
                             </ChartLegend>
                           </ChartLegends>
-                          <ChartTitles>
-                            <ChartTitle Name="Default">
-                              <Caption>Chart Title</Caption>
-                              <Style>
-                                <BackgroundGradientType>None</BackgroundGradientType>
-                                <FontSize>9pt</FontSize>
-                                <FontWeight>Normal</FontWeight>
-                                <TextAlign>Left</TextAlign>
-                                <VerticalAlign>Top</VerticalAlign>
-                                <Color>#a6a6a6</Color>
-                              </Style>
-                              <Position>TopLeft</Position>
-                            </ChartTitle>
-                          </ChartTitles>
                           <Palette>Pacific</Palette>
                           <ChartBorderSkin>
                             <Style>
@@ -509,14 +495,14 @@
                       <KeepWithGroup>After</KeepWithGroup>
                     </TablixMember>
                     <TablixMember>
-                      <Group Name="IntrumentName">
+                      <Group Name="InstrumentName">
                         <GroupExpressions>
-                          <GroupExpression>=Fields!IntrumentName.Value</GroupExpression>
+                          <GroupExpression>=Fields!InstrumentName.Value</GroupExpression>
                         </GroupExpressions>
                       </Group>
                       <SortExpressions>
                         <SortExpression>
-                          <Value>=Fields!IntrumentName.Value</Value>
+                          <Value>=Fields!InstrumentName.Value</Value>
                         </SortExpression>
                       </SortExpressions>
                       <TablixMembers>
@@ -528,8 +514,9 @@
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
+            <NoRowsMessage>No redundant instruments found</NoRowsMessage>
             <DataSetName>CardRedundancy</DataSetName>
-            <Height>5.14458in</Height>
+            <Height>3.655in</Height>
             <Width>6.79042in</Width>
             <Style>
               <Border>
@@ -538,7 +525,7 @@
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>5.14458in</Height>
+        <Height>3.655in</Height>
         <Style />
       </Body>
       <Width>6.79042in</Width>

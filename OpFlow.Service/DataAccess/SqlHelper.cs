@@ -310,14 +310,16 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<DataSet> GetCardRedundancyReport(List<int> specialtyId, List<int> cardId, int providerId, int locationId)
+        public async Task<DataSet> GetCardRedundancyReport(List<int> specialtyId, List<int> surgeonId, List<int> cardId, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
             var cardXml = GetIdentitySummary(cardId);
         
             var parameters = new[]
             {
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
@@ -2649,7 +2651,7 @@ namespace OpFlow.Service.DataAccess
         }
         
 
-        public async Task<int> UpdateSurgeryCount(int surgeryId, List<SurgeryCountItemPost> itemUsage, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryCount(int surgeryId, List<SurgeryCountItemPost> itemUsage, string countComments, int providerId, int locationId)
         {
             var usageSummary = GetUsageSummary(itemUsage);
             var dsParameters = new[]
@@ -2657,6 +2659,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
+                new SqlParameter("count_comments", countComments),
                 new SqlParameter("usage_summary", usageSummary ?? (object)DBNull.Value)
             };
             var update = await ExecuteNonQueryAsync("UpdateSurgeryCount", dsParameters);

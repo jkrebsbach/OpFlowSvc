@@ -1040,7 +1040,7 @@ namespace OpFlow.Service.Controllers
 
             try
             {
-                await sqlHelper.UpdateSurgeryCount(surgeryId, post.ItemCounts, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateSurgeryCount(surgeryId, post.ItemCounts, post.CountComments, user.ProviderID, user.LocationID);
                 await sqlHelper.UpdateSurgeryInstrumentCount(surgeryId, post.InstrumentCounts, user.ProviderID, user.LocationID);
                 await sqlHelper.UpdateSurgeryProposedCount(surgeryId, post.ProposedCounts, user.ProviderID, user.LocationID);
 
