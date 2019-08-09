@@ -341,15 +341,16 @@ namespace OpFlow.Data
         public int AuditsComplete { get; set; }
         public string TrayName { get; set; }
         public int CoveredInstruments { get; set; }
-        public int CurrentTrayItems { get; set; }
+        public decimal CurrentTrayItems { get; set; }
         public decimal UsedInstruments { get; set; }
         public int CommonInstruments { get; set; }
+        public decimal MissingInstruments { get; set; }
         public bool ReplaceCard { get; set; }
         //public decimal Overlap => (decimal)CoveredInstruments / CurrentTrayItems * 100;
         public decimal? OverlapPcnt =>
             (CurrentTrayItems == 0 ? 0 : UsedInstruments / CurrentTrayItems * 100);
 
-        public bool UncountedCard => CountsComplete == 0 && AuditsComplete == 0;
+        public bool AllIncluded => MissingInstruments <= 0;
     }
 
     public class TrayCountSummary

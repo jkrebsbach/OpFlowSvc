@@ -52,6 +52,7 @@
     <DataSource Include="OpFlow.rds" />
   </ItemGroup>
   <ItemGroup>
+    <Report Include="CardRedundancy.rdl" />
     <Report Include="ConcordanceReport.rdl" />
     <Report Include="CountSummary.rdl" />
     <Report Include="InstrumentUsage.rdl" />
@@ -60,6 +61,7 @@
     <Report Include="InstrumentUsageTrayCard.rdl" />
     <Report Include="SalesReport.rdl" />
     <Report Include="SupplyCost.rdl" />
+    <Report Include="SupplyOpen.rdl" />
     <Report Include="SupplyWaste.rdl" />
     <Report Include="TrayRationalization.rdl" />
     <Report Include="TrayScope.rdl" />

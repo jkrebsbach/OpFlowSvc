@@ -310,6 +310,23 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<DataSet> GetCardRedundancyReport(List<int> specialtyId, List<int> cardId, int providerId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var cardXml = GetIdentitySummary(cardId);
+        
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("GetAnalyticsCardRedundancy", parameters);
+
+            return result;
+        }
+
         public async Task<DataSet> GetSupplyCostReportDate(List<int> specialtyId, List<int> surgeonId, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
@@ -704,6 +721,7 @@ namespace OpFlow.Service.DataAccess
                     SpecialtyName = grp.First().SpecialtyName,
                     SurgeonName = grp.First().SurgeonName,
                     TimesUsed = grp.First().TimesUsed,
+                    MissingInstruments = grp.Sum(g => g.UsedInstruments - g.CurrentTrayItems),
                     CommonInstruments = grp.Sum(g => g.CommonInstruments),
                     UsedInstruments = grp.Sum(g => g.UsedInstruments),
                     CurrentTrayItems = grp.Sum(g => g.CurrentTrayItems)
