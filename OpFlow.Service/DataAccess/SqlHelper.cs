@@ -329,6 +329,25 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<DataSet> GetExcessInventoryReport(List<int> specialtyId, List<int> surgeonId, List<int> cardId, int providerId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+            var cardXml = GetIdentitySummary(cardId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("GetAnalyticsExcessInventory", parameters);
+
+            return result;
+        }
+
         public async Task<DataSet> GetSupplyCostReportDate(List<int> specialtyId, List<int> surgeonId, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
