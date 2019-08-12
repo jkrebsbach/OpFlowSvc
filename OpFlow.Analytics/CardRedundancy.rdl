@@ -13,7 +13,11 @@
     <DataSet Name="CardRedundancy">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'ddd' as TrayName, 5 as Quantity</CommandText>
+        <CommandText>select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'ddd' as TrayName, 5 as Quantity
+UNION
+select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'eee' as TrayName, 6 as Quantity
+UNION
+select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Quantity</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -136,7 +140,7 @@
                                 </Group>
                                 <SortExpressions>
                                   <SortExpression>
-                                    <Value>=Fields!TrayName.Value</Value>
+                                    <Value>=Fields!Quantity.Value</Value>
                                   </SortExpression>
                                 </SortExpressions>
                                 <Label>=Fields!TrayName.Value</Label>

@@ -174,6 +174,11 @@ namespace OpFlow.Service.Controllers
                     break;
             }
 
+            if (format == "CSV")
+            {
+                return ResponseHelper.CsvResponse(concordance.ToTable());
+            }
+
             var datasets = new Dictionary<string, DataTable>
             {
                 ["ConcordanceReport"] = concordance.ToTable()
@@ -304,7 +309,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
-            var analytics = await sqlHelper.GetCardRedundancyReport(post.SpecialtyID, post.SurgeonID, post.CardID, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetCardRedundancyReport(post.SpecialtyID, post.SurgeonID, post.CardID, post.MinQty, user.ProviderID, user.LocationID);
 
             var cardRedundancy = analytics.Tables[0].DefaultView;
 
@@ -348,6 +353,11 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetExcessInventoryReport(post.SpecialtyID, post.ProposedTrayID, post.Group, user.ProviderID, user.LocationID);
 
             var excessInventory = analytics.Tables[0].DefaultView;
+
+            if (format == "CSV")
+            {
+                return ResponseHelper.CsvResponse(excessInventory.ToTable());
+            }
 
             var datasets = new Dictionary<string, DataTable>
             {
