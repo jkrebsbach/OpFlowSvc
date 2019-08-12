@@ -22,6 +22,7 @@ namespace OpFlow.Data
         public string Surgeon { get; set; }
         public int QtyOpen { get; set; }
         public string QtyHold { get; set; }
+        public decimal? AvgSetup { get; set; }
         public decimal? AvgUsed { get; set; }
         public decimal? WasteAvg { get; set; }
     }
