@@ -68,6 +68,7 @@ namespace OpFlow.Data
 
     public class InstrumentUsagePost
     {
+        public List<int> ProposedTrayID { get; set; }
         public List<int> SpecialtyID { get; set; }
         public List<int> SurgeonID { get; set; }
         public List<int> CategoryID { get; set; }

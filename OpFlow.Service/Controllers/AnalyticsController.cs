@@ -37,6 +37,7 @@ namespace OpFlow.Service.Controllers
             var items = await sqlHelper.GetItems(null, null, true, user.ProviderID, user.LocationID);
             var roomGroups = await sqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
             var cpts = await sqlHelper.GetKnownCPTCodes(user.ProviderID, user.LocationID);
+            var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -51,7 +52,8 @@ namespace OpFlow.Service.Controllers
                     InstrumentCategories = lookups.Categories,
                     Items = items,
                     CardCategories = cardCategories,
-                    CPTs = cpts
+                    CPTs = cpts,
+                    ProposedTrays = proposedTrays
                 }
             });
         }
@@ -338,15 +340,12 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            if (post.SpecialtyID == null &&
-                post.SurgeonID == null &&
-                post.CardID == null &&
-                post.ItemID == null)
+            if (post.ProposedTrayID == null && post.SpecialtyID == null)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
-            var analytics = await sqlHelper.GetExcessInventoryReport(post.SpecialtyID, post.SurgeonID, post.CardID, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetExcessInventoryReport(post.SpecialtyID, post.ProposedTrayID, post.Group, user.ProviderID, user.LocationID);
 
             var excessInventory = analytics.Tables[0].DefaultView;
 

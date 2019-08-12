@@ -329,17 +329,16 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<DataSet> GetExcessInventoryReport(List<int> specialtyId, List<int> surgeonId, List<int> cardId, int providerId, int locationId)
+        public async Task<DataSet> GetExcessInventoryReport(List<int> specialtyId, List<int> proposedTrayId, string group, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
-            var surgeonXml = GetIdentitySummary(surgeonId);
-            var cardXml = GetIdentitySummary(cardId);
+            var proposedXml = GetIdentitySummary(proposedTrayId);
 
             var parameters = new[]
             {
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
-                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
-                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("proposed_tray_id", proposedXml ?? (object)DBNull.Value),
+                new SqlParameter("group_by", group),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -2678,7 +2677,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("count_comments", countComments),
+                new SqlParameter("count_comments", countComments ?? (object)DBNull.Value),
                 new SqlParameter("usage_summary", usageSummary ?? (object)DBNull.Value)
             };
             var update = await ExecuteNonQueryAsync("UpdateSurgeryCount", dsParameters);
