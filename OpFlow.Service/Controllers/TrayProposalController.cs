@@ -87,15 +87,14 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).FirstOrDefault();
+            var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).First();
             var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, true, user.ProviderID, user.LocationID);
-            var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
             var documents = await sqlHelper.GetProposedTrayApprovalDocuments(trayProposalId, user.ProviderID, user.LocationID);
             var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.ProviderID, user.LocationID);
             var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
             var trayCounts = await sqlHelper.GetTrayCountSummary(trayProposalId, user.ProviderID, user.LocationID);
             var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
-
+            
             proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
             foreach (var sourceTray in sourceTrays)
             {
@@ -108,7 +107,6 @@ namespace OpFlow.Service.Controllers
                 ReadOnly = (user.VendorID.HasValue && proposedTray?.VendorID != user.VendorID),
                 ProposedTray = proposedTray,
                 Instruments = instruments,
-                Cards = cardOverlaps.Where(i => i.OverlapPcnt >= (overlapPcnt ?? 0)),
                 ApprovalDocuments = documents,
                 Audits = audits,
                 Counts = counts,
@@ -137,7 +135,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
         [Route("cardOverlap/{trayProposalId}")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetCardOverlap(int trayProposalId, string orderBy, string sortBy, int? overlapPcnt = 0)
+        public async Task<HttpResponseMessage> GetCardOverlap(int trayProposalId, string orderBy = null, string sortBy = null, int? overlapPcnt = 0)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);

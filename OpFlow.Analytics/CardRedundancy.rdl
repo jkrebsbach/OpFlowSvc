@@ -13,11 +13,11 @@
     <DataSet Name="CardRedundancy">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'ddd' as TrayName, 5 as Quantity
+        <CommandText>select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'ddd' as TrayName, 5 as Quantity, 3.5 as Usage, 3 as TrayOpen
 UNION
-select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'eee' as TrayName, 6 as Quantity
+select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'eee' as TrayName, 6 as Quantity, 3.5 as Usage, 3 as TrayOpen
 UNION
-select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Quantity</CommandText>
+select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Quantity, 3.5 as Usage, 3 as TrayOpen</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -35,6 +35,14 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
         </Field>
         <Field Name="Quantity">
           <DataField>Quantity</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Usage">
+          <DataField>Usage</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="TrayOpen">
+          <DataField>TrayOpen</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
       </Fields>
@@ -152,6 +160,12 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                               <ChartMember>
                                 <Label>Quantity</Label>
                               </ChartMember>
+                              <ChartMember>
+                                <Label>Usage</Label>
+                              </ChartMember>
+                              <ChartMember>
+                                <Label>Tray Open</Label>
+                              </ChartMember>
                             </ChartMembers>
                           </ChartSeriesHierarchy>
                           <ChartData>
@@ -164,6 +178,80 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
                                       <Style />
+                                      <UseValueAsLabel>true</UseValueAsLabel>
+                                      <Visible>true</Visible>
+                                    </ChartDataLabel>
+                                    <Style />
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Bar</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="Usage">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Sum(Fields!Usage.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style />
+                                      <UseValueAsLabel>true</UseValueAsLabel>
+                                      <Visible>true</Visible>
+                                    </ChartDataLabel>
+                                    <Style />
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Bar</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="TrayOpen">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Sum(Fields!TrayOpen.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style />
+                                      <UseValueAsLabel>true</UseValueAsLabel>
+                                      <Visible>true</Visible>
                                     </ChartDataLabel>
                                     <Style />
                                     <ChartMarker>

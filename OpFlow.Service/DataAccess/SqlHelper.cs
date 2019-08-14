@@ -34,12 +34,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<ItemRationalization>> GetItemRationalization(int specialtyId,
+        public async Task<List<ItemRationalization>> GetItemRationalization(int? specialtyId, int? surgeonId,
             decimal? minCost, decimal? maxCost, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonId ?? (object)DBNull.Value),
                 new SqlParameter("min_cost", minCost ?? (object)DBNull.Value),
                 new SqlParameter("max_cost", maxCost ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
@@ -55,6 +56,38 @@ namespace OpFlow.Service.DataAccess
                 var item = result.FirstOrDefault(i => i.ItemID == card.ItemID);
                 item?.Cards.Add(card);
             }
+
+            return result;
+        }
+
+        public async Task<List<ItemRationalization>> SearchItems(string itemName,
+            decimal? minCost, decimal? maxCost, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("item_name", itemName ?? (object)DBNull.Value),
+                new SqlParameter("min_cost", minCost ?? (object)DBNull.Value),
+                new SqlParameter("max_cost", maxCost ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("SearchItems", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ItemRationalization>();
+            
+            return result;
+        }
+
+        public async Task<int> UpdateItemCountNeeded(int itemId, bool countNeeded, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("item_id", itemId),
+                new SqlParameter("count_needed", countNeeded),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateItemCountNeeded", parameters);
 
             return result;
         }
