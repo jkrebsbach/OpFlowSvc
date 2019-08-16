@@ -30,8 +30,8 @@ namespace OpFlow.Data
     public class ItemRationalizationCase
     {
         public int SurgeryID { get; set; }
-        public DateTime SurgeryDate { get; set; }
-        public TimeSpan SurgeryTime { get; set; }
+        public DateTime ScheduleDate { get; set; }
+        public TimeSpan ScheduleTime { get; set; }
         public string RoomDescription { get; set; }
         public string CardDescription { get; set; }
         public string SurgeonName { get; set; }
@@ -40,7 +40,7 @@ namespace OpFlow.Data
 
         public List<ItemRationalizationCaseItem> Items { get; set; }
         
-        public DateTime ScheduleTime => SurgeryDate.Add(SurgeryTime);
+        public DateTime ScheduleDateTime => ScheduleDate.Add(ScheduleTime);
 
         public ItemRationalizationCase()
         {

@@ -44,7 +44,13 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetDisposableAudits", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<TraySurgeryAudit>();
-            
+            var cptCodes = dsSchedules.Tables[1].DataTableToList<SurgeryCPTCode>();
+
+            foreach (var cptCode in cptCodes)
+            {
+                result.FirstOrDefault(r => r.SurgeryID == cptCode.SurgeryID)?.CptCodes.Add(cptCode);
+            }
+
             return result;
         }
 
@@ -58,7 +64,13 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetDisposableCounts", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<TraySurgeryAudit>();
-            
+            var cptCodes = dsSchedules.Tables[1].DataTableToList<SurgeryCPTCode>();
+
+            foreach (var cptCode in cptCodes)
+            {
+                result.FirstOrDefault(r => r.SurgeryID == cptCode.SurgeryID)?.CptCodes.Add(cptCode);
+            }
+
             return result;
         }
 
