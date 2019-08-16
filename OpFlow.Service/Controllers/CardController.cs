@@ -100,13 +100,13 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCardList")]
         [Route("api/card/list")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
-        public async Task<HttpResponseMessage> GetCardList(int? userId = null, int? procedureId = null, int? bundleId = null, bool? defaultFilter = null)
+        public async Task<HttpResponseMessage> GetCardList(int? userId = null, int? specialtyId = null, int? procedureId = null, int? bundleId = null, bool? defaultFilter = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             var defaultCardOnly = defaultFilter ?? false;
-            var cardList = await sqlHelper.GetCardList(userId, procedureId, bundleId, defaultCardOnly,
+            var cardList = await sqlHelper.GetCardList(userId, specialtyId, procedureId, bundleId, defaultCardOnly,
                 user.ProviderID, user.LocationID);
             var result = cardList.OrderBy(c => c.CardDescription).ToList();
 
@@ -149,13 +149,28 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetCardCategories")]
         [Route("api/card/cardCategories")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardUser>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
         public async Task<HttpResponseMessage> GetCardCategories()
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             var result = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("UpdateCardCategories")]
+        [Route("api/card/cardCategories")]
+        [HttpPost]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        public async Task<HttpResponseMessage> UpdateCardCategories(UpdateCardCategoryPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var result = await sqlHelper.UpdateCardCategories(post.Cards, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -206,7 +221,7 @@ namespace OpFlow.Service.Controllers
                     RoomDescription = "None"
                 };
 
-            result.Cards = await sqlHelper.GetCardList(userId, null, bundleId, false, user.ProviderID, user.LocationID);
+            result.Cards = await sqlHelper.GetCardList(userId, null, null, bundleId, false, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

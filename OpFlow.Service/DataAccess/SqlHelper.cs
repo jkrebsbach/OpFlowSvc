@@ -1677,11 +1677,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<Card>> GetCardList(int? userId, int? procedureId, int? bundleId, bool defaultCardOnly, int providerId, int locationId)
+        public async Task<List<Card>> GetCardList(int? userId, int? specialtyId, int? procedureId, int? bundleId, bool defaultCardOnly, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
                 new SqlParameter("default_flag", defaultCardOnly),
@@ -1758,6 +1759,43 @@ namespace OpFlow.Service.DataAccess
             var result = dsSchedules.Tables[0].DataTableToList<CardCategory>();
 
             return result;
+        }
+        public async Task<int> UpdateCardCategories(List<Card> cardCategories, int providerId, int locationId)
+        {
+            var categoryData = GetCardCategorySummary(cardCategories);
+
+            var parameters = new[]
+            {
+                new SqlParameter("card_category", categoryData),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("UpdateCardCategories", parameters);
+
+            return result;
+        }
+        private string GetCardCategorySummary(List<Card> cardData)
+        {
+            if (cardData == null || !cardData.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var card in cardData)
+            {
+                // prevent adding invalid data
+                if (card.CardID <= 0)
+                    continue;
+
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, card.CardID);
+                AddColumn(doc, row, card.CardCategoryID);
+            }
+
+            return table.OuterXml;
         }
 
         public async Task<int> UpdateCardFeedback(int feedbackId, bool response, int providerId, int locationId)

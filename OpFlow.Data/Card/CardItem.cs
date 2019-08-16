@@ -100,6 +100,11 @@ namespace OpFlow.Data
         public string CategoryName { get; set; }
     }
 
+    public class UpdateCardCategoryPost
+    {
+        public List<Card> Cards { get; set; }
+    }
+
     public class CardSummary
     {
         public string ProcedureName { get; set; }

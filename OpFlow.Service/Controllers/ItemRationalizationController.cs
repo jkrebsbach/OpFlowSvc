@@ -30,11 +30,13 @@ namespace OpFlow.Service.Controllers
             var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
             var audits = await sqlHelper.GetDisposableAudits(user.ProviderID, user.LocationID);
             var counts = await sqlHelper.GetDisposableCounts(user.ProviderID, user.LocationID);
+            var categories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 Specialties = specialties,
                 Surgeons = surgeons,
+                Categories = categories,
                 Audits = audits,
                 Counts = counts
             });

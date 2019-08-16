@@ -22,6 +22,7 @@ namespace OpFlow.Data
         public string SpecialtyDefaultFlag { get; set; }
         public string LocationName { get; set; }
         public string OwnerFullName { get; set; }
+        public string OwnerTitle { get; set; }
         public string OwnerLastName { get; set; }
         public string OwnerFirstName { get; set; }
         public int FlowID { get; set; }
