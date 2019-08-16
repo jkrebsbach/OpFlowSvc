@@ -34,6 +34,34 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<TraySurgeryAudit>> GetDisposableAudits(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetDisposableAudits", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TraySurgeryAudit>();
+            
+            return result;
+        }
+
+        public async Task<List<TraySurgeryAudit>> GetDisposableCounts(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetDisposableCounts", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TraySurgeryAudit>();
+            
+            return result;
+        }
+
         public async Task<List<ItemRationalization>> GetItemRationalization(int? specialtyId, int? surgeonId,
             decimal? minCost, decimal? maxCost, int providerId, int locationId)
         {
@@ -75,6 +103,50 @@ namespace OpFlow.Service.DataAccess
 
             var result = dsSchedules.Tables[0].DataTableToList<ItemRationalization>();
             
+            return result;
+        }
+
+        public async Task<List<ItemRationalizationCase>> GetItemAuditCases(int? specialtyId, string itemName,
+            int? surgeonId, int? cardId,
+            DateTime beginDate, DateTime endDate, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("item_name", itemName ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonId ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardId ?? (object)DBNull.Value),
+                new SqlParameter("begin_date", beginDate),
+                new SqlParameter("end_date", endDate),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetItemAuditCases", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ItemRationalizationCase>();
+            var items = dsSchedules.Tables[1].DataTableToList<ItemRationalizationCaseItem>();
+
+            foreach (var item in items)
+            {
+                result.FirstOrDefault(r => r.SurgeryID == item.SurgeryID)?.Items.Add(item);
+            }
+
+            return result;
+        }
+
+        public async Task<int> UpdateDisposableAudit(List<int> surgeryId, string target, int providerId, int locationId)
+        {
+            var surgeryXml = GetIdentitySummary(surgeryId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryXml),
+                new SqlParameter("target", target),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateDisposableAudit", parameters);
+
             return result;
         }
 

@@ -26,4 +26,38 @@ namespace OpFlow.Data
         public decimal? AvgUsed { get; set; }
         public decimal? WasteAvg { get; set; }
     }
+
+    public class ItemRationalizationCase
+    {
+        public int SurgeryID { get; set; }
+        public DateTime SurgeryDate { get; set; }
+        public TimeSpan SurgeryTime { get; set; }
+        public string RoomDescription { get; set; }
+        public string CardDescription { get; set; }
+        public string SurgeonName { get; set; }
+        public int? DisposableAuditID { get; set; }
+        public int? DisposableCountID { get; set; }
+
+        public List<ItemRationalizationCaseItem> Items { get; set; }
+        
+        public DateTime ScheduleTime => SurgeryDate.Add(SurgeryTime);
+
+        public ItemRationalizationCase()
+        {
+            Items = new List<ItemRationalizationCaseItem>();
+        }
+    }
+
+    public class ItemRationalizationCaseItem
+    {
+        public int SurgeryID { get; set; }
+        public int ItemID { get; set; }
+        public string ItemDescription { get; set; }
+    }
+
+    public class ItemAuditPost
+    {
+        public List<int> Surgeries { get; set; }
+        public string Target { get; set; }
+    }
 }
