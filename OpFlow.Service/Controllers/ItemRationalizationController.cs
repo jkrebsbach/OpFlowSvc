@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -82,6 +84,21 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
+        [SwaggerOperation("FinishDisposableAudit")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("auditComplete")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> FinishDisposableAudit(int surgeryId, string target)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var result = await sqlHelper.UpdateDisposableAuditComplete(surgeryId, target, user.UserID, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
         [SwaggerOperation("PostItemAudits")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("audits")]
@@ -91,13 +108,43 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            await sqlHelper.UpdateDisposableAudit(post.Surgeries, post.Target, user.ProviderID, user.LocationID);
+            await sqlHelper.InsertDisposableAudit(post.Surgeries, post.Target, user.ProviderID, user.LocationID);
 
             List<TraySurgeryAudit> result;
             if (post.Target == "A")
                 result = await sqlHelper.GetDisposableAudits(user.ProviderID, user.LocationID);
             else
                 result = await sqlHelper.GetDisposableCounts(user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
+        [SwaggerOperation("PutItemAudits")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("audits")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutItemAudits([FromBody] ItemAuditPut post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var result = await sqlHelper.UpdateDisposableAudit(post.Audits, post.Target, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
+        [SwaggerOperation("DeleteItemAudit")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("audits")]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteItemAudit(int surgeryId, string target)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var result = await sqlHelper.DeleteDisposableAudit(surgeryId, target, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -114,6 +161,48 @@ namespace OpFlow.Service.Controllers
             var result = await sqlHelper.UpdateItemCountNeeded(itemId, countNeeded, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
+        [Route("audits/csv", Name = "GetAuditCsv")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetAuditCsv(string target)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            List<TraySurgeryAudit> audits;
+            if (target == "A")
+            {
+                audits = await sqlHelper.GetDisposableAudits(user.ProviderID, user.LocationID);
+            }
+            else
+            {
+                audits = await sqlHelper.GetDisposableCounts(user.ProviderID, user.LocationID);
+            }
+
+            var extract = "Surgeon, Card, Specialty, Old Tray, New Tray, Intrument, Proposed\r\n";
+            foreach (var audit in audits)
+            {
+                extract +=
+                    $"\"{audit.SurgeonName?.Trim().Replace("\"", "\"\"")}\",\"{audit.RoomDescription?.Trim().Replace("\"", "\"\"")}\",\"{audit.RoomDescription.Replace("\"", "\"\"")}\",\"{audit.RoomDescription.Replace("\"", "\"\"")}\",\"{audit.RoomDescription.Replace("\"", "\"\"")}\",\"{audit.RoomDescription.Replace("\"", "\"\"")}\",\"{audit.RoomDescription}\"\r\n";
+            }
+
+            var extractBytes = System.Text.Encoding.Unicode.GetBytes(extract);
+            var memStream = new MemoryStream(extractBytes);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                    { FileName = "DisposableExport.csv", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
         }
     }
 }

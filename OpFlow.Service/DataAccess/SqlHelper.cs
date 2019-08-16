@@ -146,7 +146,24 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateDisposableAudit(List<int> surgeryId, string target, int providerId, int locationId)
+        public async Task<int> UpdateDisposableAuditComplete(int surgeryId, string target, int userId,
+            int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("target", target),
+                new SqlParameter("user_id", userId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateDisposableAuditComplete", parameters);
+
+            return result;
+        }
+        
+
+        public async Task<int> InsertDisposableAudit(List<int> surgeryId, string target, int providerId, int locationId)
         {
             var surgeryXml = GetIdentitySummary(surgeryId);
 
@@ -157,9 +174,59 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
+            var result = await ExecuteNonQueryAsync("InsertDisposableAudit", parameters);
+
+            return result;
+        }
+
+        public async Task<int> UpdateDisposableAudit(List<ItemAuditUpdate> audits, string target, int providerId, int locationId)
+        {
+            var auditXml = GetAuditUpdateSummary(audits);
+
+            var parameters = new[]
+            {
+                new SqlParameter("audits", auditXml),
+                new SqlParameter("target", target),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
             var result = await ExecuteNonQueryAsync("UpdateDisposableAudit", parameters);
 
             return result;
+        }
+
+        public async Task<int> DeleteDisposableAudit(int surgeryId, string target, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("target", target),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("DeleteDisposableAudit", parameters);
+
+            return result;
+        }
+
+        private string GetAuditUpdateSummary(List<ItemAuditUpdate> surgeries)
+        {
+            if (surgeries == null || !surgeries.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var surgery in surgeries)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, surgery.SurgeryID);
+                AddColumn(doc, row, surgery.Comment);
+            }
+
+            return table.OuterXml;
         }
 
         public async Task<int> UpdateItemCountNeeded(int itemId, bool countNeeded, int providerId, int locationId)

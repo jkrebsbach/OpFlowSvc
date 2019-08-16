@@ -60,4 +60,16 @@ namespace OpFlow.Data
         public List<int> Surgeries { get; set; }
         public string Target { get; set; }
     }
+
+    public class ItemAuditPut
+    {
+        public List<ItemAuditUpdate> Audits { get; set; }
+        public string Target { get; set; }
+    }
+
+    public class ItemAuditUpdate
+    {
+        public int SurgeryID { get; set; }
+        public string Comment { get; set; }
+    }
 }
