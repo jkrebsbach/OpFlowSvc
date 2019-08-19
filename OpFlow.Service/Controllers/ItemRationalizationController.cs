@@ -42,6 +42,21 @@ namespace OpFlow.Service.Controllers
             });
         }
 
+        // GET api/values/5
+        [SwaggerOperation("GetCardCategories")]
+        [Route("cardCategories")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardWithCategory>))]
+        public async Task<HttpResponseMessage> GetCardCategories(int? surgeonId, int? specialtyId, string cardName, string hierarchyLevel, int? cardCategoryId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var result = await sqlHelper.GetCardCategoryXRef(surgeonId, specialtyId, cardName, hierarchyLevel, cardCategoryId,
+                user.ProviderID, user.LocationID);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
         [SwaggerOperation("GetItemRationalizations")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemRationalization>))]
         [Route("item")]
@@ -83,6 +98,36 @@ namespace OpFlow.Service.Controllers
             var items = await sqlHelper.GetItemAuditCases(specialtyId, itemName, surgeonId, cardId, beginDate, endDate, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, items);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("UpdateCardCategories")]
+        [Route("cardCategories")]
+        [HttpPost]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        public async Task<HttpResponseMessage> UpdateCardCategories(UpdateCardCategoryPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var result = await sqlHelper.UpdateCardCategories(post.HierarchyLevel, post.CardCategoryID, post.Cards, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("DeleteCardCategoryXRef")]
+        [Route("cardCategories/{cardCategoryXrefId}")]
+        [HttpDelete]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        public async Task<HttpResponseMessage> DeleteCardCategoryXRef(int cardCategoryXrefId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var result = await sqlHelper.DeleteCardCategoryXRef(cardCategoryXrefId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y

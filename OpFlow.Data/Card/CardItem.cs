@@ -100,9 +100,24 @@ namespace OpFlow.Data
         public string CategoryName { get; set; }
     }
 
+    public class CardWithCategory : Card
+    {
+        public List<CardCategoryXRef> CardCategories { get; set; }
+    }
+
+    public class CardCategoryXRef
+    {
+        public int CardID { get; set; }
+        public int CardCategoryID { get; set; }
+        public string HierarchyLevel { get; set; }
+        public string CardCategory { get; set; }
+    }
+
     public class UpdateCardCategoryPost
     {
-        public List<Card> Cards { get; set; }
+        public string HierarchyLevel { get; set; }
+        public int CardCategoryID { get; set; }
+        public List<int> Cards { get; set; }
     }
 
     public class CardSummary

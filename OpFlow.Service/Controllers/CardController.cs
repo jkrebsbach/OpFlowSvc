@@ -14,6 +14,7 @@ using Swashbuckle.Swagger.Annotations;
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
+    [RoutePrefix("api/card")]
     public class CardController : ApiController
     {
 
@@ -31,7 +32,7 @@ namespace OpFlow.Service.Controllers
         }
 
         [SwaggerOperation("GetById")]
-        [Route("api/card/details")]
+        [Route("details")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardDetail))]
         public async Task<HttpResponseMessage> GetDetails(int cardId)
         {
@@ -56,7 +57,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values/5
         [SwaggerOperation("GetUsageHistory")]
-        [Route("api/card/usageHistory")]
+        [Route("usageHistory")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardUsageHistory))]
         public async Task<HttpResponseMessage> GetUsageHistory(int surgeryId)
         {
@@ -70,7 +71,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values/5
         [SwaggerOperation("GetCardItems")]
-        [Route("api/card/carditems")]
+        [Route("carditems")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardItem>))]
         public async Task<HttpResponseMessage> GetCardItems(int cardId)
         {
@@ -84,7 +85,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values/5
         [SwaggerOperation("GetCardSurgeryDelays")]
-        [Route("api/card/delays")]
+        [Route("delays")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
         public async Task<HttpResponseMessage> GetCardSurgeryDelays(int surgeryId)
         {
@@ -98,7 +99,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values/5
         [SwaggerOperation("GetCardList")]
-        [Route("api/card/list")]
+        [Route("list")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
         public async Task<HttpResponseMessage> GetCardList(int? userId = null, int? specialtyId = null, int? procedureId = null, int? bundleId = null, bool? defaultFilter = null)
         {
@@ -115,7 +116,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values/5
         [SwaggerOperation("UsedCardList")]
-        [Route("api/card/listUsed")]
+        [Route("listUsed")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
         [HttpPost]
         public async Task<HttpResponseMessage> UsedCardList([FromBody] UsedCardSearchPost post)
@@ -132,7 +133,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values/5
         [SwaggerOperation("GetEditFeedback")]
-        [Route("api/card/feedback")]
+        [Route("feedback")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardItemFeedback>))]
         [HttpGet]
         public async Task<HttpResponseMessage> GetEditFeedback(int? specialtyId = null, int? userId = null, int? cardId = null, DateTime? beginDate = null, DateTime? endDate = null)
@@ -148,7 +149,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values/5
         [SwaggerOperation("GetCardCategories")]
-        [Route("api/card/cardCategories")]
+        [Route("cardCategories")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
         public async Task<HttpResponseMessage> GetCardCategories()
         {
@@ -161,23 +162,8 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("UpdateCardCategories")]
-        [Route("api/card/cardCategories")]
-        [HttpPost]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        public async Task<HttpResponseMessage> UpdateCardCategories(UpdateCardCategoryPost post)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-
-            var result = await sqlHelper.UpdateCardCategories(post.Cards, user.ProviderID, user.LocationID);
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
-        }
-
-        // GET api/values/5
         [SwaggerOperation("PostEditFeedback")]
-        [Route("api/card/feedback")]
+        [Route("feedback")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
         public async Task<HttpResponseMessage> PostEditFeedback(int feedbackId, [FromBody]FeedbackRequest post)
@@ -191,7 +177,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/card/users")]
+        [Route("users")]
         [SwaggerOperation("GetCardUsers")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardUser>))]
         public async Task<HttpResponseMessage> GetCardUsers(int cardId, int? typeId = null)
@@ -205,7 +191,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/card/bundledefault")]
+        [Route("bundledefault")]
         [SwaggerOperation("GetBundleDefaultCardFlowRoom")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardFlowRoom))]
         public async Task<HttpResponseMessage> GetBundleDefaultCardFlowRoom(int bundleId, int? userId = null)
@@ -227,7 +213,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/card/importSurgeons")]
+        [Route("importSurgeons")]
         [SwaggerOperation("GetImportSurgeons")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgeon>))]
         public async Task<HttpResponseMessage> GetImportSurgeons()
@@ -241,7 +227,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/card/importProcedures")]
+        [Route("importProcedures")]
         [SwaggerOperation("GetImportProcedures")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Procedure>))]
         public async Task<HttpResponseMessage> GetImportProcedures(string importSurgeon)
@@ -255,7 +241,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/card/proceduredefault")]
+        [Route("proceduredefault")]
         [SwaggerOperation("GetProcedureDefaultCardFlowRoom")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardFlowRoom))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
@@ -274,7 +260,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/card/specialtyproceduredefault")]
+        [Route("specialtyproceduredefault")]
         [SwaggerOperation("GetSpecialtyProcedureDefaultCardFlowRoom")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardFlowRoom))]
         public async Task<HttpResponseMessage> GetSpecialtyProcedureDefaultCardFlowRoom(string cptCode)
@@ -288,7 +274,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/card/multipleproceduresdefault")]
+        [Route("multipleproceduresdefault")]
         [SwaggerOperation("GetMultipleProceduresDefaultCardFlowRoom")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
         public async Task<HttpResponseMessage> GetMultipleProceduresDefaultCardFlowRoom(List<string> cptCodes)
@@ -309,7 +295,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/card/specialtymultipleproceduresdefault")]
+        [Route("specialtymultipleproceduresdefault")]
         [SwaggerOperation("GetSpecialtyMultipleProceduresDefaultCardFlowRoom")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardFlowRoom>))]
         public async Task<HttpResponseMessage> GetSpecialtyMultipleProceduresDefaultCardFlowRoom(int specialtyId, string cptCodes)
@@ -325,7 +311,7 @@ namespace OpFlow.Service.Controllers
         // PUT api/values
         [SwaggerOperation("UpdateQuantity")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/card/updateQuantity", Name = "UpdateQuantity")]
+        [Route("updateQuantity", Name = "UpdateQuantity")]
         [HttpPut]
         public async Task<IHttpActionResult> UpdateItemQty(int cardId, [FromBody]CardQuantityEdit cardQuantity)
         {
@@ -340,7 +326,7 @@ namespace OpFlow.Service.Controllers
         // PUT api/values
         [SwaggerOperation("UpdateQuantityRequest")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/card/updateQuantityRequest", Name = "UpdateQuantityRequest")]
+        [Route("updateQuantityRequest", Name = "UpdateQuantityRequest")]
         [HttpPut]
         public async Task<IHttpActionResult> UpdateItemQtyRequest(int cardId, int surgeryId, [FromBody]CardQuantityEditRequest cardQuantity)
         {
@@ -363,7 +349,7 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("AssignFlow")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/card/assignFlow", Name = "AssignFlowCard")]
+        [Route("assignFlow", Name = "AssignFlowCard")]
         public async Task<HttpResponseMessage> AssignToCard(int cardId, int flowId)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -377,7 +363,7 @@ namespace OpFlow.Service.Controllers
         // POST api/values
         [SwaggerOperation("AssignRoomSetup")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/card/assignRoomSetup", Name = "AssignRoomSetupCard")]
+        [Route("assignRoomSetup", Name = "AssignRoomSetupCard")]
         public async Task<HttpResponseMessage> AssignRoomSetupToCard(int cardId, int roomSetupId)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -390,7 +376,7 @@ namespace OpFlow.Service.Controllers
 
         [SwaggerOperation("AssignCardUser")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/card/cardUser", Name = "AssignCardUser")]
+        [Route("cardUser", Name = "AssignCardUser")]
         [HttpPost]
         public async Task<IHttpActionResult> AssignCardUser(int cardId, int userId)
         {
@@ -404,7 +390,7 @@ namespace OpFlow.Service.Controllers
 
         [SwaggerOperation("DeleteCardUser")]
         [SwaggerResponse(HttpStatusCode.Created)]
-        [Route("api/card/cardUser", Name = "DeleteCardUser")]
+        [Route("cardUser", Name = "DeleteCardUser")]
         [HttpDelete]
         public async Task<IHttpActionResult> DeleteCardUser(int cardId, int userId)
         {
@@ -419,7 +405,7 @@ namespace OpFlow.Service.Controllers
         // PUT api/values
         [SwaggerOperation("DeleteCardItem")]
         [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
-        [Route("api/card/cardItem", Name = "DeleteCardItem")]
+        [Route("cardItem", Name = "DeleteCardItem")]
         [HttpDelete]
         public async Task<HttpResponseMessage> DeleteCardItem(int cardId, int itemId)
         {
@@ -434,7 +420,7 @@ namespace OpFlow.Service.Controllers
         // PUT api/values
         [SwaggerOperation("AssignCardItem")]
         [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
-        [Route("api/card/cardItem", Name = "AssignCardItem")]
+        [Route("cardItem", Name = "AssignCardItem")]
         [HttpPut]
         public async Task<HttpResponseMessage> PutCardItem(int cardId, int itemId, [FromBody]CardItemPost value)
         {
@@ -449,7 +435,7 @@ namespace OpFlow.Service.Controllers
         // PUT api/values
         [SwaggerOperation("AssignCardProcedure")]
         [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
-        [Route("api/card/cardProcedure", Name = "AssignCardProcedure")]
+        [Route("cardProcedure", Name = "AssignCardProcedure")]
         [HttpPut]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
@@ -465,7 +451,7 @@ namespace OpFlow.Service.Controllers
 
         // PUT api/values
         [SwaggerOperation("DeleteCardProcedure")]
-        [Route("api/card/cardProcedure", Name = "DeleteCardProcedure")]
+        [Route("cardProcedure", Name = "DeleteCardProcedure")]
         [HttpDelete]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]

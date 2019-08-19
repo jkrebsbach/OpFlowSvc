@@ -1706,6 +1706,34 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<CardWithCategory>> GetCardCategoryXRef(int? userId, int? specialtyId, string cardName, string hierarchyLevel, int? cardCategoryId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("card_name", cardName ?? (object)DBNull.Value),
+                new SqlParameter("hierarchy_level", hierarchyLevel ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryId ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetCardCategoryXRef", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<CardWithCategory>();
+            var categories = dsSchedules.Tables[1].DataTableToList<CardCategoryXRef>();
+
+            foreach (var cardCategory in categories.GroupBy(c => c.CardID))
+            {
+                var card = result.FirstOrDefault(c => c.CardID == cardCategory.Key);
+
+                if (card != null)
+                    card.CardCategories = cardCategory.ToList();
+            }
+
+            return result;
+        }
+
         public async Task<List<Card>> GetUsedCardList(List<int> userIds, List<int> trayIds, List<int> categoryIds, int providerId, int locationId)
         {
             var userXml = GetIdentitySummary(userIds);
@@ -1760,13 +1788,16 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public async Task<int> UpdateCardCategories(List<Card> cardCategories, int providerId, int locationId)
+
+        public async Task<int> UpdateCardCategories(string hierarchyLevel, int cardCategoryId, List<int> cards, int providerId, int locationId)
         {
-            var categoryData = GetCardCategorySummary(cardCategories);
+            var cardData = GetIdentitySummary(cards);
 
             var parameters = new[]
             {
-                new SqlParameter("card_category", categoryData),
+                new SqlParameter("hierarchy_level", hierarchyLevel),
+                new SqlParameter("card_category_id", cardCategoryId),
+                new SqlParameter("cards", cardData),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
@@ -1774,28 +1805,18 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        private string GetCardCategorySummary(List<Card> cardData)
+
+        public async Task<int> DeleteCardCategoryXRef(int cardCategoryXRefId, int providerId, int locationId)
         {
-            if (cardData == null || !cardData.Any())
-                return null;
-
-            var doc = new XmlDocument();
-            var table = doc.CreateElement("table");
-
-            foreach (var card in cardData)
+            var parameters = new[]
             {
-                // prevent adding invalid data
-                if (card.CardID <= 0)
-                    continue;
+                new SqlParameter("card_category_xref_id", cardCategoryXRefId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("DeleteCardCategoryXRef", parameters);
 
-                var row = doc.CreateElement("row");
-                table.AppendChild(row);
-
-                AddColumn(doc, row, card.CardID);
-                AddColumn(doc, row, card.CardCategoryID);
-            }
-
-            return table.OuterXml;
+            return result;
         }
 
         public async Task<int> UpdateCardFeedback(int feedbackId, bool response, int providerId, int locationId)
