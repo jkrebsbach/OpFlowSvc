@@ -82,6 +82,7 @@ namespace OpFlow.Data
         public int? MinQty { get; set; }
         public decimal? MinOpen { get; set; }
         public decimal? MinHold { get; set; }
+        public int? Redundancy { get; set; }
         public string Order { get; set; }
         public string Group { get; set; }
     }
@@ -93,6 +94,7 @@ namespace OpFlow.Data
         public List<int> TrayId { get; set; }
         public int? MinSize { get; set; }
         public string Order {get;set;}
+        public string Group { get; set; }
     }
 
     public class CountSummaryReportPost

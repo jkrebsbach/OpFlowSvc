@@ -494,7 +494,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<DataSet> GetCardRedundancyReport(List<int> specialtyId, List<int> surgeonId, List<int> cardId, int? minQty, int providerId, int locationId)
+        public async Task<DataSet> GetCardRedundancyReport(List<int> specialtyId, List<int> surgeonId, List<int> cardId, int? minQty, int? redundancy, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -506,6 +506,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("min_quantity", minQty ?? (object)DBNull.Value),
+                new SqlParameter("redundancy", redundancy ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
