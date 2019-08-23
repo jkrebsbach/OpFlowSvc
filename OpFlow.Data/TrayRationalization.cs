@@ -5,24 +5,6 @@ using System.Text;
 namespace OpFlow.Data
 {
 
-    public class TrayRationalizationHeader
-    {
-        public List<Specialty> Specialties { get; set; }
-        public List<TrayRationalization> Proposals { get; set; }
-        public List<TrayInstrumentCategory> Categories { get; set; }
-        public List<TrayInstrumentEponym> Eponyms { get; set; }
-        public List<TrayInstrumentType> Types { get; set; }
-        public List<ItemMaster> Trays { get; set; }
-        public List<ItemMaster> Collections { get; set; }
-        public List<Surgeon> Surgeons { get; set; }
-        public List<Card> Cards { get; set; }
-        public List<Vendor> Vendors { get; set; }
-        public List<TrayProposalPhase> Phases { get; set; }
-        public List<TrayRationalization> StandardizedTrays { get; set; }
-        public List<TrayQuestionSummary> Questions { get; set; }
-        public bool Vendor { get; set; }
-    }
-
     public class SurgeryAudits
     {
         public List<User> ScrubTechs { get; set; }
@@ -444,5 +426,30 @@ namespace OpFlow.Data
     {
         public List<int> Surgeries { get; set; }
         public string Target { get; set; }
+    }
+
+    public class TrayRationalizationReduction
+    {
+        public string TrayName { get; set; }
+        public int TrayQuantity { get; set; }
+        public decimal AvgUsage { get; set; }
+        public decimal AvgUtilization => TrayQuantity == 0 ? 0 : AvgUsage / TrayQuantity;
+    }
+
+    public class TrayRationalizationUsage
+    {
+        public int InstrumentID { get; set; }
+        public string InstrumentName { get; set; }
+        public decimal AvgUsed { get; set; }
+        public List<TrayRationalizationUsageDetail> Details { get; set; }
+    }
+
+    public class TrayRationalizationUsageDetail
+    {
+        public int InstrumentID { get; set; }
+        public int TrayItemID { get; set; }
+        public string TrayName { get; set; }
+        public int TrayQuantity { get; set; }
+        public decimal AvgUsed { get; set; }
     }
 }

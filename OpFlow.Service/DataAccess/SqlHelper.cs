@@ -515,15 +515,20 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<DataSet> GetExcessInventoryReport(List<int> specialtyId, List<int> proposedTrayId, string group, int providerId, int locationId)
+        public async Task<DataSet> GetExcessInventoryReport(List<int> specialtyId, List<int> proposedTrayId, List<string> trayStatus, List<int> trayPhaseId,
+            string group, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var proposedXml = GetIdentitySummary(proposedTrayId);
+            var statusXml = GetStringSummary(trayStatus);
+            var phaseXml = GetIdentitySummary(trayPhaseId);
 
             var parameters = new[]
             {
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("proposed_tray_id", proposedXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_status", statusXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_phase_id", phaseXml ?? (object)DBNull.Value),
                 new SqlParameter("group_by", group),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
@@ -1443,7 +1448,43 @@ namespace OpFlow.Service.DataAccess
 
             return phases;
         }
-        
+
+        public async Task<List<TrayRationalizationReduction>> GetTrayRationalizationReduction(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsItems = await ExecuteCommandAsync("GetTrayRationalizationReduction", parameters);
+            var phases = dsItems.Tables[0].DataTableToList<TrayRationalizationReduction>();
+
+            return phases;
+        }
+
+        public async Task<List<TrayRationalizationUsage>> GetTrayRationalizationUsage(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsItems = await ExecuteCommandAsync("GetTrayRationalizationUsage", parameters);
+            var result = dsItems.Tables[0].DataTableToList<TrayRationalizationUsage>();
+            var details = dsItems.Tables[1].DataTableToList<TrayRationalizationUsageDetail>();
+
+            foreach (var detail in details.GroupBy(d => d.InstrumentID))
+            {
+                var instrument = result.FirstOrDefault(r => r.InstrumentID == detail.Key);
+                if (instrument == null)
+                    continue;
+
+                instrument.Details = detail.ToList();
+            }
+
+            return result;
+        }
+
         public async Task<int> InsertTrayInstrument(string instrumentName, string instrumentNbr, 
             int trayId, int trayQuantity, int providerId, int locationId)
         {

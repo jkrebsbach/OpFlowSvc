@@ -38,6 +38,7 @@ namespace OpFlow.Service.Controllers
             var roomGroups = await sqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
             var cpts = await sqlHelper.GetKnownCPTCodes(user.ProviderID, user.LocationID);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
+            var proposalPhases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -53,7 +54,8 @@ namespace OpFlow.Service.Controllers
                     Items = items,
                     CardCategories = cardCategories,
                     CPTs = cpts,
-                    ProposedTrays = proposedTrays
+                    ProposedTrays = proposedTrays,
+                    ProposalPhases = proposalPhases
                 }
             });
         }
@@ -345,12 +347,13 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            if (post.ProposedTrayID == null && post.SpecialtyID == null)
+            if (post.ProposedTrayID == null && post.SpecialtyID == null && post.TrayStatus == null && post.TrayPhaseID == null)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
-            var analytics = await sqlHelper.GetExcessInventoryReport(post.SpecialtyID, post.ProposedTrayID, post.Group, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetExcessInventoryReport(post.SpecialtyID, post.ProposedTrayID, post.TrayStatus, post.TrayPhaseID,                 
+                post.Group, user.ProviderID, user.LocationID);
 
             var excessInventory = analytics.Tables[0].DefaultView;
 

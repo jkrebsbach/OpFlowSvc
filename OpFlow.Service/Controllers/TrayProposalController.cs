@@ -25,7 +25,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
         [SwaggerOperation("GetTrayRationalization")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(TrayRationalizationHeader))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("trayRationalization")]
         public async Task<HttpResponseMessage> GetTrayRationalization()
         {
@@ -43,7 +43,10 @@ namespace OpFlow.Service.Controllers
             var questions = await sqlHelper.GetTrayQuestions(null, user.ProviderID, user.LocationID);
             var phases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
 
-            var result = new TrayRationalizationHeader()
+            var reduction = await sqlHelper.GetTrayRationalizationReduction(user.ProviderID, user.LocationID);
+            var usage = await sqlHelper.GetTrayRationalizationUsage(user.ProviderID, user.LocationID);
+
+            var result = new
             {
                 Specialties = specialties,
                 Surgeons = surgeons,
@@ -57,7 +60,10 @@ namespace OpFlow.Service.Controllers
                 StandardizedTrays = proposedTrays.Where(p => p.Status == "D").ToList(),
                 Vendor = user.RoleType == "External",
                 Questions = questions,
-                Phases = phases
+                Phases = phases,
+
+                Reduction = reduction,
+                Usage = usage
             };
 
 
