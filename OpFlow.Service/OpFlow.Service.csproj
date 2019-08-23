@@ -362,6 +362,7 @@
     <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\SalesController.cs" />
     <Compile Include="Controllers\SamlController.cs" />
+    <Compile Include="Controllers\TrayPlanController.cs" />
     <Compile Include="Controllers\TrayProposalController.cs" />
     <Compile Include="DataAccess\ImageHelper.cs" />
     <Compile Include="DataAccess\KeyVaultHelper.cs" />

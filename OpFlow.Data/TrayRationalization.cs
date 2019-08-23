@@ -451,5 +451,9 @@ namespace OpFlow.Data
         public string TrayName { get; set; }
         public int TrayQuantity { get; set; }
         public decimal AvgUsed { get; set; }
+        public bool Main { get; set; }
+        public bool AddOn { get; set; }
+        public bool Single { get; set; }
+        public bool Peel { get; set; }
     }
 }

@@ -1462,10 +1462,11 @@ namespace OpFlow.Service.DataAccess
             return phases;
         }
 
-        public async Task<List<TrayRationalizationUsage>> GetTrayRationalizationUsage(int providerId, int locationId)
+        public async Task<List<TrayRationalizationUsage>> GetTrayRationalizationUsage(int? trayPlanId, int providerId, int locationId)
         {
             var parameters = new[]
             {
+                new SqlParameter("tray_plan_id", trayPlanId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -1483,6 +1484,79 @@ namespace OpFlow.Service.DataAccess
             }
 
             return result;
+        }
+
+        public async Task<List<TrayPlan>> GetTrayPlans(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsItems = await ExecuteCommandAsync("GetTrayPlans", parameters);
+            var result = dsItems.Tables[0].DataTableToList<TrayPlan>();
+            
+            return result;
+        }
+
+        public async Task<List<TrayPlanInstrument>> GetTrayPlanInstruments(int trayPlanId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_plan_id", trayPlanId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsItems = await ExecuteCommandAsync("GetTrayPlanInstruments", parameters);
+            var result = dsItems.Tables[0].DataTableToList<TrayPlanInstrument>();
+
+            return result;
+        }
+
+        public async Task<int> UpdateTrayPlan(int? trayPlanId, string planName, int? specialtyId, List<TrayPlanInstrumentUsage> instruments,
+            int providerId, int locationId)
+        {
+            var instrumentXml = SummarizePlanInstruments(instruments);
+
+            var parameters = new[]
+            {
+                new SqlParameter("tray_plan_id", trayPlanId ?? (object)DBNull.Value),
+                new SqlParameter("plan_name", planName ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("instruments", instrumentXml),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+
+            var dsPlan = await ExecuteCommandAsync("UpdateTrayPlan", parameters);
+
+            var result = dsPlan.Tables[0].DataTableToList<InsertionResult>().First();
+
+            return result.Identifier;
+        }
+
+        private string SummarizePlanInstruments(List<TrayPlanInstrumentUsage> instruments)
+        {
+            if (instruments == null || !instruments.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var instrument in instruments)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, instrument.InstrumentID);
+                AddColumn(doc, row, instrument.TrayID);
+                AddColumn(doc, row, instrument.Main);
+                AddColumn(doc, row, instrument.Add);
+                AddColumn(doc, row, instrument.Single);
+                AddColumn(doc, row, instrument.Peel);
+            }
+
+            return table.OuterXml;
         }
 
         public async Task<int> InsertTrayInstrument(string instrumentName, string instrumentNbr, 

@@ -43,9 +43,6 @@ namespace OpFlow.Service.Controllers
             var questions = await sqlHelper.GetTrayQuestions(null, user.ProviderID, user.LocationID);
             var phases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
 
-            var reduction = await sqlHelper.GetTrayRationalizationReduction(user.ProviderID, user.LocationID);
-            var usage = await sqlHelper.GetTrayRationalizationUsage(user.ProviderID, user.LocationID);
-
             var result = new
             {
                 Specialties = specialties,
@@ -60,10 +57,7 @@ namespace OpFlow.Service.Controllers
                 StandardizedTrays = proposedTrays.Where(p => p.Status == "D").ToList(),
                 Vendor = user.RoleType == "External",
                 Questions = questions,
-                Phases = phases,
-
-                Reduction = reduction,
-                Usage = usage
+                Phases = phases
             };
 
 
