@@ -33,7 +33,7 @@ namespace OpFlow.Data
         public int InstrumentID { get; set; }
         public int TrayID { get; set; }
         public string ItemType { get; set; }
-        public string InstrumentDescription { get; set; }
+        public string InstrumentName { get; set; }
         public string TrayName { get; set; }
         public int ProposedQty { get; set; }
     }
