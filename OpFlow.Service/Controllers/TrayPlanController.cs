@@ -51,7 +51,14 @@ namespace OpFlow.Service.Controllers
                null, null, null, null, 
                 user.ProviderID, user.LocationID);
 
-            var targetTrays = instruments.Where(t => t.TargetTrayName != null).GroupBy(t => t.TargetTrayName).Select(t => t.Key).ToList();
+            var targetTrayNames = instruments.Where(t => t.TargetTrayName != null).GroupBy(t => t.TargetTrayName).Select(t => t.Key).ToList();
+            var targetTrays = instruments.GroupBy(t => t.TargetTrayName).Select(targetTrayGroup => new TargetTraySummary()
+                { TrayName = targetTrayGroup.Key ?? "No target", Types = new List<TargetTrayCategory>() {new TargetTrayCategory()
+                    { Type = "Main", Instruments = targetTrayGroup.Where(i => i.ItemType == "M").ToList()}, new TargetTrayCategory()
+                    { Type = "Add On", Instruments = targetTrayGroup.Where(i => i.ItemType == "A").ToList()}, new TargetTrayCategory()
+                    { Type = "Single", Instruments = targetTrayGroup.Where(i => i.ItemType == "S").ToList()}, new TargetTrayCategory()
+                    { Type = "Peel", Instruments = targetTrayGroup.Where(i => i.ItemType == "P").ToList()}
+                }}).ToList();
 
             var result = new
             {
@@ -60,6 +67,7 @@ namespace OpFlow.Service.Controllers
                 Usage = usage,
                 TrayPlans = trayPlans,
                 TrayPlan = trayPlan,
+                TargetTrayName = targetTrayNames,
                 TargetTrays = targetTrays,
                 Main = instruments.Where(i => i.ItemType == "M"),
                 AddOn = instruments.Where(i => i.ItemType == "A"),

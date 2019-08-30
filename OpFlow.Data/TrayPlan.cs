@@ -75,4 +75,16 @@ namespace OpFlow.Data
         public decimal AvgRedundantInstrument { get; set; }
         public int ExcessInstruments { get; set; }
     }
+
+    public class TargetTraySummary
+    {
+        public string TrayName { get; set; }
+        public List<TargetTrayCategory> Types { get; set; }
+    }
+
+    public class TargetTrayCategory
+    {
+        public string Type { get; set; }
+        public List<TrayPlanInstrument> Instruments { get; set; }
+    }
 }
