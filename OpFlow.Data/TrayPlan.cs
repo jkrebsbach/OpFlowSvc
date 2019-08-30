@@ -16,6 +16,7 @@ namespace OpFlow.Data
         public string PlanName { get; set; }
         public int? SpecialtyID { get; set; }
         public List<TrayPlanInstrumentUsage> Instruments { get; set; }
+        public List<TrayPlanInstrumentSummary> Details { get; set; }
     }
 
     public class TrayPlanFilterPost
@@ -38,13 +39,28 @@ namespace OpFlow.Data
         public bool Peel { get; set; }
     }
 
-    public class TrayPlanInstrument
+    public class TrayPlanInstrumentSummary
+    {
+        public string Type { get; set; }
+        public List<TrayPlanInstrumentDetail> Instruments { get; set; }
+    }
+    
+    public class TrayPlanInstrumentDetail
     {
         public int InstrumentID { get; set; }
         public int TrayID { get; set; }
+        public string TargetTray { get; set; }
+        public int Quantity { get; set; }
+    }
+
+    public class TrayPlanInstrument
+    {
+        public int InstrumentID { get; set; }
+        public int TrayItemID { get; set; }
         public string ItemType { get; set; }
         public string InstrumentName { get; set; }
         public string TrayName { get; set; }
+        public string TargetTrayName { get; set; }
         public int ProposedQty { get; set; }
         public int SourceQty { get; set; }
         public decimal AvgUsed { get; set; }

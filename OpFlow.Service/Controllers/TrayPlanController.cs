@@ -51,6 +51,8 @@ namespace OpFlow.Service.Controllers
                null, null, null, null, 
                 user.ProviderID, user.LocationID);
 
+            var targetTrays = instruments.Where(t => t.TargetTrayName != null).GroupBy(t => t.TargetTrayName).Select(t => t.Key).ToList();
+
             var result = new
             {
                 SpecialtyID = specialtyId,
@@ -58,6 +60,7 @@ namespace OpFlow.Service.Controllers
                 Usage = usage,
                 TrayPlans = trayPlans,
                 TrayPlan = trayPlan,
+                TargetTrays = targetTrays,
                 Main = instruments.Where(i => i.ItemType == "M"),
                 AddOn = instruments.Where(i => i.ItemType == "A"),
                 Single = instruments.Where(i => i.ItemType == "S"),
@@ -97,6 +100,14 @@ namespace OpFlow.Service.Controllers
 
             var result = await sqlHelper.UpdateTrayPlan(trayPlanId, post.PlanName, post.SpecialtyID, post.Instruments,
                 user.ProviderID, user.LocationID);
+
+            if (!trayPlanId.HasValue) return Request.CreateResponse(HttpStatusCode.OK, result);
+
+            foreach (var detail in post.Details)
+            {
+                await sqlHelper.UpdateTrayPlanDetail(trayPlanId.Value, detail.Type, detail.Instruments, 
+                    user.ProviderID, user.LocationID);
+            }
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

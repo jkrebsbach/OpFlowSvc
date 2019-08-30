@@ -1555,6 +1555,25 @@ namespace OpFlow.Service.DataAccess
 
             return result.Identifier;
         }
+        
+        public async Task<int> UpdateTrayPlanDetail(int trayPlanId, string planType, List<TrayPlanInstrumentDetail> instruments,
+            int providerId, int locationId)
+        {
+            var instrumentXml = SummarizePlanDetails(instruments);
+
+            var parameters = new[]
+            {
+                new SqlParameter("tray_plan_id", trayPlanId),
+                new SqlParameter("plan_type", planType),
+                new SqlParameter("instruments", instrumentXml),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+
+            var result = await ExecuteNonQueryAsync("UpdateTrayPlanDetail", parameters);
+
+            return result;
+        }
 
         private string SummarizePlanInstruments(List<TrayPlanInstrumentUsage> instruments)
         {
@@ -1575,6 +1594,28 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, instrument.Add);
                 AddColumn(doc, row, instrument.Single);
                 AddColumn(doc, row, instrument.Peel);
+            }
+
+            return table.OuterXml;
+        }
+
+        private string SummarizePlanDetails(List<TrayPlanInstrumentDetail> instruments)
+        {
+            if (instruments == null || !instruments.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var instrument in instruments)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, instrument.InstrumentID);
+                AddColumn(doc, row, instrument.TrayID);
+                AddColumn(doc, row, instrument.TargetTray);
+                AddColumn(doc, row, instrument.Quantity);
             }
 
             return table.OuterXml;
