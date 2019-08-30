@@ -440,6 +440,7 @@ namespace OpFlow.Data
     {
         public int InstrumentID { get; set; }
         public string InstrumentName { get; set; }
+        public string Category { get; set; }
         public decimal AvgUsed { get; set; }
         public List<TrayRationalizationUsageDetail> Details { get; set; }
     }

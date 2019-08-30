@@ -42,6 +42,8 @@ namespace OpFlow.Service.Controllers
             var vendors = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
             var questions = await sqlHelper.GetTrayQuestions(null, user.ProviderID, user.LocationID);
             var phases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
+            var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
+            var instruments = await sqlHelper.GetItems("instrument", null, true, user.ProviderID, user.LocationID);
 
             var result = new
             {
@@ -50,6 +52,7 @@ namespace OpFlow.Service.Controllers
                 Categories = instrumentLookups.Categories,
                 Eponyms = instrumentLookups.Eponyms,
                 Types = instrumentLookups.Types,
+                CardCategories = cardCategories,
                 Trays = trays,
                 Collections = collections,
                 Proposals = proposals,
@@ -57,7 +60,8 @@ namespace OpFlow.Service.Controllers
                 StandardizedTrays = proposedTrays.Where(p => p.Status == "D").ToList(),
                 Vendor = user.RoleType == "External",
                 Questions = questions,
-                Phases = phases
+                Phases = phases,
+                Instruments = instruments
             };
 
 

@@ -1462,11 +1462,18 @@ namespace OpFlow.Service.DataAccess
             return phases;
         }
 
-        public async Task<List<TrayRationalizationUsage>> GetTrayRationalizationUsage(int? trayPlanId, int providerId, int locationId)
+        public async Task<List<TrayRationalizationUsage>> GetTrayRationalizationUsage(int? trayPlanId, int? specialtyId, 
+            int? instrumentCategoryId, int? trayItemId, int? instrumentId, int? cardCategoryId,
+            int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_plan_id", trayPlanId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("instrument_category_id", instrumentCategoryId ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayItemId ?? (object)DBNull.Value),
+                new SqlParameter("instrument_id", instrumentId ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -1497,6 +1504,20 @@ namespace OpFlow.Service.DataAccess
             var result = dsItems.Tables[0].DataTableToList<TrayPlan>();
             
             return result;
+        }
+
+        public async Task<TrayPlanDetail> GetTrayPlanDetail(int trayPlanId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_plan_id", trayPlanId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsItems = await ExecuteCommandAsync("GetTrayPlanDetail", parameters);
+            var result = dsItems.Tables[0].DataTableToList<TrayPlanDetail>();
+
+            return result.FirstOrDefault();
         }
 
         public async Task<List<TrayPlanInstrument>> GetTrayPlanInstruments(int trayPlanId, int providerId, int locationId)
