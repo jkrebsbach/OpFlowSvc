@@ -151,17 +151,7 @@
                           <ChartSeriesHierarchy>
                             <ChartMembers>
                               <ChartMember>
-                                <Group Name="Chart4_SeriesGroup1">
-                                  <GroupExpressions>
-                                    <GroupExpression>=Fields!TrayName.Value</GroupExpression>
-                                  </GroupExpressions>
-                                </Group>
-                                <SortExpressions>
-                                  <SortExpression>
-                                    <Value>=Fields!TrayName.Value</Value>
-                                  </SortExpression>
-                                </SortExpressions>
-                                <Label>=Fields!TrayName.Value</Label>
+                                <Label>Qty Open</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartSeriesHierarchy>
@@ -468,6 +458,7 @@
                             <BackgroundGradientType>None</BackgroundGradientType>
                           </Style>
                         </Chart>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>

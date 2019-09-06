@@ -129,7 +129,7 @@ namespace OpFlow.Service.Controllers
                     break;
             }
 
-            var result = ReportHelper.GetReport("InstrumentUsage", format, datasets);
+            var result = ReportHelper.GetReport(reportName, format, datasets);
 
             if (format?.ToUpper() == "PDF")
             {
