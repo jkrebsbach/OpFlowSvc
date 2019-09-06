@@ -51,7 +51,7 @@ namespace OpFlow.Service.Controllers
                     Procedures = procedures,
                     RoomGroups = roomGroups,
                     InstrumentCategories = lookups.Categories,
-                    Items = items,
+                    Items = items.Where(i => i.ItemType != "INSTRUMENT"),
                     CardCategories = cardCategories,
                     CPTs = cpts,
                     ProposedTrays = proposedTrays,
@@ -79,12 +79,13 @@ namespace OpFlow.Service.Controllers
                 post.CategoryID == null &&
                 post.ProcedureID == null &&
                 (post.Cpt == null || !post.Cpt.Any()) &&
-                post.TrayID == null)
+                post.TrayID == null &&
+                post.InstrumentID == null)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
-            var analytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyID, post.SurgeonID, post.CategoryID, post.ProcedureID, post.Cpt, post.TrayID, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyID, post.SurgeonID, post.CategoryID, post.ProcedureID, post.Cpt, post.TrayID, post.InstrumentID, user.ProviderID, user.LocationID);
 
             var usage = analytics.Tables[0].DefaultView;
             switch (post.Order)
@@ -122,6 +123,9 @@ namespace OpFlow.Service.Controllers
                     break;
                 case "c_t":
                     reportName = "InstrumentUsageCardTray";
+                    break;
+                case "s_c":
+                    reportName = "InstrumentUsageSurgeonCard";
                     break;
             }
 

@@ -76,6 +76,7 @@ namespace OpFlow.Data
         public List<int> TrayID { get; set; }
         public List<int> CardID { get; set; }
         public List<int> ItemID { get; set; }
+        public List<int> InstrumentID { get; set; }
         public List<int> TrayPhaseID { get; set; }
         public List<string> Cpt { get; set; }
         public List<string> TrayStatus { get; set; }

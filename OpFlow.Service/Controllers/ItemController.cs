@@ -46,6 +46,20 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetInstrumentsPaged")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
+        [Route("instrumentsPaged")]
+        public async Task<HttpResponseMessage> GetInstrumentsPaged(string term = null, int page = 1)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+
+            var instruments = await sqlHelper.GetInstrumentsPaged(term, page, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, instruments);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetTrayItems")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemTray>))]
         [Route("trayItems")]

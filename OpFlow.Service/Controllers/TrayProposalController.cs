@@ -264,7 +264,7 @@ namespace OpFlow.Service.Controllers
             var countAnalytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, null, null, null,
                 user.ProviderID, user.LocationID);
             var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, null, null, null,
-                null, post.TrayId,
+                null, post.TrayId, null,
                 user.ProviderID, user.LocationID);
             var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId, null,
                 user.ProviderID, user.LocationID);
