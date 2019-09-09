@@ -46,14 +46,40 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCardCategories")]
         [Route("cardCategories")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardWithCategory>))]
-        public async Task<HttpResponseMessage> GetCardCategories(int? surgeonId, int? specialtyId, string cardName, string hierarchyLevel, int? cardCategoryId)
+        public async Task<HttpResponseMessage> GetCardCategories(int? surgeonId, int? specialtyId, string cardName, string hierarchyLevel, int? cardCategoryId,
+            string cardSortField, string cardSortDir)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
             var result = await sqlHelper.GetCardCategoryXRef(surgeonId, specialtyId, cardName, hierarchyLevel, cardCategoryId,
                 user.ProviderID, user.LocationID);
-            
+
+            if (cardSortDir == null)
+                cardSortDir = "asc";
+
+            switch (cardSortField)
+            {
+                case "SpecialtyDescription":
+                    result = cardSortDir == "asc" ? result.OrderBy(r => r.SpecialtyDescription).ToList()
+                        : result.OrderByDescending(r => r.SpecialtyDescription).ToList();
+                    break;
+                case "SurgeonName":
+                    result = cardSortDir == "asc" ? result.OrderBy(r => r.OwnerLastName).ThenBy(r => r.OwnerFirstName).ToList()
+                        : result.OrderByDescending(r => r.OwnerLastName).ThenByDescending(r => r.OwnerFirstName).ToList();
+                    break;
+                case "Categories":
+                    result = cardSortDir == "asc" ? result.OrderBy(r => r.CardCategories?.FirstOrDefault()?.CardCategory ?? "").ToList()
+                        : result.OrderByDescending(r => r.CardCategories?.FirstOrDefault()?.CardCategory ?? "").ThenByDescending(r => r.OwnerFirstName).ToList();
+                    break;
+                case "CardDescription":
+                default:
+                    result = cardSortDir == "asc" ? result.OrderBy(r => r.CardDescription).ToList()
+                        : result.OrderByDescending(r => r.CardDescription).ToList();
+                    break;
+            }
+                
+
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
