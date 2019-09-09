@@ -30,13 +30,11 @@ namespace OpFlow.Service.Controllers
             var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
             var audits = await sqlHelper.GetDisposableAudits(user.ProviderID, user.LocationID);
             var counts = await sqlHelper.GetDisposableCounts(user.ProviderID, user.LocationID);
-            var categories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 Specialties = specialties,
                 Surgeons = surgeons,
-                Categories = categories,
                 Audits = audits,
                 Counts = counts
             });
@@ -52,6 +50,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
+            var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
             var result = await sqlHelper.GetCardCategoryXRef(surgeonId, specialtyId, cardName, hierarchyLevel, cardCategoryId,
                 user.ProviderID, user.LocationID);
 
@@ -80,7 +79,10 @@ namespace OpFlow.Service.Controllers
             }
                 
 
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            return Request.CreateResponse(HttpStatusCode.OK, new  {
+                Cards = result,
+                Categories = cardCategories
+            });
         }
 
         [SwaggerOperation("GetItemRationalizations")]
@@ -136,7 +138,19 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
 
-            var result = await sqlHelper.UpdateCardCategories(post.HierarchyLevel, post.CardCategoryID, post.Cards, user.ProviderID, user.LocationID);
+            if (String.IsNullOrEmpty(post.CardCategory))
+            {
+                return Request.CreateResponse(HttpStatusCode.Ambiguous);
+            }
+
+            var cardCategoryId = await sqlHelper.ParseCardCategory(post.CardCategory, user.ProviderID, user.LocationID);
+
+            if (cardCategoryId == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.Ambiguous);
+            }
+
+            var result = await sqlHelper.UpdateCardCategories(post.HierarchyLevel, cardCategoryId.Value, post.Cards, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

@@ -116,7 +116,7 @@ namespace OpFlow.Data
     public class UpdateCardCategoryPost
     {
         public string HierarchyLevel { get; set; }
-        public int CardCategoryID { get; set; }
+        public string CardCategory { get; set; }
         public List<int> Cards { get; set; }
     }
 
