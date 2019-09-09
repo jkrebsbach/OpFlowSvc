@@ -74,6 +74,7 @@ namespace OpFlow.Data
         public List<int> CategoryID { get; set; }
         public List<int> ProcedureID { get; set; }
         public List<int> TrayID { get; set; }
+        public List<int> CardCategoryID { get; set; }
         public List<int> CardID { get; set; }
         public List<int> ItemID { get; set; }
         public List<int> InstrumentID { get; set; }
@@ -95,6 +96,7 @@ namespace OpFlow.Data
         public List<int> SpecialtyId { get; set; }
         public List<int> SurgeonId { get; set; }
         public List<int> TrayId { get; set; }
+        public List<int> CardCategoryId { get; set; }
         public int? MinSize { get; set; }
         public string Order {get;set;}
         public string Group { get; set; }
@@ -105,6 +107,7 @@ namespace OpFlow.Data
         public List<int> SpecialtyId { get; set; }
         public List<int> SurgeonId { get; set; }
         public List<int> CardId { get; set; }
+        public List<int> CardCategoryId { get; set; }
         public List<int> RoomGroupId { get; set; }
         public string Order { get; set; }
     }

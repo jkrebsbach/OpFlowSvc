@@ -161,12 +161,14 @@ namespace OpFlow.Service.Controllers
                 post.SurgeonID == null &&
                 post.ProcedureID == null &&
                 post.TrayID == null &&
+                post.CardCategoryID == null &&
                 post.CardID == null)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error= true});
             }
 
-            var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, post.CardID, post.Instruments, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, 
+                post.CardCategoryID, post.CardID, post.Instruments, user.ProviderID, user.LocationID);
 
             var concordance = analytics.Tables[0].DefaultView;
             switch (post.Order)
@@ -442,7 +444,8 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.MinSize, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.CardCategoryId,
+                post.MinSize, user.ProviderID, user.LocationID);
 
             var rationalization = new DataView(analytics.Tables[0]);
             
@@ -535,7 +538,7 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.MinSize, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.CardCategoryId, post.MinSize, user.ProviderID, user.LocationID);
             /*
             switch (post.Order)
             {
@@ -589,7 +592,8 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.RoomGroupId, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
+                post.RoomGroupId, user.ProviderID, user.LocationID);
 
             /*switch (post.Order)
             {
@@ -641,7 +645,8 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
             
             var sqlHelper = new SqlHelper(user.CaseDatabaseName);
-            var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.RoomGroupId, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
+                post.RoomGroupId, user.ProviderID, user.LocationID);
 
             /*            switch (post.Order)
             {

@@ -261,12 +261,12 @@ namespace OpFlow.Service.Controllers
             if (post.TrayId != null && post.TrayId.Count == 1 && post.TrayId[0] == 0)
                 post.TrayId = null;
 
-            var countAnalytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, null, null, null,
+            var countAnalytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, null, null, null, null,
                 user.ProviderID, user.LocationID);
             var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, null, null, null,
                 null, post.TrayId, null,
                 user.ProviderID, user.LocationID);
-            var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId, null,
+            var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId, null, null,
                 user.ProviderID, user.LocationID);
 
 

@@ -379,18 +379,20 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
-        public async Task<DataSet> GetAnalyticsTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId, int? minSize,
-            int providerId, int locationId)
+        public async Task<DataSet> GetAnalyticsTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId, List<int> cardCategoryId,
+            int? minSize, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
             var trayXml = GetIdentitySummary(trayId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
 
             var parameters = new[]
             {
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("min_size", minSize ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
@@ -446,12 +448,13 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
-            List<int> procedureId, List<int> trayId, List<int> cardId, string instruments, int providerId, int locationId)
+            List<int> procedureId, List<int> trayId, List<int> cardCategoryId, List<int> cardId, string instruments, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
             var procedureXml = GetIdentitySummary(procedureId);
             var trayXml = GetIdentitySummary(trayId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
             var cardXml = GetIdentitySummary(cardId);
 
             var parameters = new[]
@@ -460,6 +463,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("instruments", instruments),
                 new SqlParameter("provider_id", providerId),
@@ -576,12 +580,13 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public async Task<DataSet> GetAnalyticsCountSummaryData(List<int> specialtyId, List<int> surgeonId, List<int> cardId, List<int> roomGroupId,
-            int providerId, int locationId)
+        public async Task<DataSet> GetAnalyticsCountSummaryData(List<int> specialtyId, List<int> surgeonId, List<int> cardId, List<int> cardCategoryId,
+            List<int> roomGroupId, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
             var cardXml = GetIdentitySummary(cardId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
             var roomGroupXml = GetIdentitySummary(roomGroupId);
 
             var parameters = new[]
@@ -589,6 +594,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("room_group_id", roomGroupXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
