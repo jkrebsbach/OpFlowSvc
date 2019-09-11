@@ -216,6 +216,7 @@ namespace OpFlow.Data
     public class TrayRationalizationDetailPost
     {
         public int TrayProposalID { get; set; }
+        public string Rollup { get; set; }
         public List<TrayDetailPost> TrayIDs { get; set; }
     }
 

@@ -826,6 +826,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<TrayRationalizationItem>> GetProposedTrayInstrumentCategories(int trayProposalId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("proposed_tray_id", trayProposalId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayInstrumentCategories", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationItem>();
+
+            return result;
+        }
+
         public async Task<ProposedTrayExport> GetProposedTrayInstrumentExport(int proposedTrayId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -1429,6 +1444,19 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("tray_item_id", trayId)
             };
             var dsItems = await ExecuteCommandAsync("GetTrayItems", parameters);
+
+            return dsItems.Tables[0].DataTableToList<ItemTray>();
+        }
+
+        public async Task<List<ItemTray>> GetTrayItemCategories(int trayId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("tray_item_id", trayId)
+            };
+            var dsItems = await ExecuteCommandAsync("GetTrayItemCategories", parameters);
 
             return dsItems.Tables[0].DataTableToList<ItemTray>();
         }

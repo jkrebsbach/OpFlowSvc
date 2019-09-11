@@ -714,7 +714,12 @@ namespace OpFlow.Service.Controllers
                 post.TrayIDs = new List<TrayDetailPost>();
 
             var result = new List<TrayRationalizationDetailItem>();
-            var instruments = await sqlHelper.GetProposedTrayInstruments(post.TrayProposalID, false, user.ProviderID, user.LocationID);
+
+            var instruments = post.Rollup == "I" ?
+                await sqlHelper.GetProposedTrayInstruments(post.TrayProposalID, false, user.ProviderID, user.LocationID)
+                : await sqlHelper.GetProposedTrayInstrumentCategories(post.TrayProposalID, user.ProviderID, user.LocationID);
+
+
             var details = new Dictionary<string, List<TrayRationalizationDetail>>();
 
             var comparableTrays = new List<TrayRationalizationSummary>();
@@ -722,7 +727,9 @@ namespace OpFlow.Service.Controllers
             var sources = instruments.GroupBy(i => new {i.TrayItemID, i.TrayName});
             foreach (var source in sources)
             {
-                var trayDetail = await sqlHelper.GetTrayItems(source.Key.TrayItemID, user.ProviderID, user.LocationID);
+                var trayDetail = post.Rollup == "I" ?
+                    await sqlHelper.GetTrayItems(source.Key.TrayItemID, user.ProviderID, user.LocationID)
+                    : await sqlHelper.GetTrayItemCategories(source.Key.TrayItemID, user.ProviderID, user.LocationID);
 
                 var sourceTray = new TrayRationalizationSummary()
                 {
