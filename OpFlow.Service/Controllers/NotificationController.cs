@@ -73,7 +73,7 @@ namespace OpFlow.Service.Controllers
             var ret = HttpStatusCode.InternalServerError;
 
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var sender = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 

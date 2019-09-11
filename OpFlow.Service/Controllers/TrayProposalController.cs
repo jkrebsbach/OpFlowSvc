@@ -30,7 +30,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetTrayRationalization()
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
@@ -75,7 +75,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetProposedTrays()
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var trayId = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
 
@@ -89,7 +89,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetProposedTray(int trayProposalId, int? overlapPcnt = 0)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).First();
             var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, true, user.ProviderID, user.LocationID);
@@ -128,7 +128,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetStatusLog(int trayProposalId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var statusLog = await sqlHelper.GetProposedTrayStatusLog(trayProposalId, user.ProviderID, user.LocationID);
 
@@ -142,7 +142,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCardOverlap(int trayProposalId, string orderBy = null, string sortBy = null, int? overlapPcnt = 0)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             
             var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.ProviderID, user.LocationID);
 
@@ -186,7 +186,7 @@ namespace OpFlow.Service.Controllers
             DateTime? beginDate = null, DateTime? endDate = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             beginDate = beginDate ?? (DateTime.Today.AddDays(-1));
 
@@ -202,7 +202,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetTraySummary(int trayProposalId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).FirstOrDefault();
             var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, true, user.ProviderID, user.LocationID);
@@ -238,7 +238,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetTrayAnalyticSummary(int trayProposalId, [FromBody] TrayRationalizationReportPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).FirstOrDefault();
             var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, true, user.ProviderID, user.LocationID);
@@ -321,7 +321,7 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             int? logId = null;
 
             try
@@ -388,7 +388,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetAuditSummary(string auditType, int? trayId, int? specialtyId, DateTime startDate, DateTime endDate)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var audits = await sqlHelper.GetProposedTrayAuditSummary(startDate, endDate, user.ProviderID, user.LocationID);
 
@@ -406,7 +406,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> AddCaseAudit(int trayProposalId, [FromBody] AddCaseAuditPost auditPost)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = -1;
             foreach (var surgeryId in auditPost.Surgeries)
@@ -427,7 +427,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> UpdateCaseAudit(int trayProposalId, int surgeryId, int? scrubTechUserId, string target)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = -1;
             if (target == "A")
@@ -445,7 +445,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeleteCaseAudit(int trayProposalId, int surgeryId, string target)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.DeleteProposedTrayAudit(trayProposalId, surgeryId, target, user.ProviderID, user.LocationID);
 
@@ -458,7 +458,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetTrayCsv(int trayProposalId, string type)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var export = await sqlHelper.GetProposedTrayInstrumentExport(trayProposalId, user.ProviderID, user.LocationID);
 
@@ -535,7 +535,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutCardTrayList(int trayProposalId, [FromBody] CardListPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.PutProposedTrayCards(trayProposalId, post.Trays, user.ProviderID, user.LocationID);
 
@@ -548,7 +548,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCardListCsv(int trayProposalId, [FromBody] CardListPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var trays = await sqlHelper.GetProposedTrayCards(trayProposalId, post.Trays, user.ProviderID, user.LocationID);
 
@@ -582,7 +582,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetTrayAuditCsv(int? trayProposalId, string filter, DateTime? startDate, DateTime? endDate)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var audits = new List<TraySurgeryAudit>();
             var extract = "Type, Surgery Date, OR, Status at Audit, CPT Code 1, CPT Code 2, CPT Code 3, Surgeon, Scrub Tech, Comments\r\n";
@@ -625,7 +625,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetTrayDetailCsv([FromBody] TrayRationalizationDetailPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             if (post.TrayIDs == null)
                 post.TrayIDs = new List<TrayDetailPost>();
@@ -708,7 +708,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PostTrayRationalizationDetail([FromBody] TrayRationalizationDetailPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             if (post.TrayIDs == null)
                 post.TrayIDs = new List<TrayDetailPost>();
@@ -812,7 +812,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PostSurgeonCards([FromBody] TrayRationalizationConfigPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = new List<Card>();
             foreach (var userId in post.Surgeons)
@@ -830,7 +830,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PostTrayRationalizationConfig([FromBody] TrayRationalizationConfigPost post, int? trayProposalId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             if (post.CptCode == string.Empty)
                 post.CptCode = null;
@@ -849,7 +849,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PostTrayRationalizationCompare([FromBody] TrayRationalizationComparePost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var rationalization = await sqlHelper.GetTrayRationalizationCompare(
                 post.TrayID, post.Overlap, post.Buffer,
@@ -865,7 +865,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PostTrayRationalizationOverlap(int trayProposalId, [FromBody] TrayRationalizationOverlapPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var proposed = await sqlHelper.GetProposedTrayInstruments(trayProposalId, false, user.ProviderID, user.LocationID);
             var shared = new List<ItemTrayOverlap>();
@@ -987,7 +987,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> NewProposedTray(int? trayProposalId, [FromBody] ProposedTrayPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var trayId = await sqlHelper.InsertProposedTray(trayProposalId, post.TrayName, post.Instruments, user.ProviderID, user.LocationID);
 
@@ -1001,7 +1001,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> UpdateProposedTray(int trayProposalId, [FromBody] ProposedTrayPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var trayId = await sqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, post.VendorID, 
                 post.SpecialtyID, post.PhaseID, user.ProviderID, user.LocationID);
@@ -1016,7 +1016,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeleteProposedTray(int trayProposalId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var trayId = await sqlHelper.DeleteProposedTray(trayProposalId, user.UserID, user.ProviderID, user.LocationID);
 
@@ -1030,7 +1030,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> UpdateProposedTrayInstruments(int trayProposalId, [FromBody] ProposedTrayUpdatePost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var trayId = await sqlHelper.UpdateProposedTrayInstruments(trayProposalId, post.Instruments, user.ProviderID, user.LocationID);
 
@@ -1044,7 +1044,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> UpdateProposedTrayQuantities(int trayProposalId, [FromBody] ProposedTrayUpdatePost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var trayId = await sqlHelper.UpdateProposedTrayQuantities(trayProposalId, post.Instruments, user.ProviderID, user.LocationID);
 
@@ -1058,7 +1058,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeleteProposedTrayInstrument(int trayProposalId, int instrumentId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var trayId = await sqlHelper.DeleteProposedTrayInstrument(trayProposalId, instrumentId, user.ProviderID, user.LocationID);
 
@@ -1073,7 +1073,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> UpdateAuditDetails(int trayProposalId, string target, [FromBody] AuditDetailPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             foreach (var audit in post.Audits)
             {

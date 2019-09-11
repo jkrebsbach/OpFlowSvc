@@ -22,7 +22,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetBundles(int? specialtyId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var bundles = await sqlHelper.GetBundles(specialtyId, user.ProviderID, user.LocationID);
 
@@ -36,7 +36,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetBundleProcedures(int bundleId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var procedures = await sqlHelper.GetBundleProcedures(bundleId, user.ProviderID, user.LocationID);
 
@@ -49,7 +49,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Post([FromBody]BundlePost value)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.NewBundle(value.BundleDescription, value.SpecialtyID, value.Procedures, user.ProviderID, user.LocationID);
 
@@ -63,7 +63,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> Put(int id, [FromBody]BundlePost value)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.UpdateBundle(id, value.BundleDescription, value.SpecialtyID, value.Procedures, user.ProviderID, user.LocationID);
 
@@ -77,7 +77,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> Delete(int id)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.DeleteBundle(id, user.ProviderID, user.LocationID);
 

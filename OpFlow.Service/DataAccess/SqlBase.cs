@@ -13,10 +13,20 @@ namespace OpFlow.Service.DataAccess
     public abstract class SqlBase
     {
         private string _connString;
+        private bool _valid;
+        public bool Valid => _valid;
 
         public SqlBase(string sqlDatabase)
         {
-            _connString = ConfigurationManager.ConnectionStrings[sqlDatabase].ConnectionString;
+            if (ConfigurationManager.ConnectionStrings[sqlDatabase] == null)
+            {
+                _valid = false;
+            }
+            else
+            {
+                _valid = true;
+                _connString = ConfigurationManager.ConnectionStrings[sqlDatabase].ConnectionString;
+            }
         }
 
 

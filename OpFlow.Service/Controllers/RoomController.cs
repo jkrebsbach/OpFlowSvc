@@ -25,7 +25,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IEnumerable<Room>> Get(int? roomId = null, int? roomGroupId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var rooms = await sqlHelper.GetRooms(user.LocationID);
             if (roomId.HasValue)
@@ -44,7 +44,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IEnumerable<RoomType>> GetTypes()
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             return await sqlHelper.GetRoomTypes(user.LocationID);
         }
@@ -56,7 +56,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IEnumerable<RoomGroup>> GetGroups()
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             return await sqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
         }
@@ -68,7 +68,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IEnumerable<RoomSetup>> GetSetups(int? roomSetupId = null, int? locationId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var setups = await sqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID);
 
@@ -85,7 +85,7 @@ namespace OpFlow.Service.Controllers
         public async Task<RoomSetupDetail> GetSetupDetail(int? roomSetupId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var setups = (await sqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID))
                 .Where(s => s.RoomSetupID == roomSetupId).ToList();
@@ -119,7 +119,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IEnumerable<PatientPosition>> GetPatientPositions()
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             return await sqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
         }
@@ -131,7 +131,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IEnumerable<Laterality>> GetLateralities()
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             return await sqlHelper.GetLateralities(user.ProviderID, user.LocationID);
         }
@@ -143,7 +143,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IEnumerable<BedOrientation>> GetBedOrientations()
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             return await sqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
         }
@@ -156,7 +156,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutRoom(int roomId, [FromBody]RoomPost room)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             await sqlHelper.UpdateRoom(roomId, room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
 
@@ -171,7 +171,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PostRoom([FromBody]RoomPost room)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var roomId = await sqlHelper.InsertRoom(room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
 
@@ -186,7 +186,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeleteRoom(int roomId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             await sqlHelper.DeleteRoom(roomId, user.ProviderID, user.LocationID);
 
@@ -201,7 +201,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Post([FromBody]RoomSetup roomSetup)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var roomSetupId = await sqlHelper.CreateRoomSetup(roomSetup, user.ProviderID, user.LocationID);
 
@@ -217,7 +217,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutRoomSetup(int roomsetupId, [FromBody]RoomSetup roomSetup)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             await sqlHelper.UpdateRoomSetup(roomsetupId, user.ProviderID, user.LocationID, roomSetup);
 
@@ -233,7 +233,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeleteSetup(int roomsetupId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             await sqlHelper.DeleteRoomSetup(roomsetupId, user.ProviderID, user.LocationID);
 
@@ -248,7 +248,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> NewRoomSetupImage(int roomSetupId, string label = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var provider = new MultipartMemoryStreamProvider();
             await Request.Content.ReadAsMultipartAsync(provider);
@@ -292,7 +292,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> UpdateRoomSetupImage(int roomSetupImageId, [FromBody]FlowImagePost flowImage)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             await sqlHelper.UpdateRoomSetupImage(roomSetupImageId, flowImage.Comment, user.ProviderID, user.LocationID);
 
@@ -330,7 +330,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> DeleteRoomSetupImage(int roomSetupImageId, int roomSetupId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             await sqlHelper.DeleteRoomSetupImage(roomSetupImageId, user.ProviderID, user.LocationID);
 

@@ -23,7 +23,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Get(int patientId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
             var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
@@ -49,7 +49,7 @@ namespace OpFlow.Service.Controllers
             if (post?.PatientArray == null) return Request.CreateResponse(HttpStatusCode.OK, patients);
 
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
             var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
@@ -80,7 +80,7 @@ namespace OpFlow.Service.Controllers
             if (patientIds == null) return Request.CreateResponse(HttpStatusCode.OK, patients);
         
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
             var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
@@ -103,7 +103,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Post([FromBody]PatientPost patient)
         {
             var secureUser = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(secureUser.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(secureUser.SecureDatabaseName);
 
             var user = await sqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID,  secureUser.UserID);

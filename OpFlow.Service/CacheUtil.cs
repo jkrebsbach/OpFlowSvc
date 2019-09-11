@@ -27,16 +27,7 @@ namespace OpFlow.Service
 
             var userAuthGuid = Guid.Parse(userAuthId);
 
-            var owinContext = HttpContext.Current.GetOwinContext();
-            var userManager = owinContext.GetUserManager<ApplicationUserManager>();
-
-            var roles = await userManager.GetRolesAsync(userAuthId);
-            var role = roles?.FirstOrDefault();
-
-            if (role == null)
-                throw new Exception("Unable to locate authenticated user");
-
-            var sqlHelper = new DataAccess.SqlHelper(role);
+            var sqlHelper = new DataAccess.SqlHelper();
 
             var secureUser = await sqlHelper.GetSecureUser(userAuthGuid, null);
             if (secureUser == null)

@@ -22,7 +22,7 @@ namespace OpFlow.Service.SignalR
             {
                 var userAuthId = Context.User.Identity.GetUserId();
                 var user = await CacheUtil.GetUserSecurity(userAuthId);
-                var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+                var sqlHelper = new SqlHelper();
                 var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
                 var insertTimestamp = DateTime.Now;
@@ -69,7 +69,7 @@ namespace OpFlow.Service.SignalR
         {
             var userAuthId = Context.User.Identity.GetUserId();
             var user = await CacheUtil.GetUserSecurity(userAuthId);
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var insertTimestamp = DateTime.Now;
 
@@ -105,7 +105,7 @@ namespace OpFlow.Service.SignalR
             await SendSurgeryMessage(surgeryId, flowNotification.FlowMessage);
 
             SmsNotification.NotifyUser(flowNotification.CellPhone, flowNotification.FlowMessage);
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             if (flowNotification.MessagingUserID.HasValue)
             {
@@ -125,7 +125,7 @@ namespace OpFlow.Service.SignalR
 
         private async Task SendNotification(UserSecurity user, User sender, int targetUserId, string message)
         {
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             var recipientUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID, targetUserId);
 
             await PushNotificationMessage(sender, recipientUser.Email, message);
@@ -160,7 +160,7 @@ namespace OpFlow.Service.SignalR
             {
                 var userAuthId = Context.User.Identity.GetUserId();
                 var user = await CacheUtil.GetUserSecurity(userAuthId);
-                var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+                var sqlHelper = new SqlHelper();
 
                 if (startSurgery)
                     await sqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, stepTime);
@@ -202,7 +202,7 @@ namespace OpFlow.Service.SignalR
 
             var userAuthId = Context.User.Identity.GetUserId();
             var user = await CacheUtil.GetUserSecurity(userAuthId);
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             if (customReason != null)
             {

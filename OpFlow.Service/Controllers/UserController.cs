@@ -34,7 +34,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Get()
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserAuthID);
 
@@ -51,7 +51,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetUsers(string nameSearchText = null, int? roleId = null, int? specialtyId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var users = await sqlHelper.SearchUsers(nameSearchText, roleId, specialtyId, user.ProviderID, user.LocationID);
 
@@ -67,7 +67,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetRoles(string nameSearchText = null, int? roleId = null, int? specialtyId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var roles = await sqlHelper.GetRoles(user.ProviderID, user.LocationID);
 
@@ -81,7 +81,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> CheckinUser(int surgeryId, [FromBody]User user)
         {
             var userSecurity = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(userSecurity.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             await sqlHelper.CheckInUser(user, surgeryId);
 
@@ -95,7 +95,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> CheckoutUser(int surgeryId, [FromBody]User user)
         {
             var userSecurity = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(userSecurity.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             await sqlHelper.CheckOutUser(user, surgeryId);
 
@@ -110,7 +110,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> WorkupReviewed(int surgeryId, [FromBody]User user)
         {
             var userSecurity = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(userSecurity.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             await sqlHelper.WorkupReviewed(user, surgeryId);
 
@@ -122,7 +122,7 @@ namespace OpFlow.Service.Controllers
         public async Task<IHttpActionResult> ResetPassword(int userId, [FromBody]SetPasswordBindingModel model)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             if (!ModelState.IsValid)
             {
@@ -163,7 +163,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
             var existing = await userManager.FindByEmailAsync(model.Email);
@@ -221,7 +221,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var authUserSecurity = await sqlHelper.GetSecureUser(null, userId);
 
@@ -259,7 +259,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 

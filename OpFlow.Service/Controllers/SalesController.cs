@@ -24,7 +24,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> ExportPDF([FromBody] SalesModel post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var dataSet = await sqlHelper.GetAnalyticsSalesToolSummary(post.SystemName, post.HospitalName, post.City,
                 post.State,

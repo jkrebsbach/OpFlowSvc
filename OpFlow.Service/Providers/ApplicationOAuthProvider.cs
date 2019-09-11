@@ -116,7 +116,7 @@ namespace OpFlow.Service.Providers
                     var userAuthId = new Guid(user.Id);
 
                     // SAML hard coded to UNC
-                    var sqlHelper = new SqlHelper("OpFlowConnection");
+                    var sqlHelper = new SqlHelper();
                     var userId = await sqlHelper.CreateUser(userAuthId, roleId, null, firstName, lastName,
                         username, null, null, "", 1, 1);
                 }

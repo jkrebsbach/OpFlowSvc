@@ -19,8 +19,6 @@ namespace OpFlow.Service.Controllers
     [RoutePrefix("api/internal")]
     public class InternalController : ApiController
     {
-        private string[] _roles = new[] { "CommonConnection", "RexConnection" };
-
         // GET api/values/5
         [SwaggerOperation("GetSetup")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<OpFlowProvider>))]
@@ -33,17 +31,11 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var result = new List<OpFlowProvider>();
-            foreach (var role in _roles)
-            {
-                var sqlHelper = new SqlHelper(role);
-                var providers = await sqlHelper.GetOpFlowSetup();
+            var sqlHelper = new SqlHelper();
+            var providers = await sqlHelper.GetOpFlowSetup();
 
-                providers.ForEach(p => p.RoleName = role);
-                result.AddRange(providers);
-            }
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, providers);
         }
 
         // GET api/values/5
@@ -58,40 +50,19 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            foreach (var role in _roles)
+            var sqlHelper = new SqlHelper();
+            var providers = await sqlHelper.GetOpFlowSetup();
+
+            // Try to find the provider in the various databases
+            var provider = providers.FirstOrDefault(p => p.ProviderID == providerId);
+            if (provider != null)
             {
-                var sqlHelper = new SqlHelper(role);
-                var providers = await sqlHelper.GetOpFlowSetup();
-
-                // Try to find the provider in the various databases
-                var provider = providers.FirstOrDefault(p => p.ProviderID == providerId);
-                if (provider != null)
-                {
-                    // Remove user from other roles, get user into correct role
-                    var userAuthId = HttpContext.Current.User.Identity.GetUserId();
-                    var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-                    var roles = await userManager.GetRolesAsync(userAuthId);
-
-                    bool inNewRole = false;
-                    foreach (var currRole in roles)
-                    {
-                        if (currRole == role)
-                        {
-                            inNewRole = true;
-                        }
-                        else
-                        {
-                            await userManager.RemoveFromRoleAsync(userAuthId, currRole);
-                        }
-                    }
-
-                    if (!inNewRole)
-                        await userManager.AddToRoleAsync(userAuthId, role);
-
-                    // Update user location as needed
-                    await sqlHelper.UpdateUserLocation(Guid.Parse(userAuthId), locationId);
-                    break;
-                }
+                // Remove user from other roles, get user into correct role
+                var userAuthId = HttpContext.Current.User.Identity.GetUserId();
+                var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                
+                // Update user location as needed
+                await sqlHelper.UpdateUserLocation(Guid.Parse(userAuthId), locationId);
             }
 
             // Dropped cache user object so system refreshes maped location
@@ -112,23 +83,18 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
             int? providerId = null;
-            var newLocationRole = "CommonConnection";
-            foreach (var role in _roles)
+            
+            var sqlHelper = new SqlHelper();
+            var providers = await sqlHelper.GetOpFlowSetup();
+
+            // Try to find the provider in the various databases
+            var provider = providers.FirstOrDefault(p => p.ProviderName.ToLower() == post.Provider.ToLower());
+            if (provider != null)
             {
-                var sqlHelper = new SqlHelper(role);
-                var providers = await sqlHelper.GetOpFlowSetup();
-
-                // Try to find the provider in the various databases
-                var provider = providers.FirstOrDefault(p => p.ProviderName.ToLower() == post.Provider.ToLower());
-                if (provider != null)
-                {
-                    newLocationRole = role;
-                    providerId = provider.ProviderID;
-                    break;
-                }
+                providerId = provider.ProviderID;
             }
-
-            var createHelper = new SqlHelper(newLocationRole);
+            
+            var createHelper = new SqlHelper();
 
             var locationId = await createHelper.CreateLocation(providerId, post.Provider, post.Location);
             
@@ -149,7 +115,7 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var users = await sqlHelper.SearchInternalUsers(nameSearchText, roleId, specialtyId, user.ProviderID, user.LocationID);
 
@@ -169,7 +135,7 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var roles = await sqlHelper.GetInternalRoles(user.ProviderID, user.LocationID);
 
@@ -189,7 +155,7 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var roles = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
 

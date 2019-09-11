@@ -21,7 +21,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetTrayPlan(int? trayPlanId, int? specialtyId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var trayPlans = await sqlHelper.GetTrayPlans(user.ProviderID, user.LocationID);
 
@@ -86,7 +86,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> FilterTrayPlan([FromBody] TrayPlanFilterPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var usage = await sqlHelper.GetTrayRationalizationUsage(post.TrayPlanID, post.SpecialtyID,
                 post.InstrumentCategoryID, post.TrayID, post.InstrumentID, post.CardCategoryID,
@@ -104,7 +104,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PostTrayPlan(int? trayPlanId, [FromBody] TrayPlanPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.UpdateTrayPlan(trayPlanId, post.PlanName, post.SpecialtyID, post.Instruments,
                 user.ProviderID, user.LocationID);

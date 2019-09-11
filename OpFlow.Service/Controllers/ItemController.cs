@@ -24,7 +24,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Get(string itemType = null, int? trayId = null, bool? countNeeded = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var items = await sqlHelper.GetItems(itemType, trayId, countNeeded, user.ProviderID, user.LocationID);
 
@@ -38,7 +38,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetInstruments()
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var instruments = await sqlHelper.GetInstruments(user.ProviderID, user.LocationID);
 
@@ -52,7 +52,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetInstrumentsPaged(string term = null, int page = 1)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var instruments = await sqlHelper.GetInstrumentsPaged(term, page, user.ProviderID, user.LocationID);
 
@@ -66,7 +66,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetTrayItems(int trayId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var items = await sqlHelper.GetTrayItems(trayId, user.ProviderID, user.LocationID);
 
@@ -81,7 +81,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetTrayExport(int surgeryId, int? trayId = null, string itemType = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var counts = await sqlHelper.GetSurgeryCardItemCounts(surgeryId, user.ProviderID, user.LocationID);
 
@@ -115,7 +115,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCollectionTrays(int itemId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.GetCollectionTrays(itemId, user.ProviderID, user.LocationID);
 
@@ -129,7 +129,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetTrayQuestions(int itemId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var questions = await sqlHelper.GetTrayQuestions(itemId, user.ProviderID, user.LocationID);
 
@@ -145,7 +145,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutTrayInstrument(int trayId, [FromBody] TrayInstrumentPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = 0;
             foreach (var instrument in post.Instruments)

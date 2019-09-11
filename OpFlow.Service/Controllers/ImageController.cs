@@ -26,7 +26,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetFlowImage(int flowId, int flowImageId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var flow = await sqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
 
@@ -52,7 +52,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSurgeryImage(int surgeryId, int surgeryImageId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var surgery = await sqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
 
@@ -97,7 +97,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetRoomSetupImage(int roomSetupId, int roomSetupImageId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var roomSetup = await sqlHelper.GetRoomSetup(roomSetupId, user.ProviderID, user.LocationID);
 

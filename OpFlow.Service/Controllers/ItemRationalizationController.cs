@@ -24,7 +24,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSummary()
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
@@ -48,7 +48,7 @@ namespace OpFlow.Service.Controllers
             string cardSortField, string cardSortDir)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
             var result = await sqlHelper.GetCardCategoryXRef(surgeonId, specialtyId, cardName, hierarchyLevel, cardCategoryId,
@@ -91,7 +91,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetItemRationalizations(int? specialtyId, int? surgeonId, decimal? minCost, decimal? maxCost)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var items = await sqlHelper.GetItemRationalization(specialtyId, surgeonId, minCost, maxCost, user.ProviderID, user.LocationID);
 
@@ -106,7 +106,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> SearchItemRationalizations(string itemName = null, decimal? minCost = null, decimal? maxCost = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var items = await sqlHelper.SearchItems(itemName, minCost, maxCost, user.ProviderID, user.LocationID);
 
@@ -121,7 +121,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> SearchAuditCase(int? specialtyId, string itemName, int? surgeonId, int? cardId, DateTime beginDate, DateTime endDate)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var items = await sqlHelper.GetItemAuditCases(specialtyId, itemName, surgeonId, cardId, beginDate, endDate, user.ProviderID, user.LocationID);
 
@@ -136,7 +136,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> UpdateCardCategories(UpdateCardCategoryPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             if (String.IsNullOrEmpty(post.CardCategory))
             {
@@ -163,7 +163,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeleteCardCategoryXRef(int cardCategoryXrefId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.DeleteCardCategoryXRef(cardCategoryXrefId, user.ProviderID, user.LocationID);
 
@@ -178,7 +178,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> FinishDisposableAudit(int surgeryId, string target)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.UpdateDisposableAuditComplete(surgeryId, target, user.UserID, user.ProviderID, user.LocationID);
 
@@ -193,7 +193,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PostItemAudits([FromBody] ItemAuditPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             await sqlHelper.InsertDisposableAudit(post.Surgeries, post.Target, user.ProviderID, user.LocationID);
 
@@ -214,7 +214,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutItemAudits([FromBody] ItemAuditPut post)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.UpdateDisposableAudit(post.Audits, post.Target, user.ProviderID, user.LocationID);
 
@@ -229,7 +229,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeleteItemAudit(int surgeryId, string target)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.DeleteDisposableAudit(surgeryId, target, user.ProviderID, user.LocationID);
 
@@ -243,7 +243,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutCountNeeded(int itemId, bool countNeeded)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.UpdateItemCountNeeded(itemId, countNeeded, user.ProviderID, user.LocationID);
 
@@ -256,7 +256,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetAuditCsv(string target)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             List<TraySurgeryAudit> audits;
             if (target == "A")

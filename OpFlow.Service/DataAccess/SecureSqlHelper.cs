@@ -22,6 +22,9 @@ namespace OpFlow.Service.DataAccess
         public async Task<Patient> GetPatient(int patientId, 
             int userId, string userFirstName, string userLastName, int userRole)
         {
+            if (!Valid)
+                return null;
+
             var parameters = new[]
             {
                 new SqlParameter("patient_id", patientId),
@@ -49,6 +52,9 @@ namespace OpFlow.Service.DataAccess
             string firstName, string lastName, string middleInitial, decimal? bmi, 
             int userId, string userFirstName, string userLastName, int? userRoleId)
         {
+            if (!Valid)
+                return -1;
+
             var dsParameters = new[]
             {
                 new SqlParameter("pt_acct_nbr", ptAcctNbr ?? (object)DBNull.Value),
@@ -73,6 +79,9 @@ namespace OpFlow.Service.DataAccess
         public async Task<int?> InsertStagingData(IImportData sourceData,
             int userId, string userFirstName, string userLastName, int? userRoleId)
         {
+            if (!Valid)
+                return -1;
+
             if (sourceData is ScheduleImport schedule)
             {
                 var dsParameters = new[]
@@ -106,6 +115,9 @@ namespace OpFlow.Service.DataAccess
 
         public async Task<int> CleanupPatients(List<Patient> ignorePatients)
         {
+            if (!Valid)
+                return -1;
+
             var patientSummary = GetPatientSummary(ignorePatients);
 
             var dsParameters = new[]

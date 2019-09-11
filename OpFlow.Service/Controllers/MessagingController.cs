@@ -27,7 +27,7 @@ namespace OpFlow.Service.Controllers
             int? surgeryId = null, int? caseGroupId = null, int? recipientId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.GetMessaging(userId ?? user.UserID, 
                 surgeryId, caseGroupId, recipientId, user.ProviderID, user.LocationID);
@@ -42,7 +42,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCaseMessageGroups(int? userId = null, DateTime? startDate = null, DateTime? endDate = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
             var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
@@ -70,7 +70,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Put([FromBody]MessagePost messagePost, int? surgeryId = null, int? communicationUserId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
             if ((surgeryId == null && communicationUserId == null) || messagePost == null)
@@ -129,7 +129,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> AcknowledgeMessage(int messageId, bool hideMessages = false)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             await sqlHelper.AcknowledgeMessage(user.UserID, user.ProviderID, user.LocationID, messageId, hideMessages);
 
@@ -144,7 +144,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeletePrivateConversation(int communicationUserId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             await sqlHelper.DeletePrivateConversation(communicationUserId, user.UserID, user.ProviderID, user.LocationID);
 

@@ -15,7 +15,7 @@ namespace OpFlow.Service.DataAccess
 {
     public class SqlHelper : SqlBase
     {
-        public SqlHelper(string secureDatabase) : base(secureDatabase)
+        public SqlHelper() : base("CommonConnection")
         {
         }
 

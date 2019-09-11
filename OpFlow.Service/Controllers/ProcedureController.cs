@@ -21,7 +21,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetProcedures(int? specialtyId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var procedures = await sqlHelper.GetProcedures(specialtyId, user.ProviderID, user.LocationID);
 

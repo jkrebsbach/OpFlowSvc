@@ -25,7 +25,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetSpecialties(int? providerId = null, int? locationId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
 
@@ -43,7 +43,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutSpecialty(int specialtyId, [FromBody]SpecialtyPost specialty)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             await sqlHelper.UpdateSpecialty(specialtyId, specialty.Name, specialty.Description, user.ProviderID, user.LocationID);
 
@@ -59,7 +59,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PostSpecialty([FromBody]SpecialtyPost specialty)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var specialtyId = await sqlHelper.InsertSpecialty(specialty.Name, specialty.Description, user.ProviderID, user.LocationID);
 
@@ -75,7 +75,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeleteSpecialty(int specialtyId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             await sqlHelper.DeleteSpecialty(specialtyId, user.ProviderID, user.LocationID);
 

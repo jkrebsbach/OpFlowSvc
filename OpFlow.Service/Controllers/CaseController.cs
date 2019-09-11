@@ -21,7 +21,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> Post([FromBody]PatientCase newCase)
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var caseId = await sqlHelper.CreateCase(newCase.PatientID, user.UserID, newCase.SpecialtyID,
                 user.ProviderID, user.LocationID, newCase.CaseNbr);

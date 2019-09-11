@@ -36,7 +36,7 @@ namespace OpFlow.Service.Controllers
 
             var questions = post?.Questions ?? new List<TrayQuestion>();
 
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             var trayHistory = await sqlHelper.GetTrayHistory(specialtyId, userId, cardId, beginDate, endDate, itemId, questions, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayHistory);
@@ -53,7 +53,7 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal" && user.RoleType != "Admin")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             var importTypes = await sqlHelper.GetImportTypes(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, importTypes);
@@ -70,7 +70,7 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal" && user.RoleType != "Admin")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             var result = new ImportDetail()
             {
                 ImportDefinitions = await sqlHelper.GetImportDefinition(importTypeId, user.ProviderID, user.LocationID),
@@ -91,7 +91,7 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal" && user.RoleType != "Admin")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             var result = await sqlHelper.GetImportMessages(importLogId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -110,7 +110,7 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal" && user.RoleType != "Admin")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             var result = await sqlHelper.GetCaseOverview(user.ProviderID, user.LocationID, beginDate, endDate, specialtyId, bundleId);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -127,7 +127,7 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal" && user.RoleType != "Admin")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
             var patients = await sqlHelper.GetCleanupPatients(user.ProviderID, user.LocationID);
@@ -147,7 +147,7 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal" && user.RoleType != "Admin")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
             int? logId = null;
 
             try

@@ -337,7 +337,7 @@ namespace OpFlow.Service.Controllers
         public async Task<ActionResult> SamlAttributes()
         {
             var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper(user.CaseDatabaseName);
+            var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserAuthID);
 
