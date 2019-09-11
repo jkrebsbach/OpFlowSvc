@@ -161,5 +161,26 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, roles);
         }
+
+        /// <summary>
+        /// Setup location with base data
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("InitializeLocation/{locationId}", Name = "InitializeLocation")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> InitializeLocation(int locationId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper();
+
+            var roles = await sqlHelper.InitializeLocation(locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, roles);
+        }
     }
 }

@@ -2231,7 +2231,17 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        
+        public async Task<int> InitializeLocation(int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("InitializeLocation", dsParameters);
+
+            return result;
+        }
+
         public async Task<UserSecurity> GetSecureUser(Guid? userAuthId, int? userId = null, string email = null)
         {
             var dsParameters = new[]

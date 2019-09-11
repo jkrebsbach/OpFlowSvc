@@ -23,6 +23,8 @@ namespace OpFlow.Data
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
         public string LocationName { get; set; }
+        public int TrayCount { get; set; }
+        public int CardCount { get; set; }
     }
 
     public class LocationPost
