@@ -12,5 +12,6 @@ namespace OpFlow.Data.Administration
         public string InstrumentName { get; set; }
         public int Quantity { get; set; }
         public string Manufacturer { get; set; }
+        public string Category { get; set; }
     }
 }

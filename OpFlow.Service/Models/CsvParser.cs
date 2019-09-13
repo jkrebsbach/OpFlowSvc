@@ -84,7 +84,8 @@ namespace OpFlow.Service.Models
                                 TrayName = _csv.GetField(2),
                                 InstrumentName = _csv.GetField(3),
                                 Quantity = int.Parse(_csv.GetField(4)),
-                                Manufacturer = _csv.GetField(5)
+                                Manufacturer = _csv.GetField(5),
+                                Category = _csv.GetField(6)
                             });
                             break;
                         case ImportType.Card:
