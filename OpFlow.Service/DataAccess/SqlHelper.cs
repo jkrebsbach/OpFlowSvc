@@ -1596,17 +1596,34 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<TrayPlanExcessTray>> GetTrayPlanExcessTrays(int trayPlanId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_plan_id", trayPlanId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsItems = await ExecuteCommandAsync("GetTrayPlanExcessTrays", parameters);
+            var result = dsItems.Tables[0].DataTableToList<TrayPlanExcessTray>();
+
+            return result;
+        }
+
         public async Task<int> UpdateTrayPlan(int? trayPlanId, string planName, int? specialtyId, List<TrayPlanInstrumentUsage> instruments,
+            List<int> excessTrays,
             int providerId, int locationId)
         {
             var instrumentXml = SummarizePlanInstruments(instruments);
+            var excessTrayXml = GetIdentitySummary(excessTrays);
 
             var parameters = new[]
             {
                 new SqlParameter("tray_plan_id", trayPlanId ?? (object)DBNull.Value),
                 new SqlParameter("plan_name", planName ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
-                new SqlParameter("instruments", instrumentXml),
+                new SqlParameter("instruments", instrumentXml ?? (object)DBNull.Value),
+                new SqlParameter("excess_trays", excessTrayXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

@@ -36,11 +36,13 @@ namespace OpFlow.Service.Controllers
 
             TrayPlanDetail trayPlan = null;
             var instruments = new List<TrayPlanInstrument>();
+            var excessTrays = new List<TrayPlanExcessTray>();
 
             if (trayPlanId.HasValue)
             {
                 trayPlan = await sqlHelper.GetTrayPlanDetail(trayPlanId.Value, user.ProviderID, user.LocationID);
                 instruments = await sqlHelper.GetTrayPlanInstruments(trayPlanId.Value, user.ProviderID, user.LocationID);
+                excessTrays = await sqlHelper.GetTrayPlanExcessTrays(trayPlanId.Value, user.ProviderID, user.LocationID);
 
                 // if no specialty id, assign it to the tray plan specialty id
                 specialtyId = (specialtyId ?? trayPlan.SpecialtyID);
@@ -71,6 +73,7 @@ namespace OpFlow.Service.Controllers
                 TrayPlan = trayPlan,
                 TargetTrayNames = targetTrayNames,
                 TargetTrays = targetTrays,
+                ExcessTrays = excessTrays,
                 Main = instruments.Where(i => i.ItemType == "M"),
                 AddOn = instruments.Where(i => i.ItemType == "A"),
                 Single = instruments.Where(i => i.ItemType == "S"),
@@ -108,7 +111,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateTrayPlan(trayPlanId, post.PlanName, post.SpecialtyID, post.Instruments,
+            var result = await sqlHelper.UpdateTrayPlan(trayPlanId, post.PlanName, post.SpecialtyID, post.Instruments, post.ExcessTrays,
                 user.ProviderID, user.LocationID);
 
             if (!trayPlanId.HasValue) return Request.CreateResponse(HttpStatusCode.OK, result);

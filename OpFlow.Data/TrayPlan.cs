@@ -17,6 +17,7 @@ namespace OpFlow.Data
         public int? SpecialtyID { get; set; }
         public List<TrayPlanInstrumentUsage> Instruments { get; set; }
         public List<TrayPlanInstrumentSummary> Details { get; set; }
+        public List<int> ExcessTrays { get; set; }
     }
 
     public class TrayPlanFilterPost
@@ -64,6 +65,12 @@ namespace OpFlow.Data
         public int ProposedQty { get; set; }
         public int SourceQty { get; set; }
         public decimal AvgUsed { get; set; }
+    }
+
+    public class TrayPlanExcessTray
+    {
+        public int TrayPlanID { get; set; }
+        public int TrayItemID { get; set; }
     }
 
     public class TrayPlanDetail
