@@ -27,7 +27,7 @@ namespace OpFlow.Service.Test
             {
                 var patientId = 1;
 
-                var sqlHelper = new SqlHelper("OpFlowConnection");
+                var sqlHelper = new SqlHelper();
 
                 var trayProposalId = 1;
                 var user = new Data.UserSecurity()

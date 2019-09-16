@@ -852,7 +852,7 @@ namespace OpFlow.Service.Controllers
         }
 
         [SwaggerOperation("PostTrayRationalizationCompare")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalizationCompare>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalizationCompareResult>))]
         [Route("trayRationalizationCompare")]
         [HttpPost]
         public async Task<HttpResponseMessage> PostTrayRationalizationCompare([FromBody] TrayRationalizationComparePost post)
@@ -860,11 +860,21 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var rationalization = await sqlHelper.GetTrayRationalizationCompare(
-                post.TrayID, post.Overlap, post.Buffer,
-                user.ProviderID, user.LocationID);
+            var result = new List<TrayRationalizationCompareResult>();
+            foreach (var comparison in post.Comparisons)
+            {
+                var rationalization = await sqlHelper.GetTrayRationalizationCompare(comparison.CustomerID, comparison.BaselineID, user.ProviderID, user.LocationID);
 
-            return Request.CreateResponse(HttpStatusCode.OK, rationalization.Where(r => r.OverlapPcnt > post.Overlap));
+                result.Add(rationalization);
+            }
+
+            var summary = TrayRationalizationCompareResultSummary.SummarizeResults(result);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Summary = summary,
+                ComparisonResults = result
+            });
         }
 
         [SwaggerOperation("PostTrayRationalizationOverlap")]

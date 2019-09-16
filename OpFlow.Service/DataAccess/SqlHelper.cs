@@ -272,24 +272,27 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayRationalizationCompare>> GetTrayRationalizationCompare(
-            int? trayId, decimal overlap, decimal buffer,
-            int providerId, int locationId)
+        public async Task<TrayRationalizationCompareResult> GetTrayRationalizationCompare(
+            int customerId, int baselineId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("tray_item_id", trayId ?? (object)DBNull.Value),
-                new SqlParameter("overlap", overlap),
-                new SqlParameter("buffer", buffer),
+                new SqlParameter("customer_id", customerId),
+                new SqlParameter("baseline_id", baselineId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetTrayRationalizationCompare", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationCompare>();
+            var instruments = dsSchedules.Tables[0].DataTableToList<TrayRationalizationCompare>();
+            var result = new TrayRationalizationCompareResult()
+            {
+                Instruments = instruments
+            };
 
             return result;
         }
+
 
         public async Task<TrayRationalizationDetailResult> GetTrayRationalizationDetail(int trayProposalId,
             string type, int? itemId,

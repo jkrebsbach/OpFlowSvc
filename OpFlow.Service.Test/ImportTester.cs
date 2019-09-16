@@ -21,7 +21,7 @@ namespace OpFlow.Service.Test
             var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\OpFlowJul1.csv";
             var importTypeId = 1;
 
-            var sqlHelper = new SqlHelper("OpflowConnection");
+            var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper("SecureConnection");
             var user = await sqlHelper.GetSecureUser(null, 1);
             int? logId = null;
@@ -70,7 +70,7 @@ namespace OpFlow.Service.Test
                 var flowImageId = 0;
 
                 var fileContents = File.ReadAllBytes(fileName);
-                var sqlHelper = new SqlHelper("OpFlowCommon");
+                var sqlHelper = new SqlHelper();
 
                 var user = await sqlHelper.GetSecureUser(null, 1);
 

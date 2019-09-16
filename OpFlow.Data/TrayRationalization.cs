@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace OpFlow.Data
@@ -192,10 +193,45 @@ namespace OpFlow.Data
 
     public class TrayRationalizationComparePost
     {
-        public int? TrayID { get; set; }
-        public decimal Overlap { get; set; }
-        public decimal Buffer { get; set; }
+        public List<TrayRationalizationCompareDetail> Comparisons { get; set; }
     }
+
+    public class TrayRationalizationCompareDetail
+    {
+        public int CustomerID { get; set; }
+        public int BaselineID { get; set; }
+    }
+
+    public class TrayRationalizationCompareResult
+    {
+        public int TrayQuantity => Instruments.Sum(i => i.TrayQuantity);
+        public int BaselineQuantity => Instruments.Sum(i => i.BaselineQuantity);
+        public List<TrayRationalizationCompare> Instruments { get; set; }
+        public List<TrayRationalizationCompareCategory> TrayCategories { get; set; }
+        public List<TrayRationalizationCompareCategory> BaselineCategories { get; set; }
+    }
+
+    public class TrayRationalizationCompareCategory
+    {
+        public string CardCategory { get; set; }
+        public int CategorySum { get; set; }
+    }
+
+    public class TrayRationalizationCompareResultSummary
+    {
+        public int TrayCompareCount { get; set; }
+        public int InstrumentCount { get; set; }
+        public int BaselineCount { get; set; }
+        public decimal CostReduction { get; set; }
+
+        public static TrayRationalizationCompareResultSummary SummarizeResults(List<TrayRationalizationCompareResult> results)
+        {
+            var summary = new TrayRationalizationCompareResultSummary();
+
+            return summary;
+        }
+    }
+
 
     public class TrayRationalizationCompare
     {
@@ -204,8 +240,8 @@ namespace OpFlow.Data
         public string InstrumentName { get; set; }
         public int UsedInstruments { get; set; }
         public int CurrentCards { get; set; }
-        public int SatisfiedCards { get; set; }
-        public int BufferedCards { get; set; }
+        public int TrayQuantity { get; set; }
+        public int BaselineQuantity { get; set; }
         public int CommonInstruments { get; set; }
         public decimal OverlapPcnt =>
             (CommonInstruments == 0 ? 0 : (decimal)UsedInstruments / CommonInstruments * 100);
