@@ -236,8 +236,9 @@ namespace OpFlow.Data
     public class TrayRationalizationCompare
     {
         public string ProposedTrayName { get; set; }
-        public string ExistingTrayName { get; set; }
+        public string CustomerTrayName { get; set; }
         public string InstrumentName { get; set; }
+        public string BaselineTrayName { get; set; }
         public int UsedInstruments { get; set; }
         public int CurrentCards { get; set; }
         public int TrayQuantity { get; set; }
