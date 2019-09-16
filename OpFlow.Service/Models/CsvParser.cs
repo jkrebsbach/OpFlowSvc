@@ -79,13 +79,14 @@ namespace OpFlow.Service.Models
                         case ImportType.Tray:
                             result.Add(new TrayImport
                             {
-                                InstrumentType = _csv.GetField(0),
+                                TrayType = _csv.GetField(0),
                                 TrayID = _csv.GetField(1),
                                 TrayName = _csv.GetField(2),
                                 InstrumentName = _csv.GetField(3),
-                                Quantity = int.Parse(_csv.GetField(4)),
-                                Manufacturer = _csv.GetField(5),
-                                Category = _csv.GetField(6)
+                                Manufacturer = _csv.GetField(4),
+                                InstrumentType = _csv.GetField(5),
+                                Quantity = int.Parse(_csv.GetField(6)),
+                                Category = _csv.GetField(7)
                             });
                             break;
                         case ImportType.Card:

@@ -6,6 +6,7 @@ namespace OpFlow.Data.Administration
 {
     public class TrayImport : IImportData
     {
+        public string TrayType { get; set; }
         public string InstrumentType { get; set; }
         public string TrayID { get; set; }
         public string TrayName { get; set; }
