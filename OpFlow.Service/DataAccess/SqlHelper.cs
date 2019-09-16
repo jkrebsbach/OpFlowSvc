@@ -688,8 +688,10 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<int> UpdateProposedTray(int proposedTrayId,
-            string trayName, string status, int statusUserId, int? vendorId, int? specialtyId, int? phaseId, int providerId, int locationId)
+            string trayName, string status, int statusUserId, int? vendorId, int? specialtyId, int? phaseId, List<int> cardCategories, int providerId, int locationId)
         {
+            var cardCategoryXml = GetIdentitySummary(cardCategories);
+
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", proposedTrayId),
@@ -699,6 +701,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("phase_id", phaseId ?? (object)DBNull.Value),
+                new SqlParameter("card_categories", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -1089,6 +1092,21 @@ namespace OpFlow.Service.DataAccess
             {
                 tray.Instruments = instruments.Where(i => i.TrayItemID == tray.TrayItemID).ToList();
             }
+
+            return result;
+        }
+
+        public async Task<List<TrayRationalizationCardCategory>> GetProposedTrayCardCategories(int trayProposalId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCardCategories", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationCardCategory>();
 
             return result;
         }

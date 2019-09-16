@@ -35,6 +35,12 @@ namespace OpFlow.Data
         public List<TrayApproval> TrayApprovals { get; set; }
     }
 
+    public class TrayRationalizationCardCategory
+    {
+        public int TrayProposalID { get; set; }
+        public int CardCategoryID { get; set; }
+    }
+
     public class TrayApproval
     {
         public int DocumentTypeID { get; set; }
@@ -142,6 +148,7 @@ namespace OpFlow.Data
         public string TrayName { get; set; }
         public string Status { get; set; }
         public List<ProposedTrayInstrumentPost> Instruments { get; set; }
+        public List<int> CardCategories { get; set; }
     }
 
     public class ProposedTrayInstrumentPost

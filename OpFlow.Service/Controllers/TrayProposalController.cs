@@ -98,7 +98,8 @@ namespace OpFlow.Service.Controllers
             var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.ProviderID, user.LocationID);
             var trayCounts = await sqlHelper.GetTrayCountSummary(trayProposalId, user.ProviderID, user.LocationID);
             var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
-            
+            var cardCategories = await sqlHelper.GetProposedTrayCardCategories(trayProposalId, user.ProviderID, user.LocationID);
+
             proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
             foreach (var sourceTray in sourceTrays)
             {
@@ -114,6 +115,7 @@ namespace OpFlow.Service.Controllers
                 ApprovalDocuments = documents,
                 Audits = audits,
                 Counts = counts,
+                CardCategories = cardCategories,
                 TrayCounts = trayCounts,
                 ApprovalAudits = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList(),
                 ApprovalCounts = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList(),
@@ -1011,7 +1013,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var trayId = await sqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, post.VendorID, 
-                post.SpecialtyID, post.PhaseID, user.ProviderID, user.LocationID);
+                post.SpecialtyID, post.PhaseID, post.CardCategories, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }
