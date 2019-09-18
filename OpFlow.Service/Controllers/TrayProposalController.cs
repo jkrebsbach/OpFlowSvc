@@ -34,11 +34,11 @@ namespace OpFlow.Service.Controllers
 
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
-            var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
             var instrumentLookups = await sqlHelper.GetTrayInstrumentLookups(user.ProviderID, user.LocationID);
             var trays = await sqlHelper.GetItems("tray", null, null, user.ProviderID, user.LocationID);
             var collections = await sqlHelper.GetItems("collection", null, null, user.ProviderID, user.LocationID);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
+            var baselineTrays = await sqlHelper.GetBaselineTrays(null, user.ProviderID, user.LocationID);
             var vendors = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
             var questions = await sqlHelper.GetTrayQuestions(null, user.ProviderID, user.LocationID);
             var phases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
@@ -55,9 +55,9 @@ namespace OpFlow.Service.Controllers
                 CardCategories = cardCategories,
                 Trays = trays,
                 Collections = collections,
-                Proposals = proposals,
+                Proposals = proposedTrays,
                 Vendors = vendors,
-                StandardizedTrays = proposedTrays.Where(p => p.Status == "D").ToList(),
+                BaselineTrays = baselineTrays,
                 Vendor = user.RoleType == "External",
                 Questions = questions,
                 Phases = phases,

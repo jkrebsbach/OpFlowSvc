@@ -285,9 +285,13 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetTrayRationalizationCompare", parameters);
 
             var instruments = dsSchedules.Tables[0].DataTableToList<TrayRationalizationCompare>();
+            var categories = dsSchedules.Tables[1].DataTableToList<TrayRationalizationCompareCategory>();
+
             var result = new TrayRationalizationCompareResult()
             {
-                Instruments = instruments
+                Instruments = instruments,
+                CustomerCategories = categories.Where(c => c.TrayProposalID == customerId).ToList(),
+                BaselineCategories = categories.Where(c => c.TrayProposalID == baselineId).ToList()
             };
 
             return result;
@@ -786,6 +790,20 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetProposedTrays", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
+
+            return result;
+        }
+
+        public async Task<List<TrayRationalization>> GetBaselineTrays(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetBaselineTrays", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
 

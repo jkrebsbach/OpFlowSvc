@@ -204,15 +204,16 @@ namespace OpFlow.Data
 
     public class TrayRationalizationCompareResult
     {
-        public int TrayQuantity => Instruments.Sum(i => i.TrayQuantity);
+        public int CustomerQuantity => Instruments.Sum(i => i.CustomerQuantity);
         public int BaselineQuantity => Instruments.Sum(i => i.BaselineQuantity);
         public List<TrayRationalizationCompare> Instruments { get; set; }
-        public List<TrayRationalizationCompareCategory> TrayCategories { get; set; }
+        public List<TrayRationalizationCompareCategory> CustomerCategories { get; set; }
         public List<TrayRationalizationCompareCategory> BaselineCategories { get; set; }
     }
 
     public class TrayRationalizationCompareCategory
     {
+        public int TrayProposalID { get; set; }
         public string CardCategory { get; set; }
         public int CategorySum { get; set; }
     }
@@ -220,13 +221,17 @@ namespace OpFlow.Data
     public class TrayRationalizationCompareResultSummary
     {
         public int TrayCompareCount { get; set; }
-        public int InstrumentCount { get; set; }
+        public int CustomerCount { get; set; }
         public int BaselineCount { get; set; }
-        public decimal CostReduction { get; set; }
+        public decimal PercentReduction => BaselineCount == CustomerCount ? 0 : (1 - ((decimal)CustomerCount / BaselineCount)) * 100;
 
         public static TrayRationalizationCompareResultSummary SummarizeResults(List<TrayRationalizationCompareResult> results)
         {
             var summary = new TrayRationalizationCompareResultSummary();
+
+            summary.TrayCompareCount = results.Count;
+            summary.CustomerCount = results.Sum(r => r.CustomerQuantity);
+            summary.BaselineCount = results.Sum(r => r.BaselineQuantity);
 
             return summary;
         }
@@ -235,17 +240,16 @@ namespace OpFlow.Data
 
     public class TrayRationalizationCompare
     {
-        public string ProposedTrayName { get; set; }
         public string CustomerTrayName { get; set; }
-        public string InstrumentName { get; set; }
         public string BaselineTrayName { get; set; }
+        public string InstrumentCategory { get; set; }
         public int UsedInstruments { get; set; }
         public int CurrentCards { get; set; }
-        public int TrayQuantity { get; set; }
+        public int CustomerQuantity { get; set; }
         public int BaselineQuantity { get; set; }
+        public int CustomerCost { get; set; }
+        public int BaselineCost { get; set; }
         public int CommonInstruments { get; set; }
-        public decimal OverlapPcnt =>
-            (CommonInstruments == 0 ? 0 : (decimal)UsedInstruments / CommonInstruments * 100);
     }
 
     public class TrayRationalizationSummary
