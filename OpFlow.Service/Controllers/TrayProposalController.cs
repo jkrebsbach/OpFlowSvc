@@ -38,7 +38,7 @@ namespace OpFlow.Service.Controllers
             var trays = await sqlHelper.GetItems("tray", null, null, user.ProviderID, user.LocationID);
             var collections = await sqlHelper.GetItems("collection", null, null, user.ProviderID, user.LocationID);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
-            var baselineTrays = await sqlHelper.GetBaselineTrays(null, user.ProviderID, user.LocationID);
+            var baselineTrays = await sqlHelper.GetBaselineTrays(user.ProviderID, user.LocationID);
             var vendors = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
             var questions = await sqlHelper.GetTrayQuestions(null, user.ProviderID, user.LocationID);
             var phases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
@@ -854,8 +854,10 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("PostTrayRationalizationCompare")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalizationCompareResult>))]
         [Route("trayRationalizationCompare")]
+        [Route("trayRationalizationCompare/{format}")]
+        [HttpPut]
         [HttpPost]
-        public async Task<HttpResponseMessage> PostTrayRationalizationCompare([FromBody] TrayRationalizationComparePost post)
+        public async Task<HttpResponseMessage> PostTrayRationalizationCompare([FromBody] TrayRationalizationComparePost post, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -866,6 +868,35 @@ namespace OpFlow.Service.Controllers
                 var rationalization = await sqlHelper.GetTrayRationalizationCompare(comparison.CustomerID, comparison.BaselineID, user.ProviderID, user.LocationID);
 
                 result.Add(rationalization);
+            }
+
+            if (format == "csv")
+            {
+                var extract = "Customer Tray,Instrument Category, Customer Qty, Baseline Tray, Baseline Qty";
+
+                foreach (var comparison in result)
+                {
+                    foreach (var category in comparison.Instruments)
+                    {
+                        extract += $"\r\n{category.CustomerTrayName},{category.InstrumentCategory},{category.CustomerQuantity},{category.BaselineTrayName},{category.BaselineQuantity}";
+                    }
+                }
+
+                var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
+                var memStream = new MemoryStream(extractBytes);
+                var response = new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StreamContent(memStream)
+                };
+
+                response.Content.Headers.ContentDisposition =
+                    new ContentDispositionHeaderValue("attachment")
+                    { FileName = "TrayRationalization.csv", };
+
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+                response.Content.Headers.ContentLength = memStream.Length;
+
+                return response;
             }
 
             var summary = TrayRationalizationCompareResultSummary.SummarizeResults(result);

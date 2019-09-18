@@ -247,8 +247,6 @@ namespace OpFlow.Data
         public int CurrentCards { get; set; }
         public int CustomerQuantity { get; set; }
         public int BaselineQuantity { get; set; }
-        public int CustomerCost { get; set; }
-        public int BaselineCost { get; set; }
         public int CommonInstruments { get; set; }
     }
 
