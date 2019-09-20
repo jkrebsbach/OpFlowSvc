@@ -5264,10 +5264,26 @@ namespace OpFlow.Service.DataAccess
                     new SqlParameter("instrument_name", tray.InstrumentName),
                     new SqlParameter("manufacturer", tray.Manufacturer),
                     new SqlParameter("quantity", tray.Quantity),
-                    new SqlParameter("quantity", tray.Category)
+                    new SqlParameter("category", tray.Category)
                 };
 
                 result.Identity = await ExecuteNonQueryAsync(@"UpdateTrayImport", parameters);
+            }
+            else if (sourceData is ProposedTrayImport proposedTray)
+            {
+                var parameters = new[]
+                {
+                    new SqlParameter("provider_id", providerId),
+                    new SqlParameter("location_id", locationId),
+                    new SqlParameter("proposed_tray_name", proposedTray.ProposedTrayName),
+                    new SqlParameter("tray_name", proposedTray.TrayName),
+                    new SqlParameter("instrument_name", proposedTray.InstrumentName),
+                    new SqlParameter("instrument_type", proposedTray.InstrumentType),
+                    new SqlParameter("quantity", proposedTray.Quantity),
+                    new SqlParameter("category", proposedTray.Category)
+                };
+
+                result.Identity = await ExecuteNonQueryAsync(@"UpdateProposedTrayImport", parameters);
             }
             else if(sourceData is ScheduleImport schedule)
             {

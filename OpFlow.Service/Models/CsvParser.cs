@@ -15,7 +15,8 @@ namespace OpFlow.Service.Models
             Schedule = 1,
             Item = 2,
             Tray = 3,
-            Card = 4
+            ProposedTray = 4,
+            Card = 5
         }
 
         public CsvParser(string contents)
@@ -87,6 +88,17 @@ namespace OpFlow.Service.Models
                                 InstrumentType = _csv.GetField(5),
                                 Quantity = int.Parse(_csv.GetField(6)),
                                 Category = _csv.GetField(7)
+                            });
+                            break;
+                        case ImportType.ProposedTray:
+                            result.Add(new ProposedTrayImport
+                            {
+                                ProposedTrayName = _csv.GetField(0),
+                                TrayName = _csv.GetField(1),
+                                InstrumentName = _csv.GetField(2),
+                                InstrumentType = _csv.GetField(3),
+                                Quantity = int.Parse(_csv.GetField(4)),
+                                Category = _csv.GetField(5)
                             });
                             break;
                         case ImportType.Card:
