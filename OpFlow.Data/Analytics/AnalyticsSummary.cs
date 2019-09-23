@@ -98,6 +98,7 @@ namespace OpFlow.Data
         public List<int> TrayId { get; set; }
         public List<int> CardCategoryId { get; set; }
         public int? MinSize { get; set; }
+        public int? MaxSize { get; set; }
         public string Order {get;set;}
         public string Group { get; set; }
     }

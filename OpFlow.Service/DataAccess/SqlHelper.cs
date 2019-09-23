@@ -386,6 +386,25 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
+        public async Task<DataSet> GetAnalyticsTrayConsolidationData(List<int> specialtyId, List<int> trayId, 
+            int? maxSize, int providerId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var trayXml = GetIdentitySummary(trayId);
+            
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("max_size", maxSize ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayConsolidation", parameters);
+
+            return dsSchedules;
+        }
+
         public async Task<DataSet> GetAnalyticsTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId, List<int> cardCategoryId,
             int? minSize, int providerId, int locationId)
         {

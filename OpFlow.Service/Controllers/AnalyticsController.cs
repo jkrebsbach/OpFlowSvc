@@ -431,6 +431,48 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("TrayConsolidationReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsSummary>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("trayConsolidation")]
+        [Route("trayConsolidation/{format}")]
+        public async Task<HttpResponseMessage> TrayConsolidationReport([FromBody] TrayRationalizationReportPost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+            var analytics = await sqlHelper.GetAnalyticsTrayConsolidationData(post.SpecialtyId, post.TrayId, 
+                post.MaxSize, user.ProviderID, user.LocationID);
+
+            var consolidation = new DataView(analytics.Tables[0]);
+
+            if (format?.ToUpper() == "CSV")
+            {
+                return ResponseHelper.CsvResponse(consolidation.ToTable());
+            }
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["TrayConsolidation"] = consolidation.ToTable()
+            };
+            var result = ReportHelper.GetReport("TrayConsolidation", format, datasets);
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
+        }
+
+        // GET api/values/5
         [SwaggerOperation("TrayRationalizationReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsSummary>))]
         [HttpPut]
