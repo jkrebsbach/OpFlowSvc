@@ -736,6 +736,24 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> UpdateProposedTrayDashboard(int proposedTrayId,
+            DateTime? countComplete, DateTime? auditComplete, DateTime? trayChanges, string comments, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", proposedTrayId),
+                new SqlParameter("count_complete", countComplete ?? (object)DBNull.Value),
+                new SqlParameter("audit_complete", auditComplete ?? (object)DBNull.Value),
+                new SqlParameter("tray_changes", trayChanges ?? (object)DBNull.Value),
+                new SqlParameter("comments", comments ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProposedTrayDashboard", parameters);
+
+            return result;
+        }
+
         public async Task<int> DeleteProposedTray(int proposedTrayId, int statusUserId, int providerId, int locationId)
         {
             var parameters = new[]

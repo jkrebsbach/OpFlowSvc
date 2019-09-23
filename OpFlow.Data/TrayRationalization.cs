@@ -32,6 +32,12 @@ namespace OpFlow.Data
         public string TrayProposalPhase { get; set; }
         public string Specialty { get; set; }
         public int InstrumentCount { get; set; }
+        public int Counts { get; set; }
+        public int Audits { get; set; }
+        public DateTime? CountCompleteTarget { get; set; }
+        public DateTime? AuditCompleteTarget { get; set; }
+        public DateTime? TrayChangesTarget { get; set; }
+        public string Comments { get; set; }
 
         public List<TrayApproval> TrayApprovals { get; set; }
     }
@@ -150,6 +156,14 @@ namespace OpFlow.Data
         public string Status { get; set; }
         public List<ProposedTrayInstrumentPost> Instruments { get; set; }
         public List<int> CardCategories { get; set; }
+    }
+
+    public class ProposedTrayDashboardPost
+    {
+        public DateTime? CountComplete { get; set; }
+        public DateTime? AuditComplete { get; set; }
+        public DateTime? TrayChanges { get; set; }
+        public string Comments { get; set; }
     }
 
     public class ProposedTrayInstrumentPost

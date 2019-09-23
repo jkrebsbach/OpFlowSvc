@@ -455,6 +455,40 @@ namespace OpFlow.Service.Controllers
         }
 
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
+        [Route("dashboard/csv", Name = "GetDashboardCsv")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetDashboardCsv()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
+
+            var extract = "Tray, Counts, Audits, Phase, Count Complete, Audit Complete, Tray Changes, Comments\r\n";
+            foreach (var proposal in proposals)
+            {
+                extract +=  $"\"{proposal.TrayName?.Trim().Replace("\"", "\"\"")}\",{proposal.Counts},{proposal.Audits},{proposal.TrayProposalPhase}," +
+                    $"{proposal.CountCompleteTarget?.ToShortDateString()},{proposal.AuditCompleteTarget?.ToShortDateString()},{proposal.TrayChangesTarget?.ToShortDateString()},\"{proposal.Comments?.Trim().Replace("\"", "\"\"")}\"\r\n";
+            }
+
+            var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
+            var memStream = new MemoryStream(extractBytes);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                { FileName = "TrayRationalization.csv", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
         [Route("proposedTray/csv/{trayProposalId}", Name = "GetTrayCsv")]
         [HttpGet]
         public async Task<HttpResponseMessage> GetTrayCsv(int trayProposalId, string type)
@@ -1055,6 +1089,21 @@ namespace OpFlow.Service.Controllers
 
             var trayId = await sqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, post.VendorID, 
                 post.SpecialtyID, post.PhaseID, post.CardCategories, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, trayId);
+        }
+
+        [SwaggerOperation("UpdateProposedTrayDashboard")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("proposedTrayDashboard")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> UpdateProposedTrayDashboard(int trayProposalId, [FromBody] ProposedTrayDashboardPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var trayId = await sqlHelper.UpdateProposedTrayDashboard(trayProposalId, 
+                post.CountComplete, post.AuditComplete, post.TrayChanges, post.Comments, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }
