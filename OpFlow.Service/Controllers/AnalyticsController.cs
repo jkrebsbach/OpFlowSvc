@@ -444,10 +444,15 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            var analytics = await sqlHelper.GetAnalyticsTrayConsolidationData(post.SpecialtyId, post.TrayId, 
-                post.MaxSize, user.ProviderID, user.LocationID);
 
-            var consolidation = new DataView(analytics.Tables[0]);
+
+            var analytics = await sqlHelper.GetAnalyticsTrayConsolidationDataZZZ(post.SpecialtyId, post.TrayId, post.MaxSize, user.ProviderID, user.LocationID);
+
+            //var analytics = await sqlHelper.GetAnalyticsTrayConsolidationData(post.SpecialtyId, post.TrayId, 
+              //  post.MaxSize, user.ProviderID, user.LocationID);
+
+            var consolidation = new DataView(analytics);
+            consolidation.Sort = "CardCount DESC";
 
             if (format?.ToUpper() == "CSV")
             {

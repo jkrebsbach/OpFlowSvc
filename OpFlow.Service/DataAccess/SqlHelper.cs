@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
@@ -403,6 +404,53 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayConsolidation", parameters);
 
             return dsSchedules;
+        }
+
+        public async Task<DataTable> GetAnalyticsTrayConsolidationDataZZZ(List<int> specialtyId, List<int> trayId,
+            int? maxSize, int providerId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var trayXml = GetIdentitySummary(trayId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("max_size", maxSize ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayConsolidation_1", parameters);
+
+            DataTable result = null;
+            foreach (DataRow drSchedule in dsSchedules.Tables[0].Rows)
+            {
+                int? trayItemId = (int?)drSchedule["tray_item_id"];
+                int? specOut = (int?)(drSchedule["specialty_id"] == DBNull.Value ? null : (int?)drSchedule["specialty_id"]);
+                int? cardCount = (int?)(drSchedule["card_count"] == DBNull.Value ? null : (int?)drSchedule["card_count"]);
+
+                var timeIn = DateTime.Now;
+                parameters = new[]
+                {
+                new SqlParameter("tray_item_id", trayItemId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specOut ?? (object)DBNull.Value),
+                new SqlParameter("card_count", cardCount ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+                var dsSchedules2 = await ExecuteCommandAsync("GetAnalyticsTrayConsolidation_2", parameters);
+
+                var timeOut = DateTime.Now;
+                Debug.WriteLine($"{trayItemId},{specOut},{cardCount},{timeOut.Subtract(timeIn)}");
+                
+                if (result == null)
+                    result = dsSchedules2.Tables[0];
+                else
+                {
+                    result.Merge(dsSchedules2.Tables[0], false, MissingSchemaAction.Add);
+                }
+            }
+
+            return result;
         }
 
         public async Task<DataSet> GetAnalyticsTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId, List<int> cardCategoryId,
