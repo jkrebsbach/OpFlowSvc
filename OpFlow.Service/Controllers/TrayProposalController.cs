@@ -1102,7 +1102,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var trayId = await sqlHelper.UpdateProposedTrayDashboard(trayProposalId, 
+            var trayId = await sqlHelper.UpdateProposedTrayDashboard(trayProposalId, post.Instances, post.DeploymentStatus,
                 post.CountComplete, post.AuditComplete, post.TrayChanges, post.Comments, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);

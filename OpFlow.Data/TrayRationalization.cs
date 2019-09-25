@@ -28,18 +28,47 @@ namespace OpFlow.Data
         public string Vendor { get; set; }
         public string Status { get; set; }
         public string StatusName { get; set; }
+        public string DeploymentStatus { get; set; }
         public string TrayName { get; set; }
         public string TrayProposalPhase { get; set; }
         public string Specialty { get; set; }
         public int InstrumentCount { get; set; }
+        public int Instances { get; set; }
         public int Counts { get; set; }
         public int Audits { get; set; }
+        public int CountsScheduled { get; set; }
+        public int AuditsScheduled { get; set; }
+        public decimal ReductionPcnt { get; set; }
+        public decimal ReductionCount { get; set; }
         public DateTime? CountCompleteTarget { get; set; }
         public DateTime? AuditCompleteTarget { get; set; }
         public DateTime? TrayChangesTarget { get; set; }
         public string Comments { get; set; }
+        public int ProposedCount { get; set; }
+        public int SourceCount { get; set; }
+        public int CountChange => SourceCount - ProposedCount;
+        public decimal PcntChange => SourceCount == 0 ? 0 : ((decimal)CountChange / SourceCount * 100);
 
         public List<TrayApproval> TrayApprovals { get; set; }
+        public string DeploymentStatusName
+        {
+            get
+            {
+
+                var result = string.Empty;
+                switch (DeploymentStatus)
+                {
+                    case "A":
+                        return "Ahead";
+                    case "B":
+                        return "Behind";
+                    case "H":
+                        return "Hold";
+                    default:
+                        return "On Time";
+                }
+            }
+        }
     }
 
     public class TrayRationalizationCardCategory
@@ -160,6 +189,8 @@ namespace OpFlow.Data
 
     public class ProposedTrayDashboardPost
     {
+        public string DeploymentStatus { get; set; }
+        public int Instances { get; set; }
         public DateTime? CountComplete { get; set; }
         public DateTime? AuditComplete { get; set; }
         public DateTime? TrayChanges { get; set; }

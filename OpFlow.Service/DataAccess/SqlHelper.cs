@@ -736,12 +736,14 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProposedTrayDashboard(int proposedTrayId,
+        public async Task<int> UpdateProposedTrayDashboard(int proposedTrayId, int instances, string deploymentStatus,
             DateTime? countComplete, DateTime? auditComplete, DateTime? trayChanges, string comments, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", proposedTrayId),
+                new SqlParameter("tray_instances", instances),
+                new SqlParameter("deployment_status", deploymentStatus ?? (object)DBNull.Value),
                 new SqlParameter("count_complete", countComplete ?? (object)DBNull.Value),
                 new SqlParameter("audit_complete", auditComplete ?? (object)DBNull.Value),
                 new SqlParameter("tray_changes", trayChanges ?? (object)DBNull.Value),
