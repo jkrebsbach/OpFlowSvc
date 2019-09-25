@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -97,7 +99,76 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
-        
+        // GET api/values/5
+        [SwaggerOperation("GetSample")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ImportMessage>))]
+        [Route("sample/{importTypeId}")]
+        public async Task<HttpResponseMessage> GetSample(int importTypeId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal" && user.RoleType != "Admin")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper();
+            var columns = await sqlHelper.GetImportDefinition(importTypeId, user.ProviderID, user.LocationID);
+
+            var sample = string.Empty;
+            var strDelim = string.Empty;
+            foreach (var column in columns)
+            {
+                sample += $"{strDelim}{column.ColumnName}";
+                strDelim = ",";
+            }
+            sample += "\r\n";
+
+            strDelim = string.Empty;
+            foreach (var column in columns)
+            {
+                var dataField = string.Empty;
+                if (column.DataType?.ToLower()?.Contains("varchar") == true)
+                {
+                    dataField = "ABC";
+                }
+
+                if (column.DataType?.ToLower()?.Contains("int") == true)
+                {
+                    dataField = "5";
+                }
+
+                if (column.DataType?.ToLower() == "date")
+                {
+                    dataField = "1/1/1990";
+                }
+
+                if (column.DataType?.ToLower() == "time")
+                {
+                    dataField = "11:30";
+                }
+                sample += $"{strDelim}{dataField}";
+                strDelim = ",";
+            }
+            sample += "\r\n";
+
+
+            var extractBytes = System.Text.Encoding.UTF8.GetBytes(sample);
+            var memStream = new MemoryStream(extractBytes);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                { FileName = "TrayRationalization.csv", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
+        }
+
+
 
         // GET api/values/5
         [SwaggerOperation("GetCaseOverview")]
