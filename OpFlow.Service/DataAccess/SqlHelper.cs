@@ -388,7 +388,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetAnalyticsTrayConsolidationData(List<int> specialtyId, List<int> trayId, 
-            int? maxSize, int providerId, int locationId)
+            int? maxSize, int? minOverlap, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var trayXml = GetIdentitySummary(trayId);
@@ -398,6 +398,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("max_size", maxSize ?? (object)DBNull.Value),
+                new SqlParameter("min_overlap", minOverlap ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -428,6 +429,7 @@ namespace OpFlow.Service.DataAccess
                 int? trayItemId = (int?)drSchedule["tray_item_id"];
                 int? specOut = (int?)(drSchedule["specialty_id"] == DBNull.Value ? null : (int?)drSchedule["specialty_id"]);
                 int? cardCount = (int?)(drSchedule["card_count"] == DBNull.Value ? null : (int?)drSchedule["card_count"]);
+                int? instrumentCount = (int?)(drSchedule["instrument_count"] == DBNull.Value ? null : (int?)drSchedule["instrument_count"]);
 
                 var timeIn = DateTime.Now;
                 parameters = new[]
@@ -435,6 +437,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("tray_item_id", trayItemId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specOut ?? (object)DBNull.Value),
                 new SqlParameter("card_count", cardCount ?? (object)DBNull.Value),
+                new SqlParameter("instrument_count", instrumentCount ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
                 var dsSchedules2 = await ExecuteCommandAsync("GetAnalyticsTrayConsolidation_2", parameters);
