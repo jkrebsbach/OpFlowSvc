@@ -448,7 +448,7 @@ namespace OpFlow.Service.Controllers
 
             //var analytics = await sqlHelper.GetAnalyticsTrayConsolidationDataZZZ(post.SpecialtyId, post.TrayId, post.MaxSize, user.ProviderID, user.LocationID);
 
-            var analytics = await sqlHelper.GetAnalyticsTrayConsolidationData(post.SpecialtyId, post.TrayId, 
+            var analytics = await sqlHelper.GetAnalyticsTrayConsolidationData(post.SpecialtyId, post.TrayId, post.Reallocation,
                 post.MaxSize, post.Overlap, user.ProviderID, user.LocationID);
 
             var consolidation = new DataView(analytics.Tables[0]);
@@ -463,7 +463,11 @@ namespace OpFlow.Service.Controllers
             {
                 ["TrayConsolidation"] = consolidation.ToTable()
             };
-            var result = ReportHelper.GetReport("TrayConsolidation", format, datasets);
+
+            var reportParams = new[] {
+                new ReportParameter("Validation", (post.Reallocation.HasValue ? "true" : "false"))
+            };
+            var result = ReportHelper.GetReport("TrayConsolidation", format, datasets, reportParams);
 
             if (format?.ToUpper() == "PDF")
             {

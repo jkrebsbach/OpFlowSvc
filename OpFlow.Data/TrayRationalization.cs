@@ -64,6 +64,8 @@ namespace OpFlow.Data
                         return "Behind";
                     case "H":
                         return "Hold";
+                    case "C":
+                        return "Completed";
                     default:
                         return "On Time";
                 }
