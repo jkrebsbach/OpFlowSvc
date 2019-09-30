@@ -451,7 +451,7 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetAnalyticsTrayConsolidationData(post.SpecialtyId, post.TrayId, post.Reallocation,
                 post.MaxSize, post.Overlap, user.ProviderID, user.LocationID);
 
-            var consolidation = new DataView(analytics.Tables[0]);
+            var consolidation = new DataView(analytics);
             consolidation.Sort = "CardCount DESC";
 
             if (format?.ToUpper() == "CSV")

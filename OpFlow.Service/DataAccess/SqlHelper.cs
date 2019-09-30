@@ -387,7 +387,7 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
-        public async Task<DataSet> GetAnalyticsTrayConsolidationData(List<int> specialtyId, List<int> trayId, int? reallocationId,
+        public async Task<DataTable> GetAnalyticsTrayConsolidationData(List<int> specialtyId, List<int> trayId, int? reallocationId,
             int? maxSize, int? minOverlap, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
@@ -404,8 +404,35 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayConsolidation", parameters);
+            var result = dsSchedules.Tables[0];
 
-            return dsSchedules;
+            if (reallocationId.HasValue)
+            {
+                // Create new table to work with, move rows into it
+                result = dsSchedules.Tables[0].Clone();
+                result.Merge(dsSchedules.Tables[0]);
+
+                foreach (DataRow drResult in dsSchedules.Tables[0].Rows)
+                {
+                    var specialty = (drResult["SpecialtyID"] == DBNull.Value ? null : (int?)drResult["SpecialtyID"]);
+                    var tray = (drResult["TrayItemID"] == DBNull.Value ? null : (int?)drResult["TrayItemID"]);
+                    
+                    parameters = new[]
+                    {
+                        new SqlParameter("specialty_id", specialty ?? (object)DBNull.Value),
+                        new SqlParameter("tray_item_id", tray ?? (object)DBNull.Value),
+                        new SqlParameter("reallocation_id", reallocationId ?? (object)DBNull.Value),
+                        new SqlParameter("provider_id", providerId),
+                        new SqlParameter("location_id", locationId)
+                    };
+
+                    var dsValidation = await ExecuteCommandAsync("GetAnalyticsTrayConsolidationValidation", parameters);
+
+                    result.Merge(dsValidation.Tables[0]);
+                }
+            }
+
+            return result;
         }
 
         public async Task<DataTable> GetAnalyticsTrayConsolidationDataZZZ(List<int> specialtyId, List<int> trayId,

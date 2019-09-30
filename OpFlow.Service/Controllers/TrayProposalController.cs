@@ -464,10 +464,10 @@ namespace OpFlow.Service.Controllers
 
             var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
 
-            var extract = "Tray, Counts, Audits, Phase, Count Complete, Audit Complete, Tray Changes, Comments\r\n";
+            var extract = "Tray, Status, Counts, Audits, Phase, Count Complete, Audit Complete, Tray Changes, Comments\r\n";
             foreach (var proposal in proposals)
             {
-                extract +=  $"\"{proposal.TrayName?.Trim().Replace("\"", "\"\"")}\",{proposal.Counts},{proposal.Audits},{proposal.TrayProposalPhase}," +
+                extract +=  $"\"{proposal.TrayName?.Trim().Replace("\"", "\"\"")}\",{proposal.DeploymentStatusName},{proposal.Counts},{proposal.Audits},{proposal.TrayProposalPhase}," +
                     $"{proposal.CountCompleteTarget?.ToShortDateString()},{proposal.AuditCompleteTarget?.ToShortDateString()},{proposal.TrayChangesTarget?.ToShortDateString()},\"{proposal.Comments?.Trim().Replace("\"", "\"\"")}\"\r\n";
             }
 
