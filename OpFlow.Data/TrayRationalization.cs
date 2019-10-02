@@ -47,6 +47,7 @@ namespace OpFlow.Data
         public int ProposedCount { get; set; }
         public int SourceCount { get; set; }
         public int CountChange => SourceCount - ProposedCount;
+        public int ProjectRemoval => CountChange * Instances;
         public decimal PcntChange => SourceCount == 0 ? 0 : ((decimal)CountChange / SourceCount * 100);
 
         public List<TrayApproval> TrayApprovals { get; set; }
