@@ -446,8 +446,6 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
 
-            //var analytics = await sqlHelper.GetAnalyticsTrayConsolidationDataZZZ(post.SpecialtyId, post.TrayId, post.MaxSize, user.ProviderID, user.LocationID);
-
             var analytics = await sqlHelper.GetAnalyticsTrayConsolidationData(post.SpecialtyId, post.TrayId, post.Reallocation,
                 post.MaxSize, post.Overlap, user.ProviderID, user.LocationID);
 
