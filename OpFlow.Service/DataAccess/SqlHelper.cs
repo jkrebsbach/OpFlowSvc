@@ -387,7 +387,7 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
-        public async Task<DataTable> GetAnalyticsTrayConsolidationData(List<int> specialtyId, List<int> trayId, int? reallocationId,
+        public async Task<List<TrayConsolidationResult>> GetAnalyticsTrayConsolidationData(List<int> specialtyId, List<int> trayId, int? reallocationId,
             int? maxSize, int? minOverlap, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
@@ -404,31 +404,35 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayConsolidation", parameters);
-            var result = dsSchedules.Tables[0];
+            
+            var consolidations = dsSchedules.Tables[0].DataTableToList<TrayConsolidation>();
+
+            var result = TrayConsolidationResult.Summarize(consolidations);
 
             if (reallocationId.HasValue)
             {
-                // Create new table to work with, move rows into it
-                result = dsSchedules.Tables[0].Clone();
-                result.Merge(dsSchedules.Tables[0]);
-
-                foreach (DataRow drResult in dsSchedules.Tables[0].Rows)
+                foreach (var specialty in result)
                 {
-                    var specialty = (drResult["SpecialtyID"] == DBNull.Value ? null : (int?)drResult["SpecialtyID"]);
-                    var tray = (drResult["TrayItemID"] == DBNull.Value ? null : (int?)drResult["TrayItemID"]);
-                    
-                    parameters = new[]
+                    foreach (var tray in specialty.Consolidations)
                     {
-                        new SqlParameter("specialty_id", specialty ?? (object)DBNull.Value),
-                        new SqlParameter("tray_item_id", tray ?? (object)DBNull.Value),
-                        new SqlParameter("reallocation_id", reallocationId ?? (object)DBNull.Value),
-                        new SqlParameter("provider_id", providerId),
-                        new SqlParameter("location_id", locationId)
-                    };
+                        var child = tray.Children?.FirstOrDefault(c => c.TrayItemID == reallocationId);
+                        if (child == null)
+                            continue;
 
-                    var dsValidation = await ExecuteCommandAsync("GetAnalyticsTrayConsolidationValidation", parameters);
+                        parameters = new[]
+                            {
+                            new SqlParameter("specialty_id", specialty.SpecialtyID ?? (object)DBNull.Value),
+                            new SqlParameter("tray_item_id", tray.TrayItemID),
+                            new SqlParameter("reallocation_id", reallocationId ?? (object)DBNull.Value),
+                            new SqlParameter("provider_id", providerId),
+                            new SqlParameter("location_id", locationId)
+                        };
 
-                    result.Merge(dsValidation.Tables[0]);
+                        var dsValidation = await ExecuteCommandAsync("GetAnalyticsTrayConsolidationValidation", parameters);
+
+                        consolidations = dsValidation.Tables[0].DataTableToList<TrayConsolidation>();
+                        child.Children = TrayConsolidationResult.SummarizeChildren(consolidations);
+                    }
                 }
             }
 

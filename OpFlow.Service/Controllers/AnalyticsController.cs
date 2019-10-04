@@ -449,6 +449,8 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetAnalyticsTrayConsolidationData(post.SpecialtyId, post.TrayId, post.Reallocation,
                 post.MaxSize, post.Overlap, user.ProviderID, user.LocationID);
 
+            return Request.CreateResponse(HttpStatusCode.OK, analytics);
+            /*
             var consolidation = new DataView(analytics);
             consolidation.Sort = "CardCount DESC";
 
@@ -476,7 +478,7 @@ namespace OpFlow.Service.Controllers
                 var webImage = ImageHelper.CreateWebImage(result);
 
                 return ResponseHelper.ImageResponse(Request, webImage);
-            }
+            }*/
         }
 
         // GET api/values/5
