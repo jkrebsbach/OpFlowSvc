@@ -388,7 +388,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<List<TrayConsolidationResult>> GetAnalyticsTrayConsolidationData(List<int> specialtyId, List<int> trayId, int? reallocationId,
-            int? maxSize, int? minOverlap, int providerId, int locationId)
+            int? maxSize, int? minCards, int? minConsolidationInstances, int? minTargetInstances, int? minOverlap, string group, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var trayXml = GetIdentitySummary(trayId);
@@ -399,15 +399,22 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("reallocation_id", reallocationId ?? (object)DBNull.Value),
                 new SqlParameter("max_size", maxSize ?? (object)DBNull.Value),
+                new SqlParameter("min_cards", minCards ?? (object)DBNull.Value),
+                new SqlParameter("min_consolidation_instances", minConsolidationInstances ?? (object)DBNull.Value),
+                new SqlParameter("min_target_instances", minTargetInstances ?? (object)DBNull.Value),
                 new SqlParameter("min_overlap", minOverlap ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayConsolidation", parameters);
-            
+            DataSet dsSchedules;
+            if (group == "S")
+                dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayConsolidation", parameters);
+            else
+                dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayConsolidationInstrument", parameters);
+
             var consolidations = dsSchedules.Tables[0].DataTableToList<TrayConsolidation>();
 
-            var result = TrayConsolidationResult.Summarize(consolidations);
+            var result = TrayConsolidationResult.Summarize(consolidations, group);
 
             if (reallocationId.HasValue)
             {
@@ -419,9 +426,18 @@ namespace OpFlow.Service.DataAccess
                         if (child == null)
                             continue;
 
+                        var filterSpecialtyId = specialty.SpecialtyID;
+                        var filterInstrumentId = specialty.InstrumentID;
+
+                        if (group == "S")
+                            filterInstrumentId = null;
+                        if (group == "I" && specialtyId == null)
+                            filterSpecialtyId = null;
+
                         parameters = new[]
-                            {
-                            new SqlParameter("specialty_id", specialty.SpecialtyID ?? (object)DBNull.Value),
+                        {
+                            new SqlParameter("specialty_id", filterSpecialtyId ?? (object)DBNull.Value),
+                            new SqlParameter("instrument_id", filterInstrumentId ?? (object)DBNull.Value),
                             new SqlParameter("tray_item_id", tray.TrayItemID),
                             new SqlParameter("reallocation_id", reallocationId ?? (object)DBNull.Value),
                             new SqlParameter("provider_id", providerId),

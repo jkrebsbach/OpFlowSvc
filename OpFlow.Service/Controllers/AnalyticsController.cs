@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Reporting.WebForms;
@@ -437,7 +439,7 @@ namespace OpFlow.Service.Controllers
         [HttpPost]
         [Route("trayConsolidation")]
         [Route("trayConsolidation/{format}")]
-        public async Task<HttpResponseMessage> TrayConsolidationReport([FromBody] TrayRationalizationReportPost post, string format = null)
+        public async Task<HttpResponseMessage> TrayConsolidationReport([FromBody] TrayConsolidationReportPost post, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
 
@@ -447,7 +449,7 @@ namespace OpFlow.Service.Controllers
 
 
             var analytics = await sqlHelper.GetAnalyticsTrayConsolidationData(post.SpecialtyId, post.TrayId, post.Reallocation,
-                post.MaxSize, post.Overlap, user.ProviderID, user.LocationID);
+                post.MaxSize, post.MinCards, post.MinConsolidationInstances, post.MinTargetInstances, post.Overlap, post.Group, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, analytics);
             /*
@@ -479,6 +481,62 @@ namespace OpFlow.Service.Controllers
 
                 return ResponseHelper.ImageResponse(Request, webImage);
             }*/
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("TrayConsolidationDownload")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsSummary>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("trayConsolidationDownload")]
+        public async Task<HttpResponseMessage> TrayConsolidationDownload([FromBody] TrayConsolidationExportPost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+
+
+            var analytics = await sqlHelper.GetAnalyticsTrayConsolidationData(post.SpecialtyId, post.TrayId, post.Reallocation,
+                post.MaxSize, post.MinCards, post.MinConsolidationInstances, post.MinTargetInstances, post.Overlap, post.Group, user.ProviderID, user.LocationID);
+
+            var export = "Tray 1, Tray 2, Shared Card\r\n";
+
+            foreach (var exportTray in post.Exports)
+            {
+                if (exportTray.Children == null || !exportTray.Children.Any())
+                {
+                    export += $"{exportTray.TrayID},NULL,NULL\r\n";
+                }
+
+                foreach (var child in exportTray.Children)
+                {
+                    export += $"{exportTray.TrayID},{child.TrayID},ZZZ\r\n";
+
+
+                    foreach (var child2 in child.Children)
+                    {
+                        export += $"{child.TrayID},{child2.TrayID},YYY\r\n";
+                    }
+                }
+            }
+
+            var extractBytes = System.Text.Encoding.UTF8.GetBytes(export);
+            var memStream = new MemoryStream(extractBytes);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                { FileName = "TrayRationalization.csv", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
         }
 
         // GET api/values/5

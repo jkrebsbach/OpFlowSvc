@@ -97,12 +97,32 @@ namespace OpFlow.Data
         public List<int> SurgeonId { get; set; }
         public List<int> TrayId { get; set; }
         public List<int> CardCategoryId { get; set; }
+        public int? MinSize { get; set; }
+        public string Order {get;set;}
+    }
+
+    public class TrayConsolidationReportPost
+    {
+        public List<int> SpecialtyId { get; set; }
+        public List<int> TrayId { get; set; }
         public int? Reallocation { get; set; }
         public int? Overlap { get; set; }
-        public int? MinSize { get; set; }
         public int? MaxSize { get; set; }
-        public string Order {get;set;}
+        public int? MinCards { get; set; }
+        public int? MinConsolidationInstances { get; set; }
+        public int? MinTargetInstances { get; set; }
         public string Group { get; set; }
+    }
+
+    public class TrayConsolidationExportPost : TrayConsolidationReportPost
+    {
+        public List<TrayConsolidationExport> Exports { get; set; }
+    }
+
+    public class TrayConsolidationExport
+    {
+        public int TrayID { get; set; }
+        public List<TrayConsolidationExport> Children { get; set; }
     }
 
     public class CountSummaryReportPost
