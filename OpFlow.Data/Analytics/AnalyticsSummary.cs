@@ -111,10 +111,11 @@ namespace OpFlow.Data
         public int? MinCards { get; set; }
         public int? MinConsolidationInstances { get; set; }
         public int? MinTargetInstances { get; set; }
+        public int? Effect { get; set; }
         public string Group { get; set; }
     }
 
-    public class TrayConsolidationExportPost : TrayConsolidationReportPost
+    public class TrayConsolidationExportPost 
     {
         public List<TrayConsolidationExport> Exports { get; set; }
     }

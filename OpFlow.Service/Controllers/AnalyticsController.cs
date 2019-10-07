@@ -449,8 +449,8 @@ namespace OpFlow.Service.Controllers
 
 
             var analytics = await sqlHelper.GetAnalyticsTrayConsolidationData(post.SpecialtyId, post.TrayId, post.Reallocation,
-                post.MaxSize, post.MinCards, post.MinConsolidationInstances, post.MinTargetInstances, post.Overlap, post.Group, user.ProviderID, user.LocationID);
-
+                post.MaxSize, post.MinCards, post.MinConsolidationInstances, post.MinTargetInstances, post.Overlap, post.Effect, post.Group, user.ProviderID, user.LocationID);
+            
             return Request.CreateResponse(HttpStatusCode.OK, analytics);
             /*
             var consolidation = new DataView(analytics);
@@ -498,26 +498,39 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
 
-            var analytics = await sqlHelper.GetAnalyticsTrayConsolidationData(post.SpecialtyId, post.TrayId, post.Reallocation,
-                post.MaxSize, post.MinCards, post.MinConsolidationInstances, post.MinTargetInstances, post.Overlap, post.Group, user.ProviderID, user.LocationID);
-
             var export = "Tray 1, Tray 2, Shared Card\r\n";
 
             foreach (var exportTray in post.Exports)
             {
+                var cards = await sqlHelper.GetTrayCards(exportTray.TrayID, user.ProviderID, user.LocationID);
+
                 if (exportTray.Children == null || !exportTray.Children.Any())
                 {
-                    export += $"{exportTray.TrayID},NULL,NULL\r\n";
+                    foreach (var card in cards)
+                    {
+                        export += $"{card.TrayName},NULL,{card.CardDescription}\r\n";
+                    }
                 }
 
-                foreach (var child in exportTray.Children)
+                foreach (var child in exportTray?.Children ?? new List<TrayConsolidationExport>())
                 {
-                    export += $"{exportTray.TrayID},{child.TrayID},ZZZ\r\n";
+                    var cards2 = await sqlHelper.GetTrayCards(child.TrayID, user.ProviderID, user.LocationID);
 
-
-                    foreach (var child2 in child.Children)
+                    foreach (var card2 in cards2.Where(c2 => cards.Any(c => c2.CardID == c.CardID)))
                     {
-                        export += $"{child.TrayID},{child2.TrayID},YYY\r\n";
+                        var card1 = cards.FirstOrDefault(c => c.CardID == card2.CardID);
+                        export += $"{card1?.TrayName},{card2.TrayName},{card2.CardDescription}\r\n";
+                    }
+                    
+                    foreach (var child2 in child?.Children ?? new List<TrayConsolidationExport>())
+                    {
+                        var cards3 = await sqlHelper.GetTrayCards(child2.TrayID, user.ProviderID, user.LocationID);
+
+                        foreach (var card3 in cards3.Where(c3 => cards2.Any(c2 => c3.CardID == c2.CardID)))
+                        {
+                            var card2 = cards2.FirstOrDefault(c => c.CardID == card3.CardID);
+                            export += $"{card2.TrayName},{card3.TrayName},{card3.CardDescription}\r\n";
+                        }
                     }
                 }
             }

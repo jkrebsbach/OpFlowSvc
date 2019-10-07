@@ -25,6 +25,7 @@ namespace OpFlow.Data.Analytics
         public int SecondTrayInstances { get; set; }
         public int RedundantInstruments { get; set; }
         public int SecondCardCount { get; set; }
+        public string SecondCardCategory { get; set; }
         public int SecondInstrumentCount { get; set; }
         public int OverlapCardCount { get; set; }
         public decimal OverlapPcnt { get; set; }
@@ -47,7 +48,7 @@ namespace OpFlow.Data.Analytics
         public decimal AvgTrayCount => SpecialtyCardCount == 0 ? 0 : (decimal)SpecialtyTrayCount / SpecialtyCardCount;
         public List<TrayConsolidationTray> Consolidations { get; set; }
 
-        public static List<TrayConsolidationResult> Summarize(List<TrayConsolidation> source, string group)
+        public static List<TrayConsolidationResult> Summarize(List<TrayConsolidation> source, string group, int? minEffect)
         {
             var result = new List<TrayConsolidationResult>();
 
@@ -70,12 +71,13 @@ namespace OpFlow.Data.Analytics
                     SpecialtyCardCount = groupEntity.SpecialtyCardCount,
                     Consolidations = new List<TrayConsolidationTray>()
                 };
+
                 result.Add(parent);
 
                 foreach (var tray in groupData.OrderByDescending(t => t.CardCount).GroupBy(t => t.TrayItemID))
                 {
                     var entity = tray.First();
-
+                    
                     var trayConsolidation = new TrayConsolidationTray()
                     {
                         Identity = identity,
@@ -91,6 +93,8 @@ namespace OpFlow.Data.Analytics
                         Children = new List<TrayConsolidationTray>()
                     };
                     parent.Consolidations.Add(trayConsolidation);
+
+                    var instrumentCount = (trayConsolidation.TrayInstances * trayConsolidation.TrayInstrumentCount);
 
                     foreach (var child in tray.OrderByDescending(t => t.SecondCardCount))
                     {
@@ -113,8 +117,12 @@ namespace OpFlow.Data.Analytics
                             TrayAudits = child.SecondaryAudits ?? 0,
                             TrayCounts = child.SecondaryCounts ?? 0,
                             TrayUsageQty = child.SecondaryUsageQty ?? 0,
-                            CardCategory = child.CardCategory
+                            CardCategory = child.SecondCardCategory,
+                            NetEffect = instrumentCount - (child.SecondTrayInstances * trayConsolidation.TrayInstrumentCount)
                         };
+
+                        if (minEffect.HasValue && secondary.NetEffect < minEffect)
+                            continue;
 
                         trayConsolidation.Children.Add(secondary);
                     }
@@ -126,12 +134,14 @@ namespace OpFlow.Data.Analytics
             return result;
         }
 
-        public static List<TrayConsolidationTray> SummarizeChildren(List<TrayConsolidation> source)
+        public static void SummarizeChildren(TrayConsolidationTray grandparent, TrayConsolidationTray parent, List<TrayConsolidation> source)
         {
-            var result = new List<TrayConsolidationTray>();
+            parent.Children = new List<TrayConsolidationTray>();
 
             foreach (var tray in source)
             {
+                var grandchildEffect = (tray.SecondTrayInstances - grandparent.TrayInstances) * grandparent.TrayInstrumentCount;
+
                 var consolidation = new TrayConsolidationTray()
                 {
                     TrayItemID = tray.SecondTrayItemID ?? -1,
@@ -145,13 +155,12 @@ namespace OpFlow.Data.Analytics
                     TrayAudits = tray.SecondaryAudits ?? 0,
                     TrayCounts = tray.SecondaryCounts ?? 0,
                     TrayUsageQty = tray.SecondaryUsageQty ?? 0,
-                    CardCategory = tray.CardCategory
+                    CardCategory = tray.CardCategory,
+                    NetEffect = parent.NetEffect - (tray.SecondTrayInstances * grandparent.TrayInstrumentCount)
                 };
 
-                result.Add(consolidation);
+                parent.Children.Add(consolidation);
             }
-
-            return result;
         }
     }
 
@@ -170,6 +179,7 @@ namespace OpFlow.Data.Analytics
         public int TrayCounts { get; set; }
         public int TrayUsageQty { get; set; }
         public string CardCategory { get; set; }
+        public int NetEffect { get; set; }
         public List<TrayConsolidationTray> Children { get; set; }
 
         public decimal TrayAvgUsage => (TrayCounts == 0 ? 0 : TrayUsageQty / TrayCounts);

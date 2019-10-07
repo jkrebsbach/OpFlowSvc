@@ -388,7 +388,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<List<TrayConsolidationResult>> GetAnalyticsTrayConsolidationData(List<int> specialtyId, List<int> trayId, int? reallocationId,
-            int? maxSize, int? minCards, int? minConsolidationInstances, int? minTargetInstances, int? minOverlap, string group, int providerId, int locationId)
+            int? maxSize, int? minCards, int? minConsolidationInstances, int? minTargetInstances, int? minOverlap, int? maxEffect, string group, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var trayXml = GetIdentitySummary(trayId);
@@ -414,7 +414,7 @@ namespace OpFlow.Service.DataAccess
 
             var consolidations = dsSchedules.Tables[0].DataTableToList<TrayConsolidation>();
 
-            var result = TrayConsolidationResult.Summarize(consolidations, group);
+            var result = TrayConsolidationResult.Summarize(consolidations, group, maxEffect);
 
             if (reallocationId.HasValue)
             {
@@ -447,11 +447,11 @@ namespace OpFlow.Service.DataAccess
                         var dsValidation = await ExecuteCommandAsync("GetAnalyticsTrayConsolidationValidation", parameters);
 
                         consolidations = dsValidation.Tables[0].DataTableToList<TrayConsolidation>();
-                        child.Children = TrayConsolidationResult.SummarizeChildren(consolidations);
+                        TrayConsolidationResult.SummarizeChildren(tray, child, consolidations);
                     }
                 }
             }
-
+            
             return result;
         }
 
@@ -1025,6 +1025,21 @@ namespace OpFlow.Service.DataAccess
             }
 
             return table.OuterXml;
+        }
+
+        public async Task<List<TrayCardOverlap>> GetTrayCards(int trayId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_item_id", trayId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetTrayCards", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayCardOverlap>();
+
+            return result;
         }
 
         public async Task<List<TrayApproval>> GetProposedTrayApprovalDocuments(int trayProposalId, int providerId,
