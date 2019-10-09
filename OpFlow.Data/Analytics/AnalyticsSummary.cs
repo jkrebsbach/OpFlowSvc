@@ -105,6 +105,7 @@ namespace OpFlow.Data
     {
         public List<int> SpecialtyId { get; set; }
         public List<int> TrayId { get; set; }
+        public List<int> ProcedureGroup { get; set; }
         public int? Reallocation { get; set; }
         public int? Overlap { get; set; }
         public int? MaxSize { get; set; }

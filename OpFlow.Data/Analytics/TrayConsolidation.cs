@@ -96,7 +96,7 @@ namespace OpFlow.Data.Analytics
 
                     var instrumentCount = (trayConsolidation.TrayInstances * trayConsolidation.TrayInstrumentCount);
 
-                    foreach (var child in tray.OrderByDescending(t => t.SecondCardCount))
+                    foreach (var child in tray.OrderByDescending(t => t.OverlapPcnt))
                     {
                         if (child.SecondTrayItemID == null)
                             continue;

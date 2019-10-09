@@ -388,10 +388,11 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<List<TrayConsolidationResult>> GetAnalyticsTrayConsolidationData(List<int> specialtyId, List<int> trayId, int? reallocationId,
-            int? maxSize, int? minCards, int? minConsolidationInstances, int? minTargetInstances, int? minOverlap, int? maxEffect, string group, int providerId, int locationId)
+            int? maxSize, int? minCards, int? minConsolidationInstances, int? minTargetInstances, int? minOverlap, int? maxEffect, List<int> procedureGroup, string group, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var trayXml = GetIdentitySummary(trayId);
+            var procedureXml = GetIdentitySummary(procedureGroup);
 
             var parameters = new[]
             {
@@ -403,6 +404,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("min_consolidation_instances", minConsolidationInstances ?? (object)DBNull.Value),
                 new SqlParameter("min_target_instances", minTargetInstances ?? (object)DBNull.Value),
                 new SqlParameter("min_overlap", minOverlap ?? (object)DBNull.Value),
+                new SqlParameter("card_category", procedureXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

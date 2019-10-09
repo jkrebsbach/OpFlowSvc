@@ -449,7 +449,7 @@ namespace OpFlow.Service.Controllers
 
 
             var analytics = await sqlHelper.GetAnalyticsTrayConsolidationData(post.SpecialtyId, post.TrayId, post.Reallocation,
-                post.MaxSize, post.MinCards, post.MinConsolidationInstances, post.MinTargetInstances, post.Overlap, post.Effect, post.Group, user.ProviderID, user.LocationID);
+                post.MaxSize, post.MinCards, post.MinConsolidationInstances, post.MinTargetInstances, post.Overlap, post.Effect, post.ProcedureGroup, post.Group, user.ProviderID, user.LocationID);
             
             return Request.CreateResponse(HttpStatusCode.OK, analytics);
             /*
