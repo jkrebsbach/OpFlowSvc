@@ -478,6 +478,21 @@ namespace OpFlow.Data
         }
     }
 
+    public class TrayProposalSchedule
+    {
+        public int TrayProposalID { get; set; }
+        public int SurgeryID { get; set; }
+        public DateTime SurgeryDate { get; set; }
+        public string RoomDescription { get; set; }
+        public string Surgeon { get; set; }
+        public string CardDescription { get; set; }
+        public string TrayName { get; set; }
+        public string TrayGroup { get; set; }
+        public string TrayStatus { get; set; }
+
+        public bool Assigned { get; set; }
+    }
+
     public class TrayRationalizationExport : TrayRationalizationItem
     {
         public int ProposedQuantity { get; set; }

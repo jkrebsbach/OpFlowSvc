@@ -39,6 +39,7 @@ namespace OpFlow.Service.Controllers
             var collections = await sqlHelper.GetItems("collection", null, null, user.ProviderID, user.LocationID);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
             var baselineTrays = await sqlHelper.GetBaselineTrays(user.ProviderID, user.LocationID);
+            var schedules = await sqlHelper.GetProposedTraySchedule(null, user.ProviderID, user.LocationID);
             var vendors = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
             var questions = await sqlHelper.GetTrayQuestions(null, user.ProviderID, user.LocationID);
             var phases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
@@ -54,6 +55,7 @@ namespace OpFlow.Service.Controllers
                 Types = instrumentLookups.Types,
                 CardCategories = cardCategories,
                 Trays = trays,
+                Schedules = schedules,
                 Collections = collections,
                 Proposals = proposedTrays,
                 Vendors = vendors,
@@ -399,6 +401,54 @@ namespace OpFlow.Service.Controllers
                                            (specialtyId == null || a.SpecialtyID == specialtyId));
 
             return Request.CreateResponse(HttpStatusCode.OK, filter);
+        }
+
+        [SwaggerOperation("GetTraySchedule")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("traySchedule/{trayProposalId}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTraySchedule(int trayProposalId, DateTime startDate, DateTime endDate)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var surgeries = await sqlHelper.SearchCases(null, null, null, null, null, null, null, startDate, endDate, user.ProviderID, user.LocationID);
+            var schedules = await sqlHelper.GetProposedTraySchedule(trayProposalId, user.ProviderID, user.LocationID);
+
+            var result = new List<TrayProposalSchedule>();
+            foreach (var surgery in surgeries)
+            {
+                result.Add(new TrayProposalSchedule()
+                {
+                    SurgeryID = surgery.SurgeryID,
+                    SurgeryDate = surgery.ScheduleTime,
+                    RoomDescription = surgery.RoomDescription,
+                    Surgeon = surgery.SurgeryTeam,
+                    CardDescription = surgery.CardDescription,
+                    Assigned = schedules.Any(s => s.SurgeryID == surgery.SurgeryID)
+                });
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        [SwaggerOperation("UpdateTraySchedule")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("traySchedule")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateTraySchedule(int trayProposalId, int surgeryId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.UpdateProposedTraySchedule(trayProposalId, surgeryId, user.ProviderID, user.LocationID);
+
+            var schedules = await sqlHelper.GetProposedTraySchedule(null, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Schedules = schedules
+            });
         }
 
         [SwaggerOperation("AddCaseAudit")]
