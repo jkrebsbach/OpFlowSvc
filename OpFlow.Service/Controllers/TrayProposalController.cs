@@ -432,6 +432,21 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
+        [SwaggerOperation("PostMessage")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("message")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostMessage(int trayProposalId, int surgeryId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var abc = EmailHelper.SendEmail("jeff@thesandjay.com");
+            var result = -1;
+        
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
         [SwaggerOperation("UpdateTraySchedule")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("traySchedule")]

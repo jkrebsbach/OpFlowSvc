@@ -488,7 +488,26 @@ namespace OpFlow.Data
         public string CardDescription { get; set; }
         public string TrayName { get; set; }
         public string TrayGroup { get; set; }
-        public string TrayStatus { get; set; }
+        public string DeploymentStatus { get; set; }
+        public string TrayStatus {
+        get
+            {
+                var result = string.Empty;
+                switch (DeploymentStatus)
+                {
+                    case "A":
+                        return "Ahead";
+                    case "B":
+                        return "Behind";
+                    case "H":
+                        return "Hold";
+                    case "C":
+                        return "Completed";
+                    default:
+                        return "On Time";
+                }
+            }
+        }
 
         public bool Assigned { get; set; }
     }
