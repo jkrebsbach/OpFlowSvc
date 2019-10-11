@@ -482,34 +482,52 @@ namespace OpFlow.Data
     {
         public int TrayProposalID { get; set; }
         public int SurgeryID { get; set; }
-        public DateTime SurgeryDate { get; set; }
+        public DateTime ScheduleTime { get; set; }
         public string RoomDescription { get; set; }
         public string Surgeon { get; set; }
         public string CardDescription { get; set; }
         public string TrayName { get; set; }
         public string TrayGroup { get; set; }
-        public string DeploymentStatus { get; set; }
-        public string TrayStatus {
+        public string CommunicationStatusID { get; set; }
+        public string CommunicationStatus {
         get
             {
                 var result = string.Empty;
-                switch (DeploymentStatus)
+                switch (CommunicationStatusID)
                 {
+                    case "S":
+                        return "Submitted";
                     case "A":
-                        return "Ahead";
-                    case "B":
-                        return "Behind";
+                        return "Accepted";
                     case "H":
                         return "Hold";
-                    case "C":
-                        return "Completed";
+                    case "B":
+                        return "Built";
+                    case "T":
+                        return "Transport";
+                    case "AV":
+                        return "Available";
                     default:
-                        return "On Time";
+                        return "Pending";
                 }
             }
         }
 
         public bool Assigned { get; set; }
+
+        public List<SurgeryUser> SurgeryUsers { get; set; }
+
+        public TrayProposalSchedule()
+        {
+            SurgeryUsers = new List<SurgeryUser>();
+        }
+        public string SurgeryTeam
+        {
+            get
+            {
+                return SurgeryUsers == null ? null : string.Join(", ", SurgeryUsers.Select(su => su.LastName));
+            }
+        }
     }
 
     public class TrayRationalizationExport : TrayRationalizationItem
@@ -555,6 +573,11 @@ namespace OpFlow.Data
     {
         public List<int> Surgeries { get; set; }
         public string Target { get; set; }
+    }
+
+    public class CommunicationStatusPost
+    {
+        public string Status { get; set; }
     }
 
     public class TrayRationalizationReduction

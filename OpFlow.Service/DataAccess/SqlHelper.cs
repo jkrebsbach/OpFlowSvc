@@ -1277,6 +1277,47 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<TrayProposalSchedule>> SearchCaseTraySchedule(int? surgeonId, int? proposedTrayId, DateTime startDate, DateTime endDate,
+            int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgeon_user_id", surgeonId ?? (object)DBNull.Value),
+                new SqlParameter("tray_proposal_id", proposedTrayId ?? (object)DBNull.Value),
+                new SqlParameter("beg_date", startDate),
+                new SqlParameter("end_date", endDate),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("SearchCaseTraySchedule", parameters);
+
+            var surgeries = dsSchedules.Tables[0].DataTableToList<TrayProposalSchedule>();
+            var surgeryUsers = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
+
+            foreach (var surgeryUser in surgeryUsers)
+            {
+                var surgery = surgeries.FirstOrDefault(s => s.SurgeryID == surgeryUser.SurgeryID);
+                surgery?.SurgeryUsers?.Add(surgeryUser);
+            }
+
+            return surgeries;
+        }
+
+        public async Task<List<TrayProposalSchedule>> GetSurgeryTraySchedule(int surgeryId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeryTraySchedule", parameters);
+
+            var trayProposals = dsSchedules.Tables[0].DataTableToList<TrayProposalSchedule>();
+            
+            return trayProposals;
+        }
+
         public async Task<int> UpdateProposedTrayApproval(int trayProposalId, string filename, int typeId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -1304,7 +1345,22 @@ namespace OpFlow.Service.DataAccess
             var result = await ExecuteNonQueryAsync("UpdateProposedTraySchedule", parameters);
 
             return result;
-        }        
+        }
+        
+        public async Task<int> UpdateProposedTrayCommunicationStatus(int trayProposalId, int surgeryId, string status, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("communication_status", status),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProposedTrayCommunicationStatus", parameters);
+
+            return result;
+        }
 
         public async Task<int> UpdateProposedTrayAudit(int trayProposalId, int surgeryId, int? scrubTechUserId, int? auditUserId, int providerId, int locationId)
         {

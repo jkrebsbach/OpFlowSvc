@@ -405,46 +405,33 @@ namespace OpFlow.Service.Controllers
 
         [SwaggerOperation("GetTraySchedule")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [Route("traySchedule/{trayProposalId}")]
+        [Route("traySchedule")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetTraySchedule(int trayProposalId, DateTime startDate, DateTime endDate)
+        public async Task<HttpResponseMessage> GetTraySchedule(int? surgeonId, int? trayProposalId, DateTime startDate, DateTime endDate)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var surgeries = await sqlHelper.SearchCases(null, null, null, null, null, null, null, startDate, endDate, user.ProviderID, user.LocationID);
-            var schedules = await sqlHelper.GetProposedTraySchedule(trayProposalId, user.ProviderID, user.LocationID);
-
-            var result = new List<TrayProposalSchedule>();
-            foreach (var surgery in surgeries)
-            {
-                result.Add(new TrayProposalSchedule()
-                {
-                    SurgeryID = surgery.SurgeryID,
-                    SurgeryDate = surgery.ScheduleTime,
-                    RoomDescription = surgery.RoomDescription,
-                    Surgeon = surgery.SurgeryTeam,
-                    CardDescription = surgery.CardDescription,
-                    Assigned = schedules.Any(s => s.SurgeryID == surgery.SurgeryID)
-                });
-            }
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            var surgeries = await sqlHelper.SearchCaseTraySchedule(surgeonId, trayProposalId, startDate, endDate, user.ProviderID, user.LocationID);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, surgeries);
         }
 
-        [SwaggerOperation("PostMessage")]
+        [SwaggerOperation("GetSurgeryTraySchedule")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [Route("message")]
-        [HttpPost]
-        public async Task<HttpResponseMessage> PostMessage(int trayProposalId, int surgeryId)
+        [Route("surgeryTraySchedule")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetSurgeryTraySchedule(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var abc = EmailHelper.SendEmail("jeff@thesandjay.com");
-            var result = -1;
-        
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            var trayProposals = await sqlHelper.GetSurgeryTraySchedule(surgeryId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Proposals = trayProposals
+            });
         }
 
         [SwaggerOperation("UpdateTraySchedule")]
@@ -457,6 +444,27 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             await sqlHelper.UpdateProposedTraySchedule(trayProposalId, surgeryId, user.ProviderID, user.LocationID);
+
+            var schedules = await sqlHelper.GetProposedTraySchedule(null, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Schedules = schedules
+            });
+        }
+
+        [SwaggerOperation("UpdateCommunicationStatus")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("communicationStatus")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateCommunicationStatus(int trayProposalId, int surgeryId, [FromBody] CommunicationStatusPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.UpdateProposedTrayCommunicationStatus(trayProposalId, surgeryId, post.Status, user.ProviderID, user.LocationID);
+
+            EmailHelper.SendEmail("dave@opflowtech.com", post.Status);            
 
             var schedules = await sqlHelper.GetProposedTraySchedule(null, user.ProviderID, user.LocationID);
 
