@@ -1202,7 +1202,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var trayId = await sqlHelper.InsertProposedTray(trayProposalId, post.TrayName, post.Instruments, user.ProviderID, user.LocationID);
+            var trayId = await sqlHelper.InsertProposedTray(trayProposalId, post.SpecialtyID, post.Customized, post.TrayName, post.Instruments, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }
@@ -1219,7 +1219,7 @@ namespace OpFlow.Service.Controllers
             List<int> trayGroups = await sqlHelper.UpdateTrayGroups(post.TrayGroups, user.ProviderID, user.LocationID);
 
             var trayId = await sqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, post.VendorID, 
-                post.SpecialtyID, post.PhaseID, post.CardCategories, trayGroups, user.ProviderID, user.LocationID);
+                post.SpecialtyID, post.PhaseID, post.Customized, post.CardCategories, trayGroups, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }

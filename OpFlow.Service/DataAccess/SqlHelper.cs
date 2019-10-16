@@ -682,7 +682,7 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
-        public async Task<int> InsertProposedTray(int? proposedTrayId,
+        public async Task<int> InsertProposedTray(int? proposedTrayId, int? specialtyId, bool customized,
             string trayName, List<ProposedTrayInstrumentPost> instruments, int providerId, int locationId)
         {
             var instrumentXml = GetInstrumentSummary(instruments);
@@ -691,6 +691,8 @@ namespace OpFlow.Service.DataAccess
             {
                 new SqlParameter("tray_proposal_id", proposedTrayId ?? (object)DBNull.Value),
                 new SqlParameter("tray_name", trayName ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("customized", customized),
                 new SqlParameter("instruments", instrumentXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
@@ -791,7 +793,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<int> UpdateProposedTray(int proposedTrayId,
-            string trayName, string status, int statusUserId, int? vendorId, int? specialtyId, int? phaseId, 
+            string trayName, string status, int statusUserId, int? vendorId, int? specialtyId, int? phaseId, bool customized,
             List<int> cardCategories, List<int> trayGroups, int providerId, int locationId)
         {
             var cardCategoryXml = GetIdentitySummary(cardCategories);
@@ -806,6 +808,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("phase_id", phaseId ?? (object)DBNull.Value),
+                new SqlParameter("customized", customized),
                 new SqlParameter("card_categories", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_groups", trayGroupXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
