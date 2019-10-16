@@ -44,6 +44,7 @@ namespace OpFlow.Service.Controllers
             var questions = await sqlHelper.GetTrayQuestions(null, user.ProviderID, user.LocationID);
             var phases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
             var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
+            var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
             var instruments = await sqlHelper.GetItems("instrument", null, true, user.ProviderID, user.LocationID);
 
             var result = new
@@ -54,6 +55,7 @@ namespace OpFlow.Service.Controllers
                 Eponyms = instrumentLookups.Eponyms,
                 Types = instrumentLookups.Types,
                 CardCategories = cardCategories,
+                TrayGroups = trayGroups,
                 Trays = trays,
                 Schedules = schedules,
                 Collections = collections,
@@ -101,7 +103,10 @@ namespace OpFlow.Service.Controllers
             var trayCounts = await sqlHelper.GetTrayCountSummary(trayProposalId, user.ProviderID, user.LocationID);
             var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
             var cardCategories = await sqlHelper.GetProposedTrayCardCategories(trayProposalId, user.ProviderID, user.LocationID);
+            var trayGroups = await sqlHelper.GetTrayProposalTrayGroups(trayProposalId, user.ProviderID, user.LocationID);
 
+            var schedules = await sqlHelper.GetProposedTraySchedule(trayProposalId, user.ProviderID, user.LocationID);
+            
             proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
             foreach (var sourceTray in sourceTrays)
             {
@@ -118,9 +123,11 @@ namespace OpFlow.Service.Controllers
                 Audits = audits,
                 Counts = counts,
                 CardCategories = cardCategories,
+                TrayGroups = trayGroups,
                 TrayCounts = trayCounts,
                 ApprovalAudits = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList(),
                 ApprovalCounts = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList(),
+                SubmittedSchedules = schedules.Where(s => s.ScheduleSubmitted),
                 SourceTrays = sourceTrays
             });
         }
@@ -403,20 +410,6 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, filter);
         }
 
-        [SwaggerOperation("GetTraySchedule")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [Route("traySchedule")]
-        [HttpGet]
-        public async Task<HttpResponseMessage> GetTraySchedule(int? surgeonId, int? trayProposalId, DateTime startDate, DateTime endDate)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper();
-
-            var surgeries = await sqlHelper.SearchCaseTraySchedule(surgeonId, trayProposalId, startDate, endDate, user.ProviderID, user.LocationID);
-            
-            return Request.CreateResponse(HttpStatusCode.OK, surgeries);
-        }
-
         [SwaggerOperation("GetSurgeryTraySchedule")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("surgeryTraySchedule")]
@@ -434,22 +427,56 @@ namespace OpFlow.Service.Controllers
             });
         }
 
-        [SwaggerOperation("UpdateTraySchedule")]
+        [SwaggerOperation("GetTraySchedule")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("traySchedule")]
-        [HttpPost]
-        public async Task<HttpResponseMessage> UpdateTraySchedule(int trayProposalId, int surgeryId)
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTraySchedule(int? surgeonId, int? trayProposalId, DateTime startDate, DateTime endDate)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateProposedTraySchedule(trayProposalId, surgeryId, user.ProviderID, user.LocationID);
+            var surgeries = await sqlHelper.SearchCaseTraySchedule(surgeonId, trayProposalId, startDate, endDate, user.ProviderID, user.LocationID);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, surgeries);
+        }
+
+        [SwaggerOperation("UpdateTraySchedule")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("traySchedule")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateTraySchedule(int surgeryId, int? trayProposalId, int? trayGroupId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (trayProposalId == null && trayGroupId == null)
+                return Request.CreateResponse(HttpStatusCode.Ambiguous);
+
+            await sqlHelper.UpdateProposedTraySchedule(surgeryId, trayProposalId, trayGroupId, user.ProviderID, user.LocationID);
 
             var schedules = await sqlHelper.GetProposedTraySchedule(null, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 Schedules = schedules
+            });
+        }
+
+        [SwaggerOperation("GetCommunicationTeam")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("communicationTeam")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetCommunicationTeam(int trayProposalId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var team = await sqlHelper.GetProposedTrayCommunicationTeam(trayProposalId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Team = team
             });
         }
 
@@ -462,15 +489,44 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateProposedTrayCommunicationStatus(trayProposalId, surgeryId, post.Status, user.ProviderID, user.LocationID);
+            var trayProposal = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).First();
 
-            EmailHelper.SendEmail("dave@opflowtech.com", post.Status);            
+            if (trayProposal.DeploymentStatus != post.Status)
+            {
+                await sqlHelper.UpdateProposedTrayCommunicationStatus(trayProposalId, surgeryId, post.Status, user.UserID, user.ProviderID, user.LocationID);
+                var dbUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+
+                await EmailHelper.SendEmail(dbUser.Email, post.Status);
+            }            
 
             var schedules = await sqlHelper.GetProposedTraySchedule(null, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 Schedules = schedules
+            });
+        }
+
+        [SwaggerOperation("SendTrayNotification")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("communication")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> SendTrayNotification(int trayProposalId, [FromBody] CommunicationPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var trayProposal = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).First();
+            var team = await sqlHelper.GetProposedTrayCommunicationTeam(trayProposalId, user.ProviderID, user.LocationID);
+
+            foreach (var member in team.Where(t => post.Users.Any(u => u == t.UserID)))
+            {
+                await EmailHelper.SendEmail(member.Email, trayProposal.DeploymentStatus);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Team = team
             });
         }
 
@@ -1160,8 +1216,10 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
+            List<int> trayGroups = await sqlHelper.UpdateTrayGroups(post.TrayGroups, user.ProviderID, user.LocationID);
+
             var trayId = await sqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, post.VendorID, 
-                post.SpecialtyID, post.PhaseID, post.CardCategories, user.ProviderID, user.LocationID);
+                post.SpecialtyID, post.PhaseID, post.CardCategories, trayGroups, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }

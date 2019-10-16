@@ -100,6 +100,12 @@ namespace OpFlow.Data
         public string CategoryName { get; set; }
     }
 
+    public class TrayGroup
+    {
+        public int TrayGroupID { get; set; }
+        public string TrayGroupDescription { get; set; }
+    }
+
     public class CardWithCategory : Card
     {
         public List<CardCategoryXRef> CardCategories { get; set; }

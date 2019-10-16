@@ -80,6 +80,11 @@ namespace OpFlow.Data
         public int CardCategoryID { get; set; }
     }
 
+    public class TrayProposalTrayGroup : TrayGroup
+    {
+        public int TrayProposalID { get; set; }
+    }
+
     public class TrayApproval
     {
         public int DocumentTypeID { get; set; }
@@ -188,6 +193,7 @@ namespace OpFlow.Data
         public string Status { get; set; }
         public List<ProposedTrayInstrumentPost> Instruments { get; set; }
         public List<int> CardCategories { get; set; }
+        public List<string> TrayGroups { get; set; }
     }
 
     public class ProposedTrayDashboardPost
@@ -480,7 +486,8 @@ namespace OpFlow.Data
 
     public class TrayProposalSchedule
     {
-        public int TrayProposalID { get; set; }
+        public int? TrayProposalID { get; set; }
+        public int? TrayGroupID { get; set; }
         public int SurgeryID { get; set; }
         public DateTime ScheduleTime { get; set; }
         public string RoomDescription { get; set; }
@@ -490,9 +497,8 @@ namespace OpFlow.Data
         public string TrayGroup { get; set; }
         public string CommunicationStatusID { get; set; }
         public string CommunicationStatus {
-        get
+            get
             {
-                var result = string.Empty;
                 switch (CommunicationStatusID)
                 {
                     case "S":
@@ -512,6 +518,8 @@ namespace OpFlow.Data
                 }
             }
         }
+
+        public bool ScheduleSubmitted => CommunicationStatus != "Pending";
 
         public bool Assigned { get; set; }
 
@@ -578,6 +586,11 @@ namespace OpFlow.Data
     public class CommunicationStatusPost
     {
         public string Status { get; set; }
+    }
+
+    public class CommunicationPost
+    {
+        public List<int> Users { get; set; }
     }
 
     public class TrayRationalizationReduction
