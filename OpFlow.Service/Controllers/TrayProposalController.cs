@@ -105,8 +105,6 @@ namespace OpFlow.Service.Controllers
             var cardCategories = await sqlHelper.GetProposedTrayCardCategories(trayProposalId, user.ProviderID, user.LocationID);
             var trayGroups = await sqlHelper.GetTrayProposalTrayGroups(trayProposalId, user.ProviderID, user.LocationID);
 
-            var schedules = await sqlHelper.GetProposedTraySchedule(trayProposalId, user.ProviderID, user.LocationID);
-            
             proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
             foreach (var sourceTray in sourceTrays)
             {
@@ -127,7 +125,6 @@ namespace OpFlow.Service.Controllers
                 TrayCounts = trayCounts,
                 ApprovalAudits = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList(),
                 ApprovalCounts = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList(),
-                SubmittedSchedules = schedules.Where(s => s.ScheduleSubmitted),
                 SourceTrays = sourceTrays
             });
         }

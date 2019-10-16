@@ -455,6 +455,7 @@ namespace OpFlow.Data
         public int SurgeryID { get; set; }
         public int SpecialtyID { get; set; }
         public int? AuditUserID { get; set; }
+        public int? ScheduleID { get; set; }
         public string ProposedTrayName { get; set; }
         public string SurgeonName { get; set; }
         public string RoomDescription { get; set; }
@@ -491,6 +492,7 @@ namespace OpFlow.Data
         public int? TrayProposalID { get; set; }
         public int? TrayGroupID { get; set; }
         public int SurgeryID { get; set; }
+        public bool CustomizedTray { get; set; }
         public DateTime ScheduleTime { get; set; }
         public string RoomDescription { get; set; }
         public string Surgeon { get; set; }
