@@ -98,6 +98,7 @@ namespace OpFlow.Data
     {
         public int TrayItemID { get; set; }
         public string TrayName { get; set; }
+        public string CardCategories { get; set; }
         public int CountsComplete { get; set; }
         public int CountsScheduled { get; set; }
         public int AuditsComplete { get; set; }

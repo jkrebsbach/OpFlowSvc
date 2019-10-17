@@ -619,6 +619,11 @@ namespace OpFlow.Service.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> GetTrayCsv(int trayProposalId, string type)
         {
+            if (type == "export")
+            {
+                return await TraySummaryCsv(trayProposalId);
+            }
+
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
@@ -684,6 +689,37 @@ namespace OpFlow.Service.Controllers
             result.Content.Headers.ContentDisposition =
                 new ContentDispositionHeaderValue("attachment")
                     { FileName = "TrayRationalization.csv", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
+        }
+
+        public async Task<HttpResponseMessage> TraySummaryCsv(int trayProposalId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).First();
+            var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
+            var extract = "Tray Name, Source Tray, # Instruments, Service Line, Categories\r\n";
+
+            foreach (var sourceTray in sourceTrays)
+            {
+                extract += $"\"{proposedTray.TrayName?.Trim().Replace("\"", "\"\"")}\",{sourceTray.TrayName},{proposedTray.InstrumentCount},{proposedTray.Specialty},{sourceTray.CardCategories}\r\n";
+            }
+            
+            var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
+            var memStream = new MemoryStream(extractBytes);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                { FileName = "TrayRationalization.csv", };
 
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
             result.Content.Headers.ContentLength = memStream.Length;
