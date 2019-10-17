@@ -25,6 +25,7 @@ namespace OpFlow.iOS
             public DateTime InsertTimestamp { get; set; }
             public int? SurgeryID { get; set; }
             public int? CommunicationUserID { get; set; }
+            public int? TrayProposalID { get; set; }
         }
 
         public event EventHandler<MessageReceiveEvent> OnMessageReceived;
@@ -55,7 +56,7 @@ namespace OpFlow.iOS
 
             _proxy.On("broadcastMessage", (string message, int senderRoleId, int senderUserId,
                 string senderUserName, DateTime insertTimestamp,
-                int? surgeryId, int? communicationUserId) =>
+                int? surgeryId, int? communicationUserId, int? trayProposalId) =>
             {
                 OnMessageReceived?.Invoke(this, new MessageReceiveEvent()
                 {
@@ -65,7 +66,8 @@ namespace OpFlow.iOS
                     SenderUserName = senderUserName,
                     InsertTimestamp = insertTimestamp,
                     SurgeryID = surgeryId,
-                    CommunicationUserID = communicationUserId
+                    CommunicationUserID = communicationUserId,
+                    TrayProposalID = trayProposalId
                 });
             });
 

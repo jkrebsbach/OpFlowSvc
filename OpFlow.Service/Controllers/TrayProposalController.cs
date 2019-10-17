@@ -473,7 +473,8 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
-                Team = team
+                Team = team,
+                TrayProposalID = trayProposalId
             });
         }
 
@@ -486,74 +487,12 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var history = await sqlHelper.GetProposedTrayCommunicationHistory(trayProposalId, user.ProviderID, user.LocationID);
+            var messages = await sqlHelper.GetProposedTrayCommunicationHistory(trayProposalId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
-                History = history
+                Messages = messages
             });
-        }
-
-        [SwaggerOperation("UpdateCommunicationStatus")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [Route("communicationStatus")]
-        [HttpPost]
-        public async Task<HttpResponseMessage> UpdateCommunicationStatus(int trayProposalId, [FromBody] CommunicationStatusPost post)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper();
-
-            var trayProposal = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).First();
-
-            if (trayProposal.DeploymentStatus != post.Status)
-            {
-                await sqlHelper.UpdateProposedTrayCommunicationStatus(trayProposalId, post.Status, user.UserID, user.ProviderID, user.LocationID);
-                var dbUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
-
-                var message = TrayProposalEmail(post.Status);
-
-                await EmailHelper.SendEmail(dbUser.Email, message);
-                await sqlHelper.UpdateProposedTrayCommunicationHistory(dbUser.UserID, trayProposalId, message, user.ProviderID, user.LocationID);
-            }            
-
-            var schedules = await sqlHelper.GetProposedTraySchedule(null, user.ProviderID, user.LocationID);
-
-            return Request.CreateResponse(HttpStatusCode.OK, new
-            {
-                Schedules = schedules
-            });
-        }
-
-        [SwaggerOperation("SendTrayNotification")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [Route("communication")]
-        [HttpPost]
-        public async Task<HttpResponseMessage> SendTrayNotification(int trayProposalId, [FromBody] CommunicationPost post)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper();
-
-            var trayProposal = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).First();
-            var team = await sqlHelper.GetProposedTrayCommunicationTeam(trayProposalId, user.ProviderID, user.LocationID);
-
-            var message = TrayProposalEmail(trayProposal.DeploymentStatus);
-
-            foreach (var member in team.Where(t => post.Users.Any(u => u == t.UserID)))
-            {
-                await EmailHelper.SendEmail(member.Email, trayProposal.DeploymentStatus);
-                await sqlHelper.UpdateProposedTrayCommunicationHistory(member.UserID, trayProposalId, message, user.ProviderID, user.LocationID);
-            }
-
-            return Request.CreateResponse(HttpStatusCode.OK, new
-            {
-                Team = team
-            });
-        }
-
-        private string TrayProposalEmail(string status)
-        {
-            var result = $"This is a sample email - tray status set to {status}";
-            return result;
         }
 
         [SwaggerOperation("AddCaseAudit")]

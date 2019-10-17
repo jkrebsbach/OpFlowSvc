@@ -42,7 +42,7 @@ namespace OpFlow.Service.SignalR
                 {
                     user.ProviderID.ToString()
                 };
-                Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
+                Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, surgeryId, null, null);
                 //Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
 
                 // Prepend surgery descriptor to message
@@ -86,7 +86,7 @@ namespace OpFlow.Service.SignalR
             {
                 user.ProviderID.ToString()
             };
-            Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
+            Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId, null);
             //Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
 
             // Send messages to communication target
@@ -94,6 +94,43 @@ namespace OpFlow.Service.SignalR
 
             // Send messages to communication source
             await PushNotificationMessage(sender, sender.Email, message);
+        }
+        public async Task SendTrayRationalizationMessage(int trayProposalId, string message)
+        {
+            var userAuthId = Context.User.Identity.GetUserId();
+            var user = await CacheUtil.GetUserSecurity(userAuthId);
+            var sqlHelper = new SqlHelper();
+
+            var insertTimestamp = DateTime.Now;
+
+            var trayProposal = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).First();
+            var team = await sqlHelper.GetProposedTrayCommunicationTeam(trayProposalId, user.ProviderID, user.LocationID);
+
+            foreach (var member in team)
+            {
+                await EmailHelper.SendEmail(member.Email, trayProposal.DeploymentStatus);
+
+                var recipientUser =
+                    await sqlHelper.GetUser(user.ProviderID, user.LocationID, member.UserID);
+            }
+
+            await sqlHelper.UpdateProposedTrayCommunicationHistory(user.UserID, trayProposalId, message, user.ProviderID, user.LocationID);
+
+            var sender =
+                await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+
+            var groups = new List<string>()
+            {
+                user.ProviderID.ToString()
+            };
+            Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, null, null, trayProposalId);
+            //Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
+
+            // Send messages to communication target
+            //await PushNotificationMessage(sender, recipientUser.Email, message);
+
+            // Send messages to communication source
+            //await PushNotificationMessage(sender, sender.Email, message);
         }
 
         private async Task SendNotification(UserSecurity user, User sender, int surgeryId, FlowNotification flowNotification)
@@ -134,7 +171,7 @@ namespace OpFlow.Service.SignalR
             {
                 user.ProviderID.ToString()
             };
-            Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), DateTime.Now, null, targetUserId);
+            Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), DateTime.Now, null, targetUserId, null);
             //Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), DateTime.Now, null, targetUserId);
             await sqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID, null, targetUserId, message);
 
@@ -216,6 +253,28 @@ namespace OpFlow.Service.SignalR
             }
 
             NotifySurgeryChange(user.ProviderID, "FLOW", surgeryId);
+        }
+
+        public async Task UpdateCommunicationStatus(int trayProposalId, string status)
+        {
+            var userAuthId = Context.User.Identity.GetUserId();
+            var user = await CacheUtil.GetUserSecurity(userAuthId);
+            var sqlHelper = new SqlHelper();
+
+            var trayProposal = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).First();
+
+            if (trayProposal.DeploymentStatus != status)
+            {
+                await sqlHelper.UpdateProposedTrayCommunicationStatus(trayProposalId, status, user.UserID, user.ProviderID, user.LocationID);
+                var dbUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+
+                var message = $"Tray status set to {status}";
+
+                await EmailHelper.SendEmail(dbUser.Email, message);
+                await sqlHelper.UpdateProposedTrayCommunicationHistory(dbUser.UserID, trayProposalId, message, user.ProviderID, user.LocationID);
+            }
+
+            var schedules = await sqlHelper.GetProposedTraySchedule(null, user.ProviderID, user.LocationID);
         }
 
         private void NotifySurgeryChange(int providerId, string property, int surgeryId)
