@@ -201,6 +201,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExportTester.cs" />
     <Compile Include="ImagesTester.cs" />
     <Compile Include="ImportTester.cs" />
     <Compile Include="PDFTester.cs" />

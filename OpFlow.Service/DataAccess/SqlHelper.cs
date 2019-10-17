@@ -1409,12 +1409,26 @@ namespace OpFlow.Service.DataAccess
             return users;
         }
 
-        public async Task<int> UpdateProposedTrayCommunicationStatus(int trayProposalId, int surgeryId, string status, int userId, int providerId, int locationId)
+        public async Task<List<MessagePost>> GetProposedTrayCommunicationHistory(int trayProposalId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", trayProposalId),
-                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsResult = await ExecuteCommandAsync("GetProposedTrayCommunicationHistory", parameters);
+
+            var history = dsResult.Tables[0].DataTableToList<MessagePost>();
+
+            return history;
+        }
+
+        public async Task<int> UpdateProposedTrayCommunicationStatus(int trayProposalId, string status, int userId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
                 new SqlParameter("communication_status", status),
                 new SqlParameter("user_id", userId),
                 new SqlParameter("provider_id", providerId),

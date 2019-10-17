@@ -477,11 +477,28 @@ namespace OpFlow.Service.Controllers
             });
         }
 
+        [SwaggerOperation("GetCommunicationHistory")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("communicationHistory")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetCommunicationHistory(int trayProposalId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var history = await sqlHelper.GetProposedTrayCommunicationHistory(trayProposalId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                History = history
+            });
+        }
+
         [SwaggerOperation("UpdateCommunicationStatus")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("communicationStatus")]
         [HttpPost]
-        public async Task<HttpResponseMessage> UpdateCommunicationStatus(int trayProposalId, int surgeryId, [FromBody] CommunicationStatusPost post)
+        public async Task<HttpResponseMessage> UpdateCommunicationStatus(int trayProposalId, [FromBody] CommunicationStatusPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -490,7 +507,7 @@ namespace OpFlow.Service.Controllers
 
             if (trayProposal.DeploymentStatus != post.Status)
             {
-                await sqlHelper.UpdateProposedTrayCommunicationStatus(trayProposalId, surgeryId, post.Status, user.UserID, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateProposedTrayCommunicationStatus(trayProposalId, post.Status, user.UserID, user.ProviderID, user.LocationID);
                 var dbUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
                 await EmailHelper.SendEmail(dbUser.Email, post.Status);
@@ -696,18 +713,19 @@ namespace OpFlow.Service.Controllers
             return result;
         }
 
-        public async Task<HttpResponseMessage> TraySummaryCsv(int trayProposalId)
+        private async Task<HttpResponseMessage> TraySummaryCsv(int trayProposalId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
             var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).First();
+            var proposedInstruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, false, user.ProviderID, user.LocationID);
             var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
             var extract = "Tray Name, Source Tray, # Instruments, Service Line, Categories\r\n";
 
             foreach (var sourceTray in sourceTrays)
             {
-                extract += $"\"{proposedTray.TrayName?.Trim().Replace("\"", "\"\"")}\",{sourceTray.TrayName},{proposedTray.InstrumentCount},{proposedTray.Specialty},{sourceTray.CardCategories}\r\n";
+                extract += $"\"{proposedTray.TrayName?.Trim().Replace("\"", "\"\"")}\",{sourceTray.TrayName},{proposedInstruments.Sum(p => p.Quantity)},{proposedTray.Specialty},\"{sourceTray.CardCategories?.Trim().Replace("\"", "\"\"")}\"\r\n";
             }
             
             var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
