@@ -1409,7 +1409,7 @@ namespace OpFlow.Service.DataAccess
             return users;
         }
 
-        public async Task<List<MessagePost>> GetProposedTrayCommunicationHistory(int trayProposalId, int providerId, int locationId)
+        public async Task<List<Messaging>> GetProposedTrayCommunicationHistory(int trayProposalId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -1419,9 +1419,24 @@ namespace OpFlow.Service.DataAccess
             };
             var dsResult = await ExecuteCommandAsync("GetProposedTrayCommunicationHistory", parameters);
 
-            var history = dsResult.Tables[0].DataTableToList<MessagePost>();
+            var history = dsResult.Tables[0].DataTableToList<Messaging>();
 
             return history;
+        }
+
+        public async Task<int> UpdateProposedTrayCommunicationHistory(int userId, int trayProposalId, string message, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("user_id", userId),
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("message", message),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProposedTrayCommunicationHistory", parameters);
+
+            return result;
         }
 
         public async Task<int> UpdateProposedTrayCommunicationStatus(int trayProposalId, string status, int userId, int providerId, int locationId)

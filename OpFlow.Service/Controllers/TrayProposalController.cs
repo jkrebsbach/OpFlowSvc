@@ -510,7 +510,10 @@ namespace OpFlow.Service.Controllers
                 await sqlHelper.UpdateProposedTrayCommunicationStatus(trayProposalId, post.Status, user.UserID, user.ProviderID, user.LocationID);
                 var dbUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
-                await EmailHelper.SendEmail(dbUser.Email, post.Status);
+                var message = TrayProposalEmail(post.Status);
+
+                await EmailHelper.SendEmail(dbUser.Email, message);
+                await sqlHelper.UpdateProposedTrayCommunicationHistory(dbUser.UserID, trayProposalId, message, user.ProviderID, user.LocationID);
             }            
 
             var schedules = await sqlHelper.GetProposedTraySchedule(null, user.ProviderID, user.LocationID);
@@ -533,15 +536,24 @@ namespace OpFlow.Service.Controllers
             var trayProposal = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).First();
             var team = await sqlHelper.GetProposedTrayCommunicationTeam(trayProposalId, user.ProviderID, user.LocationID);
 
+            var message = TrayProposalEmail(trayProposal.DeploymentStatus);
+
             foreach (var member in team.Where(t => post.Users.Any(u => u == t.UserID)))
             {
                 await EmailHelper.SendEmail(member.Email, trayProposal.DeploymentStatus);
+                await sqlHelper.UpdateProposedTrayCommunicationHistory(member.UserID, trayProposalId, message, user.ProviderID, user.LocationID);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 Team = team
             });
+        }
+
+        private string TrayProposalEmail(string status)
+        {
+            var result = $"This is a sample email - tray status set to {status}";
+            return result;
         }
 
         [SwaggerOperation("AddCaseAudit")]
