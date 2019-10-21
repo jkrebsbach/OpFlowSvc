@@ -495,12 +495,35 @@ namespace OpFlow.Data
         public int SurgeryID { get; set; }
         public bool CustomizedTray { get; set; }
         public DateTime ScheduleTime { get; set; }
+        public DateTime? TrayChangesTarget { get; set; }
         public string RoomDescription { get; set; }
         public string Surgeon { get; set; }
         public string CardDescription { get; set; }
         public string TrayName { get; set; }
         public string TrayGroup { get; set; }
         public string CommunicationStatusID { get; set; }
+
+        public string ScheduleTimeDelta
+        {
+            get
+            {
+                var delta = ScheduleTime.Subtract(DateTime.Today).Days;
+
+                return delta > 0 ? $"(+{delta} days)" : $"({delta} days)";
+            }
+        }
+        public string TrayChangesDelta
+        {
+            get
+            {
+                if (TrayChangesTarget == null)
+                    return string.Empty;
+
+                var delta = TrayChangesTarget.Value.Subtract(DateTime.Today).Days;
+                return delta > 0 ? $"(+{delta} days)" : $"({delta} days)";
+            }
+        }
+
         public string CommunicationStatus {
             get
             {

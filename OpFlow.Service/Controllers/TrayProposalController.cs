@@ -438,6 +438,23 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, surgeries);
         }
 
+        [SwaggerOperation("GetTrayScheduleHistory")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("trayScheduleHistory")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetProposedTrayScheduleHistory(int? repId, int? surgeonId, int? trayProposalId, int? categoryId, int? questionId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var surgeries = await sqlHelper.GetProposedTrayScheduleHistory(repId, surgeonId, trayProposalId, categoryId, questionId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Surgeries = surgeries
+            });
+        }
+
         [SwaggerOperation("UpdateTraySchedule")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("traySchedule")]
@@ -779,6 +796,40 @@ namespace OpFlow.Service.Controllers
             result.Content.Headers.ContentDisposition =
                 new ContentDispositionHeaderValue("attachment")
                     { FileName = "TrayAuditExport.csv", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
+        [Route("trayScheduling/csv/{trayProposalId}", Name = "GetTraySchedulingCsv")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTraySchedulingCsv(int trayProposalId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var extract = "Tray, Instrument, Sequence, Quantity\r\n";
+            var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, true, user.ProviderID, user.LocationID);
+
+            foreach (var instrument in instruments)
+            {
+                extract +=
+                    $"\"{instrument.TrayName?.Replace("\"", "\"\"")}\",\"{instrument.InstrumentName?.Trim().Replace("\"", "\"\"")}\",{instrument.Sequence},{instrument.Quantity}\r\n";
+            }
+
+            var extractBytes = System.Text.Encoding.Unicode.GetBytes(extract);
+            var memStream = new MemoryStream(extractBytes);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                { FileName = "TrayScheduleDetail.csv", };
 
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
             result.Content.Headers.ContentLength = memStream.Length;

@@ -1322,6 +1322,25 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+        public async Task<List<TrayProposalSchedule>> GetProposedTrayScheduleHistory(int? repId, int? surgeonId, int? trayProposalId, int? categoryId, int? questionId,
+            int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("rep_id", repId ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonId ?? (object)DBNull.Value),
+                new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
+                new SqlParameter("category_id", categoryId ?? (object)DBNull.Value),
+                new SqlParameter("question_id", questionId ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsResult = await ExecuteCommandAsync("GetProposedTrayScheduleHistory", parameters);
+
+            var surgeries = dsResult.Tables[0].DataTableToList<TrayProposalSchedule>();
+
+            return surgeries;
+        }
 
         public async Task<List<TrayProposalSchedule>> SearchCaseTraySchedule(int? surgeonId, int? proposedTrayId, DateTime startDate, DateTime endDate,
             int providerId, int locationId)
