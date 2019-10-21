@@ -40,7 +40,7 @@ namespace OpFlow.Service.SignalR
 
                 var groups = new List<string>()
                 {
-                    user.ProviderID.ToString()
+                    user.LocationID.ToString()
                 };
                 Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, surgeryId, null, null);
                 //Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, surgeryId, null);
@@ -84,7 +84,7 @@ namespace OpFlow.Service.SignalR
 
             var groups = new List<string>()
             {
-                user.ProviderID.ToString()
+                user.LocationID.ToString()
             };
             Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId, null);
             //Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
@@ -121,7 +121,7 @@ namespace OpFlow.Service.SignalR
 
             var groups = new List<string>()
             {
-                user.ProviderID.ToString()
+                user.LocationID.ToString()
             };
             Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, null, null, trayProposalId);
             //Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), insertTimestamp, null, communicationUserId);
@@ -169,7 +169,7 @@ namespace OpFlow.Service.SignalR
 
             var groups = new List<string>()
             {
-                user.ProviderID.ToString()
+                user.LocationID.ToString()
             };
             Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), DateTime.Now, null, targetUserId, null);
             //Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), DateTime.Now, null, targetUserId);

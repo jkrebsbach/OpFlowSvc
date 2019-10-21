@@ -27,7 +27,7 @@ namespace OpFlow.Service.SignalR
             try
             {
                 var userTask = await CacheUtil.GetUserSecurity(userAuthId);
-                await Groups.Add(Context.ConnectionId, userTask.ProviderID.ToString());
+                await Groups.Add(Context.ConnectionId, userTask.LocationID.ToString());
             }
             catch (Exception e)
             {
@@ -42,7 +42,7 @@ namespace OpFlow.Service.SignalR
             {
                 var userTask = await CacheUtil.GetUserSecurity(userAuthId);
 
-                await Groups.Remove(Context.ConnectionId, userTask.ProviderID.ToString());
+                await Groups.Remove(Context.ConnectionId, userTask.LocationID.ToString());
 
             }
             catch (Exception e)
