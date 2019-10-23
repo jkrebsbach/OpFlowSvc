@@ -1369,6 +1369,20 @@ namespace OpFlow.Service.DataAccess
             return surgeries;
         }
 
+        public async Task<List<CaseProfile>> GetCaseProfiles(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetCaseProfiles", parameters);
+
+            var caseProfiles = dsSchedules.Tables[0].DataTableToList<CaseProfile>();
+            
+            return caseProfiles;
+        }
+
         public async Task<CaseProfile> GetCaseProfile(int caseProfileId, int providerId, int locationId)
         {
             var parameters = new[]

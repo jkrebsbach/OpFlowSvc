@@ -46,6 +46,7 @@ namespace OpFlow.Service.Controllers
             var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
             var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
             var instruments = await sqlHelper.GetItems("instrument", null, true, user.ProviderID, user.LocationID);
+            var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
 
             if (user.VendorID.HasValue)
             {
@@ -67,10 +68,10 @@ namespace OpFlow.Service.Controllers
                 Proposals = proposedTrays,
                 Vendors = vendors,
                 BaselineTrays = baselineTrays,
-                Vendor = user.RoleType == "External",
                 Questions = questions,
                 Phases = phases,
-                Instruments = instruments
+                Instruments = instruments,
+                CaseProfiles = caseProfiles
             };
 
 
