@@ -464,7 +464,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("caseProfile")]
         [Route("caseProfile/{caseProfileId}")]
-        [HttpPut]
+        [HttpPost]
         public async Task<HttpResponseMessage> PutCaseProfile([FromBody] CaseProfilePost post, int? caseProfileId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
