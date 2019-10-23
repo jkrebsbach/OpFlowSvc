@@ -19,8 +19,6 @@ namespace OpFlow.Service.Controllers
     [Authorize]
     public class NotificationController : ApiController
     {
-        private NotificationHubClient _hub;
-
         [SwaggerOperation("RegisterDevice")]
         [Route("api/notification/device")]
         [SwaggerResponse(HttpStatusCode.OK)]

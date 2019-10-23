@@ -397,6 +397,7 @@
     <Compile Include="Controllers\SamlController.cs" />
     <Compile Include="Controllers\TrayPlanController.cs" />
     <Compile Include="Controllers\TrayProposalController.cs" />
+    <Compile Include="Controllers\TraySchedulingController.cs" />
     <Compile Include="DataAccess\EmailHelper.cs" />
     <Compile Include="DataAccess\ImageHelper.cs" />
     <Compile Include="DataAccess\KeyVaultHelper.cs" />
