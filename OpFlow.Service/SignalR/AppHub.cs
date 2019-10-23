@@ -273,8 +273,6 @@ namespace OpFlow.Service.SignalR
                 await EmailHelper.SendEmail(dbUser.Email, message);
                 await sqlHelper.UpdateProposedTrayCommunicationHistory(dbUser.UserID, trayProposalId, message, user.ProviderID, user.LocationID);
             }
-
-            var schedules = await sqlHelper.GetProposedTraySchedule(null, user.ProviderID, user.LocationID);
         }
 
         private void NotifySurgeryChange(int providerId, string property, int surgeryId)

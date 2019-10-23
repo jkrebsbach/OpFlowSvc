@@ -1219,11 +1219,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }        
 
-        public async Task<List<TrayProposalSchedule>> GetProposedTraySchedule(int? trayProposalId, int providerId, int locationId)
+        public async Task<List<TrayProposalSchedule>> GetProposedTraySchedule(int? trayProposalId, int? vendorId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
+                new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -1322,12 +1323,12 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public async Task<List<TrayProposalSchedule>> GetProposedTrayScheduleHistory(int? repId, int? surgeonId, int? trayProposalId, int? categoryId, int? questionId,
+        public async Task<List<TrayProposalSchedule>> GetProposedTrayScheduleHistory(int? vendorId, int? surgeonId, int? trayProposalId, int? categoryId, int? questionId,
             int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("rep_id", repId ?? (object)DBNull.Value),
+                new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_id", surgeonId ?? (object)DBNull.Value),
                 new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
                 new SqlParameter("category_id", categoryId ?? (object)DBNull.Value),
@@ -1366,6 +1367,82 @@ namespace OpFlow.Service.DataAccess
             }
 
             return surgeries;
+        }
+
+        public async Task<CaseProfile> GetCaseProfile(int caseProfileId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("case_profile_id", caseProfileId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetCaseProfile", parameters);
+
+            var caseProfile = dsSchedules.Tables[0].DataTableToList<CaseProfile>().First();
+            var questions = dsSchedules.Tables[1].DataTableToList<CaseProfileQuestionResult>();
+
+            caseProfile.ParseResults(questions);
+
+            return caseProfile;
+        }
+
+        public async Task<int> UpdateCaseProfile(int? caseProfileId, string profileName, string profileType, List<CaseProfileQuestion> questions,
+            int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("case_profile_id", caseProfileId ?? (object)DBNull.Value),
+                new SqlParameter("profile_name", profileName ?? (object)DBNull.Value),
+                new SqlParameter("profile_type", profileType ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsResult = await ExecuteCommandAsync("UpdateCaseProfile", parameters);
+
+            var identity = dsResult.Tables[0].DataTableToList<InsertionResult>().First().Identifier;
+            
+            foreach (var question in questions ?? new List<CaseProfileQuestion>())
+            {
+                var answerXml = GetProfileAnswerSummary(question.Answers);
+
+                parameters = new[]
+                {
+                    new SqlParameter("case_profile_id", identity),
+                    new SqlParameter("question_id", question.QuestionID ?? (object)DBNull.Value),
+                    new SqlParameter("question", question.Question ?? (object)DBNull.Value),
+                    new SqlParameter("answers", answerXml ?? (object)DBNull.Value),
+                    new SqlParameter("provider_id", providerId),
+                    new SqlParameter("location_id", locationId)
+                };
+
+                var q = await ExecuteNonQueryAsync("UpdateCaseProfileQuestion", parameters);
+            }
+
+            return identity;
+        }
+        private string GetProfileAnswerSummary(List<CaseProfileAnswer> answers)
+        {
+            if (!answers.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var answer in answers)
+            {
+                // prevent adding invalid data
+                if (string.IsNullOrEmpty(answer.Answer))
+                    continue;
+
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, answer.AnswerID);
+                AddColumn(doc, row, answer.Answer);
+            }
+
+            return table.OuterXml;
         }
 
         public async Task<List<TrayProposalSchedule>> GetSurgeryTraySchedule(int surgeryId, int providerId, int locationId)
@@ -2097,7 +2174,7 @@ namespace OpFlow.Service.DataAccess
 
         private string GetQuestionSummary(List<TrayQuestion> questions)
         {
-            if (!questions.Any())
+            if (questions == null || !questions.Any())
                 return null;
 
             var doc = new XmlDocument();

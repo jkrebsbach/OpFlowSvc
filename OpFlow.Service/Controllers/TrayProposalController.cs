@@ -39,13 +39,18 @@ namespace OpFlow.Service.Controllers
             var collections = await sqlHelper.GetItems("collection", null, null, user.ProviderID, user.LocationID);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
             var baselineTrays = await sqlHelper.GetBaselineTrays(user.ProviderID, user.LocationID);
-            var schedules = await sqlHelper.GetProposedTraySchedule(null, user.ProviderID, user.LocationID);
+            var schedules = await sqlHelper.GetProposedTraySchedule(null, user.VendorID, user.ProviderID, user.LocationID);
             var vendors = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
             var questions = await sqlHelper.GetTrayQuestions(null, user.ProviderID, user.LocationID);
             var phases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
             var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
             var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
             var instruments = await sqlHelper.GetItems("instrument", null, true, user.ProviderID, user.LocationID);
+
+            if (user.VendorID.HasValue)
+            {
+                vendors = vendors.Where(v => v.VendorID == user.VendorID).ToList();
+            }
 
             var result = new
             {
@@ -438,16 +443,48 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, surgeries);
         }
 
-        [SwaggerOperation("GetTrayScheduleHistory")]
+        [SwaggerOperation("GetCaseProfile")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [Route("trayScheduleHistory")]
+        [Route("caseProfile")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetProposedTrayScheduleHistory(int? repId, int? surgeonId, int? trayProposalId, int? categoryId, int? questionId)
+        public async Task<HttpResponseMessage> GetCaseProfile(int? caseProfileId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var surgeries = await sqlHelper.GetProposedTrayScheduleHistory(repId, surgeonId, trayProposalId, categoryId, questionId, user.ProviderID, user.LocationID);
+            CaseProfile caseProfile = new CaseProfile();
+            if (caseProfileId.HasValue)
+                caseProfile = await sqlHelper.GetCaseProfile(caseProfileId.Value, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, caseProfile);
+        }
+
+        [SwaggerOperation("PutCaseProfile")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("caseProfile")]
+        [Route("caseProfile/{caseProfileId}")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutCaseProfile([FromBody] CaseProfilePost post, int? caseProfileId = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            caseProfileId = await sqlHelper.UpdateCaseProfile(caseProfileId, post.ProfileName, post.ProfileType, post.Questions,
+                user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, caseProfileId);
+        }
+
+        [SwaggerOperation("GetTrayScheduleHistory")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("trayScheduleHistory")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetProposedTrayScheduleHistory(int? vendorId, int? surgeonId, int? trayProposalId, int? categoryId, int? questionId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var surgeries = await sqlHelper.GetProposedTrayScheduleHistory(vendorId, surgeonId, trayProposalId, categoryId, questionId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -469,12 +506,7 @@ namespace OpFlow.Service.Controllers
 
             await sqlHelper.UpdateProposedTraySchedule(surgeryId, trayProposalId, trayGroupId, user.ProviderID, user.LocationID);
 
-            var schedules = await sqlHelper.GetProposedTraySchedule(null, user.ProviderID, user.LocationID);
-
-            return Request.CreateResponse(HttpStatusCode.OK, new
-            {
-                Schedules = schedules
-            });
+            return Request.CreateResponse(HttpStatusCode.OK, surgeryId);
         }
 
         [SwaggerOperation("GetCommunicationTeam")]
@@ -722,6 +754,22 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.PutProposedTrayCards(trayProposalId, post.Trays, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayProposalSchedule>))]
+        [Route("trayScheduling", Name = "GetTrayScheduling")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTrayScheduling(int? vendorId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (user.VendorID.HasValue)
+                vendorId = user.VendorID;
+
+            var result = await sqlHelper.GetProposedTraySchedule(null, vendorId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

@@ -415,6 +415,82 @@ namespace OpFlow.Data
         public string TypeDescription { get; set; }
     }
 
+    public class CaseProfile
+    {
+        public int CaseProfileID { get; set; }
+        public string CaseProfileName { get; set; }
+
+        public List<CaseProfileQuestion> Questions { get; set; }
+
+        public CaseProfile()
+        {
+            Questions = new List<CaseProfileQuestion>();
+        }
+
+        public void ParseResults(List<CaseProfileQuestionResult> questions)
+        {
+            foreach (var questionAnswer in questions.OrderBy(q => q.QuestionID))
+            {
+                var question = Questions.FirstOrDefault(q => q.QuestionID == questionAnswer.QuestionID);
+                if (question == null)
+                {
+                    question = new CaseProfileQuestion()
+                    {
+                        QuestionID = questionAnswer.QuestionID,
+                        Question = questionAnswer.Question
+                    };
+
+                    Questions.Add(question);
+                }
+
+                if (questionAnswer.AnswerID.HasValue)
+                {
+                    var answer = new CaseProfileAnswer()
+                    {
+                        AnswerID = questionAnswer.AnswerID,
+                        Answer = questionAnswer.Answer
+                    };
+
+                    question.Answers.Add(answer);
+                }
+            }
+        }
+    }
+
+    public class CaseProfileQuestionResult
+    {
+        public int QuestionID { get; set; }
+        public int? AnswerID { get; set; }
+        public string Question { get; set; }
+        public string Answer { get; set; }
+    }
+
+    public class CaseProfilePost
+    {
+        public string ProfileName { get; set; }
+        public string ProfileType { get; set; }
+        public List<CaseProfileQuestion> Questions { get; set; }
+    }
+
+    public class CaseProfileQuestion
+    {
+        public int? QuestionID { get; set; }
+        public string Question { get; set; }
+        public List<CaseProfileAnswer> Answers { get; set; }
+
+        public CaseProfileQuestion()
+        {
+            Answers = new List<CaseProfileAnswer>();
+        }
+    }
+
+    public class CaseProfileAnswer
+    {
+        public int? AnswerID { get; set; }
+        public string Answer { get; set; }
+    }
+
+
     public class TrayCardOverlap
     {
         public int CardID { get; set; }
