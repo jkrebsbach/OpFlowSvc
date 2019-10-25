@@ -1,4 +1,5 @@
-﻿using Swashbuckle.Swagger.Annotations;
+﻿using OpFlow.Service.DataAccess;
+using Swashbuckle.Swagger.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,18 @@ namespace OpFlow.Service.Controllers
 
         private async Task UnscheduledCases()
         {
-            var tmpInt = 0;
+            var sqlHelper = new SqlHelper();
+            var proposals = await sqlHelper.GetProposedTrayAlert();
+
+            foreach (var proposal in proposals)
+            {
+                var message = $"Proposal for {proposal.TrayName} due by {proposal.TrayChangesTarget.Value.ToShortDateString()} has not been accepted";
+
+                await EmailHelper.SendEmail(proposal.ProposalUsers.ToList<Data.User>(), message);
+
+                await sqlHelper.UpdateProposedTrayCommunicationHistory(
+                    null, proposal.TrayProposalID, message, proposal.ProviderID, proposal.LocationID);
+            }
         }
 
         private bool AuthenticateUser()

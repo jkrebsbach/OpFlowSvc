@@ -39,7 +39,7 @@ namespace OpFlow.Service.Controllers
             var collections = await sqlHelper.GetItems("collection", null, null, user.ProviderID, user.LocationID);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
             var baselineTrays = await sqlHelper.GetBaselineTrays(user.ProviderID, user.LocationID);
-            var schedules = await sqlHelper.GetProposedTraySchedule(null, user.VendorID, user.ProviderID, user.LocationID);
+            var schedules = await sqlHelper.GetProposedTraySchedule(null, user.VendorID, user.UserID, user.ProviderID, user.LocationID);
             var vendors = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
             var questions = await sqlHelper.GetTrayQuestions(null, user.ProviderID, user.LocationID);
             var phases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
@@ -476,6 +476,20 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, caseProfileId);
         }
 
+        [SwaggerOperation("PutCaseProfile")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("rep/{trayProposalId}")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PutTrayProposalRep(int trayProposalId, [FromBody] TrayProposalRepPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.UpdateProposedTrayRep(trayProposalId, user.UserID, post.Ignore, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, trayProposalId);
+        }
+
         [SwaggerOperation("GetTrayScheduleHistory")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("trayScheduleHistory")]
@@ -770,7 +784,7 @@ namespace OpFlow.Service.Controllers
             if (user.VendorID.HasValue)
                 vendorId = user.VendorID;
 
-            var result = await sqlHelper.GetProposedTraySchedule(null, vendorId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetProposedTraySchedule(null, vendorId, user.UserID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

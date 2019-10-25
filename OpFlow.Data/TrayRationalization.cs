@@ -471,6 +471,10 @@ namespace OpFlow.Data
         public string ProfileType { get; set; }
         public List<CaseProfileQuestion> Questions { get; set; }
     }
+    public class TrayProposalRepPost
+    {
+        public bool Ignore { get; set; }
+    }
 
     public class CaseProfileQuestion
     {
@@ -564,6 +568,19 @@ namespace OpFlow.Data
         }
     }
 
+    public class AdminTrayProposal : TrayRationalization
+    {
+        public int ProviderID { get; set; }
+        public int LocationID { get; set; }
+
+        public List<TrayProposalRep> ProposalUsers { get; set; }
+    }
+
+    public class TrayProposalRep : User
+    {
+        public int TrayProposalID { get; set; }
+    }
+
     public class TrayProposalSchedule
     {
         public int? TrayProposalID { get; set; }
@@ -578,6 +595,7 @@ namespace OpFlow.Data
         public string TrayName { get; set; }
         public string TrayGroup { get; set; }
         public string CommunicationStatusID { get; set; }
+        public bool Ignore { get; set; }
 
         public string ScheduleTimeDelta
         {

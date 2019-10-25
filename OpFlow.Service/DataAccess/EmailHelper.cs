@@ -1,4 +1,5 @@
-﻿using SendGrid;
+﻿using OpFlow.Data;
+using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,9 @@ namespace OpFlow.Service.DataAccess
 {
     public abstract class EmailHelper
     {
-        public static async Task<Response> SendEmail(string emailTarget, string message)
+        public static async Task<Response> SendEmail(User emailTarget, string message)
         {
-            var targets = new List<string>()
+            var targets = new List<User>()
             {
                 emailTarget
             };
@@ -21,7 +22,7 @@ namespace OpFlow.Service.DataAccess
             return await SendEmail(targets, message);
         }
 
-        public static async Task<Response> SendEmail(List<string> emailTargets, string message)
+        public static async Task<Response> SendEmail(List<User> emailTargets, string message)
         {
             if (emailTargets == null || !emailTargets.Any())
             {
@@ -42,11 +43,14 @@ namespace OpFlow.Service.DataAccess
 
             foreach (var emailTarget in emailTargets)
             {
-                var to = new EmailAddress(emailTarget, "OpFlow User");
+                if (string.IsNullOrEmpty(emailTarget.Email))
+                    continue;
+
+                var to = new EmailAddress(emailTarget.Email, $"{emailTarget.FirstName} {emailTarget.LastName}");
                 if (emailEnvironment != "Production")
                 {
                     to = new EmailAddress("dave@opflowtech.com");
-                    subject += $" ({emailTarget})";
+                    subject += $" ({emailTarget.Email})";
                 }
 
                 tos.Add(to);
