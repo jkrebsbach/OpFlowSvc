@@ -418,7 +418,9 @@ namespace OpFlow.Data
     public class CaseProfile
     {
         public int CaseProfileID { get; set; }
+        public string CaseProfileType { get; set; }
         public string CaseProfileName { get; set; }
+        public string CaseProfileTypeName => CaseProfileType == "S" ? "Schedule" : "Perioperative";
 
         public List<CaseProfileQuestion> Questions { get; set; }
 
@@ -427,7 +429,7 @@ namespace OpFlow.Data
             Questions = new List<CaseProfileQuestion>();
         }
 
-        public void ParseResults(List<CaseProfileQuestionResult> questions)
+        public void ParseResults(IEnumerable<CaseProfileQuestionResult> questions)
         {
             foreach (var questionAnswer in questions.OrderBy(q => q.QuestionID))
             {
@@ -459,6 +461,7 @@ namespace OpFlow.Data
 
     public class CaseProfileQuestionResult
     {
+        public int CaseProfileID { get; set; }
         public int QuestionID { get; set; }
         public int? AnswerID { get; set; }
         public string Question { get; set; }
@@ -474,6 +477,17 @@ namespace OpFlow.Data
     public class TrayProposalRepPost
     {
         public bool Ignore { get; set; }
+    }
+    public class TraySchedulePost
+    {
+        public int? CaseProfileID { get; set; }
+        public List<CaseProfileQuestionPost> Questions { get; set; }
+    }
+
+    public class CaseProfileQuestionPost
+    {
+        public int QuestionID { get; set; }
+        public int? AnswerID { get; set; }
     }
 
     public class CaseProfileQuestion

@@ -1386,20 +1386,6 @@ namespace OpFlow.Service.DataAccess
             return surgeries;
         }
 
-        public async Task<List<CaseProfile>> GetCaseProfiles(int providerId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetCaseProfiles", parameters);
-
-            var caseProfiles = dsSchedules.Tables[0].DataTableToList<CaseProfile>();
-            
-            return caseProfiles;
-        }
-
         public async Task<CaseProfile> GetCaseProfile(int caseProfileId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -1416,6 +1402,27 @@ namespace OpFlow.Service.DataAccess
             caseProfile.ParseResults(questions);
 
             return caseProfile;
+        }
+
+        public async Task<List<CaseProfile>> GetCaseProfiles(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("case_profile_id", DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetCaseProfile", parameters);
+
+            var caseProfiles = dsSchedules.Tables[0].DataTableToList<CaseProfile>();
+            var questions = dsSchedules.Tables[1].DataTableToList<CaseProfileQuestionResult>();
+
+            foreach (var caseProfile in caseProfiles)
+            {
+                caseProfile.ParseResults(questions.Where(q => q.CaseProfileID == caseProfile.CaseProfileID));
+            }
+
+            return caseProfiles;
         }
 
         public async Task<int> UpdateCaseProfile(int? caseProfileId, string profileName, string profileType, List<CaseProfileQuestion> questions,
@@ -1491,11 +1498,12 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public async Task<List<TrayProposalSchedule>> GetSurgeryTraySchedule(int surgeryId, int providerId, int locationId)
+        public async Task<List<TrayProposalSchedule>> GetSurgeryTraySchedule(int surgeryId, int? vendorId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -1521,13 +1529,18 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProposedTraySchedule(int surgeryId, int? trayProposalId, int? trayGroupId, int providerId, int locationId)
+        public async Task<int> UpdateProposedTraySchedule(int surgeryId, int? trayProposalId, int? trayGroupId,
+            int? caseProfileId, List<CaseProfileQuestionPost> questions, int providerId, int locationId)
         {
+            var questionXml = SummarizeQuestions(questions);
+
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
                 new SqlParameter("tray_group_id", trayGroupId ?? (object)DBNull.Value),
+                new SqlParameter("case_profile_id", caseProfileId ?? (object)DBNull.Value),
+                new SqlParameter("questions", questionXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -1535,7 +1548,26 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        
+        private string SummarizeQuestions(List<CaseProfileQuestionPost> questions)
+        {
+            if (questions == null || !questions.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var question in questions)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, question.QuestionID);
+                AddColumn(doc, row, question.AnswerID);
+            }
+
+            return table.OuterXml;
+        }
+
         public async Task<List<User>> GetProposedTrayCommunicationTeam(int trayProposalId, int providerId, int locationId)
         {
             var parameters = new[]
