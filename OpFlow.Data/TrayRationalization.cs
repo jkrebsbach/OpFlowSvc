@@ -480,7 +480,12 @@ namespace OpFlow.Data
     }
     public class TraySchedulePost
     {
-        public int? CaseProfileID { get; set; }
+        public List<CaseProfileSchedulePost> CaseProfiles { get; set; }
+    }
+
+    public class CaseProfileSchedulePost
+    {
+        public int CaseProfileID { get; set; }
         public List<CaseProfileQuestionPost> Questions { get; set; }
     }
 

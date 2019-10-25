@@ -1530,17 +1530,16 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<int> UpdateProposedTraySchedule(int surgeryId, int? trayProposalId, int? trayGroupId,
-            int? caseProfileId, List<CaseProfileQuestionPost> questions, int providerId, int locationId)
+            List<CaseProfileSchedulePost> caseProfiles, int providerId, int locationId)
         {
-            var questionXml = SummarizeQuestions(questions);
+            var profileXml = SummarizeQuestions(caseProfiles);
 
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
                 new SqlParameter("tray_group_id", trayGroupId ?? (object)DBNull.Value),
-                new SqlParameter("case_profile_id", caseProfileId ?? (object)DBNull.Value),
-                new SqlParameter("questions", questionXml ?? (object)DBNull.Value),
+                new SqlParameter("case_profiles", profileXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -1548,21 +1547,25 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        private string SummarizeQuestions(List<CaseProfileQuestionPost> questions)
+        private string SummarizeQuestions(List<CaseProfileSchedulePost> profiles)
         {
-            if (questions == null || !questions.Any())
+            if (profiles == null || !profiles.Any())
                 return null;
 
             var doc = new XmlDocument();
             var table = doc.CreateElement("table");
 
-            foreach (var question in questions)
+            foreach (var profile in profiles)
             {
-                var row = doc.CreateElement("row");
-                table.AppendChild(row);
+                foreach (var question in profile?.Questions ?? new List<CaseProfileQuestionPost>())
+                {
+                    var row = doc.CreateElement("row");
+                    table.AppendChild(row);
 
-                AddColumn(doc, row, question.QuestionID);
-                AddColumn(doc, row, question.AnswerID);
+                    AddColumn(doc, row, profile.CaseProfileID);
+                    AddColumn(doc, row, question.QuestionID);
+                    AddColumn(doc, row, question.AnswerID);
+                }
             }
 
             return table.OuterXml;

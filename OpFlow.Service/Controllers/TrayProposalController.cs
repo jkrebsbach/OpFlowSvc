@@ -534,7 +534,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.Ambiguous);
 
             await sqlHelper.UpdateProposedTraySchedule(surgeryId, trayProposalId, trayGroupId, 
-                post.CaseProfileID, post.Questions, user.ProviderID, user.LocationID);
+                post.CaseProfiles, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, surgeryId);
         }
