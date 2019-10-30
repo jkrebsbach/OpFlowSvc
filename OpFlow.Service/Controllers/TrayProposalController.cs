@@ -647,16 +647,19 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("traySchedule")]
         [HttpPost]
-        public async Task<HttpResponseMessage> UpdateTraySchedule(int surgeryId, int? trayProposalId, int? trayGroupId, [FromBody] TraySchedulePost post)
+        public async Task<HttpResponseMessage> UpdateTraySchedule(int surgeryId, [FromBody] TraySchedulePost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            if (trayProposalId == null && trayGroupId == null)
-                return Request.CreateResponse(HttpStatusCode.Ambiguous);
-
-            await sqlHelper.UpdateProposedTraySchedule(surgeryId, trayProposalId, trayGroupId, 
-                post.CaseProfiles, user.ProviderID, user.LocationID);
+            foreach (var tray in post.Trays)
+            {
+                if (tray.TrayProposalID == null && tray.TrayGroupID == null)
+                    continue;
+            
+                await sqlHelper.UpdateProposedTraySchedule(surgeryId, tray.TrayProposalID, tray.TrayGroupID,
+                    post.CaseProfiles, user.ProviderID, user.LocationID);
+            }
 
             return Request.CreateResponse(HttpStatusCode.OK, surgeryId);
         }
