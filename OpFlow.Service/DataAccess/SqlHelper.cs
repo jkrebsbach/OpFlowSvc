@@ -1425,6 +1425,28 @@ namespace OpFlow.Service.DataAccess
             return caseProfiles;
         }
 
+        public async Task<List<CaseProfile>> GetSurgeryCaseProfiles(int surgeryId, int trayProposalId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeryCaseProfiles", parameters);
+
+            var caseProfiles = dsSchedules.Tables[0].DataTableToList<CaseProfile>();
+            var questions = dsSchedules.Tables[1].DataTableToList<CaseProfileQuestionResult>();
+
+            foreach (var caseProfile in caseProfiles)
+            {
+                caseProfile.ParseResults(questions.Where(q => q.CaseProfileID == caseProfile.CaseProfileID));
+            }
+
+            return caseProfiles;
+        }
+
         public async Task<int> UpdateCaseProfile(int? caseProfileId, string profileName, string profileType, List<CaseProfileQuestion> questions,
             int providerId, int locationId)
         {
@@ -1471,6 +1493,19 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("UpdateProposedTrayRep", parameters);
+
+            return result;
+        }
+        public async Task<int> UpdateProposedTrayImageFilename(int trayProposalId, string imageFilename, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("image_filename", imageFilename ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProposedTrayImageFilename", parameters);
 
             return result;
         }
@@ -1547,6 +1582,20 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+        
+        public async Task<int> UpdateProposedTrayScheduleDetails(int scheduleId, string supplies, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("schedule_id", scheduleId),
+                new SqlParameter("supplies", supplies ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProposedTrayScheduleDetails", parameters);
+
+            return result;
+        }
         private string SummarizeQuestions(List<CaseProfileSchedulePost> profiles)
         {
             if (profiles == null || !profiles.Any())
@@ -1586,22 +1635,23 @@ namespace OpFlow.Service.DataAccess
             return users;
         }
 
-        public async Task<List<Messaging>> GetProposedTrayCommunicationHistory(int trayProposalId, int providerId, int locationId)
+        public async Task<List<Messaging>> GetProposedTrayCommunication(int userId, int trayProposalId, int providerId, int locationId)
         {
             var parameters = new[]
             {
+                new SqlParameter("user_id", userId),
                 new SqlParameter("tray_proposal_id", trayProposalId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsResult = await ExecuteCommandAsync("GetProposedTrayCommunicationHistory", parameters);
+            var dsResult = await ExecuteCommandAsync("GetProposedTrayCommunication", parameters);
 
             var history = dsResult.Tables[0].DataTableToList<Messaging>();
 
             return history;
         }
 
-        public async Task<int> UpdateProposedTrayCommunicationHistory(int? senderId, int trayProposalId, string message, int providerId, int locationId)
+        public async Task<int> InsertProposedTrayCommunication(int? senderId, int trayProposalId, string message, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -1611,7 +1661,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = await ExecuteNonQueryAsync("UpdateProposedTrayCommunicationHistory", parameters);
+            var result = await ExecuteNonQueryAsync("InsertProposedTrayCommunication", parameters);
 
             return result;
         }

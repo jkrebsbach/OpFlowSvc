@@ -44,6 +44,7 @@ namespace OpFlow.Data
         public DateTime? CountCompleteTarget { get; set; }
         public DateTime? AuditCompleteTarget { get; set; }
         public DateTime? TrayChangesTarget { get; set; }
+        public string ImageFilename { get; set; }
         public string Comments { get; set; }
         public int ProposedCount { get; set; }
         public int SourceCount { get; set; }
@@ -439,7 +440,8 @@ namespace OpFlow.Data
                     question = new CaseProfileQuestion()
                     {
                         QuestionID = questionAnswer.QuestionID,
-                        Question = questionAnswer.Question
+                        Question = questionAnswer.Question,
+                        AnswerID = questionAnswer.QuestionAnswerID
                     };
 
                     Questions.Add(question);
@@ -465,6 +467,7 @@ namespace OpFlow.Data
         public int QuestionID { get; set; }
         public int? AnswerID { get; set; }
         public string Question { get; set; }
+        public int? QuestionAnswerID { get; set; }
         public string Answer { get; set; }
     }
 
@@ -483,6 +486,11 @@ namespace OpFlow.Data
         public List<CaseProfileSchedulePost> CaseProfiles { get; set; }
     }
 
+    public class TrayScheduleDetailPost
+    {
+        public string Supplies { get; set; }
+    }
+
     public class CaseProfileSchedulePost
     {
         public int CaseProfileID { get; set; }
@@ -499,6 +507,8 @@ namespace OpFlow.Data
     {
         public int? QuestionID { get; set; }
         public string Question { get; set; }
+
+        public int? AnswerID { get; set; }
         public List<CaseProfileAnswer> Answers { get; set; }
 
         public CaseProfileQuestion()
@@ -602,18 +612,21 @@ namespace OpFlow.Data
 
     public class TrayProposalSchedule
     {
+        public int ScheduleID { get; set; }
         public int? TrayProposalID { get; set; }
         public int? TrayGroupID { get; set; }
         public int SurgeryID { get; set; }
         public bool CustomizedTray { get; set; }
         public DateTime ScheduleTime { get; set; }
         public DateTime? TrayChangesTarget { get; set; }
+        public DateTimeOffset? LatestMessage { get; set; }
         public string RoomDescription { get; set; }
         public string Surgeon { get; set; }
         public string CardDescription { get; set; }
         public string TrayName { get; set; }
         public string TrayGroup { get; set; }
         public string CommunicationStatusID { get; set; }
+        public string Supplies { get; set; }
         public bool Ignore { get; set; }
 
         public string ScheduleTimeDelta

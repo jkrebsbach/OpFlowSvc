@@ -464,14 +464,136 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("caseProfiles")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetCaseProfiles()
+        public async Task<HttpResponseMessage> GetCaseProfiles(int? surgeryId = null, int? trayProposalId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
+            List<CaseProfile> caseProfiles;
+            if (surgeryId.HasValue && trayProposalId.HasValue)
+                caseProfiles = await sqlHelper.GetSurgeryCaseProfiles(surgeryId.Value, trayProposalId.Value, user.ProviderID, user.LocationID);
+            else
+                caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, caseProfiles);
+        }
+
+        [SwaggerOperation("GetTrayPhoto")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("trayPhoto/{trayProposalId}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTrayPhoto(int trayProposalId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var trayProposal = await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID);
+            if (trayProposal.Any())
+            {
+                var blobStorage = BlobStorageHelper.GetHelper(user);
+
+                var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.TrayProposalImages, trayProposalId);
+
+                var filename = trayProposalId.ToString();
+
+                var exists = await blobStorage.BlobExists(folder, filename);
+
+                if (exists)
+                    return Request.CreateResponse(HttpStatusCode.OK, trayProposalId);
+            }
+
+
+            return Request.CreateResponse(HttpStatusCode.OK, (int?)null);
+        }
+
+        // POST api/values
+        [SwaggerOperation("RotateTrayImage")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("rotateTrayPhoto/{trayProposalId}", Name = "RotateTrayImage")]
+        [HttpPut]
+        public async Task<IHttpActionResult> RotateTrayImage(int trayProposalId, int direction)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            // Make sure valid rotation direction
+            if (direction != 1 && direction != -1)
+                return Ok();
+
+
+            var trayProposals = await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID);
+            if (trayProposals.Any())
+            {
+                var storageHelper = BlobStorageHelper.GetHelper(user);
+                var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.TrayProposalImages, trayProposalId);
+
+                await storageHelper.RotateImage(folder, trayProposalId.ToString(), direction);
+            }
+
+            return Ok();
+        }
+
+        // POST api/values
+        [SwaggerOperation("DeleteTrayImage")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("trayPhoto/{trayProposalId}", Name = "DeleteTrayImage")]
+        [HttpDelete]
+        public async Task<IHttpActionResult> DeleteTrayImage(int trayProposalId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var trayProposals = await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID);
+            if (trayProposals.Any())
+            {
+                await sqlHelper.UpdateProposedTrayImageFilename(trayProposalId, null, user.ProviderID, user.LocationID);
+
+                var storageHelper = BlobStorageHelper.GetHelper(user);
+                var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.TrayProposalImages, trayProposalId);
+
+                await storageHelper.DeleteBlob(folder, trayProposalId.ToString());
+            }
+            return Ok();
+        }
+
+        [SwaggerOperation("PutTrayPhotoBytes")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("trayPhoto/{trayProposalId}")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutTrayPhotoBytes(int trayProposalId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+            
+            try
+            {
+                var trayProposal = await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID);
+                if (trayProposal.Any())
+                {
+                    var provider = new MultipartMemoryStreamProvider();
+                    await Request.Content.ReadAsMultipartAsync(provider);
+
+                    // extract file name and file contents
+                    var fileNameParam = provider.Contents[0].Headers.ContentDisposition.Parameters
+                        .FirstOrDefault(p => p.Name.ToLower() == "filename");
+                    var fileName = fileNameParam?.Value.Trim('"') ?? "";
+                    var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
+
+                    var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.TrayProposalImages, trayProposalId);
+
+                    var storageHelper = BlobStorageHelper.GetHelper(user);
+
+                    await sqlHelper.UpdateProposedTrayImageFilename(trayProposalId, fileName, user.ProviderID, user.LocationID);
+                    await storageHelper.PutBlobBytes(folder, trayProposalId.ToString(), fileContents);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, 200);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.LogException(ex);
+                throw;
+            }
         }
 
         [SwaggerOperation("PutCaseProfile")]
@@ -539,6 +661,20 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, surgeryId);
         }
 
+        [SwaggerOperation("UpdateTrayScheduleDetails")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("traySchedule")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> UpdateTrayScheduleDetails(int scheduleId, [FromBody] TrayScheduleDetailPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.UpdateProposedTrayScheduleDetails(scheduleId, post.Supplies, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, scheduleId);
+        }
+
         [SwaggerOperation("GetCommunicationTeam")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("communicationTeam")]
@@ -557,16 +693,16 @@ namespace OpFlow.Service.Controllers
             });
         }
 
-        [SwaggerOperation("GetCommunicationHistory")]
+        [SwaggerOperation("GetCommunication")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("communicationHistory")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetCommunicationHistory(int trayProposalId)
+        public async Task<HttpResponseMessage> GetCommunication(int trayProposalId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var messages = await sqlHelper.GetProposedTrayCommunicationHistory(trayProposalId, user.ProviderID, user.LocationID);
+            var messages = await sqlHelper.GetProposedTrayCommunication(user.UserID, trayProposalId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {

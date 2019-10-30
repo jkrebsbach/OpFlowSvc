@@ -114,7 +114,7 @@ namespace OpFlow.Service.SignalR
                     await sqlHelper.GetUser(user.ProviderID, user.LocationID, member.UserID);
             }
 
-            await sqlHelper.UpdateProposedTrayCommunicationHistory(user.UserID, trayProposalId, message, user.ProviderID, user.LocationID);
+            await sqlHelper.InsertProposedTrayCommunication(user.UserID, trayProposalId, message, user.ProviderID, user.LocationID);
 
             var sender =
                 await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
@@ -271,7 +271,7 @@ namespace OpFlow.Service.SignalR
                 var message = $"Tray status set to {status}";
 
                 await EmailHelper.SendEmail(dbUser, message);
-                await sqlHelper.UpdateProposedTrayCommunicationHistory(dbUser.UserID, trayProposalId, message, user.ProviderID, user.LocationID);
+                await sqlHelper.InsertProposedTrayCommunication(dbUser.UserID, trayProposalId, message, user.ProviderID, user.LocationID);
             }
         }
 

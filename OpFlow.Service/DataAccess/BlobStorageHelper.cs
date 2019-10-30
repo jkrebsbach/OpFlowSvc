@@ -23,7 +23,8 @@ namespace OpFlow.Service.DataAccess
             ApprovalImages,
             FlowImages,
             RoomSetupImages,
-            SurgeryImages
+            SurgeryImages,
+            TrayProposalImages
         }
 
         private BlobStorageHelper(string connectionString, string containerName)
@@ -62,6 +63,26 @@ namespace OpFlow.Service.DataAccess
 
 
             return memStream.ToArray();
+        }
+
+        public async Task<bool> BlobExists(string folder, string filename)
+        {
+            var filepath = Path.Combine(folder, filename);
+
+            try
+            {
+                var blockBlob = await Container.GetBlobReferenceFromServerAsync(filepath);
+                return await blockBlob.ExistsAsync();
+            }
+            catch (StorageException se)
+            {
+                if (se.Message.Contains("404") || se.Message.Contains("Not Found"))
+                {
+                    return false;
+                }
+
+                throw;
+            }
         }
 
         public async Task RotateImage(string folder, string filename, int direction)

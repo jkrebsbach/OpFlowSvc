@@ -34,6 +34,7 @@ namespace OpFlow.Data
 
         public string Message { get; set; }
         public DateTimeOffset InsertTimestamp { get; set; }
+        public bool MessageAcknowledged { get; set; }
     }
 
     public class MessagePost

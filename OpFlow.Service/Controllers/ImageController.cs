@@ -116,6 +116,34 @@ namespace OpFlow.Service.Controllers
                 ImageResponse(binary);
         }
 
+        [SwaggerOperation("GetTrayPhotoBytes")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("trayPhoto/{trayProposalId}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTrayPhotoBytes(int trayProposalId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var trayProposals = await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID);
+            var trayProposal = trayProposals.FirstOrDefault();
+            if (trayProposal != null)
+            {
+                var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.TrayProposalImages, trayProposalId);
+
+                var storageHelper = BlobStorageHelper.GetHelper(user);
+
+                var binary = await storageHelper.GetBlobBytes(folder, trayProposalId.ToString());
+
+                return binary == null ?
+                    Request.CreateResponse(HttpStatusCode.NotFound) :
+                    ImageResponse(binary);
+            }
+
+
+            return Request.CreateResponse(HttpStatusCode.OK, (int?)null);
+        }
+
 
         // PUT api/values/5
         //[SwaggerOperation("UpdatePatientPositionImage")]

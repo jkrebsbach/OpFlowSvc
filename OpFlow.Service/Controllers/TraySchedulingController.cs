@@ -48,7 +48,7 @@ namespace OpFlow.Service.Controllers
 
                 await EmailHelper.SendEmail(proposal.ProposalUsers.ToList<Data.User>(), message);
 
-                await sqlHelper.UpdateProposedTrayCommunicationHistory(
+                await sqlHelper.InsertProposedTrayCommunication(
                     null, proposal.TrayProposalID, message, proposal.ProviderID, proposal.LocationID);
             }
         }
