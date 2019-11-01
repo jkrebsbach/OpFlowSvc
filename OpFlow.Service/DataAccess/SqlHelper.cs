@@ -1254,6 +1254,21 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+        
+        public async Task<TrayProposalScheduleRule> GetProposedTrayScheduleRules(int userId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("user_id", userId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayScheduleRules", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayProposalScheduleRule>().FirstOrDefault();
+
+            return result;
+        }
 
         public async Task<List<AdminTrayProposal>> GetProposedTrayAlert()
         {
@@ -1499,6 +1514,22 @@ namespace OpFlow.Service.DataAccess
             }
 
             return identity;
+        }
+        public async Task<int> UpdateScheduleRules(int userId, string surgeon, string category, DateTime? startDate, DateTime? endDate, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("user_id", userId),
+                new SqlParameter("surgeon", surgeon ?? (object)DBNull.Value),
+                new SqlParameter("category", category ?? (object)DBNull.Value),
+                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateScheduleRules", parameters);
+
+            return result;
         }
 
         public async Task<int> UpdateProposedTrayRep(int trayProposalId, int userId, bool ignore, int providerId, int locationId)

@@ -47,6 +47,7 @@ namespace OpFlow.Service.Controllers
             var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
             var instruments = await sqlHelper.GetItems("instrument", null, true, user.ProviderID, user.LocationID);
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
+            var rules = await sqlHelper.GetProposedTrayScheduleRules(user.UserID, user.ProviderID, user.LocationID);
 
             if (user.VendorID.HasValue)
             {
@@ -71,7 +72,8 @@ namespace OpFlow.Service.Controllers
                 Questions = questions,
                 Phases = phases,
                 Instruments = instruments,
-                CaseProfiles = caseProfiles
+                CaseProfiles = caseProfiles,
+                Rules = rules
             };
 
 
@@ -596,12 +598,12 @@ namespace OpFlow.Service.Controllers
             }
         }
 
-        [SwaggerOperation("PutCaseProfile")]
+        [SwaggerOperation("PostCaseProfile")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("caseProfile")]
         [Route("caseProfile/{caseProfileId}")]
         [HttpPost]
-        public async Task<HttpResponseMessage> PutCaseProfile([FromBody] CaseProfilePost post, int? caseProfileId = null)
+        public async Task<HttpResponseMessage> PostCaseProfile([FromBody] CaseProfilePost post, int? caseProfileId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -612,11 +614,29 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, caseProfileId);
         }
 
-        [SwaggerOperation("PutCaseProfile")]
+        [SwaggerOperation("PostTrayScheduleRules")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("scheduleRules")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostTrayScheduleRules([FromBody] ScheduleRulePost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var surgeonJson = JsonConvert.SerializeObject(post.Surgeon);
+            var categoryJson = JsonConvert.SerializeObject(post.Category);
+
+            var result = await sqlHelper.UpdateScheduleRules(user.UserID, surgeonJson, categoryJson, post.BeginDate, post.EndDate,
+                user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        [SwaggerOperation("PostTrayProposalRep")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("rep/{trayProposalId}")]
         [HttpPost]
-        public async Task<HttpResponseMessage> PutTrayProposalRep(int trayProposalId, [FromBody] TrayProposalRepPost post)
+        public async Task<HttpResponseMessage> PostTrayProposalRep(int trayProposalId, [FromBody] TrayProposalRepPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();

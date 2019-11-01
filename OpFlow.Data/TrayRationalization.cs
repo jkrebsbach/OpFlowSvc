@@ -482,6 +482,13 @@ namespace OpFlow.Data
         public string ProfileType { get; set; }
         public List<CaseProfileQuestion> Questions { get; set; }
     }
+    public class ScheduleRulePost
+    {
+        public List<int> Surgeon { get; set; }
+        public List<int> Category { get; set; }
+        public DateTime? BeginDate { get; set; }
+        public DateTime? EndDate { get; set; }
+    }
     public class TrayProposalRepPost
     {
         public bool Ignore { get; set; }
@@ -702,7 +709,13 @@ namespace OpFlow.Data
             }
         }
     }
-
+    public class TrayProposalScheduleRule
+    {
+        public string Surgeon { get; set; }
+        public string Category { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+    }
     public class TrayRationalizationExport : TrayRationalizationItem
     {
         public int ProposedQuantity { get; set; }
