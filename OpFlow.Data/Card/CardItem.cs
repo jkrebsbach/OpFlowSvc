@@ -102,9 +102,17 @@ namespace OpFlow.Data
 
     public class TrayGroup
     {
-        public int TrayGroupID { get; set; }
-        public string TrayGroupDescription { get; set; }
+        public int? TrayGroupID { get; set; }
+        public string GroupName { get; set; }
+        public List<TrayGroupTrayProposal> Trays { get; set; }
     }
+    public class TrayGroupTrayProposal
+    {
+        public int TrayGroupID { get; set; }
+        public int TrayProposalID { get; set; }
+        public string TrayName { get; set; }
+    }
+
 
     public class CardWithCategory : Card
     {

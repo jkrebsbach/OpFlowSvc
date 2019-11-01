@@ -200,6 +200,11 @@ namespace OpFlow.Data
         public List<string> TrayGroups { get; set; }
     }
 
+    public class TrayGroupPost
+    {
+        public List<TrayGroup> TrayGroups { get; set; }
+    }
+
     public class ProposedTrayDashboardPost
     {
         public string DeploymentStatus { get; set; }

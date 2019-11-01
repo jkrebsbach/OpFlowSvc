@@ -1486,12 +1486,33 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            List<int> trayGroups = await sqlHelper.UpdateTrayGroups(post.TrayGroups, user.ProviderID, user.LocationID);
+            var trayGroups = new List<int>();
+            foreach (var trayGroup in post.TrayGroups)
+            {
+                var trayGroupId = await sqlHelper.InsertTrayGroup(trayGroup, user.ProviderID, user.LocationID);
+                trayGroups.Add(trayGroupId);
+            }
 
             var trayId = await sqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, post.VendorID, 
                 post.SpecialtyID, post.PhaseID, post.Customized, post.CardCategories, trayGroups, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
+        }
+
+        [SwaggerOperation("UpdateTrayGroups")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("trayGroups")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateTrayGroups([FromBody] TrayGroupPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.UpdateTrayGroups(post.TrayGroups, user.ProviderID, user.LocationID);
+
+            var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, trayGroups);
         }
 
         [SwaggerOperation("UpdateProposedTrayDashboard")]
