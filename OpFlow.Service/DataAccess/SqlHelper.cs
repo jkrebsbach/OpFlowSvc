@@ -1251,6 +1251,14 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetProposedTraySchedule", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<TrayProposalSchedule>();
+            var surgeryUsers = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
+            var cardCategories = dsSchedules.Tables[2].DataTableToList<ProposalCardCategory>();
+
+            foreach (var surgery in result)
+            {
+                surgery.SurgeryUsers = surgeryUsers.Where(su => su.SurgeryID == surgery.SurgeryID).ToList();
+                surgery.CardCategories = cardCategories.Where(cc => cc.TrayProposalID == surgery.TrayProposalID).ToList();
+            }
 
             return result;
         }
@@ -1411,10 +1419,9 @@ namespace OpFlow.Service.DataAccess
             var surgeries = dsSchedules.Tables[0].DataTableToList<TrayProposalSchedule>();
             var surgeryUsers = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
 
-            foreach (var surgeryUser in surgeryUsers)
+            foreach (var surgery in surgeries)
             {
-                var surgery = surgeries.FirstOrDefault(s => s.SurgeryID == surgeryUser.SurgeryID);
-                surgery?.SurgeryUsers?.Add(surgeryUser);
+                surgery.SurgeryUsers = surgeryUsers.Where(su => su.SurgeryID == surgery.SurgeryID).ToList();
             }
 
             return surgeries;

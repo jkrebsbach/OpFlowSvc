@@ -695,10 +695,12 @@ namespace OpFlow.Data
 
         public bool Assigned { get; set; }
 
+        public List<ProposalCardCategory> CardCategories { get; set; }
         public List<SurgeryUser> SurgeryUsers { get; set; }
-
+        
         public TrayProposalSchedule()
         {
+            CardCategories = new List<ProposalCardCategory>();
             SurgeryUsers = new List<SurgeryUser>();
         }
         public string SurgeryTeam
@@ -708,6 +710,11 @@ namespace OpFlow.Data
                 return SurgeryUsers == null ? null : string.Join(", ", SurgeryUsers.Select(su => su.LastName));
             }
         }
+    }
+
+    public class ProposalCardCategory : CardCategory 
+    {
+        public int TrayProposalID { get; set; }
     }
     public class TrayProposalScheduleRule
     {

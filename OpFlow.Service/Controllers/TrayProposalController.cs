@@ -49,6 +49,8 @@ namespace OpFlow.Service.Controllers
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
             var rules = await sqlHelper.GetProposedTrayScheduleRules(user.UserID, user.ProviderID, user.LocationID);
 
+            schedules = ApplyRules(schedules, rules);
+
             if (user.VendorID.HasValue)
             {
                 vendors = vendors.Where(v => v.VendorID == user.VendorID).ToList();
@@ -78,6 +80,41 @@ namespace OpFlow.Service.Controllers
 
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        private static List<TrayProposalSchedule> ApplyRules(IEnumerable<TrayProposalSchedule> schedule, TrayProposalScheduleRule rules)
+        {
+            if (rules.Surgeon != null)
+            {
+                var surgeonList = JsonConvert.DeserializeObject<List<int>>(rules.Surgeon);
+
+                if (surgeonList?.Any() == true)
+                {
+                    schedule = schedule.Where(s => s.SurgeryUsers.Any(su => surgeonList.Contains(su.UserID)));
+                }
+            }
+
+            if (rules.Category != null)
+            {
+                var categoryList = JsonConvert.DeserializeObject<List<int>>(rules.Category);
+
+                if (categoryList?.Any() == true)
+                {
+                    schedule = schedule.Where(s => s.CardCategories.Any(cc => categoryList.Contains(cc.CategoryID)));
+                }
+            }
+
+            if (rules.StartDate != null)
+            {
+                schedule = schedule.Where(s => s.ScheduleTime >= rules.StartDate);
+            }
+
+            if (rules.EndDate != null)
+            {
+                schedule = schedule.Where(s => s.ScheduleTime <= rules.EndDate);
+            }
+
+            return schedule.ToList();
         }
 
         [SwaggerOperation("GetProposedTrays")]
@@ -959,6 +996,9 @@ namespace OpFlow.Service.Controllers
                 vendorId = user.VendorID;
 
             var result = await sqlHelper.GetProposedTraySchedule(null, vendorId, user.UserID, user.ProviderID, user.LocationID);
+            var rules = await sqlHelper.GetProposedTrayScheduleRules(user.UserID, user.ProviderID, user.LocationID);
+
+            result = ApplyRules(result, rules);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
