@@ -48,6 +48,7 @@ namespace OpFlow.Service.Controllers
             var instruments = await sqlHelper.GetItems("instrument", null, true, user.ProviderID, user.LocationID);
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
             var rules = await sqlHelper.GetProposedTrayScheduleRules(user.UserID, user.ProviderID, user.LocationID);
+            var implementation = TrayImplementation.GetImplementationSteps();
 
             schedules = ApplyRules(schedules, rules);
 
@@ -75,7 +76,8 @@ namespace OpFlow.Service.Controllers
                 Phases = phases,
                 Instruments = instruments,
                 CaseProfiles = caseProfiles,
-                Rules = rules
+                Rules = rules,
+                Implementation = implementation
             };
 
 
