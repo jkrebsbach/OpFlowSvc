@@ -1273,7 +1273,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("GetProposedTrayScheduleRules", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<TrayProposalScheduleRule>().FirstOrDefault();
+            var result = dsSchedules.Tables[0].DataTableToList<TrayProposalScheduleRule>().FirstOrDefault() ?? new TrayProposalScheduleRule();
 
             return result;
         }
