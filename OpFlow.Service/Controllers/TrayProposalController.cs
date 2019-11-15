@@ -33,7 +33,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
-            var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
+            var users = await sqlHelper.SearchUsers(null, null, null, user.ProviderID, user.LocationID);
             var instrumentLookups = await sqlHelper.GetTrayInstrumentLookups(user.ProviderID, user.LocationID);
             var trays = await sqlHelper.GetItems("tray", null, null, user.ProviderID, user.LocationID);
             var collections = await sqlHelper.GetItems("collection", null, null, user.ProviderID, user.LocationID);
@@ -48,7 +48,9 @@ namespace OpFlow.Service.Controllers
             var instruments = await sqlHelper.GetItems("instrument", null, true, user.ProviderID, user.LocationID);
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
             var rules = await sqlHelper.GetProposedTrayScheduleRules(user.UserID, user.ProviderID, user.LocationID);
-            var implementation = TrayImplementation.GetImplementationSteps();
+
+            var attachments = await sqlHelper.GetImplementationAttachments(user.ProviderID, user.LocationID);
+            var implementation = TrayImplementation.GetImplementationSteps(attachments);
 
             schedules = ApplyRules(schedules, rules);
 
@@ -60,7 +62,8 @@ namespace OpFlow.Service.Controllers
             var result = new
             {
                 Specialties = specialties,
-                Surgeons = surgeons,
+                Surgeons = users.Where(u => u.RoleID == RoleEnum.Surgeon),
+                Users = users,
                 Categories = instrumentLookups.Categories,
                 Eponyms = instrumentLookups.Eponyms,
                 Types = instrumentLookups.Types,
@@ -406,6 +409,129 @@ namespace OpFlow.Service.Controllers
                 LogHelper.LogException(ex);
                 throw;
             }
+        }
+        [SwaggerOperation("PutImplementation")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpPut]
+        [Route("implementation", Name = "PutImplementation")]
+        public async Task<HttpResponseMessage> PutImplementation(int target)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var sqlHelper = new SqlHelper();
+            
+            try
+            {
+                var provider = new MultipartMemoryStreamProvider();
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                // extract file name and file contents
+                var fileNameParam = provider.Contents[0].Headers.ContentDisposition.Parameters
+                    .FirstOrDefault(p => p.Name.ToLower() == "filename");
+                var fileName = fileNameParam?.Value.Trim('"') ?? "";
+                var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
+
+                var attachmentId = await sqlHelper.UpdateImplementationAttachment(target, fileName, user.ProviderID, user.LocationID);
+
+                var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.ImplementationImages, target);
+
+                var storageHelper = BlobStorageHelper.GetHelper(user);
+
+                await storageHelper.PutBlobBytes(folder, attachmentId.ToString(), fileContents);
+
+                var attachments = await sqlHelper.GetImplementationAttachments(user.ProviderID, user.LocationID);
+                var result = TrayImplementation.GetImplementationSteps(attachments);
+
+                return Request.CreateResponse(HttpStatusCode.OK, result);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.LogException(ex);
+                throw;
+            }
+        }
+        [SwaggerOperation("GetImplementationAttachment")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpGet]
+        [Route("implementationAttachment", Name = "GetImplementationAttachment")]
+        public async Task<HttpResponseMessage> GetImplementationAttachment(int attachmentId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var sqlHelper = new SqlHelper();
+
+            try
+            {
+                var attachments = await sqlHelper.GetImplementationAttachments(user.ProviderID, user.LocationID);
+                var attachment = attachments.First(a => a.AttachmentID == attachmentId);
+
+                if (attachment != null)
+                {
+                    var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.ImplementationImages, attachment.Target);
+
+                    var storageHelper = BlobStorageHelper.GetHelper(user);
+
+                    var binary = await storageHelper.GetBlobBytes(folder, attachmentId.ToString());
+
+                    var memStream = new MemoryStream(binary);
+                    var result = new HttpResponseMessage(HttpStatusCode.OK)
+                    {
+                        Content = new StreamContent(memStream)
+                    };
+
+                    result.Content.Headers.ContentDisposition =
+                        new ContentDispositionHeaderValue("attachment")
+                        { FileName = attachment.Filename, };
+
+                    result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                    result.Content.Headers.ContentLength = memStream.Length;
+
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.LogException(ex);
+                throw;
+            }
+
+            return Request.CreateResponse(HttpStatusCode.NotFound);
+        }
+        [SwaggerOperation("DeleteImplementationAttachment")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpDelete]
+        [Route("implementationAttachment", Name = "DeleteImplementationAttachment")]
+        public async Task<HttpResponseMessage> DeleteImplementationAttachment(int attachmentId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var sqlHelper = new SqlHelper();
+            var attachments = await sqlHelper.GetImplementationAttachments(user.ProviderID, user.LocationID);
+            var attachment = attachments.FirstOrDefault(a => a.AttachmentID == attachmentId);
+
+            try
+            {
+
+                if (attachment != null)
+                {
+                    var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.ImplementationImages, attachment.Target);
+
+                    var storageHelper = BlobStorageHelper.GetHelper(user);
+
+                    await storageHelper.DeleteBlob(folder, attachmentId.ToString());
+                    await sqlHelper.DeleteImplementationAttachment(attachmentId, user.ProviderID, user.LocationID);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.LogException(ex);
+                throw;
+            }
+
+            attachments = await sqlHelper.GetImplementationAttachments(user.ProviderID, user.LocationID);
+            var result = TrayImplementation.GetImplementationSteps(attachments);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
@@ -852,6 +978,41 @@ namespace OpFlow.Service.Controllers
             result.Content.Headers.ContentDisposition =
                 new ContentDispositionHeaderValue("attachment")
                 { FileName = "TrayRationalization.csv", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
+        [Route("implementation", Name = "GetImplementationCsv")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetImplementationCsv(int target)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var steps = TrayImplementation.GetImplementationSteps(null);
+            var implementation = steps[target];
+
+            var extract = "Service Line, Activites, Outputs, Roles, Timing, Tools\r\n";
+            foreach (var specialty in implementation.Steps)
+            {
+                extract += $"\"{specialty.Specialty}\",\"{string.Join("\r\n", specialty.Activities)}\",\"{string.Join("\r\n", specialty.Outputs)}\",\"{string.Join("\r\n", specialty.Roles)}\"," +
+                    $"\"{string.Join("\r\n", specialty.Timing)}\",\"{string.Join("\r\n", specialty.Tools)}\"\r\n";
+            }
+
+            var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
+            var memStream = new MemoryStream(extractBytes);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                { FileName = "TrayImplementation.csv", };
 
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
             result.Content.Headers.ContentLength = memStream.Length;

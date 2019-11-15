@@ -14,13 +14,25 @@ namespace OpFlow.Data
         public List<string> Timing { get; set; }
         public List<string> Tools { get; set; }
     }
+    public class ImplementationAttachment
+    {
+        public int AttachmentID { get; set; }
+        public int Target { get; set; }
+        public string Filename { get; set; }
+    }
     public class TrayImplementation
     {
         public string Overview { get; set; }
         public string Title { get; set; }
         public List<TrayImplementationStep> Steps { get; set; }
+        public List<ImplementationAttachment> Attachments { get; set; }
 
-        public static IEnumerable<TrayImplementation> GetImplementationSteps()
+        public TrayImplementation()
+        {
+            Attachments = new List<ImplementationAttachment>();
+        }
+
+        public static List<TrayImplementation> GetImplementationSteps(IEnumerable<ImplementationAttachment> attachments)
         {
             var result = new List<TrayImplementation>()
             {
@@ -31,6 +43,11 @@ namespace OpFlow.Data
                 GetRollOutImplementationSteps(),
                 GetSustainmentImplementationSteps()
             };
+
+            foreach (var attachment in attachments ?? new List<ImplementationAttachment>())
+            {
+                result[attachment.Target].Attachments.Add(attachment);
+            }
 
             return result;
         }

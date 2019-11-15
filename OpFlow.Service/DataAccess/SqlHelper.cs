@@ -1621,6 +1621,49 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<ImplementationAttachment>> GetImplementationAttachments(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetImplementationAttachments", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ImplementationAttachment>();
+
+            return result;
+        }
+
+        public async Task<int> DeleteImplementationAttachment(int attachmentId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("attachment_id", attachmentId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("DeleteImplementationAttachment", parameters);
+
+            return result;
+        }
+
+        public async Task<int> UpdateImplementationAttachment(int target, string filename, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("target", target),
+                new SqlParameter("filename", filename),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsAttachment = await ExecuteCommandAsync("UpdateImplementationAttachment", parameters);
+
+            var result = dsAttachment.Tables[0].DataTableToList<InsertionResult>().First();
+
+            return result.Identifier;
+        }
+
         public async Task<int> UpdateProposedTraySchedule(int surgeryId, int? trayProposalId, int? trayGroupId,
             List<CaseProfileSchedulePost> caseProfiles, int providerId, int locationId)
         {

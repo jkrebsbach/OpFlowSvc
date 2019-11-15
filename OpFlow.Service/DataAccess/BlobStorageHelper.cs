@@ -24,7 +24,8 @@ namespace OpFlow.Service.DataAccess
             FlowImages,
             RoomSetupImages,
             SurgeryImages,
-            TrayProposalImages
+            TrayProposalImages,
+            ImplementationImages
         }
 
         private BlobStorageHelper(string connectionString, string containerName)
