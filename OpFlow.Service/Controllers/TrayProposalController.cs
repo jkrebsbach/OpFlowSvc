@@ -863,6 +863,25 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, scheduleId);
         }
 
+        [SwaggerOperation("UpdateCommunicationRoles")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("communicationRoles")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateCommunicationRoles(int trayProposalId, [FromBody] TrayCommunicationRolePost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var users = await sqlHelper.SearchUsers(null, null, null, user.ProviderID, user.LocationID);
+            var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Users = users,
+                Proposals = proposals
+            });
+        }
+
         [SwaggerOperation("GetCommunicationTeam")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("communicationTeam")]

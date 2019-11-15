@@ -509,6 +509,13 @@ namespace OpFlow.Data
         public string Supplies { get; set; }
     }
 
+    public class TrayCommunicationRolePost
+    {
+        public int OwnerID { get; set; }
+        public List<int> Approvers { get; set; }
+        public List<int> Users { get; set; }
+    }
+
     public class CaseProfileSchedulePost
     {
         public int CaseProfileID { get; set; }
