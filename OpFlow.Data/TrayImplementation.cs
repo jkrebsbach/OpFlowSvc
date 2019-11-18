@@ -20,6 +20,11 @@ namespace OpFlow.Data
         public int Target { get; set; }
         public string Filename { get; set; }
     }
+    public class ProposedTrayOrgChart
+    {
+        public int OrgChartID { get; set; }
+        public string Filename { get; set; }
+    }
     public class TrayImplementation
     {
         public string Overview { get; set; }

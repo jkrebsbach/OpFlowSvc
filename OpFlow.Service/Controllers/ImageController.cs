@@ -143,6 +143,54 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, (int?)null);
         }
+        [SwaggerOperation("GetOrgChart")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpGet]
+        [Route("orgChart", Name = "GetOrgChart")]
+        public async Task<HttpResponseMessage> GetOrgChart(string type, int id)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var sqlHelper = new SqlHelper();
+
+            try
+            {
+                var storageHelper = BlobStorageHelper.GetHelper(user);
+
+                string filename = null;
+                byte[] binary;
+
+                if (type == "T")
+                {
+                    var proposals = await sqlHelper.GetProposedTrays(id, user.ProviderID, user.LocationID);
+                    var proposal = proposals.First();
+
+                    filename = proposal.OrgChart;
+
+                    var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.OrgChartImages, id);
+                    binary = await storageHelper.GetBlobBytes(folder, id.ToString());
+                }
+                else
+                {
+                    var attachments = await sqlHelper.GetOrgChartAttachments(user.ProviderID, user.LocationID);
+                    var attachment = attachments.First(a => a.OrgChartID == id);
+
+                    filename = attachment.Filename;
+
+                    var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.OrgChartImages, -1);
+                    binary = await storageHelper.GetBlobBytes(folder, id.ToString());
+                }
+
+                return binary == null ?
+                    Request.CreateResponse(HttpStatusCode.NotFound) :
+                    ImageResponse(binary);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.LogException(ex);
+                throw;
+            }
+        }
 
 
         // PUT api/values/5

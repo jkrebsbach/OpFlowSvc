@@ -1626,6 +1626,48 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+        public async Task<List<ProposedTrayOrgChart>> GetOrgChartAttachments(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsAttachments = await ExecuteCommandAsync("GetProposedTrayOrgChartAttachments", parameters);
+
+            var result = dsAttachments.Tables[0].DataTableToList<ProposedTrayOrgChart>();
+
+            return result;
+        }
+        public async Task<int> DeleteProposedTrayOrgChart(int? orgChartId, int? trayProposalId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("org_chart_id", orgChartId ?? (object)DBNull.Value),
+                new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("DeleteProposedTrayOrgChart", parameters);
+
+            return result;
+        }
+        public async Task<int> UpdateOrgChartAttachment(string type, int? trayProposalId, string filename, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("type", type),
+                new SqlParameter("filename", filename),
+                new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsAttachments = await ExecuteCommandAsync("UpdateProposedTrayOrgChartAttachment", parameters);
+
+            var result = dsAttachments.Tables[0].DataTableToList<InsertionResult>().First();
+
+            return result.Identifier;
+        }
 
         public async Task<List<ImplementationAttachment>> GetImplementationAttachments(int providerId, int locationId)
         {

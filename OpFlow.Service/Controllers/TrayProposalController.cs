@@ -48,6 +48,7 @@ namespace OpFlow.Service.Controllers
             var instruments = await sqlHelper.GetItems("instrument", null, true, user.ProviderID, user.LocationID);
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
             var rules = await sqlHelper.GetProposedTrayScheduleRules(user.UserID, user.ProviderID, user.LocationID);
+            var orgCharts = await sqlHelper.GetOrgChartAttachments(user.ProviderID, user.LocationID);
 
             var attachments = await sqlHelper.GetImplementationAttachments(user.ProviderID, user.LocationID);
             var implementation = TrayImplementation.GetImplementationSteps(attachments);
@@ -80,7 +81,8 @@ namespace OpFlow.Service.Controllers
                 Instruments = instruments,
                 CaseProfiles = caseProfiles,
                 Rules = rules,
-                Implementation = implementation
+                Implementation = implementation,
+                OrgCharts = orgCharts
             };
 
 
@@ -410,6 +412,101 @@ namespace OpFlow.Service.Controllers
                 throw;
             }
         }
+        [SwaggerOperation("PutOrgChart")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpPut]
+        [Route("orgChart", Name = "PutOrgChart")]
+        public async Task<HttpResponseMessage> PutOrgChart(string type, int? tray)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var sqlHelper = new SqlHelper();
+            
+            try
+            {
+                var provider = new MultipartMemoryStreamProvider();
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                // extract file name and file contents
+                var fileNameParam = provider.Contents[0].Headers.ContentDisposition.Parameters
+                    .FirstOrDefault(p => p.Name.ToLower() == "filename");
+                var fileName = fileNameParam?.Value.Trim('"') ?? "";
+                var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
+
+                var orgChartId = await sqlHelper.UpdateOrgChartAttachment(type, tray, fileName, user.ProviderID, user.LocationID);
+
+                var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.OrgChartImages, tray ?? -1);
+
+                var storageHelper = BlobStorageHelper.GetHelper(user);
+
+                await storageHelper.PutBlobBytes(folder, orgChartId.ToString(), fileContents);
+
+                var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID); 
+                var orgCharts = await sqlHelper.GetOrgChartAttachments(user.ProviderID, user.LocationID);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    Proposals = proposals,
+                    OrgCharts = orgCharts
+                });
+            }
+            catch (Exception ex)
+            {
+                LogHelper.LogException(ex);
+                throw;
+            }
+        }
+        [SwaggerOperation("DeleteOrgChart")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpDelete]
+        [Route("orgChart", Name = "DeleteOrgChart")]
+        public async Task<HttpResponseMessage> DeleteOrgChart(string type, int? id)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var sqlHelper = new SqlHelper();
+
+            try
+            {
+                var storageHelper = BlobStorageHelper.GetHelper(user);
+
+                if (type == "T")
+                {
+                    var proposalChecks = await sqlHelper.GetProposedTrays(id, user.ProviderID, user.LocationID);
+                    var proposal = proposalChecks.First();
+
+                    await sqlHelper.DeleteProposedTrayOrgChart(null, id, user.ProviderID, user.LocationID);
+
+                    var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.OrgChartImages, id ?? -1);
+                    await storageHelper.DeleteBlob(folder, id.ToString());
+                }
+                else
+                {
+                    var attachments = await sqlHelper.GetOrgChartAttachments(user.ProviderID, user.LocationID);
+                    var attachment = attachments.First(a => a.OrgChartID == id);
+
+                    await sqlHelper.DeleteProposedTrayOrgChart(id, null, user.ProviderID, user.LocationID);
+
+                    var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.OrgChartImages, -1);
+                    await storageHelper.DeleteBlob(folder, id.ToString());
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.LogException(ex);
+                throw;
+            }
+
+            var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
+            var orgCharts = await sqlHelper.GetOrgChartAttachments(user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Proposals = proposals,
+                OrgCharts = orgCharts
+            });
+        }
         [SwaggerOperation("PutImplementation")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [HttpPut]
@@ -419,7 +516,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper();
-            
+
             try
             {
                 var provider = new MultipartMemoryStreamProvider();

@@ -46,6 +46,7 @@ namespace OpFlow.Data
         public DateTime? AuditCompleteTarget { get; set; }
         public DateTime? TrayChangesTarget { get; set; }
         public string ImageFilename { get; set; }
+        public string OrgChart { get; set; }
         public string TrayOwner { get; set; }
         public string Comments { get; set; }
         public int ProposedCount { get; set; }
