@@ -872,6 +872,8 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
+            await sqlHelper.UpdateProposedTrayRoles(trayProposalId, post.OwnerID, post.Approvers, post.Users, user.ProviderID, user.LocationID);
+
             var users = await sqlHelper.SearchUsers(null, null, null, user.ProviderID, user.LocationID);
             var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
 

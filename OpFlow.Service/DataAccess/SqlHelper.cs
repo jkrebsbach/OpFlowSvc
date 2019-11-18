@@ -933,6 +933,12 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetProposedTrays", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
+            var userAssignments = dsSchedules.Tables[1].DataTableToList<TrayProposalUserAssignment>();
+
+            foreach (var tray in result)
+            {
+                tray.UserAssignments = userAssignments.Where(t => t.TrayProposalID == tray.TrayProposalID).ToList();
+            }
 
             return result;
         }
@@ -1693,6 +1699,25 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("UpdateProposedTrayScheduleDetails", parameters);
+
+            return result;
+        }
+        public async Task<int> UpdateProposedTrayRoles(int trayProposalId, int? ownerUserId, List<int> approvers,
+            List<int> users, int providerId, int locationId)
+        {
+            var approverXml = GetIdentitySummary(approvers);
+            var userXml = GetIdentitySummary(users);
+
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("owner_user_id", ownerUserId ?? (object)DBNull.Value),
+                new SqlParameter("approvers", approverXml ?? (object)DBNull.Value),
+                new SqlParameter("users", userXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProposedTrayRoles", parameters);
 
             return result;
         }

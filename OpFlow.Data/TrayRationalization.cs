@@ -25,6 +25,7 @@ namespace OpFlow.Data
         public int? VendorID { get; set; }
         public int? TrayProposalPhaseID { get; set; }
         public int? SpecialtyID { get; set; }
+        public int? TrayOwnerUserID { get; set; }
         public bool CustomizedTray { get; set; }
         public string Vendor { get; set; }
         public string Status { get; set; }
@@ -45,6 +46,7 @@ namespace OpFlow.Data
         public DateTime? AuditCompleteTarget { get; set; }
         public DateTime? TrayChangesTarget { get; set; }
         public string ImageFilename { get; set; }
+        public string TrayOwner { get; set; }
         public string Comments { get; set; }
         public int ProposedCount { get; set; }
         public int SourceCount { get; set; }
@@ -52,6 +54,9 @@ namespace OpFlow.Data
         public int ProjectRemoval => CountChange * Instances;
         public decimal PcntChange => SourceCount == 0 ? 0 : ((decimal)CountChange / SourceCount * 100);
 
+        public List<TrayProposalUserAssignment> UserAssignments { get; set; }
+        public List<TrayProposalUserAssignment> TrayApprovers => UserAssignments?.Where(ua => ua.UserType == "A")?.ToList();
+        public List<TrayProposalUserAssignment> TrayUsers => UserAssignments?.Where(ua => ua.UserType == "U")?.ToList();
         public List<TrayApproval> TrayApprovals { get; set; }
         public string DeploymentStatusName
         {
@@ -75,7 +80,11 @@ namespace OpFlow.Data
             }
         }
     }
-
+    public class TrayProposalUserAssignment : User
+    { 
+        public int TrayProposalID { get; set; }
+        public string UserType { get; set; }
+    }
     public class TrayRationalizationCardCategory
     {
         public int TrayProposalID { get; set; }
@@ -511,7 +520,7 @@ namespace OpFlow.Data
 
     public class TrayCommunicationRolePost
     {
-        public int OwnerID { get; set; }
+        public int? OwnerID { get; set; }
         public List<int> Approvers { get; set; }
         public List<int> Users { get; set; }
     }
