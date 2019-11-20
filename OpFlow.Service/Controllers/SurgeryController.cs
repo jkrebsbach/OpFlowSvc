@@ -348,6 +348,7 @@ namespace OpFlow.Service.Controllers
                 else
                 {
                     tray.TrayOpened = trayOpen.TrayOpened;
+                    tray.Feedback = trayOpen.Feedback;
                 }
             }
 
@@ -557,6 +558,21 @@ namespace OpFlow.Service.Controllers
                 .ToList();
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // POST api/values
+        [SwaggerOperation("UpdateTrayFeedback")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("trayFeedback", Name = "UpdateTrayFeedback")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateTrayFeedback(int surgeryId, int trayId, [FromBody] SurgeryTrayFeedback post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.UpdateSurgeryTrayFeedback(surgeryId, trayId, post.Feedback, user.ProviderID, user.LocationID);
+
+            return await GetSurgeryCardItemCounts(surgeryId);
         }
 
         // POST api/values

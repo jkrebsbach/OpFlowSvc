@@ -2670,6 +2670,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> UpdateSurgeryTrayFeedback(int surgeryId, int trayId, string feedback, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("tray_id", trayId),
+                new SqlParameter("feedback", feedback ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateSurgeryTrayFeedback", parameters);
+
+            return result;
+        }
+
         public async Task<List<Card>> GetCardSurgeryDelays(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]

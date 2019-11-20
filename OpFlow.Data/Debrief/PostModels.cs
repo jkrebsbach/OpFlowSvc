@@ -51,6 +51,10 @@ namespace OpFlow.Data.Debrief
     {
         public List<int> IDList { get; set; }
     }
+    public class SurgeryTrayFeedback
+    {
+        public string Feedback { get; set; }
+    }
     public class DebriefUpdatePost
     {
         public string CaseNotes { get; set; }
