@@ -1016,6 +1016,24 @@ namespace OpFlow.Service.Controllers
             });
         }
 
+        [SwaggerOperation("GetCommunication")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayProposalCommunication>))]
+        [Route("communication")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> GetCommunication([FromBody] TrayCommunicationSummaryPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var communication = await sqlHelper.GetProposedTrayCommunicationSummary(post.TrayProposalIds, post.PhaseID, post.UserID,
+                user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Communication = communication
+            });
+        }
+
         [SwaggerOperation("AddCaseAudit")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("caseAudit")]

@@ -972,6 +972,26 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<TrayProposalCommunication>> GetProposedTrayCommunicationSummary(List<int> trayProposalIds, int? phaseId, int? userId,
+            int providerId, int locationId)
+        {
+            var trayProposals = GetIdentitySummary(trayProposalIds);
+
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposals ?? (object)DBNull.Value),
+                new SqlParameter("phase_id", phaseId ?? (object)DBNull.Value),
+                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCommunicationSummary", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayProposalCommunication>();
+
+            return result;
+        }
+
         public async Task<List<TrayRationalizationItem>> GetProposedTrayInstruments(int trayProposalId, bool showHistory, int providerId, int locationId)
         {
             var parameters = new[]

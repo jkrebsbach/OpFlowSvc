@@ -740,6 +740,14 @@ namespace OpFlow.Data
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
     }
+    public class TrayProposalCommunication
+    { 
+        public string Phase { get; set; }
+        public string TrayName { get; set; }
+        public string Sender { get; set; }
+        public string Message { get; set; }
+        public DateTimeOffset InsertTimestamp { get; set; }
+    }
     public class TrayRationalizationExport : TrayRationalizationItem
     {
         public int ProposedQuantity { get; set; }
@@ -778,7 +786,12 @@ namespace OpFlow.Data
         public int SurgeryID { get; set; }
         public string TrayName { get; set; }
     }
-
+    public class TrayCommunicationSummaryPost
+    {
+        public List<int> TrayProposalIds { get; set; }
+        public int? PhaseID { get; set; }
+        public int? UserID { get; set; }
+    }
     public class AddCaseAuditPost
     {
         public List<int> Surgeries { get; set; }
