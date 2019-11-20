@@ -742,10 +742,12 @@ namespace OpFlow.Data
     }
     public class TrayProposalCommunication
     { 
+        public int CommunicationID { get; set; }
         public string Phase { get; set; }
         public string TrayName { get; set; }
         public string Sender { get; set; }
         public string Message { get; set; }
+        public string Comments { get; set; }
         public DateTimeOffset InsertTimestamp { get; set; }
     }
     public class TrayRationalizationExport : TrayRationalizationItem
@@ -791,6 +793,10 @@ namespace OpFlow.Data
         public List<int> TrayProposalIds { get; set; }
         public int? PhaseID { get; set; }
         public int? UserID { get; set; }
+    }
+    public class TrayCommunicationUpdatePost
+    {
+        public string Comments { get; set; }
     }
     public class AddCaseAuditPost
     {

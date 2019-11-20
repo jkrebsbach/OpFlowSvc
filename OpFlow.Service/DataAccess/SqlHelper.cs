@@ -992,6 +992,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> UpdateProposedTrayCommunicationSummary(int communicationId, string comments,
+            int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("communication_id", communicationId),
+                new SqlParameter("comments", comments ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProposedTrayCommunicationSummary", parameters);
+
+            return result;
+        }
+
         public async Task<List<TrayRationalizationItem>> GetProposedTrayInstruments(int trayProposalId, bool showHistory, int providerId, int locationId)
         {
             var parameters = new[]
