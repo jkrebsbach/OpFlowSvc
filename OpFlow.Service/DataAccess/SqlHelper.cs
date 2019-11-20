@@ -972,7 +972,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayProposalCommunication>> GetProposedTrayCommunicationSummary(List<int> trayProposalIds, int? phaseId, int? userId,
+        public async Task<List<TrayProposalHistory>> GetProposedTrayHistory(List<int> trayProposalIds, int? phaseId, int? userId,
             int providerId, int locationId)
         {
             var trayProposals = GetIdentitySummary(trayProposalIds);
@@ -985,24 +985,24 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCommunicationSummary", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayHistory", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<TrayProposalCommunication>();
+            var result = dsSchedules.Tables[0].DataTableToList<TrayProposalHistory>();
 
             return result;
         }
 
-        public async Task<int> UpdateProposedTrayCommunicationSummary(int communicationId, string comments,
+        public async Task<int> UpdateProposedTrayCommunicationHistory(int historyId, string comments,
             int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("communication_id", communicationId),
+                new SqlParameter("history_id", historyId),
                 new SqlParameter("comments", comments ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = await ExecuteNonQueryAsync("UpdateProposedTrayCommunicationSummary", parameters);
+            var result = await ExecuteNonQueryAsync("UpdateProposedTrayCommunicationHistory", parameters);
 
             return result;
         }

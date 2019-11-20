@@ -1017,15 +1017,15 @@ namespace OpFlow.Service.Controllers
         }
 
         [SwaggerOperation("GetCommunication")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayProposalCommunication>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayProposalHistory>))]
         [Route("communication")]
         [HttpPost]
-        public async Task<HttpResponseMessage> GetCommunication([FromBody] TrayCommunicationSummaryPost post)
+        public async Task<HttpResponseMessage> GetCommunication([FromBody] TrayCommunicationHistoryPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var communication = await sqlHelper.GetProposedTrayCommunicationSummary(post.TrayProposalIds, post.PhaseID, post.UserID,
+            var communication = await sqlHelper.GetProposedTrayHistory(post.TrayProposalIds, post.PhaseID, post.UserID,
                 user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
@@ -1038,12 +1038,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("communicationComments")]
         [HttpPost]
-        public async Task<HttpResponseMessage> AddCommunicationComments(int communicationId, [FromBody] TrayCommunicationUpdatePost post)
+        public async Task<HttpResponseMessage> AddCommunicationComments(int historyId, [FromBody] TrayCommunicationHistoryUpdatePost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var communication = await sqlHelper.UpdateProposedTrayCommunicationSummary(communicationId, post.Comments,
+            var communication = await sqlHelper.UpdateProposedTrayCommunicationHistory(historyId, post.Comments,
                 user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK);
