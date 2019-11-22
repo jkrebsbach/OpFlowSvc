@@ -41,6 +41,7 @@ namespace OpFlow.Service.Controllers
             var cpts = await sqlHelper.GetKnownCPTCodes(user.ProviderID, user.LocationID);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
             var proposalPhases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
+            var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -57,7 +58,8 @@ namespace OpFlow.Service.Controllers
                     CardCategories = cardCategories,
                     CPTs = cpts,
                     ProposedTrays = proposedTrays,
-                    ProposalPhases = proposalPhases
+                    ProposalPhases = proposalPhases,
+                    CaseProfiles = caseProfiles
                 }
             });
         }
@@ -598,6 +600,64 @@ namespace OpFlow.Service.Controllers
             };
             var result = ReportHelper.GetReport("TrayRationalization", format, datasets);
             
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("VendorTrayRationalizationReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsSummary>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("vendorTrayRationalization")]
+        [Route("vendorTrayRationalization/{format}")]
+        public async Task<HttpResponseMessage> VendorTrayRationalizationReport([FromBody] TrayRationalizationReportPost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+            var analytics = await sqlHelper.GetAnalyticsVendorTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.CardCategoryId,
+                post.MinSize, post.StartDate, post.EndDate, post.CaseProfileId, post.QuestionId, post.AnswerId, user.ProviderID, user.LocationID);
+
+            var rationalization = new DataView(analytics.Tables[0]);
+
+            switch (post.Order)
+            {
+                case "instrument_nbr":
+                    rationalization.Sort = "InstrumentCount";
+                    break;
+                case "instrument_avg":
+                    rationalization.Sort = "UsageQuantity DESC";
+                    break;
+                case "tray_open":
+                    rationalization.Sort = "TrayOpened";
+                    break;
+                case "tray_name":
+                    rationalization.Sort = "TrayName DESC";
+                    break;
+                case "count":
+                default:
+                    rationalization.Sort = "CaseCount";
+                    break;
+            }
+
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["TrayRationalization"] = rationalization.ToTable()
+            };
+            var result = ReportHelper.GetReport("TrayRationalization", format, datasets);
+
             if (format?.ToUpper() == "PDF")
             {
                 return ResponseHelper.PdfResponse(result);

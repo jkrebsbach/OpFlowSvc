@@ -480,6 +480,34 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
+        public async Task<DataSet> GetAnalyticsVendorTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId, List<int> cardCategoryId,
+            int? minSize, DateTime? startDate, DateTime? endDate, int? caseProfileId, int? questionId, int? answerId, int providerId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+            var trayXml = GetIdentitySummary(trayId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("min_size", minSize ?? (object)DBNull.Value),
+                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
+                new SqlParameter("case_profile_id", caseProfileId ?? (object)DBNull.Value),
+                new SqlParameter("question_id", questionId ?? (object)DBNull.Value),
+                new SqlParameter("answer_id", answerId ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsVendorTrayRationalization", parameters);
+
+            return dsSchedules;
+        }
+
         public async Task<DataSet> GetAnalyticsTrayScopeData(List<int> specialtyId, List<int> trayId, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);

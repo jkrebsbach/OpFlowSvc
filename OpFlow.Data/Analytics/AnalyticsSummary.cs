@@ -98,6 +98,11 @@ namespace OpFlow.Data
         public List<int> TrayId { get; set; }
         public List<int> CardCategoryId { get; set; }
         public int? MinSize { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public int? CaseProfileId { get; set; }
+        public int? QuestionId { get; set; }
+        public int? AnswerId { get; set; }
         public string Order {get;set;}
     }
 
