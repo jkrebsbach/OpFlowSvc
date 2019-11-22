@@ -580,6 +580,33 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<DataSet> GetVendorTrayConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
+            List<int> procedureId, List<int> trayId, List<int> cardCategoryId, List<int> cardId, string instruments, int providerId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+            var procedureXml = GetIdentitySummary(procedureId);
+            var trayXml = GetIdentitySummary(trayId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+            var cardXml = GetIdentitySummary(cardId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("procedure_id", procedureXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("instruments", instruments),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("GetVendorTrayAnalyticsConcordanceReport", parameters);
+
+            return result;
+        }
+
         public async Task<DataSet> GetSupplyWasteReportDate(List<int> specialtyId, List<int> surgeonId,
             List<int> cardId, List<int>itemId, int? minCost, decimal? minOpen, decimal? minHold, string groupBy, int providerId, int locationId)
         {
