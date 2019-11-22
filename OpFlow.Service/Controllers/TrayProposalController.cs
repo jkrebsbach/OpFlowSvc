@@ -1034,6 +1034,21 @@ namespace OpFlow.Service.Controllers
             });
         }
 
+        [SwaggerOperation("AddCommunicationHistory")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("communicationHistory")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> AddCommunicationHistory([FromBody] TrayCommunicationHistoryInsertPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var communication = await sqlHelper.InsertProposedTrayCommunicationHistory(post.Phase, post.Activity, post.Tray, post.Audience,
+                user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK);
+        }
+
         [SwaggerOperation("AddCommunicationComments")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("communicationComments")]

@@ -794,6 +794,13 @@ namespace OpFlow.Data
         public int? PhaseID { get; set; }
         public int? UserID { get; set; }
     }
+    public class TrayCommunicationHistoryInsertPost
+    {
+        public int Phase { get; set; }
+        public int Tray { get; set; }
+        public string Activity { get; set; }
+        public int Audience { get; set; }
+    }
     public class TrayCommunicationHistoryUpdatePost
     {
         public string Comments { get; set; }
