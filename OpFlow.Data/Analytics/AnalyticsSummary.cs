@@ -87,6 +87,9 @@ namespace OpFlow.Data
         public decimal? MinOpen { get; set; }
         public decimal? MinHold { get; set; }
         public int? Redundancy { get; set; }
+        public int? CaseProfileId { get; set; }
+        public int? QuestionId { get; set; }
+        public int? AnswerId { get; set; }
         public string Order { get; set; }
         public string Group { get; set; }
     }

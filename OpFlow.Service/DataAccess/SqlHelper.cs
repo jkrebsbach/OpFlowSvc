@@ -581,7 +581,9 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetVendorTrayConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
-            List<int> procedureId, List<int> trayId, List<int> cardCategoryId, List<int> cardId, string instruments, int providerId, int locationId)
+            List<int> procedureId, List<int> trayId, List<int> cardCategoryId, List<int> cardId, string instruments, 
+            int? caseProfileId, int? questionId, int? answerId,
+            int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -598,11 +600,14 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
-                new SqlParameter("instruments", instruments),
+                new SqlParameter("instruments", instruments ?? (object)DBNull.Value),
+                new SqlParameter("case_profile_id", caseProfileId ?? (object)DBNull.Value),
+                new SqlParameter("question_id", questionId ?? (object)DBNull.Value),
+                new SqlParameter("answer_id", answerId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = await ExecuteCommandAsync("GetVendorTrayAnalyticsConcordanceReport", parameters);
+            var result = await ExecuteCommandAsync("GetAnalyticsVendorTrayConcordanceReport", parameters);
 
             return result;
         }

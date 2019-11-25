@@ -228,13 +228,14 @@ namespace OpFlow.Service.Controllers
                 post.ProcedureID == null &&
                 post.TrayID == null &&
                 post.CardCategoryID == null &&
-                post.CardID == null)
+                post.CardID == null &&
+                post.CaseProfileId == null)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
             var analytics = await sqlHelper.GetVendorTrayConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID,
-                post.CardCategoryID, post.CardID, post.Instruments, user.ProviderID, user.LocationID);
+                post.CardCategoryID, post.CardID, post.Instruments, post.CaseProfileId, post.QuestionId, post.AnswerId, user.ProviderID, user.LocationID);
 
             var concordance = analytics.Tables[0].DefaultView;
             switch (post.Order)
