@@ -199,8 +199,9 @@ namespace OpFlow.Data
         public int TrayID { get; set; }
         public int? RoleID { get; set; }
         public int? UsageType { get; set; }
-        public int Usage { get; set; }
         public int? Setup { get; set; }
+        public int? SetupAdded { get; set; }
+        public int Usage { get; set; }
     }
 
     public class SurgeryDelay

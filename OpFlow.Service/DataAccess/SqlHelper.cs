@@ -4111,6 +4111,7 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, customItem.UsageType);
                 AddColumn(doc, row, customItem.RoleID);
                 AddColumn(doc, row, customItem.Setup);
+                AddColumn(doc, row, customItem.SetupAdded);
             }
 
             return table.OuterXml;
