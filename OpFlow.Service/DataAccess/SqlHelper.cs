@@ -3942,6 +3942,17 @@ namespace OpFlow.Service.DataAccess
             };
             return await ExecuteNonQueryAsync("InsertSurgeryProposedTray", dsParameters);
         }
+        public async Task<int> AddSurgeryProposedTrayGroup(int surgeryId, int trayGroupId, int providerId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("tray_proposal_id", trayGroupId)
+            };
+            return await ExecuteNonQueryAsync("InsertSurgeryProposedTrayGroup", dsParameters);
+        }
 
         public async Task<int> AddSurgeryUser(int surgeryId, int userId, int providerId, int locationId)
         {

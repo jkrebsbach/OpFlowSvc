@@ -827,6 +827,21 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
 
+        // POST api/values
+        [SwaggerOperation("AddProposedTrayGroup")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        [Route("addProposedTrayGroup", Name = "AddProposedTrayGroup")]
+        public async Task<HttpResponseMessage> AddProposedTrayGroup(int surgeryId, int trayGroupId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.AddSurgeryProposedTrayGroup(surgeryId, trayGroupId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
         [SwaggerOperation("UpdateTeams")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [Route("updateTeams")]
