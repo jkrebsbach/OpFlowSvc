@@ -728,18 +728,32 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("caseProfiles")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetCaseProfiles(int? surgeryId = null, int? trayProposalId = null)
+        public async Task<HttpResponseMessage> GetCaseProfiles(int? surgeryId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
             List<CaseProfile> caseProfiles;
-            if (surgeryId.HasValue && trayProposalId.HasValue)
-                caseProfiles = await sqlHelper.GetSurgeryCaseProfiles(surgeryId.Value, trayProposalId.Value, user.ProviderID, user.LocationID);
+            if (surgeryId.HasValue)
+                caseProfiles = new List<CaseProfile>() { await sqlHelper.GetSurgeryCaseProfile(surgeryId.Value, user.ProviderID, user.LocationID) };
             else
                 caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, caseProfiles);
+        }
+
+        [SwaggerOperation("UpdateSurgeryCaseProfile")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("surgeryCaseProfile")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateSurgeryCaseProfile(int surgeryId, int caseProfileId, [FromBody] CaseProfileSchedulePost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.UpdateSurgeryCaseProfile(surgeryId, caseProfileId, post.Questions, user.ProviderID, user.LocationID);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, surgeryId);
         }
 
         [SwaggerOperation("GetTrayPhoto")]
@@ -939,8 +953,8 @@ namespace OpFlow.Service.Controllers
                 if (tray.TrayProposalID == null && tray.TrayGroupID == null)
                     continue;
             
-                await sqlHelper.UpdateProposedTraySchedule(surgeryId, tray.TrayProposalID, tray.TrayGroupID,
-                    post.CaseProfiles, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateProposedTraySchedule(surgeryId, tray.TrayProposalID, tray.TrayGroupID, post.CaseProfiles.First()?.CaseProfileID ?? -1,
+                    post.CaseProfiles.First()?.Questions, user.ProviderID, user.LocationID);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, surgeryId);

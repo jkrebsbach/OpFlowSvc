@@ -457,14 +457,18 @@ namespace OpFlow.Service.Controllers
 
             var instrumentLookups = await sqlHelper.GetTrayInstrumentLookups(user.ProviderID, user.LocationID);
             var audits = await sqlHelper.GetSurgeryProposedTrays(surgeryId, user.ProviderID, user.LocationID);
+            var groups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
+            var caseProfile = await sqlHelper.GetSurgeryCaseProfile(surgeryId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
+                TrayGroups = groups,
                 Categories = instrumentLookups.Categories,
                 Eponyms = instrumentLookups.Eponyms,
                 Types = instrumentLookups.Types,
                 Audits = audits.Audits,
-                ScrubTechs = audits.ScrubTechs
+                ScrubTechs = audits.ScrubTechs,
+                CaseProfile = caseProfile
             });
         }
 

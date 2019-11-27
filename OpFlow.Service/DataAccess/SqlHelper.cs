@@ -1584,16 +1584,15 @@ namespace OpFlow.Service.DataAccess
             return caseProfiles;
         }
 
-        public async Task<List<CaseProfile>> GetSurgeryCaseProfiles(int surgeryId, int trayProposalId, int providerId, int locationId)
+        public async Task<CaseProfile> GetSurgeryCaseProfile(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("tray_proposal_id", trayProposalId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = await ExecuteCommandAsync("GetSurgeryCaseProfiles", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeryCaseProfile", parameters);
 
             var caseProfiles = dsSchedules.Tables[0].DataTableToList<CaseProfile>();
             var questions = dsSchedules.Tables[1].DataTableToList<CaseProfileQuestionResult>();
@@ -1603,7 +1602,7 @@ namespace OpFlow.Service.DataAccess
                 caseProfile.ParseResults(questions.Where(q => q.CaseProfileID == caseProfile.CaseProfileID));
             }
 
-            return caseProfiles;
+            return caseProfiles.FirstOrDefault();
         }
 
         public async Task<int> UpdateCaseProfile(int? caseProfileId, string profileName, string profileType, List<CaseProfileQuestion> questions,
@@ -1824,17 +1823,37 @@ namespace OpFlow.Service.DataAccess
             return result.Identifier;
         }
 
-        public async Task<int> UpdateProposedTraySchedule(int surgeryId, int? trayProposalId, int? trayGroupId,
-            List<CaseProfileSchedulePost> caseProfiles, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryCaseProfile(int surgeryId, int? caseProfileId,
+            List<CaseProfileQuestionPost> questions, int providerId, int locationId)
         {
-            var profileXml = SummarizeQuestions(caseProfiles);
+            var questionXml = SummarizeQuestions(questions);
 
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("case_profile_id", caseProfileId),
+                new SqlParameter("questions", questionXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateSurgeryCaseProfile", parameters);
+
+            return result;
+        }
+
+        public async Task<int> UpdateProposedTraySchedule(int surgeryId, int? trayProposalId, int? trayGroupId,
+            int caseProfileId,
+            List<CaseProfileQuestionPost> questions, int providerId, int locationId)
+        {
+            var questionXml = SummarizeQuestions(questions);
+
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("case_profile_id", caseProfileId),
                 new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
                 new SqlParameter("tray_group_id", trayGroupId ?? (object)DBNull.Value),
-                new SqlParameter("case_profiles", profileXml ?? (object)DBNull.Value),
+                new SqlParameter("questions", questionXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -1875,27 +1894,23 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        private string SummarizeQuestions(List<CaseProfileSchedulePost> profiles)
+        private string SummarizeQuestions(List<CaseProfileQuestionPost> questions)
         {
-            if (profiles == null || !profiles.Any())
+            if (questions == null || !questions.Any())
                 return null;
 
             var doc = new XmlDocument();
             var table = doc.CreateElement("table");
 
-            foreach (var profile in profiles)
+            foreach (var question in questions ?? new List<CaseProfileQuestionPost>())
             {
-                foreach (var question in profile?.Questions ?? new List<CaseProfileQuestionPost>())
-                {
-                    var row = doc.CreateElement("row");
-                    table.AppendChild(row);
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
 
-                    AddColumn(doc, row, profile.CaseProfileID);
-                    AddColumn(doc, row, question.QuestionID);
-                    AddColumn(doc, row, question.AnswerID);
-                }
+                AddColumn(doc, row, question.QuestionID);
+                AddColumn(doc, row, question.AnswerID);
             }
-
+            
             return table.OuterXml;
         }
 

@@ -19,6 +19,7 @@ namespace OpFlow.Data
         public int? LateralityID { get; set; }
         public int? RoomSetupID { get; set; }
         public int? FlowID { get; set; }
+        public int? CaseProfileID { get; set; }
         public int UserID { get; set; }
         public int UserRoleID { get; set; }
         public int? StepID { get; set; }
@@ -36,6 +37,7 @@ namespace OpFlow.Data
         public string SurgeonLastName { get; set; }
         public string PatientPosition { get; set; }
         public string FlowStepDescription { get; set; }
+        public string CaseProfile { get; set; }
         public string RoomSetupDescription { get; set; }
         public int SharpCount { get; set; }
         public int NeedleCount { get; set; }
