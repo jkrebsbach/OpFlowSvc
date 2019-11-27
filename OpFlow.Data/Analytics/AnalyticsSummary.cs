@@ -88,8 +88,8 @@ namespace OpFlow.Data
         public decimal? MinHold { get; set; }
         public int? Redundancy { get; set; }
         public int? CaseProfileId { get; set; }
-        public int? QuestionId { get; set; }
-        public int? AnswerId { get; set; }
+        public List<int> QuestionId { get; set; }
+        public List<int> AnswerId { get; set; }
         public string Order { get; set; }
         public string Group { get; set; }
     }
@@ -104,9 +104,10 @@ namespace OpFlow.Data
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public int? CaseProfileId { get; set; }
-        public int? QuestionId { get; set; }
-        public int? AnswerId { get; set; }
-        public string Order {get;set;}
+        public List<int> QuestionId { get; set; }
+        public List<int> AnswerId { get; set; }
+        public string Order {get;set; }
+        public string Group { get; set; }
     }
 
     public class TrayConsolidationReportPost

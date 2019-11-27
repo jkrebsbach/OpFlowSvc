@@ -235,7 +235,8 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetVendorTrayConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID,
-                post.CardCategoryID, post.CardID, post.Instruments, post.CaseProfileId, post.QuestionId, post.AnswerId, user.ProviderID, user.LocationID);
+                post.CardCategoryID, post.CardID, post.Instruments, post.CaseProfileId, post.QuestionId, post.AnswerId, user.ProviderID, user.LocationID,
+                post.Group);
 
             var concordance = analytics.Tables[0].DefaultView;
             switch (post.Order)
