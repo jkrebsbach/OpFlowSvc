@@ -155,8 +155,7 @@ namespace OpFlow.Service.Controllers
             var trayCounts = await sqlHelper.GetTrayCountSummary(trayProposalId, user.ProviderID, user.LocationID);
             var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
             var cardCategories = await sqlHelper.GetProposedTrayCardCategories(trayProposalId, user.ProviderID, user.LocationID);
-            var trayGroups = await sqlHelper.GetTrayProposalTrayGroups(trayProposalId, user.ProviderID, user.LocationID);
-
+            
             proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
             foreach (var sourceTray in sourceTrays)
             {
@@ -173,7 +172,6 @@ namespace OpFlow.Service.Controllers
                 Audits = audits,
                 Counts = counts,
                 CardCategories = cardCategories,
-                TrayGroups = trayGroups,
                 TrayCounts = trayCounts,
                 ApprovalAudits = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList(),
                 ApprovalCounts = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList(),
@@ -1902,16 +1900,16 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }
 
-        [SwaggerOperation("UpdateTrayGroups")]
+        [SwaggerOperation("UpdateTrayGroup")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [Route("trayGroups")]
+        [Route("trayGroup")]
         [HttpPost]
-        public async Task<HttpResponseMessage> UpdateTrayGroups([FromBody] TrayGroupPost post)
+        public async Task<HttpResponseMessage> UpdateTrayGroup([FromBody] TrayGroupPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateTrayGroups(post.TrayGroups, user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateTrayGroup(post.TrayGroupID, post.TrayGroup, post.Trays, user.ProviderID, user.LocationID);
 
             var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
 

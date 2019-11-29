@@ -126,12 +126,12 @@ namespace OpFlow.Data
     {
         public int? TrayGroupID { get; set; }
         public string GroupName { get; set; }
-        public List<TrayGroupTrayProposal> Trays { get; set; }
+        public List<TrayGroupTray> Trays { get; set; }
     }
-    public class TrayGroupTrayProposal
+    public class TrayGroupTray
     {
         public int TrayGroupID { get; set; }
-        public int TrayProposalID { get; set; }
+        public int TrayItemID { get; set; }
         public string TrayName { get; set; }
     }
 

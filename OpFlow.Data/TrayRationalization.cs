@@ -92,11 +92,6 @@ namespace OpFlow.Data
         public int CardCategoryID { get; set; }
     }
 
-    public class TrayProposalTrayGroup : TrayGroup
-    {
-        public int TrayProposalID { get; set; }
-    }
-
     public class TrayApproval
     {
         public int DocumentTypeID { get; set; }
@@ -212,7 +207,9 @@ namespace OpFlow.Data
 
     public class TrayGroupPost
     {
-        public List<TrayGroup> TrayGroups { get; set; }
+        public int? TrayGroupID { get; set; }
+        public string TrayGroup { get; set; }
+        public List<TrayGroupTray> Trays { get; set; }
     }
 
     public class ProposedTrayDashboardPost
