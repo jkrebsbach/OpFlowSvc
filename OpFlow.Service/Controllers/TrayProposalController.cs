@@ -1328,15 +1328,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayProposalSchedule>))]
         [Route("trayScheduling", Name = "GetTrayScheduling")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetTrayScheduling(int? vendorId)
+        public async Task<HttpResponseMessage> GetTrayScheduling()
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            if (user.VendorID.HasValue)
-                vendorId = user.VendorID;
-
-            var result = await sqlHelper.GetProposedTraySchedule(null, vendorId, user.UserID, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetProposedTraySchedule(null, user.VendorID, user.UserID, user.ProviderID, user.LocationID);
             var rules = await sqlHelper.GetProposedTrayScheduleRules(user.UserID, user.ProviderID, user.LocationID);
 
             result = ApplyRules(result, rules);
