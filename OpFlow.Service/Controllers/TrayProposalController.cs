@@ -1909,11 +1909,14 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateTrayGroup(post.TrayGroupID, post.TrayGroup, post.Trays, user.ProviderID, user.LocationID);
+            var trayGroupId = await sqlHelper.UpdateTrayGroup(post.TrayGroupID, post.TrayGroup, post.Trays, user.ProviderID, user.LocationID);
 
             var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
 
-            return Request.CreateResponse(HttpStatusCode.OK, trayGroups);
+            return Request.CreateResponse(HttpStatusCode.OK, new {
+                TrayGroupID = trayGroupId,
+                TrayGroups = trayGroups
+            });
         }
 
         [SwaggerOperation("UpdateProposedTrayDashboard")]

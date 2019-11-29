@@ -868,7 +868,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            result = await ExecuteNonQueryAsync("UpdateTrayGroup", parameters);
+            await ExecuteNonQueryAsync("UpdateTrayGroup", parameters);
             
             return result;
         }
