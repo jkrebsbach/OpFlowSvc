@@ -442,34 +442,44 @@ namespace OpFlow.Data
             Questions = new List<CaseProfileQuestion>();
         }
 
-        public void ParseResults(IEnumerable<CaseProfileQuestionResult> questions)
+        public void ParseResults(IEnumerable<CaseProfileQuestionResult> validAnswers, IEnumerable<CaseProfileQuestionResult> questionAnswers)
         {
-            foreach (var questionAnswer in questions.OrderBy(q => q.QuestionID))
+            if (questionAnswers == null)
+                questionAnswers = new List<CaseProfileQuestionResult>();
+
+            foreach (var validAnswer in validAnswers)
             {
-                var question = Questions.FirstOrDefault(q => q.QuestionID == questionAnswer.QuestionID);
+                var question = Questions.FirstOrDefault(q => q.QuestionID == validAnswer.QuestionID);
                 if (question == null)
                 {
                     question = new CaseProfileQuestion()
                     {
-                        QuestionID = questionAnswer.QuestionID,
-                        Question = questionAnswer.Question,
-                        SchedulingAnswerID = questionAnswer.SchedulingAnswerID,
-                        PerioperativeAnswerID = questionAnswer.PerioperativeAnswerID
+                        QuestionID = validAnswer.QuestionID,
+                        Question = validAnswer.Question
                     };
 
                     Questions.Add(question);
                 }
-
-                if (questionAnswer.AnswerID.HasValue)
+                
+                var answer = new CaseProfileAnswer()
                 {
-                    var answer = new CaseProfileAnswer()
-                    {
-                        AnswerID = questionAnswer.AnswerID,
-                        Answer = questionAnswer.Answer
-                    };
+                    AnswerID = validAnswer.AnswerID,
+                    Answer = validAnswer.Answer
+                };
 
-                    question.Answers.Add(answer);
-                }
+                question.ValidAnswers.Add(answer);
+            }
+
+            foreach (var questionAnswer in questionAnswers)
+            {
+                var question = Questions.FirstOrDefault(q => q.QuestionID == questionAnswer.QuestionID);
+                if (question == null)
+                    continue;
+
+                if (questionAnswer.AnswerType == "S")
+                    question.SchedulingAnswers.Add(questionAnswer.AnswerID);
+                else
+                    question.PerioperativeAnswers.Add(questionAnswer.AnswerID);
             }
         }
     }
@@ -478,10 +488,9 @@ namespace OpFlow.Data
     {
         public int CaseProfileID { get; set; }
         public int QuestionID { get; set; }
-        public int? AnswerID { get; set; }
+        public int AnswerID { get; set; }
         public string Question { get; set; }
-        public int? SchedulingAnswerID { get; set; }
-        public int? PerioperativeAnswerID { get; set; }
+        public string AnswerType { get; set; }
         public string Answer { get; set; }
     }
 
@@ -534,7 +543,7 @@ namespace OpFlow.Data
     public class CaseProfileQuestionPost
     {
         public int QuestionID { get; set; }
-        public int? AnswerID { get; set; }
+        public List<int> AnswerID { get; set; }
     }
 
     public class CaseProfileQuestion
@@ -542,13 +551,15 @@ namespace OpFlow.Data
         public int? QuestionID { get; set; }
         public string Question { get; set; }
 
-        public int? SchedulingAnswerID { get; set; }
-        public int? PerioperativeAnswerID { get; set; }
-        public List<CaseProfileAnswer> Answers { get; set; }
+        public List<int> SchedulingAnswers { get; set; }
+        public List<int> PerioperativeAnswers { get; set; }
+        public List<CaseProfileAnswer> ValidAnswers { get; set; }
 
         public CaseProfileQuestion()
         {
-            Answers = new List<CaseProfileAnswer>();
+            SchedulingAnswers = new List<int>();
+            PerioperativeAnswers = new List<int>();
+            ValidAnswers = new List<CaseProfileAnswer>();
         }
     }
 

@@ -1567,7 +1567,7 @@ namespace OpFlow.Service.DataAccess
             var caseProfile = dsSchedules.Tables[0].DataTableToList<CaseProfile>().First();
             var questions = dsSchedules.Tables[1].DataTableToList<CaseProfileQuestionResult>();
 
-            caseProfile.ParseResults(questions);
+            caseProfile.ParseResults(questions, null);
 
             return caseProfile;
         }
@@ -1587,7 +1587,7 @@ namespace OpFlow.Service.DataAccess
 
             foreach (var caseProfile in caseProfiles)
             {
-                caseProfile.ParseResults(questions.Where(q => q.CaseProfileID == caseProfile.CaseProfileID));
+                caseProfile.ParseResults(questions.Where(q => q.CaseProfileID == caseProfile.CaseProfileID), null);
             }
 
             return caseProfiles;
@@ -1604,11 +1604,12 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetSurgeryCaseProfile", parameters);
 
             var caseProfiles = dsSchedules.Tables[0].DataTableToList<CaseProfile>();
-            var questions = dsSchedules.Tables[1].DataTableToList<CaseProfileQuestionResult>();
+            var validAnswers = dsSchedules.Tables[1].DataTableToList<CaseProfileQuestionResult>();
+            var questionAnswers = dsSchedules.Tables[2].DataTableToList<CaseProfileQuestionResult>();
 
             foreach (var caseProfile in caseProfiles)
             {
-                caseProfile.ParseResults(questions.Where(q => q.CaseProfileID == caseProfile.CaseProfileID));
+                caseProfile.ParseResults(validAnswers, questionAnswers);
             }
 
             return caseProfiles.FirstOrDefault();
@@ -1631,7 +1632,7 @@ namespace OpFlow.Service.DataAccess
             
             foreach (var question in questions ?? new List<CaseProfileQuestion>())
             {
-                var answerXml = GetProfileAnswerSummary(question.Answers);
+                var answerXml = GetProfileAnswerSummary(question.ValidAnswers);
 
                 parameters = new[]
                 {
@@ -1934,7 +1935,17 @@ namespace OpFlow.Service.DataAccess
                 table.AppendChild(row);
 
                 AddColumn(doc, row, question.QuestionID);
-                AddColumn(doc, row, question.AnswerID);
+
+                if (question.AnswerID == null || !question.AnswerID.Any())
+                {
+                    AddColumn(doc, row, "0");
+                    continue;
+                }
+
+                foreach (var answer in question.AnswerID ?? new List<int>())
+                {
+                    AddColumn(doc, row, answer);
+                }
             }
             
             return table.OuterXml;
