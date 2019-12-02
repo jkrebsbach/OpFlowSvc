@@ -55,6 +55,7 @@
     <Report Include="CardRedundancy.rdl" />
     <Report Include="ConcordanceReport.rdl" />
     <Report Include="CountSummary.rdl" />
+    <Report Include="DisposableUsage.rdl" />
     <Report Include="ExcessInventory.rdl" />
     <Report Include="InstrumentUsage.rdl" />
     <Report Include="InstrumentUsageCard.rdl" />

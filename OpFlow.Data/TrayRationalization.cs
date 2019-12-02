@@ -453,7 +453,8 @@ namespace OpFlow.Data
                     {
                         QuestionID = questionAnswer.QuestionID,
                         Question = questionAnswer.Question,
-                        AnswerID = questionAnswer.QuestionAnswerID
+                        SchedulingAnswerID = questionAnswer.SchedulingAnswerID,
+                        PerioperativeAnswerID = questionAnswer.PerioperativeAnswerID
                     };
 
                     Questions.Add(question);
@@ -479,7 +480,8 @@ namespace OpFlow.Data
         public int QuestionID { get; set; }
         public int? AnswerID { get; set; }
         public string Question { get; set; }
-        public int? QuestionAnswerID { get; set; }
+        public int? SchedulingAnswerID { get; set; }
+        public int? PerioperativeAnswerID { get; set; }
         public string Answer { get; set; }
     }
 
@@ -540,7 +542,8 @@ namespace OpFlow.Data
         public int? QuestionID { get; set; }
         public string Question { get; set; }
 
-        public int? AnswerID { get; set; }
+        public int? SchedulingAnswerID { get; set; }
+        public int? PerioperativeAnswerID { get; set; }
         public List<CaseProfileAnswer> Answers { get; set; }
 
         public CaseProfileQuestion()
@@ -551,6 +554,7 @@ namespace OpFlow.Data
 
     public class CaseProfileAnswer
     {
+        public string AnswerType { get; set; }
         public int? AnswerID { get; set; }
         public string Answer { get; set; }
     }

@@ -609,6 +609,20 @@ namespace OpFlow.Service.Controllers
             return Ok();
         }
 
+        [SwaggerOperation("UpdatePerioperativeCaseProfile")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("perioperativeCaseProfile")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdatePerioperativeCaseProfile(int surgeryId, [FromBody] CaseProfileSchedulePost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.UpdateSurgeryPerioperativeCaseProfile(surgeryId, post.Questions, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, surgeryId);
+        }
+
         // POST api/values
         [SwaggerOperation("AddSurgerySmartPhrase")]
         [SwaggerResponse(HttpStatusCode.OK)]

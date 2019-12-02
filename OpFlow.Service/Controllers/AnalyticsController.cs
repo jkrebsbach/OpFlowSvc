@@ -148,6 +148,72 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("DisposableUsageReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("disposableUsage")]
+        [Route("disposableUsage/{format}")]
+        public async Task<HttpResponseMessage> DisposableUsageReport([FromBody] InstrumentUsagePost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+            if (post.SpecialtyID == null &&
+                post.SurgeonID == null &&
+                post.CardID == null &&
+                post.CardCategoryID == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
+            }
+
+            var analytics = await sqlHelper.GetDisposableUsageReportData(post.SpecialtyID, post.SurgeonID, post.CardID, post.CardCategoryID, 
+                user.ProviderID, user.LocationID);
+
+            var usage = analytics.Tables[0].DefaultView;
+            switch (post.Order)
+            {
+                case "qty":
+                    usage.Sort = "QtyOpen DESC";
+                    break;
+                case "tray":
+                    usage.Sort = "TrayName DESC";
+                    break;
+                case "item":
+                default:
+                    usage.Sort = "ItemName";
+                    break;
+            }
+
+            if (format == "CSV")
+            {
+                return ResponseHelper.CsvResponse(usage.ToTable());
+            }
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["DisposableUsage"] = usage.ToTable()
+            };
+
+            var reportName = "DisposableUsage";
+
+            var result = ReportHelper.GetReport(reportName, format, datasets);
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
+        }
+
+        // GET api/values/5
         [SwaggerOperation("ConcordanceReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
         [HttpPut]

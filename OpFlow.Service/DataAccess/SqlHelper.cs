@@ -555,6 +555,28 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<DataSet> GetDisposableUsageReportData(List<int> specialtyId, List<int> surgeonId, List<int> cardId,
+            List<int> cardCategoryId, int providerId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+            var cardXml = GetIdentitySummary(cardId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("GetAnalyticsDisposableUsage", parameters);
+
+            return result;
+        }
+
         public async Task<DataSet> GetConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
             List<int> procedureId, List<int> trayId, List<int> cardCategoryId, List<int> cardId, string instruments, int providerId, int locationId)
         {
@@ -1824,6 +1846,23 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("UpdateSurgeryCaseProfile", parameters);
+
+            return result;
+        }
+
+        public async Task<int> UpdateSurgeryPerioperativeCaseProfile(int surgeryId, 
+            List<CaseProfileQuestionPost> questions, int providerId, int locationId)
+        {
+            var questionXml = SummarizeQuestions(questions);
+
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("questions", questionXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateSurgeryPerioperativeCaseProfile", parameters);
 
             return result;
         }
@@ -3936,7 +3975,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("tray_proposal_id", trayGroupId)
+                new SqlParameter("tray_group_id", trayGroupId)
             };
             return await ExecuteNonQueryAsync("InsertSurgeryProposedTrayGroup", dsParameters);
         }
