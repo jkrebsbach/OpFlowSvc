@@ -430,6 +430,51 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("SupplyUsageVarianceReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("supplyUsageVariance")]
+        [Route("supplyUsageVariance/{format}")]
+        public async Task<HttpResponseMessage> SupplyUsageVarianceReport([FromBody] InstrumentUsagePost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+            if (post.SpecialtyID == null &&
+                post.SurgeonID == null &&
+                post.CardID == null &&
+                post.ItemID == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
+            }
+
+            var analytics = await sqlHelper.GetSupplyWasteReportDate(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID,
+                post.MinCost, post.MinOpen, post.MinHold, post.Group, user.ProviderID, user.LocationID);
+
+            var supplyOpen = analytics.Tables[0].DefaultView;
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["SupplyUsageVariance"] = supplyOpen.ToTable()
+            };
+            var result = ReportHelper.GetReport("SupplyUsageVariance", format, datasets);
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
+        }
+
+        // GET api/values/5
         [SwaggerOperation("CardRedundancyReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
         [HttpPut]

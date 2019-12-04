@@ -65,6 +65,7 @@
     <Report Include="SalesReport.rdl" />
     <Report Include="SupplyCost.rdl" />
     <Report Include="SupplyOpen.rdl" />
+    <Report Include="SupplyUsageVariance.rdl" />
     <Report Include="SupplyWaste.rdl" />
     <Report Include="TrayConsolidation.rdl" />
     <Report Include="TrayRationalization.rdl" />
