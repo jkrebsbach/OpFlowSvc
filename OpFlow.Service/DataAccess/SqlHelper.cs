@@ -1509,11 +1509,12 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public async Task<List<TrayProposalSchedule>> GetProposedTrayScheduleHistory(int? vendorId, int? surgeonId, int? trayProposalId, int? categoryId, int? questionId,
+        public async Task<List<TrayProposalSchedule>> GetProposedTrayScheduleHistory(int? caseProfileId, int? vendorId, int? surgeonId, int? trayProposalId, int? categoryId, int? questionId,
             int providerId, int locationId)
         {
             var parameters = new[]
             {
+                new SqlParameter("case_profile_id", caseProfileId ?? (object)DBNull.Value),
                 new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_id", surgeonId ?? (object)DBNull.Value),
                 new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),

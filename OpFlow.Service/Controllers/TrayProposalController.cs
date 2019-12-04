@@ -924,12 +924,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("trayScheduleHistory")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetProposedTrayScheduleHistory(int? vendorId, int? surgeonId, int? trayProposalId, int? categoryId, int? questionId)
+        public async Task<HttpResponseMessage> GetProposedTrayScheduleHistory(int? caseProfileId, int? vendorId, int? surgeonId, int? trayProposalId, int? categoryId, int? questionId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var surgeries = await sqlHelper.GetProposedTrayScheduleHistory(vendorId, surgeonId, trayProposalId, categoryId, questionId, user.ProviderID, user.LocationID);
+            var surgeries = await sqlHelper.GetProposedTrayScheduleHistory(caseProfileId, vendorId, surgeonId, trayProposalId, categoryId, questionId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
