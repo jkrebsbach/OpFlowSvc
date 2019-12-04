@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using Newtonsoft.Json;
 using OpFlow.Data;
 using OpFlow.Data.Administration;
 using OpFlow.Data.Analytics;
@@ -1594,6 +1595,24 @@ namespace OpFlow.Service.DataAccess
             return caseProfiles;
         }
 
+        public async Task<List<SurgeonPreference>> GetSurgeonPreferences(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeonPreferences", parameters);
+
+            var surgeonPreferences = dsSchedules.Tables[0].DataTableToList<SurgeonPreference>();
+            foreach (var surgeonPreference in surgeonPreferences.Where(sp => sp.TrayGroup != null))
+            {
+                surgeonPreference.TrayGroupID = JsonConvert.DeserializeObject<List<int>>(surgeonPreference.TrayGroup);
+            }
+
+            return surgeonPreferences;
+        }
+
         public async Task<CaseProfile> GetSurgeryCaseProfile(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -1889,7 +1908,26 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        
+
+        public async Task<int> UpdateSurgeonPreference(int? preferenceId, string preferenceName,
+            int? surgeonId, int? caseProfileId, string trayGroup, string comments, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgeon_preference_id", preferenceId ?? (object)DBNull.Value),
+                new SqlParameter("preference_name", preferenceName ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonId ?? (object)DBNull.Value),
+                new SqlParameter("case_profile_id", caseProfileId ?? (object)DBNull.Value),
+                new SqlParameter("tray_group_id", trayGroup ?? (object)DBNull.Value),
+                new SqlParameter("comments", comments ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateSurgeonPreference", parameters);
+
+            return result;
+        }
+
         public async Task<int> UpdateProposedTrayScheduleDetails(int scheduleId, string supplies, int providerId, int locationId)
         {
             var parameters = new[]

@@ -47,6 +47,7 @@ namespace OpFlow.Service.Controllers
             var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
             var instruments = await sqlHelper.GetItems("instrument", null, true, user.ProviderID, user.LocationID);
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
+            var surgeonPreferences = await sqlHelper.GetSurgeonPreferences(user.ProviderID, user.LocationID);
             var rules = await sqlHelper.GetProposedTrayScheduleRules(user.UserID, user.ProviderID, user.LocationID);
             var orgCharts = await sqlHelper.GetOrgChartAttachments(user.ProviderID, user.LocationID);
 
@@ -58,6 +59,12 @@ namespace OpFlow.Service.Controllers
             if (user.VendorID.HasValue)
             {
                 vendors = vendors.Where(v => v.VendorID == user.VendorID).ToList();
+            }
+
+            foreach (var surgeonPreference in surgeonPreferences)
+            {
+                var trayGroupString = trayGroups.Where(tg => surgeonPreference.TrayGroupID?.Contains(tg.TrayGroupID ?? -1) == true).Select(tg => tg.GroupName);
+                surgeonPreference.TrayGroup = string.Join(",", trayGroupString);
             }
 
             var result = new
@@ -80,6 +87,7 @@ namespace OpFlow.Service.Controllers
                 Phases = phases,
                 Instruments = instruments,
                 CaseProfiles = caseProfiles,
+                SurgeonPreferences = surgeonPreferences,
                 Rules = rules,
                 Implementation = implementation,
                 OrgCharts = orgCharts
@@ -956,6 +964,34 @@ namespace OpFlow.Service.Controllers
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, surgeryId);
+        }
+
+        [SwaggerOperation("UpdateSurgeonPreference")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("surgeonPreference")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateSurgeonPreference(int? preferenceId, [FromBody] SurgeonPreferencePost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var trayGroup = JsonConvert.SerializeObject(post.TrayGroupID);
+
+            await sqlHelper.UpdateSurgeonPreference(preferenceId, post.PreferenceName, post.SurgeonID, post.CaseProfileID, trayGroup,
+                post.Comments, user.ProviderID, user.LocationID);
+
+            var surgeonPreferences = await sqlHelper.GetSurgeonPreferences(user.ProviderID, user.LocationID);
+            var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
+
+            foreach (var surgeonPreference in surgeonPreferences)
+            {
+                var trayGroupString = trayGroups.Where(tg => surgeonPreference.TrayGroupID?.Contains(tg.TrayGroupID ?? -1) == true).Select(tg => tg.GroupName);
+                surgeonPreference.TrayGroup = string.Join(",", trayGroupString);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new {
+                SurgeonPreferences = surgeonPreferences
+            });
         }
 
         [SwaggerOperation("UpdateTrayScheduleDetails")]

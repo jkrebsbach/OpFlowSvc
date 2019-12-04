@@ -427,7 +427,18 @@ namespace OpFlow.Data
         public int TypeID { get; set; }
         public string TypeDescription { get; set; }
     }
-
+    public class SurgeonPreference
+    {
+        public int SurgeonPreferenceID { get; set; }
+        public string PreferenceName { get; set; }
+        public int? SurgeonID { get; set; }
+        public int? CaseProfileID { get; set; }
+        public string Surgeon { get; set; }
+        public string CaseProfile { get; set; }
+        public string TrayGroup { get; set; }
+        public List<int> TrayGroupID { get; set; }
+        public string Comments { get; set; }
+    }
     public class CaseProfile
     {
         public int CaseProfileID { get; set; }
@@ -515,6 +526,14 @@ namespace OpFlow.Data
     {
         public List<ScheduleTrayPost> Trays { get; set; }
         public List<CaseProfileSchedulePost> CaseProfiles { get; set; }
+    }
+    public class SurgeonPreferencePost
+    {
+        public string PreferenceName { get; set; }
+        public int? SurgeonID { get; set; }
+        public int? CaseProfileID { get; set; }
+        public List<int> TrayGroupID { get; set; }
+        public string Comments { get; set; }
     }
     public class ScheduleTrayPost
     {
