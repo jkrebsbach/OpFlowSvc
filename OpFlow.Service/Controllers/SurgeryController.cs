@@ -124,6 +124,55 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/surgery?userId=5
+        [SwaggerOperation("GetSurgeonPreferences")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeonPreference>))]
+        [Route("surgeonPreferences")]
+        public async Task<HttpResponseMessage> GetSurgeonPreferences(int surgeryId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var surgery = await sqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+            var preferences = await sqlHelper.GetSurgeonPreferences(user.ProviderID, user.LocationID);
+
+            var surgeonPreferences = preferences.Where(sp => sp.SurgeonID == surgery.UserID &&
+                (sp.CaseProfileID == null || sp.CaseProfileID == surgery.CaseProfileID)).ToList();
+
+            return Request.CreateResponse(HttpStatusCode.OK, new {
+                SurgeonPreferences = surgeonPreferences
+            });
+        }
+
+        // GET api/surgery?userId=5
+        [SwaggerOperation("UpdateSurgeonPreferences")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeonPreference>))]
+        [Route("surgeonPreference")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> UpdateSurgeonPreferences(int surgeryId, int surgeonPreferenceId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.GetSurgeonPreferences(user.ProviderID, user.LocationID);
+            var preference = result.FirstOrDefault(sp => sp.SurgeonPreferenceID == surgeonPreferenceId);
+            if (preference == null)
+                return Request.CreateResponse(HttpStatusCode.OK, result);
+
+            var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
+
+            foreach (var trayGroupId in preference.TrayGroupID)
+            {
+                var trayGroup = trayGroups.FirstOrDefault(tg => tg.TrayGroupID == trayGroupId);
+                foreach (var tray in trayGroup.Trays)
+                {
+                    await sqlHelper.AddCustomSurgeryTray(surgeryId, tray.TrayItemID, user.ProviderID, user.LocationID);
+                }
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/surgery?userId=5
         [SwaggerOperation("SearchRoomCases")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchResult>))]
         [Route("searchRoomCases")]

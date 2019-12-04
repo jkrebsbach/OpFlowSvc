@@ -431,7 +431,7 @@ namespace OpFlow.Data
     {
         public int SurgeonPreferenceID { get; set; }
         public string PreferenceName { get; set; }
-        public int? SurgeonID { get; set; }
+        public int SurgeonID { get; set; }
         public int? CaseProfileID { get; set; }
         public string Surgeon { get; set; }
         public string CaseProfile { get; set; }
