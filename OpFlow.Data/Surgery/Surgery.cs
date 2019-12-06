@@ -119,6 +119,13 @@ namespace OpFlow.Data
         public List<Laterality> Lateralities { get; set; }
     }
 
+    public class NewSurgeryVendor
+    {
+        public List<OpFlowProvider> Providers { get; set; }
+        public List<CaseProfile> CaseProfiles { get; set; }
+        public List<TrayGroup> TrayGroups { get; set; }
+    }
+
     public class SurgerySchedule : Surgery
     {
         public List<SurgeryUser> SurgeryUsers { get; set; }
@@ -126,6 +133,7 @@ namespace OpFlow.Data
 
     public class SurgeryPost
     {
+        public int? VendorLocationID { get; set; }
         public string CaseNbr { get; set; }
         public string PtAcctNbr { get; set; }
         public DateTime? PtDOB { get; set; }
@@ -141,6 +149,9 @@ namespace OpFlow.Data
         public int? BundleID { get; set; }
         public int? CardID { get; set; }
         public int? LateralityID { get; set; }
+        public int? CaseProfileID { get; set; }
+        public int? SurgeonPreferenceID { get; set; }
+        public List<int> TrayGroupID { get; set; }
         public string CptCode { get; set; }
         public DateTime ScheduleDate { get; set; }
     }

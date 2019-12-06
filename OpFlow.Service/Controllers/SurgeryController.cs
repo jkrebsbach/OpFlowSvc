@@ -61,6 +61,34 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
+        // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
+        [SwaggerOperation("GetNewSurgeryVendor")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(NewSurgeryVendor))]
+        [Route("newSurgeryVendor")]
+        public async Task<HttpResponseMessage> GetNewSurgeryVendor()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (user.VendorID == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            }
+
+            var providers = await sqlHelper.GetOpFlowSetup();
+            var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
+            var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
+
+            var result = new NewSurgeryVendor()
+            {
+                Providers = providers,
+                CaseProfiles = caseProfiles,
+                TrayGroups = trayGroups
+            };
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
         // GET api/surgery?userId=5
         [SwaggerOperation("GetCase")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Surgery))]
@@ -127,19 +155,38 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSurgeonPreferences")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeonPreference>))]
         [Route("surgeonPreferences")]
-        public async Task<HttpResponseMessage> GetSurgeonPreferences(int surgeryId)
+        public async Task<HttpResponseMessage> GetSurgeonPreferences(int? surgeryId = null, int? userId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var surgery = await sqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
-            var schedules = await sqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
             var preferences = await sqlHelper.GetSurgeonPreferences(user.ProviderID, user.LocationID);
+            
+            int? caseProfileId = null;
+            var users = new List<int>();
+            var surgeonPreferences = new List<SurgeonPreference>();
 
+            if (surgeryId.HasValue)
+            {
+                var surgery = await sqlHelper.GetSurgery(surgeryId.Value, user.ProviderID, user.LocationID);
+                var schedules = await sqlHelper.GetSurgeryUsers(surgeryId.Value, user.ProviderID, user.LocationID);
+
+                caseProfileId = surgery.CaseProfileID;
+
+                users.Add(surgery.UserID);
+                users.AddRange(schedules.Select(s => s.UserID));
+
+                surgeonPreferences = preferences.Where(sp =>
+                    (users.Any(s => s == sp.SurgeonID)) &&
+                    (sp.CaseProfileID == null || sp.CaseProfileID == caseProfileId)).ToList();
+            }
+            if (userId.HasValue)
+            {
+                surgeonPreferences = preferences.Where(sp =>
+                    sp.SurgeonID == userId.Value).ToList();
+            }
+            
             // Preference where primary surgeon or any surgeon on case
-            var surgeonPreferences = preferences.Where(sp => 
-                (schedules.Any(s => s.UserID == sp.SurgeonID) || surgery.UserID == sp.SurgeonID) &&
-                (sp.CaseProfileID == null || sp.CaseProfileID == surgery.CaseProfileID)).ToList();
 
             return Request.CreateResponse(HttpStatusCode.OK, new {
                 SurgeonPreferences = surgeonPreferences
@@ -834,6 +881,9 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(secureUser.SecureDatabaseName);
 
+            if (secureUser.VendorID == null)
+                surgery.VendorLocationID = null;
+
             var user = await sqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID,  secureUser.UserID);
             
             var patientId = await secureSqlHelper.CreatePatient(surgery.PtAcctNbr,
@@ -849,6 +899,19 @@ namespace OpFlow.Service.Controllers
 
             var surgeryId = await sqlHelper.CreateSurgery(surgery, secureUser.ProviderID, secureUser.LocationID, patientId, caseId, 
                 surgery.CardID ?? cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID);
+
+            if (surgery.TrayGroupID != null && surgery.TrayGroupID.Any())
+            {
+                var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
+
+                foreach (var trayGroup in trayGroups.Where(t => surgery.TrayGroupID.Any(stg => t.TrayGroupID == stg)))
+                {
+                    foreach (var tray in trayGroup.Trays)
+                    {
+                        await sqlHelper.AddCustomSurgeryItem(surgeryId, tray.TrayItemID, 1, user.ProviderID, user.LocationID);
+                    }
+                }
+            }
 
             return Request.CreateResponse(HttpStatusCode.Created, surgeryId);
         }

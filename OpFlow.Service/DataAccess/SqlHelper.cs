@@ -3974,6 +3974,7 @@ namespace OpFlow.Service.DataAccess
             {
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
+                new SqlParameter("vendor_location_id", surgery.VendorLocationID ?? (object)DBNull.Value),
                 new SqlParameter("patient_id", patientId),
                 new SqlParameter("user_id", surgery.SurgeonUserID ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", surgery.SpecialtyID ?? (object)DBNull.Value),
@@ -3986,7 +3987,8 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("default_flow_id", defaultFlowId ?? (object)DBNull.Value),
                 new SqlParameter("default_room_id", defaultRoomId ?? (object)DBNull.Value),
                 new SqlParameter("cpt_codes", surgery.CptCode ?? (object)DBNull.Value),
-                new SqlParameter("laterality_id", surgery.LateralityID ?? (object)DBNull.Value)
+                new SqlParameter("laterality_id", surgery.LateralityID ?? (object)DBNull.Value),
+                new SqlParameter("case_profile_id", surgery.CaseProfileID ?? (object)DBNull.Value)
             };
             var insert = await ExecuteCommandAsync("InsertSurgery", dsParameters);
 
