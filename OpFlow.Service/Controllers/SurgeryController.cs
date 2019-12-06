@@ -133,9 +133,12 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var surgery = await sqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+            var schedules = await sqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
             var preferences = await sqlHelper.GetSurgeonPreferences(user.ProviderID, user.LocationID);
 
-            var surgeonPreferences = preferences.Where(sp => sp.SurgeonID == surgery.UserID &&
+            // Preference where primary surgeon or any surgeon on case
+            var surgeonPreferences = preferences.Where(sp => 
+                (schedules.Any(s => s.UserID == sp.SurgeonID) || surgery.UserID == sp.SurgeonID) &&
                 (sp.CaseProfileID == null || sp.CaseProfileID == surgery.CaseProfileID)).ToList();
 
             return Request.CreateResponse(HttpStatusCode.OK, new {
