@@ -164,8 +164,8 @@ namespace OpFlow.Service.Controllers
             {
                 var trayGroup = trayGroups.FirstOrDefault(tg => tg.TrayGroupID == trayGroupId);
                 foreach (var tray in trayGroup.Trays)
-                {
-                    await sqlHelper.AddCustomSurgeryTray(surgeryId, tray.TrayItemID, user.ProviderID, user.LocationID);
+                {   
+                    await sqlHelper.AddCustomSurgeryItem(surgeryId, tray.TrayItemID, 1, user.ProviderID, user.LocationID);
                 }
             }
 
