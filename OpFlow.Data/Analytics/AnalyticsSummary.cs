@@ -4,6 +4,11 @@ using System.Text;
 
 namespace OpFlow.Data
 {
+    public class ReportGroup
+    {
+        public string Category { get; set; }
+        public List<AnalyticsSummary> Reports { get; set; }
+    }
     public class AnalyticsSummary
     {
         public int TableID { get; set; }
@@ -92,6 +97,8 @@ namespace OpFlow.Data
         public List<int> AnswerId { get; set; }
         public string Order { get; set; }
         public string Group { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 
     public class TrayRationalizationReportPost

@@ -240,9 +240,6 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                               <ChartMember>
                                 <Label>Item Name</Label>
                               </ChartMember>
-                              <ChartMember>
-                                <Label>Bleeding</Label>
-                              </ChartMember>
                             </ChartMembers>
                           </ChartSeriesHierarchy>
                           <ChartData>
@@ -468,54 +465,6 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 </ChartEmptyPoints>
                                 <ChartItemInLegend>
                                   <LegendText>Nbr Counts</LegendText>
-                                </ChartItemInLegend>
-                                <ValueAxisName>Primary</ValueAxisName>
-                                <CategoryAxisName>Primary</CategoryAxisName>
-                                <ChartSmartLabel>
-                                  <CalloutLineColor>Black</CalloutLineColor>
-                                  <MinMovingDistance>0pt</MinMovingDistance>
-                                </ChartSmartLabel>
-                              </ChartSeries>
-                              <ChartSeries Name="Types">
-                                <ChartDataPoints>
-                                  <ChartDataPoint>
-                                    <ChartDataPointValues>
-                                      <Y>=Sum(Fields!Bleeding.Value)</Y>
-                                    </ChartDataPointValues>
-                                    <ChartDataLabel>
-                                      <Style />
-                                      <Label>= Cstr(Sum(Fields!Bleeding.Value)) + "/" +
-Cstr(Sum(Fields!Anatomy.Value)) + "/" +
-Cstr(Sum(Fields!Preference.Value)) + "/" +
-Cstr(Sum(Fields!CirculatorOpened.Value)) + "/" +
-Cstr(Sum(Fields!ScrubRequest.Value)) + "/" +
-Cstr(Sum(Fields!Error.Value)) + "/" +
-Cstr(Sum(Fields!Extra.Value)) + "/" +
-Cstr(Sum(Fields!Needed.Value)) + "/" +
-Cstr(Sum(Fields!NoTrust.Value)) + "/" +
-Cstr(Sum(Fields!Miscommunication.Value))</Label>
-                                      <Visible>true</Visible>
-                                    </ChartDataLabel>
-                                    <Style />
-                                    <ChartMarker>
-                                      <Style />
-                                    </ChartMarker>
-                                    <DataElementOutput>Output</DataElementOutput>
-                                  </ChartDataPoint>
-                                </ChartDataPoints>
-                                <Type>Bar</Type>
-                                <Style />
-                                <ChartEmptyPoints>
-                                  <Style />
-                                  <ChartMarker>
-                                    <Style />
-                                  </ChartMarker>
-                                  <ChartDataLabel>
-                                    <Style />
-                                  </ChartDataLabel>
-                                </ChartEmptyPoints>
-                                <ChartItemInLegend>
-                                  <LegendText>Types</LegendText>
                                 </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
@@ -806,7 +755,6 @@ Cstr(Sum(Fields!Miscommunication.Value))</Label>
                             <BackgroundGradientType>None</BackgroundGradientType>
                           </Style>
                         </Chart>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>

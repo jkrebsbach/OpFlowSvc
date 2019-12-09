@@ -343,7 +343,7 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public async Task<List<AnalyticsSummary>> GetPowerBIReports(int providerId, int locationId)
+        public async Task<List<ReportGroup>> GetPowerBIReports(int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -353,9 +353,15 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("GetPowerBIAnalytics", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<AnalyticsSummary>();
+            var reports = dsSchedules.Tables[0].DataTableToList<AnalyticsSummary>();
+            var result = reports.GroupBy(r => r.Category).Select(c =>
+                new ReportGroup()
+                {
+                    Category = c.Key,
+                    Reports = c.ToList()
+                });
 
-            return result;
+            return result.ToList();
         }
 
         public async Task<DataSet> GetAnalyticsSalesToolSummary(string systemName, string hospitalName, string city, string state,
@@ -641,7 +647,8 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetSupplyWasteReportDate(List<int> specialtyId, List<int> surgeonId,
-            List<int> cardId, List<int>itemId, int? minCost, decimal? minOpen, decimal? minHold, string groupBy, int providerId, int locationId)
+            List<int> cardId, List<int>itemId, int? minCost, decimal? minOpen, decimal? minHold, 
+            DateTime? startDate, DateTime? endDate, string groupBy, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -657,6 +664,8 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("min_cost", minCost ?? (object)DBNull.Value),
                 new SqlParameter("min_open", minOpen ?? (object)DBNull.Value),
                 new SqlParameter("min_hold", minHold ?? (object)DBNull.Value),
+                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
                 new SqlParameter("group_by", groupBy),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
@@ -710,7 +719,8 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<DataSet> GetSupplyCostReportDate(List<int> specialtyId, List<int> surgeonId, int providerId, int locationId)
+        public async Task<DataSet> GetSupplyCostReportDate(List<int> specialtyId, List<int> surgeonId, 
+            DateTime? startDate, DateTime? endDate, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -719,6 +729,8 @@ namespace OpFlow.Service.DataAccess
             {
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

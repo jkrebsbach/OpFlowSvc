@@ -45,7 +45,7 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
-                Reports = reports,
+                ReportCategories = reports,
                 Parameters = new
                 {
                     Specialties = specialties,
@@ -362,7 +362,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetSupplyWasteReportDate(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID, 
-                post.MinCost, post.MinOpen, post.MinHold, post.Group, user.ProviderID, user.LocationID);
+                post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, post.Group, user.ProviderID, user.LocationID);
 
             var supplyWaste = analytics.Tables[0].DefaultView;
             
@@ -407,7 +407,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetSupplyWasteReportDate(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID,
-                post.MinCost, post.MinOpen, post.MinHold, post.Group, user.ProviderID, user.LocationID);
+                post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, post.Group, user.ProviderID, user.LocationID);
 
             var supplyOpen = analytics.Tables[0].DefaultView;
 
@@ -452,7 +452,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetSupplyWasteReportDate(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID,
-                post.MinCost, post.MinOpen, post.MinHold, post.Group, user.ProviderID, user.LocationID);
+                post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, post.Group, user.ProviderID, user.LocationID);
 
             var supplyOpen = analytics.Tables[0].DefaultView;
 
@@ -587,7 +587,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
-            var analytics = await sqlHelper.GetSupplyCostReportDate(post.SpecialtyID, post.SurgeonID, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetSupplyCostReportDate(post.SpecialtyID, post.SurgeonID, post.StartDate, post.EndDate, user.ProviderID, user.LocationID);
 
             var supplyWaste = analytics.Tables[0].DefaultView;
 
