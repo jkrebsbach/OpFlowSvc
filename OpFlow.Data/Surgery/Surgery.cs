@@ -117,6 +117,7 @@ namespace OpFlow.Data
         public List<Room> Rooms { get; set; }   
         public List<Specialty> Specialties { get; set; }
         public List<Laterality> Lateralities { get; set; }
+        public List<User> Surgeons { get; set; }
     }
 
     public class NewSurgeryVendor
@@ -151,6 +152,7 @@ namespace OpFlow.Data
         public int? LateralityID { get; set; }
         public int? CaseProfileID { get; set; }
         public int? SurgeonPreferenceID { get; set; }
+        public List<int> SecondarySurgeons { get; set; }
         public List<int> TrayGroupID { get; set; }
         public string CptCode { get; set; }
         public DateTime ScheduleDate { get; set; }

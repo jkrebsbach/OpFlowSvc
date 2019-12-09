@@ -50,12 +50,14 @@ namespace OpFlow.Service.Controllers
             var rooms = await sqlHelper.GetRooms(user.LocationID);
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var lateralities = await sqlHelper.GetLateralities(user.ProviderID, user.LocationID);
+            var surgeons = await sqlHelper.GetSurgeryUsers(user.ProviderID, user.LocationID);
 
             var result = new NewSurgerySetup()
             {
                 Rooms = rooms,
                 Specialties = specialties,
-                Lateralities = lateralities
+                Lateralities = lateralities,
+                Surgeons = surgeons
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -72,7 +74,8 @@ namespace OpFlow.Service.Controllers
 
             if (user.VendorID == null)
             {
-                return Request.CreateResponse(HttpStatusCode.NotFound);
+                if (user.RoleType != "Internal")
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
             }
 
             var providers = await sqlHelper.GetOpFlowSetup();
@@ -899,6 +902,14 @@ namespace OpFlow.Service.Controllers
 
             var surgeryId = await sqlHelper.CreateSurgery(surgery, secureUser.ProviderID, secureUser.LocationID, patientId, caseId, 
                 surgery.CardID ?? cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID);
+
+            if (surgery.SecondarySurgeons != null && surgery.SecondarySurgeons.Any())
+            {
+                foreach (var userId in surgery.SecondarySurgeons)
+                {
+                    await sqlHelper.AddSurgeryUser(surgeryId, userId, user.ProviderID, user.LocationID);
+                }
+            }
 
             if (surgery.TrayGroupID != null && surgery.TrayGroupID.Any())
             {

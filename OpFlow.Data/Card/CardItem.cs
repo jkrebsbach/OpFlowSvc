@@ -44,7 +44,7 @@ namespace OpFlow.Data
             get {
                 if (Usage == null)
                     return null;
-                return Usage.Value > Quantity ? Quantity - Usage.Value : 0;
+                return Usage.Value > SetupQuantity ? Usage.Value - SetupQuantity : 0;
             }
         }
         public int UsageEncoded
