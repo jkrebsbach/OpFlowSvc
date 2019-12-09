@@ -95,6 +95,7 @@ namespace OpFlow.Data
 
     public class CardItemCountResult
     {
+        public List<CardItemCount> Room { get; set; }
         public List<CardItemCount> Supplies { get; set; }
         public List<CardItemCount> Instruments { get; set; }
         public List<TrayCollection> Collections { get; set; }

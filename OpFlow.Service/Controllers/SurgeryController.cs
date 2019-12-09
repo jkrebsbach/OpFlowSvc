@@ -398,6 +398,9 @@ namespace OpFlow.Service.Controllers
             {
                 switch (countType.Key.ItemType)
                 {
+                    case "ROOM":
+                        result.Room = countType.ToList();
+                        break;
                     case "SUPPLY":
                         result.Supplies = countType.ToList();
                         break;
