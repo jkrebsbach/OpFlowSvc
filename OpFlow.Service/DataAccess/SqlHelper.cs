@@ -850,6 +850,19 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> InsertProposedTrayInstrumentLog(int proposedTrayId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", proposedTrayId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("InsertProposedTrayInstrumentLog", parameters);
+
+            return result;
+        }
+
         public async Task<int> UpdateProposedTrayAuditComments(int proposedTrayId, int surgeryId, string comments, string target,
             int providerId, int locationId)
         {
@@ -1040,6 +1053,27 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<TrayProposalLog>> GetProposedTrayLog(int proposedTrayId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", proposedTrayId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayLog", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayProposalLog>();
+            var instrumentLog = dsSchedules.Tables[1].DataTableToList<TrayProposalInstrumentLog>();
+
+            foreach (var log in result)
+            {
+                log.Instruments = instrumentLog.Where(t => t.TrayProposalLogID == log.TrayProposalLogID).ToList();
+            }
+
+            return result;
+        }
+
         public async Task<List<TrayRationalization>> GetBaselineTrays(int providerId, int locationId)
         {
             var parameters = new[]
@@ -1069,7 +1103,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayProposalHistory>> GetProposedTrayHistory(List<int> trayProposalIds, int? phaseId, int? userId,
+        public async Task<List<TrayProposalHistory>> GetProposedTrayCommunicationHistory(List<int> trayProposalIds, int? phaseId, int? userId,
             int providerId, int locationId)
         {
             var trayProposals = GetIdentitySummary(trayProposalIds);
@@ -1082,7 +1116,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayHistory", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCommunicationHistory", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<TrayProposalHistory>();
 
@@ -1711,6 +1745,28 @@ namespace OpFlow.Service.DataAccess
             var result = await ExecuteNonQueryAsync("UpdateProposedTrayRep", parameters);
 
             return result;
+        }
+
+        public async Task<int> UpdateProposedTrayLog(int trayProposalLogId, 
+            string requestor, string audience, string changeType, string changeDescription, string affectedItems, DateTime changeDate, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_log_id", trayProposalLogId),
+                new SqlParameter("requestor", requestor),
+                new SqlParameter("audience", audience),
+                new SqlParameter("change_type", changeType),
+                new SqlParameter("change_description", changeDescription),
+                new SqlParameter("affected_items", affectedItems),
+                new SqlParameter("change_date", changeDate),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsResult = await ExecuteCommandAsync("UpdateProposedTrayLog", parameters);
+
+            var result = dsResult.Tables[0].DataTableToList<InsertionResult>().First();
+
+            return result.Identifier;
         }
         public async Task<int> UpdateProposedTrayImageFilename(int trayProposalId, string imageFilename, int providerId, int locationId)
         {

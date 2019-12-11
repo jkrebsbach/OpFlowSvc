@@ -44,6 +44,16 @@ namespace OpFlow.Data
             get {
                 if (Usage == null)
                     return null;
+
+                // Some screens don't have setup - deduct from raw quantity
+                if (Setup == null)
+                {
+                    if (Usage.Value > Quantity)
+                        return Usage.Value - Quantity;
+                    
+                    return null;
+                }
+
                 return Usage.Value > SetupQuantity ? Usage.Value - SetupQuantity : 0;
             }
         }
@@ -52,6 +62,15 @@ namespace OpFlow.Data
             get {
                 if (Usage == null)
                     return -1;
+
+                // Some screens don't have setup - deduct from raw quantity
+                if (Setup == null)
+                {
+                    if (Usage.Value > Quantity)
+                        return Quantity;
+
+                    return Usage.Value;
+                }
 
                 else if (Usage > SetupQuantity)
                     return SetupQuantity;

@@ -81,6 +81,33 @@ namespace OpFlow.Data
             }
         }
     }
+    public class TrayProposalLog
+    { 
+        public int TrayProposalLogID { get; set; }
+        public string Requestor { get; set; }
+        public string Audience { get; set; }
+        public string ChangeType { get; set; }
+        public string ChangeDescription { get; set; }
+        public string AffectedItems { get; set; }
+        public DateTime? ChangeDate { get; set; }
+        public DateTimeOffset? InsertTimestamp { get; set; }
+        public List<TrayProposalInstrumentLog> Instruments { get; set; }
+
+        public string CurrentItems => string.Join(",", Instruments.Select(i => i.InstrumentName));
+
+        public TrayProposalLog()
+        {
+            Instruments = new List<TrayProposalInstrumentLog>();
+        }
+    }
+
+    public class TrayProposalInstrumentLog
+    {
+        public int TrayProposalLogID { get; set; }
+        public int InstrumentID { get; set; }
+        public string InstrumentName { get; set; }
+        public int Quantity { get; set; }
+    }
     public class TrayProposalUserAssignment : User
     { 
         public int TrayProposalID { get; set; }
@@ -521,6 +548,15 @@ namespace OpFlow.Data
     public class TrayProposalRepPost
     {
         public bool Ignore { get; set; }
+    }
+    public class TrayProposalLogPost
+    {
+        public string Requestor { get; set; }
+        public string Audience { get; set; }
+        public string ChangeType { get; set; }
+        public string ChangeDescription { get; set; }
+        public string AffectedItems { get; set; }
+        public DateTime ChangeDate { get; set; }
     }
     public class TraySchedulePost
     {

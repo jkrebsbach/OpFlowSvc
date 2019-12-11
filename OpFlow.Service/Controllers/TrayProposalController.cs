@@ -163,7 +163,8 @@ namespace OpFlow.Service.Controllers
             var trayCounts = await sqlHelper.GetTrayCountSummary(trayProposalId, user.ProviderID, user.LocationID);
             var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.ProviderID, user.LocationID);
             var cardCategories = await sqlHelper.GetProposedTrayCardCategories(trayProposalId, user.ProviderID, user.LocationID);
-            
+            var history = await sqlHelper.GetProposedTrayLog(trayProposalId, user.ProviderID, user.LocationID);
+
             proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
             foreach (var sourceTray in sourceTrays)
             {
@@ -183,7 +184,8 @@ namespace OpFlow.Service.Controllers
                 TrayCounts = trayCounts,
                 ApprovalAudits = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList(),
                 ApprovalCounts = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList(),
-                SourceTrays = sourceTrays
+                SourceTrays = sourceTrays,
+                History = history
             });
         }
 
@@ -928,6 +930,23 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, trayProposalId);
         }
 
+        [SwaggerOperation("PostTrayProposalLog")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("log/{trayProposalLogId}")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostTrayProposalLog(int trayProposalLogId, [FromBody] TrayProposalLogPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var proposedTrayId = await sqlHelper.UpdateProposedTrayLog(trayProposalLogId, post.Requestor, post.Audience,
+                post.ChangeType, post.ChangeDescription, post.AffectedItems, post.ChangeDate, user.ProviderID, user.LocationID);
+
+            var logs = await sqlHelper.GetProposedTrayLog(proposedTrayId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, logs);
+        }
+
         [SwaggerOperation("GetTrayScheduleHistory")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("trayScheduleHistory")]
@@ -1073,7 +1092,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var communication = await sqlHelper.GetProposedTrayHistory(post.TrayProposalIds, post.PhaseID, post.UserID,
+            var communication = await sqlHelper.GetProposedTrayCommunicationHistory(post.TrayProposalIds, post.PhaseID, post.UserID,
                 user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
@@ -1907,6 +1926,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var trayId = await sqlHelper.InsertProposedTray(trayProposalId, post.SpecialtyID, post.Customized, post.TrayName, post.Instruments, user.ProviderID, user.LocationID);
+            await sqlHelper.InsertProposedTrayInstrumentLog(trayId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }
@@ -1990,9 +2010,10 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var trayId = await sqlHelper.UpdateProposedTrayInstruments(trayProposalId, post.Instruments, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.UpdateProposedTrayInstruments(trayProposalId, post.Instruments, user.ProviderID, user.LocationID);
+            await sqlHelper.InsertProposedTrayInstrumentLog(trayProposalId, user.ProviderID, user.LocationID);
 
-            return Request.CreateResponse(HttpStatusCode.OK, trayId);
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         [SwaggerOperation("UpdateProposedTrayQuantities")]
@@ -2019,6 +2040,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var trayId = await sqlHelper.DeleteProposedTrayInstrument(trayProposalId, instrumentId, user.ProviderID, user.LocationID);
+            await sqlHelper.InsertProposedTrayInstrumentLog(trayProposalId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }
