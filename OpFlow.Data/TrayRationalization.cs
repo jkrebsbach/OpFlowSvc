@@ -93,7 +93,23 @@ namespace OpFlow.Data
         public DateTimeOffset? InsertTimestamp { get; set; }
         public List<TrayProposalInstrumentLog> Instruments { get; set; }
 
-        public string CurrentItems => string.Join(",", Instruments.Select(i => i.InstrumentName));
+        public string ChangeTypeDesc
+        {
+            get
+            {
+                switch (ChangeType)
+                {
+                    case "A":
+                        return "Addition";
+                    case "D":
+                        return "Deletion";
+                    case "Q":
+                        return "Qty Chg";
+                }
+
+                return string.Empty;
+            }
+        }
 
         public TrayProposalLog()
         {
