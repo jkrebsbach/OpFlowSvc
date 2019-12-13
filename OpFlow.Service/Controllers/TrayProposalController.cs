@@ -940,7 +940,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var proposedTrayId = await sqlHelper.UpdateProposedTrayLog(trayProposalLogId, post.Requestor, post.Audience,
-                post.ChangeType, post.ChangeDescription, post.AffectedItems, post.ChangeDate, user.ProviderID, user.LocationID);
+                post.ChangeType, post.ChangeDescription, post.AffectedItems, post.ChangeDate, post.Comments, user.ProviderID, user.LocationID);
 
             var logs = await sqlHelper.GetProposedTrayLog(proposedTrayId, user.ProviderID, user.LocationID);
 

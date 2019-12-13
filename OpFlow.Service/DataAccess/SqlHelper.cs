@@ -1748,7 +1748,8 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<int> UpdateProposedTrayLog(int trayProposalLogId, 
-            string requestor, string audience, string changeType, string changeDescription, string affectedItems, DateTime changeDate, int providerId, int locationId)
+            string requestor, string audience, string changeType, string changeDescription, string affectedItems, DateTime changeDate,
+            string comments, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -1759,6 +1760,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("change_description", changeDescription),
                 new SqlParameter("affected_items", affectedItems),
                 new SqlParameter("change_date", changeDate),
+                new SqlParameter("comments", comments),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
