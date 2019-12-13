@@ -412,10 +412,11 @@ namespace OpFlow.Service.Controllers
                 post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, post.Group, user.ProviderID, user.LocationID);
 
             var supplyOpen = analytics.Tables[0].DefaultView;
+            var supplyOpenAggregate = analytics.Tables[1].DefaultView;
 
             var datasets = new Dictionary<string, DataTable>
             {
-                ["SupplyOpen"] = supplyOpen.ToTable()
+                ["SupplyOpen"] = supplyOpenAggregate.ToTable()
             };
             var result = ReportHelper.GetReport("SupplyOpen", format, datasets);
 

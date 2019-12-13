@@ -17,23 +17,18 @@
 	ELSE card.description + '\n' +
 	item_master.description 
 	END ItemName,
+'This is a thing' CustomLegend,
 	specialty.description Specialty,
 	item_master.unit_cost ItemCost,
 	card.description CardName,
 	card_item.qty_open CardQuantity,
-scic.qty_setup SetupOpen,
-scic.qty_setup_added SetupAdded,
-	CASE WHEN IsNull(card_item.qty_hold, '0') = '0' THEN 0
-		WHEN card_item.qty_open &lt; scic.qty_open THEN 0
-		ELSE card_item.qty_open - scic.qty_open END HoldUsed,
-	CASE WHEN IsNull(card_item.qty_hold, '0') &lt;&gt; '0' THEN 0
-		WHEN card_item.qty_open &lt; scic.qty_open THEN 0
-		ELSE card_item.qty_open - scic.qty_open
-	END TotalAdded,
-	scic.qty_setup TotalOpen,
-4 QtyOpenInit,
-6 QtyOpenAdded,
-4 UsageVariance
+3.1 AvgSetupOpen,
+2.1 AvgSetupAdded,
+4.1 AvgOpenInit,
+6.1 AvgOpenAdded,
+4.1 AvgOpenVariance,
+4.1 AvgUsageVariance,
+4.1 AvgCardQtyVariance
 from surgery s
 JOIN surgery_card_item_counts scic ON s.surgery_id = scic.surgery_id
 	AND scic.type = 'U'
@@ -52,6 +47,10 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
           <DataField>ItemName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="CustomLegend">
+          <DataField>CustomLegend</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="Specialty">
           <DataField>Specialty</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -68,37 +67,33 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
           <DataField>CardQuantity</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="SetupOpen">
-          <DataField>SetupOpen</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
+        <Field Name="AvgSetupOpen">
+          <DataField>AvgSetupOpen</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
-        <Field Name="HoldUsed">
-          <DataField>HoldUsed</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
+        <Field Name="AvgSetupAdded">
+          <DataField>AvgSetupAdded</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
-        <Field Name="SetupAdded">
-          <DataField>SetupAdded</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
+        <Field Name="AvgOpenInit">
+          <DataField>AvgOpenInit</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
-        <Field Name="TotalAdded">
-          <DataField>TotalAdded</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
+        <Field Name="AvgOpenAdded">
+          <DataField>AvgOpenAdded</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
-        <Field Name="TotalOpen">
-          <DataField>TotalOpen</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
+        <Field Name="AvgOpenVariance">
+          <DataField>AvgOpenVariance</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
-        <Field Name="QtyOpenInit">
-          <DataField>QtyOpenInit</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
+        <Field Name="AvgUsageVariance">
+          <DataField>AvgUsageVariance</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
-        <Field Name="UsageVariance">
-          <DataField>UsageVariance</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="QtyOpenAdded">
-          <DataField>QtyOpenAdded</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
+        <Field Name="AvgCardQtyVariance">
+          <DataField>AvgCardQtyVariance</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
@@ -163,40 +158,34 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                               <ChartMember>
                                 <Group Name="Chart1_CategoryGroup">
                                   <GroupExpressions>
-                                    <GroupExpression>=Fields!ItemName.Value</GroupExpression>
+                                    <GroupExpression>=Fields!CustomLegend.Value</GroupExpression>
                                   </GroupExpressions>
                                 </Group>
                                 <SortExpressions>
                                   <SortExpression>
-                                    <Value>=Fields!ItemName.Value</Value>
+                                    <Value>=Fields!CustomLegend.Value</Value>
                                   </SortExpression>
                                 </SortExpressions>
-                                <Label>=Fields!ItemName.Value</Label>
+                                <Label>=Fields!CustomLegend.Value</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartCategoryHierarchy>
                           <ChartSeriesHierarchy>
                             <ChartMembers>
                               <ChartMember>
-                                <Label>Setup Open</Label>
+                                <Label>Avg Setup Open</Label>
                               </ChartMember>
                               <ChartMember>
-                                <Label>Setup Added</Label>
+                                <Label>Avg Setup Added</Label>
                               </ChartMember>
                               <ChartMember>
-                                <Label>Qty Open Init</Label>
+                                <Label>Avg Open Init</Label>
                               </ChartMember>
                               <ChartMember>
-                                <Label>Qty Open Added</Label>
+                                <Label>Avg Open Added</Label>
                               </ChartMember>
                               <ChartMember>
-                                <Label>Usage Variance</Label>
-                              </ChartMember>
-                              <ChartMember>
-                                <Label>Card Quantity</Label>
-                              </ChartMember>
-                              <ChartMember>
-                                <Label>Item Name</Label>
+                                <Label>Avg Usage Variance</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartSeriesHierarchy>
@@ -206,10 +195,12 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Avg(Fields!SetupOpen.Value)</Y>
+                                      <Y>=Sum(Fields!AvgSetupOpen.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
-                                      <Style />
+                                      <Style>
+                                        <Format>0.##</Format>
+                                      </Style>
                                       <UseValueAsLabel>true</UseValueAsLabel>
                                       <Visible>true</Visible>
                                     </ChartDataLabel>
@@ -242,10 +233,12 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Avg(Fields!SetupAdded.Value)</Y>
+                                      <Y>=Sum(Fields!AvgSetupAdded.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
-                                      <Style />
+                                      <Style>
+                                        <Format>0.##</Format>
+                                      </Style>
                                       <UseValueAsLabel>true</UseValueAsLabel>
                                       <Visible>true</Visible>
                                     </ChartDataLabel>
@@ -274,15 +267,17 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                   <MinMovingDistance>0pt</MinMovingDistance>
                                 </ChartSmartLabel>
                               </ChartSeries>
-                              <ChartSeries Name="AvgUsed">
+                              <ChartSeries Name="AvgOpen">
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Avg(Fields!QtyOpenInit.Value)</Y>
+                                      <Y>=Sum(Fields!AvgOpenInit.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
-                                      <Style />
-                                      <Label>=Format(Avg(Fields!TotalOpen.Value), "0.#") + " (" + CStr(Sum(Fields!TotalOpen.Value)) + "/" + CStr(Sum(Fields!CardQuantity.Value)) + ")"</Label>
+                                      <Style>
+                                        <Format>0.##</Format>
+                                      </Style>
+                                      <UseValueAsLabel>true</UseValueAsLabel>
                                       <Visible>true</Visible>
                                     </ChartDataLabel>
                                     <Style />
@@ -304,7 +299,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                   </ChartDataLabel>
                                 </ChartEmptyPoints>
                                 <ChartItemInLegend>
-                                  <LegendText>Avg Used</LegendText>
+                                  <LegendText>Avg Open Init</LegendText>
                                 </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
@@ -317,7 +312,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Avg(Fields!QtyOpenAdded.Value)</Y>
+                                      <Y>=Sum(Fields!AvgOpenAdded.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
                                       <Style>
@@ -358,10 +353,12 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Avg(Fields!UsageVariance.Value)</Y>
+                                      <Y>=Sum(Fields!AvgUsageVariance.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
-                                      <Style />
+                                      <Style>
+                                        <Format>0.##</Format>
+                                      </Style>
                                       <UseValueAsLabel>true</UseValueAsLabel>
                                       <Visible>true</Visible>
                                     </ChartDataLabel>
@@ -385,83 +382,6 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 </ChartEmptyPoints>
                                 <ChartItemInLegend>
                                   <LegendText>Average Waste</LegendText>
-                                </ChartItemInLegend>
-                                <ValueAxisName>Primary</ValueAxisName>
-                                <CategoryAxisName>Primary</CategoryAxisName>
-                                <ChartSmartLabel>
-                                  <CalloutLineColor>Black</CalloutLineColor>
-                                  <MinMovingDistance>0pt</MinMovingDistance>
-                                </ChartSmartLabel>
-                              </ChartSeries>
-                              <ChartSeries Name="tray_quantity">
-                                <ChartDataPoints>
-                                  <ChartDataPoint>
-                                    <ChartDataPointValues>
-                                      <Y>=Max(Fields!CardQuantity.Value)</Y>
-                                    </ChartDataPointValues>
-                                    <ChartDataLabel>
-                                      <Style>
-                                        <Format>0.#</Format>
-                                      </Style>
-                                      <Label>=Fields!CardQuantity.Value &amp; " - " &amp; Format(Fields!ItemCost.Value, "$#.00") &amp; " per unit"</Label>
-                                      <Visible>true</Visible>
-                                    </ChartDataLabel>
-                                    <Style />
-                                    <ChartMarker>
-                                      <Style />
-                                    </ChartMarker>
-                                    <DataElementOutput>Output</DataElementOutput>
-                                  </ChartDataPoint>
-                                </ChartDataPoints>
-                                <Type>Bar</Type>
-                                <Style />
-                                <ChartEmptyPoints>
-                                  <Style />
-                                  <ChartMarker>
-                                    <Style />
-                                  </ChartMarker>
-                                  <ChartDataLabel>
-                                    <Style />
-                                  </ChartDataLabel>
-                                </ChartEmptyPoints>
-                                <ValueAxisName>Primary</ValueAxisName>
-                                <CategoryAxisName>Primary</CategoryAxisName>
-                                <ChartSmartLabel>
-                                  <CalloutLineColor>Black</CalloutLineColor>
-                                  <MinMovingDistance>0pt</MinMovingDistance>
-                                </ChartSmartLabel>
-                              </ChartSeries>
-                              <ChartSeries Name="ItemName">
-                                <ChartDataPoints>
-                                  <ChartDataPoint>
-                                    <ChartDataPointValues>
-                                      <Y>=Count(Fields!ItemName.Value)</Y>
-                                    </ChartDataPointValues>
-                                    <ChartDataLabel>
-                                      <Style />
-                                      <UseValueAsLabel>true</UseValueAsLabel>
-                                      <Visible>true</Visible>
-                                    </ChartDataLabel>
-                                    <Style />
-                                    <ChartMarker>
-                                      <Style />
-                                    </ChartMarker>
-                                    <DataElementOutput>Output</DataElementOutput>
-                                  </ChartDataPoint>
-                                </ChartDataPoints>
-                                <Type>Bar</Type>
-                                <Style />
-                                <ChartEmptyPoints>
-                                  <Style />
-                                  <ChartMarker>
-                                    <Style />
-                                  </ChartMarker>
-                                  <ChartDataLabel>
-                                    <Style />
-                                  </ChartDataLabel>
-                                </ChartEmptyPoints>
-                                <ChartItemInLegend>
-                                  <LegendText>Nbr Counts</LegendText>
                                 </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
