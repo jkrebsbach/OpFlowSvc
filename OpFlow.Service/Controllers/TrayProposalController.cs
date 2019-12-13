@@ -949,16 +949,41 @@ namespace OpFlow.Service.Controllers
 
         [SwaggerOperation("GetTrayProposalLogCsv")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [Route("log/csv/{trayProposalId}")]
+        [Route("log/csv/{trayProposalId}/{logId}")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetTrayProposalLogCsv(int trayProposalId, [FromBody] TrayProposalLogPost post)
+        public async Task<HttpResponseMessage> GetTrayProposalLogCsv(int trayProposalId, int logId, [FromBody] TrayProposalLogPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var extract = "Tray, Status, Counts, Audits, Phase, Count Complete, Audit Complete, Tray Changes, Comments\r\n";
+            var extract = "Date, Proposed Tray, Source Tray, Instrument, Quantity\r\n";
 
-            extract += "More Work Needed, To Do, Not yet implemented\r\n";
+            var proposal = await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID);
+            var proposals = await sqlHelper.GetProposedTrayLog(trayProposalId, user.ProviderID, user.LocationID);
+            var proposalLog = proposals.FirstOrDefault(p => p.TrayProposalLogID == logId);
+
+            if (proposalLog != null)
+            {
+                var createDate = proposalLog.ChangeDate;
+                if (createDate == null && proposalLog.InsertTimestamp.HasValue)
+                {
+                    createDate = proposalLog.InsertTimestamp.Value.AddHours(-5).DateTime; // Convert UTC to east coast
+                }
+
+                if (proposalLog.Instruments == null || !proposalLog.Instruments.Any())
+                {
+                    proposalLog.Instruments.Add(new TrayProposalInstrumentLog()
+                    {
+                        InstrumentName = "NO INSTRUMENTS"
+                    });
+                }
+
+                foreach (var instrument in proposalLog.Instruments)
+                {
+                    extract += $"{createDate?.ToShortDateString()}, {proposal.FirstOrDefault()?.TrayName}, {instrument.SourceTrayName}, {instrument.InstrumentName}, {instrument.Quantity}\r\n";
+                }
+            }
+
 
             var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
             var memStream = new MemoryStream(extractBytes);

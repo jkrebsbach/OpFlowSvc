@@ -122,6 +122,7 @@ namespace OpFlow.Data
         public int TrayProposalLogID { get; set; }
         public int InstrumentID { get; set; }
         public string InstrumentName { get; set; }
+        public string SourceTrayName { get; set; }
         public int Quantity { get; set; }
     }
     public class TrayProposalUserAssignment : User
