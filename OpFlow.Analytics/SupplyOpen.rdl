@@ -33,16 +33,7 @@ scic.qty_setup_added SetupAdded,
 	scic.qty_setup TotalOpen,
 4 QtyOpenInit,
 6 QtyOpenAdded,
-	1 Bleeding ,
-	1 Anatomy ,
-	1 Preference ,
-	1 CirculatorOpened,
-	1 ScrubRequest,
-	1 Error,
-	1 Extra,
-	1 Needed,
-	1 NoTrust,
-	1 Miscommunication
+4 UsageVariance
 from surgery s
 JOIN surgery_card_item_counts scic ON s.surgery_id = scic.surgery_id
 	AND scic.type = 'U'
@@ -97,52 +88,16 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
           <DataField>TotalOpen</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="Bleeding">
-          <DataField>Bleeding</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
         <Field Name="QtyOpenInit">
           <DataField>QtyOpenInit</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="Anatomy">
-          <DataField>Anatomy</DataField>
+        <Field Name="UsageVariance">
+          <DataField>UsageVariance</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="QtyOpenAdded">
           <DataField>QtyOpenAdded</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="Preference">
-          <DataField>Preference</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="CirculatorOpened">
-          <DataField>CirculatorOpened</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="ScrubRequest">
-          <DataField>ScrubRequest</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="Error">
-          <DataField>Error</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="Extra">
-          <DataField>Extra</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="Needed">
-          <DataField>Needed</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="NoTrust">
-          <DataField>NoTrust</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="Miscommunication">
-          <DataField>Miscommunication</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
       </Fields>
@@ -235,6 +190,9 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 <Label>Qty Open Added</Label>
                               </ChartMember>
                               <ChartMember>
+                                <Label>Usage Variance</Label>
+                              </ChartMember>
+                              <ChartMember>
                                 <Label>Card Quantity</Label>
                               </ChartMember>
                               <ChartMember>
@@ -320,7 +278,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Sum(Fields!QtyOpenInit.Value)</Y>
+                                      <Y>=Avg(Fields!QtyOpenInit.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
                                       <Style />
@@ -359,7 +317,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Sum(Fields!QtyOpenAdded.Value)</Y>
+                                      <Y>=Avg(Fields!QtyOpenAdded.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
                                       <Style>
@@ -388,6 +346,45 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 </ChartEmptyPoints>
                                 <ChartItemInLegend>
                                   <LegendText>Avg Added</LegendText>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="UsageVariance">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Avg(Fields!UsageVariance.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style />
+                                      <UseValueAsLabel>true</UseValueAsLabel>
+                                      <Visible>true</Visible>
+                                    </ChartDataLabel>
+                                    <Style />
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Bar</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>Average Waste</LegendText>
                                 </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
@@ -755,6 +752,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             <BackgroundGradientType>None</BackgroundGradientType>
                           </Style>
                         </Chart>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
