@@ -22,13 +22,17 @@
 	item_master.unit_cost ItemCost,
 	card.description CardName,
 	card_item.qty_open CardQuantity,
+3.1 AvgSetup,
 3.1 AvgSetupOpen,
 2.1 AvgSetupAdded,
+4.1 AvgOpen,
 4.1 AvgOpenInit,
 6.1 AvgOpenAdded,
 4.1 AvgOpenVariance,
 4.1 AvgUsageVariance,
-4.1 AvgCardQtyVariance
+-1.2 AvgCardQtyVariance,
+40 UsageVariance,
+72 CaseCount
 from surgery s
 JOIN surgery_card_item_counts scic ON s.surgery_id = scic.surgery_id
 	AND scic.type = 'U'
@@ -67,6 +71,10 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
           <DataField>CardQuantity</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
+        <Field Name="AvgSetup">
+          <DataField>AvgSetup</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
         <Field Name="AvgSetupOpen">
           <DataField>AvgSetupOpen</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
@@ -77,6 +85,10 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
         </Field>
         <Field Name="AvgOpenInit">
           <DataField>AvgOpenInit</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="AvgOpen">
+          <DataField>AvgOpen</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
         <Field Name="AvgOpenAdded">
@@ -95,6 +107,14 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
           <DataField>AvgCardQtyVariance</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
+        <Field Name="UsageVariance">
+          <DataField>UsageVariance</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="CaseCount">
+          <DataField>CaseCount</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
       </Fields>
     </DataSet>
   </DataSets>
@@ -106,7 +126,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>7.36459in</Width>
+                  <Width>10.28126in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -148,6 +168,84 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox2">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Total Savings Opportunity</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox2</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>None</Style>
+                            </Border>
+                            <BackgroundColor>White</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox3">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>="Total Units Opened But not used " &amp; SUM(Fields!UsageVariance.Value) &amp;
+" = $" &amp; Format(SUM(Fields!UsageVariance.Value * Fields!ItemCost.Value), "#,###.00") &amp;
+" for the " &amp; MAX(Fields!CaseCount.Value) &amp; " cases we audited"</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox3</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>None</Style>
+                            </Border>
+                            <BackgroundColor>White</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
                   <Height>8.96875in</Height>
                   <TablixCells>
                     <TablixCell>
@@ -173,36 +271,35 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                           <ChartSeriesHierarchy>
                             <ChartMembers>
                               <ChartMember>
-                                <Label>Avg Setup Open</Label>
+                                <Label>Avg Setup</Label>
                               </ChartMember>
                               <ChartMember>
-                                <Label>Avg Setup Added</Label>
-                              </ChartMember>
-                              <ChartMember>
-                                <Label>Avg Open Init</Label>
-                              </ChartMember>
-                              <ChartMember>
-                                <Label>Avg Open Added</Label>
+                                <Label>Avg Open</Label>
                               </ChartMember>
                               <ChartMember>
                                 <Label>Avg Usage Variance</Label>
+                              </ChartMember>
+                              <ChartMember>
+                                <Label>Avg Card Qty Variance</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartSeriesHierarchy>
                           <ChartData>
                             <ChartSeriesCollection>
-                              <ChartSeries Name="SetupOpen">
+                              <ChartSeries Name="Setup">
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Sum(Fields!AvgSetupOpen.Value)</Y>
+                                      <Y>=Max(Fields!AvgSetup.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
                                       <Style>
+                                        <FontSize>8pt</FontSize>
                                         <Format>0.##</Format>
                                       </Style>
-                                      <UseValueAsLabel>true</UseValueAsLabel>
+                                      <Label>="Setup (" &amp; Format(Fields!AvgSetupOpen.Value, "0.##") &amp; " / " &amp; Format(Fields!AvgSetupAdded.Value, "0.##") &amp; ")"</Label>
                                       <Visible>true</Visible>
+                                      <Position>Outside</Position>
                                     </ChartDataLabel>
                                     <Style />
                                     <ChartMarker>
@@ -222,44 +319,9 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                     <Style />
                                   </ChartDataLabel>
                                 </ChartEmptyPoints>
-                                <ValueAxisName>Primary</ValueAxisName>
-                                <CategoryAxisName>Primary</CategoryAxisName>
-                                <ChartSmartLabel>
-                                  <CalloutLineColor>Black</CalloutLineColor>
-                                  <MinMovingDistance>0pt</MinMovingDistance>
-                                </ChartSmartLabel>
-                              </ChartSeries>
-                              <ChartSeries Name="SetupAdded">
-                                <ChartDataPoints>
-                                  <ChartDataPoint>
-                                    <ChartDataPointValues>
-                                      <Y>=Sum(Fields!AvgSetupAdded.Value)</Y>
-                                    </ChartDataPointValues>
-                                    <ChartDataLabel>
-                                      <Style>
-                                        <Format>0.##</Format>
-                                      </Style>
-                                      <UseValueAsLabel>true</UseValueAsLabel>
-                                      <Visible>true</Visible>
-                                    </ChartDataLabel>
-                                    <Style />
-                                    <ChartMarker>
-                                      <Style />
-                                    </ChartMarker>
-                                    <DataElementOutput>Output</DataElementOutput>
-                                  </ChartDataPoint>
-                                </ChartDataPoints>
-                                <Type>Bar</Type>
-                                <Style />
-                                <ChartEmptyPoints>
-                                  <Style />
-                                  <ChartMarker>
-                                    <Style />
-                                  </ChartMarker>
-                                  <ChartDataLabel>
-                                    <Style />
-                                  </ChartDataLabel>
-                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>Setup</LegendText>
+                                </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
                                 <ChartSmartLabel>
@@ -271,14 +333,16 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Sum(Fields!AvgOpenInit.Value)</Y>
+                                      <Y>=Max(Fields!AvgOpen.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
                                       <Style>
+                                        <FontSize>8pt</FontSize>
                                         <Format>0.##</Format>
                                       </Style>
-                                      <UseValueAsLabel>true</UseValueAsLabel>
+                                      <Label>="PeriOp Open (" &amp; Format(Fields!AvgOpenInit.Value, "0.##") &amp; " / "&amp; Format(Fields!AvgOpenAdded.Value, "0.##") &amp; ")"</Label>
                                       <Visible>true</Visible>
+                                      <Position>Outside</Position>
                                     </ChartDataLabel>
                                     <Style />
                                     <ChartMarker>
@@ -299,7 +363,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                   </ChartDataLabel>
                                 </ChartEmptyPoints>
                                 <ChartItemInLegend>
-                                  <LegendText>Avg Open Init</LegendText>
+                                  <LegendText>Open</LegendText>
                                 </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
@@ -308,48 +372,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                   <MinMovingDistance>0pt</MinMovingDistance>
                                 </ChartSmartLabel>
                               </ChartSeries>
-                              <ChartSeries Name="AvgAdded">
-                                <ChartDataPoints>
-                                  <ChartDataPoint>
-                                    <ChartDataPointValues>
-                                      <Y>=Sum(Fields!AvgOpenAdded.Value)</Y>
-                                    </ChartDataPointValues>
-                                    <ChartDataLabel>
-                                      <Style>
-                                        <Format>0.##</Format>
-                                      </Style>
-                                      <UseValueAsLabel>true</UseValueAsLabel>
-                                      <Visible>true</Visible>
-                                    </ChartDataLabel>
-                                    <Style />
-                                    <ChartMarker>
-                                      <Style />
-                                    </ChartMarker>
-                                    <DataElementOutput>Output</DataElementOutput>
-                                  </ChartDataPoint>
-                                </ChartDataPoints>
-                                <Type>Bar</Type>
-                                <Style />
-                                <ChartEmptyPoints>
-                                  <Style />
-                                  <ChartMarker>
-                                    <Style />
-                                  </ChartMarker>
-                                  <ChartDataLabel>
-                                    <Style />
-                                  </ChartDataLabel>
-                                </ChartEmptyPoints>
-                                <ChartItemInLegend>
-                                  <LegendText>Avg Added</LegendText>
-                                </ChartItemInLegend>
-                                <ValueAxisName>Primary</ValueAxisName>
-                                <CategoryAxisName>Primary</CategoryAxisName>
-                                <ChartSmartLabel>
-                                  <CalloutLineColor>Black</CalloutLineColor>
-                                  <MinMovingDistance>0pt</MinMovingDistance>
-                                </ChartSmartLabel>
-                              </ChartSeries>
-                              <ChartSeries Name="UsageVariance">
+                              <ChartSeries Name="SetupVariance">
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
@@ -357,10 +380,12 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
                                       <Style>
+                                        <FontSize>8pt</FontSize>
                                         <Format>0.##</Format>
                                       </Style>
-                                      <UseValueAsLabel>true</UseValueAsLabel>
+                                      <Label>=Format(Fields!AvgUsageVariance.Value, "0.##") &amp; " - Setup Variance"</Label>
                                       <Visible>true</Visible>
+                                      <Position>Outside</Position>
                                     </ChartDataLabel>
                                     <Style />
                                     <ChartMarker>
@@ -381,7 +406,50 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                   </ChartDataLabel>
                                 </ChartEmptyPoints>
                                 <ChartItemInLegend>
-                                  <LegendText>Average Waste</LegendText>
+                                  <LegendText>Setup Variance</LegendText>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="AvgCardQtyVariance">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Sum(Fields!AvgCardQtyVariance.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style>
+                                        <FontSize>8pt</FontSize>
+                                        <Format>0.##</Format>
+                                      </Style>
+                                      <Label>=Format(Fields!AvgCardQtyVariance.Value, "0.##") &amp; " - Card Variance"</Label>
+                                      <Visible>true</Visible>
+                                      <Position>Outside</Position>
+                                    </ChartDataLabel>
+                                    <Style />
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Bar</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>Card Variance</LegendText>
                                 </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
@@ -413,7 +481,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                   </ChartAxisTitle>
                                   <Interval>1</Interval>
                                   <ChartMajorGridLines>
-                                    <Enabled>False</Enabled>
+                                    <Enabled>True</Enabled>
                                     <Style>
                                       <Border>
                                         <Color>Gainsboro</Color>
@@ -645,7 +713,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             </ChartLegend>
                           </ChartLegends>
                           <Palette>Pacific</Palette>
-                          <DynamicHeight>=(2 + CountDistinct(Fields!ItemName.Value)) &amp; " in"</DynamicHeight>
+                          <DynamicHeight>=(2 + CountDistinct(Fields!ItemName.Value)) * 1.2 &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>
@@ -672,7 +740,6 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             <BackgroundGradientType>None</BackgroundGradientType>
                           </Style>
                         </Chart>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -703,13 +770,15 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                   <TablixMembers>
                     <TablixMember />
                     <TablixMember />
+                    <TablixMember />
+                    <TablixMember />
                   </TablixMembers>
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>SupplyOpen</DataSetName>
-            <Height>9.21875in</Height>
-            <Width>7.36459in</Width>
+            <Height>9.71875in</Height>
+            <Width>10.28126in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -717,11 +786,13 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>9.21875in</Height>
+        <Height>9.71875in</Height>
         <Style />
       </Body>
-      <Width>7.36459in</Width>
+      <Width>10.28126in</Width>
       <Page>
+        <PageHeight>8.5in</PageHeight>
+        <PageWidth>11in</PageWidth>
         <Style />
       </Page>
     </ReportSection>
