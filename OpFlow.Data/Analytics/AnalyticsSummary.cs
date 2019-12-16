@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace OpFlow.Data
@@ -69,6 +71,24 @@ namespace OpFlow.Data
     {
         public string SurgeonName { get; set; }
         public List<decimal> QtyOpen { get; set; }
+    }
+
+    public class ConcordanceReportSummary
+    {
+        public string TrayName { get; set; }
+        public string UsageSummary => $"{(TrayItems.Sum(ti => ti.Usage) / TrayItems.Sum(ti => ti.Quantity)).ToString("P", CultureInfo.InvariantCulture)} ({TrayItems.Sum(ti => ti.Usage).ToString("0.##")}/{TrayItems.Sum(ti => ti.Quantity).ToString("0.##")})";
+
+        public List<ConcordanceItem> TrayItems { get; set; }
+
+        public ConcordanceReportSummary()
+        {
+            TrayItems = new List<ConcordanceItem>();
+        }
+    }
+    public class ConcordanceItem
+    {
+        public decimal Quantity { get; set; }
+        public decimal Usage { get; set; }
     }
 
     public class InstrumentUsagePost

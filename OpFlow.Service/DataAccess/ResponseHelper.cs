@@ -131,6 +131,19 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public static HttpResponseMessage CompositeImageResponse(HttpRequestMessage request, object summary, List<byte[]> pngResult)
+        {
+            return request.CreateResponse(HttpStatusCode.OK,
+                new
+                {
+                    Summary = summary,
+                    Images = pngResult.Select(img => new SecureImage()
+                    {
+                        DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(img)
+                    })
+                });
+        }
+
         public static HttpResponseMessage ImageResponse(HttpRequestMessage request, List<byte[]> pngResult)
         {
             return request.CreateResponse(HttpStatusCode.OK,

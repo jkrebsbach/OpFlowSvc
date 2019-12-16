@@ -240,6 +240,8 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, 
                 post.CardCategoryID, post.CardID, post.Instruments, user.ProviderID, user.LocationID);
 
+            var summary = SummarizeConcordanceReport(analytics.Tables[0]);
+
             var concordance = analytics.Tables[0].DefaultView;
             switch (post.Order)
             {
@@ -271,8 +273,43 @@ namespace OpFlow.Service.Controllers
             {
                 var webImage = ImageHelper.CreateWebImage(result);
 
-                return ResponseHelper.ImageResponse(Request, webImage);
+                return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
             }
+        }
+
+        private List<ConcordanceReportSummary> SummarizeConcordanceReport(DataTable concordanceData)
+        {
+            var result = new List<ConcordanceReportSummary>();
+
+            foreach (DataRow concordanceRow in concordanceData.Rows)
+            {
+                var trayQty = concordanceRow["TrayQty"];
+                var tray = concordanceRow["SurgeonName"].ToString();
+
+                if (trayQty != DBNull.Value)
+                {
+                    var quantity = (decimal)trayQty;
+                    var usageQty = (decimal)concordanceRow["TrayUsage"];
+
+                    var usage = result.FirstOrDefault(r => r.TrayName == tray);
+                    if (usage == null)
+                    {
+                        usage = new ConcordanceReportSummary()
+                        {
+                            TrayName = tray
+                        };
+                        result.Add(usage);
+                    }
+
+                    usage.TrayItems.Add(new ConcordanceItem()
+                    {
+                        Usage = usageQty,
+                        Quantity = quantity
+                    });
+                }
+            }
+
+            return result;
         }
 
         // GET api/values/5
@@ -316,6 +353,8 @@ namespace OpFlow.Service.Controllers
                     break;
             }
 
+            var summary = SummarizeConcordanceReport(analytics.Tables[0]);
+
             if (format == "CSV")
             {
                 return ResponseHelper.CsvResponse(concordance.ToTable());
@@ -335,7 +374,7 @@ namespace OpFlow.Service.Controllers
             {
                 var webImage = ImageHelper.CreateWebImage(result);
 
-                return ResponseHelper.ImageResponse(Request, webImage);
+                return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
             }
         }
 
