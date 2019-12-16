@@ -13,7 +13,7 @@
     <DataSet Name="ConcordanceReport">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>exec GetAnalyticsConcordanceReport '&lt;table&gt;&lt;row&gt;&lt;col&gt;1&lt;/col&gt;&lt;/row&gt;&lt;/table&gt;', null, null, null, 1,1</CommandText>
+        <CommandText>exec GetAnalyticsConcordanceReport '&lt;table&gt;&lt;row&gt;&lt;col&gt;1&lt;/col&gt;&lt;/row&gt;&lt;/table&gt;', null, null, null, null,null,null, 1,1</CommandText>
       </Query>
       <Fields>
         <Field Name="SurgeonID">
@@ -31,6 +31,18 @@
         <Field Name="QtyOpen">
           <DataField>QtyOpen</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="TrayQty">
+          <DataField>TrayQty</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="TrayUsage">
+          <DataField>TrayUsage</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="SortOrder">
+          <DataField>SortOrder</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
@@ -60,11 +72,14 @@
                       <GroupExpression>=Fields!SurgeonName.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
-                  <SortExpressions>
-                    <SortExpression>
-                      <Value>=Fields!SurgeonName.Value</Value>
-                    </SortExpression>
-                  </SortExpressions>
+                  <ChartMembers>
+                    <ChartMember>
+                      <Label>Qty Open</Label>
+                    </ChartMember>
+                    <ChartMember>
+                      <Label>Tray Qty</Label>
+                    </ChartMember>
+                  </ChartMembers>
                   <Label>=Fields!SurgeonName.Value</Label>
                 </ChartMember>
               </ChartMembers>
@@ -72,6 +87,7 @@
             <ChartData>
               <ChartSeriesCollection>
                 <ChartSeries Name="QtyOpen">
+                  <Hidden>=SUM(Fields!QtyOpen.Value) = 0</Hidden>
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
@@ -103,6 +119,49 @@
                       <Style />
                     </ChartDataLabel>
                   </ChartEmptyPoints>
+                  <ChartItemInLegend>
+                    <LegendText>="Open - " &amp; Fields!SurgeonName.Value</LegendText>
+                  </ChartItemInLegend>
+                  <ValueAxisName>Primary</ValueAxisName>
+                  <CategoryAxisName>Primary</CategoryAxisName>
+                  <ChartSmartLabel>
+                    <CalloutLineColor>Black</CalloutLineColor>
+                    <MinMovingDistance>0pt</MinMovingDistance>
+                  </ChartSmartLabel>
+                </ChartSeries>
+                <ChartSeries Name="TrayQty">
+                  <Hidden>=SUM(Fields!TrayQty.Value) = 0</Hidden>
+                  <ChartDataPoints>
+                    <ChartDataPoint>
+                      <ChartDataPointValues>
+                        <Y>=Sum(Fields!TrayQty.Value)</Y>
+                      </ChartDataPointValues>
+                      <ChartDataLabel>
+                        <Style />
+                      </ChartDataLabel>
+                      <Style />
+                      <ChartMarker>
+                        <Type>Cross</Type>
+                        <Size>10pt</Size>
+                        <Style />
+                      </ChartMarker>
+                      <DataElementOutput>Output</DataElementOutput>
+                    </ChartDataPoint>
+                  </ChartDataPoints>
+                  <Type>Scatter</Type>
+                  <Style />
+                  <ChartEmptyPoints>
+                    <Style />
+                    <ChartMarker>
+                      <Style />
+                    </ChartMarker>
+                    <ChartDataLabel>
+                      <Style />
+                    </ChartDataLabel>
+                  </ChartEmptyPoints>
+                  <ChartItemInLegend>
+                    <LegendText>= "Quantity - " &amp; Fields!SurgeonName.Value</LegendText>
+                  </ChartItemInLegend>
                   <ValueAxisName>Primary</ValueAxisName>
                   <CategoryAxisName>Primary</CategoryAxisName>
                   <ChartSmartLabel>
@@ -400,6 +459,10 @@
               </Style>
             </ChartNoDataMessage>
             <DataSetName>ConcordanceReport</DataSetName>
+            <PageBreak>
+              <BreakLocation>Start</BreakLocation>
+            </PageBreak>
+            <Top>1.25in</Top>
             <Height>7.875in</Height>
             <Width>10.45833in</Width>
             <Style>
@@ -411,8 +474,210 @@
               <BackgroundGradientType>None</BackgroundGradientType>
             </Style>
           </Chart>
+          <Tablix Name="Tablix1">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>3.73958in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>2.26042in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox14">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Tray</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox14</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox15">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Avg Usage</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox15</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="SurgeonName">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!SurgeonName.Value</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>SurgeonName</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox13">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>= Format(SUM(Fields!TrayUsage.Value) / SUM(Fields!TrayQty.Value), "P") &amp; " (" &amp; 
+Format(SUM(Fields!TrayUsage.Value), "0.##") &amp; 
+"/" &amp; Format(SUM(Fields!TrayQty.Value), "0.##") &amp; 
+")"</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox13</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <KeepWithGroup>After</KeepWithGroup>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="SurgeonName">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!SurgeonName.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!SurgeonName.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
+                  <TablixMembers>
+                    <TablixMember />
+                  </TablixMembers>
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>ConcordanceReport</DataSetName>
+            <Filters>
+              <Filter>
+                <FilterExpression>=Fields!TrayQty.Value</FilterExpression>
+                <Operator>GreaterThan</Operator>
+                <FilterValues>
+                  <FilterValue>=CDec(0)</FilterValue>
+                </FilterValues>
+              </Filter>
+            </Filters>
+            <Top>0.5in</Top>
+            <Height>0.5in</Height>
+            <Width>6in</Width>
+            <ZIndex>1</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Tablix>
         </ReportItems>
-        <Height>7.875in</Height>
+        <Height>9.125in</Height>
         <Style />
       </Body>
       <Width>10.45833in</Width>
