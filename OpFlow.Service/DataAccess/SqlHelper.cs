@@ -1155,12 +1155,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayRationalizationItem>> GetProposedTrayInstruments(int trayProposalId, bool showHistory, int providerId, int locationId)
+        public async Task<List<TrayRationalizationItem>> GetProposedTrayInstruments(int trayProposalId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("proposed_tray_id", trayProposalId),
-                new SqlParameter("show_history", showHistory),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -2459,6 +2458,19 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("tray_item_id", trayId)
             };
             var dsItems = await ExecuteCommandAsync("GetTrayItems", parameters);
+
+            return dsItems.Tables[0].DataTableToList<ItemTrayOverlap>();
+        }
+
+        public async Task<List<ItemTrayOverlap>> GetProposedTrayItemOverlaps(int trayProposalId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("proposed_tray_id", trayProposalId)
+            };
+            var dsItems = await ExecuteCommandAsync("GetProposedTrayInstruments", parameters);
 
             return dsItems.Tables[0].DataTableToList<ItemTrayOverlap>();
         }

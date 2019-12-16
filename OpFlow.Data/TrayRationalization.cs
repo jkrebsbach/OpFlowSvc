@@ -407,8 +407,14 @@ namespace OpFlow.Data
 
     public class TrayRationalizationOverlapPost
     {
-        public List<string> Trays { get; set; }
+        public List<TrayRationalizationTrayPost> Trays { get; set; }
         public int? StandardizedTrayID { get; set; }
+    }
+
+    public class TrayRationalizationTrayPost
+    {
+        public string TrayType { get; set; }
+        public int TrayID { get; set; }
     }
 
     public class TrayRationalizationDetailResult
