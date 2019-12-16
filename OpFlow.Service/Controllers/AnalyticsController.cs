@@ -810,12 +810,19 @@ namespace OpFlow.Service.Controllers
                     break;
             }
 
+            var parameters = new ReportParameter[]
+            {
+                new ReportParameter("FieldCase", post.FieldCase.ToString()),
+                new ReportParameter("FieldInstrument", post.FieldInstrument.ToString()),
+                new ReportParameter("FieldUsage", post.FieldUsage.ToString()),
+                new ReportParameter("FieldTray", post.FieldTray.ToString())
+            };
 
             var datasets = new Dictionary<string, DataTable>
             {
                 ["TrayRationalization"] = rationalization.ToTable()
             };
-            var result = ReportHelper.GetReport("TrayRationalization", format, datasets);
+            var result = ReportHelper.GetReport("TrayRationalization", format, datasets, parameters);
             
             if (format?.ToUpper() == "PDF")
             {
@@ -873,7 +880,16 @@ namespace OpFlow.Service.Controllers
             {
                 ["TrayRationalization"] = rationalization.ToTable()
             };
-            var result = ReportHelper.GetReport("TrayRationalization", format, datasets);
+
+            var parameters = new ReportParameter[]
+            {
+                new ReportParameter("FieldCase", post.FieldCase.ToString()),
+                new ReportParameter("FieldInstrument", post.FieldInstrument.ToString()),
+                new ReportParameter("FieldUsage", post.FieldUsage.ToString()),
+                new ReportParameter("FieldTray", post.FieldTray.ToString())
+            };
+
+            var result = ReportHelper.GetReport("TrayRationalization", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {

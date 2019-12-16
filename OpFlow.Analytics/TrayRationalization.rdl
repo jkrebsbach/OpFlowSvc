@@ -84,6 +84,7 @@ ORDER BY TrayName</CommandText>
             <ChartData>
               <ChartSeriesCollection>
                 <ChartSeries Name="CaseCount">
+                  <Hidden>=Parameters!FieldCase.Value = False</Hidden>
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
@@ -120,6 +121,7 @@ ORDER BY TrayName</CommandText>
                   </ChartSmartLabel>
                 </ChartSeries>
                 <ChartSeries Name="InstrumentCount">
+                  <Hidden>=Parameters!FieldInstrument.Value = False</Hidden>
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
@@ -156,6 +158,7 @@ ORDER BY TrayName</CommandText>
                   </ChartSmartLabel>
                 </ChartSeries>
                 <ChartSeries Name="UsageQuantity">
+                  <Hidden>=Parameters!FieldUsage.Value = False</Hidden>
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
@@ -195,6 +198,7 @@ ORDER BY TrayName</CommandText>
                   </ChartSmartLabel>
                 </ChartSeries>
                 <ChartSeries Name="TrayOpened">
+                  <Hidden>=Parameters!FieldTray.Value = False</Hidden>
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
@@ -541,10 +545,70 @@ ORDER BY TrayName</CommandText>
       </Page>
     </ReportSection>
   </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="FieldCase">
+      <DataType>Boolean</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>true</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>FieldCase</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="FieldInstrument">
+      <DataType>Boolean</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>true</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>FieldInstrument</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="FieldUsage">
+      <DataType>Boolean</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>true</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>FieldUsage</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="FieldTray">
+      <DataType>Boolean</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>true</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>FieldTray</Prompt>
+    </ReportParameter>
+  </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
       <NumberOfColumns>4</NumberOfColumns>
       <NumberOfRows>2</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>FieldCase</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>FieldInstrument</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>FieldUsage</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>3</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>FieldTray</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
     </GridLayoutDefinition>
   </ReportParametersLayout>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>

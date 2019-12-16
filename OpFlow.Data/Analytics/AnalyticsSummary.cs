@@ -135,6 +135,11 @@ namespace OpFlow.Data
         public List<int> AnswerId { get; set; }
         public string Order {get;set; }
         public string Group { get; set; }
+
+        public bool FieldCase { get; set; }
+        public bool FieldInstrument { get; set; }
+        public bool FieldUsage { get; set; }
+        public bool FieldTray { get; set; }
     }
 
     public class TrayConsolidationReportPost
