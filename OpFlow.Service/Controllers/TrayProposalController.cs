@@ -979,12 +979,8 @@ namespace OpFlow.Service.Controllers
             if (proposalLog != null)
             {
                 var createDateOffset = proposalLog.ChangeDate ?? proposalLog.InsertTimestamp;
-                DateTime? createDate = null;
-                if (createDateOffset.HasValue)
-                {
-                    createDate = createDateOffset.Value.AddHours(-5).DateTime; // Convert UTC to east coast
-                }
-
+                var createDate = createDateOffset.AddHours(-5).DateTime;
+                
                 if (proposalLog.Instruments == null || !proposalLog.Instruments.Any())
                 {
                     proposalLog.Instruments.Add(new TrayProposalInstrumentLog()
@@ -995,7 +991,7 @@ namespace OpFlow.Service.Controllers
 
                 foreach (var instrument in proposalLog.Instruments)
                 {
-                    extract += $"{createDate?.ToShortDateString()}, {proposal.FirstOrDefault()?.TrayName}, {instrument.SourceTrayName}, {instrument.InstrumentName}, {instrument.Quantity}\r\n";
+                    extract += $"{createDate.ToShortDateString()}, {proposal.FirstOrDefault()?.TrayName}, {instrument.SourceTrayName}, {instrument.InstrumentName}, {instrument.Quantity}\r\n";
                 }
             }
 
@@ -1903,9 +1899,9 @@ namespace OpFlow.Service.Controllers
                     
                     trayInstruments = await sqlHelper.GetTrayItemOverlaps(tray.TrayID, user.ProviderID, user.LocationID);
                 }
-                else
+                else 
                 {
-                    trayInstruments = await sqlHelper.GetProposedTrayItemOverlaps(tray.TrayID, user.ProviderID, user.LocationID);
+                    trayInstruments = await sqlHelper.GetProposedTrayItemOverlaps(tray.TrayID, tray.TrayLogID, user.ProviderID, user.LocationID);
                 }
 
                 decimal usedInstruments = 0;

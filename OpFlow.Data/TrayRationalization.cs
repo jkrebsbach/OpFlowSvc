@@ -91,8 +91,9 @@ namespace OpFlow.Data
         public string AffectedItems { get; set; }
         public string Comments { get; set; }
         public DateTimeOffset? ChangeDate { get; set; }
-        public DateTimeOffset? InsertTimestamp { get; set; }
+        public DateTimeOffset InsertTimestamp { get; set; }
         public List<TrayProposalInstrumentLog> Instruments { get; set; }
+        public DateTimeOffset LogEffective => ChangeDate ?? InsertTimestamp;
 
         public string ChangeTypeDesc
         {
@@ -415,6 +416,7 @@ namespace OpFlow.Data
     {
         public string TrayType { get; set; }
         public int TrayID { get; set; }
+        public int? TrayLogID { get; set; }
     }
 
     public class TrayRationalizationDetailResult

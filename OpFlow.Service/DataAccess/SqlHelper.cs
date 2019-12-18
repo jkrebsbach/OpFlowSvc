@@ -2462,17 +2462,37 @@ namespace OpFlow.Service.DataAccess
             return dsItems.Tables[0].DataTableToList<ItemTrayOverlap>();
         }
 
-        public async Task<List<ItemTrayOverlap>> GetProposedTrayItemOverlaps(int trayProposalId, int providerId, int locationId)
+        public async Task<List<ItemTrayOverlap>> GetProposedTrayItemOverlaps(int trayProposalId, int? trayProposalLogId, int providerId, int locationId)
         {
-            var parameters = new[]
-            {
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
-                new SqlParameter("proposed_tray_id", trayProposalId)
-            };
-            var dsItems = await ExecuteCommandAsync("GetProposedTrayInstruments", parameters);
+            DataSet dsItems;
 
-            return dsItems.Tables[0].DataTableToList<ItemTrayOverlap>();
+            if (trayProposalLogId.HasValue)
+            {
+                var parameters = new[]
+                {
+                    new SqlParameter("tray_proposal_id", trayProposalId),
+                    new SqlParameter("provider_id", providerId),
+                    new SqlParameter("location_id", locationId)
+                };
+                var dsSchedules = await ExecuteCommandAsync("GetProposedTrayLog", parameters);
+
+                var instrumentLog = dsSchedules.Tables[1].DataTableToList<ItemTrayOverlap>();
+
+                return instrumentLog.Where(i => i.TrayProposalLogID == trayProposalLogId).ToList();
+            }
+            else
+            {
+
+                var parameters = new[]
+                {
+                    new SqlParameter("provider_id", providerId),
+                    new SqlParameter("location_id", locationId),
+                    new SqlParameter("proposed_tray_id", trayProposalId)
+                };
+                dsItems = await ExecuteCommandAsync("GetProposedTrayInstruments", parameters);
+
+                return dsItems.Tables[0].DataTableToList<ItemTrayOverlap>();
+            }
         }
 
         public async Task<List<TrayQuestionSummary>> GetTrayQuestions(int? itemId, int providerId, int locationId)
