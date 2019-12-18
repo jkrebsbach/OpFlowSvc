@@ -290,9 +290,9 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>="Total units opened but not used " &amp; SUM(Fields!UsageVariance.Value) &amp;
-" = $" &amp; Format(SUM(Fields!UsageVariance.Value * Fields!ItemCost.Value), "#,###.00") &amp;
-" for the " &amp; MAX(Fields!CaseCount.Value) &amp; " cases we audited"</Value>
+                                  <Value>="Total units opened but not used " &amp; SUM(Fields!UsageVariance.Value, "Specialty") &amp;
+" = $" &amp; Format(SUM(Fields!UsageVariance.Value * Fields!ItemCost.Value, "Specialty"), "#,###.00") &amp;
+" for the " &amp; MAX(Fields!CaseCount.Value, "Specialty") &amp; " cases we audited"</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                   </Style>
@@ -363,9 +363,9 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>="Total units allocated but not needed " &amp; SUM(Fields!CardQtyVariance.Value) &amp;
-" = $" &amp; Format(SUM(Fields!CardQtyVariance.Value * Fields!ItemCost.Value), "#,###.00") &amp;
-" for the " &amp; MAX(Fields!CaseCount.Value) &amp; " cases we audited"</Value>
+                                  <Value>="Total units allocated but not needed " &amp; SUM(Fields!CardQtyVariance.Value, "Specialty") &amp;
+" = $" &amp; Format(SUM(Fields!CardQtyVariance.Value * Fields!ItemCost.Value, "Specialty"), "#,###.00") &amp;
+" for the " &amp; MAX(Fields!CaseCount.Value, "Specialty") &amp; " cases we audited"</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                   </Style>
@@ -387,6 +387,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
