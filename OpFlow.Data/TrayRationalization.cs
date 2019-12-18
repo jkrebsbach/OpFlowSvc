@@ -90,7 +90,7 @@ namespace OpFlow.Data
         public string ChangeDescription { get; set; }
         public string AffectedItems { get; set; }
         public string Comments { get; set; }
-        public DateTime? ChangeDate { get; set; }
+        public DateTimeOffset? ChangeDate { get; set; }
         public DateTimeOffset? InsertTimestamp { get; set; }
         public List<TrayProposalInstrumentLog> Instruments { get; set; }
 

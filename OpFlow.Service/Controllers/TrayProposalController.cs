@@ -978,10 +978,11 @@ namespace OpFlow.Service.Controllers
 
             if (proposalLog != null)
             {
-                var createDate = proposalLog.ChangeDate;
-                if (createDate == null && proposalLog.InsertTimestamp.HasValue)
+                var createDateOffset = proposalLog.ChangeDate ?? proposalLog.InsertTimestamp;
+                DateTime? createDate = null;
+                if (createDateOffset.HasValue)
                 {
-                    createDate = proposalLog.InsertTimestamp.Value.AddHours(-5).DateTime; // Convert UTC to east coast
+                    createDate = createDateOffset.Value.AddHours(-5).DateTime; // Convert UTC to east coast
                 }
 
                 if (proposalLog.Instruments == null || !proposalLog.Instruments.Any())

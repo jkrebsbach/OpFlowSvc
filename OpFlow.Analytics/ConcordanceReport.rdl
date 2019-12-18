@@ -120,7 +120,7 @@
                     </ChartDataLabel>
                   </ChartEmptyPoints>
                   <ChartItemInLegend>
-                    <LegendText>="Open - " &amp; Fields!SurgeonName.Value</LegendText>
+                    <LegendText>=Fields!SurgeonName.Value</LegendText>
                   </ChartItemInLegend>
                   <ValueAxisName>Primary</ValueAxisName>
                   <CategoryAxisName>Primary</CategoryAxisName>
