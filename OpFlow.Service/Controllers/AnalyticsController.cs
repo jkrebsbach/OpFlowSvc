@@ -447,11 +447,22 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
+            if (format?.ToUpper() == "CSV")
+            {
+                // override some of the parameters to force more detail
+                post.Group = "SCI";
+            }
+
             var analytics = await sqlHelper.GetSupplyWasteReportDate(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID,
                 post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, post.Group, user.ProviderID, user.LocationID);
 
             var supplyOpen = analytics.Tables[0].DefaultView;
             var supplyOpenAggregate = analytics.Tables[1].DefaultView;
+            
+            if (format?.ToUpper() == "CSV")
+            {
+                return ResponseHelper.CsvResponse(supplyOpen.ToTable());
+            }
 
             var datasets = new Dictionary<string, DataTable>
             {
