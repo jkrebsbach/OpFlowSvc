@@ -32,6 +32,7 @@
 4.1 AvgUsageVariance,
 -1.2 AvgCardQtyVariance,
 40 UsageVariance,
+17 CardQtyVariance,
 72 CaseCount
 from surgery s
 JOIN surgery_card_item_counts scic ON s.surgery_id = scic.surgery_id
@@ -109,6 +110,10 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
         </Field>
         <Field Name="UsageVariance">
           <DataField>UsageVariance</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="CardQtyVariance">
+          <DataField>CardQtyVariance</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="CaseCount">
@@ -217,7 +222,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>="Total Units Opened But not used " &amp; SUM(Fields!UsageVariance.Value) &amp;
+                                  <Value>="Total units opened but not used " &amp; SUM(Fields!UsageVariance.Value) &amp;
 " = $" &amp; Format(SUM(Fields!UsageVariance.Value * Fields!ItemCost.Value), "#,###.00") &amp;
 " for the " &amp; MAX(Fields!CaseCount.Value) &amp; " cases we audited"</Value>
                                   <Style>
@@ -229,6 +234,47 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox3</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>None</Style>
+                            </Border>
+                            <BackgroundColor>White</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <rd:Selected>true</rd:Selected>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>="Total units allocated but not needed " &amp; SUM(Fields!CardQtyVariance.Value) &amp;
+" = $" &amp; Format(SUM(Fields!CardQtyVariance.Value * Fields!ItemCost.Value), "#,###.00") &amp;
+" for the " &amp; MAX(Fields!CaseCount.Value) &amp; " cases we audited"</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox1</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -772,12 +818,13 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                     <TablixMember />
                     <TablixMember />
                     <TablixMember />
+                    <TablixMember />
                   </TablixMembers>
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>SupplyOpen</DataSetName>
-            <Height>9.71875in</Height>
+            <Height>9.96875in</Height>
             <Width>10.28126in</Width>
             <Style>
               <Border>
@@ -786,7 +833,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>9.71875in</Height>
+        <Height>9.96875in</Height>
         <Style />
       </Body>
       <Width>10.28126in</Width>
