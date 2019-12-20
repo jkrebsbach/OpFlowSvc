@@ -400,7 +400,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
-            var analytics = await sqlHelper.GetSupplyWasteReportDate(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID, 
+            var analytics = await sqlHelper.GetSupplyWasteReportData(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID, 
                 post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, true, true, true, true, post.Group, user.ProviderID, user.LocationID);
 
             var supplyWaste = analytics.Tables[0].DefaultView;
@@ -410,6 +410,66 @@ namespace OpFlow.Service.Controllers
                 ["SupplyWaste"] = supplyWaste.ToTable()
             };
             var result = ReportHelper.GetReport("SupplyWaste", format, datasets);
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("ServiceLineReviewReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("serviceLineReview")]
+        [Route("serviceLineReview/{format}")]
+        public async Task<HttpResponseMessage> ServiceLineReviewReport([FromBody] InstrumentUsagePost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+            if (post.StartDate == null &&
+                post.EndDate == null &&
+                post.SpecialtyID == null &&
+                post.SurgeonID == null &&
+                post.CardID == null &&
+                post.ItemID == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
+            }
+
+            if (format?.ToUpper() == "CSV")
+            {
+                // override some of the parameters to force more detail
+                post.Group = "SCI";
+            }
+
+            var analytics = await sqlHelper.GetServiceLineReviewReportData(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID,
+                post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate,
+                post.Group, user.ProviderID, user.LocationID);
+
+            var supplyOpen = analytics.Tables[0].DefaultView;
+            var supplyOpenAggregate = analytics.Tables[1].DefaultView;
+
+            if (format?.ToUpper() == "CSV")
+            {
+                return ResponseHelper.CsvResponse(supplyOpen.ToTable());
+            }
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["ServiceLineReview"] = supplyOpenAggregate.ToTable()
+            };
+            var result = ReportHelper.GetReport("ServiceLineReview", format, datasets);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -453,7 +513,7 @@ namespace OpFlow.Service.Controllers
                 post.Group = "SCI";
             }
 
-            var analytics = await sqlHelper.GetSupplyWasteReportDate(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID,
+            var analytics = await sqlHelper.GetSupplyWasteReportData(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID,
                 post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, 
                 post.FieldAll, post.FieldWaste, post.FieldOver, post.FieldUnder,
                 post.Group, user.ProviderID, user.LocationID);
@@ -506,7 +566,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
-            var analytics = await sqlHelper.GetSupplyWasteReportDate(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID,
+            var analytics = await sqlHelper.GetSupplyWasteReportData(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID,
                 post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, true, true, true, true, post.Group, user.ProviderID, user.LocationID);
 
             var supplyOpen = analytics.Tables[0].DefaultView;

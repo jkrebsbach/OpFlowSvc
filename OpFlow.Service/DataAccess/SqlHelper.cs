@@ -646,7 +646,37 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<DataSet> GetSupplyWasteReportDate(List<int> specialtyId, List<int> surgeonId,
+        public async Task<DataSet> GetServiceLineReviewReportData(List<int> specialtyId, List<int> surgeonId,
+            List<int> cardId, List<int> itemId, int? minCost, decimal? minOpen, decimal? minHold,
+            DateTime? startDate, DateTime? endDate,
+            string groupBy, int providerId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+            var cardXml = GetIdentitySummary(cardId);
+            var itemXml = GetIdentitySummary(itemId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("item_id", itemXml ?? (object)DBNull.Value),
+                new SqlParameter("min_cost", minCost ?? (object)DBNull.Value),
+                new SqlParameter("min_open", minOpen ?? (object)DBNull.Value),
+                new SqlParameter("min_hold", minHold ?? (object)DBNull.Value),
+                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
+                new SqlParameter("group_by", groupBy),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("GetAnalyticsServiceLineReview", parameters);
+
+            return result;
+        }
+
+        public async Task<DataSet> GetSupplyWasteReportData(List<int> specialtyId, List<int> surgeonId,
             List<int> cardId, List<int>itemId, int? minCost, decimal? minOpen, decimal? minHold, 
             DateTime? startDate, DateTime? endDate, 
             bool fieldAll, bool fieldWaste, bool fieldOver, bool fieldUnder, string groupBy, int providerId, int locationId)
