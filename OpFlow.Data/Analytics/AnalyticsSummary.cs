@@ -182,6 +182,37 @@ namespace OpFlow.Data
         public string Order { get; set; }
     }
 
+    public class ServiceLineSummary
+    {
+        public string ItemName { get; set; }
+        public int SpecialtyID { get; set; }
+        public string Specialty { get; set; }
+        public string CardName { get; set; }
+        public string Surgeon { get; set; }
+        public string ProcedureName { get; set; }
+        public string CustomLegend { get; set; }
+        public int CardQuantity { get; set; }
+        public int ItemCost { get; set; }
+        public decimal AvgHold { get; set; }
+        public decimal AvgSetup { get; set; }
+        public decimal AvgSetupOpen { get; set; }
+        public decimal AvgSetupAdded { get; set; }
+        public decimal AvgOpen { get; set; }
+        public decimal AvgOpenInit { get; set; }
+        public decimal AvgOpenAdded { get; set; }
+        public decimal AvgOpenVariance { get; set; }
+        public decimal AvgUsageVariance { get; set; }
+        public decimal AvgCardQtyVariance { get; set; }
+        public decimal AvgUsed { get; set; }
+        public decimal UsageVariance { get; set; }
+        public decimal CardQtyVariance { get; set; }
+        public int CaseCount { get; set; }
+
+        public string Waste => (AvgSetup > AvgOpen) ? "Y" : "N";
+        public string Allocation => (CardQtyVariance == 0) ? "" : 
+            (CardQtyVariance > 0 ? "UNDER" : "OVER");
+    }
+
     public class InstrumentUsageSummaryResult
     {
         public string TrayName { get; set; }

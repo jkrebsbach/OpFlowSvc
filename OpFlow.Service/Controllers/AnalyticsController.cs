@@ -477,9 +477,11 @@ namespace OpFlow.Service.Controllers
             }
             else
             {
+                var summary = analytics.Tables[1].DataTableToList<ServiceLineSummary>();
+
                 var webImage = ImageHelper.CreateWebImage(result);
 
-                return ResponseHelper.ImageResponse(Request, webImage);
+                return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
             }
         }
 
