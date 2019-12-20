@@ -401,7 +401,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetSupplyWasteReportDate(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID, 
-                post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, post.Group, user.ProviderID, user.LocationID);
+                post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, true, true, true, true, post.Group, user.ProviderID, user.LocationID);
 
             var supplyWaste = analytics.Tables[0].DefaultView;
             
@@ -454,7 +454,9 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetSupplyWasteReportDate(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID,
-                post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, post.Group, user.ProviderID, user.LocationID);
+                post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, 
+                post.FieldAll, post.FieldWaste, post.FieldOver, post.FieldUnder,
+                post.Group, user.ProviderID, user.LocationID);
 
             var supplyOpen = analytics.Tables[0].DefaultView;
             var supplyOpenAggregate = analytics.Tables[1].DefaultView;
@@ -505,7 +507,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetSupplyWasteReportDate(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID,
-                post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, post.Group, user.ProviderID, user.LocationID);
+                post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, true, true, true, true, post.Group, user.ProviderID, user.LocationID);
 
             var supplyOpen = analytics.Tables[0].DefaultView;
 

@@ -115,6 +115,10 @@ namespace OpFlow.Data
         public int? CaseProfileId { get; set; }
         public List<int> QuestionId { get; set; }
         public List<int> AnswerId { get; set; }
+        public bool FieldAll { get; set; }
+        public bool FieldWaste { get; set; }
+        public bool FieldOver { get; set; }
+        public bool FieldUnder { get; set; }
         public string Order { get; set; }
         public string Group { get; set; }
         public DateTime? StartDate { get; set; }
