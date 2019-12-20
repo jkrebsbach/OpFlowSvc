@@ -17,25 +17,20 @@
 	'Item' ItemName,
 	5 SpecialtyID,
 	'Specialty' Specialty,
-	'Card' CardName,
 'Surgeon' Surgeon,
+	'Card' CardName,
 	'Procedure' ProcedureName,
-	'item 5 cnts cost $5.15' CustomLegend,
 	6 CardQuantity,
 	5 ItemCost,
-	2.1 AvgHold,
 	2.2 AvgSetup,
-	2.3 AvgSetupOpen,
-	2.4 AvgSetupAdded,
 	2.5 AvgOpen,
-	2.6 AvgOpenInit,
-	2.7 AvgOpenAdded,
-	2.8 AvgOpenVariance,
 	2.9 AvgUsageVariance,
 	3.1 AvgCardQtyVariance,
 	3.2 AvgUsed,
-	3.3 UsageVariance,
-	4.0 CardQtyVariance,
+	3 UsageVariance,
+	3 WasteAmount,
+	3 OverAllocation,
+	4 UnderAllocation,
 	6 CaseCount</CommandText>
       </Query>
       <Fields>
@@ -63,10 +58,6 @@
           <DataField>ProcedureName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="CustomLegend">
-          <DataField>CustomLegend</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
         <Field Name="CardQuantity">
           <DataField>CardQuantity</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
@@ -75,36 +66,12 @@
           <DataField>ItemCost</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="AvgHold">
-          <DataField>AvgHold</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
         <Field Name="AvgSetup">
           <DataField>AvgSetup</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
-        <Field Name="AvgSetupOpen">
-          <DataField>AvgSetupOpen</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="AvgSetupAdded">
-          <DataField>AvgSetupAdded</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
         <Field Name="AvgOpen">
           <DataField>AvgOpen</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="AvgOpenInit">
-          <DataField>AvgOpenInit</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="AvgOpenAdded">
-          <DataField>AvgOpenAdded</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="AvgOpenVariance">
-          <DataField>AvgOpenVariance</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
         <Field Name="AvgUsageVariance">
@@ -121,14 +88,22 @@
         </Field>
         <Field Name="UsageVariance">
           <DataField>UsageVariance</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="CardQtyVariance">
-          <DataField>CardQtyVariance</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
+        <Field Name="WasteAmount">
+          <DataField>WasteAmount</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="OverAllocation">
+          <DataField>OverAllocation</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="CaseCount">
           <DataField>CaseCount</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="UnderAllocation">
+          <DataField>UnderAllocation</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
       </Fields>
@@ -159,7 +134,7 @@
             <ChartSeriesHierarchy>
               <ChartMembers>
                 <ChartMember>
-                  <Label>Avg Usage Variance</Label>
+                  <Label>Waste Amount</Label>
                 </ChartMember>
               </ChartMembers>
             </ChartSeriesHierarchy>
@@ -169,7 +144,7 @@
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
-                        <Y>=Sum(Fields!AvgUsageVariance.Value)</Y>
+                        <Y>=Sum(Fields!WasteAmount.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
@@ -483,8 +458,8 @@
               </Style>
             </ChartNoDataMessage>
             <DataSetName>ServiceLineReview</DataSetName>
-            <Height>3.5in</Height>
-            <Width>3.5in</Width>
+            <Height>5in</Height>
+            <Width>5in</Width>
             <Style>
               <Border>
                 <Color>LightGrey</Color>
@@ -515,7 +490,7 @@
             <ChartSeriesHierarchy>
               <ChartMembers>
                 <ChartMember>
-                  <Label>Card Qty Variance</Label>
+                  <Label>Over Allocation</Label>
                 </ChartMember>
               </ChartMembers>
             </ChartSeriesHierarchy>
@@ -525,7 +500,7 @@
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
-                        <Y>=Sum(Fields!CardQtyVariance.Value)</Y>
+                        <Y>=Sum(Fields!OverAllocation.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
@@ -839,9 +814,9 @@
               </Style>
             </ChartNoDataMessage>
             <DataSetName>ServiceLineReview</DataSetName>
-            <Left>4in</Left>
-            <Height>3.5in</Height>
-            <Width>3.5in</Width>
+            <Left>5.5in</Left>
+            <Height>5in</Height>
+            <Width>5in</Width>
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
@@ -853,12 +828,13 @@
             </Style>
           </Chart>
         </ReportItems>
-        <Height>3.5in</Height>
+        <Height>5in</Height>
         <Style />
       </Body>
-      <Width>7.5in</Width>
+      <Width>10.5in</Width>
       <Page>
-        <PageHeight>5in</PageHeight>
+        <PageHeight>6in</PageHeight>
+        <PageWidth>11in</PageWidth>
         <Style />
       </Page>
     </ReportSection>

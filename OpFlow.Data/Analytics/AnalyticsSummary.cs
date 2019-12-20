@@ -187,30 +187,24 @@ namespace OpFlow.Data
         public string ItemName { get; set; }
         public int SpecialtyID { get; set; }
         public string Specialty { get; set; }
-        public string CardName { get; set; }
         public string Surgeon { get; set; }
+        public string CardName { get; set; }
         public string ProcedureName { get; set; }
-        public string CustomLegend { get; set; }
         public int CardQuantity { get; set; }
         public int ItemCost { get; set; }
-        public decimal AvgHold { get; set; }
         public decimal AvgSetup { get; set; }
-        public decimal AvgSetupOpen { get; set; }
-        public decimal AvgSetupAdded { get; set; }
         public decimal AvgOpen { get; set; }
-        public decimal AvgOpenInit { get; set; }
-        public decimal AvgOpenAdded { get; set; }
-        public decimal AvgOpenVariance { get; set; }
         public decimal AvgUsageVariance { get; set; }
         public decimal AvgCardQtyVariance { get; set; }
         public decimal AvgUsed { get; set; }
-        public decimal UsageVariance { get; set; }
-        public decimal CardQtyVariance { get; set; }
+        public int WasteAmount { get; set; }
+        public int OverAllocation { get; set; }
+        public int UnderAllocation { get; set; }
         public int CaseCount { get; set; }
 
-        public string Waste => (AvgSetup > AvgOpen) ? "Y" : "N";
-        public string Allocation => (AvgCardQtyVariance == 0) ? "" : 
-            (AvgCardQtyVariance > 0 ? "UNDER" : "OVER");
+        public string Waste => (WasteAmount > 0) ? "Y" : "N";
+        public string Allocation => (OverAllocation > 0) ? "OVER" : 
+            (UnderAllocation > 0 ? "UNDER" : "");
     }
 
     public class InstrumentUsageSummaryResult
