@@ -209,8 +209,8 @@ namespace OpFlow.Data
         public int CaseCount { get; set; }
 
         public string Waste => (AvgSetup > AvgOpen) ? "Y" : "N";
-        public string Allocation => (CardQtyVariance == 0) ? "" : 
-            (CardQtyVariance > 0 ? "UNDER" : "OVER");
+        public string Allocation => (AvgCardQtyVariance == 0) ? "" : 
+            (AvgCardQtyVariance > 0 ? "UNDER" : "OVER");
     }
 
     public class InstrumentUsageSummaryResult
