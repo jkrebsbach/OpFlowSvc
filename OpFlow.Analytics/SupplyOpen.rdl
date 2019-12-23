@@ -778,6 +778,17 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 <BackgroundColor>#00ffffff</BackgroundColor>
                                 <BackgroundGradientType>None</BackgroundGradientType>
                               </Style>
+                              <ChartElementPosition>
+                                <Top>9.023</Top>
+                                <Left>3</Left>
+                                <Height>98</Height>
+                                <Width>94</Width>
+                              </ChartElementPosition>
+                              <ChartInnerPlotPosition>
+                                <Left>29.047</Left>
+                                <Height>100</Height>
+                                <Width>70.953</Width>
+                              </ChartInnerPlotPosition>
                             </ChartArea>
                           </ChartAreas>
                           <ChartLegends>
@@ -787,6 +798,14 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 <FontSize>8pt</FontSize>
                               </Style>
                               <Position>TopLeft</Position>
+                              <Layout>Row</Layout>
+                              <DockToChartArea>Default</DockToChartArea>
+                              <DockOutsideChartArea>true</DockOutsideChartArea>
+                              <ChartElementPosition>
+                                <Left>3</Left>
+                                <Height>2</Height>
+                                <Width>30.126</Width>
+                              </ChartElementPosition>
                               <ChartLegendTitle>
                                 <Caption />
                                 <Style>
@@ -800,7 +819,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             </ChartLegend>
                           </ChartLegends>
                           <Palette>Pacific</Palette>
-                          <DynamicHeight>=(2 + CountDistinct(Fields!ItemName.Value)) * 1.2 &amp; " in"</DynamicHeight>
+                          <DynamicHeight>=(1 + CountDistinct(Fields!ItemName.Value)) * 1 &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>
@@ -1180,6 +1199,17 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 <BackgroundColor>#00ffffff</BackgroundColor>
                                 <BackgroundGradientType>None</BackgroundGradientType>
                               </Style>
+                              <ChartElementPosition>
+                                <Top>9.023</Top>
+                                <Left>3</Left>
+                                <Height>98</Height>
+                                <Width>94</Width>
+                              </ChartElementPosition>
+                              <ChartInnerPlotPosition>
+                                <Left>7.843</Left>
+                                <Height>100</Height>
+                                <Width>92.157</Width>
+                              </ChartInnerPlotPosition>
                             </ChartArea>
                           </ChartAreas>
                           <ChartLegends>
@@ -1189,6 +1219,12 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 <FontSize>8pt</FontSize>
                               </Style>
                               <Position>TopLeft</Position>
+                              <Layout>Row</Layout>
+                              <ChartElementPosition>
+                                <Left>3</Left>
+                                <Height>2</Height>
+                                <Width>57.494</Width>
+                              </ChartElementPosition>
                               <ChartLegendTitle>
                                 <Caption />
                                 <Style>
@@ -1202,7 +1238,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             </ChartLegend>
                           </ChartLegends>
                           <Palette>Excel</Palette>
-                          <DynamicHeight>=(2 + CountDistinct(Fields!ItemName.Value)) * 1.2 &amp; " in"</DynamicHeight>
+                          <DynamicHeight>=(1 + CountDistinct(Fields!ItemName.Value)) * 1 &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>
@@ -1280,7 +1316,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
         <Height>9.96875in</Height>
         <Style />
       </Body>
-      <Width>10.28126in</Width>
+      <Width>9.23959in</Width>
       <Page>
         <PageHeight>8.5in</PageHeight>
         <PageWidth>11in</PageWidth>
