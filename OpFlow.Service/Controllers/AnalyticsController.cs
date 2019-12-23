@@ -454,8 +454,9 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetServiceLineReviewReportData(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID,
-                post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate,
-                post.Group, user.ProviderID, user.LocationID);
+                post.MinCost, post.MinOpen, post.MinHold, 
+                post.FieldAll, post.FieldWaste, post.FieldOver, post.FieldUnder,
+                post.StartDate, post.EndDate, post.Group, user.ProviderID, user.LocationID);
 
             var supplyOpen = analytics.Tables[0].DefaultView;
             var supplyOpenAggregate = analytics.Tables[1].DefaultView;

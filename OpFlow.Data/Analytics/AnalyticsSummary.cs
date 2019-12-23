@@ -204,7 +204,7 @@ namespace OpFlow.Data
 
         public string Waste => (WasteAmount > 0) ? "Y" : "N";
         public string Allocation => (OverAllocation > 0) ? "OVER" : 
-            (UnderAllocation > 0 ? "UNDER" : "");
+            (UnderAllocation < 0 ? "UNDER" : "");
     }
 
     public class InstrumentUsageSummaryResult

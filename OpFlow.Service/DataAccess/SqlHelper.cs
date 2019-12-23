@@ -648,6 +648,7 @@ namespace OpFlow.Service.DataAccess
 
         public async Task<DataSet> GetServiceLineReviewReportData(List<int> specialtyId, List<int> surgeonId,
             List<int> cardId, List<int> itemId, int? minCost, decimal? minOpen, decimal? minHold,
+            bool fieldAll, bool fieldWaste, bool fieldOver, bool fieldUnder,
             DateTime? startDate, DateTime? endDate,
             string groupBy, int providerId, int locationId)
         {
@@ -667,6 +668,10 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("min_hold", minHold ?? (object)DBNull.Value),
                 new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
                 new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
+                new SqlParameter("field_all", fieldAll),
+                new SqlParameter("field_waste", fieldWaste),
+                new SqlParameter("field_over", fieldOver),
+                new SqlParameter("field_under", fieldUnder),
                 new SqlParameter("group_by", groupBy),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
