@@ -387,7 +387,6 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -537,7 +536,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                   </ChartDataLabel>
                                 </ChartEmptyPoints>
                                 <ChartItemInLegend>
-                                  <LegendText>Open</LegendText>
+                                  <LegendText>Used</LegendText>
                                 </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
@@ -862,7 +861,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                           </ChartSeriesHierarchy>
                           <ChartData>
                             <ChartSeriesCollection>
-                              <ChartSeries Name="SetupVariance">
+                              <ChartSeries Name="UsageVariance">
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
@@ -896,7 +895,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                   </ChartDataLabel>
                                 </ChartEmptyPoints>
                                 <ChartItemInLegend>
-                                  <LegendText>Setup Variance</LegendText>
+                                  <LegendText>Usage Variance</LegendText>
                                 </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
