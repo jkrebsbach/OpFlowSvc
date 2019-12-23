@@ -31,6 +31,48 @@
 	3 WasteAmount,
 	3 OverAllocation,
 	4 UnderAllocation,
+	6 CaseCount
+
+UNION ALL
+SELECT 
+	'Item' ItemName,
+	5 SpecialtyID,
+	'Specialty2' Specialty,
+'Surgeon' Surgeon,
+	'Card' CardName,
+	'Procedure' ProcedureName,
+	6 CardQuantity,
+	5 ItemCost,
+	2.2 AvgSetup,
+	2.5 AvgOpen,
+	2.9 AvgUsageVariance,
+	3.1 AvgCardQtyVariance,
+	3.2 AvgUsed,
+	3 UsageVariance,
+	0.3 WasteAmount,
+	0.3 OverAllocation,
+	0.4 UnderAllocation,
+	6 CaseCount
+
+UNION ALL
+SELECT 
+	'Item' ItemName,
+	5 SpecialtyID,
+	'Specialty3' Specialty,
+'Surgeon' Surgeon,
+	'Card' CardName,
+	'Procedure' ProcedureName,
+	6 CardQuantity,
+	5 ItemCost,
+	2.2 AvgSetup,
+	2.5 AvgOpen,
+	2.9 AvgUsageVariance,
+	3.1 AvgCardQtyVariance,
+	3.2 AvgUsed,
+	3 UsageVariance,
+	30 WasteAmount,
+	30 OverAllocation,
+	40 UnderAllocation,
 	6 CaseCount</CommandText>
       </Query>
       <Fields>
@@ -92,11 +134,11 @@
         </Field>
         <Field Name="WasteAmount">
           <DataField>WasteAmount</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
         <Field Name="OverAllocation">
           <DataField>OverAllocation</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
         <Field Name="CaseCount">
           <DataField>CaseCount</DataField>
@@ -104,7 +146,7 @@
         </Field>
         <Field Name="UnderAllocation">
           <DataField>UnderAllocation</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
@@ -147,7 +189,11 @@
                         <Y>=Sum(Fields!WasteAmount.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
-                        <Style />
+                        <Style>
+                          <Format>C</Format>
+                        </Style>
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
@@ -167,6 +213,12 @@
                       <Style />
                     </ChartDataLabel>
                   </ChartEmptyPoints>
+                  <CustomProperties>
+                    <CustomProperty>
+                      <Name>PieLabelStyle</Name>
+                      <Value>Outside</Value>
+                    </CustomProperty>
+                  </CustomProperties>
                   <ValueAxisName>Primary</ValueAxisName>
                   <CategoryAxisName>Primary</CategoryAxisName>
                   <ChartSmartLabel>
@@ -402,6 +454,12 @@
                     </ChartAxisScaleBreak>
                   </ChartAxis>
                 </ChartValueAxes>
+                <ChartThreeDProperties>
+                  <Enabled>true</Enabled>
+                  <Rotation>0</Rotation>
+                  <Inclination>0</Inclination>
+                  <Shading>Simple</Shading>
+                </ChartThreeDProperties>
                 <Style>
                   <BackgroundColor>#00ffffff</BackgroundColor>
                   <BackgroundGradientType>None</BackgroundGradientType>
@@ -458,6 +516,15 @@
               </Style>
             </ChartNoDataMessage>
             <DataSetName>ServiceLineReview</DataSetName>
+            <Filters>
+              <Filter>
+                <FilterExpression>=Fields!WasteAmount.Value</FilterExpression>
+                <Operator>GreaterThan</Operator>
+                <FilterValues>
+                  <FilterValue DataType="Integer">0</FilterValue>
+                </FilterValues>
+              </Filter>
+            </Filters>
             <Height>5in</Height>
             <Width>5in</Width>
             <Style>
@@ -503,7 +570,11 @@
                         <Y>=Sum(Fields!OverAllocation.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
-                        <Style />
+                        <Style>
+                          <Format>C</Format>
+                        </Style>
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
@@ -523,9 +594,16 @@
                       <Style />
                     </ChartDataLabel>
                   </ChartEmptyPoints>
+                  <CustomProperties>
+                    <CustomProperty>
+                      <Name>PieLabelStyle</Name>
+                      <Value>Outside</Value>
+                    </CustomProperty>
+                  </CustomProperties>
                   <ValueAxisName>Primary</ValueAxisName>
                   <CategoryAxisName>Primary</CategoryAxisName>
                   <ChartSmartLabel>
+                    <AllowOutSidePlotArea>True</AllowOutSidePlotArea>
                     <CalloutLineColor>Black</CalloutLineColor>
                     <MinMovingDistance>0pt</MinMovingDistance>
                   </ChartSmartLabel>
@@ -758,6 +836,12 @@
                     </ChartAxisScaleBreak>
                   </ChartAxis>
                 </ChartValueAxes>
+                <ChartThreeDProperties>
+                  <Enabled>true</Enabled>
+                  <Rotation>0</Rotation>
+                  <Inclination>0</Inclination>
+                  <Shading>Simple</Shading>
+                </ChartThreeDProperties>
                 <Style>
                   <BackgroundColor>#00ffffff</BackgroundColor>
                   <BackgroundGradientType>None</BackgroundGradientType>
@@ -814,6 +898,15 @@
               </Style>
             </ChartNoDataMessage>
             <DataSetName>ServiceLineReview</DataSetName>
+            <Filters>
+              <Filter>
+                <FilterExpression>=Fields!OverAllocation.Value</FilterExpression>
+                <Operator>GreaterThan</Operator>
+                <FilterValues>
+                  <FilterValue DataType="Integer">0</FilterValue>
+                </FilterValues>
+              </Filter>
+            </Filters>
             <Left>5.5in</Left>
             <Height>5in</Height>
             <Width>5in</Width>

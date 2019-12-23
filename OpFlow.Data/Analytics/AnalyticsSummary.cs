@@ -137,7 +137,7 @@ namespace OpFlow.Data
         public int? CaseProfileId { get; set; }
         public List<int> QuestionId { get; set; }
         public List<int> AnswerId { get; set; }
-        public string Order {get;set; }
+        public string Order { get; set; }
         public string Group { get; set; }
 
         public bool FieldCase { get; set; }
@@ -161,7 +161,7 @@ namespace OpFlow.Data
         public string Group { get; set; }
     }
 
-    public class TrayConsolidationExportPost 
+    public class TrayConsolidationExportPost
     {
         public List<TrayConsolidationExport> Exports { get; set; }
     }
@@ -182,6 +182,15 @@ namespace OpFlow.Data
         public string Order { get; set; }
     }
 
+    public class ServiceLineSummarySpecialty
+    {
+        public string Specialty { get; set; }
+        public int CardQuantity => Results.Sum(r => r.CardQuantity);
+        public decimal ItemCost => Results.Sum(r => r.ItemCost);
+        public int CaseCount => Results.Sum(r => r.CaseCount);
+        public List<ServiceLineSummary> Results { get; set; }
+    }
+
     public class ServiceLineSummary
     {
         public string ItemName { get; set; }
@@ -191,7 +200,7 @@ namespace OpFlow.Data
         public string CardName { get; set; }
         public string ProcedureName { get; set; }
         public int CardQuantity { get; set; }
-        public int ItemCost { get; set; }
+        public decimal ItemCost { get; set; }
         public decimal AvgSetup { get; set; }
         public decimal AvgOpen { get; set; }
         public decimal AvgUsageVariance { get; set; }

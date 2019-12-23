@@ -1,4 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner"><AutoRefresh>0</AutoRefresh><DataSources><DataSource Name="OpFlow"><DataSourceReference>OpFlow</DataSourceReference><rd:SecurityType>None</rd:SecurityType><rd:DataSourceID>7dee3b8f-847d-47ae-9895-42e57c35c851</rd:DataSourceID></DataSource></DataSources><DataSets><DataSet Name="ServiceLineReview"><Query><DataSourceName>OpFlow</DataSourceName><CommandText>SELECT 
+<?xml version="1.0" encoding="utf-8"?>
+<Report MustUnderstand="df" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:df="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition/defaultfontfamily">
+  <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="OpFlow">
+      <DataSourceReference>OpFlow</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>7dee3b8f-847d-47ae-9895-42e57c35c851</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="ServiceLineReview">
+      <Query>
+        <DataSourceName>OpFlow</DataSourceName>
+        <CommandText>SELECT 
 	'Item' ItemName,
 	5 SpecialtyID,
 	'Specialty' Specialty,
@@ -16,4 +31,913 @@
 	3 WasteAmount,
 	3 OverAllocation,
 	4 UnderAllocation,
-	6 CaseCount</CommandText></Query><Fields><Field Name="ItemName"><DataField>ItemName</DataField><rd:TypeName>System.String</rd:TypeName></Field><Field Name="SpecialtyID"><DataField>SpecialtyID</DataField><rd:TypeName>System.Int32</rd:TypeName></Field><Field Name="Specialty"><DataField>Specialty</DataField><rd:TypeName>System.String</rd:TypeName></Field><Field Name="CardName"><DataField>CardName</DataField><rd:TypeName>System.String</rd:TypeName></Field><Field Name="Surgeon"><DataField>Surgeon</DataField><rd:TypeName>System.String</rd:TypeName></Field><Field Name="ProcedureName"><DataField>ProcedureName</DataField><rd:TypeName>System.String</rd:TypeName></Field><Field Name="CardQuantity"><DataField>CardQuantity</DataField><rd:TypeName>System.Int32</rd:TypeName></Field><Field Name="ItemCost"><DataField>ItemCost</DataField><rd:TypeName>System.Int32</rd:TypeName></Field><Field Name="AvgSetup"><DataField>AvgSetup</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field><Field Name="AvgOpen"><DataField>AvgOpen</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field><Field Name="AvgUsageVariance"><DataField>AvgUsageVariance</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field><Field Name="AvgCardQtyVariance"><DataField>AvgCardQtyVariance</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field><Field Name="AvgUsed"><DataField>AvgUsed</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field><Field Name="UsageVariance"><DataField>UsageVariance</DataField><rd:TypeName>System.Int32</rd:TypeName></Field><Field Name="WasteAmount"><DataField>WasteAmount</DataField><rd:TypeName>System.Int32</rd:TypeName></Field><Field Name="OverAllocation"><DataField>OverAllocation</DataField><rd:TypeName>System.Int32</rd:TypeName></Field><Field Name="CaseCount"><DataField>CaseCount</DataField><rd:TypeName>System.Int32</rd:TypeName></Field><Field Name="UnderAllocation"><DataField>UnderAllocation</DataField><rd:TypeName>System.Int32</rd:TypeName></Field></Fields></DataSet></DataSets><ReportSections><ReportSection><Body><ReportItems><Chart Name="Chart1"><ChartCategoryHierarchy><ChartMembers><ChartMember><Group Name="Chart1_CategoryGroup"><GroupExpressions><GroupExpression>=Fields!Specialty.Value</GroupExpression></GroupExpressions></Group><SortExpressions><SortExpression><Value>=Fields!Specialty.Value</Value></SortExpression></SortExpressions><Label>=Fields!Specialty.Value</Label></ChartMember></ChartMembers></ChartCategoryHierarchy><ChartSeriesHierarchy><ChartMembers><ChartMember><Label>Waste Amount</Label></ChartMember></ChartMembers></ChartSeriesHierarchy><ChartData><ChartSeriesCollection><ChartSeries Name="AvgUsageVariance"><ChartDataPoints><ChartDataPoint><ChartDataPointValues><Y>=Sum(Fields!WasteAmount.Value)</Y></ChartDataPointValues><ChartDataLabel><Style><FontFamily>Segoe UI</FontFamily></Style></ChartDataLabel><Style /><ChartMarker><Style /></ChartMarker><DataElementOutput>Output</DataElementOutput></ChartDataPoint></ChartDataPoints><Type>Shape</Type><Style /><ChartEmptyPoints><Style /><ChartMarker><Style /></ChartMarker><ChartDataLabel><Style><FontFamily>Segoe UI</FontFamily></Style></ChartDataLabel></ChartEmptyPoints><ValueAxisName>Primary</ValueAxisName><CategoryAxisName>Primary</CategoryAxisName><ChartSmartLabel><CalloutLineColor>Black</CalloutLineColor><MinMovingDistance>0pt</MinMovingDistance></ChartSmartLabel></ChartSeries></ChartSeriesCollection></ChartData><ChartAreas><ChartArea Name="Default"><ChartCategoryAxes><ChartAxis Name="Primary"><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border><FontSize>8pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style><ChartAxisTitle><Caption /><Style><FontSize>9pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style></ChartAxisTitle><ChartMajorGridLines><Enabled>False</Enabled><Style><Border><Color>Gainsboro</Color></Border></Style></ChartMajorGridLines><ChartMinorGridLines><Style><Border><Color>Gainsboro</Color><Style>Dotted</Style></Border></Style></ChartMinorGridLines><ChartMajorTickMarks><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border></Style></ChartMajorTickMarks><ChartMinorTickMarks><Style><Border><Color>Gainsboro</Color></Border></Style><Length>0.5</Length></ChartMinorTickMarks><CrossAt>NaN</CrossAt><Minimum>NaN</Minimum><Maximum>NaN</Maximum><ChartAxisScaleBreak><Style /></ChartAxisScaleBreak></ChartAxis><ChartAxis Name="Secondary"><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border><FontSize>8pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style><ChartAxisTitle><Caption /><Style><FontSize>9pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style></ChartAxisTitle><ChartMajorGridLines><Enabled>False</Enabled><Style><Border><Color>Gainsboro</Color></Border></Style></ChartMajorGridLines><ChartMinorGridLines><Style><Border><Color>Gainsboro</Color><Style>Dotted</Style></Border></Style></ChartMinorGridLines><ChartMajorTickMarks><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border></Style></ChartMajorTickMarks><ChartMinorTickMarks><Style><Border><Color>Gainsboro</Color></Border></Style><Length>0.5</Length></ChartMinorTickMarks><CrossAt>NaN</CrossAt><Location>Opposite</Location><Minimum>NaN</Minimum><Maximum>NaN</Maximum><ChartAxisScaleBreak><Style /></ChartAxisScaleBreak></ChartAxis></ChartCategoryAxes><ChartValueAxes><ChartAxis Name="Primary"><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border><FontSize>8pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style><ChartAxisTitle><Caption /><Style><FontSize>9pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style></ChartAxisTitle><ChartMajorGridLines><Style><Border><Color>Gainsboro</Color></Border></Style></ChartMajorGridLines><ChartMinorGridLines><Style><Border><Color>Gainsboro</Color><Style>Dotted</Style></Border></Style></ChartMinorGridLines><ChartMajorTickMarks><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border></Style></ChartMajorTickMarks><ChartMinorTickMarks><Style><Border><Color>Gainsboro</Color></Border></Style><Length>0.5</Length></ChartMinorTickMarks><CrossAt>NaN</CrossAt><Minimum>NaN</Minimum><Maximum>NaN</Maximum><ChartAxisScaleBreak><Style /></ChartAxisScaleBreak></ChartAxis><ChartAxis Name="Secondary"><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border><FontSize>8pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style><ChartAxisTitle><Caption /><Style><FontSize>9pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style></ChartAxisTitle><ChartMajorGridLines><Style><Border><Color>Gainsboro</Color></Border></Style></ChartMajorGridLines><ChartMinorGridLines><Style><Border><Color>Gainsboro</Color><Style>Dotted</Style></Border></Style></ChartMinorGridLines><ChartMajorTickMarks><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border></Style></ChartMajorTickMarks><ChartMinorTickMarks><Style><Border><Color>Gainsboro</Color></Border></Style><Length>0.5</Length></ChartMinorTickMarks><CrossAt>NaN</CrossAt><Location>Opposite</Location><Minimum>NaN</Minimum><Maximum>NaN</Maximum><ChartAxisScaleBreak><Style /></ChartAxisScaleBreak></ChartAxis></ChartValueAxes><Style><BackgroundColor>#00ffffff</BackgroundColor><BackgroundGradientType>None</BackgroundGradientType></Style></ChartArea></ChartAreas><ChartLegends><ChartLegend Name="Default"><Style><BackgroundGradientType>None</BackgroundGradientType><FontSize>8pt</FontSize><FontFamily>Segoe UI</FontFamily></Style><ChartLegendTitle><Caption /><Style><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight><TextAlign>Center</TextAlign><FontFamily>Segoe UI</FontFamily></Style></ChartLegendTitle><HeaderSeparatorColor>Black</HeaderSeparatorColor><ColumnSeparatorColor>Black</ColumnSeparatorColor></ChartLegend></ChartLegends><ChartTitles><ChartTitle Name="Default"><Caption>% of Waste by Service Line</Caption><Style><BackgroundGradientType>None</BackgroundGradientType><FontSize>9pt</FontSize><FontWeight>Normal</FontWeight><TextAlign>Left</TextAlign><VerticalAlign>Top</VerticalAlign><Color>#a6a6a6</Color><FontFamily>Segoe UI</FontFamily></Style><Position>TopLeft</Position></ChartTitle></ChartTitles><Palette>Custom</Palette><ChartCustomPaletteColors><ChartCustomPaletteColor>#01b8aa</ChartCustomPaletteColor><ChartCustomPaletteColor>#374649</ChartCustomPaletteColor><ChartCustomPaletteColor>#fd625e</ChartCustomPaletteColor><ChartCustomPaletteColor>#f2c80f</ChartCustomPaletteColor><ChartCustomPaletteColor>#5f6b6d</ChartCustomPaletteColor><ChartCustomPaletteColor>#8ad4eb</ChartCustomPaletteColor><ChartCustomPaletteColor>#fe9666</ChartCustomPaletteColor><ChartCustomPaletteColor>#a66999</ChartCustomPaletteColor><ChartCustomPaletteColor>#3599b8</ChartCustomPaletteColor><ChartCustomPaletteColor>#dfbfbf</ChartCustomPaletteColor><ChartCustomPaletteColor>#4ac5bb</ChartCustomPaletteColor><ChartCustomPaletteColor>#5f6b6d</ChartCustomPaletteColor><ChartCustomPaletteColor>#fb8281</ChartCustomPaletteColor><ChartCustomPaletteColor>#f4d25a</ChartCustomPaletteColor><ChartCustomPaletteColor>#7f898a</ChartCustomPaletteColor><ChartCustomPaletteColor>#a4ddee</ChartCustomPaletteColor><ChartCustomPaletteColor>#fdab89</ChartCustomPaletteColor><ChartCustomPaletteColor>#b687ac</ChartCustomPaletteColor><ChartCustomPaletteColor>#28738a</ChartCustomPaletteColor><ChartCustomPaletteColor>#a78f8f</ChartCustomPaletteColor></ChartCustomPaletteColors><ChartBorderSkin><Style><BackgroundColor>Gray</BackgroundColor><BackgroundGradientType>None</BackgroundGradientType><Color>White</Color></Style></ChartBorderSkin><ChartNoDataMessage Name="NoDataMessage"><Caption>No Data Available</Caption><Style><BackgroundGradientType>None</BackgroundGradientType><FontWeight>Bold</FontWeight><TextAlign>General</TextAlign><VerticalAlign>Top</VerticalAlign></Style></ChartNoDataMessage><DataSetName>ServiceLineReview</DataSetName><Height>5in</Height><Width>5in</Width><Style><Border><Color>LightGrey</Color><Style>None</Style></Border><BackgroundColor>White</BackgroundColor><BackgroundGradientType>None</BackgroundGradientType></Style></Chart><Chart Name="Chart2"><ChartCategoryHierarchy><ChartMembers><ChartMember><Group Name="Chart2_CategoryGroup"><GroupExpressions><GroupExpression>=Fields!Specialty.Value</GroupExpression></GroupExpressions></Group><SortExpressions><SortExpression><Value>=Fields!Specialty.Value</Value></SortExpression></SortExpressions><Label>=Fields!Specialty.Value</Label></ChartMember></ChartMembers></ChartCategoryHierarchy><ChartSeriesHierarchy><ChartMembers><ChartMember><Label>Over Allocation</Label></ChartMember></ChartMembers></ChartSeriesHierarchy><ChartData><ChartSeriesCollection><ChartSeries Name="CardQtyVariance"><ChartDataPoints><ChartDataPoint><ChartDataPointValues><Y>=Sum(Fields!OverAllocation.Value)</Y></ChartDataPointValues><ChartDataLabel><Style><FontFamily>Segoe UI</FontFamily></Style></ChartDataLabel><Style /><ChartMarker><Style /></ChartMarker><DataElementOutput>Output</DataElementOutput></ChartDataPoint></ChartDataPoints><Type>Shape</Type><Style /><ChartEmptyPoints><Style /><ChartMarker><Style /></ChartMarker><ChartDataLabel><Style><FontFamily>Segoe UI</FontFamily></Style></ChartDataLabel></ChartEmptyPoints><ValueAxisName>Primary</ValueAxisName><CategoryAxisName>Primary</CategoryAxisName><ChartSmartLabel><CalloutLineColor>Black</CalloutLineColor><MinMovingDistance>0pt</MinMovingDistance></ChartSmartLabel></ChartSeries></ChartSeriesCollection></ChartData><ChartAreas><ChartArea Name="Default"><ChartCategoryAxes><ChartAxis Name="Primary"><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border><FontSize>8pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style><ChartAxisTitle><Caption /><Style><FontSize>9pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style></ChartAxisTitle><ChartMajorGridLines><Enabled>False</Enabled><Style><Border><Color>Gainsboro</Color></Border></Style></ChartMajorGridLines><ChartMinorGridLines><Style><Border><Color>Gainsboro</Color><Style>Dotted</Style></Border></Style></ChartMinorGridLines><ChartMajorTickMarks><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border></Style></ChartMajorTickMarks><ChartMinorTickMarks><Style><Border><Color>Gainsboro</Color></Border></Style><Length>0.5</Length></ChartMinorTickMarks><CrossAt>NaN</CrossAt><Minimum>NaN</Minimum><Maximum>NaN</Maximum><ChartAxisScaleBreak><Style /></ChartAxisScaleBreak></ChartAxis><ChartAxis Name="Secondary"><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border><FontSize>8pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style><ChartAxisTitle><Caption /><Style><FontSize>9pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style></ChartAxisTitle><ChartMajorGridLines><Enabled>False</Enabled><Style><Border><Color>Gainsboro</Color></Border></Style></ChartMajorGridLines><ChartMinorGridLines><Style><Border><Color>Gainsboro</Color><Style>Dotted</Style></Border></Style></ChartMinorGridLines><ChartMajorTickMarks><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border></Style></ChartMajorTickMarks><ChartMinorTickMarks><Style><Border><Color>Gainsboro</Color></Border></Style><Length>0.5</Length></ChartMinorTickMarks><CrossAt>NaN</CrossAt><Location>Opposite</Location><Minimum>NaN</Minimum><Maximum>NaN</Maximum><ChartAxisScaleBreak><Style /></ChartAxisScaleBreak></ChartAxis></ChartCategoryAxes><ChartValueAxes><ChartAxis Name="Primary"><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border><FontSize>8pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style><ChartAxisTitle><Caption /><Style><FontSize>9pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style></ChartAxisTitle><ChartMajorGridLines><Style><Border><Color>Gainsboro</Color></Border></Style></ChartMajorGridLines><ChartMinorGridLines><Style><Border><Color>Gainsboro</Color><Style>Dotted</Style></Border></Style></ChartMinorGridLines><ChartMajorTickMarks><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border></Style></ChartMajorTickMarks><ChartMinorTickMarks><Style><Border><Color>Gainsboro</Color></Border></Style><Length>0.5</Length></ChartMinorTickMarks><CrossAt>NaN</CrossAt><Minimum>NaN</Minimum><Maximum>NaN</Maximum><ChartAxisScaleBreak><Style /></ChartAxisScaleBreak></ChartAxis><ChartAxis Name="Secondary"><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border><FontSize>8pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style><ChartAxisTitle><Caption /><Style><FontSize>9pt</FontSize><Color>#5c5c5c</Color><FontFamily>Segoe UI</FontFamily></Style></ChartAxisTitle><ChartMajorGridLines><Style><Border><Color>Gainsboro</Color></Border></Style></ChartMajorGridLines><ChartMinorGridLines><Style><Border><Color>Gainsboro</Color><Style>Dotted</Style></Border></Style></ChartMinorGridLines><ChartMajorTickMarks><Style><Border><Color>Gainsboro</Color><Style>None</Style></Border></Style></ChartMajorTickMarks><ChartMinorTickMarks><Style><Border><Color>Gainsboro</Color></Border></Style><Length>0.5</Length></ChartMinorTickMarks><CrossAt>NaN</CrossAt><Location>Opposite</Location><Minimum>NaN</Minimum><Maximum>NaN</Maximum><ChartAxisScaleBreak><Style /></ChartAxisScaleBreak></ChartAxis></ChartValueAxes><Style><BackgroundColor>#00ffffff</BackgroundColor><BackgroundGradientType>None</BackgroundGradientType></Style></ChartArea></ChartAreas><ChartLegends><ChartLegend Name="Default"><Style><BackgroundGradientType>None</BackgroundGradientType><FontSize>8pt</FontSize><FontFamily>Segoe UI</FontFamily></Style><ChartLegendTitle><Caption /><Style><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight><TextAlign>Center</TextAlign><FontFamily>Segoe UI</FontFamily></Style></ChartLegendTitle><HeaderSeparatorColor>Black</HeaderSeparatorColor><ColumnSeparatorColor>Black</ColumnSeparatorColor></ChartLegend></ChartLegends><ChartTitles><ChartTitle Name="Default"><Caption>% Over Allocation by Service Line</Caption><Style><BackgroundGradientType>None</BackgroundGradientType><FontSize>9pt</FontSize><FontWeight>Normal</FontWeight><TextAlign>Left</TextAlign><VerticalAlign>Top</VerticalAlign><Color>#a6a6a6</Color><FontFamily>Segoe UI</FontFamily></Style><Position>TopLeft</Position></ChartTitle></ChartTitles><Palette>Custom</Palette><ChartCustomPaletteColors><ChartCustomPaletteColor>#01b8aa</ChartCustomPaletteColor><ChartCustomPaletteColor>#374649</ChartCustomPaletteColor><ChartCustomPaletteColor>#fd625e</ChartCustomPaletteColor><ChartCustomPaletteColor>#f2c80f</ChartCustomPaletteColor><ChartCustomPaletteColor>#5f6b6d</ChartCustomPaletteColor><ChartCustomPaletteColor>#8ad4eb</ChartCustomPaletteColor><ChartCustomPaletteColor>#fe9666</ChartCustomPaletteColor><ChartCustomPaletteColor>#a66999</ChartCustomPaletteColor><ChartCustomPaletteColor>#3599b8</ChartCustomPaletteColor><ChartCustomPaletteColor>#dfbfbf</ChartCustomPaletteColor><ChartCustomPaletteColor>#4ac5bb</ChartCustomPaletteColor><ChartCustomPaletteColor>#5f6b6d</ChartCustomPaletteColor><ChartCustomPaletteColor>#fb8281</ChartCustomPaletteColor><ChartCustomPaletteColor>#f4d25a</ChartCustomPaletteColor><ChartCustomPaletteColor>#7f898a</ChartCustomPaletteColor><ChartCustomPaletteColor>#a4ddee</ChartCustomPaletteColor><ChartCustomPaletteColor>#fdab89</ChartCustomPaletteColor><ChartCustomPaletteColor>#b687ac</ChartCustomPaletteColor><ChartCustomPaletteColor>#28738a</ChartCustomPaletteColor><ChartCustomPaletteColor>#a78f8f</ChartCustomPaletteColor></ChartCustomPaletteColors><ChartBorderSkin><Style><BackgroundColor>Gray</BackgroundColor><BackgroundGradientType>None</BackgroundGradientType><Color>White</Color></Style></ChartBorderSkin><ChartNoDataMessage Name="NoDataMessage"><Caption>No Data Available</Caption><Style><BackgroundGradientType>None</BackgroundGradientType><FontWeight>Bold</FontWeight><TextAlign>General</TextAlign><VerticalAlign>Top</VerticalAlign></Style></ChartNoDataMessage><DataSetName>ServiceLineReview</DataSetName><Left>5.5in</Left><Height>5in</Height><Width>5in</Width><ZIndex>1</ZIndex><Style><Border><Color>LightGrey</Color><Style>None</Style></Border><BackgroundColor>White</BackgroundColor><BackgroundGradientType>None</BackgroundGradientType></Style></Chart></ReportItems><Height>5in</Height><Style /></Body><Width>10.5in</Width><Page><PageHeight>6in</PageHeight><PageWidth>11in</PageWidth><Style /></Page></ReportSection></ReportSections><rd:ReportUnitType>Inch</rd:ReportUnitType><rd:ReportID>1efbd37d-ae99-4039-863b-71498cf6c984</rd:ReportID></Report>
+	6 CaseCount
+
+UNION ALL
+SELECT 
+	'Item' ItemName,
+	5 SpecialtyID,
+	'Specialty2' Specialty,
+'Surgeon' Surgeon,
+	'Card' CardName,
+	'Procedure' ProcedureName,
+	6 CardQuantity,
+	5 ItemCost,
+	2.2 AvgSetup,
+	2.5 AvgOpen,
+	2.9 AvgUsageVariance,
+	3.1 AvgCardQtyVariance,
+	3.2 AvgUsed,
+	3 UsageVariance,
+	0.3 WasteAmount,
+	0.3 OverAllocation,
+	0.4 UnderAllocation,
+	6 CaseCount
+
+UNION ALL
+SELECT 
+	'Item' ItemName,
+	5 SpecialtyID,
+	'Specialty3' Specialty,
+'Surgeon' Surgeon,
+	'Card' CardName,
+	'Procedure' ProcedureName,
+	6 CardQuantity,
+	5 ItemCost,
+	2.2 AvgSetup,
+	2.5 AvgOpen,
+	2.9 AvgUsageVariance,
+	3.1 AvgCardQtyVariance,
+	3.2 AvgUsed,
+	3 UsageVariance,
+	30 WasteAmount,
+	30 OverAllocation,
+	40 UnderAllocation,
+	6 CaseCount</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="ItemName">
+          <DataField>ItemName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="SpecialtyID">
+          <DataField>SpecialtyID</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Specialty">
+          <DataField>Specialty</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CardName">
+          <DataField>CardName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Surgeon">
+          <DataField>Surgeon</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ProcedureName">
+          <DataField>ProcedureName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CardQuantity">
+          <DataField>CardQuantity</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="ItemCost">
+          <DataField>ItemCost</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="AvgSetup">
+          <DataField>AvgSetup</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="AvgOpen">
+          <DataField>AvgOpen</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="AvgUsageVariance">
+          <DataField>AvgUsageVariance</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="AvgCardQtyVariance">
+          <DataField>AvgCardQtyVariance</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="AvgUsed">
+          <DataField>AvgUsed</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="UsageVariance">
+          <DataField>UsageVariance</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="WasteAmount">
+          <DataField>WasteAmount</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="OverAllocation">
+          <DataField>OverAllocation</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="CaseCount">
+          <DataField>CaseCount</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="UnderAllocation">
+          <DataField>UnderAllocation</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Chart Name="Chart1">
+            <ChartCategoryHierarchy>
+              <ChartMembers>
+                <ChartMember>
+                  <Group Name="Chart1_CategoryGroup">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!Specialty.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!Specialty.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
+                  <Label>=Fields!Specialty.Value</Label>
+                </ChartMember>
+              </ChartMembers>
+            </ChartCategoryHierarchy>
+            <ChartSeriesHierarchy>
+              <ChartMembers>
+                <ChartMember>
+                  <Label>Waste Amount</Label>
+                </ChartMember>
+              </ChartMembers>
+            </ChartSeriesHierarchy>
+            <ChartData>
+              <ChartSeriesCollection>
+                <ChartSeries Name="AvgUsageVariance">
+                  <ChartDataPoints>
+                    <ChartDataPoint>
+                      <ChartDataPointValues>
+                        <Y>=Sum(Fields!WasteAmount.Value)</Y>
+                      </ChartDataPointValues>
+                      <ChartDataLabel>
+                        <Style>
+                          <Format>C</Format>
+                        </Style>
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
+                      </ChartDataLabel>
+                      <Style />
+                      <ChartMarker>
+                        <Style />
+                      </ChartMarker>
+                      <DataElementOutput>Output</DataElementOutput>
+                    </ChartDataPoint>
+                  </ChartDataPoints>
+                  <Type>Shape</Type>
+                  <Style />
+                  <ChartEmptyPoints>
+                    <Style />
+                    <ChartMarker>
+                      <Style />
+                    </ChartMarker>
+                    <ChartDataLabel>
+                      <Style />
+                    </ChartDataLabel>
+                  </ChartEmptyPoints>
+                  <CustomProperties>
+                    <CustomProperty>
+                      <Name>PieLabelStyle</Name>
+                      <Value>Outside</Value>
+                    </CustomProperty>
+                  </CustomProperties>
+                  <ValueAxisName>Primary</ValueAxisName>
+                  <CategoryAxisName>Primary</CategoryAxisName>
+                  <ChartSmartLabel>
+                    <CalloutLineColor>Black</CalloutLineColor>
+                    <MinMovingDistance>0pt</MinMovingDistance>
+                  </ChartSmartLabel>
+                </ChartSeries>
+              </ChartSeriesCollection>
+            </ChartData>
+            <ChartAreas>
+              <ChartArea Name="Default">
+                <ChartCategoryAxes>
+                  <ChartAxis Name="Primary">
+                    <Style>
+                      <Border>
+                        <Color>Gainsboro</Color>
+                        <Style>None</Style>
+                      </Border>
+                      <FontSize>8pt</FontSize>
+                      <Color>#5c5c5c</Color>
+                    </Style>
+                    <ChartAxisTitle>
+                      <Caption />
+                      <Style>
+                        <FontSize>9pt</FontSize>
+                        <Color>#5c5c5c</Color>
+                      </Style>
+                    </ChartAxisTitle>
+                    <ChartMajorGridLines>
+                      <Enabled>False</Enabled>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                    </ChartMajorGridLines>
+                    <ChartMinorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>Dotted</Style>
+                        </Border>
+                      </Style>
+                    </ChartMinorGridLines>
+                    <ChartMajorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>None</Style>
+                        </Border>
+                      </Style>
+                    </ChartMajorTickMarks>
+                    <ChartMinorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                      <Length>0.5</Length>
+                    </ChartMinorTickMarks>
+                    <CrossAt>NaN</CrossAt>
+                    <Minimum>NaN</Minimum>
+                    <Maximum>NaN</Maximum>
+                    <ChartAxisScaleBreak>
+                      <Style />
+                    </ChartAxisScaleBreak>
+                  </ChartAxis>
+                  <ChartAxis Name="Secondary">
+                    <Style>
+                      <Border>
+                        <Color>Gainsboro</Color>
+                        <Style>None</Style>
+                      </Border>
+                      <FontSize>8pt</FontSize>
+                      <Color>#5c5c5c</Color>
+                    </Style>
+                    <ChartAxisTitle>
+                      <Caption />
+                      <Style>
+                        <FontSize>9pt</FontSize>
+                        <Color>#5c5c5c</Color>
+                      </Style>
+                    </ChartAxisTitle>
+                    <ChartMajorGridLines>
+                      <Enabled>False</Enabled>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                    </ChartMajorGridLines>
+                    <ChartMinorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>Dotted</Style>
+                        </Border>
+                      </Style>
+                    </ChartMinorGridLines>
+                    <ChartMajorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>None</Style>
+                        </Border>
+                      </Style>
+                    </ChartMajorTickMarks>
+                    <ChartMinorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                      <Length>0.5</Length>
+                    </ChartMinorTickMarks>
+                    <CrossAt>NaN</CrossAt>
+                    <Location>Opposite</Location>
+                    <Minimum>NaN</Minimum>
+                    <Maximum>NaN</Maximum>
+                    <ChartAxisScaleBreak>
+                      <Style />
+                    </ChartAxisScaleBreak>
+                  </ChartAxis>
+                </ChartCategoryAxes>
+                <ChartValueAxes>
+                  <ChartAxis Name="Primary">
+                    <Style>
+                      <Border>
+                        <Color>Gainsboro</Color>
+                        <Style>None</Style>
+                      </Border>
+                      <FontSize>8pt</FontSize>
+                      <Color>#5c5c5c</Color>
+                    </Style>
+                    <ChartAxisTitle>
+                      <Caption />
+                      <Style>
+                        <FontSize>9pt</FontSize>
+                        <Color>#5c5c5c</Color>
+                      </Style>
+                    </ChartAxisTitle>
+                    <ChartMajorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                    </ChartMajorGridLines>
+                    <ChartMinorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>Dotted</Style>
+                        </Border>
+                      </Style>
+                    </ChartMinorGridLines>
+                    <ChartMajorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>None</Style>
+                        </Border>
+                      </Style>
+                    </ChartMajorTickMarks>
+                    <ChartMinorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                      <Length>0.5</Length>
+                    </ChartMinorTickMarks>
+                    <CrossAt>NaN</CrossAt>
+                    <Minimum>NaN</Minimum>
+                    <Maximum>NaN</Maximum>
+                    <ChartAxisScaleBreak>
+                      <Style />
+                    </ChartAxisScaleBreak>
+                  </ChartAxis>
+                  <ChartAxis Name="Secondary">
+                    <Style>
+                      <Border>
+                        <Color>Gainsboro</Color>
+                        <Style>None</Style>
+                      </Border>
+                      <FontSize>8pt</FontSize>
+                      <Color>#5c5c5c</Color>
+                    </Style>
+                    <ChartAxisTitle>
+                      <Caption />
+                      <Style>
+                        <FontSize>9pt</FontSize>
+                        <Color>#5c5c5c</Color>
+                      </Style>
+                    </ChartAxisTitle>
+                    <ChartMajorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                    </ChartMajorGridLines>
+                    <ChartMinorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>Dotted</Style>
+                        </Border>
+                      </Style>
+                    </ChartMinorGridLines>
+                    <ChartMajorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>None</Style>
+                        </Border>
+                      </Style>
+                    </ChartMajorTickMarks>
+                    <ChartMinorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                      <Length>0.5</Length>
+                    </ChartMinorTickMarks>
+                    <CrossAt>NaN</CrossAt>
+                    <Location>Opposite</Location>
+                    <Minimum>NaN</Minimum>
+                    <Maximum>NaN</Maximum>
+                    <ChartAxisScaleBreak>
+                      <Style />
+                    </ChartAxisScaleBreak>
+                  </ChartAxis>
+                </ChartValueAxes>
+                <ChartThreeDProperties>
+                  <Enabled>true</Enabled>
+                  <Rotation>0</Rotation>
+                  <Inclination>0</Inclination>
+                  <Shading>Simple</Shading>
+                </ChartThreeDProperties>
+                <Style>
+                  <BackgroundColor>#00ffffff</BackgroundColor>
+                  <BackgroundGradientType>None</BackgroundGradientType>
+                </Style>
+              </ChartArea>
+            </ChartAreas>
+            <ChartLegends>
+              <ChartLegend Name="Default">
+                <Style>
+                  <BackgroundGradientType>None</BackgroundGradientType>
+                  <FontSize>8pt</FontSize>
+                </Style>
+                <ChartLegendTitle>
+                  <Caption />
+                  <Style>
+                    <FontSize>8pt</FontSize>
+                    <FontWeight>Bold</FontWeight>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
+                </ChartLegendTitle>
+                <HeaderSeparatorColor>Black</HeaderSeparatorColor>
+                <ColumnSeparatorColor>Black</ColumnSeparatorColor>
+              </ChartLegend>
+            </ChartLegends>
+            <ChartTitles>
+              <ChartTitle Name="Default">
+                <Caption>% of Waste by Service Line</Caption>
+                <Style>
+                  <BackgroundGradientType>None</BackgroundGradientType>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextAlign>Left</TextAlign>
+                  <VerticalAlign>Top</VerticalAlign>
+                  <Color>#a6a6a6</Color>
+                </Style>
+                <Position>TopLeft</Position>
+              </ChartTitle>
+            </ChartTitles>
+            <Palette>Pacific</Palette>
+            <ChartBorderSkin>
+              <Style>
+                <BackgroundColor>Gray</BackgroundColor>
+                <BackgroundGradientType>None</BackgroundGradientType>
+                <Color>White</Color>
+              </Style>
+            </ChartBorderSkin>
+            <ChartNoDataMessage Name="NoDataMessage">
+              <Caption>No Data Available</Caption>
+              <Style>
+                <BackgroundGradientType>None</BackgroundGradientType>
+                <FontWeight>Bold</FontWeight>
+                <TextAlign>General</TextAlign>
+                <VerticalAlign>Top</VerticalAlign>
+              </Style>
+            </ChartNoDataMessage>
+            <DataSetName>ServiceLineReview</DataSetName>
+            <Filters>
+              <Filter>
+                <FilterExpression>=Fields!WasteAmount.Value</FilterExpression>
+                <Operator>GreaterThan</Operator>
+                <FilterValues>
+                  <FilterValue DataType="Integer">0</FilterValue>
+                </FilterValues>
+              </Filter>
+            </Filters>
+            <Height>5in</Height>
+            <Width>5in</Width>
+            <Style>
+              <Border>
+                <Color>LightGrey</Color>
+                <Style>None</Style>
+              </Border>
+              <BackgroundColor>White</BackgroundColor>
+              <BackgroundGradientType>None</BackgroundGradientType>
+            </Style>
+          </Chart>
+          <Chart Name="Chart2">
+            <ChartCategoryHierarchy>
+              <ChartMembers>
+                <ChartMember>
+                  <Group Name="Chart2_CategoryGroup">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!Specialty.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!Specialty.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
+                  <Label>=Fields!Specialty.Value</Label>
+                </ChartMember>
+              </ChartMembers>
+            </ChartCategoryHierarchy>
+            <ChartSeriesHierarchy>
+              <ChartMembers>
+                <ChartMember>
+                  <Label>Over Allocation</Label>
+                </ChartMember>
+              </ChartMembers>
+            </ChartSeriesHierarchy>
+            <ChartData>
+              <ChartSeriesCollection>
+                <ChartSeries Name="CardQtyVariance">
+                  <ChartDataPoints>
+                    <ChartDataPoint>
+                      <ChartDataPointValues>
+                        <Y>=Sum(Fields!OverAllocation.Value)</Y>
+                      </ChartDataPointValues>
+                      <ChartDataLabel>
+                        <Style>
+                          <Format>C</Format>
+                        </Style>
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
+                      </ChartDataLabel>
+                      <Style />
+                      <ChartMarker>
+                        <Style />
+                      </ChartMarker>
+                      <DataElementOutput>Output</DataElementOutput>
+                    </ChartDataPoint>
+                  </ChartDataPoints>
+                  <Type>Shape</Type>
+                  <Style />
+                  <ChartEmptyPoints>
+                    <Style />
+                    <ChartMarker>
+                      <Style />
+                    </ChartMarker>
+                    <ChartDataLabel>
+                      <Style />
+                    </ChartDataLabel>
+                  </ChartEmptyPoints>
+                  <CustomProperties>
+                    <CustomProperty>
+                      <Name>PieLabelStyle</Name>
+                      <Value>Outside</Value>
+                    </CustomProperty>
+                  </CustomProperties>
+                  <ValueAxisName>Primary</ValueAxisName>
+                  <CategoryAxisName>Primary</CategoryAxisName>
+                  <ChartSmartLabel>
+                    <AllowOutSidePlotArea>True</AllowOutSidePlotArea>
+                    <CalloutLineColor>Black</CalloutLineColor>
+                    <MinMovingDistance>0pt</MinMovingDistance>
+                  </ChartSmartLabel>
+                </ChartSeries>
+              </ChartSeriesCollection>
+            </ChartData>
+            <ChartAreas>
+              <ChartArea Name="Default">
+                <ChartCategoryAxes>
+                  <ChartAxis Name="Primary">
+                    <Style>
+                      <Border>
+                        <Color>Gainsboro</Color>
+                        <Style>None</Style>
+                      </Border>
+                      <FontSize>8pt</FontSize>
+                      <Color>#5c5c5c</Color>
+                    </Style>
+                    <ChartAxisTitle>
+                      <Caption />
+                      <Style>
+                        <FontSize>9pt</FontSize>
+                        <Color>#5c5c5c</Color>
+                      </Style>
+                    </ChartAxisTitle>
+                    <ChartMajorGridLines>
+                      <Enabled>False</Enabled>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                    </ChartMajorGridLines>
+                    <ChartMinorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>Dotted</Style>
+                        </Border>
+                      </Style>
+                    </ChartMinorGridLines>
+                    <ChartMajorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>None</Style>
+                        </Border>
+                      </Style>
+                    </ChartMajorTickMarks>
+                    <ChartMinorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                      <Length>0.5</Length>
+                    </ChartMinorTickMarks>
+                    <CrossAt>NaN</CrossAt>
+                    <Minimum>NaN</Minimum>
+                    <Maximum>NaN</Maximum>
+                    <ChartAxisScaleBreak>
+                      <Style />
+                    </ChartAxisScaleBreak>
+                  </ChartAxis>
+                  <ChartAxis Name="Secondary">
+                    <Style>
+                      <Border>
+                        <Color>Gainsboro</Color>
+                        <Style>None</Style>
+                      </Border>
+                      <FontSize>8pt</FontSize>
+                      <Color>#5c5c5c</Color>
+                    </Style>
+                    <ChartAxisTitle>
+                      <Caption />
+                      <Style>
+                        <FontSize>9pt</FontSize>
+                        <Color>#5c5c5c</Color>
+                      </Style>
+                    </ChartAxisTitle>
+                    <ChartMajorGridLines>
+                      <Enabled>False</Enabled>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                    </ChartMajorGridLines>
+                    <ChartMinorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>Dotted</Style>
+                        </Border>
+                      </Style>
+                    </ChartMinorGridLines>
+                    <ChartMajorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>None</Style>
+                        </Border>
+                      </Style>
+                    </ChartMajorTickMarks>
+                    <ChartMinorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                      <Length>0.5</Length>
+                    </ChartMinorTickMarks>
+                    <CrossAt>NaN</CrossAt>
+                    <Location>Opposite</Location>
+                    <Minimum>NaN</Minimum>
+                    <Maximum>NaN</Maximum>
+                    <ChartAxisScaleBreak>
+                      <Style />
+                    </ChartAxisScaleBreak>
+                  </ChartAxis>
+                </ChartCategoryAxes>
+                <ChartValueAxes>
+                  <ChartAxis Name="Primary">
+                    <Style>
+                      <Border>
+                        <Color>Gainsboro</Color>
+                        <Style>None</Style>
+                      </Border>
+                      <FontSize>8pt</FontSize>
+                      <Color>#5c5c5c</Color>
+                    </Style>
+                    <ChartAxisTitle>
+                      <Caption />
+                      <Style>
+                        <FontSize>9pt</FontSize>
+                        <Color>#5c5c5c</Color>
+                      </Style>
+                    </ChartAxisTitle>
+                    <ChartMajorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                    </ChartMajorGridLines>
+                    <ChartMinorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>Dotted</Style>
+                        </Border>
+                      </Style>
+                    </ChartMinorGridLines>
+                    <ChartMajorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>None</Style>
+                        </Border>
+                      </Style>
+                    </ChartMajorTickMarks>
+                    <ChartMinorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                      <Length>0.5</Length>
+                    </ChartMinorTickMarks>
+                    <CrossAt>NaN</CrossAt>
+                    <Minimum>NaN</Minimum>
+                    <Maximum>NaN</Maximum>
+                    <ChartAxisScaleBreak>
+                      <Style />
+                    </ChartAxisScaleBreak>
+                  </ChartAxis>
+                  <ChartAxis Name="Secondary">
+                    <Style>
+                      <Border>
+                        <Color>Gainsboro</Color>
+                        <Style>None</Style>
+                      </Border>
+                      <FontSize>8pt</FontSize>
+                      <Color>#5c5c5c</Color>
+                    </Style>
+                    <ChartAxisTitle>
+                      <Caption />
+                      <Style>
+                        <FontSize>9pt</FontSize>
+                        <Color>#5c5c5c</Color>
+                      </Style>
+                    </ChartAxisTitle>
+                    <ChartMajorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                    </ChartMajorGridLines>
+                    <ChartMinorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>Dotted</Style>
+                        </Border>
+                      </Style>
+                    </ChartMinorGridLines>
+                    <ChartMajorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>None</Style>
+                        </Border>
+                      </Style>
+                    </ChartMajorTickMarks>
+                    <ChartMinorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                      <Length>0.5</Length>
+                    </ChartMinorTickMarks>
+                    <CrossAt>NaN</CrossAt>
+                    <Location>Opposite</Location>
+                    <Minimum>NaN</Minimum>
+                    <Maximum>NaN</Maximum>
+                    <ChartAxisScaleBreak>
+                      <Style />
+                    </ChartAxisScaleBreak>
+                  </ChartAxis>
+                </ChartValueAxes>
+                <ChartThreeDProperties>
+                  <Enabled>true</Enabled>
+                  <Rotation>0</Rotation>
+                  <Inclination>0</Inclination>
+                  <Shading>Simple</Shading>
+                </ChartThreeDProperties>
+                <Style>
+                  <BackgroundColor>#00ffffff</BackgroundColor>
+                  <BackgroundGradientType>None</BackgroundGradientType>
+                </Style>
+              </ChartArea>
+            </ChartAreas>
+            <ChartLegends>
+              <ChartLegend Name="Default">
+                <Style>
+                  <BackgroundGradientType>None</BackgroundGradientType>
+                  <FontSize>8pt</FontSize>
+                </Style>
+                <ChartLegendTitle>
+                  <Caption />
+                  <Style>
+                    <FontSize>8pt</FontSize>
+                    <FontWeight>Bold</FontWeight>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
+                </ChartLegendTitle>
+                <HeaderSeparatorColor>Black</HeaderSeparatorColor>
+                <ColumnSeparatorColor>Black</ColumnSeparatorColor>
+              </ChartLegend>
+            </ChartLegends>
+            <ChartTitles>
+              <ChartTitle Name="Default">
+                <Caption>% Over Allocation by Service Line</Caption>
+                <Style>
+                  <BackgroundGradientType>None</BackgroundGradientType>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextAlign>Left</TextAlign>
+                  <VerticalAlign>Top</VerticalAlign>
+                  <Color>#a6a6a6</Color>
+                </Style>
+                <Position>TopLeft</Position>
+              </ChartTitle>
+            </ChartTitles>
+            <Palette>Pacific</Palette>
+            <ChartBorderSkin>
+              <Style>
+                <BackgroundColor>Gray</BackgroundColor>
+                <BackgroundGradientType>None</BackgroundGradientType>
+                <Color>White</Color>
+              </Style>
+            </ChartBorderSkin>
+            <ChartNoDataMessage Name="NoDataMessage">
+              <Caption>No Data Available</Caption>
+              <Style>
+                <BackgroundGradientType>None</BackgroundGradientType>
+                <FontWeight>Bold</FontWeight>
+                <TextAlign>General</TextAlign>
+                <VerticalAlign>Top</VerticalAlign>
+              </Style>
+            </ChartNoDataMessage>
+            <DataSetName>ServiceLineReview</DataSetName>
+            <Filters>
+              <Filter>
+                <FilterExpression>=Fields!OverAllocation.Value</FilterExpression>
+                <Operator>GreaterThan</Operator>
+                <FilterValues>
+                  <FilterValue DataType="Integer">0</FilterValue>
+                </FilterValues>
+              </Filter>
+            </Filters>
+            <Left>5.5in</Left>
+            <Height>5in</Height>
+            <Width>5in</Width>
+            <ZIndex>1</ZIndex>
+            <Style>
+              <Border>
+                <Color>LightGrey</Color>
+                <Style>None</Style>
+              </Border>
+              <BackgroundColor>White</BackgroundColor>
+              <BackgroundGradientType>None</BackgroundGradientType>
+            </Style>
+          </Chart>
+        </ReportItems>
+        <Height>5in</Height>
+        <Style />
+      </Body>
+      <Width>10.5in</Width>
+      <Page>
+        <PageHeight>6in</PageHeight>
+        <PageWidth>11in</PageWidth>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>2</NumberOfRows>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>1efbd37d-ae99-4039-863b-71498cf6c984</rd:ReportID>
+</Report>

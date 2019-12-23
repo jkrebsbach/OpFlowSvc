@@ -480,9 +480,15 @@ namespace OpFlow.Service.Controllers
             {
                 var summary = analytics.Tables[1].DataTableToList<ServiceLineSummary>();
 
+                var summarySpecialties = summary.GroupBy(s => s.Specialty).Select(x => new ServiceLineSummarySpecialty()
+                {
+                    Specialty = x.Key,
+                    Results = x.ToList()
+                });
+
                 var webImage = ImageHelper.CreateWebImage(result);
 
-                return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
+                return ResponseHelper.CompositeImageResponse(Request, summarySpecialties, webImage);
             }
         }
 
