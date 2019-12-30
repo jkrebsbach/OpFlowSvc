@@ -277,6 +277,70 @@ namespace OpFlow.Service.Controllers
             }
         }
 
+        // GET api/values/5
+        [SwaggerOperation("SupplyConcordanceReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("supplyConcordanceReport")]
+        [Route("supplyConcordanceReport/{format}")]
+        public async Task<HttpResponseMessage> SupplyConcordanceReport([FromBody] InstrumentUsagePost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+            if (post.SpecialtyID == null &&
+                post.SurgeonID == null &&
+                post.ProcedureID == null &&
+                post.TrayID == null &&
+                post.CardCategoryID == null &&
+                post.CardID == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
+            }
+
+            var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID,
+                post.CardCategoryID, post.CardID, post.Instruments, user.ProviderID, user.LocationID);
+
+            var summary = SummarizeConcordanceReport(analytics.Tables[0]);
+
+            var concordance = analytics.Tables[0].DefaultView;
+            switch (post.Order)
+            {
+                case "instrument_avg":
+                    concordance.Sort = "QtyOpen DESC";
+                    break;
+                case "instrument_name":
+                default:
+                    concordance.Sort = "InstrumentName";
+                    break;
+            }
+
+            if (format == "CSV")
+            {
+                return ResponseHelper.CsvResponse(concordance.ToTable());
+            }
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["ConcordanceReport"] = concordance.ToTable()
+            };
+            var result = ReportHelper.GetReport("ConcordanceReport", format, datasets);
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
+            }
+        }
+
         private List<ConcordanceReportSummary> SummarizeConcordanceReport(DataTable concordanceData)
         {
             var result = new List<ConcordanceReportSummary>();

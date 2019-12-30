@@ -76,7 +76,14 @@ namespace OpFlow.Data
     public class ConcordanceReportSummary
     {
         public string TrayName { get; set; }
-        public string UsageSummary => $"{(TrayItems.Sum(ti => ti.Usage) / TrayItems.Sum(ti => ti.Quantity)).ToString("P", CultureInfo.InvariantCulture)} ({TrayItems.Sum(ti => ti.Usage).ToString("0.##")}/{TrayItems.Sum(ti => ti.Quantity).ToString("0.##")})";
+        public string UsageSummary {
+            get {
+                var usageRatio = 0.0M;
+                if (TrayItems.Sum(ti => ti.Quantity) != 0)
+                    usageRatio = (TrayItems.Sum(ti => ti.Usage) / TrayItems.Sum(ti => ti.Quantity));
+                return $"{usageRatio.ToString("P", CultureInfo.InvariantCulture)} ({TrayItems.Sum(ti => ti.Usage).ToString("0.##")}/{TrayItems.Sum(ti => ti.Quantity).ToString("0.##")})";
+            }
+        }
 
         public List<ConcordanceItem> TrayItems { get; set; }
 
