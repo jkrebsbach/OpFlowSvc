@@ -163,6 +163,8 @@ namespace OpFlow.Data
         public List<SurgeryCountItemPost> ItemCounts { get; set; }
         public List<SurgeryCountItemPost> InstrumentCounts { get; set; }
         public List<SurgeryCountItemPost> ProposedCounts { get; set; }
+        public List<SutureCountItemPost> SutureCounts { get; set; }
+        public List<int> DeletedSutures { get; set; }
         public List<TrayQuestion> Answers { get; set; }
         public List<string> SurgeryCpts { get; set; }
         public string CountComments { get; set; }
@@ -217,6 +219,15 @@ namespace OpFlow.Data
         public int? Setup { get; set; }
         public int? SetupAdded { get; set; }
         public int Usage { get; set; }
+    }
+    public class SutureCountItemPost
+    {
+        public int? SutureID { get; set; }
+        public int? ItemID { get; set; }
+        public string Manufacturer { get; set; }
+        public string Size { get; set; }
+        public string PackSize { get; set; }
+        public int? Quantity { get; set; }
     }
 
     public class SurgeryDelay

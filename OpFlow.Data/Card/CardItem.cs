@@ -28,6 +28,15 @@ namespace OpFlow.Data
         public List<TrayQuestion> TrayQuestions { get; set; }
     }
 
+    public class SurgerySutureCount
+    {
+        public int SutureID { get; set; }
+        public int? ItemID { get; set; }
+        public string Manufacturer { get; set; }
+        public string Size { get; set; }
+        public string PackSize { get; set; }
+        public int Quantity { get; set; }
+    }
     public class CardItemCount : ItemMaster
     {
         public int CardID { get; set; }
@@ -114,9 +123,11 @@ namespace OpFlow.Data
 
     public class CardItemCountResult
     {
+        public List<ItemMaster> Sutures { get; set; }
         public List<CardItemCount> Room { get; set; }
         public List<CardItemCount> Supplies { get; set; }
         public List<CardItemCount> Instruments { get; set; }
+        public List<SurgerySutureCount> SutureCounts { get; set; }
         public List<TrayCollection> Collections { get; set; }
         public List<TrayUsage> Trays { get; set; }
         public List<SurgeryCPTCode> CptCodes { get; set; }

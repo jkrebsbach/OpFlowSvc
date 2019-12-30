@@ -2423,6 +2423,20 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<ItemMaster>> GetItemSutures(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetItemSutures", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
+
+            return result;
+        }
+
         public async Task<List<ItemMaster>> GetInstruments(int providerId, int locationId)
         {
             var parameters = new[]
@@ -2948,6 +2962,19 @@ namespace OpFlow.Service.DataAccess
             };
 
             return result;
+        }
+        
+        public async Task<List<SurgerySutureCount>> GetSurgerySutureCounts(int surgeryId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSurgerySutureCounts", parameters);
+
+            return dsSchedules.Tables[0].DataTableToList<SurgerySutureCount>();
         }
 
         public async Task<List<SurgeryTrayOpen>> GetSurgeryTrayOpens(int surgeryId, int providerId, int locationId)
@@ -4332,6 +4359,23 @@ namespace OpFlow.Service.DataAccess
 
             return update;
         }
+        public async Task<int> UpdateSurgerySutureCount(int surgeryId, List<SutureCountItemPost> sutureUsage, List<int> deletedSutures, int providerId, int locationId)
+        {
+            var usageSummary = GetSutureSummary(sutureUsage);
+            var deletedSutureXml = GetIdentitySummary(deletedSutures);
+
+            var dsParameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("usage_summary", usageSummary ?? (object)DBNull.Value),
+                new SqlParameter("deleted_sutures", deletedSutureXml ?? (object)DBNull.Value)
+            };
+            var update = await ExecuteNonQueryAsync("UpdateSurgerySutureCount", dsParameters);
+
+            return update;
+        }
 
         private string GetUsageSummary(List<SurgeryCountItemPost> countData)
         {
@@ -4358,6 +4402,34 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, customItem.RoleID);
                 AddColumn(doc, row, customItem.Setup);
                 AddColumn(doc, row, customItem.SetupAdded);
+            }
+
+            return table.OuterXml;
+        }
+
+        private string GetSutureSummary(List<SutureCountItemPost> countData)
+        {
+            if (!countData.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var customItem in countData)
+            {
+                // prevent adding invalid data
+                if (customItem.ItemID <= 0)
+                    continue;
+
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, customItem.SutureID);
+                AddColumn(doc, row, customItem.ItemID);
+                AddColumn(doc, row, customItem.Manufacturer);
+                AddColumn(doc, row, customItem.Size);
+                AddColumn(doc, row, customItem.PackSize);
+                AddColumn(doc, row, customItem.Quantity);
             }
 
             return table.OuterXml;

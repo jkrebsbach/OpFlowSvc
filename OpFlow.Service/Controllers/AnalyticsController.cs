@@ -214,13 +214,13 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("ConcordanceReport")]
+        [SwaggerOperation("TrayConcordanceReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
         [HttpPut]
         [HttpPost]
-        [Route("concordanceReport")]
-        [Route("concordanceReport/{format}")]
-        public async Task<HttpResponseMessage> ConcordanceReport([FromBody] InstrumentUsagePost post, string format = null)
+        [Route("trayConcordanceReport")]
+        [Route("trayConcordanceReport/{format}")]
+        public async Task<HttpResponseMessage> TrayConcordanceReport([FromBody] InstrumentUsagePost post, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
 
