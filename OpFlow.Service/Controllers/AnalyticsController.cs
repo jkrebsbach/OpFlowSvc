@@ -539,7 +539,7 @@ namespace OpFlow.Service.Controllers
                 var dtSupply = supplyOpen.ToTable();
                 dtSupply.Columns.Add("MRN", typeof(string));
 
-                var extract = "MRN,SurgeonName,ItemName,Specialty,ProcedureName,ItemCost,CardName,CardQuantity<TotalUsed,SetupOpen,SetupAdded,QtyOpenInit,QtyOpenAdded,OpenVariance,UsageVariance,CardQtyVariance,TotalOpen";
+                var extract = "MRN,SurgeryDate,SurgeonName,ItemName,Specialty,ProcedureName,ItemCost,CardName,CardQuantity<TotalUsed,SetupOpen,SetupAdded,QtyOpenInit,QtyOpenAdded,OpenVariance,UsageVariance,CardQtyVariance,TotalOpen";
                 
                 foreach (DataRow dtSupplyData in dtSupply.Rows)
                 {
@@ -548,13 +548,14 @@ namespace OpFlow.Service.Controllers
                     var patientId = (int)dtSupplyData["PatientID"];
                     var patient = await secureSqlHelper.GetPatient(patientId, user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
 
+                    var surgeryDate = ((DateTime)dtSupplyData["SurgeryDate"]).ToShortDateString();
                     var surgeon = dtSupplyData["SurgeonName"].ToString().Trim().Replace("\"", "\"\"");
                     var item = dtSupplyData["ItemName"].ToString().Trim().Replace("\"", "\"\"");
                     var specialty = dtSupplyData["Specialty"].ToString().Trim().Replace("\"", "\"\"");
                     var procName = dtSupplyData["ProcedureName"].ToString().Trim().Replace("\"", "\"\"");
                     var cardName = dtSupplyData["CardName"].ToString().Trim().Replace("\"", "\"\"");
 
-                    extract += $"=\"{patient.PatientAcctNbr}\",\"{surgeon}\",\"{item}\",\"{specialty}\",\"{procName}\"," +
+                    extract += $"=\"{patient.PatientAcctNbr}\",{surgeryDate},\"{surgeon}\",\"{item}\",\"{specialty}\",\"{procName}\"," +
                         $"{dtSupplyData["ItemCost"]},\"{cardName}\",{dtSupplyData["CardQuantity"]},{dtSupplyData["TotalUsed"]},{dtSupplyData["SetupOpen"]},{dtSupplyData["SetupAdded"]}" +
                         $"{dtSupplyData["QtyOpenInit"]},{dtSupplyData["QtyOpenAdded"]},{dtSupplyData["OpenVariance"]},{dtSupplyData["UsageVariance"]},{dtSupplyData["CardQtyVariance"]},{dtSupplyData["TotalOpen"]}";
                 }
