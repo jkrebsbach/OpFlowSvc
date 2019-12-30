@@ -506,6 +506,7 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
+
             if (post.StartDate == null &&
                 post.EndDate == null &&
                 post.SpecialtyID == null &&
@@ -532,7 +533,33 @@ namespace OpFlow.Service.Controllers
             
             if (format?.ToUpper() == "CSV")
             {
-                return ResponseHelper.CsvResponse(supplyOpen.ToTable());
+                var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
+                var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+
+                var dtSupply = supplyOpen.ToTable();
+                dtSupply.Columns.Add("MRN", typeof(string));
+
+                var extract = "MRN,SurgeonName,ItemName,Specialty,ProcedureName,ItemCost,CardName,CardQuantity<TotalUsed,SetupOpen,SetupAdded,QtyOpenInit,QtyOpenAdded,OpenVariance,UsageVariance,CardQtyVariance,TotalOpen";
+                
+                foreach (DataRow dtSupplyData in dtSupply.Rows)
+                {
+                    extract += "\r\n";
+
+                    var patientId = (int)dtSupplyData["PatientID"];
+                    var patient = await secureSqlHelper.GetPatient(patientId, user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
+
+                    var surgeon = dtSupplyData["SurgeonName"].ToString().Trim().Replace("\"", "\"\"");
+                    var item = dtSupplyData["ItemName"].ToString().Trim().Replace("\"", "\"\"");
+                    var specialty = dtSupplyData["Specialty"].ToString().Trim().Replace("\"", "\"\"");
+                    var procName = dtSupplyData["ProcedureName"].ToString().Trim().Replace("\"", "\"\"");
+                    var cardName = dtSupplyData["CardName"].ToString().Trim().Replace("\"", "\"\"");
+
+                    extract += $"=\"{patient.PatientAcctNbr}\",\"{surgeon}\",\"{item}\",\"{specialty}\",\"{procName}\"," +
+                        $"{dtSupplyData["ItemCost"]},\"{cardName}\",{dtSupplyData["CardQuantity"]},{dtSupplyData["TotalUsed"]},{dtSupplyData["SetupOpen"]},{dtSupplyData["SetupAdded"]}" +
+                        $"{dtSupplyData["QtyOpenInit"]},{dtSupplyData["QtyOpenAdded"]},{dtSupplyData["OpenVariance"]},{dtSupplyData["UsageVariance"]},{dtSupplyData["CardQtyVariance"]},{dtSupplyData["TotalOpen"]}";
+                }
+
+                return ResponseHelper.CsvResponse(extract);
             }
 
             var datasets = new Dictionary<string, DataTable>

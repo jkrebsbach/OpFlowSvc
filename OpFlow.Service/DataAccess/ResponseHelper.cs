@@ -114,7 +114,11 @@ namespace OpFlow.Service.DataAccess
                 }
             }
 
-            var extractBytes = System.Text.Encoding.Unicode.GetBytes(extract);
+            return CsvResponse(extract);
+        }
+        public static HttpResponseMessage CsvResponse(string csvData)
+        {
+            var extractBytes = System.Text.Encoding.Unicode.GetBytes(csvData);
             var memStream = new MemoryStream(extractBytes);
             var result = new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -123,7 +127,7 @@ namespace OpFlow.Service.DataAccess
 
             result.Content.Headers.ContentDisposition =
                 new ContentDispositionHeaderValue("attachment")
-                    { FileName = "CardListExport.csv", };
+                { FileName = "CardListExport.csv", };
 
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
             result.Content.Headers.ContentLength = memStream.Length;
