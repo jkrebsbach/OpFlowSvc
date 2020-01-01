@@ -301,7 +301,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
-            var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID,
+            var analytics = await sqlHelper.GetSupplyConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, 
                 post.CardCategoryID, post.CardID, post.Instruments, user.ProviderID, user.LocationID);
 
             var summary = SummarizeConcordanceReport(analytics.Tables[0]);
