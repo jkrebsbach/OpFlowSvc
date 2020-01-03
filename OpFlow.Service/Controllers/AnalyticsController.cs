@@ -309,14 +309,17 @@ namespace OpFlow.Service.Controllers
             var concordance = analytics.Tables[0].DefaultView;
             switch (post.Order)
             {
-                case "instrument_avg":
-                    concordance.Sort = "QtyOpen DESC";
+                case "usage":
+                    concordance.Sort = "QtyOpen DESC, TrayUsage DESC";
+                    summary = summary.OrderByDescending(s => s.ItemUsage).ToList();
                     break;
-                case "instrument_name":
+                case "card_qty":
                 default:
-                    concordance.Sort = "InstrumentName";
+                    concordance.Sort = "TrayQty DESC, InstrumentName";
+                    summary = summary.OrderByDescending(s => s.ItemQuantity).ToList();
                     break;
             }
+
 
             if (format == "CSV")
             {

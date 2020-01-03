@@ -85,6 +85,9 @@ namespace OpFlow.Data
             }
         }
 
+        public decimal ItemQuantity => TrayItems.Sum(t => t.Quantity);
+        public decimal ItemUsage => TrayItems.Sum(t => t.Usage);
+
         public List<ConcordanceItem> TrayItems { get; set; }
 
         public ConcordanceReportSummary()

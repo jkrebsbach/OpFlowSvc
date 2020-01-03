@@ -127,20 +127,6 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/surgery?userId=5
-        [SwaggerOperation("SearchCaseNbr")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchResult>))]
-        [Route("searchCaseNbr")]
-        public async Task<HttpResponseMessage> GetCaseNbr(string caseNbr, int? providerId = null, int? locationId = null)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper();
-
-            var schedules = await sqlHelper.GetCaseNbr(caseNbr, user.ProviderID, user.LocationID);
-
-            return Request.CreateResponse(HttpStatusCode.OK, schedules);
-        }
-
-        // GET api/surgery?userId=5
         [SwaggerOperation("SearchSurgeonCases")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchResult>))]
         [Route("searchSurgeonCases")]

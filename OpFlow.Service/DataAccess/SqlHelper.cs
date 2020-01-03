@@ -5512,22 +5512,6 @@ namespace OpFlow.Service.DataAccess
             return surgeries;
         }
 
-        public async Task<List<SurgerySearchResult>> GetCaseNbr(string caseNbr, int providerId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("case_nbr", caseNbr),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
-            };
-
-            var dsSchedules = await ExecuteCommandAsync("SearchCaseNbr", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<SurgerySearchResult>();
-
-            return result;
-        }
-
         public async Task<List<SurgerySearchResult>> GetSurgeonCases(int userId, DateTime begDate, DateTime endDate, int providerId, int locationId)
         {
             var parameters = new[]
