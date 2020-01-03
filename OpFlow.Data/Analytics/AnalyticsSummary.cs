@@ -16,8 +16,6 @@ namespace OpFlow.Data
         public int TableID { get; set; }
         public string TableName { get; set; }
         public string Category { get; set; }
-        public int RoleID { get; set; }
-        public string PowerBILink { get; set; }
         public DateTime InsTimestamp { get; set; }
     }
 
