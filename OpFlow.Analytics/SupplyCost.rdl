@@ -497,7 +497,7 @@ ORDER BY card.description</CommandText>
                             </ChartLegend>
                           </ChartLegends>
                           <Palette>Pacific</Palette>
-                          <DynamicHeight>=(1 + CountDistinct(Fields!CardName.Value) * 0.25) &amp; " in"</DynamicHeight>
+                          <DynamicHeight>=(1 + CountDistinct(Fields!CardName.Value) * 0.5) &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>

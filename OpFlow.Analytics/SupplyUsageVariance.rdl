@@ -17,6 +17,7 @@
 	ELSE card.description + '\n' +
 	item_master.description 
 	END ItemName,
+'abc' GroupName,
 	specialty.description Specialty,
 	item_master.unit_cost ItemCost,
 	card.description CardName,
@@ -53,6 +54,10 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
       <Fields>
         <Field Name="ItemName">
           <DataField>ItemName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="GroupName">
+          <DataField>GroupName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="Specialty">
@@ -198,15 +203,15 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                               <ChartMember>
                                 <Group Name="Chart1_CategoryGroup">
                                   <GroupExpressions>
-                                    <GroupExpression>=Fields!ItemName.Value</GroupExpression>
+                                    <GroupExpression>=Fields!GroupName.Value</GroupExpression>
                                   </GroupExpressions>
                                 </Group>
                                 <SortExpressions>
                                   <SortExpression>
-                                    <Value>=Fields!ItemName.Value</Value>
+                                    <Value>=Fields!GroupName.Value</Value>
                                   </SortExpression>
                                 </SortExpressions>
-                                <Label>=Fields!ItemName.Value</Label>
+                                <Label>=Fields!GroupName.Value</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartCategoryHierarchy>
@@ -680,7 +685,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             </ChartLegend>
                           </ChartLegends>
                           <Palette>Pacific</Palette>
-                          <DynamicHeight>=(2 + CountDistinct(Fields!ItemName.Value)) &amp; " in"</DynamicHeight>
+                          <DynamicHeight>=(2 + CountDistinct(Fields!GroupName.Value)) &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>
@@ -707,7 +712,6 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             <BackgroundGradientType>None</BackgroundGradientType>
                           </Style>
                         </Chart>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
