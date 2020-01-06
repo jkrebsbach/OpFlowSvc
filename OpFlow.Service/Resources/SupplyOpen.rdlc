@@ -513,7 +513,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                         <FontSize>8pt</FontSize>
                                         <Format>0.##</Format>
                                       </Style>
-                                      <Label>="PeriOp Open (" &amp; Format(Fields!AvgOpenInit.Value, "0.##") &amp; " / "&amp; Format(Fields!AvgOpenAdded.Value, "0.##") &amp; ")"</Label>
+                                      <Label>="PeriOp Used (" &amp; Format(Fields!AvgOpenInit.Value, "0.##") &amp; " / "&amp; Format(Fields!AvgOpenAdded.Value, "0.##") &amp; ")"</Label>
                                       <Visible>true</Visible>
                                       <Position>Outside</Position>
                                     </ChartDataLabel>
