@@ -857,13 +857,13 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetSupplySavingsEstimatorReportData(post.SpecialtyID, post.SurgeonID, post.CardCategoryID,
                 post.ItemID, user.ProviderID, user.LocationID);
 
-            var supplyWaste = analytics.Tables[0].DefaultView;
+            var supplySavings = analytics.Tables[0].DefaultView;
 
             var datasets = new Dictionary<string, DataTable>
             {
-                ["SupplyCost"] = supplyWaste.ToTable()
+                ["SupplySavings"] = supplySavings.ToTable()
             };
-            var result = ReportHelper.GetReport("SupplyCost", format, datasets);
+            var result = ReportHelper.GetReport("SupplySavingsEstimator", format, datasets);
 
             if (format?.ToUpper() == "PDF")
             {
