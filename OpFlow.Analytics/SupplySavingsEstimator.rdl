@@ -626,7 +626,7 @@ Format(Fields!UnitCost.Value * (Fields!QtySetup.Value - Fields!QtyOpen.Value)  /
         <Height>0.5in</Height>
         <Style />
       </Body>
-      <Width>9.28125in</Width>
+      <Width>8.28125in</Width>
       <Page>
         <PageHeight>8.5in</PageHeight>
         <PageWidth>11in</PageWidth>

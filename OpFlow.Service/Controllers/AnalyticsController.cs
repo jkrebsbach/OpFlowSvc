@@ -872,9 +872,15 @@ namespace OpFlow.Service.Controllers
             else
             {
                 var webImage = ImageHelper.CreateWebImage(result);
+                var summary = SummarizeSupplySavings(supplySavings.ToTable());
 
-                return ResponseHelper.ImageResponse(Request, webImage);
+                return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
             }
+        }
+
+        private List<ItemMaster> SummarizeSupplySavings(DataTable supplySavings)
+        {
+            return new List<ItemMaster>();
         }
 
         // GET api/values/5
