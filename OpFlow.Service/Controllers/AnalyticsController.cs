@@ -878,9 +878,28 @@ namespace OpFlow.Service.Controllers
             }
         }
 
-        private List<ItemMaster> SummarizeSupplySavings(DataTable supplySavings)
+        private SupplySavingsSummary SummarizeSupplySavings(DataTable supplySavings)
         {
-            return new List<ItemMaster>();
+            var result = new SupplySavingsSummary();
+
+            foreach(DataRow drSaving in supplySavings.Rows)
+            {
+                var waste = (decimal)drSaving["QtySetup"] - (decimal)drSaving["QtyOpen"];
+                var overallocation = (int)drSaving["CardQty"] - (decimal)drSaving["QtyOpen"];
+                var cost = (decimal)drSaving["UnitCost"];
+
+                if (waste < 0)
+                    waste = 0;
+                if (overallocation < 0)
+                    overallocation = 0;
+
+                result.WasteUnits += waste;
+                result.OverallocatedUnits += overallocation;
+                result.WasteCost += waste * cost;
+                result.OverallocatedCost += overallocation * cost;
+            }
+
+            return result;
         }
 
         // GET api/values/5

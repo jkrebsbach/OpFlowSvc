@@ -180,6 +180,14 @@ namespace OpFlow.Data
         public List<TrayConsolidationExport> Children { get; set; }
     }
 
+    public class SupplySavingsSummary
+    {
+        public decimal WasteUnits { get; set; }
+        public decimal WasteCost { get; set; }
+        public decimal OverallocatedUnits { get; set; }
+        public decimal OverallocatedCost { get; set; }
+    }
+
     public class CountSummaryReportPost
     {
         public List<int> SpecialtyId { get; set; }
