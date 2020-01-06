@@ -182,10 +182,13 @@ namespace OpFlow.Data
 
     public class SupplySavingsSummary
     {
+        public decimal TotalCost { get; set; }
         public decimal WasteUnits { get; set; }
         public decimal WasteCost { get; set; }
         public decimal OverallocatedUnits { get; set; }
         public decimal OverallocatedCost { get; set; }
+        public decimal WasteReduction => (WasteCost / TotalCost);
+        public decimal OverallocatedReduction => (OverallocatedCost / TotalCost);
     }
 
     public class CountSummaryReportPost

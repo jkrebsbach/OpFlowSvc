@@ -216,7 +216,7 @@ select
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Qty Open</Value>
+                                  <Value>Qty Used</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -276,7 +276,7 @@ select
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Under Allocation</Value>
+                                  <Value>Over Allocation</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -533,8 +533,8 @@ Format(Fields!UnitCost.Value * (Fields!QtySetup.Value - Fields!QtyOpen.Value)  /
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Iif((Fields!QtyOpen.Value  / Fields!CaseCount.Value) - Fields!CardQty.Value &lt; 0, 0,
-(Fields!QtyOpen.Value  / Fields!CaseCount.Value) - Fields!CardQty.Value)</Value>
+                                  <Value>=Iif((Fields!QtyOpen.Value  / Fields!CaseCount.Value) - Fields!CardQty.Value &gt;= 0, 0,
+Fields!CardQty.Value - (Fields!QtyOpen.Value  / Fields!CaseCount.Value))</Value>
                                   <Style>
                                     <Format>0.##</Format>
                                   </Style>

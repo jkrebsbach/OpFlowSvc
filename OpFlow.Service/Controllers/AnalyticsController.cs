@@ -884,8 +884,9 @@ namespace OpFlow.Service.Controllers
 
             foreach(DataRow drSaving in supplySavings.Rows)
             {
-                var waste = (decimal)drSaving["QtySetup"] - (decimal)drSaving["QtyOpen"];
-                var overallocation = (int)drSaving["CardQty"] - (decimal)drSaving["QtyOpen"];
+                var totalOpen = (decimal)drSaving["QtyOpen"];
+                var waste = (decimal)drSaving["QtySetup"] - totalOpen;
+                var overallocation = (int)drSaving["CardQty"] - totalOpen;
                 var cost = (decimal)drSaving["UnitCost"];
 
                 if (waste < 0)
@@ -893,6 +894,7 @@ namespace OpFlow.Service.Controllers
                 if (overallocation < 0)
                     overallocation = 0;
 
+                result.TotalCost += totalOpen * cost;
                 result.WasteUnits += waste;
                 result.OverallocatedUnits += overallocation;
                 result.WasteCost += waste * cost;
