@@ -784,7 +784,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<DataSet> GetSupplyCardCostReportDate(List<int> specialtyId, List<int> surgeonId, List<int> cardCategoryId,
+        public async Task<DataSet> GetSupplyCardCostReportData(List<int> specialtyId, List<int> surgeonId, List<int> cardCategoryId,
             DateTime? startDate, DateTime? endDate, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
@@ -802,6 +802,28 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteCommandAsync("GetAnalyticsSupplyCardCost", parameters);
+
+            return result;
+        }
+
+        public async Task<DataSet> GetSupplySavingsEstimatorReportData(List<int> specialtyId, List<int> surgeonId, List<int> cardCategoryId,
+            List<int> itemId, int providerId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+            var itemXml = GetIdentitySummary(itemId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("item_id", itemXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("GetAnalyticsSupplySavings", parameters);
 
             return result;
         }
