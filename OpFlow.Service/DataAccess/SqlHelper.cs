@@ -4408,7 +4408,7 @@ namespace OpFlow.Service.DataAccess
 
             return update;
         }
-        public async Task<int> UpdateSurgerySutureCount(int surgeryId, List<SutureCountItemPost> sutureUsage, List<int> deletedSutures, int providerId, int locationId)
+        public async Task<int> UpdateSurgerySutureCount(int surgeryId, List<SurgeryCountSuturePost> sutureUsage, List<int> deletedSutures, int providerId, int locationId)
         {
             var usageSummary = GetSutureSummary(sutureUsage);
             var deletedSutureXml = GetIdentitySummary(deletedSutures);
@@ -4451,12 +4451,13 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, customItem.RoleID);
                 AddColumn(doc, row, customItem.Setup);
                 AddColumn(doc, row, customItem.SetupAdded);
+                AddColumn(doc, row, customItem.Notes);
             }
 
             return table.OuterXml;
         }
 
-        private string GetSutureSummary(List<SutureCountItemPost> countData)
+        private string GetSutureSummary(List<SurgeryCountSuturePost> countData)
         {
             if (!countData.Any())
                 return null;
@@ -4480,6 +4481,7 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, customItem.PackSize);
                 AddColumn(doc, row, customItem.SetupAdded);
                 AddColumn(doc, row, customItem.Usage);
+                AddColumn(doc, row, customItem.Notes);
             }
 
             return table.OuterXml;

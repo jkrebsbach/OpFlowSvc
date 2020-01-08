@@ -1199,7 +1199,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
         [Route("updateCountsUsages", Name = "UpdateSurgeryCountsUsages")]
-        public async Task<HttpResponseMessage> UpdateSurgeryCountsUsages(int surgeryId, [FromBody]SurgeryCountPost post)
+        public async Task<HttpResponseMessage> UpdateSurgeryCountsUsages(int surgeryId, [FromBody]SurgeryCountSummaryPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();

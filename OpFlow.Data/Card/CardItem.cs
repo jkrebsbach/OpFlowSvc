@@ -37,6 +37,7 @@ namespace OpFlow.Data
         public string PackSize { get; set; }
         public int Opened { get; set; }
         public int Used { get; set; }
+        public string Notes { get; set; }
     }
     public class CardItemCount : ItemMaster
     {
@@ -48,6 +49,7 @@ namespace OpFlow.Data
         public int? Usage { get; set; }
         public int? UsageType { get; set; }
         public int? RoleID { get; set; }
+        public string Notes { get; set; }
 
         private int SetupQuantity => (Setup ?? 0) + (SetupAdded ?? 0);
         public int? Added {

@@ -158,12 +158,12 @@ namespace OpFlow.Data
         public DateTime ScheduleDate { get; set; }
     }
 
-    public class SurgeryCountPost
+    public class SurgeryCountSummaryPost
     {
         public List<SurgeryCountItemPost> ItemCounts { get; set; }
         public List<SurgeryCountItemPost> InstrumentCounts { get; set; }
         public List<SurgeryCountItemPost> ProposedCounts { get; set; }
-        public List<SutureCountItemPost> SutureCounts { get; set; }
+        public List<SurgeryCountSuturePost> SutureCounts { get; set; }
         public List<int> DeletedSutures { get; set; }
         public List<TrayQuestion> Answers { get; set; }
         public List<string> SurgeryCpts { get; set; }
@@ -210,25 +210,26 @@ namespace OpFlow.Data
         public DateTime ScheduleDateTime { get; set; }
         public int? NotificationUser { get; set; }
     }
-    public class SurgeryCountItemPost
+    public abstract class SurgeryCountPost
     {
-        public int ItemID { get; set; }
-        public int TrayID { get; set; }
-        public int? RoleID { get; set; }
-        public int? UsageType { get; set; }
+        public int? ItemID { get; set; }
         public int? Setup { get; set; }
         public int? SetupAdded { get; set; }
         public int Usage { get; set; }
+        public string Notes { get; set; }
     }
-    public class SutureCountItemPost
+    public class SurgeryCountItemPost : SurgeryCountPost
     {
+        public int TrayID { get; set; }
+        public int? RoleID { get; set; }
+        public int? UsageType { get; set; }
+    }
+    public class SurgeryCountSuturePost : SurgeryCountPost
+{
         public int? SutureID { get; set; }
-        public int? ItemID { get; set; }
         public string Manufacturer { get; set; }
         public string Size { get; set; }
         public string PackSize { get; set; }
-        public int? SetupAdded { get; set; }
-        public int Usage { get; set; }
     }
 
     public class SurgeryDelay
