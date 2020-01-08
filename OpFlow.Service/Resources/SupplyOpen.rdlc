@@ -22,6 +22,7 @@
 	item_master.unit_cost ItemCost,
 	card.description CardName,
 	card_item.qty_open CardQuantity,
+'Setup' UsageType,
 3.1 AvgSetup,
 3.1 AvgSetupOpen,
 2.1 AvgSetupAdded,
@@ -79,6 +80,10 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
         <Field Name="AvgSetupOpen">
           <DataField>AvgSetupOpen</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="UsageType">
+          <DataField>UsageType</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="AvgSetupAdded">
           <DataField>AvgSetupAdded</DataField>
@@ -450,10 +455,25 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                           <ChartSeriesHierarchy>
                             <ChartMembers>
                               <ChartMember>
-                                <Label>Avg Setup</Label>
-                              </ChartMember>
-                              <ChartMember>
-                                <Label>Avg Open</Label>
+                                <Group Name="Chart1_SeriesGroup">
+                                  <GroupExpressions>
+                                    <GroupExpression>=Fields!UsageType.Value</GroupExpression>
+                                  </GroupExpressions>
+                                </Group>
+                                <SortExpressions>
+                                  <SortExpression>
+                                    <Value>=Fields!UsageType.Value</Value>
+                                  </SortExpression>
+                                </SortExpressions>
+                                <ChartMembers>
+                                  <ChartMember>
+                                    <Label>Avg Setup</Label>
+                                  </ChartMember>
+                                  <ChartMember>
+                                    <Label>Avg Open</Label>
+                                  </ChartMember>
+                                </ChartMembers>
+                                <Label>=Fields!UsageType.Value</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartSeriesHierarchy>
@@ -470,8 +490,8 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                         <FontSize>8pt</FontSize>
                                         <Format>0.##</Format>
                                       </Style>
-                                      <Label>="Setup (" &amp; Format(Fields!AvgSetupOpen.Value, "0.##") &amp; " / " &amp; Format(Fields!AvgSetupAdded.Value, "0.##") &amp; ")"</Label>
-                                      <Visible>true</Visible>
+                                      <Label>=Fields!AvgSetup.Value</Label>
+                                      <Visible>=Iif(SUM(Fields!AvgSetup.Value) = 0, False, True)</Visible>
                                       <Position>Outside</Position>
                                     </ChartDataLabel>
                                     <Style />
@@ -482,6 +502,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                   </ChartDataPoint>
                                 </ChartDataPoints>
                                 <Type>Bar</Type>
+                                <Subtype>Stacked</Subtype>
                                 <Style />
                                 <ChartEmptyPoints>
                                   <Style />
@@ -492,11 +513,13 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                     <Style />
                                   </ChartDataLabel>
                                 </ChartEmptyPoints>
+                                <LegendName>Default</LegendName>
                                 <ChartItemInLegend>
-                                  <LegendText>Setup</LegendText>
+                                  <LegendText>=Iif(Fields!UsageType.Value = "Setup", "Setup", "Added")</LegendText>
+                                  <Hidden>=Iif(SUM(Fields!AvgSetup.Value) = 0, True, False)</Hidden>
                                 </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
-                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <CategoryAxisName>Secondary</CategoryAxisName>
                                 <ChartSmartLabel>
                                   <CalloutLineColor>Black</CalloutLineColor>
                                   <MinMovingDistance>0pt</MinMovingDistance>
@@ -514,7 +537,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                         <Format>0.##</Format>
                                       </Style>
                                       <Label>="PeriOp Used (" &amp; Format(Fields!AvgOpenInit.Value, "0.##") &amp; " / "&amp; Format(Fields!AvgOpenAdded.Value, "0.##") &amp; ")"</Label>
-                                      <Visible>true</Visible>
+                                      <Visible>=Iif(SUM(Fields!AvgOpen.Value) = 0, False, True)</Visible>
                                       <Position>Outside</Position>
                                     </ChartDataLabel>
                                     <Style />
@@ -525,6 +548,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                   </ChartDataPoint>
                                 </ChartDataPoints>
                                 <Type>Bar</Type>
+                                <Subtype>Stacked</Subtype>
                                 <Style />
                                 <ChartEmptyPoints>
                                   <Style />
@@ -536,7 +560,8 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                   </ChartDataLabel>
                                 </ChartEmptyPoints>
                                 <ChartItemInLegend>
-                                  <LegendText>Used</LegendText>
+                                  <LegendText>Usage</LegendText>
+                                  <Hidden>=Iif(SUM(Fields!AvgOpen.Value) = 0, True, False)</Hidden>
                                 </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
@@ -804,7 +829,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                               <ChartElementPosition>
                                 <Left>3</Left>
                                 <Height>2</Height>
-                                <Width>30.126</Width>
+                                <Width>100</Width>
                               </ChartElementPosition>
                               <ChartLegendTitle>
                                 <Caption />

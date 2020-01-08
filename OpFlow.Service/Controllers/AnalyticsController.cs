@@ -596,7 +596,7 @@ namespace OpFlow.Service.Controllers
                 post.Group, user.ProviderID, user.LocationID);
 
             var supplyOpen = analytics.Tables[0].DefaultView;
-            var supplyOpenAggregate = analytics.Tables[1].DefaultView;
+            var supplyOpenAggregate = analytics.Tables[2].DefaultView;
             
             if (format?.ToUpper() == "CSV")
             {
@@ -628,6 +628,34 @@ namespace OpFlow.Service.Controllers
                 }
 
                 return ResponseHelper.CsvResponse(extract);
+            }
+
+            // Data set repeats three times for nested columns - clean things up now
+            foreach (DataRow aggregate in supplyOpenAggregate.Table.Rows)
+            {
+                if (aggregate["UsageType"].ToString() == "Setup")
+                {
+                    aggregate["AvgSetup"] = aggregate["AvgSetupOpen"];
+                    aggregate["AvgOpen"] = 0;
+                }
+                if (aggregate["UsageType"].ToString() == "Added")
+                {
+                    aggregate["AvgSetup"] = aggregate["AvgSetupAdded"];
+                    aggregate["AvgOpen"] = 0;
+                }
+                if (aggregate["UsageType"].ToString() == "Usage")
+                {
+                    aggregate["AvgSetup"] = 0;
+                }
+
+
+                if (aggregate["UsageType"].ToString() != "Setup")
+                {
+                    aggregate["UsageVariance"] = 0;
+                    aggregate["CardQtyVariance"] = 0;
+                    aggregate["AvgUsageVariance"] = 0;
+                    aggregate["AvgCardQtyVariance"] = 0;
+                }
             }
 
             var datasets = new Dictionary<string, DataTable>
