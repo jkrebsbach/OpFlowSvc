@@ -4365,7 +4365,8 @@ namespace OpFlow.Service.DataAccess
         }
         
 
-        public async Task<int> UpdateSurgeryCount(int surgeryId, List<SurgeryCountItemPost> itemUsage, string countComments, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryCount(int surgeryId, List<SurgeryCountItemPost> itemUsage, string countComments, string surgeryType,
+            int providerId, int locationId)
         {
             var usageSummary = GetUsageSummary(itemUsage);
             var dsParameters = new[]
@@ -4374,6 +4375,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("count_comments", countComments ?? (object)DBNull.Value),
+                new SqlParameter("surgery_type", surgeryType ?? (object)DBNull.Value),
                 new SqlParameter("usage_summary", usageSummary ?? (object)DBNull.Value)
             };
             var update = await ExecuteNonQueryAsync("UpdateSurgeryCount", dsParameters);

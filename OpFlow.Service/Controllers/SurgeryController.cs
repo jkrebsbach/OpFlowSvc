@@ -368,6 +368,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
+            var surgery = await sqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
             var cardItemCounts = await sqlHelper.GetSurgeryCardItemCounts(surgeryId, user.ProviderID, user.LocationID);
             var itemCounts = cardItemCounts.CardItemCounts.GroupBy(ic => new { ic.ItemType, ic.TrayName, ic.TrayID});
             
@@ -375,6 +376,7 @@ namespace OpFlow.Service.Controllers
 
             var result = new CardItemCountResult()
             {
+                Surgery = surgery,
                 Collections = new List<TrayCollection>(),
                 Trays = new List<TrayUsage>(),
                 Sutures = await sqlHelper.GetItemSutures(user.ProviderID, user.LocationID),
@@ -1206,7 +1208,7 @@ namespace OpFlow.Service.Controllers
 
             try
             {
-                await sqlHelper.UpdateSurgeryCount(surgeryId, post.ItemCounts, post.CountComments, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateSurgeryCount(surgeryId, post.ItemCounts, post.CountComments, post.SurgeryType, user.ProviderID, user.LocationID);
                 await sqlHelper.UpdateSurgeryInstrumentCount(surgeryId, post.InstrumentCounts, user.ProviderID, user.LocationID);
                 await sqlHelper.UpdateSurgeryProposedCount(surgeryId, post.ProposedCounts, user.ProviderID, user.LocationID);
                 await sqlHelper.UpdateSurgerySutureCount(surgeryId, post.SutureCounts, post.DeletedSutures, user.ProviderID, user.LocationID);

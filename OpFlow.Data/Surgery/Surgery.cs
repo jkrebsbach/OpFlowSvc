@@ -44,6 +44,7 @@ namespace OpFlow.Data
         public int LapCount { get; set; }
         public int SpecimenCount { get; set; }
         public string CountComments { get; set; }
+        public string SurgeryCountType { get; set; }
         public DateTime ScheduleDate { get; set; }
         public TimeSpan ScheduleTime { get; set; }
         public DateTime? ActualStartDate { get; set; }
@@ -168,6 +169,7 @@ namespace OpFlow.Data
         public List<TrayQuestion> Answers { get; set; }
         public List<string> SurgeryCpts { get; set; }
         public string CountComments { get; set; }
+        public string SurgeryType { get; set; }
     }
 
     public class SurgeryCPTCode

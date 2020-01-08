@@ -126,6 +126,7 @@ namespace OpFlow.Data
 
     public class CardItemCountResult
     {
+        public Surgery Surgery { get; set; }
         public List<ItemMaster> Sutures { get; set; }
         public List<CardItemCount> Room { get; set; }
         public List<CardItemCount> Supplies { get; set; }
