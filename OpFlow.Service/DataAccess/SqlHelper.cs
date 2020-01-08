@@ -4478,7 +4478,8 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, customItem.Manufacturer);
                 AddColumn(doc, row, customItem.Size);
                 AddColumn(doc, row, customItem.PackSize);
-                AddColumn(doc, row, customItem.Quantity);
+                AddColumn(doc, row, customItem.SetupAdded);
+                AddColumn(doc, row, customItem.Usage);
             }
 
             return table.OuterXml;

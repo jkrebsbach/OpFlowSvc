@@ -227,7 +227,8 @@ namespace OpFlow.Data
         public string Manufacturer { get; set; }
         public string Size { get; set; }
         public string PackSize { get; set; }
-        public int? Quantity { get; set; }
+        public int? SetupAdded { get; set; }
+        public int Usage { get; set; }
     }
 
     public class SurgeryDelay

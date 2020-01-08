@@ -35,7 +35,8 @@ namespace OpFlow.Data
         public string Manufacturer { get; set; }
         public string Size { get; set; }
         public string PackSize { get; set; }
-        public int Quantity { get; set; }
+        public int Opened { get; set; }
+        public int Used { get; set; }
     }
     public class CardItemCount : ItemMaster
     {
