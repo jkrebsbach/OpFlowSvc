@@ -515,7 +515,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                 </ChartEmptyPoints>
                                 <LegendName>Default</LegendName>
                                 <ChartItemInLegend>
-                                  <LegendText>=Iif(Fields!UsageType.Value = "Setup", "Setup", "Added")</LegendText>
+                                  <LegendText>=Iif(Fields!UsageType.Value = "1Setup", "Setup Init", "Setup Added")</LegendText>
                                   <Hidden>=Iif(SUM(Fields!AvgSetup.Value) = 0, True, False)</Hidden>
                                 </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
@@ -536,7 +536,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                         <FontSize>8pt</FontSize>
                                         <Format>0.##</Format>
                                       </Style>
-                                      <Label>="PeriOp Used (" &amp; Format(Fields!AvgOpenInit.Value, "0.##") &amp; " / "&amp; Format(Fields!AvgOpenAdded.Value, "0.##") &amp; ")"</Label>
+                                      <Label>=Fields!AvgOpen.Value</Label>
                                       <Visible>=Iif(SUM(Fields!AvgOpen.Value) = 0, False, True)</Visible>
                                       <Position>Outside</Position>
                                     </ChartDataLabel>
@@ -560,7 +560,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                   </ChartDataLabel>
                                 </ChartEmptyPoints>
                                 <ChartItemInLegend>
-                                  <LegendText>Usage</LegendText>
+                                  <LegendText>=Iif(Fields!UsageType.Value = "2Usage", "PeriOp Used", "PeriOp Added")</LegendText>
                                   <Hidden>=Iif(SUM(Fields!AvgOpen.Value) = 0, True, False)</Hidden>
                                 </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>

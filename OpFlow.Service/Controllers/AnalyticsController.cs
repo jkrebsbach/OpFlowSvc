@@ -633,23 +633,24 @@ namespace OpFlow.Service.Controllers
             // Data set repeats three times for nested columns - clean things up now
             foreach (DataRow aggregate in supplyOpenAggregate.Table.Rows)
             {
-                if (aggregate["UsageType"].ToString() == "Setup")
+                if (aggregate["UsageType"].ToString() == "1Setup")
                 {
                     aggregate["AvgSetup"] = aggregate["AvgSetupOpen"];
                     aggregate["AvgOpen"] = 0;
                 }
-                if (aggregate["UsageType"].ToString() == "Added")
+                if (aggregate["UsageType"].ToString() == "3Added")
                 {
                     aggregate["AvgSetup"] = aggregate["AvgSetupAdded"];
-                    aggregate["AvgOpen"] = 0;
+                    aggregate["AvgOpen"] = aggregate["AvgOpenAdded"];
                 }
-                if (aggregate["UsageType"].ToString() == "Usage")
+                if (aggregate["UsageType"].ToString() == "2Usage")
                 {
                     aggregate["AvgSetup"] = 0;
+                    aggregate["AvgOpen"] = aggregate["AvgOpenInit"];
                 }
 
 
-                if (aggregate["UsageType"].ToString() != "Setup")
+                if (aggregate["UsageType"].ToString() != "1Setup")
                 {
                     aggregate["UsageVariance"] = 0;
                     aggregate["CardQtyVariance"] = 0;
