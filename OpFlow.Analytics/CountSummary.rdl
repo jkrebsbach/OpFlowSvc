@@ -13,7 +13,7 @@
     <DataSet Name="CountSummary">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>exec GetAnalyticsCountSummary '&lt;table&gt;&lt;row&gt;&lt;col&gt;1&lt;/col&gt;&lt;/row&gt;&lt;/table&gt;', null, null, null, 1,1</CommandText>
+        <CommandText>exec GetAnalyticsCountSummary '&lt;table&gt;&lt;row&gt;&lt;col&gt;1&lt;/col&gt;&lt;/row&gt;&lt;/table&gt;', null, null, null, null, 1,1</CommandText>
       </Query>
       <Fields>
         <Field Name="Specialty">
@@ -24,8 +24,12 @@
           <DataField>Card</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="TrayCount">
-          <DataField>TrayCount</DataField>
+        <Field Name="InstrumentCount">
+          <DataField>InstrumentCount</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="ConsolidationCount">
+          <DataField>ConsolidationCount</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="CardCount">
@@ -60,7 +64,10 @@
             <ChartSeriesHierarchy>
               <ChartMembers>
                 <ChartMember>
-                  <Label>Tray Count</Label>
+                  <Label>Instrument Count</Label>
+                </ChartMember>
+                <ChartMember>
+                  <Label>Consolidation Count</Label>
                 </ChartMember>
                 <ChartMember>
                   <Label>Card Count</Label>
@@ -69,16 +76,48 @@
             </ChartSeriesHierarchy>
             <ChartData>
               <ChartSeriesCollection>
-                <ChartSeries Name="TrayCount">
+                <ChartSeries Name="InstrumentCount">
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
-                        <Y>=Sum(Fields!TrayCount.Value)</Y>
+                        <Y>=Sum(Fields!InstrumentCount.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
-                        <UseValueAsLabel>true</UseValueAsLabel>
-                        <Visible>true</Visible>
+                      </ChartDataLabel>
+                      <Style />
+                      <ChartMarker>
+                        <Style />
+                      </ChartMarker>
+                      <DataElementOutput>Output</DataElementOutput>
+                    </ChartDataPoint>
+                  </ChartDataPoints>
+                  <Type>Bar</Type>
+                  <Style />
+                  <ChartEmptyPoints>
+                    <Style />
+                    <ChartMarker>
+                      <Style />
+                    </ChartMarker>
+                    <ChartDataLabel>
+                      <Style />
+                    </ChartDataLabel>
+                  </ChartEmptyPoints>
+                  <ValueAxisName>Primary</ValueAxisName>
+                  <CategoryAxisName>Primary</CategoryAxisName>
+                  <ChartSmartLabel>
+                    <CalloutLineColor>Black</CalloutLineColor>
+                    <MinMovingDistance>0pt</MinMovingDistance>
+                  </ChartSmartLabel>
+                </ChartSeries>
+                <ChartSeries Name="ConsolidationCount">
+                  <ChartDataPoints>
+                    <ChartDataPoint>
+                      <ChartDataPointValues>
+                        <Y>=Sum(Fields!ConsolidationCount.Value)</Y>
+                      </ChartDataPointValues>
+                      <ChartDataLabel>
+                        <Style />
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
@@ -462,7 +501,10 @@
             <ChartSeriesHierarchy>
               <ChartMembers>
                 <ChartMember>
-                  <Label>Tray Count</Label>
+                  <Label>Instrument Count</Label>
+                </ChartMember>
+                <ChartMember>
+                  <Label>Consolidation Count</Label>
                 </ChartMember>
                 <ChartMember>
                   <Label>Card Count</Label>
@@ -471,16 +513,48 @@
             </ChartSeriesHierarchy>
             <ChartData>
               <ChartSeriesCollection>
-                <ChartSeries Name="TrayCount">
+                <ChartSeries Name="InstrumentCount">
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
-                        <Y>=Sum(Fields!TrayCount.Value)</Y>
+                        <Y>=Sum(Fields!InstrumentCount.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
-                        <UseValueAsLabel>true</UseValueAsLabel>
-                        <Visible>true</Visible>
+                      </ChartDataLabel>
+                      <Style />
+                      <ChartMarker>
+                        <Style />
+                      </ChartMarker>
+                      <DataElementOutput>Output</DataElementOutput>
+                    </ChartDataPoint>
+                  </ChartDataPoints>
+                  <Type>Bar</Type>
+                  <Style />
+                  <ChartEmptyPoints>
+                    <Style />
+                    <ChartMarker>
+                      <Style />
+                    </ChartMarker>
+                    <ChartDataLabel>
+                      <Style />
+                    </ChartDataLabel>
+                  </ChartEmptyPoints>
+                  <ValueAxisName>Primary</ValueAxisName>
+                  <CategoryAxisName>Primary</CategoryAxisName>
+                  <ChartSmartLabel>
+                    <CalloutLineColor>Black</CalloutLineColor>
+                    <MinMovingDistance>0pt</MinMovingDistance>
+                  </ChartSmartLabel>
+                </ChartSeries>
+                <ChartSeries Name="ConsolidationCount">
+                  <ChartDataPoints>
+                    <ChartDataPoint>
+                      <ChartDataPointValues>
+                        <Y>=Sum(Fields!ConsolidationCount.Value)</Y>
+                      </ChartDataPointValues>
+                      <ChartDataLabel>
+                        <Style />
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
