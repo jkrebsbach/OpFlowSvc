@@ -5981,6 +5981,49 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<SpecialtyCardCategory>> GetSpecialtyProcedureGroup(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSpecialtyProcedureGroup", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<SpecialtyCardCategory>();
+
+            return result;
+        }
+
+        public async Task<int> InsertSpecialtyProcedureGroup(int specialtyId, int procedureGroupId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("procedure_group_id", procedureGroupId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("InsertSpecialtyProcedureGroup", parameters);
+
+            return result;
+        }
+
+        public async Task<int> DeleteSpecialtyProcedureGroup(int specialtyId, int procedureGroupId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyId),
+                new SqlParameter("procedure_group_id", procedureGroupId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            
+            var result = await ExecuteNonQueryAsync("DeleteSpecialtyProcedureGroup", parameters);
+
+            return result;
+        }
+
         public async Task<List<Surgeon>> GetSurgeons(int? specialtyId, int providerId, int locationId)
         {
             var parameters = new[]

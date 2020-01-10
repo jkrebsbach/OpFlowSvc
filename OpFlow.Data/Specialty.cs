@@ -10,6 +10,8 @@ namespace OpFlow.Data
         public string SpecialtyName { get; set; }
         public string SpecialtyDescription { get; set; }
 
+        public List<SpecialtyCardCategory> CardCategories { get; set; }
+
         public int GetID()
         {
             return SpecialtyID;
@@ -19,6 +21,13 @@ namespace OpFlow.Data
         {
             return SpecialtyDescription;
         }
+    }
+
+    public class SpecialtyCardCategory
+    { 
+        public int SpecialtyID { get; set; }
+        public int CardCategoryID { get; set; }
+        public string CategoryName { get; set; }
     }
 
     public class SpecialtyPost

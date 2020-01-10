@@ -22,12 +22,18 @@ namespace OpFlow.Service.Controllers
         [Route("api/specialty")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Specialty>))]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetSpecialties(int? providerId = null, int? locationId = null)
+        public async Task<HttpResponseMessage> GetSpecialties()
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
+            var cardCategories = await sqlHelper.GetSpecialtyProcedureGroup(user.ProviderID, user.LocationID);
+
+            foreach (var specialty in specialties)
+            {
+                specialty.CardCategories = cardCategories.Where(c => c.SpecialtyID == specialty.SpecialtyID).ToList();
+            }
 
             return specialties == null ?
                 Request.CreateResponse(HttpStatusCode.NotFound) :
@@ -78,6 +84,38 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             await sqlHelper.DeleteSpecialty(specialtyId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
+        }
+
+        // PUT api/roomSetup/values/5
+        [SwaggerOperation("PutProcedureGroup")]
+        [Route("api/specialty/procedureGroup")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutProcedureGroup(int specialtyId, int procedureGroupId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.InsertSpecialtyProcedureGroup(specialtyId, procedureGroupId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
+        }
+
+        // PUT api/roomSetup/values/5
+        [SwaggerOperation("DeleteProcedureGroup")]
+        [Route("api/specialty/procedureGroup")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteProcedureGroup(int specialtyId, int procedureGroupId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.DeleteSpecialtyProcedureGroup(specialtyId, procedureGroupId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
         }

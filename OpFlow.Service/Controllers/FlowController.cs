@@ -22,7 +22,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Get")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Flow))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public async Task<HttpResponseMessage> GetFlow(int flowId, int? cardId = null, int? providerId = null, int? locationId = null)
+        public async Task<HttpResponseMessage> GetFlow(int flowId, int? cardId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();

@@ -96,7 +96,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCase")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Surgery))]
         [Route("case")]
-        public async Task<HttpResponseMessage> GetCase(int caseId, int? providerId = null, int? locationId = null)
+        public async Task<HttpResponseMessage> GetCase(int caseId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -114,7 +114,7 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCases(string caseNbr = null, int? surgeonUserId = null, int? userId = null, 
             int? roomGroupId = null, int? roomId = null, 
             int? bundleId = null, int? procedureId = null, int? specialtyId = null,
-            DateTime? begDate = null, DateTime? endDate = null, int? providerId = null, int? locationId = null)
+            DateTime? begDate = null, DateTime? endDate = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -130,7 +130,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("SearchSurgeonCases")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchResult>))]
         [Route("searchSurgeonCases")]
-        public async Task<HttpResponseMessage> GetSurgeonCases(int surgeonUserId, DateTime begDate, DateTime endDate, int? providerId = null, int? locationId = null)
+        public async Task<HttpResponseMessage> GetSurgeonCases(int surgeonUserId, DateTime begDate, DateTime endDate)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -215,7 +215,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("SearchRoomCases")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchResult>))]
         [Route("searchRoomCases")]
-        public async Task<HttpResponseMessage> GetRoomCases(int roomId, DateTime begDate, DateTime endDate, int? providerId = null, int? locationId = null)
+        public async Task<HttpResponseMessage> GetRoomCases(int roomId, DateTime begDate, DateTime endDate)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -253,7 +253,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetAlerts")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Surgery>))]
         [Route("alerts")]
-        public async Task<HttpResponseMessage> GetSurgeryAlerts(int surgeryId, int? providerId = null, int? locationId = null)
+        public async Task<HttpResponseMessage> GetSurgeryAlerts(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -294,7 +294,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSurgeryUsers")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryUser>))]
         [Route("users")]
-        public async Task<HttpResponseMessage> GetSurgeryUsers(int surgeryId, int? providerId = null, int? locationId = null)
+        public async Task<HttpResponseMessage> GetSurgeryUsers(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -307,7 +307,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetVendorReps")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryVendorRep>))]
         [Route("VendorReps")]
-        public async Task<HttpResponseMessage> GetSurgeryVendorReps(int surgeryId, int? providerId = null, int? locationId = null)
+        public async Task<HttpResponseMessage> GetSurgeryVendorReps(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
