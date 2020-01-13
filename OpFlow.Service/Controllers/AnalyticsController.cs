@@ -1356,7 +1356,7 @@ namespace OpFlow.Service.Controllers
         [HttpPost]
         [Route("supplyDistribution")]
         [Route("supplyDistribution/{format}")]
-        public async Task<HttpResponseMessage> SupplyDistributionReport([FromBody] CountSummaryReportPost post, string format = null)
+        public async Task<HttpResponseMessage> SupplyDistributionReport([FromBody] SupplyDistributionPost post, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
 
@@ -1364,7 +1364,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsSupplyDistributionData(post.SpecialtyId, post.SurgeonId, post.CardCategoryId, 
-                post.ItemCategoryId, post.ItemId, user.ProviderID, user.LocationID);
+                post.ItemCategoryId, post.ItemId, post.CardFilter, post.SurgeonFilter, user.ProviderID, user.LocationID);
 
             var datasets = new Dictionary<string, DataTable>
             {
@@ -1388,6 +1388,24 @@ namespace OpFlow.Service.Controllers
         private SupplyDistributionSummary SummarizeDistribution(DataTable dtblDistribution)
         {
             var result = new SupplyDistributionSummary();
+            
+            result.Supplies = dtblDistribution
+                .AsEnumerable()
+                .Select(r => r.Field<string>("ItemName"))
+                .Distinct()
+                .Count();
+
+            result.SurgeonCounts = dtblDistribution
+                .AsEnumerable()
+                .Select(r => r.Field<string>("Surgeon"))
+                .Distinct()
+                .Count();
+
+            result.CardCounts = dtblDistribution
+                .AsEnumerable()
+                .Select(r => r.Field<string>("Card"))
+                .Distinct()
+                .Count();
 
             return result;
         }

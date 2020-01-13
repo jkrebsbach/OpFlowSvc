@@ -213,6 +213,12 @@ namespace OpFlow.Data
         public string Group { get; set; }
     }
 
+    public class SupplyDistributionPost : CountSummaryReportPost
+    {
+        public string CardFilter { get; set; }
+        public string SurgeonFilter { get; set; }
+    }
+
     public class ServiceLineSummarySpecialty
     {
         public string Specialty { get; set; }
