@@ -870,21 +870,22 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
-        public async Task<DataSet> GetAnalyticsSupplyDistributionData(List<int> specialtyId, List<int> surgeonId, List<int> cardId, List<int> cardCategoryId,
-            string group, int providerId, int locationId)
+        public async Task<DataSet> GetAnalyticsSupplyDistributionData(List<int> specialtyId, List<int> surgeonId, List<int> cardCategoryId, 
+            List<int> itemCategoryId, List<int> itemId, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
-            var cardXml = GetIdentitySummary(cardId);
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+            var itemCategoryXml = GetIdentitySummary(itemCategoryId);
+            var itemXml = GetIdentitySummary(itemId);
 
             var parameters = new[]
             {
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
-                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
-                new SqlParameter("group", group ?? (object)DBNull.Value),
+                new SqlParameter("item_category_id", itemCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("item_id", itemXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

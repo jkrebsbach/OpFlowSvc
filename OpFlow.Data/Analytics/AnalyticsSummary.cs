@@ -71,6 +71,15 @@ namespace OpFlow.Data
         public List<decimal> QtyOpen { get; set; }
     }
 
+    public class SupplyDistributionSummary
+    {
+        public int Supplies { get; set; }
+        public int SurgeonCounts { get; set; }
+        public int SurgeonNoCounts { get; set; }
+        public int CardCounts { get; set; }
+        public int CardNoCounts { get; set; }
+    }
+
     public class ConcordanceReportSummary
     {
         public string TrayName { get; set; }
@@ -198,6 +207,8 @@ namespace OpFlow.Data
         public List<int> CardId { get; set; }
         public List<int> CardCategoryId { get; set; }
         public List<int> RoomGroupId { get; set; }
+        public List<int> ItemCategoryId { get; set; }
+        public List<int> ItemId { get; set; }
         public string Order { get; set; }
         public string Group { get; set; }
     }

@@ -1363,8 +1363,8 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            var analytics = await sqlHelper.GetAnalyticsSupplyDistributionData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
-                post.Group, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetAnalyticsSupplyDistributionData(post.SpecialtyId, post.SurgeonId, post.CardCategoryId, 
+                post.ItemCategoryId, post.ItemId, user.ProviderID, user.LocationID);
 
             var datasets = new Dictionary<string, DataTable>
             {
@@ -1378,10 +1378,18 @@ namespace OpFlow.Service.Controllers
             }
             else
             {
+                var summary = SummarizeDistribution(analytics.Tables[0]);
                 var webImage = ImageHelper.CreateWebImage(result);
 
-                return ResponseHelper.ImageResponse(Request, webImage);
+                return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
             }
+        }
+
+        private SupplyDistributionSummary SummarizeDistribution(DataTable dtblDistribution)
+        {
+            var result = new SupplyDistributionSummary();
+
+            return result;
         }
 
         // GET api/values/5
