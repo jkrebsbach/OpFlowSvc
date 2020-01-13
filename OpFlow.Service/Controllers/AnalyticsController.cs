@@ -1364,13 +1364,19 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsSupplyDistributionData(post.SpecialtyId, post.SurgeonId, post.CardCategoryId, 
-                post.ItemCategoryId, post.ItemId, post.CardFilter, post.SurgeonFilter, user.ProviderID, user.LocationID);
+                post.ItemCategoryId, post.ItemId, user.ProviderID, user.LocationID);
+
+            var parameters = new[]
+            {
+                new ReportParameter("card_filter", post.CardFilter),
+                new ReportParameter("surgeon_filter", post.SurgeonFilter)
+            };
 
             var datasets = new Dictionary<string, DataTable>
             {
                 ["SupplyDistribution"] = analytics.Tables[0]
             };
-            var result = ReportHelper.GetReport("SupplyDistribution", format, datasets);
+            var result = ReportHelper.GetReport("SupplyDistribution", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -1395,17 +1401,22 @@ namespace OpFlow.Service.Controllers
                 .Distinct()
                 .Count();
 
-            result.SurgeonCounts = dtblDistribution
-                .AsEnumerable()
-                .Select(r => r.Field<string>("Surgeon"))
-                .Distinct()
-                .Count();
+            var summary = dtblDistribution.DataTableToList<SupplyDistributionOutput>();
+            foreach (var surgeon in summary.GroupBy(s => s.Surgeon))
+            {
+                if (surgeon.Sum(s => s.CardCount) > 0)
+                    result.SurgeonCounts++;
+                else
+                    result.SurgeonNoCounts++;
 
-            result.CardCounts = dtblDistribution
-                .AsEnumerable()
-                .Select(r => r.Field<string>("Card"))
-                .Distinct()
-                .Count();
+                foreach (var card in surgeon.ToList().GroupBy(c => c.Card))
+                {
+                    if (card.Sum(s => s.CardCount) > 0)
+                        result.CardCounts++;
+                    else
+                        result.CardNoCounts++;
+                }
+            }
 
             return result;
         }

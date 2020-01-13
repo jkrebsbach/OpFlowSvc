@@ -71,6 +71,12 @@ namespace OpFlow.Data
         public List<decimal> QtyOpen { get; set; }
     }
 
+    public class SupplyDistributionOutput
+    {
+        public string Surgeon { get; set; }
+        public string Card { get; set; }
+        public int CardCount { get; set; }
+    }
     public class SupplyDistributionSummary
     {
         public int Supplies { get; set; }
