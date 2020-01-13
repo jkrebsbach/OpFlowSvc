@@ -65,6 +65,7 @@
     <Report Include="SalesReport.rdl" />
     <Report Include="ServiceLineReview.rdl" />
     <Report Include="SupplyCost.rdl" />
+    <Report Include="SupplyCount.rdl" />
     <Report Include="SupplyOpen.rdl" />
     <Report Include="SupplySavingsEstimator.rdl" />
     <Report Include="SupplyUsageVariance.rdl" />

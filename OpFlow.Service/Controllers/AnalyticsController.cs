@@ -1292,20 +1292,6 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
                 post.RoomGroupId, user.ProviderID, user.LocationID);
 
-            /*switch (post.Order)
-            {
-                case "specialty":
-                    analytics = analytics.OrderBy(a => a.Specialty).ToList();
-                    break;
-                case "card":
-                    analytics = analytics.OrderBy(a => a.Card).ToList();
-                    break;
-                case "count":
-                default:
-                    analytics = analytics.OrderByDescending(a => a.TrayCount).ToList();
-                    break;
-            }*/
-
             var parameters = new[]
             {
                 new ReportParameter("Group", "t")
@@ -1315,6 +1301,41 @@ namespace OpFlow.Service.Controllers
                 ["CountSummary"] = analytics.Tables[0]
             };
             var result = ReportHelper.GetReport("CountSummary", format, datasets, parameters);
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("SupplyCountReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("supplyCount")]
+        [Route("supplyCount/{format}")]
+        public async Task<HttpResponseMessage> SupplyCountReport([FromBody] CountSummaryReportPost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+            var analytics = await sqlHelper.GetAnalyticsSupplyCountData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
+                post.RoomGroupId, user.ProviderID, user.LocationID);
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["SupplyCount"] = analytics.Tables[0]
+            };
+            var result = ReportHelper.GetReport("SupplyCount", format, datasets);
 
             if (format?.ToUpper() == "PDF")
             {
