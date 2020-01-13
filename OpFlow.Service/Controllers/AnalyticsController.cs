@@ -1350,6 +1350,41 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("SupplyDistributionReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("supplyDistribution")]
+        [Route("supplyDistribution/{format}")]
+        public async Task<HttpResponseMessage> SupplyDistributionReport([FromBody] CountSummaryReportPost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+            var analytics = await sqlHelper.GetAnalyticsSupplyDistributionData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
+                post.Group, user.ProviderID, user.LocationID);
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["SupplyDistribution"] = analytics.Tables[0]
+            };
+            var result = ReportHelper.GetReport("SupplyDistribution", format, datasets);
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
+        }
+
+        // GET api/values/5
         [SwaggerOperation("CountSummaryByCardReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
         [HttpPut]
