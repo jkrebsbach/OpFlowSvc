@@ -848,13 +848,12 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetAnalyticsSupplyCountData(List<int> specialtyId, List<int> surgeonId, List<int> cardId, List<int> cardCategoryId,
-            List<int> roomGroupId, int providerId, int locationId)
+            string group, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
             var cardXml = GetIdentitySummary(cardId);
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
-            var roomGroupXml = GetIdentitySummary(roomGroupId);
 
             var parameters = new[]
             {
@@ -862,7 +861,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
-                new SqlParameter("room_group_id", roomGroupXml ?? (object)DBNull.Value),
+                new SqlParameter("group", group ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

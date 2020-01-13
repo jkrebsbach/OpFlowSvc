@@ -199,6 +199,7 @@ namespace OpFlow.Data
         public List<int> CardCategoryId { get; set; }
         public List<int> RoomGroupId { get; set; }
         public string Order { get; set; }
+        public string Group { get; set; }
     }
 
     public class ServiceLineSummarySpecialty

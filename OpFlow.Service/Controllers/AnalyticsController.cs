@@ -1329,7 +1329,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsSupplyCountData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
-                post.RoomGroupId, user.ProviderID, user.LocationID);
+                post.Group, user.ProviderID, user.LocationID);
 
             var datasets = new Dictionary<string, DataTable>
             {
