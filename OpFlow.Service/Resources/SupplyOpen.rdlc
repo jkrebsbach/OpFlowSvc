@@ -844,7 +844,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             </ChartLegend>
                           </ChartLegends>
                           <Palette>Pacific</Palette>
-                          <DynamicHeight>=(1 + CountDistinct(Fields!ItemName.Value)) * 1 &amp; " in"</DynamicHeight>
+                          <DynamicHeight>=(1 + CountDistinct(Fields!ItemName.Value)) * 0.5 &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>
@@ -1263,7 +1263,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             </ChartLegend>
                           </ChartLegends>
                           <Palette>Excel</Palette>
-                          <DynamicHeight>=(1 + CountDistinct(Fields!ItemName.Value)) * 1 &amp; " in"</DynamicHeight>
+                          <DynamicHeight>=(1 + CountDistinct(Fields!ItemName.Value)) * 0.5 &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>
