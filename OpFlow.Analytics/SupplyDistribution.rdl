@@ -21,7 +21,19 @@
 5 CardQty,
 7 Setup,
 3 Added,
-52 Usage</CommandText>
+52 Usage
+
+UNION
+
+select 'ABC' Specialty, 
+'XYZ' Card,
+'ZZZ' Surgeon,
+'LMN' ItemName,
+0 CardCount,
+3 CardQty,
+6 Setup,
+3 Added,
+25 Usage</CommandText>
       </Query>
       <Fields>
         <Field Name="Specialty">
@@ -254,7 +266,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!CardCount.Value</Value>
+                                  <Value>=MAX(Fields!CardCount.Value, "Card")</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -314,7 +326,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Setup.Value / Fields!CardCount.Value</Value>
+                                  <Value>=Iif(Fields!CardCount.Value = 0, 0, Fields!Setup.Value / Iif(Fields!CardCount.Value = 0, 1, Fields!CardCount.Value))</Value>
                                   <Style>
                                     <Format>0.##</Format>
                                   </Style>
@@ -346,7 +358,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Added.Value / Fields!CardCount.Value</Value>
+                                  <Value>=Iif(Fields!CardCount.Value = 0, 0, Fields!Added.Value / Iif(Fields!CardCount.Value = 0, 1, Fields!CardCount.Value))</Value>
                                   <Style>
                                     <Format>0.##</Format>
                                   </Style>
@@ -378,7 +390,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Usage.Value / Fields!CardCount.Value</Value>
+                                  <Value>=Iif(Fields!CardCount.Value = 0, 0, Fields!Usage.Value / Iif(Fields!CardCount.Value = 0, 1, Fields!CardCount.Value))</Value>
                                   <Style>
                                     <Format>0.##</Format>
                                   </Style>

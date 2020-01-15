@@ -115,7 +115,7 @@ namespace OpFlow.Service.Controllers
 
                 if (categoryList?.Any() == true)
                 {
-                    schedule = schedule.Where(s => s.CardCategories.Any(cc => categoryList.Contains(cc.CategoryID)));
+                    schedule = schedule.Where(s => s.CardCategories.Any(cc => categoryList.Contains(cc.CardCategoryID)));
                 }
             }
 

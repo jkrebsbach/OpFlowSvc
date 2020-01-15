@@ -153,7 +153,7 @@ namespace OpFlow.Data
 
     public class CardCategory
     {
-        public int CategoryID { get; set; }
+        public int CardCategoryID { get; set; }
         public string CategoryName { get; set; }
     }
 

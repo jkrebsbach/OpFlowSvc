@@ -43,6 +43,13 @@ namespace OpFlow.Service.Controllers
             var proposalPhases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
 
+            var cardCategoryXref = await sqlHelper.GetSpecialtyProcedureGroup(user.ProviderID, user.LocationID);
+
+            foreach (var specialty in specialties)
+            {
+                specialty.CardCategories = cardCategoryXref.Where(c => c.SpecialtyID == specialty.SpecialtyID).ToList();
+            }
+
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 ReportCategories = reports,
