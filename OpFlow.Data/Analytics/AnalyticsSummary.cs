@@ -206,6 +206,42 @@ namespace OpFlow.Data
         public decimal OverallocatedReduction => (OverallocatedCost / TotalCost) * 100;
     }
 
+    public class CountSampleDispersionReportPost
+    {
+        public string CountType { get; set; }
+        public List<int> SpecialtyId { get; set; }
+        public List<int> SurgeonId { get; set; }
+        public List<int> TrayId { get; set; }
+        public List<int> ItemId { get; set; }
+        public List<int> CardCategoryId { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+    }
+    public class CountSampleDispersionReport
+    {
+        public string Specialty { get; set; }
+        public string Surgeon { get; set; }
+        public string Card { get; set; }
+        public string Tray { get; set; }
+        public string Item { get; set; }
+        public int InstrumentCount { get; set; }
+        public int ConsolidationCount { get; set; }
+        public int CardCount { get; set; }
+    }
+    public class CountSampleDispersionReportCard
+    {
+        public string Card { get; set; }
+        public string Surgeon { get; set; }
+        public string Specialty { get; set; }
+        public int CardCount { get; set; }
+        public List<CountSampleDispersionReport> Instruments { get; set; }
+    }
+    public class CountSampleDispersionReportSurgeon
+    {
+        public string Surgeon { get; set; }
+        public string Specialty { get; set; }
+        public List<CountSampleDispersionReportCard> Cards { get; set; }
+    }
     public class CountSummaryReportPost
     {
         public List<int> SpecialtyId { get; set; }

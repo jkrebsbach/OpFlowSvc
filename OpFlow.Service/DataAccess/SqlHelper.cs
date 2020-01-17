@@ -917,6 +917,33 @@ namespace OpFlow.Service.DataAccess
 
             return dsSchedules;
         }
+        
+        public async Task<DataSet> GetAnalyticsCountSampleDispersion(string countType, List<int> specialtyId, List<int> surgeonId, List<int> trayId, List<int> itemId,
+            List<int> cardCategoryId, DateTime? startDate, DateTime? endDate, int providerId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+            var trayXml = GetIdentitySummary(trayId);
+            var itemXml = GetIdentitySummary(itemId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+            
+            var parameters = new[]
+            {
+                new SqlParameter("count_type", countType ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("item_id", itemXml ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsCountSampleDispersion", parameters);
+
+            return dsSchedules;
+        }
 
         public async Task<int> InsertProposedTray(int? proposedTrayId, int? specialtyId, bool customized,
             string trayName, List<ProposedTrayInstrumentPost> instruments, int providerId, int locationId)

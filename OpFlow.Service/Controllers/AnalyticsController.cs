@@ -1322,6 +1322,58 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("CountSampleDispersionReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("countSampleDispersion")]
+        [Route("countSampleDispersion/{format}")]
+        public async Task<HttpResponseMessage> CountSampleDispersionReport([FromBody] CountSampleDispersionReportPost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+            var analytics = await sqlHelper.GetAnalyticsCountSampleDispersion(post.CountType, post.SpecialtyId, post.SurgeonId, post.TrayId, post.ItemId,
+                post.CardCategoryId, post.StartDate, post.EndDate, user.ProviderID, user.LocationID);
+
+
+            if (format?.ToUpper() == "PDF")
+            {
+                var datasets = new Dictionary<string, DataTable>
+                {
+                    ["CountSampleDispersion"] = analytics.Tables[0]
+                };
+                var result = ReportHelper.GetReport("CountSampleDispersion", format, datasets);
+
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var summary = analytics.Tables[0].DataTableToList<CountSampleDispersionReport>();
+                var cards = summary.GroupBy(s => new { s.Card, s.Surgeon, s.Specialty }).Select(s =>
+                    new CountSampleDispersionReportCard()
+                    {
+                        Surgeon = s.Key.Surgeon,
+                        Specialty = s.Key.Specialty,
+                        Card = s.Key.Card,
+                        CardCount = s.Max(c => c.CardCount),
+                        Instruments = s.ToList()
+                    });
+                var surgeons = cards.GroupBy(c => new { c.Specialty, c.Surgeon }).Select(s =>
+                    new CountSampleDispersionReportSurgeon()
+                    {
+                        Surgeon = s.Key.Surgeon,
+                        Specialty = s.Key.Specialty,
+                        Cards = s.ToList()
+                    });
+
+                return Request.CreateResponse(HttpStatusCode.OK, surgeons);
+            }
+        }
+
+        // GET api/values/5
         [SwaggerOperation("SupplyCountReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
         [HttpPut]

@@ -54,6 +54,7 @@
   <ItemGroup>
     <Report Include="CardRedundancy.rdl" />
     <Report Include="ConcordanceReport.rdl" />
+    <Report Include="CountSampleDispersion.rdl" />
     <Report Include="CountSummary.rdl" />
     <Report Include="DisposableUsage.rdl" />
     <Report Include="ExcessInventory.rdl" />
