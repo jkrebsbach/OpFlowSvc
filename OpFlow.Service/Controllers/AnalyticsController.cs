@@ -1336,8 +1336,22 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsCountSampleDispersion(post.CountType, post.SpecialtyId, post.SurgeonId, post.TrayId, post.ItemId,
-                post.CardCategoryId, post.StartDate, post.EndDate, user.ProviderID, user.LocationID);
+                post.CardCategoryId, post.StartDate, post.EndDate, post.Group, user.ProviderID, user.LocationID);
 
+            string groupType;
+            switch (post.Group)
+            {
+                case "P":
+                    groupType = "Pref Card";
+                    break;
+                case "G":
+                    groupType = "Procedure";
+                    break;
+                case "S":
+                default:
+                    groupType = "Specialty";
+                    break;
+            }
 
             if (format?.ToUpper() == "PDF")
             {
@@ -1352,24 +1366,27 @@ namespace OpFlow.Service.Controllers
             else
             {
                 var summary = analytics.Tables[0].DataTableToList<CountSampleDispersionReport>();
-                var cards = summary.GroupBy(s => new { s.Card, s.Surgeon, s.Specialty }).Select(s =>
+                var cards = summary.GroupBy(s => new { s.Card, s.Surgeon, s.GroupValue }).Select(s =>
                     new CountSampleDispersionReportCard()
                     {
                         Surgeon = s.Key.Surgeon,
-                        Specialty = s.Key.Specialty,
+                        GroupValue = s.Key.GroupValue,
                         Card = s.Key.Card,
                         CardCount = s.Max(c => c.CardCount),
                         Instruments = s.ToList()
                     });
-                var surgeons = cards.GroupBy(c => new { c.Specialty, c.Surgeon }).Select(s =>
+                var surgeons = cards.GroupBy(c => new { c.Surgeon, c.GroupValue }).Select(s =>
                     new CountSampleDispersionReportSurgeon()
                     {
                         Surgeon = s.Key.Surgeon,
-                        Specialty = s.Key.Specialty,
+                        GroupValue = s.Key.GroupValue,
                         Cards = s.ToList()
                     });
 
-                return Request.CreateResponse(HttpStatusCode.OK, surgeons);
+                return Request.CreateResponse(HttpStatusCode.OK, new{
+                    GroupType = groupType,
+                    Surgeons = surgeons
+                });
             }
         }
 

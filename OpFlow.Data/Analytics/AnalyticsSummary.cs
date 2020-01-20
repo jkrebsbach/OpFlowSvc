@@ -216,10 +216,11 @@ namespace OpFlow.Data
         public List<int> CardCategoryId { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public string Group { get; set; }
     }
     public class CountSampleDispersionReport
     {
-        public string Specialty { get; set; }
+        public string GroupValue { get; set; }
         public string Surgeon { get; set; }
         public string Card { get; set; }
         public string Tray { get; set; }
@@ -232,14 +233,14 @@ namespace OpFlow.Data
     {
         public string Card { get; set; }
         public string Surgeon { get; set; }
-        public string Specialty { get; set; }
+        public string GroupValue { get; set; }
         public int CardCount { get; set; }
         public List<CountSampleDispersionReport> Instruments { get; set; }
     }
     public class CountSampleDispersionReportSurgeon
     {
         public string Surgeon { get; set; }
-        public string Specialty { get; set; }
+        public string GroupValue { get; set; }
         public List<CountSampleDispersionReportCard> Cards { get; set; }
     }
     public class CountSummaryReportPost
