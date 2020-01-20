@@ -127,9 +127,9 @@ namespace OpFlow.Data
         public int Usage { get; set; }
         public int Added { get; set; }
 
-        public decimal AvgOpen => Setup / CardCount;
-        public decimal AvgAdded => Added / CardCount;
-        public decimal AvgUsed => Usage / CardCount;
+        public decimal AvgOpen => (decimal)Setup / CardCount;
+        public decimal AvgAdded => (decimal)Added / CardCount;
+        public decimal AvgUsed => (decimal)Usage / CardCount;
     }
 
     public class ConcordanceReportSummary
