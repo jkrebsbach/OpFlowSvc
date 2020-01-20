@@ -1448,22 +1448,22 @@ namespace OpFlow.Service.Controllers
                 new ReportParameter("surgeon_filter", post.SurgeonFilter)
             };
 
-            var datasets = new Dictionary<string, DataTable>
-            {
-                ["SupplyDistribution"] = analytics.Tables[0]
-            };
-            var result = ReportHelper.GetReport("CountDistribution", format, datasets, parameters);
-
             if (format?.ToUpper() == "PDF")
             {
+
+                var datasets = new Dictionary<string, DataTable>
+                {
+                    ["SupplyDistribution"] = analytics.Tables[0]
+                };
+                var result = ReportHelper.GetReport("CountDistribution", format, datasets, parameters);
+
                 return ResponseHelper.PdfResponse(result);
             }
             else
             {
                 var summary = SummarizeDistribution(analytics.Tables[0]);
-                var webImage = ImageHelper.CreateWebImage(result);
 
-                return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
+                return Request.CreateResponse(HttpStatusCode.OK, summary);
             }
         }
 
@@ -1493,6 +1493,41 @@ namespace OpFlow.Service.Controllers
                         result.CardNoCounts++;
                 }
             }
+
+            var type = summary.GroupBy(s => s.CountType);
+            result.Data = type.Select(t => new CountDistributionReport()
+            {
+                CountType = t.Key,
+                Data = t.GroupBy(ct => ct.Specialty).Select(ct =>
+                    new CountDistributionReportType()
+                    {
+                        ServiceLine = ct.Key,
+                        Data = ct.GroupBy(s => s.Surgeon).Select(s =>
+                        new CountDistributionReportSpecialty()
+                        {
+                            Surgeon = s.Key,
+                            Data = s.GroupBy(c => c.Card).Select(c =>
+                            new CountDistributionReportSurgeon()
+                            {
+                                Card = c.Key,
+                                Data = c.GroupBy(i => i.ItemName).Select(d =>                                
+                                    new CountDistributionReportCard()
+                                    {
+                                        ItemName = d.Key,
+                                        Data = d.Select(row =>
+                                        new CountDistributionReportItem()
+                                        {
+                                            CardCount = row.CardCount,
+                                            CardQty = row.CardQty,
+                                            Setup = row.Setup,
+                                            Usage = row.Usage,
+                                            Added = row.Added
+                                        }).ToList()
+                                    }).ToList()
+                            }).ToList()
+                        }).ToList()
+                    }).ToList()
+            }).ToList();
 
             return result;
         }

@@ -73,9 +73,16 @@ namespace OpFlow.Data
 
     public class CountDistributionOutput
     {
-        public string Surgeon { get; set; }
+        public string CountType { get; set; }
+        public string Specialty { get; set; }
         public string Card { get; set; }
+        public string ItemName { get; set; }
+        public string Surgeon { get; set; }
         public int CardCount { get; set; }
+        public int CardQty { get; set; }
+        public int Setup { get; set; }
+        public int Usage { get; set; }
+        public int Added { get; set; }
     }
     public class CountDistributionSummary
     {
@@ -84,6 +91,45 @@ namespace OpFlow.Data
         public int SurgeonNoCounts { get; set; }
         public int CardCounts { get; set; }
         public int CardNoCounts { get; set; }
+
+        public List<CountDistributionReport> Data { get; set; }
+    }
+    public class CountDistributionReport
+    {
+        public string CountType { get; set; }
+        public List<CountDistributionReportType> Data { get; set; }
+    }
+    public class CountDistributionReportType
+    {
+        public string ServiceLine { get; set; }
+        public List<CountDistributionReportSpecialty> Data { get; set; }
+    }
+    public class CountDistributionReportSpecialty
+    {
+        public string Surgeon { get; set; }
+        public List<CountDistributionReportSurgeon> Data { get; set; }
+    }
+    public class CountDistributionReportSurgeon
+    {
+        public string Card { get; set; }
+        public List<CountDistributionReportCard> Data { get; set; }
+    }
+    public class CountDistributionReportCard
+    {
+        public string ItemName { get; set; }
+        public List<CountDistributionReportItem> Data { get; set; }
+    }
+    public class CountDistributionReportItem
+    {
+        public int CardCount { get; set; }
+        public int CardQty { get; set; }
+        public int Setup { get; set; }
+        public int Usage { get; set; }
+        public int Added { get; set; }
+
+        public decimal AvgOpen => Setup / CardCount;
+        public decimal AvgAdded => Added / CardCount;
+        public decimal AvgUsed => Usage / CardCount;
     }
 
     public class ConcordanceReportSummary
