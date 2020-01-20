@@ -1426,20 +1426,20 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("SupplyDistributionReport")]
+        [SwaggerOperation("CountDistributionReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
         [HttpPut]
         [HttpPost]
-        [Route("supplyDistribution")]
-        [Route("supplyDistribution/{format}")]
-        public async Task<HttpResponseMessage> SupplyDistributionReport([FromBody] SupplyDistributionPost post, string format = null)
+        [Route("countDistribution")]
+        [Route("countDistribution/{format}")]
+        public async Task<HttpResponseMessage> CountDistributionReport([FromBody] SupplyDistributionPost post, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
 
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            var analytics = await sqlHelper.GetAnalyticsSupplyDistributionData(post.SpecialtyId, post.SurgeonId, post.CardCategoryId, 
+            var analytics = await sqlHelper.GetAnalyticsCountDistributionData(post.SpecialtyId, post.SurgeonId, post.CardCategoryId, 
                 post.ItemCategoryId, post.ItemId, user.ProviderID, user.LocationID);
 
             var parameters = new[]
@@ -1452,7 +1452,7 @@ namespace OpFlow.Service.Controllers
             {
                 ["SupplyDistribution"] = analytics.Tables[0]
             };
-            var result = ReportHelper.GetReport("SupplyDistribution", format, datasets, parameters);
+            var result = ReportHelper.GetReport("CountDistribution", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -1467,9 +1467,9 @@ namespace OpFlow.Service.Controllers
             }
         }
 
-        private SupplyDistributionSummary SummarizeDistribution(DataTable dtblDistribution)
+        private CountDistributionSummary SummarizeDistribution(DataTable dtblDistribution)
         {
-            var result = new SupplyDistributionSummary();
+            var result = new CountDistributionSummary();
             
             result.Supplies = dtblDistribution
                 .AsEnumerable()
@@ -1477,7 +1477,7 @@ namespace OpFlow.Service.Controllers
                 .Distinct()
                 .Count();
 
-            var summary = dtblDistribution.DataTableToList<SupplyDistributionOutput>();
+            var summary = dtblDistribution.DataTableToList<CountDistributionOutput>();
             foreach (var surgeon in summary.GroupBy(s => s.Surgeon))
             {
                 if (surgeon.Sum(s => s.CardCount) > 0)

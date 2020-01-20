@@ -870,7 +870,7 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
-        public async Task<DataSet> GetAnalyticsSupplyDistributionData(List<int> specialtyId, List<int> surgeonId, List<int> cardCategoryId, 
+        public async Task<DataSet> GetAnalyticsCountDistributionData(List<int> specialtyId, List<int> surgeonId, List<int> cardCategoryId, 
             List<int> itemCategoryId, List<int> itemId, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
@@ -889,7 +889,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsSupplyDistribution", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsCountDistribution", parameters);
 
             return dsSchedules;
         }

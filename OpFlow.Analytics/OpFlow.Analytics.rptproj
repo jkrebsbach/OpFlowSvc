@@ -54,6 +54,7 @@
   <ItemGroup>
     <Report Include="CardRedundancy.rdl" />
     <Report Include="ConcordanceReport.rdl" />
+    <Report Include="CountDistribution.rdl" />
     <Report Include="CountSampleDispersion.rdl" />
     <Report Include="CountSummary.rdl" />
     <Report Include="DisposableUsage.rdl" />
@@ -67,7 +68,6 @@
     <Report Include="ServiceLineReview.rdl" />
     <Report Include="SupplyCost.rdl" />
     <Report Include="SupplyCount.rdl" />
-    <Report Include="SupplyDistribution.rdl" />
     <Report Include="SupplyOpen.rdl" />
     <Report Include="SupplySavingsEstimator.rdl" />
     <Report Include="SupplyUsageVariance.rdl" />
