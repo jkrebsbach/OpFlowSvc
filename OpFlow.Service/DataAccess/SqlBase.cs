@@ -38,6 +38,7 @@ namespace OpFlow.Service.DataAccess
                     new SqlConnection(_connString))
                 using (var cmd = new SqlCommand(storedProcedure, conn) { CommandType = CommandType.StoredProcedure })
                 {
+                    cmd.CommandTimeout = 60 * 3;
                     cmd.Parameters.AddRange(dsParameters);
 
                     await conn.OpenAsync();

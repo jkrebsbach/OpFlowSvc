@@ -108,28 +108,28 @@ namespace OpFlow.Data
     {
         public string Surgeon { get; set; }
         public List<CountDistributionReportSurgeon> Data { get; set; }
+
+        public int SurgeonCount => Data.Sum(c => c.CardCount);
     }
     public class CountDistributionReportSurgeon
     {
         public string Card { get; set; }
         public List<CountDistributionReportCard> Data { get; set; }
+
+        public int CardCount => Data.Max(d => d.CardCount);
     }
     public class CountDistributionReportCard
     {
         public string ItemName { get; set; }
-        public List<CountDistributionReportItem> Data { get; set; }
-    }
-    public class CountDistributionReportItem
-    {
         public int CardCount { get; set; }
         public int CardQty { get; set; }
         public int Setup { get; set; }
         public int Usage { get; set; }
         public int Added { get; set; }
 
-        public decimal AvgOpen => (decimal)Setup / CardCount;
-        public decimal AvgAdded => (decimal)Added / CardCount;
-        public decimal AvgUsed => (decimal)Usage / CardCount;
+        public decimal AvgOpen => CardCount == 0 ? 0 : (decimal)Setup / CardCount;
+        public decimal AvgAdded => CardCount == 0 ? 0 : (decimal)Added / CardCount;
+        public decimal AvgUsed => CardCount == 0 ? 0 : (decimal)Usage / CardCount;
     }
 
     public class ConcordanceReportSummary
@@ -269,11 +269,28 @@ namespace OpFlow.Data
         public string GroupValue { get; set; }
         public string Surgeon { get; set; }
         public string Card { get; set; }
+        public int CardId { get; set; }
         public string Tray { get; set; }
         public string Item { get; set; }
         public int InstrumentCount { get; set; }
         public int ConsolidationCount { get; set; }
         public int CardCount { get; set; }
+    }
+    public class CountSampleVelocity
+    {
+        public int CardId { get; set; }
+        public int Jan { get; set; }
+        public int Feb { get; set; }
+        public int Mar { get; set; }
+        public int Apr { get; set; }
+        public int May { get; set; }
+        public int Jun { get; set; }
+        public int Jul { get; set; }
+        public int Aug { get; set; }
+        public int Sep { get; set; }
+        public int Oct { get; set; }
+        public int Nov { get; set; }
+        public int Dec { get; set; }
     }
     public class CountSampleDispersionReportCard
     {
@@ -281,6 +298,7 @@ namespace OpFlow.Data
         public string Surgeon { get; set; }
         public string GroupValue { get; set; }
         public int CardCount { get; set; }
+        public CountSampleVelocity Velocity { get; set; }
         public List<CountSampleDispersionReport> Instruments { get; set; }
     }
     public class CountSampleDispersionReportSurgeon

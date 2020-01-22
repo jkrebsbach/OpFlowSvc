@@ -1366,13 +1366,16 @@ namespace OpFlow.Service.Controllers
             else
             {
                 var summary = analytics.Tables[0].DataTableToList<CountSampleDispersionReport>();
-                var cards = summary.GroupBy(s => new { s.Card, s.Surgeon, s.GroupValue }).Select(s =>
+                var velocity = analytics.Tables[1].DataTableToList<CountSampleVelocity>();
+
+                var cards = summary.GroupBy(s => new { s.CardId, s.Card, s.Surgeon, s.GroupValue }).Select(s =>
                     new CountSampleDispersionReportCard()
                     {
                         Surgeon = s.Key.Surgeon,
                         GroupValue = s.Key.GroupValue,
                         Card = s.Key.Card,
                         CardCount = s.Max(c => c.CardCount),
+                        Velocity = velocity.FirstOrDefault(v => v.CardId == s.Key.CardId),
                         Instruments = s.ToList()
                     });
                 var surgeons = cards.GroupBy(c => new { c.Surgeon, c.GroupValue }).Select(s =>
@@ -1461,13 +1464,12 @@ namespace OpFlow.Service.Controllers
             }
             else
             {
-                var summary = SummarizeDistribution(analytics.Tables[0]);
-
+                var summary = SummarizeDistribution(analytics.Tables[0], post.CardFilter, post.SurgeonFilter);
                 return Request.CreateResponse(HttpStatusCode.OK, summary);
             }
         }
 
-        private CountDistributionSummary SummarizeDistribution(DataTable dtblDistribution)
+        private CountDistributionSummary SummarizeDistribution(DataTable dtblDistribution, string cardFilter, string surgeonFilter)
         {
             var result = new CountDistributionSummary();
             
@@ -1478,12 +1480,21 @@ namespace OpFlow.Service.Controllers
                 .Count();
 
             var summary = dtblDistribution.DataTableToList<CountDistributionOutput>();
+            var validSurgeons = new List<string>();
             foreach (var surgeon in summary.GroupBy(s => s.Surgeon))
             {
                 if (surgeon.Sum(s => s.CardCount) > 0)
+                {
                     result.SurgeonCounts++;
+                    if (surgeonFilter == "C")
+                        validSurgeons.Add(surgeon.Key);
+                }
                 else
+                {
                     result.SurgeonNoCounts++;
+                    if (surgeonFilter == "N")
+                        validSurgeons.Add(surgeon.Key);
+                }
 
                 foreach (var card in surgeon.ToList().GroupBy(c => c.Card))
                 {
@@ -1510,22 +1521,21 @@ namespace OpFlow.Service.Controllers
                             new CountDistributionReportSurgeon()
                             {
                                 Card = c.Key,
-                                Data = c.GroupBy(i => i.ItemName).Select(d =>                                
+                                Data = c.Select(d =>                                
                                     new CountDistributionReportCard()
                                     {
-                                        ItemName = d.Key,
-                                        Data = d.Select(row =>
-                                        new CountDistributionReportItem()
-                                        {
-                                            CardCount = row.CardCount,
-                                            CardQty = row.CardQty,
-                                            Setup = row.Setup,
-                                            Usage = row.Usage,
-                                            Added = row.Added
-                                        }).ToList()
+                                        ItemName = d.ItemName,
+                                        CardCount = d.CardCount,
+                                        CardQty = d.CardQty,
+                                        Setup = d.Setup,
+                                        Usage = d.Usage,
+                                        Added = d.Added
                                     }).ToList()
-                            }).ToList()
-                        }).ToList()
+                            }).Where(d => cardFilter == "A" ||
+                            (d.CardCount == 0 && cardFilter == "N") ||
+                            (d.CardCount > 0 && cardFilter == "C")).ToList()
+                        }).Where(s => surgeonFilter == "A" ||
+                            validSurgeons.Contains(s.Surgeon)).ToList()
                     }).ToList()
             }).ToList();
 
