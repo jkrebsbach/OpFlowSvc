@@ -291,6 +291,18 @@ namespace OpFlow.Data
         public int Oct { get; set; }
         public int Nov { get; set; }
         public int Dec { get; set; }
+        public int JanYear => DateTime.Today.Year - (DateTime.Today.Month >= 1 ? 0 : 1);
+        public int FebYear => DateTime.Today.Year - (DateTime.Today.Month >= 2 ? 0 : 1);
+        public int MarYear => DateTime.Today.Year - (DateTime.Today.Month >= 3 ? 0 : 1);
+        public int AprYear => DateTime.Today.Year - (DateTime.Today.Month >= 4 ? 0 : 1);
+        public int MayYear => DateTime.Today.Year - (DateTime.Today.Month >= 5 ? 0 : 1);
+        public int JunYear => DateTime.Today.Year - (DateTime.Today.Month >= 6 ? 0 : 1);
+        public int JulYear => DateTime.Today.Year - (DateTime.Today.Month >= 7 ? 0 : 1);
+        public int AugYear => DateTime.Today.Year - (DateTime.Today.Month >= 8 ? 0 : 1);
+        public int SepYear => DateTime.Today.Year - (DateTime.Today.Month >= 9 ? 0 : 1);
+        public int OctYear => DateTime.Today.Year - (DateTime.Today.Month >= 10 ? 0 : 1);
+        public int NovYear => DateTime.Today.Year - (DateTime.Today.Month >= 11 ? 0 : 1);
+        public int DecYear => DateTime.Today.Year - (DateTime.Today.Month >= 12 ? 0 : 1);
     }
     public class CountSampleDispersionReportCard
     {
