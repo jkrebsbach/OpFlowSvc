@@ -2088,6 +2088,21 @@ namespace OpFlow.Service.DataAccess
             return result.Identifier;
         }
 
+        public async Task<int> UpdateConsolidationPlan(List<TrayRationalization> consolidations, int providerId, int locationId)
+        {
+            var consolidationPlanXml = SummarizeConsolidations(consolidations);
+
+            var parameters = new[]
+            {
+                new SqlParameter("consolidations", consolidationPlanXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProposedTrayConsolidationPlan", parameters);
+
+            return result;
+        }
+
         public async Task<int> UpdateSurgeryCaseProfile(int surgeryId, int? caseProfileId,
             List<CaseProfileQuestionPost> questions, int providerId, int locationId)
         {
@@ -2194,6 +2209,30 @@ namespace OpFlow.Service.DataAccess
             var result = await ExecuteNonQueryAsync("UpdateProposedTrayRoles", parameters);
 
             return result;
+        }
+        private string SummarizeConsolidations(List<TrayRationalization> consolidations)
+        {
+            if (consolidations == null || !consolidations.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var question in consolidations)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, question.TrayProposalID);
+                AddColumn(doc, row, question.Level1Target);
+                AddColumn(doc, row, question.Level1Instances);
+                AddColumn(doc, row, question.Level2Target);
+                AddColumn(doc, row, question.Level2Instances);
+                AddColumn(doc, row, question.Level3Target);
+                AddColumn(doc, row, question.Level3Instances);
+            }
+
+            return table.OuterXml;
         }
         private string SummarizeQuestions(List<CaseProfileQuestionPost> questions)
         {

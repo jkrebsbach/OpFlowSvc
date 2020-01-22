@@ -51,6 +51,12 @@ namespace OpFlow.Data
         public string Comments { get; set; }
         public int ProposedCount { get; set; }
         public int SourceCount { get; set; }
+        public int? Level1Target { get; set; }
+        public int? Level1Instances { get; set; }
+        public int? Level2Target { get; set; }
+        public int? Level2Instances { get; set; }
+        public int? Level3Target { get; set; }
+        public int? Level3Instances { get; set; }
         public int CountChange => SourceCount - ProposedCount;
         public int ProjectRemoval => CountChange * Instances;
         public decimal PcntChange => SourceCount == 0 ? 0 : ((decimal)CountChange / SourceCount * 100);
@@ -620,6 +626,11 @@ namespace OpFlow.Data
     {
         public int CaseProfileID { get; set; }
         public List<CaseProfileQuestionPost> Questions { get; set; }
+    }
+
+    public class ConsolidationPlanPost
+    {
+        public List<TrayRationalization> Proposals { get; set; }
     }
 
     public class CaseProfileQuestionPost

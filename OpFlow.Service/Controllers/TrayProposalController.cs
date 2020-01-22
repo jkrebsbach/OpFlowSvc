@@ -750,6 +750,20 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, caseProfiles);
         }
 
+        [SwaggerOperation("UpdateConsolidationPlan")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("consolidationPlan")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateConsolidationPlan([FromBody] ConsolidationPlanPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.UpdateConsolidationPlan(post.Proposals, user.ProviderID, user.LocationID);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, 1);
+        }
+
         [SwaggerOperation("UpdateSurgeryCaseProfile")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("surgeryCaseProfile")]
@@ -760,7 +774,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             await sqlHelper.UpdateSurgeryCaseProfile(surgeryId, caseProfileId, post.Questions, user.ProviderID, user.LocationID);
-            
+
             return Request.CreateResponse(HttpStatusCode.OK, surgeryId);
         }
 
