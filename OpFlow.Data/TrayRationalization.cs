@@ -65,12 +65,11 @@ namespace OpFlow.Data
         public List<TrayProposalUserAssignment> TrayApprovers => UserAssignments?.Where(ua => ua.UserType == "A")?.ToList();
         public List<TrayProposalUserAssignment> TrayUsers => UserAssignments?.Where(ua => ua.UserType == "U")?.ToList();
         public List<TrayApproval> TrayApprovals { get; set; }
+        public List<TrayRationalizationCardCategory> CardCategories { get; set; }
         public string DeploymentStatusName
         {
             get
             {
-
-                var result = string.Empty;
                 switch (DeploymentStatus)
                 {
                     case "A":
@@ -84,6 +83,18 @@ namespace OpFlow.Data
                     default:
                         return "On Time";
                 }
+            }
+        }
+        public string DashboardCountColor
+        {
+            get
+            {
+                if (CountsScheduled >= 5)
+                    return "lightgreen";
+                if (CountsScheduled >= 2)
+                    return "lightyellow";
+
+                return "lightgray";
             }
         }
     }
@@ -142,6 +153,16 @@ namespace OpFlow.Data
     {
         public int TrayProposalID { get; set; }
         public int CardCategoryID { get; set; }
+        public string CardCategory { get; set; }
+
+        public List<SurgeonCardCategory> Surgeons { get; set; }
+    }
+
+    public class SurgeonCardCategory
+    {
+        public int SurgeonID { get; set; }
+        public int CardCategoryID { get; set; }
+        public string Surgeon { get; set; }
     }
 
     public class TrayApproval

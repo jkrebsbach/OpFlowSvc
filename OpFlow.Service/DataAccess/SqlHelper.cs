@@ -3335,6 +3335,27 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<TrayRationalizationCardCategory>> GetProposedTrayCardCategories(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCardCategories", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationCardCategory>();
+            var surgeons = dsSchedules.Tables[1].DataTableToList<SurgeonCardCategory>();
+
+            foreach (var trayGroup in result)
+            {
+                trayGroup.Surgeons = surgeons.Where(t => t.CardCategoryID == trayGroup.CardCategoryID).ToList();
+            }
+
+            return result;
+        }
+
         public async Task<int> UpdateCardCategories(string hierarchyLevel, int cardCategoryId, List<int> cards, int providerId, int locationId)
         {
             var cardData = GetIdentitySummary(cards);

@@ -45,6 +45,7 @@ namespace OpFlow.Service.Controllers
             var phases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
             var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
             var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
+            var proposalCardCategories = await sqlHelper.GetProposedTrayCardCategories(user.ProviderID, user.LocationID);
             var instruments = await sqlHelper.GetItems("instrument", null, true, user.ProviderID, user.LocationID);
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
             var surgeonPreferences = await sqlHelper.GetSurgeonPreferences(user.ProviderID, user.LocationID);
@@ -65,6 +66,11 @@ namespace OpFlow.Service.Controllers
             {
                 var trayGroupString = trayGroups.Where(tg => surgeonPreference.TrayGroupID?.Contains(tg.TrayGroupID ?? -1) == true).Select(tg => tg.GroupName);
                 surgeonPreference.TrayGroup = string.Join(",", trayGroupString);
+            }
+
+            foreach (var proposal in proposedTrays)
+            {
+                proposal.CardCategories = proposalCardCategories.Where(p => p.TrayProposalID == proposal.TrayProposalID).ToList();
             }
 
             var result = new
@@ -1990,7 +1996,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var trayGroups = new List<int>();
-            foreach (var trayGroup in post.TrayGroups)
+            foreach (var trayGroup in post.TrayGroups ?? new List<string>())
             {
                 var trayGroupId = await sqlHelper.InsertTrayGroup(trayGroup, user.ProviderID, user.LocationID);
                 trayGroups.Add(trayGroupId);
