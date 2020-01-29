@@ -74,6 +74,7 @@ namespace OpFlow.Data
     public class CountDistributionOutput
     {
         public string CountType { get; set; }
+        public string ProcedureGroup { get; set; }
         public string Specialty { get; set; }
         public string Card { get; set; }
         public string ItemName { get; set; }
@@ -101,6 +102,11 @@ namespace OpFlow.Data
         public List<CountDistributionReportType> Data { get; set; }
     }
     public class CountDistributionReportType
+    {
+        public string ProcedureGroup { get; set; }
+        public List<CountDistributionReportProcedureGroup> Data { get; set; }
+    }
+    public class CountDistributionReportProcedureGroup
     {
         public string ServiceLine { get; set; }
         public List<CountDistributionReportSpecialty> Data { get; set; }

@@ -1509,35 +1509,40 @@ namespace OpFlow.Service.Controllers
             result.Data = type.Select(t => new CountDistributionReport()
             {
                 CountType = t.Key,
-                Data = t.GroupBy(ct => ct.Specialty).Select(ct =>
+                Data = t.GroupBy(ct => ct.ProcedureGroup).Select(ct =>
                     new CountDistributionReportType()
                     {
-                        ServiceLine = ct.Key,
-                        Data = ct.GroupBy(s => s.Surgeon).Select(s =>
-                        new CountDistributionReportSpecialty()
+                        ProcedureGroup = ct.Key,
+                        Data = ct.GroupBy(pg => pg.Specialty).Select(pg =>
+                        new CountDistributionReportProcedureGroup()
                         {
-                            Surgeon = s.Key,
-                            Data = s.GroupBy(c => c.Card).Select(c =>
-                            new CountDistributionReportSurgeon()
+                            ServiceLine = pg.Key,
+                            Data = pg.GroupBy(s => s.Surgeon).Select(s =>
+                            new CountDistributionReportSpecialty()
                             {
-                                Card = c.Key,
-                                Data = c.Select(d =>                                
-                                    new CountDistributionReportCard()
-                                    {
-                                        ItemName = d.ItemName,
-                                        CardCount = d.CardCount,
-                                        UnitCost = d.UnitCost,
-                                        CardQty = d.CardQty,
-                                        Setup = d.Setup,
-                                        Usage = d.Usage,
-                                        Added = d.Added
-                                    }).ToList()
-                            }).Where(d => cardFilter == "A" ||
-                            (d.CardCount == 0 && cardFilter == "N") ||
-                            (d.CardCount > 0 && cardFilter == "C")).ToList()
-                        }).Where(s => surgeonFilter == "A" ||
-                            validSurgeons.Contains(s.Surgeon)).ToList()
+                                Surgeon = s.Key,
+                                Data = s.GroupBy(c => c.Card).Select(c =>
+                                new CountDistributionReportSurgeon()
+                                {
+                                    Card = c.Key,
+                                    Data = c.Select(d =>
+                                        new CountDistributionReportCard()
+                                        {
+                                            ItemName = d.ItemName,
+                                            CardCount = d.CardCount,
+                                            UnitCost = d.UnitCost,
+                                            CardQty = d.CardQty,
+                                            Setup = d.Setup,
+                                            Usage = d.Usage,
+                                            Added = d.Added
+                                        }).ToList()
+                                }).Where(d => cardFilter == "A" ||
+                                (d.CardCount == 0 && cardFilter == "N") ||
+                                (d.CardCount > 0 && cardFilter == "C")).ToList()
+                            }).Where(s => surgeonFilter == "A" ||
+                                validSurgeons.Contains(s.Surgeon)).ToList()
                     }).ToList()
+                }).ToList()
             }).ToList();
 
             return result;
