@@ -1443,7 +1443,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsCountDistributionData(post.SpecialtyId, post.SurgeonId, post.CardCategoryId, 
-                post.ItemCategoryId, post.ItemId, user.ProviderID, user.LocationID);
+                post.ItemCategoryId, post.ItemId, post.MinCost, user.ProviderID, user.LocationID);
 
             var parameters = new[]
             {
@@ -1526,6 +1526,7 @@ namespace OpFlow.Service.Controllers
                                     {
                                         ItemName = d.ItemName,
                                         CardCount = d.CardCount,
+                                        UnitCost = d.UnitCost,
                                         CardQty = d.CardQty,
                                         Setup = d.Setup,
                                         Usage = d.Usage,

@@ -79,6 +79,7 @@ namespace OpFlow.Data
         public string ItemName { get; set; }
         public string Surgeon { get; set; }
         public int CardCount { get; set; }
+        public int? UnitCost { get; set; }
         public int CardQty { get; set; }
         public int Setup { get; set; }
         public int Usage { get; set; }
@@ -121,6 +122,7 @@ namespace OpFlow.Data
     public class CountDistributionReportCard
     {
         public string ItemName { get; set; }
+        public int? UnitCost { get; set; }
         public int CardCount { get; set; }
         public int CardQty { get; set; }
         public int Setup { get; set; }
@@ -334,6 +336,7 @@ namespace OpFlow.Data
 
     public class SupplyDistributionPost : CountSummaryReportPost
     {
+        public int? MinCost { get; set; }
         public string CardFilter { get; set; }
         public string SurgeonFilter { get; set; }
     }

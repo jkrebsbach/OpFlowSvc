@@ -871,7 +871,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetAnalyticsCountDistributionData(List<int> specialtyId, List<int> surgeonId, List<int> cardCategoryId, 
-            List<int> itemCategoryId, List<int> itemId, int providerId, int locationId)
+            List<int> itemCategoryId, List<int> itemId, int? minCost, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -886,6 +886,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("item_category_id", itemCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("item_id", itemXml ?? (object)DBNull.Value),
+                new SqlParameter("min_cost", minCost ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
