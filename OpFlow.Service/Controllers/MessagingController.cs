@@ -54,7 +54,7 @@ namespace OpFlow.Service.Controllers
                 var patient = await secureSqlHelper.GetPatient(group.PatientID.Value, 
                     user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
 
-                group.CommunicationTargetName = $"{patient.LastName} {group.CommunicationTargetName}";
+                group.CommunicationTargetName = $"{patient?.LastName} {group.CommunicationTargetName}";
             }
 
             groups = groups.OrderByDescending(g => g.SurgeryID.HasValue).ToList();
