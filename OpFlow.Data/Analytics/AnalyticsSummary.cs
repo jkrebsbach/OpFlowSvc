@@ -363,6 +363,7 @@ namespace OpFlow.Data
         public string Specialty { get; set; }
         public string Surgeon { get; set; }
         public string CardName { get; set; }
+        public string CardCategory { get; set; }
         public string ProcedureName { get; set; }
         public int CardQuantity { get; set; }
         public decimal ItemCost { get; set; }

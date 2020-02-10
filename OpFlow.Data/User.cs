@@ -22,6 +22,7 @@ namespace OpFlow.Data
         public string RoleName { get; set; }
         public string RoleType { get; set; }
         public string LocationName { get; set; }
+        public bool PHILocation { get; set; }
 
         public string DeriveInitials()
         {

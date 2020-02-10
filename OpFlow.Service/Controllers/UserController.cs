@@ -37,6 +37,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserAuthID);
+            result.PHILocation = (user.SecureDatabaseName != "InvalidConnection");
 
             return result == null ? Request.CreateResponse(HttpStatusCode.NotFound, "User not found") : Request.CreateResponse(HttpStatusCode.OK, result);
         }

@@ -672,7 +672,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetServiceLineReviewReportData(List<int> specialtyId, List<int> surgeonId,
-            List<int> cardId, List<int> itemId, int? minCost, decimal? minOpen, decimal? minHold,
+            List<int> cardId, List<int> itemId, List<int> cardCategoryId, int? minCost, decimal? minOpen, decimal? minHold,
             bool fieldAll, bool fieldWaste, bool fieldOver, bool fieldUnder,
             DateTime? startDate, DateTime? endDate,
             string groupBy, int providerId, int locationId)
@@ -681,6 +681,7 @@ namespace OpFlow.Service.DataAccess
             var surgeonXml = GetIdentitySummary(surgeonId);
             var cardXml = GetIdentitySummary(cardId);
             var itemXml = GetIdentitySummary(itemId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
 
             var parameters = new[]
             {
@@ -688,6 +689,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("item_id", itemXml ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("min_cost", minCost ?? (object)DBNull.Value),
                 new SqlParameter("min_open", minOpen ?? (object)DBNull.Value),
                 new SqlParameter("min_hold", minHold ?? (object)DBNull.Value),
