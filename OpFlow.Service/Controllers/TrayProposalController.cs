@@ -1271,6 +1271,34 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
+        [SwaggerOperation("AddComparableInstrument")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("comparableInstrument")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> AddComparableInstrument(int trayProposalId, int instrumentId, int comparableInstrumentId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.InsertComparableInstrument(trayProposalId, instrumentId, comparableInstrumentId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        [SwaggerOperation("DeleteComparableInstrument")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("comparableInstrument")]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteComparableInstrument(int trayProposalId, int instrumentId, int comparableInstrumentId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.DeleteComparableInstrument(trayProposalId, instrumentId, comparableInstrumentId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
         [Route("dashboard/csv", Name = "GetDashboardCsv")]
         [HttpGet]

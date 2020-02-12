@@ -22,8 +22,11 @@ namespace OpFlow.Service.Test
             var importTypeId = 1;
 
             var sqlHelper = new SqlHelper();
-            var secureSqlHelper = new SecureSqlHelper("SecureConnection");
-            var user = await sqlHelper.GetSecureUser(null, 1);
+            //var secureSqlHelper = new SecureSqlHelper("SecureConnection");
+            //var user = await sqlHelper.GetSecureUser(null, 1);
+            var secureSqlHelper = new SecureSqlHelper("InvalidConnection");
+            var user = await sqlHelper.GetSecureUser(null, 166);
+
             int? logId = null;
 
             try

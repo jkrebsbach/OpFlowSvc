@@ -2377,6 +2377,36 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> InsertComparableInstrument(int trayProposalId, int instrumentId, int comparableInstrumentId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("instrument_id", instrumentId),
+                new SqlParameter("comparable_instrument_id", comparableInstrumentId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("InsertComparableInstrument", parameters);
+
+            return result;
+        }
+
+        public async Task<int> DeleteComparableInstrument(int trayProposalId, int instrumentId, int comparableInstrumentId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("instrument_id", instrumentId),
+                new SqlParameter("comparable_instrument_id", comparableInstrumentId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("DeleteComparableInstrument", parameters);
+
+            return result;
+        }
+
         public async Task<TrayCardOverlapSummary> GetTrayOverlapSummary(int trayId, int providerId, int locationId)
         {
             var parameters = new[]
