@@ -1337,6 +1337,7 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetProposedTrayInstruments", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationItem>();
+            var comparables = dsSchedules.Tables[1].DataTableToList<ComparableInstrument>();
 
             var sequence = 0;
             foreach (var item in result.Where(r => r.HistoryType == null))
@@ -1345,6 +1346,8 @@ namespace OpFlow.Service.DataAccess
                     item.Sequence = (++sequence);
 
                 sequence = item.Sequence ?? 0;
+
+                item.ComparableInstruments = comparables.Where(c => c.InstrumentID == item.InstrumentID).ToList();
             }
 
             return result;

@@ -221,6 +221,15 @@ namespace OpFlow.Data
         public decimal CaseUsagePcnt => TrayCases == 0 ? 0 : (UsedCases / (decimal)TrayCases * 100);
 
         public string HighlightClass => (SourceQty - Quantity == 0 ? "" : "highlight-tray");
+
+        public List<ComparableInstrument> ComparableInstruments { get; set; }
+    }
+
+    public class ComparableInstrument
+    { 
+        public int InstrumentID { get; set; }
+        public int ComparableInstrumentID { get; set; }
+        public string ItemDescription { get; set; }
     }
 
     public class TrayRationalizationStatusLog
