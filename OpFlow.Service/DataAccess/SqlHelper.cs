@@ -3351,6 +3351,23 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+        
+        public async Task<ProcedureProfile> GetProcedureProfile(int cardCategoryId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_category_id", providerId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProcedureProfile", parameters);
+
+            var result = new ProcedureProfile();
+            result.Procedures = dsSchedules.Tables[0].DataTableToList<Procedure>();
+            result.Items = dsSchedules.Tables[1].DataTableToList<ItemMaster>();
+
+            return result;
+        }
 
         public async Task<List<TrayGroup>> GetTrayGroups(int providerId, int locationId)
         {
@@ -6092,6 +6109,20 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetProceduresBySpecialty", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Procedure>();
+
+            return result;
+        }
+
+        public async Task<List<Procedure>> GetCptCodes(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetCptCodes", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Procedure>();
 

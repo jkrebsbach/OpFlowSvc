@@ -162,6 +162,34 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetCptCodes")]
+        [Route("cptCode")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Procedure>))]
+        public async Task<HttpResponseMessage> GetCptCodes()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.GetCptCodes(user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetProcedureProfile")]
+        [Route("procedureProfile")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
+        public async Task<HttpResponseMessage> GetProcedureProfile(int cardCategoryId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.GetProcedureProfile(cardCategoryId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("PostEditFeedback")]
         [Route("feedback")]
         [SwaggerResponse(HttpStatusCode.OK)]
