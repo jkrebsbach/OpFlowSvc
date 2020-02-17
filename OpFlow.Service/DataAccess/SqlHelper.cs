@@ -3351,12 +3351,71 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        
+
+        public async Task<int> InsertCardCategoryProcedure(int cardCategoryId, string cptCode, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_category_id", cardCategoryId),
+                new SqlParameter("cpt_id", cptCode),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("InsertCardCategoryProcedure", parameters);
+
+            return result;
+        }
+
+        public async Task<int> UpdateCardCategoryItem(int cardCategoryId, int? itemId, int? instrumentId, int quantity, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_category_id", cardCategoryId),
+                new SqlParameter("item_id", itemId ?? (object)DBNull.Value),
+                new SqlParameter("instrument_id", instrumentId ?? (object)DBNull.Value),
+                new SqlParameter("quantity", quantity),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("UpdateCardCategoryItem", parameters);
+
+            return result;
+        }
+
+        public async Task<int> DeleteCardCategoryProcedure(int cardCategoryId, string cptCode, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_category_id", cardCategoryId),
+                new SqlParameter("cpt_id", cptCode),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("DeleteCardCategoryProcedure", parameters);
+
+            return result;
+        }
+
+        public async Task<int> DeleteCardCategoryItem(int cardCategoryId, int? itemId, int? instrumentId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_category_id", cardCategoryId),
+                new SqlParameter("item_id", itemId ?? (object)DBNull.Value),
+                new SqlParameter("instrument_id", instrumentId ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("DeleteCardCategoryItem", parameters);
+
+            return result;
+        }
+
         public async Task<ProcedureProfile> GetProcedureProfile(int cardCategoryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("card_category_id", providerId),
+                new SqlParameter("card_category_id", cardCategoryId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };

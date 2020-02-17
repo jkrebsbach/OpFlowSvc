@@ -162,6 +162,72 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("PutCardCategoryProcedure")]
+        [Route("cardCategoryProcedure")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutCardCategoryProcedure(int cardCategoryId, string cptCode)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.InsertCardCategoryProcedure(cardCategoryId, cptCode, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PutCardCategoryItem")]
+        [Route("cardCategoryItem")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutCardCategoryItem(int cardCategoryId, string itemType, int itemId, int quantity)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (itemType == "I") // Instrument
+                await sqlHelper.UpdateCardCategoryItem(cardCategoryId, null, itemId, quantity, user.ProviderID, user.LocationID);
+            else // Supply
+                await sqlHelper.UpdateCardCategoryItem(cardCategoryId, itemId, null, quantity, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, itemId);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("DeleteCardCategoryProcedure")]
+        [Route("cardCategoryProcedure")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteCardCategoryProcedure(int cardCategoryId, string cptCode)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.DeleteCardCategoryProcedure(cardCategoryId, cptCode, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("DeleteCardCategoryItem")]
+        [Route("cardCategoryItem")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteCardCategoryItem(int cardCategoryId, string itemType, int itemId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (itemType == "I") // Instrument
+                await sqlHelper.DeleteCardCategoryItem(cardCategoryId, null, itemId, user.ProviderID, user.LocationID);
+            else // Supply
+                await sqlHelper.DeleteCardCategoryItem(cardCategoryId, itemId, null, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, itemId);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetCptCodes")]
         [Route("cptCode")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Procedure>))]
