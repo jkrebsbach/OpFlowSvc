@@ -3411,21 +3411,27 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<ProcedureProfile> GetProcedureProfile(int cardCategoryId, int providerId, int locationId)
+        public async Task<List<ProcedureProfile>> GetProcedureProfile(int? cardCategoryId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("card_category_id", cardCategoryId),
+                new SqlParameter("card_category_id", cardCategoryId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
             var dsSchedules = await ExecuteCommandAsync("GetProcedureProfile", parameters);
 
-            var result = new ProcedureProfile();
-            result.Procedures = dsSchedules.Tables[0].DataTableToList<Procedure>();
-            result.Items = dsSchedules.Tables[1].DataTableToList<ItemMaster>();
+            var results = dsSchedules.Tables[0].DataTableToList<ProcedureProfile>();
+            var procedures = dsSchedules.Tables[1].DataTableToList<ProfileProcedure>();
+            var items = dsSchedules.Tables[2].DataTableToList<ProfileItem>();
 
-            return result;
+            foreach (var result in results)
+            {
+                result.Procedures = procedures.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+                result.Items = items.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+            }
+
+            return results;
         }
 
         public async Task<List<TrayGroup>> GetTrayGroups(int providerId, int locationId)

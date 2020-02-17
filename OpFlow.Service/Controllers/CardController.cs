@@ -245,7 +245,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetProcedureProfile")]
         [Route("procedureProfile")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
-        public async Task<HttpResponseMessage> GetProcedureProfile(int cardCategoryId)
+        public async Task<HttpResponseMessage> GetProcedureProfile(int? cardCategoryId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();

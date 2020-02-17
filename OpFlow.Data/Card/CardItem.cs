@@ -159,8 +159,20 @@ namespace OpFlow.Data
 
     public class ProcedureProfile
     {
-        public List<Procedure> Procedures { get; set; }
-        public List<ItemMaster> Items { get; set; }
+        public int ProcedureProfileID { get; set; }
+        public string ProcedureProfileName { get; set; }
+        public List<ProfileProcedure> Procedures { get; set; }
+        public List<ProfileItem> Items { get; set; }
+    }
+
+    public class ProfileProcedure : Procedure
+    {
+        public int ProcedureProfileID { get; set; }
+    }
+
+    public class ProfileItem : ItemMaster
+    {
+        public int ProcedureProfileID { get; set; }
     }
 
     public class TrayGroup
