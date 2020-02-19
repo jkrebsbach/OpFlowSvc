@@ -242,6 +242,20 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetProcedureProfiles")]
+        [Route("procedureProfiles")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ProcedureProfile>))]
+        public async Task<HttpResponseMessage> GetProcedureProfiles()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.GetProcedureProfile(null, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetProcedureProfile")]
         [Route("procedureProfile")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
@@ -250,7 +264,35 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetProcedureProfile(cardCategoryId, user.ProviderID, user.LocationID);
+            ProcedureProfile profile = null;
+            if (cardCategoryId.HasValue)
+            {
+                var profiles = await sqlHelper.GetProcedureProfile(cardCategoryId, user.ProviderID, user.LocationID);
+                profile = profiles.FirstOrDefault();
+            }
+            var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
+            var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                ProcedureProfile = profile,
+                CardCategories = cardCategories,
+                Specialties = specialties
+            });
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PutProcedureProfile")]
+        [Route("procedureProfile")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PutProcedureProfile(int? procedureProfileId, [FromBody] ProcedureProfilePost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.UpdateProcedureProfile(procedureProfileId, request.ProfileName, request.CardCategoryID, 
+                user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

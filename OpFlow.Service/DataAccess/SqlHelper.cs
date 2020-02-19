@@ -3411,11 +3411,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<ProcedureProfile>> GetProcedureProfile(int? cardCategoryId, int providerId, int locationId)
+        public async Task<List<ProcedureProfile>> GetProcedureProfile(int? procedureProfileId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("card_category_id", cardCategoryId ?? (object)DBNull.Value),
+                new SqlParameter("procedure_profile_id", procedureProfileId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
@@ -3432,6 +3432,25 @@ namespace OpFlow.Service.DataAccess
             }
 
             return results;
+        }
+
+        public async Task<int> UpdateProcedureProfile(int? procedureProfileId, string profileName, int cardCategoryId,
+            int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId ?? (object)DBNull.Value),
+                new SqlParameter("profile_name", profileName),
+                new SqlParameter("card_category_id", cardCategoryId),
+                new SqlParameter("specialty_id", string.Empty ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = await ExecuteCommandAsync("UpdateProcedureProfile", parameters);
+
+            var results = dsSchedules.Tables[0].DataTableToList<InsertionResult>();
+            
+            return results.First().Identifier;
         }
 
         public async Task<List<TrayGroup>> GetTrayGroups(int providerId, int locationId)

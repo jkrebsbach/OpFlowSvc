@@ -175,6 +175,12 @@ namespace OpFlow.Data
         public int ProcedureProfileID { get; set; }
     }
 
+    public class ProcedureProfilePost
+    {
+        public string ProfileName { get; set; }
+        public int CardCategoryID { get; set; }
+    }
+
     public class TrayGroup
     {
         public int? TrayGroupID { get; set; }
