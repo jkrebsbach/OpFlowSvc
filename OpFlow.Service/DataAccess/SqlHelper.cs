@@ -332,7 +332,7 @@ namespace OpFlow.Service.DataAccess
             var doc = new XmlDocument();
             var table = doc.CreateElement("table");
 
-            foreach (var identity in identities)
+            foreach (var identity in identities.Distinct())
             {
                 var row = doc.CreateElement("row");
                 table.AppendChild(row);
@@ -3352,61 +3352,61 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> InsertCardCategoryProcedure(int cardCategoryId, string cptCode, int providerId, int locationId)
+        public async Task<int> InsertProcedureProfileCpt(int procedureProfileId, string cptCode, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("card_category_id", cardCategoryId),
+                new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("cpt_id", cptCode),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
-            var result = await ExecuteNonQueryAsync("InsertCardCategoryProcedure", parameters);
+            var result = await ExecuteNonQueryAsync("InsertProcedureProfileCpt", parameters);
 
             return result;
         }
 
-        public async Task<int> UpdateCardCategoryItem(int cardCategoryId, int? itemId, int? instrumentId, int quantity, int providerId, int locationId)
+        public async Task<int> UpdateProcedureProfileItem(int procedureProfileId, int? itemId, int? instrumentId, int quantity, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("card_category_id", cardCategoryId),
+                new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("item_id", itemId ?? (object)DBNull.Value),
                 new SqlParameter("instrument_id", instrumentId ?? (object)DBNull.Value),
                 new SqlParameter("quantity", quantity),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
-            var result = await ExecuteNonQueryAsync("UpdateCardCategoryItem", parameters);
+            var result = await ExecuteNonQueryAsync("UpdateProcedureProfileItem", parameters);
 
             return result;
         }
 
-        public async Task<int> DeleteCardCategoryProcedure(int cardCategoryId, string cptCode, int providerId, int locationId)
+        public async Task<int> DeleteProcedureProfileCpt(int procedureProfileId, string cptCode, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("card_category_id", cardCategoryId),
+                new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("cpt_id", cptCode),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
-            var result = await ExecuteNonQueryAsync("DeleteCardCategoryProcedure", parameters);
+            var result = await ExecuteNonQueryAsync("DeleteProcedureProfileCpt", parameters);
 
             return result;
         }
 
-        public async Task<int> DeleteCardCategoryItem(int cardCategoryId, int? itemId, int? instrumentId, int providerId, int locationId)
+        public async Task<int> DeleteProcedureProfileItem(int procedureProfileId, int? itemId, int? instrumentId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("card_category_id", cardCategoryId),
+                new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("item_id", itemId ?? (object)DBNull.Value),
                 new SqlParameter("instrument_id", instrumentId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
-            var result = await ExecuteNonQueryAsync("DeleteCardCategoryItem", parameters);
+            var result = await ExecuteNonQueryAsync("DeleteProcedureProfileItem", parameters);
 
             return result;
         }
@@ -3424,25 +3424,29 @@ namespace OpFlow.Service.DataAccess
             var results = dsSchedules.Tables[0].DataTableToList<ProcedureProfile>();
             var procedures = dsSchedules.Tables[1].DataTableToList<ProfileProcedure>();
             var items = dsSchedules.Tables[2].DataTableToList<ProfileItem>();
+            var specialties = dsSchedules.Tables[3].DataTableToList<ProfileSpecialty>();
 
             foreach (var result in results)
             {
                 result.Procedures = procedures.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
                 result.Items = items.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+                result.Specialties = specialties.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
             }
 
             return results;
         }
 
-        public async Task<int> UpdateProcedureProfile(int? procedureProfileId, string profileName, int cardCategoryId,
+        public async Task<int> UpdateProcedureProfile(int? procedureProfileId, string profileName, int cardCategoryId, List<int> specialtyId,
             int providerId, int locationId)
         {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId ?? (object)DBNull.Value),
                 new SqlParameter("profile_name", profileName),
                 new SqlParameter("card_category_id", cardCategoryId),
-                new SqlParameter("specialty_id", string.Empty ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };

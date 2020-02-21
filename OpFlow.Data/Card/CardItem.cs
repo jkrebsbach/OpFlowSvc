@@ -161,8 +161,16 @@ namespace OpFlow.Data
     {
         public int ProcedureProfileID { get; set; }
         public string ProcedureProfileName { get; set; }
+        public int CardCategoryID { get; set; }
+        public string CardCategoryName { get; set; }
+        public List<ProfileSpecialty> Specialties { get; set; }
         public List<ProfileProcedure> Procedures { get; set; }
         public List<ProfileItem> Items { get; set; }
+    }
+
+    public class ProfileSpecialty : Specialty
+    {
+        public int ProcedureProfileID { get; set; }
     }
 
     public class ProfileProcedure : Procedure
@@ -179,6 +187,7 @@ namespace OpFlow.Data
     {
         public string ProfileName { get; set; }
         public int CardCategoryID { get; set; }
+        public List<int> SpecialtyID { get; set; }
     }
 
     public class TrayGroup
