@@ -184,6 +184,7 @@ namespace OpFlow.Data
     public class ProfileItem : ItemMaster
     {
         public int ProcedureProfileID { get; set; }
+        public decimal AvgUsed { get; set; }
         public string TrayType { get; set; }
 
         public List<ComparableItem> ComparableItems { get; set; }
