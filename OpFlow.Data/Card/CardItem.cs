@@ -166,6 +166,9 @@ namespace OpFlow.Data
         public List<ProfileSpecialty> Specialties { get; set; }
         public List<ProfileProcedure> Procedures { get; set; }
         public List<ProfileItem> Items { get; set; }
+        public List<ProfileItem> ProcedureTrays { get; set; }
+        public List<ProfileItem> SpecialtyTrays { get; set; }
+        public List<ProfileItem> SharedTrays { get; set; }
     }
 
     public class ProfileSpecialty : Specialty
@@ -181,8 +184,8 @@ namespace OpFlow.Data
     public class ProfileItem : ItemMaster
     {
         public int ProcedureProfileID { get; set; }
+        public string TrayType { get; set; }
 
-        public List<ComparableInstrument> ComparableInstruments { get; set; }
         public List<ComparableItem> ComparableItems { get; set; }
     }
 

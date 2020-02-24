@@ -3394,6 +3394,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> InsertProcedureProfileTray(int procedureProfileId, int trayItemId, string trayType, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("tray_item_id", trayItemId),
+                new SqlParameter("tray_type", trayType),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("InsertProcedureProfileTray", parameters);
+
+            return result;
+        }
+
         public async Task<int> UpdateProcedureProfileItem(int procedureProfileId, int? itemId, int? instrumentId, int quantity, int providerId, int locationId)
         {
             var parameters = new[]
@@ -3406,6 +3421,23 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
             };
             var result = await ExecuteNonQueryAsync("UpdateProcedureProfileItem", parameters);
+
+            return result;
+        }
+
+        public async Task<int> UpdateProcedureProfileTray(int procedureProfileId, string trayType, int itemId, int trayItemId, int quantity, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("tray_type", trayType),
+                new SqlParameter("item_id", itemId),
+                new SqlParameter("tray_item_id", trayItemId),
+                new SqlParameter("quantity", quantity),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProcedureProfileTray", parameters);
 
             return result;
         }
@@ -3435,7 +3467,23 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
             };
             var result = await ExecuteNonQueryAsync("DeleteProcedureProfileItem", parameters);
+                
+            return result;
+        }
 
+        public async Task<int> DeleteProcedureProfileTray(int procedureProfileId, string trayType, int itemId, int trayItemId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("tray_type", trayType),
+                new SqlParameter("item_id", itemId),
+                new SqlParameter("tray_item_id", trayItemId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("DeleteProcedureProfileTray", parameters);
+                
             return result;
         }
 
@@ -3453,11 +3501,16 @@ namespace OpFlow.Service.DataAccess
             var procedures = dsSchedules.Tables[1].DataTableToList<ProfileProcedure>();
             var items = dsSchedules.Tables[2].DataTableToList<ProfileItem>();
             var specialties = dsSchedules.Tables[3].DataTableToList<ProfileSpecialty>();
-            var comparableItems = dsSchedules.Tables[4].DataTableToList<ComparableItem>();
+            var trayItems = dsSchedules.Tables[4].DataTableToList<ProfileItem>();
+            var comparableItems = dsSchedules.Tables[5].DataTableToList<ComparableItem>();
 
             foreach (var item in items)
             {
                 item.ComparableItems = comparableItems.Where(c => c.ItemID == item.ItemID && c.ItemType == item.ItemType).ToList();
+            }
+            foreach (var item in trayItems)
+            {
+                item.ComparableItems = comparableItems.Where(c => c.ItemID == item.ItemID && c.ItemType == "I").ToList();
             }
 
             foreach (var result in results)
@@ -3465,6 +3518,10 @@ namespace OpFlow.Service.DataAccess
                 result.Procedures = procedures.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
                 result.Items = items.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
                 result.Specialties = specialties.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+
+                result.ProcedureTrays = trayItems.Where(p => p.ProcedureProfileID == result.ProcedureProfileID && p.TrayType == "P").ToList();
+                result.SpecialtyTrays = trayItems.Where(p => p.ProcedureProfileID == result.ProcedureProfileID && p.TrayType == "S").ToList();
+                result.SharedTrays = trayItems.Where(p => p.ProcedureProfileID == result.ProcedureProfileID && p.TrayType == "H").ToList();
             }
 
             return results;

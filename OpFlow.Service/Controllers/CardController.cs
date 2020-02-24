@@ -177,6 +177,21 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("PutProcedureProfileTray")]
+        [Route("procedureProfileTray")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutProcedureProfileTray(int procedureProfileId, int trayItemId, string trayType)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.InsertProcedureProfileTray(procedureProfileId, trayItemId, trayType, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("PutProcedureProfileItem")]
         [Route("procedureProfileItem")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
@@ -190,6 +205,21 @@ namespace OpFlow.Service.Controllers
                 await sqlHelper.UpdateProcedureProfileItem(procedureProfileId, null, itemId, quantity, user.ProviderID, user.LocationID);
             else // Supply
                 await sqlHelper.UpdateProcedureProfileItem(procedureProfileId, itemId, null, quantity, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, itemId);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PutProcedureProfileTray")]
+        [Route("procedureProfileTray")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutProcedureProfileTray(int procedureProfileId, string trayType, int itemId, int trayItemId, int quantity)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.UpdateProcedureProfileTray(procedureProfileId, trayType, itemId, trayItemId, quantity, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, itemId);
         }
@@ -223,6 +253,21 @@ namespace OpFlow.Service.Controllers
                 await sqlHelper.DeleteProcedureProfileItem(procedureProfileId, null, itemId, user.ProviderID, user.LocationID);
             else // Supply
                 await sqlHelper.DeleteProcedureProfileItem(procedureProfileId, itemId, null, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, itemId);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("DeleteProcedureProfileTray")]
+        [Route("procedureProfileTray")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteProcedureProfileTray(int procedureProfileId, string trayType, int itemId, int trayItemId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.DeleteProcedureProfileTray(procedureProfileId, trayType, itemId, trayItemId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, itemId);
         }
