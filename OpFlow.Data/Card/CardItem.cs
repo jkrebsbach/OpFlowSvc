@@ -181,6 +181,9 @@ namespace OpFlow.Data
     public class ProfileItem : ItemMaster
     {
         public int ProcedureProfileID { get; set; }
+
+        public List<ComparableInstrument> ComparableInstruments { get; set; }
+        public List<ComparableItem> ComparableItems { get; set; }
     }
 
     public class ProcedureProfilePost

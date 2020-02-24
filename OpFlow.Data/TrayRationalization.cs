@@ -232,6 +232,14 @@ namespace OpFlow.Data
         public string ItemDescription { get; set; }
     }
 
+    public class ComparableItem
+    {
+        public int ItemID { get; set; }
+        public int ComparableItemID { get; set; }
+        public string ItemDescription { get; set; }
+        public string ItemType { get; set; }
+    }
+
     public class TrayRationalizationStatusLog
     {
         public string Status { get; set; }

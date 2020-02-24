@@ -138,6 +138,44 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("PutComparableItem")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("comparableItem")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutComparableItem(string itemType, int itemId, int comparableItemId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = 0;
+            if (itemType == "I") // Instrument
+                result = await sqlHelper.InsertComparableInstrument(null, itemId, comparableItemId, user.ProviderID, user.LocationID);
+            else
+                result = await sqlHelper.InsertComparableItem(itemId, comparableItemId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("DeleteComparableItem")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("comparableItem")]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteComparableItem(string itemType, int itemId, int comparableItemId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = 0;
+            if (itemType == "I") // Instrument
+                result = await sqlHelper.DeleteComparableInstrument(null, itemId, comparableItemId, user.ProviderID, user.LocationID);
+            else
+                result = await sqlHelper.DeleteComparableItem(itemId, comparableItemId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("PutTrayInstrument")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("trayInstrument")]

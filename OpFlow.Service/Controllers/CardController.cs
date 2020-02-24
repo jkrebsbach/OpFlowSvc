@@ -272,7 +272,7 @@ namespace OpFlow.Service.Controllers
             }
             var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
-            
+
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 ProcedureProfile = profile,
