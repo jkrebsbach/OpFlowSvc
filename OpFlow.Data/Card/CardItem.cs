@@ -197,6 +197,11 @@ namespace OpFlow.Data
         public List<int> SpecialtyID { get; set; }
     }
 
+    public class ProcedureProfileCardComparison
+    {
+        public string TrayName { get; set; }
+    }
+
     public class TrayGroup
     {
         public int? TrayGroupID { get; set; }

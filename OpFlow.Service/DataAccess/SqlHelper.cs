@@ -3527,7 +3527,22 @@ namespace OpFlow.Service.DataAccess
             return results;
         }
 
-        public async Task<int> UpdateProcedureProfile(int? procedureProfileId, string profileName, int cardCategoryId, List<int> specialtyId,
+        public async Task<List<ProcedureProfileCardComparison>> GetProcedureProfileCardComparison(int procedureProfileId, int cardId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProcedureProfileCardComparison", parameters);
+
+            var results = dsSchedules.Tables[0].DataTableToList<ProcedureProfileCardComparison>();
+            return results;
+        }
+
+            public async Task<int> UpdateProcedureProfile(int? procedureProfileId, string profileName, int cardCategoryId, List<int> specialtyId,
             int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);

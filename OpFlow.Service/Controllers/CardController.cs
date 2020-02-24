@@ -304,26 +304,42 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetProcedureProfile")]
         [Route("procedureProfile")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
-        public async Task<HttpResponseMessage> GetProcedureProfile(int? cardCategoryId = null)
+        public async Task<HttpResponseMessage> GetProcedureProfile(int? procedureProfileId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
             ProcedureProfile profile = null;
-            if (cardCategoryId.HasValue)
+            if (procedureProfileId.HasValue)
             {
-                var profiles = await sqlHelper.GetProcedureProfile(cardCategoryId, user.ProviderID, user.LocationID);
+                var profiles = await sqlHelper.GetProcedureProfile(procedureProfileId, user.ProviderID, user.LocationID);
                 profile = profiles.FirstOrDefault();
             }
             var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
+            var cards = await sqlHelper.GetCards(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 ProcedureProfile = profile,
                 CardCategories = cardCategories,
-                Specialties = specialties
+                Specialties = specialties,
+                Cards = cards
             });
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetProcedureProfileCompare")]
+        [Route("procedureProfileCompare")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ProcedureProfileCardComparison>))]
+        public async Task<HttpResponseMessage> GetProcedureProfileCompare(int procedureProfileId, int cardId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.GetProcedureProfileCardComparison(procedureProfileId, cardId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // GET api/values/5
