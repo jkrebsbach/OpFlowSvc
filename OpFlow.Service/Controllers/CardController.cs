@@ -337,9 +337,25 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetProcedureProfileCardComparison(procedureProfileId, cardId, user.ProviderID, user.LocationID);
+            var profiles = (await sqlHelper.GetProcedureProfile(procedureProfileId, user.ProviderID, user.LocationID)).First();
 
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            var profileItems = profiles.Items.Union(profiles.Trays);
+            var cardItems = await sqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
+
+            
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Profile = profileItems.GroupBy(p => p.ItemType).Select(p =>
+                    new {
+                        ItemType = p.Key == "I" ? "INSTRUMENT" : "SUPPLY",
+                        Items = p.ToList()
+                    }),
+                Card = cardItems.GroupBy(p => p.ItemType).Select(p =>
+                    new {
+                        ItemType = p.Key,
+                        Items = p.ToList()
+                    })
+            });
         }
 
         // GET api/values/5
