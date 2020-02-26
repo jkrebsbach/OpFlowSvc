@@ -245,7 +245,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, 
-                post.CardCategoryID, post.CardID, post.Instruments, user.ProviderID, user.LocationID);
+                post.CardCategoryID, post.CardID, post.Instruments, post.Label, user.ProviderID, user.LocationID);
 
             var summary = SummarizeConcordanceReport(analytics.Tables[0]);
 
@@ -254,12 +254,18 @@ namespace OpFlow.Service.Controllers
             {
                 case "instrument_avg":
                     concordance.Sort = "QtyOpen DESC";
+                    summary.Items = summary.Items.OrderByDescending(i => i.QtyOpen).ToList();
                     break;
                 case "instrument_name":
                 default:
                     concordance.Sort = "InstrumentName";
+                    summary.Items = summary.Items.OrderBy(i => i.InstrumentDescription).ToList();
                     break;
             }
+
+            // only send items when legend necessary
+            if (post.Label != "ID")
+                summary.Items = null;
 
             if (format == "CSV")
             {
@@ -318,12 +324,12 @@ namespace OpFlow.Service.Controllers
             {
                 case "usage":
                     concordance.Sort = "QtyOpen DESC, TrayUsage DESC";
-                    summary = summary.OrderByDescending(s => s.ItemUsage).ToList();
+                    summary.TrayData = summary.TrayData.OrderByDescending(s => s.ItemUsage).ToList();
                     break;
                 case "card_qty":
                 default:
                     concordance.Sort = "TrayQty DESC, InstrumentName";
-                    summary = summary.OrderByDescending(s => s.ItemQuantity).ToList();
+                    summary.TrayData = summary.TrayData.OrderByDescending(s => s.ItemQuantity).ToList();
                     break;
             }
 
@@ -351,28 +357,55 @@ namespace OpFlow.Service.Controllers
             }
         }
 
-        private List<ConcordanceReportSummary> SummarizeConcordanceReport(DataTable concordanceData)
+        private ConcordanceReportSummary SummarizeConcordanceReport(DataTable concordanceData)
         {
-            var result = new List<ConcordanceReportSummary>();
+            var result = new ConcordanceReportSummary()
+            {
+                TrayData = new List<ConcordanceReportTrayData>(),
+                Items = new List<ConcordanceReportItemData>()
+            };
 
             foreach (DataRow concordanceRow in concordanceData.Rows)
             {
                 var trayQty = concordanceRow["TrayQty"];
+                var trayUsage = concordanceRow["TrayUsage"];
+                var qtyOpen = concordanceRow["QtyOpen"];
                 var tray = concordanceRow["SurgeonName"].ToString();
+
+                var item = new ConcordanceReportItemData()
+                {
+                    ID = (string)concordanceRow["InstrumentName"],
+                    InstrumentDescription = (string)concordanceRow["InstrumentDescription"],
+                    QtyOpen = qtyOpen == DBNull.Value ? 0 : (decimal)qtyOpen,
+                    TrayUsage = trayUsage == DBNull.Value ? 0 : (decimal)trayUsage,
+                    TrayQty = trayQty == DBNull.Value ? 0 : (decimal)trayQty
+                };
+
+                var match = result.Items.FirstOrDefault(i => i.ID == item.ID);
+                if (match == null)
+                {
+                    result.Items.Add(item);
+                }
+                else
+                {
+                    match.QtyOpen = (item.QtyOpen > match.QtyOpen ? item.QtyOpen : match.QtyOpen);
+                    match.TrayUsage = (item.TrayUsage > match.TrayUsage ? item.TrayUsage : match.TrayUsage);
+                    match.TrayQty = (item.TrayQty > match.TrayQty ? item.TrayQty : match.TrayQty);
+                }
 
                 if (trayQty != DBNull.Value)
                 {
                     var quantity = (decimal)trayQty;
                     var usageQty = (decimal)concordanceRow["TrayUsage"];
 
-                    var usage = result.FirstOrDefault(r => r.TrayName == tray);
+                    var usage = result.TrayData.FirstOrDefault(r => r.TrayName == tray);
                     if (usage == null)
                     {
-                        usage = new ConcordanceReportSummary()
+                        usage = new ConcordanceReportTrayData()
                         {
                             TrayName = tray
                         };
-                        result.Add(usage);
+                        result.TrayData.Add(usage);
                     }
 
                     usage.TrayItems.Add(new ConcordanceItem()

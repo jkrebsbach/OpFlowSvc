@@ -141,6 +141,21 @@ namespace OpFlow.Data
     }
 
     public class ConcordanceReportSummary
+    { 
+        public List<ConcordanceReportTrayData> TrayData { get; set; }
+        public List<ConcordanceReportItemData> Items { get; set; }
+    }
+
+    public class ConcordanceReportItemData
+    {
+        public string ID { get; set; }
+        public string InstrumentDescription { get; set; }
+        public decimal QtyOpen { get; set; }
+        public decimal TrayUsage { get; set; }
+        public decimal TrayQty { get; set; }
+    }
+
+    public class ConcordanceReportTrayData
     {
         public string TrayName { get; set; }
         public string UsageSummary {
@@ -157,7 +172,7 @@ namespace OpFlow.Data
 
         public List<ConcordanceItem> TrayItems { get; set; }
 
-        public ConcordanceReportSummary()
+        public ConcordanceReportTrayData()
         {
             TrayItems = new List<ConcordanceItem>();
         }
@@ -196,6 +211,7 @@ namespace OpFlow.Data
         public bool FieldWaste { get; set; }
         public bool FieldOver { get; set; }
         public bool FieldUnder { get; set; }
+        public string Label { get; set; }
         public string Order { get; set; }
         public string Group { get; set; }
         public DateTime? StartDate { get; set; }
