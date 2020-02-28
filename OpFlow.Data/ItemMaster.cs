@@ -12,6 +12,7 @@ namespace OpFlow.Data
         public bool CountNeeded { get; set; }
         public string UnitOfMeasure { get; set; }
         public string ItemType { get; set; }
+        public string Category { get; set; }
         public string ItemDescription { get; set; }
         public decimal UnitCost { get; set; }
         public decimal BillableUnitCost { get; set; }

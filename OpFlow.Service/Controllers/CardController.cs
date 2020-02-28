@@ -337,20 +337,35 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var profiles = (await sqlHelper.GetProcedureProfile(procedureProfileId, user.ProviderID, user.LocationID)).First();
+            var profile = (await sqlHelper.GetProcedureProfile(procedureProfileId, user.ProviderID, user.LocationID)).First();
 
-            var profileItems = profiles.Items.Union(profiles.Trays);
+            var profileTrays = profile.ProcedureTrays.Union(profile.SpecialtyTrays).Union(profile.SharedTrays).ToList();
+            var traySummary = profileTrays.GroupBy(p => p.TrayName).Select(p => new ProfileItem()
+            { 
+                ItemType = "TRAY",
+                ItemDescription = p.Key,
+                Quantity = p.Sum(ti => ti.Quantity)
+            });
+
+            
+            var profileItems = profile.Items.Union(traySummary);
+
             var cardItems = await sqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
 
+            // rework card items for this screen
+            cardItems = cardItems.Where(c => c.ItemType != "TRAY").ToList();
+            cardItems.Where(c => c.Category == "TRAY").ToList().ForEach(c => c.ItemType = "TRAY");
             
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
-                Profile = profileItems.GroupBy(p => p.ItemType).Select(p =>
+                Profile = profileItems.OrderBy(p => p.ItemType).GroupBy(p => p.ItemType).Select(p =>
                     new {
-                        ItemType = p.Key == "I" ? "INSTRUMENT" : "SUPPLY",
+                        ItemType = p.Key == "I" ? "INSTRUMENT" : 
+                            p.Key == "S" ? "SUPPLY" :
+                            p.Key,
                         Items = p.ToList()
                     }),
-                Card = cardItems.GroupBy(p => p.ItemType).Select(p =>
+                Card = cardItems.OrderBy(p => p.ItemType).GroupBy(p => p.ItemType).Select(p =>
                     new {
                         ItemType = p.Key,
                         Items = p.ToList()

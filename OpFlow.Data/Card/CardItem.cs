@@ -170,9 +170,6 @@ namespace OpFlow.Data
         public List<ProfileItem> ProcedureTrays { get; set; }
         public List<ProfileItem> SpecialtyTrays { get; set; }
         public List<ProfileItem> SharedTrays { get; set; }
-
-
-        public List<ProfileItem> Trays =>  ProcedureTrays.Union(SpecialtyTrays).Union(SharedTrays).ToList();
     }
 
     public class ProfileSpecialty : Specialty
