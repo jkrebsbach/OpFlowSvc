@@ -318,13 +318,15 @@ namespace OpFlow.Service.Controllers
             var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var cards = await sqlHelper.GetCards(user.ProviderID, user.LocationID);
+            var trays = await sqlHelper.GetItems("TRAY", null, null, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 ProcedureProfile = profile,
                 CardCategories = cardCategories,
                 Specialties = specialties,
-                Cards = cards
+                Cards = cards,
+                Trays = trays
             });
         }
 
@@ -332,7 +334,8 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetProcedureProfileCompare")]
         [Route("procedureProfileCompare")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ProcedureProfileCardComparison>))]
-        public async Task<HttpResponseMessage> GetProcedureProfileCompare(int procedureProfileId, int cardId)
+        [HttpPost]
+        public async Task<HttpResponseMessage> GetProcedureProfileCompare(int procedureProfileId, [FromBody]ProcedureProfileCardComparisonRequest request)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -349,27 +352,71 @@ namespace OpFlow.Service.Controllers
 
             
             var profileItems = profile.Items.Union(traySummary);
+            List<CardItem> studyItems = new List<CardItem>();
 
-            var cardItems = await sqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
 
-            // rework card items for this screen
-            cardItems = cardItems.Where(c => c.ItemType != "TRAY").ToList();
-            cardItems.Where(c => c.Category == "TRAY").ToList().ForEach(c => c.ItemType = "TRAY");
-            
+            if (request.CardID.HasValue)
+            {
+                var cardItems = await sqlHelper.GetCardItems(request.CardID.Value, user.ProviderID, user.LocationID);
+                studyItems.AddRange(cardItems);
+            }
+
+            foreach (var trayId in request.Trays)
+            {
+                var trayItems = await sqlHelper.GetTrayItems(trayId, user.ProviderID, user.LocationID);
+                if (trayItems.Any())
+                {
+                    studyItems.Add(new CardItem()
+                    {
+                        Category = "TRAY",
+                        ItemDescription = trayItems.First().TrayName,
+                        Quantity = trayItems.Sum(ti => ti.Quantity)
+                    });
+                }
+            }
+
+            var result = new List<ProcedureProfileCardComparison>();
+            result.Add(new ProcedureProfileCardComparison()
+            {
+                ItemType = "INSTRUMENT",
+                CardItems = studyItems.Where(ci => ci.Category != "TRAY" && ci.ItemType == "INSTRUMENT").ToList(),
+                ProfileItems = profileItems.Where(p => p.ItemType == "I").ToList()
+            });
+            result.Add(new ProcedureProfileCardComparison()
+            {
+                ItemType = "SUPPLY",
+                CardItems = studyItems.Where(ci => ci.ItemType == "SUPPLY").ToList(),
+                ProfileItems = profileItems.Where(p => p.ItemType == "S").ToList()
+            });
+            result.Add(new ProcedureProfileCardComparison()
+            {
+                ItemType = "TRAY",
+                CardItems = studyItems.Where(ci => ci.Category == "TRAY").ToList(),
+                ProfileItems = profileItems.Where(p => p.ItemType == "TRAY").ToList()
+            });
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        [SwaggerOperation("GetProcedureProfileVenn")]
+        [Route("procedureProfileVenn")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ProcedureProfileCardComparison>))]
+        [HttpPost]
+        public async Task<HttpResponseMessage> GetProcedureProfileVenn(int procedureProfileId, [FromBody]ProcedureProfileCardComparisonRequest request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var profile = (await sqlHelper.GetProcedureProfile(procedureProfileId, user.ProviderID, user.LocationID)).First();
+            var cardItems = await sqlHelper.GetCardItems(request.CardID.Value, user.ProviderID, user.LocationID);
+
+            var result = new List<ProcedureProfileCardComparison>();
+
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
-                Profile = profileItems.OrderBy(p => p.ItemType).GroupBy(p => p.ItemType).Select(p =>
-                    new {
-                        ItemType = p.Key == "I" ? "INSTRUMENT" : 
-                            p.Key == "S" ? "SUPPLY" :
-                            p.Key,
-                        Items = p.ToList()
-                    }),
-                Card = cardItems.OrderBy(p => p.ItemType).GroupBy(p => p.ItemType).Select(p =>
-                    new {
-                        ItemType = p.Key,
-                        Items = p.ToList()
-                    })
+                Proposed = profile.Items,
+                Shared = profile.Items.FirstOrDefault(),
+                Trays = cardItems
             });
         }
 

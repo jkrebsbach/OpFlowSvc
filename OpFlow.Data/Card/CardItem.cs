@@ -200,7 +200,16 @@ namespace OpFlow.Data
 
     public class ProcedureProfileCardComparison
     {
-        public string TrayName { get; set; }
+        public string ItemType { get; set; }
+        public List<CardItem> CardItems { get; set; }
+        public List<ProfileItem> ProfileItems { get; set; }
+    }
+
+    public class ProcedureProfileCardComparisonRequest
+    {
+
+        public int? CardID { get; set; }
+        public List<int> Trays { get; set; }
     }
 
     public class TrayGroup
