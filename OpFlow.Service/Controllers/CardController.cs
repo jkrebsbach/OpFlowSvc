@@ -408,15 +408,33 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var profile = (await sqlHelper.GetProcedureProfile(procedureProfileId, user.ProviderID, user.LocationID)).First();
+            var card = await sqlHelper.GetCardData(request.CardID.Value, user.ProviderID, user.LocationID);
             var cardItems = await sqlHelper.GetCardItems(request.CardID.Value, user.ProviderID, user.LocationID);
 
-            var result = new List<ProcedureProfileCardComparison>();
+            var profileTrays = profile.ProcedureTrays.Union(profile.SharedTrays).Union(profile.SpecialtyTrays);
+
+            var shared = profile.ProcedureTrays.Where(t => cardItems.Any(ci => ci.TrayID == t.TrayID)).ToList();
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
-                Proposed = profile.Items,
-                Shared = profile.Items.FirstOrDefault(),
-                Trays = cardItems
+                Proposed = profileTrays.GroupBy(p => p.TrayName).Select(p =>
+                new
+                {
+                    TrayName = p.Key,
+                    Instruments = p.ToList()
+                }),
+                Shared = shared.GroupBy(p => p.TrayName).Select(p =>
+                new
+                {
+                    TrayName = p.Key,
+                    Instruments = p.ToList()
+                }),
+                Card = cardItems.GroupBy(c => c.TrayName).Select(c =>
+                new
+                {
+                    TrayName = c.Key ?? "ITEMS",
+                    Instruments = c.ToList()
+                })
             });
         }
 
