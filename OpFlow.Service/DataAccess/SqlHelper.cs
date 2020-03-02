@@ -3396,7 +3396,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> InsertProcedureProfileTray(int procedureProfileId, int trayItemId, string trayType, int providerId, int locationId)
+        public async Task<int> InsertProcedureProfileTrayInstrument(int procedureProfileId, int trayItemId, string trayType, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3406,7 +3406,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
-            var result = await ExecuteNonQueryAsync("InsertProcedureProfileTray", parameters);
+            var result = await ExecuteNonQueryAsync("InsertProcedureProfileTrayInstrument", parameters);
 
             return result;
         }
@@ -3427,7 +3427,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProcedureProfileTray(int procedureProfileId, string trayType, int itemId, int trayItemId, int quantity, int providerId, int locationId)
+        public async Task<int> UpdateProcedureProfileTrayInstrument(int procedureProfileId, string trayType, int itemId, int trayItemId, int quantity, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3439,7 +3439,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
-            var result = await ExecuteNonQueryAsync("UpdateProcedureProfileTray", parameters);
+            var result = await ExecuteNonQueryAsync("UpdateProcedureProfileTrayInstrument", parameters);
 
             return result;
         }
@@ -3473,7 +3473,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> DeleteProcedureProfileTray(int procedureProfileId, string trayType, int itemId, int trayItemId, int providerId, int locationId)
+        public async Task<int> DeleteProcedureProfileTrayInstrument(int procedureProfileId, string trayType, int itemId, int trayItemId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3484,7 +3484,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
-            var result = await ExecuteNonQueryAsync("DeleteProcedureProfileTray", parameters);
+            var result = await ExecuteNonQueryAsync("DeleteProcedureProfileTrayInstrument", parameters);
                 
             return result;
         }
