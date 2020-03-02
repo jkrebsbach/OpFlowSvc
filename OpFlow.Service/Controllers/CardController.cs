@@ -455,6 +455,22 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("PutProcedureProfileDashboard")]
+        [Route("procedureProfileDashboard")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PutProcedureProfileDashboard(int? procedureProfileId, [FromBody] ProcedureProfileDashboardPost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.UpdateProcedureProfileDashboard(procedureProfileId, request.Cards, request.Trays,
+                user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("PostEditFeedback")]
         [Route("feedback")]
         [SwaggerResponse(HttpStatusCode.OK)]

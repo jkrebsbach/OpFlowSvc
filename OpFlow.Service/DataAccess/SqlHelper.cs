@@ -3504,7 +3504,9 @@ namespace OpFlow.Service.DataAccess
             var items = dsSchedules.Tables[2].DataTableToList<ProfileItem>();
             var specialties = dsSchedules.Tables[3].DataTableToList<ProfileSpecialty>();
             var trayItems = dsSchedules.Tables[4].DataTableToList<ProfileItem>();
-            var comparableItems = dsSchedules.Tables[5].DataTableToList<ComparableItem>();
+            var cards = dsSchedules.Tables[5].DataTableToList<ProfileCard>();
+            var trays = dsSchedules.Tables[6].DataTableToList<ProfileItem>();
+            var comparableItems = dsSchedules.Tables[7].DataTableToList<ComparableItem>();
 
             foreach (var item in items)
             {
@@ -3520,6 +3522,8 @@ namespace OpFlow.Service.DataAccess
                 result.Procedures = procedures.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
                 result.Items = items.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
                 result.Specialties = specialties.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+                result.Cards = cards.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+                result.Trays = trays.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
 
                 result.ProcedureTrays = trayItems.Where(p => p.ProcedureProfileID == result.ProcedureProfileID && p.TrayType == "P").ToList();
                 result.SpecialtyTrays = trayItems.Where(p => p.ProcedureProfileID == result.ProcedureProfileID && p.TrayType == "S").ToList();
@@ -3548,6 +3552,25 @@ namespace OpFlow.Service.DataAccess
             var results = dsSchedules.Tables[0].DataTableToList<InsertionResult>();
             
             return results.First().Identifier;
+        }
+
+        public async Task<int> UpdateProcedureProfileDashboard(int? procedureProfileId, List<int> cards, List<int> trays,
+            int providerId, int locationId)
+        {
+            var cardXml = GetIdentitySummary(cards);
+            var trayXml = GetIdentitySummary(trays);
+
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProcedureProfileDashboard", parameters);
+
+            return result;
         }
 
         public async Task<List<TrayGroup>> GetTrayGroups(int providerId, int locationId)

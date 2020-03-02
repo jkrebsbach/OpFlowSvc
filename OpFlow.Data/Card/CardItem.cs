@@ -163,10 +163,15 @@ namespace OpFlow.Data
         public int ProcedureProfileID { get; set; }
         public string ProcedureProfileName { get; set; }
         public int CardCategoryID { get; set; }
+        public int NbrInstruments { get; set; }
+        public int NbrCounts { get; set; }
+        public int NbrAudits { get; set; }
         public string CardCategoryName { get; set; }
         public List<ProfileSpecialty> Specialties { get; set; }
         public List<ProfileProcedure> Procedures { get; set; }
         public List<ProfileItem> Items { get; set; }
+        public List<ProfileItem> Trays { get; set; }
+        public List<ProfileCard> Cards { get; set; }
         public List<ProfileItem> ProcedureTrays { get; set; }
         public List<ProfileItem> SpecialtyTrays { get; set; }
         public List<ProfileItem> SharedTrays { get; set; }
@@ -175,6 +180,12 @@ namespace OpFlow.Data
     public class ProfileSpecialty : Specialty
     {
         public int ProcedureProfileID { get; set; }
+    }
+
+    public class ProfileCard : Card
+    {
+        public int ProcedureProfileID { get; set; }
+        public int NbrInstruments { get; set; }
     }
 
     public class ProfileProcedure : Procedure
@@ -187,6 +198,7 @@ namespace OpFlow.Data
         public int ProcedureProfileID { get; set; }
         public decimal AvgUsed { get; set; }
         public string TrayType { get; set; }
+        public int NbrInstruments { get; set; }
 
         public List<ComparableItem> ComparableItems { get; set; }
     }
@@ -196,6 +208,12 @@ namespace OpFlow.Data
         public string ProfileName { get; set; }
         public int CardCategoryID { get; set; }
         public List<int> SpecialtyID { get; set; }
+    }
+
+    public class ProcedureProfileDashboardPost
+    {
+        public List<int> Cards { get; set; }
+        public List<int> Trays { get; set; }
     }
 
     public class ProcedureProfileCardComparison
