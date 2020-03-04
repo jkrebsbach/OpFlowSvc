@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -328,6 +329,31 @@ namespace OpFlow.Service.Controllers
                 Cards = cards,
                 Trays = trays
             });
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetProcedureProfileChart")]
+        [Route("procedureProfileChart")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
+        public async Task<HttpResponseMessage> GetProcedureProfileChart(int procedureProfileId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var analytics = await sqlHelper.GetProcedureProfileReport(procedureProfileId, user.ProviderID, user.LocationID);
+
+            var profile = analytics.Tables[0].DefaultView;
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["ProcedureProfile"] = profile.ToTable()
+            };
+
+            var reportName = "ProcedureProfile";
+
+            var result = ReportHelper.GetReport(reportName, datasets);
+            var webImage = ImageHelper.CreateWebImage(result);
+
+            return ResponseHelper.ImageResponse(Request, webImage);
         }
 
         // GET api/values/5

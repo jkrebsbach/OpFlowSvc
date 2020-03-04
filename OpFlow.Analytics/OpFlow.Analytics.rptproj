@@ -64,6 +64,7 @@
     <Report Include="InstrumentUsageCardTray.rdl" />
     <Report Include="InstrumentUsageSurgeonCard.rdl" />
     <Report Include="InstrumentUsageTrayCard.rdl" />
+    <Report Include="ProcedureProfile.rdl" />
     <Report Include="SalesReport.rdl" />
     <Report Include="ServiceLineReview.rdl" />
     <Report Include="SupplyCost.rdl" />
