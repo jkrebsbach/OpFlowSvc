@@ -3526,6 +3526,9 @@ namespace OpFlow.Service.DataAccess
                 result.Cards = cards.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
                 result.Trays = trays.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
 
+                result.Cards.ForEach(c => c.ProfileCount = result.NbrInstruments);
+                result.Trays.ForEach(t => t.ProfileCount = result.NbrInstruments);
+
                 result.ProcedureTrays = trayItems.Where(p => p.ProcedureProfileID == result.ProcedureProfileID && p.TrayType == "P").ToList();
                 result.SpecialtyTrays = trayItems.Where(p => p.ProcedureProfileID == result.ProcedureProfileID && p.TrayType == "S").ToList();
                 result.SharedTrays = trayItems.Where(p => p.ProcedureProfileID == result.ProcedureProfileID && p.TrayType == "H").ToList();

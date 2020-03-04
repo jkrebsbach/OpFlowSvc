@@ -186,6 +186,10 @@ namespace OpFlow.Data
     {
         public int ProcedureProfileID { get; set; }
         public int NbrInstruments { get; set; }
+
+        public int ProfileCount { get; set; }
+        public int CountChange => ProfileCount - NbrInstruments;
+        public decimal PcntChange => ProfileCount == 0 ? 0 : ((decimal)CountChange / ProfileCount * 100);
     }
 
     public class ProfileProcedure : Procedure
@@ -199,6 +203,11 @@ namespace OpFlow.Data
         public decimal AvgUsed { get; set; }
         public string TrayType { get; set; }
         public int NbrInstruments { get; set; }
+
+
+        public int ProfileCount { get; set; }
+        public int CountChange => ProfileCount - NbrInstruments;
+        public decimal PcntChange => ProfileCount == 0 ? 0 : ((decimal)CountChange / ProfileCount * 100);
 
         public List<ComparableItem> ComparableItems { get; set; }
     }
