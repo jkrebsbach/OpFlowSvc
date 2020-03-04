@@ -614,7 +614,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetSupplyConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
-            List<int> procedureId, List<int> cardCategoryId, List<int> cardId, string instruments, int providerId, int locationId)
+            List<int> procedureId, List<int> cardCategoryId, List<int> cardId, string instruments, string label, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -630,6 +630,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("instruments", instruments),
+                new SqlParameter("label", label),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

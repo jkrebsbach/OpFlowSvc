@@ -315,7 +315,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetSupplyConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, 
-                post.CardCategoryID, post.CardID, post.Instruments, user.ProviderID, user.LocationID);
+                post.CardCategoryID, post.CardID, post.Instruments, post.Label, user.ProviderID, user.LocationID);
 
             var summary = SummarizeConcordanceReport(analytics.Tables[0]);
 
@@ -323,13 +323,15 @@ namespace OpFlow.Service.Controllers
             switch (post.Order)
             {
                 case "usage":
-                    concordance.Sort = "QtyOpen DESC, TrayUsage DESC";
+                    concordance.Sort = "QtyOpen DESC, TrayUsage DESC, InstrumentDescription";
                     summary.TrayData = summary.TrayData.OrderByDescending(s => s.ItemUsage).ToList();
+                    summary.Items = summary.Items.OrderByDescending(i => i.QtyOpen).ThenByDescending(i => i.TrayUsage).ThenBy(i => i.InstrumentDescription).ToList();
                     break;
                 case "card_qty":
                 default:
-                    concordance.Sort = "TrayQty DESC, InstrumentName";
+                    concordance.Sort = "TrayQty DESC, InstrumentDescription";
                     summary.TrayData = summary.TrayData.OrderByDescending(s => s.ItemQuantity).ToList();
+                    summary.Items = summary.Items.OrderByDescending(i => i.TrayQty).ThenBy(i => i.InstrumentDescription).ToList();
                     break;
             }
 
