@@ -98,14 +98,16 @@ select 'bbb' TrayName, 213 InstrumentCount, 21.45 InstrumentCost</CommandText>
                     <MinMovingDistance>0pt</MinMovingDistance>
                   </ChartSmartLabel>
                 </ChartSeries>
-                <ChartSeries Name="UsageQuantity">
+                <ChartSeries Name="InstrumentCost">
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
                         <Y>=Sum(Fields!InstrumentCost.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
-                        <Style />
+                        <Style>
+                          <Format>$0.##</Format>
+                        </Style>
                         <UseValueAsLabel>true</UseValueAsLabel>
                         <Visible>true</Visible>
                       </ChartDataLabel>
@@ -128,7 +130,7 @@ select 'bbb' TrayName, 213 InstrumentCount, 21.45 InstrumentCost</CommandText>
                     </ChartDataLabel>
                   </ChartEmptyPoints>
                   <ChartItemInLegend>
-                    <LegendText>Avg Usage Quantity</LegendText>
+                    <LegendText>Instrument Cost</LegendText>
                   </ChartItemInLegend>
                   <ValueAxisName>Primary</ValueAxisName>
                   <CategoryAxisName>Primary</CategoryAxisName>
@@ -442,10 +444,6 @@ select 'bbb' TrayName, 213 InstrumentCount, 21.45 InstrumentCost</CommandText>
       </Body>
       <Width>7.28in</Width>
       <Page>
-        <LeftMargin>1in</LeftMargin>
-        <RightMargin>1in</RightMargin>
-        <TopMargin>1in</TopMargin>
-        <BottomMargin>1in</BottomMargin>
         <Style />
       </Page>
     </ReportSection>
