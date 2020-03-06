@@ -320,6 +320,7 @@ namespace OpFlow.Service.Controllers
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var cards = await sqlHelper.GetCards(user.ProviderID, user.LocationID);
             var trays = await sqlHelper.GetItems("TRAY", null, null, user.ProviderID, user.LocationID);
+            var proposed = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -327,7 +328,8 @@ namespace OpFlow.Service.Controllers
                 CardCategories = cardCategories,
                 Specialties = specialties,
                 Cards = cards,
-                Trays = trays
+                Trays = trays,
+                Proposed = proposed
             });
         }
 
@@ -490,7 +492,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateProcedureProfileDashboard(procedureProfileId, request.Cards, request.Trays,
+            var result = await sqlHelper.UpdateProcedureProfileDashboard(procedureProfileId, request.Cards, request.Trays, request.Proposals,
                 user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);

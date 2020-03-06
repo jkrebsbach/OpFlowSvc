@@ -3519,7 +3519,7 @@ namespace OpFlow.Service.DataAccess
             var specialties = dsSchedules.Tables[3].DataTableToList<ProfileSpecialty>();
             var trayItems = dsSchedules.Tables[4].DataTableToList<ProfileItem>();
             var cards = dsSchedules.Tables[5].DataTableToList<ProfileCard>();
-            var trays = dsSchedules.Tables[6].DataTableToList<ProfileItem>();
+            var trays = dsSchedules.Tables[6].DataTableToList<ProfileTray>();
             var comparableItems = dsSchedules.Tables[7].DataTableToList<ComparableItem>();
 
             foreach (var item in items)
@@ -3571,17 +3571,19 @@ namespace OpFlow.Service.DataAccess
             return results.First().Identifier;
         }
 
-        public async Task<int> UpdateProcedureProfileDashboard(int? procedureProfileId, List<int> cards, List<int> trays,
+        public async Task<int> UpdateProcedureProfileDashboard(int? procedureProfileId, List<int> cards, List<int> trays, List<int> proposed,
             int providerId, int locationId)
         {
             var cardXml = GetIdentitySummary(cards);
             var trayXml = GetIdentitySummary(trays);
+            var proposedXml = GetIdentitySummary(proposed);
 
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_proposal_id", proposedXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
