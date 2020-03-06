@@ -200,6 +200,11 @@ namespace OpFlow.Data
         public int ItemID { get; set; }
         public int NbrInstruments { get; set; }
         public string ItemDescription { get; set; }
+
+        public int ProfileCount { get; set; }
+        public int CountChange => ProfileCount - NbrInstruments;
+        public decimal PcntChange => ProfileCount == 0 ? 0 : ((decimal)CountChange / ProfileCount * 100);
+        public int Increase => CountChange > 0 ? 1 : (CountChange < 0 ? -1 : 0);
     }
 
     public class ProfileProcedure : Procedure
