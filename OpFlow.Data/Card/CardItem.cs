@@ -217,6 +217,7 @@ namespace OpFlow.Data
         public int ProcedureProfileID { get; set; }
         public decimal AvgUsed { get; set; }
         public string TrayType { get; set; }
+        public int NbrInstances { get; set; }
         public int NbrInstruments { get; set; }
 
 

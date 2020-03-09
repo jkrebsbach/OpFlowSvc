@@ -439,13 +439,22 @@ namespace OpFlow.Service.Controllers
             var card = await sqlHelper.GetCardData(request.CardID.Value, user.ProviderID, user.LocationID);
             var cardItems = await sqlHelper.GetCardItems(request.CardID.Value, user.ProviderID, user.LocationID);
 
-            var profileTrays = profile.ProcedureTrays.Union(profile.SharedTrays).Union(profile.SpecialtyTrays);
+            var profileTrayItems = profile.ProcedureTrays.Union(profile.SharedTrays).Union(profile.SpecialtyTrays);
+            var profileTrays = profileTrayItems.GroupBy(p => p.TrayName).Select(t =>
+                new TrayCardOverlapSummary()
+                {
+                    TrayName = t.Key,
+                    NbrInstances = t.First().NbrInstances,
+                    NbrInstruments = t.Sum(i => i.Quantity),
+                    CostPerTray = t.Sum(p => p.UnitCost * p.Quantity)
+                });
 
             var shared = profile.ProcedureTrays.Where(t => cardItems.Any(ci => ci.TrayID == t.TrayID)).ToList();
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
-                Proposed = profileTrays.GroupBy(p => p.TrayName).Select(p =>
+                TraySummary = profileTrays,
+                Proposed = profileTrayItems.GroupBy(p => p.TrayName).Select(p =>
                 new
                 {
                     TrayName = p.Key,

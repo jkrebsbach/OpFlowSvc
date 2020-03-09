@@ -489,12 +489,12 @@ namespace OpFlow.Data
         public int NbrInstances { get; set; }
         public int NbrInstruments { get; set; }
         public decimal CostPerTray { get; set; }
-        public decimal CostAllTrays { get; set; }
         public int ProcessedAvg { get; set; }
         public int ProcessedMin { get; set; }
         public int ProcessedMax { get; set; }
         public decimal UsedInstruments { get; set; }
         public int CommonInstruments { get; set; }
+        public decimal CostAllTrays => CostPerTray * NbrInstances;
         public decimal? OverlapPcnt =>
             (CommonInstruments == 0 ? 0 : (decimal)UsedInstruments / CommonInstruments * 100);
     }
