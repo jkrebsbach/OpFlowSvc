@@ -191,11 +191,11 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("PutProcedureProfileTrayInstrument")]
-        [Route("procedureProfileTrayInstrument")]
+        [SwaggerOperation("PutProcedureProfileTray")]
+        [Route("procedureProfileTray")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
         [HttpPut]
-        public async Task<HttpResponseMessage> PutProcedureProfileTrayInstrument(int procedureProfileId, int trayItemId, string trayType)
+        public async Task<HttpResponseMessage> PutProcedureProfileTray(int procedureProfileId, int trayItemId, string trayType)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
