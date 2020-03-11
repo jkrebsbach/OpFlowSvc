@@ -59,11 +59,13 @@ namespace OpFlow.Service.Controllers
             }
 
             var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
+            var surgeons = await sqlHelper.SearchUsers(null, 1, null, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 CardCategories = cardCategories,
-                Card = card
+                Card = card,
+                Surgeons = surgeons
             });
         }
 
