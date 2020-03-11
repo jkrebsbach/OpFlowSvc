@@ -411,9 +411,9 @@ namespace OpFlow.Service.Controllers
             List<CardItem> studyItems = new List<CardItem>();
 
 
-            if (request.CardID.HasValue)
+            foreach (var cardId in request.Trays) 
             {
-                var cardItems = await sqlHelper.GetCardItems(request.CardID.Value, user.ProviderID, user.LocationID);
+                var cardItems = await sqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
                 studyItems.AddRange(cardItems);
             }
 
@@ -463,9 +463,13 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
+            var cardItems = new List<CardItem>();
             var profile = (await sqlHelper.GetProcedureProfile(procedureProfileId, user.ProviderID, user.LocationID)).First();
-            var card = await sqlHelper.GetCardData(request.CardID.Value, user.ProviderID, user.LocationID);
-            var cardItems = await sqlHelper.GetCardItems(request.CardID.Value, user.ProviderID, user.LocationID);
+            foreach (var cardId in request.Cards)
+            {
+                var items = await sqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
+                cardItems.AddRange(items);
+            }
 
             var profileTrayItems = profile.ProcedureTrays.Union(profile.SharedTrays).Union(profile.SpecialtyTrays);
             var profileTrays = profileTrayItems.GroupBy(p => p.TrayName).Select(t =>

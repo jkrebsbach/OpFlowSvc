@@ -253,7 +253,7 @@ namespace OpFlow.Data
     public class ProcedureProfileCardComparisonRequest
     {
 
-        public int? CardID { get; set; }
+        public List<int> Cards { get; set; }
         public List<int> Trays { get; set; }
     }
 
