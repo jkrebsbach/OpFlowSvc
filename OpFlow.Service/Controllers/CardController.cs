@@ -224,6 +224,21 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("PutProcedureProfileCard")]
+        [Route("procedureProfileCard")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutProcedureProfileCard(int procedureProfileId, int cardId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.UpdateProcedureProfileCard(procedureProfileId, cardId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, cardId);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("PostProcedureProfileTrayInstrument")]
         [Route("procedureProfileTrayInstrument")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]

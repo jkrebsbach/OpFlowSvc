@@ -3456,6 +3456,20 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> UpdateProcedureProfileCard(int procedureProfileId, int cardId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProcedureProfileCard", parameters);
+
+            return result;
+        }
+
         public async Task<int> UpdateProcedureProfileTrayInstrument(int procedureProfileId, string trayType, int itemId, int trayItemId, int quantity, int providerId, int locationId)
         {
             var parameters = new[]
