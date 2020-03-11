@@ -56,6 +56,7 @@ namespace OpFlow.Data
         public List<CardItem> CardItems { get; set; }
         public List<SurgeryInstrumentCount> SurgeryAdditionalItems { get; set; }
         public List<Procedure> CardProcedures { get; set; }
+        public List<CardCategoryXRef> CardCategories { get; set; }
     }
 
     public class SurgeryCard : Card
@@ -92,6 +93,7 @@ namespace OpFlow.Data
         public string CardCategory { get; set; }
         public int? TemplateFlowID { get; set; }
         public int? TemplateRoomSetupID { get; set; }
+        public List<CardCategoryXRef> CardCategories { get; set; }
         public List<CardPostImportProcedure> Procedures { get; set; }
     }
 

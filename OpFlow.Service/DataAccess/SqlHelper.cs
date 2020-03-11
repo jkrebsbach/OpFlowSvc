@@ -3313,6 +3313,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<CardCategoryXRef>> GetCardCategoryXRef(int cardId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetCardCategoryXRefDetail", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<CardCategoryXRef>();
+            
+            return result;
+        }
+
         public async Task<List<CardWithCategory>> GetCardCategoryXRef(int? userId, int? specialtyId, string cardName, string hierarchyLevel, int? cardCategoryId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -3661,6 +3676,42 @@ namespace OpFlow.Service.DataAccess
             var result = await ExecuteNonQueryAsync("DeleteCardCategoryXRef", parameters);
 
             return result;
+        }
+
+        public async Task<int> UpdateCardCategoryXRef(int cardId, List<CardCategoryXRef> categories, int providerId, int locationId)
+        {
+            var categoryData = SummarizeCategories(categories);
+
+            var parameters = new[]
+            {
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("card_category_id", categoryData),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("UpdateCardCategoryXRef", parameters);
+
+            return result;
+        }
+
+        private string SummarizeCategories(List<CardCategoryXRef> categories)
+        {
+            if (categories == null || !categories.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var category in categories)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, category.HierarchyLevel);
+                AddColumn(doc, row, category.CardCategoryID);
+            }
+
+            return table.OuterXml;
         }
 
         public async Task<int> UpdateCardFeedback(int feedbackId, bool response, int providerId, int locationId)

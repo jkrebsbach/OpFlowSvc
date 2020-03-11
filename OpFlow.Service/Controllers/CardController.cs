@@ -35,25 +35,36 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetById")]
         [Route("details")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(CardDetail))]
-        public async Task<HttpResponseMessage> GetDetails(int cardId)
+        public async Task<HttpResponseMessage> GetDetails(int? cardId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var cards = await sqlHelper.GetCardData(cardId, user.ProviderID, user.LocationID);
-
-            var card = cards.FirstOrDefault();
-            if (card == null)
+            CardDetail card = null;
+            if (cardId.HasValue)
             {
-                return Request.CreateResponse(HttpStatusCode.NotFound);
+                var cards = await sqlHelper.GetCardData(cardId.Value, user.ProviderID, user.LocationID);
+
+                card = cards.FirstOrDefault();
+                if (card == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+                card.CardUsers = await sqlHelper.GetCardUsers(cardId.Value, user.ProviderID, user.LocationID, 1);
+                card.CardItems = await sqlHelper.GetCardItems(cardId.Value, user.ProviderID, user.LocationID);
+                card.SurgeryAdditionalItems = await sqlHelper.GetCardAdditionalItems(cardId.Value, user.ProviderID, user.LocationID);
+                card.CardProcedures = await sqlHelper.GetCardProcedures(cardId.Value, user.ProviderID, user.LocationID);
+                card.CardCategories = await sqlHelper.GetCardCategoryXRef(cardId.Value, user.ProviderID, user.LocationID);
             }
 
-            card.CardUsers = await sqlHelper.GetCardUsers(cardId, user.ProviderID, user.LocationID, 1);
-            card.CardItems = await sqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
-            card.SurgeryAdditionalItems = await sqlHelper.GetCardAdditionalItems(cardId, user.ProviderID, user.LocationID);
-            card.CardProcedures = await sqlHelper.GetCardProcedures(cardId, user.ProviderID, user.LocationID);
+            var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
 
-            return Request.CreateResponse(HttpStatusCode.OK, card);
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                CardCategories = cardCategories,
+                Card = card
+            });
         }
 
         // GET api/values/5
@@ -831,6 +842,8 @@ namespace OpFlow.Service.Controllers
 
                 await InitializeCardProcedures(sqlHelper, cardId, user, value.Procedures);
 
+                await sqlHelper.UpdateCardCategoryXRef(cardId, value.CardCategories, user.ProviderID, user.LocationID);
+
                 return Request.CreateResponse(HttpStatusCode.Created, cardId);
             }
             catch (Exception ex)
@@ -864,6 +877,8 @@ namespace OpFlow.Service.Controllers
                         value.DefaultFlag == "1", value.SpecialtyDefaultFlag == "1",
                         user.ProviderID, user.LocationID);
                 }
+
+                await sqlHelper.UpdateCardCategoryXRef(id, value.CardCategories, user.ProviderID, user.LocationID);
 
                 return Ok();
             }
