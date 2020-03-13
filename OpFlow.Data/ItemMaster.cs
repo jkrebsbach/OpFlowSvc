@@ -30,6 +30,7 @@ namespace OpFlow.Data
         public int InstrumentID { get; set; }
         public int Quantity { get; set; }
         public int? Sequence { get; set; }
+        public decimal InstrumentCost { get; set; }
         public string TrayName { get; set; }
         public string ItemType { get; set; }
         public string ItemCategory { get; set; }

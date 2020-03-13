@@ -471,6 +471,22 @@ namespace OpFlow.Service.Controllers
                 cardItems.AddRange(items);
             }
 
+            foreach (var trayId in request.Trays)
+            {
+                var items = await sqlHelper.GetTrayItems(trayId, user.ProviderID, user.LocationID);
+                foreach (var item in items)
+                {
+                    cardItems.Add(new CardItem()
+                    {
+                        TrayName = item.TrayName,
+                        TrayID = item.TrayItemID,
+                        Quantity = item.Quantity,
+                        UnitCost = item.InstrumentCost,
+                        ItemDescription = item.ItemDescription
+                    });
+                }
+            }
+
             var profileTrayItems = profile.ProcedureTrays.Union(profile.SharedTrays).Union(profile.SpecialtyTrays);
             var profileTrays = profileTrayItems.GroupBy(p => p.TrayName).Select(t =>
                 new TrayCardOverlapSummary()
