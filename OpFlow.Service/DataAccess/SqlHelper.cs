@@ -781,6 +781,19 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<DataSet> GetProcedureProfileAlignment(int procedureProfileId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("GetAnalyticsProcedureProfileAlignment", parameters);
+
+            return result;
+        }
+
         public async Task<DataSet> GetExcessInventoryReport(List<int> specialtyId, List<int> proposedTrayId, List<string> trayStatus, List<int> trayPhaseId,
             string group, int providerId, int locationId)
         {

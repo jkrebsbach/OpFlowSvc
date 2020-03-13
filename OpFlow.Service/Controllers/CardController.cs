@@ -392,6 +392,31 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetProcedureProfileAlignment")]
+        [Route("procedureProfileAlignment")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
+        public async Task<HttpResponseMessage> GetProcedureProfileAlignment(int procedureProfileId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var analytics = await sqlHelper.GetProcedureProfileAlignment(procedureProfileId, user.ProviderID, user.LocationID);
+
+            var profile = analytics.Tables[0].DefaultView;
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["Alignment"] = profile.ToTable()
+            };
+
+            var reportName = "ProfileAlignment";
+
+            var result = ReportHelper.GetReport(reportName, datasets);
+            var webImage = ImageHelper.CreateWebImage(result);
+
+            return ResponseHelper.ImageResponse(Request, webImage);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetProcedureProfileCompare")]
         [Route("procedureProfileCompare")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ProcedureProfileCardComparison>))]
