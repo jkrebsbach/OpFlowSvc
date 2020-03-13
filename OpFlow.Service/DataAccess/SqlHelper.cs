@@ -4665,8 +4665,9 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateSurgeryCardItemQty", dsParameters);
         }
 
-        public async Task<int> CreateSurgery(SurgeryPost surgery, int providerId, int locationId, int patientId, int caseId, 
-            int? defaultCardId, int? defaultFlowId, int? defaultRoomId)
+        public async Task<int> CreateSurgery(SurgeryPost surgery, int patientId, int caseId, 
+            int? defaultCardId, int? defaultFlowId, int? defaultRoomId,
+            int providerId, int locationId)
         {
             var dsParameters = new[]
             {
@@ -7053,8 +7054,9 @@ namespace OpFlow.Service.DataAccess
                 var caseId = await CreateCase(secureId ?? -1, surgery.SurgeonUserID, surgery.SpecialtyID, providerId,
                     locationId, surgery.CaseNbr);
 
-                result.Identity = await CreateSurgery(surgery, providerId, locationId, secureId ?? -1, caseId,
-                    cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID);
+                result.Identity = await CreateSurgery(surgery, secureId ?? -1, caseId,
+                    cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID, 
+                    providerId, locationId);
 
                 foreach (var secondarySurgeon in schedule.SecondarySurgeons)
                 {

@@ -51,13 +51,15 @@ namespace OpFlow.Service.Controllers
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var lateralities = await sqlHelper.GetLateralities(user.ProviderID, user.LocationID);
             var surgeons = await sqlHelper.GetSurgeryUsers(user.ProviderID, user.LocationID);
+            var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
 
             var result = new NewSurgerySetup()
             {
                 Rooms = rooms,
                 Specialties = specialties,
                 Lateralities = lateralities,
-                Surgeons = surgeons
+                Surgeons = surgeons,
+                Proposals = proposals
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -893,8 +895,9 @@ namespace OpFlow.Service.Controllers
                 await sqlHelper.GetBundleDefaultCardFlowRoom(surgery.BundleID.Value, surgery.SurgeonUserID.Value, secureUser.ProviderID, secureUser.LocationID) : 
                 (await sqlHelper.GetProcedureDefaultCardFlowRoom(secureUser.ProviderID, secureUser.LocationID, surgery.CptCode)).FirstOrDefault();
 
-            var surgeryId = await sqlHelper.CreateSurgery(surgery, secureUser.ProviderID, secureUser.LocationID, patientId, caseId, 
-                surgery.CardID ?? cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID);
+            var surgeryId = await sqlHelper.CreateSurgery(surgery, patientId, caseId, 
+                surgery.CardID ?? cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID,
+                secureUser.ProviderID, secureUser.LocationID);
 
             if (surgery.SecondarySurgeons != null && surgery.SecondarySurgeons.Any())
             {
@@ -915,6 +918,16 @@ namespace OpFlow.Service.Controllers
                         await sqlHelper.AddCustomSurgeryItem(surgeryId, tray.TrayItemID, 1, user.ProviderID, user.LocationID);
                     }
                 }
+            }
+
+            foreach (var trayProposalId in surgery.TrayProposalCounts ?? new List<int>())
+            {
+                await sqlHelper.UpdateProposedTrayCount(trayProposalId, surgeryId, null, null, user.ProviderID, user.LocationID);
+            }
+
+            foreach (var trayProposalId in surgery.TrayProposalAudits ?? new List<int>())
+            {
+                await sqlHelper.UpdateProposedTrayAudit(trayProposalId, surgeryId, null, null, user.ProviderID, user.LocationID);
             }
 
             return Request.CreateResponse(HttpStatusCode.Created, surgeryId);
