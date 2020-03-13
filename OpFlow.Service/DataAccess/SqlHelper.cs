@@ -3579,6 +3579,21 @@ namespace OpFlow.Service.DataAccess
             return results;
         }
 
+        public async Task<List<ProcedureProfileTrayUsage>> GetProcedureProfileTrayUsage(int procedureProfileId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProcedureProfileTrayUsage", parameters);
+
+            var results = dsSchedules.Tables[0].DataTableToList<ProcedureProfileTrayUsage>();
+            
+            return results;
+        }
+
         public async Task<int> UpdateProcedureProfile(int? procedureProfileId, string profileName, int cardCategoryId, List<int> specialtyId,
             int providerId, int locationId)
         {

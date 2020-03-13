@@ -19,6 +19,7 @@ namespace OpFlow.Data
         public string Manufacturer { get; set; }
         public string VendorID { get; set; }
 
+        public decimal? AvgUsed { get; set; }
         public int? TrayID { get; set; }
         public string TrayName { get; set; }
         public int Quantity { get; set; }
@@ -31,6 +32,7 @@ namespace OpFlow.Data
         public int Quantity { get; set; }
         public int? Sequence { get; set; }
         public decimal InstrumentCost { get; set; }
+        public decimal? AvgUsed { get; set; }
         public string TrayName { get; set; }
         public string ItemType { get; set; }
         public string ItemCategory { get; set; }

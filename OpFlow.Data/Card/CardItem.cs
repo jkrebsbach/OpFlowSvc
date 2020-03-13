@@ -15,6 +15,7 @@ namespace OpFlow.Data
 
     public class SurgeryCardItem : CardItem
     {
+        public decimal? AvgUsed { get; set; }
         public int? QtyOpenOrig { get; set; }
         public string QtyHoldOrig { get; set; }
         public string QtySource { get; set; }
@@ -177,6 +178,13 @@ namespace OpFlow.Data
         public List<ProfileItem> SharedTrays { get; set; }
     }
 
+    public class ProcedureProfileTrayUsage
+    {
+        public string TrayName { get; set; }
+        public int CardCount { get; set; }
+        public int SurgeonCount { get; set; }
+    }
+
     public class ProfileSpecialty : Specialty
     {
         public int ProcedureProfileID { get; set; }
@@ -215,7 +223,6 @@ namespace OpFlow.Data
     public class ProfileItem : ItemMaster
     {
         public int ProcedureProfileID { get; set; }
-        public decimal AvgUsed { get; set; }
         public string TrayType { get; set; }
         public int NbrInstances { get; set; }
         public int NbrInstruments { get; set; }

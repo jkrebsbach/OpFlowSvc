@@ -339,10 +339,14 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             ProcedureProfile profile = null;
+            var trayUsage = new List<ProcedureProfileTrayUsage>();
             if (procedureProfileId.HasValue)
             {
                 var profiles = await sqlHelper.GetProcedureProfile(procedureProfileId, user.ProviderID, user.LocationID);
                 profile = profiles.FirstOrDefault();
+
+
+                trayUsage = await sqlHelper.GetProcedureProfileTrayUsage(procedureProfileId.Value, user.ProviderID, user.LocationID);
             }
             var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
@@ -357,7 +361,8 @@ namespace OpFlow.Service.Controllers
                 Specialties = specialties,
                 Cards = cards,
                 Trays = trays,
-                Proposed = proposed
+                Proposed = proposed,
+                TrayUsage = trayUsage
             });
         }
 
@@ -482,12 +487,20 @@ namespace OpFlow.Service.Controllers
                         TrayID = item.TrayItemID,
                         Quantity = item.Quantity,
                         UnitCost = item.InstrumentCost,
-                        ItemDescription = item.ItemDescription
+                        ItemDescription = item.ItemDescription,
+                        AvgUsed = item.AvgUsed
                     });
                 }
             }
 
-            var profileTrayItems = profile.ProcedureTrays.Union(profile.SharedTrays).Union(profile.SpecialtyTrays);
+            var profileTrayItems = profile.ProcedureTrays.Union(profile.SharedTrays).Union(profile.SpecialtyTrays).ToList();
+            var shared = profileTrayItems.Where(t => cardItems.Any(ci => ci.TrayID == t.TrayID)).ToList();
+
+            foreach(var sharedItem in shared)
+            {
+                profileTrayItems.RemoveAll(p => p.TrayID == sharedItem.TrayID && p.ItemID == sharedItem.ItemID);
+            }
+            
             var profileTrays = profileTrayItems.GroupBy(p => p.TrayName).Select(t =>
                 new TrayCardOverlapSummary()
                 {
@@ -497,7 +510,6 @@ namespace OpFlow.Service.Controllers
                     CostPerTray = t.Sum(p => p.UnitCost * p.Quantity)
                 });
 
-            var shared = profile.ProcedureTrays.Where(t => cardItems.Any(ci => ci.TrayID == t.TrayID)).ToList();
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
