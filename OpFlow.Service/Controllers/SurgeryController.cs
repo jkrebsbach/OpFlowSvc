@@ -21,14 +21,14 @@ namespace OpFlow.Service.Controllers
     {
         // GET api/surgery?surgeryId=5&caseId=1&providerId=1&bundleFlag=Y
         [SwaggerOperation("GetSurgery")]
-        [SwaggerResponse(HttpStatusCode.OK, Type=typeof(PatientSurgery))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(PatientSurgery))]
         public async Task<HttpResponseMessage> GetSurgery(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
-            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
             var patientSurgery = await sqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
             patientSurgery.Patient =
@@ -115,17 +115,26 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchResult>))]
         [SwaggerResponse(HttpStatusCode.Ambiguous)]
         [Route("searchCases")]
-        public async Task<HttpResponseMessage> GetCases(string caseNbr = null, int? surgeonUserId = null, int? userId = null, 
-            int? roomGroupId = null, int? roomId = null, 
-            int? bundleId = null, int? procedureId = null, int? specialtyId = null,
-            DateTime? begDate = null, DateTime? endDate = null)
+        [HttpPost]
+        public async Task<HttpResponseMessage> GetCases([FromBody] SearchCasePost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var schedules = await sqlHelper.SearchCases(userId, surgeonUserId, roomGroupId, roomId,
-                bundleId, procedureId, specialtyId, 
-                begDate, endDate, user.ProviderID, user.LocationID);
+            var schedules = await sqlHelper.SearchCases(post.UserID, post.surgeonUserId, post.roomGroupId, post.roomId,
+                null, post.procedureId, post.specialtyId,
+                post.BegDate, post.EndDate, user.ProviderID, user.LocationID);
+
+            if (post.CountStatus?.Any() == true)
+            {
+                var counts = post.CountStatus.Any(c => c == "Count");
+                var audits = post.CountStatus.Any(c => c == "Audit");
+                var complete = post.CountStatus.Any(c => c == "Complete");
+                schedules = schedules.Where(s => (audits && s.AuditSurgery) || (counts && s.CountSurgery)).ToList();
+
+                if (complete)
+                    schedules = schedules.Where(s => s.SurgeryCountType != null).ToList();
+            }
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
@@ -154,7 +163,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var preferences = await sqlHelper.GetSurgeonPreferences(user.ProviderID, user.LocationID);
-            
+
             int? caseProfileId = null;
             var users = new List<int>();
             var surgeonPreferences = new List<SurgeonPreference>();
@@ -178,7 +187,7 @@ namespace OpFlow.Service.Controllers
                 surgeonPreferences = preferences.Where(sp =>
                     sp.SurgeonID == userId.Value).ToList();
             }
-            
+
             // Preference where primary surgeon or any surgeon on case
 
             return Request.CreateResponse(HttpStatusCode.OK, new {
@@ -207,28 +216,14 @@ namespace OpFlow.Service.Controllers
             {
                 var trayGroup = trayGroups.FirstOrDefault(tg => tg.TrayGroupID == trayGroupId);
                 foreach (var tray in trayGroup.Trays)
-                {   
+                {
                     await sqlHelper.AddCustomSurgeryItem(surgeryId, tray.TrayItemID, 1, user.ProviderID, user.LocationID);
                 }
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
-
-        // GET api/surgery?userId=5
-        [SwaggerOperation("SearchRoomCases")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchResult>))]
-        [Route("searchRoomCases")]
-        public async Task<HttpResponseMessage> GetRoomCases(int roomId, DateTime begDate, DateTime endDate)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper();
-
-            var schedules = await sqlHelper.GetRoomCases(roomId, begDate, endDate, user.ProviderID, user.LocationID);
-
-            return Request.CreateResponse(HttpStatusCode.OK, schedules);
-        }
-
+        
         // GET api/surgery?userId=5
         [SwaggerOperation("GetSchedule")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySchedule>))]
@@ -243,13 +238,13 @@ namespace OpFlow.Service.Controllers
                 userId = user.UserID;
 
             var surgeries = await sqlHelper.GetScheduledSurgeries(userId, user.ProviderID, user.LocationID, scheduleDate, roomId);
-            
+
             foreach (var surgery in surgeries)
             {
                 surgery.SurgeryUsers =
                     await sqlHelper.GetSurgeryUsers(surgery.CaseID, user.ProviderID, user.LocationID);
             }
-            
+
             return Request.CreateResponse(HttpStatusCode.OK, surgeries);
         }
 
@@ -374,8 +369,8 @@ namespace OpFlow.Service.Controllers
 
             var surgery = await sqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
             var cardItemCounts = await sqlHelper.GetSurgeryCardItemCounts(surgeryId, user.ProviderID, user.LocationID);
-            var itemCounts = cardItemCounts.CardItemCounts.GroupBy(ic => new { ic.ItemType, ic.TrayName, ic.TrayID});
-            
+            var itemCounts = cardItemCounts.CardItemCounts.GroupBy(ic => new { ic.ItemType, ic.TrayName, ic.TrayID });
+
             var trayOpens = await sqlHelper.GetSurgeryTrayOpens(surgeryId, user.ProviderID, user.LocationID);
 
             var result = new CardItemCountResult()
@@ -451,7 +446,7 @@ namespace OpFlow.Service.Controllers
                 }
             }
 
-            
+
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -520,7 +515,7 @@ namespace OpFlow.Service.Controllers
 
             var surgeryPhrases = new List<SurgeryPhrase>();
             var surgeryImages = new List<SurgeryImage>();
-            
+
             if (surgeryId.HasValue)
             {
                 surgeryPhrases = await sqlHelper.GetSurgeryPhrases(surgeryId.Value, user.ProviderID, user.LocationID);
@@ -614,7 +609,8 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSurgeryRoomOverview")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<RoomOverview>))]
         [Route("roomOverview", Name = "GetSurgeryRoomOverview")]
-        public async Task<HttpResponseMessage> GetSurgeryRoomOverview(DateTime surgeryDate, int? specialtyId = null, int? roomGroupId = null, int? roomId = null, int? surgeonId = null)
+        [HttpPost]
+        public async Task<HttpResponseMessage> GetSurgeryRoomOverview([FromBody] RoomOverviewPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -622,12 +618,20 @@ namespace OpFlow.Service.Controllers
 
             var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
 
-            int? bundleId = null;
-            int? procedureId = null;
-
             var surgeries = await sqlHelper.GetSurgeryRoomOverview(
-                specialtyId, roomGroupId, roomId, surgeonId, 
-                surgeryDate, user.ProviderID, user.LocationID);
+                post.SpecialtyId, post.RoomGroupId, post.RoomId, post.SurgeonId,
+                post.SurgeryDate, user.ProviderID, user.LocationID);
+
+            if (post.CountStatus?.Any() == true)
+            {
+                var counts = post.CountStatus.Any(c => c == "Count");
+                var audits = post.CountStatus.Any(c => c == "Audit");
+                var complete = post.CountStatus.Any(c => c == "Complete");
+                surgeries = surgeries.Where(s => (audits && s.AuditSurgery) || (counts && s.CountSurgery)).ToList();
+
+                if (complete)
+                    surgeries = surgeries.Where(s => s.SurgeryCountType != null).ToList();
+            }
 
             foreach (var surgery in surgeries)
             {
