@@ -1966,7 +1966,7 @@ namespace OpFlow.Service.Controllers
                         instrument.Warning = instrument.Warning || (instrument.Quantity > matching.Quantity);
                         shared.Add(instrument);
 
-                        usedInstruments += instrument.AvgUsed; // usage history
+                        usedInstruments += instrument.AvgUsed ?? 0; // usage history
                         commonInstruments += matching.Quantity; // proposed quantity
                     }
                     else

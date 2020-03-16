@@ -413,7 +413,9 @@ namespace OpFlow.Service.Controllers
             var result = ReportHelper.GetReport(reportName, datasets);
             var webImage = ImageHelper.CreateWebImage(result);
 
-            return ResponseHelper.ImageResponse(Request, webImage);
+            var summary = analytics.Tables[1].DataTableToList<ProcedureProfileAnalyticsSummary>();
+
+            return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
         }
 
         // GET api/values/5

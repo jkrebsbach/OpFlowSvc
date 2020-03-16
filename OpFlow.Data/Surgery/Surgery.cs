@@ -119,6 +119,7 @@ namespace OpFlow.Data
         public List<Specialty> Specialties { get; set; }
         public List<Laterality> Lateralities { get; set; }
         public List<User> Surgeons { get; set; }
+        public List<ProcedureProfile> Profiles { get; set; }
         public List<TrayRationalization> Proposals { get; set; }
     }
 
@@ -156,7 +157,7 @@ namespace OpFlow.Data
         public int? SurgeonPreferenceID { get; set; }
         public List<int> SecondarySurgeons { get; set; }
         public List<int> TrayGroupID { get; set; }
-        public List<int> TrayProposalCounts { get; set; }
+        public int? TrayProposalID { get; set; }
         public string CptCode { get; set; }
         public DateTime ScheduleDate { get; set; }
     }

@@ -208,6 +208,8 @@ namespace OpFlow.Data
         public int ItemID { get; set; }
         public int NbrInstruments { get; set; }
         public string ItemDescription { get; set; }
+        public int? TrayProposalID { get; set; }
+        public string TrayName { get; set; }
 
         public int ProfileCount { get; set; }
         public int CountChange => ProfileCount - NbrInstruments;
@@ -262,6 +264,11 @@ namespace OpFlow.Data
 
         public List<int> Cards { get; set; }
         public List<int> Trays { get; set; }
+    }
+
+    public class ProcedureProfileAnalyticsSummary
+    {
+        public string ProfileName { get; set; }
     }
 
     public class TrayGroup

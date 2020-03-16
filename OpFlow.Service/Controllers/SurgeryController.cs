@@ -51,6 +51,7 @@ namespace OpFlow.Service.Controllers
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var lateralities = await sqlHelper.GetLateralities(user.ProviderID, user.LocationID);
             var surgeons = await sqlHelper.GetSurgeryUsers(user.ProviderID, user.LocationID);
+            var profiles = await sqlHelper.GetProcedureProfile(null, user.ProviderID, user.LocationID);
             var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
 
             var result = new NewSurgerySetup()
@@ -59,6 +60,7 @@ namespace OpFlow.Service.Controllers
                 Specialties = specialties,
                 Lateralities = lateralities,
                 Surgeons = surgeons,
+                Profiles = profiles,
                 Proposals = proposals
             };
 
@@ -920,9 +922,9 @@ namespace OpFlow.Service.Controllers
                 }
             }
 
-            foreach (var trayProposalId in surgery.TrayProposalCounts ?? new List<int>())
+            if (surgery.TrayProposalID != null)
             {
-                await sqlHelper.UpdateProposedTrayCount(trayProposalId, surgeryId, null, null, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateProposedTrayCount(surgery.TrayProposalID.Value, surgeryId, null, null, user.ProviderID, user.LocationID);
             }
 
             return Request.CreateResponse(HttpStatusCode.Created, surgeryId);
