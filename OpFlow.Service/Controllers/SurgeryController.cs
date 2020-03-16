@@ -925,11 +925,6 @@ namespace OpFlow.Service.Controllers
                 await sqlHelper.UpdateProposedTrayCount(trayProposalId, surgeryId, null, null, user.ProviderID, user.LocationID);
             }
 
-            foreach (var trayProposalId in surgery.TrayProposalAudits ?? new List<int>())
-            {
-                await sqlHelper.UpdateProposedTrayAudit(trayProposalId, surgeryId, null, null, user.ProviderID, user.LocationID);
-            }
-
             return Request.CreateResponse(HttpStatusCode.Created, surgeryId);
         }
 

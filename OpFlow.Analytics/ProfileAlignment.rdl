@@ -14,9 +14,13 @@
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
         <CommandText>select 5 as InstrumentCount,
-   'AAA' CardName
+   'AAA' CardName,
+   'Card' ItemType
+
+UNION
 select 15 as InstrumentCount,
-   'ZZZ' CardName</CommandText>
+   'ZZZ' CardName,
+   'Tray' ItemType</CommandText>
       </Query>
       <Fields>
         <Field Name="InstrumentCount">
@@ -25,6 +29,10 @@ select 15 as InstrumentCount,
         </Field>
         <Field Name="CardName">
           <DataField>CardName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ItemType">
+          <DataField>ItemType</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
@@ -55,7 +63,17 @@ select 15 as InstrumentCount,
             <ChartSeriesHierarchy>
               <ChartMembers>
                 <ChartMember>
-                  <Label>Instrument Count</Label>
+                  <Group Name="Chart1_SeriesGroup">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!ItemType.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!ItemType.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
+                  <Label>=Fields!ItemType.Value</Label>
                 </ChartMember>
               </ChartMembers>
             </ChartSeriesHierarchy>

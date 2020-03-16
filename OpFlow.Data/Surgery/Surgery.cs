@@ -157,7 +157,6 @@ namespace OpFlow.Data
         public List<int> SecondarySurgeons { get; set; }
         public List<int> TrayGroupID { get; set; }
         public List<int> TrayProposalCounts { get; set; }
-        public List<int> TrayProposalAudits { get; set; }
         public string CptCode { get; set; }
         public DateTime ScheduleDate { get; set; }
     }
