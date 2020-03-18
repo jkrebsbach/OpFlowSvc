@@ -781,7 +781,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<DataSet> GetProcedureProfileAlignment(int procedureProfileId, int providerId, int locationId)
+        public async Task<DataSet> GetProcedureProfileTrayAlignment(int procedureProfileId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -789,7 +789,20 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = await ExecuteCommandAsync("GetAnalyticsProcedureProfileAlignment", parameters);
+            var result = await ExecuteCommandAsync("GetAnalyticsProcedureProfileTrayAlignment", parameters);
+
+            return result;
+        }
+
+        public async Task<DataSet> GetProcedureProfileSupplyAlignment(int procedureProfileId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("GetAnalyticsProcedureProfileSupplyAlignment", parameters);
 
             return result;
         }

@@ -392,15 +392,42 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("GetProcedureProfileAlignment")]
-        [Route("procedureProfileAlignment")]
+        [SwaggerOperation("GetProcedureProfileTrayAlignment")]
+        [Route("procedureProfileTrayAlignment")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
-        public async Task<HttpResponseMessage> GetProcedureProfileAlignment(int procedureProfileId)
+        public async Task<HttpResponseMessage> GetProcedureProfileTrayAlignment(int procedureProfileId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var analytics = await sqlHelper.GetProcedureProfileAlignment(procedureProfileId, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetProcedureProfileTrayAlignment(procedureProfileId, user.ProviderID, user.LocationID);
+
+            var profile = analytics.Tables[0].DefaultView;
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["Alignment"] = profile.ToTable()
+            };
+
+            var reportName = "ProfileAlignment";
+
+            var result = ReportHelper.GetReport(reportName, datasets);
+            var webImage = ImageHelper.CreateWebImage(result);
+
+            var summary = analytics.Tables[1].DataTableToList<ProcedureProfileAnalyticsSummary>();
+
+            return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetProcedureProfileSupplyAlignment")]
+        [Route("procedureProfileSupplyAlignment")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
+        public async Task<HttpResponseMessage> GetProcedureProfileSupplyAlignment(int procedureProfileId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var analytics = await sqlHelper.GetProcedureProfileSupplyAlignment(procedureProfileId, user.ProviderID, user.LocationID);
 
             var profile = analytics.Tables[0].DefaultView;
             var datasets = new Dictionary<string, DataTable>

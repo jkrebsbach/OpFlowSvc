@@ -420,10 +420,6 @@ select 15 as InstrumentCount,
       </Body>
       <Width>7.41667in</Width>
       <Page>
-        <LeftMargin>1in</LeftMargin>
-        <RightMargin>1in</RightMargin>
-        <TopMargin>1in</TopMargin>
-        <BottomMargin>1in</BottomMargin>
         <Style />
       </Page>
     </ReportSection>

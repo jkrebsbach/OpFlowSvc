@@ -268,7 +268,8 @@ namespace OpFlow.Data
 
     public class ProcedureProfileAnalyticsSummary
     {
-        public string ProfileName { get; set; }
+        public string ProcedureProfile { get; set; }
+        public string CardCategory { get; set; }
     }
 
     public class TrayGroup
