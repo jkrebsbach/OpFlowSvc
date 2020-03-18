@@ -13,27 +13,56 @@
     <DataSet Name="Alignment">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>select 5 as InstrumentCount,
-   'AAA' CardName,
-   'Card' ItemType
+        <CommandText>select 'Card A' CardName,
+   'Scissor' ItemName,
+   6 OPP_Qty,
+   1.2 AVG_Qty,
+   5 ORIG_Qty
 
 UNION
-select 15 as InstrumentCount,
-   'ZZZ' CardName,
-   'Tray' ItemType</CommandText>
+
+select 'Card B' CardName,
+   'Scissor' ItemName,
+   4 OPP_Qty,
+   2.2 AVG_Qty,
+   5 ORIG_Qty
+
+UNION
+
+select 'Card A' CardName,
+   'Scalpel' ItemName,
+   6 OPP_Qty,
+   1.2 AVG_Qty,
+   5 ORIG_Qty
+
+UNION
+
+select 'Card B' CardName,
+   'Scalpel' ItemName,
+   4 OPP_Qty,
+   1.2 AVG_Qty,
+   3 ORIG_Qty</CommandText>
       </Query>
       <Fields>
-        <Field Name="InstrumentCount">
-          <DataField>InstrumentCount</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
         <Field Name="CardName">
           <DataField>CardName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="ItemType">
-          <DataField>ItemType</DataField>
+        <Field Name="ItemName">
+          <DataField>ItemName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="OPP_Qty">
+          <DataField>OPP_Qty</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="AVG_Qty">
+          <DataField>AVG_Qty</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="ORIG_Qty">
+          <DataField>ORIG_Qty</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
@@ -46,7 +75,24 @@ select 15 as InstrumentCount,
             <ChartCategoryHierarchy>
               <ChartMembers>
                 <ChartMember>
-                  <Group Name="Chart1_CategoryGroup">
+                  <Group Name="Chart1_CategoryGroup1">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!ItemName.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!ItemName.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
+                  <Label>=Fields!ItemName.Value</Label>
+                </ChartMember>
+              </ChartMembers>
+            </ChartCategoryHierarchy>
+            <ChartSeriesHierarchy>
+              <ChartMembers>
+                <ChartMember>
+                  <Group Name="Chart1_SeriesGroup">
                     <GroupExpressions>
                       <GroupExpression>=Fields!CardName.Value</GroupExpression>
                     </GroupExpressions>
@@ -56,24 +102,18 @@ select 15 as InstrumentCount,
                       <Value>=Fields!CardName.Value</Value>
                     </SortExpression>
                   </SortExpressions>
+                  <ChartMembers>
+                    <ChartMember>
+                      <Label>OPP Qty</Label>
+                    </ChartMember>
+                    <ChartMember>
+                      <Label>AVG Qty</Label>
+                    </ChartMember>
+                    <ChartMember>
+                      <Label>ORIG Qty</Label>
+                    </ChartMember>
+                  </ChartMembers>
                   <Label>=Fields!CardName.Value</Label>
-                </ChartMember>
-              </ChartMembers>
-            </ChartCategoryHierarchy>
-            <ChartSeriesHierarchy>
-              <ChartMembers>
-                <ChartMember>
-                  <Group Name="Chart1_SeriesGroup">
-                    <GroupExpressions>
-                      <GroupExpression>=Fields!ItemType.Value</GroupExpression>
-                    </GroupExpressions>
-                  </Group>
-                  <SortExpressions>
-                    <SortExpression>
-                      <Value>=Fields!ItemType.Value</Value>
-                    </SortExpression>
-                  </SortExpressions>
-                  <Label>=Fields!ItemType.Value</Label>
                 </ChartMember>
               </ChartMembers>
             </ChartSeriesHierarchy>
@@ -83,14 +123,98 @@ select 15 as InstrumentCount,
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
-                        <Y>=Sum(Fields!InstrumentCount.Value)</Y>
+                        <Y>=Sum(Fields!OPP_Qty.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
-                        <Type>Circle</Type>
+                        <Type>Cross</Type>
+                        <Size>12pt</Size>
+                        <Style />
+                      </ChartMarker>
+                      <DataElementOutput>Output</DataElementOutput>
+                    </ChartDataPoint>
+                  </ChartDataPoints>
+                  <Type>Scatter</Type>
+                  <Style />
+                  <ChartEmptyPoints>
+                    <Style />
+                    <ChartMarker>
+                      <Style />
+                    </ChartMarker>
+                    <ChartDataLabel>
+                      <Style />
+                    </ChartDataLabel>
+                  </ChartEmptyPoints>
+                  <ChartItemInLegend>
+                    <Hidden>=IIF(SUM(Fields!OPP_Qty.Value) &gt; 0, False, True)</Hidden>
+                  </ChartItemInLegend>
+                  <ValueAxisName>Primary</ValueAxisName>
+                  <CategoryAxisName>Primary</CategoryAxisName>
+                  <ChartSmartLabel>
+                    <CalloutLineColor>Black</CalloutLineColor>
+                    <MinMovingDistance>0pt</MinMovingDistance>
+                  </ChartSmartLabel>
+                </ChartSeries>
+                <ChartSeries Name="AVG_Qty">
+                  <ChartDataPoints>
+                    <ChartDataPoint>
+                      <ChartDataPointValues>
+                        <Y>=Sum(Fields!AVG_Qty.Value)</Y>
+                      </ChartDataPointValues>
+                      <ChartDataLabel>
+                        <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
+                      </ChartDataLabel>
+                      <Style />
+                      <ChartMarker>
+                        <Type>Diamond</Type>
+                        <Size>12pt</Size>
+                        <Style />
+                      </ChartMarker>
+                      <DataElementOutput>Output</DataElementOutput>
+                    </ChartDataPoint>
+                  </ChartDataPoints>
+                  <Type>Scatter</Type>
+                  <Style />
+                  <ChartEmptyPoints>
+                    <Style />
+                    <ChartMarker>
+                      <Style />
+                    </ChartMarker>
+                    <ChartDataLabel>
+                      <Style />
+                    </ChartDataLabel>
+                  </ChartEmptyPoints>
+                  <ChartItemInLegend>
+                    <Hidden>=IIF(SUM(Fields!AVG_Qty.Value) &gt; 0, False, True)</Hidden>
+                  </ChartItemInLegend>
+                  <ValueAxisName>Primary</ValueAxisName>
+                  <CategoryAxisName>Primary</CategoryAxisName>
+                  <ChartSmartLabel>
+                    <CalloutLineColor>Black</CalloutLineColor>
+                    <MinMovingDistance>0pt</MinMovingDistance>
+                  </ChartSmartLabel>
+                </ChartSeries>
+                <ChartSeries Name="ORIG_Qty">
+                  <ChartDataPoints>
+                    <ChartDataPoint>
+                      <ChartDataPointValues>
+                        <Y>=Sum(Fields!ORIG_Qty.Value)</Y>
+                      </ChartDataPointValues>
+                      <ChartDataLabel>
+                        <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
+                      </ChartDataLabel>
+                      <Style />
+                      <ChartMarker>
+                        <Type>Square</Type>
                         <Size>10pt</Size>
                         <Style />
                       </ChartMarker>
@@ -108,6 +232,9 @@ select 15 as InstrumentCount,
                       <Style />
                     </ChartDataLabel>
                   </ChartEmptyPoints>
+                  <ChartItemInLegend>
+                    <Hidden>=IIF(SUM(Fields!ORIG_Qty.Value) &gt; 0, False, True)</Hidden>
+                  </ChartItemInLegend>
                   <ValueAxisName>Primary</ValueAxisName>
                   <CategoryAxisName>Primary</CategoryAxisName>
                   <ChartSmartLabel>
@@ -136,6 +263,7 @@ select 15 as InstrumentCount,
                         <Color>#5c5c5c</Color>
                       </Style>
                     </ChartAxisTitle>
+                    <Interval>1</Interval>
                     <ChartMajorGridLines>
                       <Enabled>True</Enabled>
                       <Style>
@@ -386,6 +514,7 @@ select 15 as InstrumentCount,
               </ChartTitle>
             </ChartTitles>
             <Palette>Pacific</Palette>
+            <DynamicWidth>=(2 + CountDistinct(Fields!ItemName.Value, "Alignment") / 3) &amp; " in"</DynamicWidth>
             <ChartBorderSkin>
               <Style>
                 <BackgroundColor>Gray</BackgroundColor>
@@ -403,8 +532,8 @@ select 15 as InstrumentCount,
               </Style>
             </ChartNoDataMessage>
             <DataSetName>Alignment</DataSetName>
-            <Height>4.76042in</Height>
-            <Width>7.41667in</Width>
+            <Height>7.875in</Height>
+            <Width>10.83334in</Width>
             <Style>
               <Border>
                 <Color>LightGrey</Color>
@@ -415,11 +544,13 @@ select 15 as InstrumentCount,
             </Style>
           </Chart>
         </ReportItems>
-        <Height>4.76042in</Height>
+        <Height>7.875in</Height>
         <Style />
       </Body>
-      <Width>7.41667in</Width>
+      <Width>10.83334in</Width>
       <Page>
+        <PageHeight>8.5in</PageHeight>
+        <PageWidth>11in</PageWidth>
         <Style />
       </Page>
     </ReportSection>
