@@ -3508,13 +3508,14 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProcedureProfileItem(int procedureProfileId, int? itemId, int? instrumentId, int quantity, int providerId, int locationId)
+        public async Task<int> UpdateProcedureProfileItem(int procedureProfileId, int? itemId, int? instrumentId, string category, int quantity, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("item_id", itemId ?? (object)DBNull.Value),
                 new SqlParameter("instrument_id", instrumentId ?? (object)DBNull.Value),
+                new SqlParameter("category", category ?? (object)DBNull.Value),
                 new SqlParameter("quantity", quantity),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),

@@ -216,9 +216,9 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             if (itemType == "I") // Instrument
-                await sqlHelper.UpdateProcedureProfileItem(procedureProfileId, null, itemId, quantity, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateProcedureProfileItem(procedureProfileId, null, itemId, category, quantity, user.ProviderID, user.LocationID);
             else // Supply
-                await sqlHelper.UpdateProcedureProfileItem(procedureProfileId, itemId, null, quantity, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateProcedureProfileItem(procedureProfileId, itemId, null, category, quantity, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, itemId);
         }
