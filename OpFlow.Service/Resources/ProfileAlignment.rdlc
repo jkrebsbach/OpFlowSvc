@@ -15,9 +15,9 @@
         <DataSourceName>OpFlow</DataSourceName>
         <CommandText>select 'Card A' CardName,
    'Scissor' ItemName,
-   6 OPP_Qty,
-   1.2 AVG_Qty,
-   5 ORIG_Qty
+   3 OPP_Qty,
+   3 AVG_Qty,
+   3 ORIG_Qty
 
 UNION
 
@@ -80,11 +80,6 @@ select 'Card B' CardName,
                       <GroupExpression>=Fields!ItemName.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
-                  <SortExpressions>
-                    <SortExpression>
-                      <Value>=Fields!ItemName.Value</Value>
-                    </SortExpression>
-                  </SortExpressions>
                   <Label>=Fields!ItemName.Value</Label>
                 </ChartMember>
               </ChartMembers>
@@ -104,13 +99,13 @@ select 'Card B' CardName,
                   </SortExpressions>
                   <ChartMembers>
                     <ChartMember>
-                      <Label>OPP Qty</Label>
-                    </ChartMember>
-                    <ChartMember>
                       <Label>AVG Qty</Label>
                     </ChartMember>
                     <ChartMember>
                       <Label>ORIG Qty</Label>
+                    </ChartMember>
+                    <ChartMember>
+                      <Label>OPP Qty</Label>
                     </ChartMember>
                   </ChartMembers>
                   <Label>=Fields!CardName.Value</Label>
@@ -119,47 +114,6 @@ select 'Card B' CardName,
             </ChartSeriesHierarchy>
             <ChartData>
               <ChartSeriesCollection>
-                <ChartSeries Name="InstrumentCount">
-                  <ChartDataPoints>
-                    <ChartDataPoint>
-                      <ChartDataPointValues>
-                        <Y>=Sum(Fields!OPP_Qty.Value)</Y>
-                      </ChartDataPointValues>
-                      <ChartDataLabel>
-                        <Style />
-                        <UseValueAsLabel>true</UseValueAsLabel>
-                        <Visible>true</Visible>
-                      </ChartDataLabel>
-                      <Style />
-                      <ChartMarker>
-                        <Type>Cross</Type>
-                        <Size>12pt</Size>
-                        <Style />
-                      </ChartMarker>
-                      <DataElementOutput>Output</DataElementOutput>
-                    </ChartDataPoint>
-                  </ChartDataPoints>
-                  <Type>Scatter</Type>
-                  <Style />
-                  <ChartEmptyPoints>
-                    <Style />
-                    <ChartMarker>
-                      <Style />
-                    </ChartMarker>
-                    <ChartDataLabel>
-                      <Style />
-                    </ChartDataLabel>
-                  </ChartEmptyPoints>
-                  <ChartItemInLegend>
-                    <Hidden>=IIF(SUM(Fields!OPP_Qty.Value) &gt; 0, False, True)</Hidden>
-                  </ChartItemInLegend>
-                  <ValueAxisName>Primary</ValueAxisName>
-                  <CategoryAxisName>Primary</CategoryAxisName>
-                  <ChartSmartLabel>
-                    <CalloutLineColor>Black</CalloutLineColor>
-                    <MinMovingDistance>0pt</MinMovingDistance>
-                  </ChartSmartLabel>
-                </ChartSeries>
                 <ChartSeries Name="AVG_Qty">
                   <ChartDataPoints>
                     <ChartDataPoint>
@@ -174,7 +128,7 @@ select 'Card B' CardName,
                       <Style />
                       <ChartMarker>
                         <Type>Diamond</Type>
-                        <Size>12pt</Size>
+                        <Size>14pt</Size>
                         <Style />
                       </ChartMarker>
                       <DataElementOutput>Output</DataElementOutput>
@@ -212,10 +166,13 @@ select 'Card B' CardName,
                         <UseValueAsLabel>true</UseValueAsLabel>
                         <Visible>true</Visible>
                       </ChartDataLabel>
-                      <Style />
+                      <Style>
+                        <BackgroundGradientType>None</BackgroundGradientType>
+                        <BackgroundHatchType>None</BackgroundHatchType>
+                      </Style>
                       <ChartMarker>
-                        <Type>Square</Type>
-                        <Size>10pt</Size>
+                        <Type>Cross</Type>
+                        <Size>14pt</Size>
                         <Style />
                       </ChartMarker>
                       <DataElementOutput>Output</DataElementOutput>
@@ -234,6 +191,52 @@ select 'Card B' CardName,
                   </ChartEmptyPoints>
                   <ChartItemInLegend>
                     <Hidden>=IIF(SUM(Fields!ORIG_Qty.Value) &gt; 0, False, True)</Hidden>
+                  </ChartItemInLegend>
+                  <ValueAxisName>Primary</ValueAxisName>
+                  <CategoryAxisName>Primary</CategoryAxisName>
+                  <ChartSmartLabel>
+                    <CalloutLineColor>Black</CalloutLineColor>
+                    <MinMovingDistance>0pt</MinMovingDistance>
+                  </ChartSmartLabel>
+                </ChartSeries>
+                <ChartSeries Name="InstrumentCount">
+                  <ChartDataPoints>
+                    <ChartDataPoint>
+                      <ChartDataPointValues>
+                        <Y>=Sum(Fields!OPP_Qty.Value)</Y>
+                      </ChartDataPointValues>
+                      <ChartDataLabel>
+                        <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
+                      </ChartDataLabel>
+                      <Style />
+                      <ChartMarker>
+                        <Type>Star5</Type>
+                        <Size>24pt</Size>
+                        <Style>
+                          <Border>
+                            <Color>Black</Color>
+                          </Border>
+                          <Color>#00ffffff</Color>
+                        </Style>
+                      </ChartMarker>
+                      <DataElementOutput>Output</DataElementOutput>
+                    </ChartDataPoint>
+                  </ChartDataPoints>
+                  <Type>Scatter</Type>
+                  <Style />
+                  <ChartEmptyPoints>
+                    <Style />
+                    <ChartMarker>
+                      <Style />
+                    </ChartMarker>
+                    <ChartDataLabel>
+                      <Style />
+                    </ChartDataLabel>
+                  </ChartEmptyPoints>
+                  <ChartItemInLegend>
+                    <Hidden>=IIF(SUM(Fields!OPP_Qty.Value) &gt; 0, False, True)</Hidden>
                   </ChartItemInLegend>
                   <ValueAxisName>Primary</ValueAxisName>
                   <CategoryAxisName>Primary</CategoryAxisName>

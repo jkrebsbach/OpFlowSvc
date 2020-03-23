@@ -399,7 +399,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetProcedureProfileTrayAlignment")]
         [Route("procedureProfileTrayAlignment")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
-        public async Task<HttpResponseMessage> GetProcedureProfileTrayAlignment(int procedureProfileId)
+        public async Task<HttpResponseMessage> GetProcedureProfileTrayAlignment(int procedureProfileId, string orderBy)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -407,6 +407,23 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetProcedureProfileTrayAlignment(procedureProfileId, user.ProviderID, user.LocationID);
 
             var profile = analytics.Tables[0].DefaultView;
+            switch (orderBy)
+            {
+                case "HIGH":
+                    profile.Sort = "AVG_Qty DESC";
+                    break;
+                case "LOW":
+                    profile.Sort = "AVG_Qty ASC";
+                    break;
+                case "VAR":
+                    profile.Sort = "VAR_Qty DESC";
+                    break;
+                case "OPP":
+                default:
+                    profile.Sort = "OPP_Qty DESC";
+                    break;
+            }
+
             var datasets = new Dictionary<string, DataTable>
             {
                 ["Alignment"] = profile.ToTable()
@@ -426,7 +443,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetProcedureProfileSupplyAlignment")]
         [Route("procedureProfileSupplyAlignment")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
-        public async Task<HttpResponseMessage> GetProcedureProfileSupplyAlignment(int procedureProfileId)
+        public async Task<HttpResponseMessage> GetProcedureProfileSupplyAlignment(int procedureProfileId, string orderBy)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -434,6 +451,23 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetProcedureProfileSupplyAlignment(procedureProfileId, user.ProviderID, user.LocationID);
 
             var profile = analytics.Tables[0].DefaultView;
+            switch (orderBy)
+            {
+                case "HIGH":
+                    profile.Sort = "AVG_Qty DESC";
+                    break;
+                case "LOW":
+                    profile.Sort = "AVG_Qty ASC";
+                    break;
+                case "VAR":
+                    profile.Sort = "VAR_Qty DESC";
+                    break;
+                case "OPP":
+                default:
+                    profile.Sort = "OPP_Qty DESC";
+                    break;
+            }
+
             var datasets = new Dictionary<string, DataTable>
             {
                 ["Alignment"] = profile.ToTable()
