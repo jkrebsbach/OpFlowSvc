@@ -243,12 +243,12 @@ namespace OpFlow.Service.Controllers
         [Route("procedureProfileTrayInstrument")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
         [HttpPost]
-        public async Task<HttpResponseMessage> PostProcedureProfileTrayInstrument(int procedureProfileId, string trayType, int itemId, int trayItemId, int quantity)
+        public async Task<HttpResponseMessage> PostProcedureProfileTrayInstrument(int procedureProfileId, int itemId, int trayItemId, int? categoryId, int quantity)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateProcedureProfileTrayInstrument(procedureProfileId, trayType, itemId, trayItemId, quantity, user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateProcedureProfileTrayInstrument(procedureProfileId, itemId, trayItemId, categoryId, quantity, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, itemId);
         }
@@ -461,8 +461,7 @@ namespace OpFlow.Service.Controllers
 
             var profile = (await sqlHelper.GetProcedureProfile(procedureProfileId, user.ProviderID, user.LocationID)).First();
 
-            var profileTrays = profile.ProcedureTrays.Union(profile.SpecialtyTrays).Union(profile.SharedTrays).ToList();
-            var traySummary = profileTrays.GroupBy(p => p.TrayName).Select(p => new ProfileItem()
+            var traySummary = profile.TrayItems.GroupBy(p => p.TrayName).Select(p => new ProfileItem()
             { 
                 ItemType = "TRAY",
                 ItemDescription = p.Key,
@@ -551,7 +550,7 @@ namespace OpFlow.Service.Controllers
                 }
             }
 
-            var profileTrayItems = profile.ProcedureTrays.Union(profile.SharedTrays).Union(profile.SpecialtyTrays).ToList();
+            var profileTrayItems = profile.TrayItems;
             var shared = profileTrayItems.Where(t => cardItems.Any(ci => ci.TrayID == t.TrayID)).ToList();
 
             foreach(var sharedItem in shared)

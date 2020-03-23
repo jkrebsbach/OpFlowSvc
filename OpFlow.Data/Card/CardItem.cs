@@ -173,9 +173,7 @@ namespace OpFlow.Data
         public List<ProfileItem> Items { get; set; }
         public List<ProfileCard> Cards { get; set; }
         public List<ProfileTray> Trays { get; set; }
-        public List<ProfileItem> ProcedureTrays { get; set; }
-        public List<ProfileItem> SpecialtyTrays { get; set; }
-        public List<ProfileItem> SharedTrays { get; set; }
+        public List<ProfileItem> TrayItems { get; set; }
     }
 
     public class ProcedureProfileTrayUsage

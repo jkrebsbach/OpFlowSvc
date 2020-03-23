@@ -3539,14 +3539,14 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProcedureProfileTrayInstrument(int procedureProfileId, string trayType, int itemId, int trayItemId, int quantity, int providerId, int locationId)
+        public async Task<int> UpdateProcedureProfileTrayInstrument(int procedureProfileId, int instrumentId, int trayItemId, int? categoryId, int quantity, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId),
-                new SqlParameter("tray_type", trayType),
-                new SqlParameter("item_id", itemId),
                 new SqlParameter("tray_item_id", trayItemId),
+                new SqlParameter("instrument_id", instrumentId),
+                new SqlParameter("category_id", categoryId ?? (object)DBNull.Value),
                 new SqlParameter("quantity", quantity),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
@@ -3640,9 +3640,7 @@ namespace OpFlow.Service.DataAccess
                 result.Cards.ForEach(c => c.ProfileCount = result.NbrInstruments);
                 result.Trays.ForEach(t => t.ProfileCount = result.NbrInstruments);
 
-                result.ProcedureTrays = trayItems.Where(p => p.ProcedureProfileID == result.ProcedureProfileID && p.TrayType == "P").ToList();
-                result.SpecialtyTrays = trayItems.Where(p => p.ProcedureProfileID == result.ProcedureProfileID && p.TrayType == "S").ToList();
-                result.SharedTrays = trayItems.Where(p => p.ProcedureProfileID == result.ProcedureProfileID && p.TrayType == "H").ToList();
+                result.TrayItems = trayItems.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
             }
 
             return results;
