@@ -230,6 +230,7 @@ namespace OpFlow.Data
         public int NbrInstruments { get; set; }
 
 
+        public string CategoryID { get; set; }
         public int ProfileCount { get; set; }
         public int CountChange => ProfileCount - NbrInstruments;
         public decimal PcntChange => ProfileCount == 0 ? 0 : ((decimal)CountChange / ProfileCount * 100);

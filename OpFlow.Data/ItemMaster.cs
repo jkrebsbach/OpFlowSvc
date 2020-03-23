@@ -48,6 +48,11 @@ namespace OpFlow.Data
         public bool Warning { get; set; }
     }
 
+    public class ItemMasterCategory
+    {
+        public int CategoryID { get; set; }
+        public string CategoryDescription { get; set; }
+    }
     public class ComparableItemPost
     {
         public string Status { get; set; }

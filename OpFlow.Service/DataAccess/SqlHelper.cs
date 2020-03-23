@@ -2710,6 +2710,34 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<ItemMasterCategory>> GetItemCategories(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetItemCategories", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ItemMasterCategory>();
+
+            return result;
+        }
+
+        public async Task<List<ItemMasterCategory>> GetInstrumentCategories(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetInstrumentCategories", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ItemMasterCategory>();
+
+            return result;
+        }
+
         public async Task<List<ItemMaster>> GetItemSutures(int providerId, int locationId)
         {
             var parameters = new[]
