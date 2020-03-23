@@ -2422,6 +2422,20 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> InsertItemMaster(string itemType, string itemName, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("item_type", itemType),
+                new SqlParameter("item_name", itemName),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("InsertItemMaster", parameters);
+
+            return result.Tables[0].DataTableToList<InsertionResult>().First().Identifier;
+        }
+
         public async Task<int> InsertComparableItem(int itemId, int comparableItemId, int providerId, int locationId)
         {
             var parameters = new[]

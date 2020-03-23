@@ -142,10 +142,21 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("comparableItem")]
         [HttpPut]
-        public async Task<HttpResponseMessage> PutComparableItem(string itemType, int itemId, int comparableItemId)
+        public async Task<HttpResponseMessage> PutComparableItem(string itemType, int itemId, ComparableItemPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
+
+            int comparableItemId;
+            if (post.Status == "NEW")
+            {
+                var newItemType = (itemType == "I" ? "INSTRUMENT" : "SUPPLY");
+                comparableItemId = await sqlHelper.InsertItemMaster(itemType, post.ItemName, user.ProviderID, user.LocationID);
+            }
+            else
+            {
+                comparableItemId = post.ComparableItemID ?? -1;
+            }
 
             var result = 0;
             if (itemType == "I") // Instrument

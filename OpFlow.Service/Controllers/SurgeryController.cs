@@ -475,12 +475,17 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
+            var users = await sqlHelper.GetSurgeryUsers(user.ProviderID, user.LocationID);
+
             var result = new SearchScreen
             {
                 Rooms = await sqlHelper.GetRooms(user.LocationID),
                 RoomGroups = await sqlHelper.GetRoomGroups(user.ProviderID, user.LocationID),
-                Users = await sqlHelper.GetSurgeryUsers(user.ProviderID, user.LocationID),
                 Specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID),
+                Users = users,
+                Surgeons = users.Where(u => u.RoleID == RoleEnum.Surgeon).ToList(),
+                Trays = await sqlHelper.GetItems("TRAY", null, null, user.ProviderID, user.LocationID),
+                Proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID),
                 Bundles = await sqlHelper.GetBundles(null, user.ProviderID, user.LocationID),
                 Procedures = await sqlHelper.GetProcedures(null, user.ProviderID, user.LocationID)
             };

@@ -47,4 +47,11 @@ namespace OpFlow.Data
         public int ProposedInstrumentCount { get; set; }
         public bool Warning { get; set; }
     }
+
+    public class ComparableItemPost
+    {
+        public string Status { get; set; }
+        public int? ComparableItemID { get; set; }
+        public string ItemName { get; set; }
+    }
 }
