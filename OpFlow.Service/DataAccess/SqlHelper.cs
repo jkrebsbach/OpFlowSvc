@@ -781,10 +781,15 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<DataSet> GetProcedureProfileTrayAlignment(int procedureProfileId, int providerId, int locationId)
+        public async Task<DataSet> GetProcedureProfileTrayAlignment(int procedureProfileId, List<int> cardId, List<int> trayId, int providerId, int locationId)
         {
+            var cardXml = GetIdentitySummary(cardId);
+            var trayXml = GetIdentitySummary(trayId);
+
             var parameters = new[]
             {
+                new SqlParameter("card_id", cardXml),
+                new SqlParameter("tray_id", trayXml),
                 new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
@@ -794,10 +799,15 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<DataSet> GetProcedureProfileSupplyAlignment(int procedureProfileId, int providerId, int locationId)
+        public async Task<DataSet> GetProcedureProfileSupplyAlignment(int procedureProfileId, List<int> cardId, List<int> trayId, int providerId, int locationId)
         {
+            var cardXml = GetIdentitySummary(cardId);
+            var trayXml = GetIdentitySummary(trayId);
+
             var parameters = new[]
             {
+                new SqlParameter("card_id", cardXml),
+                new SqlParameter("tray_id", trayXml),
                 new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)

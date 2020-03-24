@@ -399,15 +399,16 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetProcedureProfileTrayAlignment")]
         [Route("procedureProfileTrayAlignment")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
-        public async Task<HttpResponseMessage> GetProcedureProfileTrayAlignment(int procedureProfileId, string orderBy)
+        [HttpPost]
+        public async Task<HttpResponseMessage> GetProcedureProfileTrayAlignment(int procedureProfileId, [FromBody] ProcedureProfileAlignmentPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var analytics = await sqlHelper.GetProcedureProfileTrayAlignment(procedureProfileId, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetProcedureProfileTrayAlignment(procedureProfileId, post.CardId, post.TrayId, user.ProviderID, user.LocationID);
 
             var profile = analytics.Tables[0].DefaultView;
-            switch (orderBy)
+            switch (post.OrderBy)
             {
                 case "HIGH":
                     profile.Sort = "AVG_Qty DESC";
@@ -443,15 +444,16 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetProcedureProfileSupplyAlignment")]
         [Route("procedureProfileSupplyAlignment")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
-        public async Task<HttpResponseMessage> GetProcedureProfileSupplyAlignment(int procedureProfileId, string orderBy)
+        [HttpPost]
+        public async Task<HttpResponseMessage> GetProcedureProfileSupplyAlignment(int procedureProfileId, [FromBody] ProcedureProfileAlignmentPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var analytics = await sqlHelper.GetProcedureProfileSupplyAlignment(procedureProfileId, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetProcedureProfileSupplyAlignment(procedureProfileId, post.CardId, post.TrayId, user.ProviderID, user.LocationID);
 
             var profile = analytics.Tables[0].DefaultView;
-            switch (orderBy)
+            switch (post.OrderBy)
             {
                 case "HIGH":
                     profile.Sort = "AVG_Qty DESC";

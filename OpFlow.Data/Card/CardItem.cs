@@ -265,6 +265,12 @@ namespace OpFlow.Data
         public List<int> Trays { get; set; }
     }
 
+    public class ProcedureProfileAlignmentPost
+    {
+        public List<int> CardId { get; set; }
+        public List<int> TrayId { get; set; }
+        public string OrderBy { get; set; }
+    }
     public class ProcedureProfileAnalyticsSummary
     {
         public string ProcedureProfile { get; set; }
