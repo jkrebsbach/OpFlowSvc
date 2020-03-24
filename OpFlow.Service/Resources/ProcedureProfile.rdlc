@@ -15,13 +15,13 @@
         <DataSourceName>OpFlow</DataSourceName>
         <CommandText>select 'aaa' TrayName, 
 123 InstrumentCount, 
-45.36 AvgUsage,
+45.3655555 AvgUsage,
 16 Variance,
 12.45 InstrumentCost
 UNION
 select 'bbb' TrayName, 
 213 InstrumentCount, 
-45.36 AvgUsage,
+45.3655555 AvgUsage,
 16 Variance,
 21.45 InstrumentCost</CommandText>
       </Query>
@@ -126,7 +126,9 @@ select 'bbb' TrayName,
                         <Y>=Sum(Fields!AvgUsage.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
-                        <Style />
+                        <Style>
+                          <Format>0.##</Format>
+                        </Style>
                         <UseValueAsLabel>true</UseValueAsLabel>
                         <Visible>true</Visible>
                       </ChartDataLabel>
