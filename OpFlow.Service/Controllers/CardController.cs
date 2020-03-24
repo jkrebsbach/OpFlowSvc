@@ -372,12 +372,17 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values/5
         [SwaggerOperation("GetProcedureProfileChart")]
-        [Route("procedureProfileChart")]
+        [Route("procedureProfileChart/{procedureProfileId}")]
+        [Route("procedureProfileChart/{format}/{procedureProfileId}")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
-        public async Task<HttpResponseMessage> GetProcedureProfileChart(int procedureProfileId)
+        [HttpPut]
+        [HttpPost]
+        public async Task<HttpResponseMessage> GetProcedureProfileChart(int procedureProfileId, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
+
+            format = format ?? "IMAGE";
 
             var analytics = await sqlHelper.GetProcedureProfileReport(procedureProfileId, user.ProviderID, user.LocationID);
 
@@ -389,21 +394,33 @@ namespace OpFlow.Service.Controllers
 
             var reportName = "ProcedureProfile";
 
-            var result = ReportHelper.GetReport(reportName, datasets);
-            var webImage = ImageHelper.CreateWebImage(result);
+            var result = ReportHelper.GetReport(reportName, format, datasets);
+            
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
 
-            return ResponseHelper.ImageResponse(Request, webImage);
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
         }
 
         // GET api/values/5
         [SwaggerOperation("GetProcedureProfileTrayAlignment")]
-        [Route("procedureProfileTrayAlignment")]
+        [Route("procedureProfileTrayAlignment/{procedureProfileId}")]
+        [Route("procedureProfileTrayAlignment/{format}/{procedureProfileId}")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
+        [HttpPut]
         [HttpPost]
-        public async Task<HttpResponseMessage> GetProcedureProfileTrayAlignment(int procedureProfileId, [FromBody] ProcedureProfileAlignmentPost post)
+        public async Task<HttpResponseMessage> GetProcedureProfileTrayAlignment([FromBody] ProcedureProfileAlignmentPost post, int procedureProfileId, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
+
+            format = format ?? "IMAGE";
 
             var analytics = await sqlHelper.GetProcedureProfileTrayAlignment(procedureProfileId, post.CardId, post.TrayId, user.ProviderID, user.LocationID);
 
@@ -432,23 +449,34 @@ namespace OpFlow.Service.Controllers
 
             var reportName = "ProfileAlignment";
 
-            var result = ReportHelper.GetReport(reportName, datasets);
-            var webImage = ImageHelper.CreateWebImage(result);
+            var result = ReportHelper.GetReport(reportName, format, datasets);
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
 
-            var summary = analytics.Tables[1].DataTableToList<ProcedureProfileAnalyticsSummary>();
+                var summary = analytics.Tables[1].DataTableToList<ProcedureProfileAnalyticsSummary>();
 
-            return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
+                return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
+            }
         }
 
         // GET api/values/5
         [SwaggerOperation("GetProcedureProfileSupplyAlignment")]
-        [Route("procedureProfileSupplyAlignment")]
+        [Route("procedureProfileSupplyAlignment/{procedureProfileId}")]
+        [Route("procedureProfileSupplyAlignment/{format}/{procedureProfileId}")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
+        [HttpPut]
         [HttpPost]
-        public async Task<HttpResponseMessage> GetProcedureProfileSupplyAlignment(int procedureProfileId, [FromBody] ProcedureProfileAlignmentPost post)
+        public async Task<HttpResponseMessage> GetProcedureProfileSupplyAlignment([FromBody] ProcedureProfileAlignmentPost post, int procedureProfileId, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
+
+            format = format ?? "IMAGE";
 
             var analytics = await sqlHelper.GetProcedureProfileSupplyAlignment(procedureProfileId, post.CardId, post.TrayId, user.ProviderID, user.LocationID);
 
@@ -477,12 +505,19 @@ namespace OpFlow.Service.Controllers
 
             var reportName = "ProfileAlignment";
 
-            var result = ReportHelper.GetReport(reportName, datasets);
-            var webImage = ImageHelper.CreateWebImage(result);
+            var result = ReportHelper.GetReport(reportName, format, datasets);
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
 
-            var summary = analytics.Tables[1].DataTableToList<ProcedureProfileAnalyticsSummary>();
+                var summary = analytics.Tables[1].DataTableToList<ProcedureProfileAnalyticsSummary>();
 
-            return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
+                return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
+            }
         }
 
         // GET api/values/5
