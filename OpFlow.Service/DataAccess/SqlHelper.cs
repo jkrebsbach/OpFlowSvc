@@ -788,8 +788,7 @@ namespace OpFlow.Service.DataAccess
 
             var parameters = new[]
             {
-                new SqlParameter("card_id", cardXml),
-                new SqlParameter("tray_id", trayXml),
+                new SqlParameter("tray_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
@@ -806,8 +805,7 @@ namespace OpFlow.Service.DataAccess
 
             var parameters = new[]
             {
-                new SqlParameter("card_id", cardXml),
-                new SqlParameter("tray_id", trayXml),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
