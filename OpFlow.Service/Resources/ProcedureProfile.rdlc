@@ -13,9 +13,17 @@
     <DataSet Name="ProcedureProfile">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>select 'aaa' TrayName, 123 InstrumentCount, 12.45 InstrumentCost
+        <CommandText>select 'aaa' TrayName, 
+123 InstrumentCount, 
+45.36 AvgUsage,
+16 Variance,
+12.45 InstrumentCost
 UNION
-select 'bbb' TrayName, 213 InstrumentCount, 21.45 InstrumentCost</CommandText>
+select 'bbb' TrayName, 
+213 InstrumentCount, 
+45.36 AvgUsage,
+16 Variance,
+21.45 InstrumentCost</CommandText>
       </Query>
       <Fields>
         <Field Name="TrayName">
@@ -26,9 +34,17 @@ select 'bbb' TrayName, 213 InstrumentCount, 21.45 InstrumentCost</CommandText>
           <DataField>InstrumentCount</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
+        <Field Name="AvgUsage">
+          <DataField>AvgUsage</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
         <Field Name="InstrumentCost">
           <DataField>InstrumentCost</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="Variance">
+          <DataField>Variance</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
@@ -56,7 +72,10 @@ select 'bbb' TrayName, 213 InstrumentCount, 21.45 InstrumentCost</CommandText>
                   <Label>Instrument Count</Label>
                 </ChartMember>
                 <ChartMember>
-                  <Label>Instrument Cost</Label>
+                  <Label>Avg Usage</Label>
+                </ChartMember>
+                <ChartMember>
+                  <Label>Variance</Label>
                 </ChartMember>
               </ChartMembers>
             </ChartSeriesHierarchy>
@@ -75,12 +94,14 @@ select 'bbb' TrayName, 213 InstrumentCount, 21.45 InstrumentCost</CommandText>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
+                        <Type>Circle</Type>
+                        <Size>10pt</Size>
                         <Style />
                       </ChartMarker>
                       <DataElementOutput>Output</DataElementOutput>
                     </ChartDataPoint>
                   </ChartDataPoints>
-                  <Type>Bar</Type>
+                  <Type>Scatter</Type>
                   <Style />
                   <ChartEmptyPoints>
                     <Style />
@@ -98,27 +119,26 @@ select 'bbb' TrayName, 213 InstrumentCount, 21.45 InstrumentCost</CommandText>
                     <MinMovingDistance>0pt</MinMovingDistance>
                   </ChartSmartLabel>
                 </ChartSeries>
-                <ChartSeries Name="InstrumentCost">
+                <ChartSeries Name="AvgUsage">
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
-                        <Y>=Sum(Fields!InstrumentCost.Value)</Y>
+                        <Y>=Sum(Fields!AvgUsage.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
-                        <Style>
-                          <Format>$0.##</Format>
-                        </Style>
+                        <Style />
                         <UseValueAsLabel>true</UseValueAsLabel>
                         <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
+                        <Type>Circle</Type>
                         <Style />
                       </ChartMarker>
                       <DataElementOutput>Output</DataElementOutput>
                     </ChartDataPoint>
                   </ChartDataPoints>
-                  <Type>Bar</Type>
+                  <Type>Scatter</Type>
                   <Style />
                   <ChartEmptyPoints>
                     <Style />
@@ -129,9 +149,44 @@ select 'bbb' TrayName, 213 InstrumentCount, 21.45 InstrumentCost</CommandText>
                       <Style />
                     </ChartDataLabel>
                   </ChartEmptyPoints>
-                  <ChartItemInLegend>
-                    <LegendText>Instrument Cost</LegendText>
-                  </ChartItemInLegend>
+                  <ValueAxisName>Primary</ValueAxisName>
+                  <CategoryAxisName>Primary</CategoryAxisName>
+                  <ChartSmartLabel>
+                    <CalloutLineColor>Black</CalloutLineColor>
+                    <MinMovingDistance>0pt</MinMovingDistance>
+                  </ChartSmartLabel>
+                </ChartSeries>
+                <ChartSeries Name="Variance">
+                  <ChartDataPoints>
+                    <ChartDataPoint>
+                      <ChartDataPointValues>
+                        <Y>=Sum(Fields!Variance.Value)</Y>
+                      </ChartDataPointValues>
+                      <ChartDataLabel>
+                        <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
+                      </ChartDataLabel>
+                      <Style />
+                      <ChartMarker>
+                        <Type>Circle</Type>
+                        <Size>10pt</Size>
+                        <Style />
+                      </ChartMarker>
+                      <DataElementOutput>Output</DataElementOutput>
+                    </ChartDataPoint>
+                  </ChartDataPoints>
+                  <Type>Scatter</Type>
+                  <Style />
+                  <ChartEmptyPoints>
+                    <Style />
+                    <ChartMarker>
+                      <Style />
+                    </ChartMarker>
+                    <ChartDataLabel>
+                      <Style />
+                    </ChartDataLabel>
+                  </ChartEmptyPoints>
                   <ValueAxisName>Primary</ValueAxisName>
                   <CategoryAxisName>Primary</CategoryAxisName>
                   <ChartSmartLabel>
@@ -162,7 +217,7 @@ select 'bbb' TrayName, 213 InstrumentCount, 21.45 InstrumentCost</CommandText>
                     </ChartAxisTitle>
                     <Interval>1</Interval>
                     <ChartMajorGridLines>
-                      <Enabled>False</Enabled>
+                      <Enabled>True</Enabled>
                       <Style>
                         <Border>
                           <Color>Gainsboro</Color>
@@ -195,6 +250,7 @@ select 'bbb' TrayName, 213 InstrumentCount, 21.45 InstrumentCost</CommandText>
                       <Length>0.5</Length>
                     </ChartMinorTickMarks>
                     <CrossAt>NaN</CrossAt>
+                    <Scalar>true</Scalar>
                     <Minimum>NaN</Minimum>
                     <Maximum>NaN</Maximum>
                     <ChartAxisScaleBreak>
@@ -251,6 +307,7 @@ select 'bbb' TrayName, 213 InstrumentCount, 21.45 InstrumentCost</CommandText>
                     </ChartMinorTickMarks>
                     <CrossAt>NaN</CrossAt>
                     <Location>Opposite</Location>
+                    <Scalar>true</Scalar>
                     <Minimum>NaN</Minimum>
                     <Maximum>NaN</Maximum>
                     <ChartAxisScaleBreak>
@@ -276,6 +333,7 @@ select 'bbb' TrayName, 213 InstrumentCount, 21.45 InstrumentCost</CommandText>
                       </Style>
                     </ChartAxisTitle>
                     <ChartMajorGridLines>
+                      <Enabled>True</Enabled>
                       <Style>
                         <Border>
                           <Color>Gainsboro</Color>
