@@ -275,6 +275,12 @@ namespace OpFlow.Data
     {
         public string ProcedureProfile { get; set; }
         public string CardCategory { get; set; }
+        public decimal GroupAvgCount { get; set; }
+        public decimal GroupAvgCost { get; set; }
+        public decimal GroupAvgInstruments { get; set; }
+        public decimal ProfileAvgCount { get; set; }
+        public decimal ProfileAvgCost { get; set; }
+        public decimal ProfileAvgInstruments { get; set; }
     }
 
     public class TrayGroup
