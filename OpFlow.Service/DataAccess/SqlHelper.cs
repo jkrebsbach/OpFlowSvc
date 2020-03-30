@@ -2383,11 +2383,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProposedTrayAudit(int trayProposalId, int surgeryId, int? scrubTechUserId, int? auditUserId, int providerId, int locationId)
+        public async Task<int> UpdateProposedTrayAudit(int? trayProposalId, int surgeryId, int? scrubTechUserId, int? auditUserId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("scrub_tech_user_id", scrubTechUserId ?? (object)DBNull.Value),
                 new SqlParameter("audit_user_id", auditUserId ?? (object)DBNull.Value),
@@ -2399,11 +2399,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProposedTrayCount(int trayProposalId, int surgeryId, int? scrubTechUserId, int? countUserId, int providerId, int locationId)
+        public async Task<int> UpdateProposedTrayCount(int? trayProposalId, int surgeryId, int? scrubTechUserId, int? countUserId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("scrub_tech_user_id", scrubTechUserId ?? (object)DBNull.Value),
                 new SqlParameter("count_user_id", countUserId ?? (object)DBNull.Value),
@@ -6079,21 +6079,21 @@ namespace OpFlow.Service.DataAccess
             return surgeries;
         }
 
-        public async Task<List<SurgeryAuditSearchResult>> GetProposedTrayAuditSearch(int trayProposalId,
+        public async Task<List<SurgeryAuditSearchResult>> GetProposedTrayAuditSearch(int? trayProposalId,
             int? surgeonUserId,
             int? specialtyId, int? trayId, int? cardId,
             DateTime? begDate, DateTime? endDate, string target, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("target", target),
+                new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_user_id", surgeonUserId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("tray_id", trayId ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardId ?? (object)DBNull.Value),
                 new SqlParameter("beg_date", begDate ?? (object)DBNull.Value),
                 new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
-                new SqlParameter("target", target),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

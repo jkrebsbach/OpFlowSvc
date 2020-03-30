@@ -255,8 +255,8 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryAuditSearchResult>))]
         [Route("searchCases")]
         [HttpGet]
-        public async Task<HttpResponseMessage> SearchCases(int trayProposalId, string target, 
-            int ? surgeonUserId = null, int? specialtyId = null, int? trayId = null, int? cardId = null, 
+        public async Task<HttpResponseMessage> SearchCases(string target,
+            int? trayProposalId = null, int? surgeonUserId = null, int? specialtyId = null, int? trayId = null, int? cardId = null, 
             DateTime? beginDate = null, DateTime? endDate = null)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -1222,7 +1222,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("caseAudit")]
         [HttpPost]
-        public async Task<HttpResponseMessage> AddCaseAudit(int trayProposalId, [FromBody] AddCaseAuditPost auditPost)
+        public async Task<HttpResponseMessage> AddCaseAudit(int? trayProposalId, [FromBody] AddCaseAuditPost auditPost)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
