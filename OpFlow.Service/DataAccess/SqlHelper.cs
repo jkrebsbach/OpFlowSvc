@@ -7041,26 +7041,28 @@ namespace OpFlow.Service.DataAccess
             }
             else if (sourceData is CardImport card)
             {
+                var surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == card.PrimarySurgeon.LastName
+                    && r.FirstName == card.PrimarySurgeon.FirstName);
+
+                if (surgeon == null)
+                {
+                    result.Messages.Add("Unable to find surgeon: " + card.Surgeon);
+                    return result;
+                }
+
                 var parameters = new[]
                 {
                     new SqlParameter("provider_id", providerId),
                     new SqlParameter("location_id", locationId),
-                    new SqlParameter("location", card.Location),
-                    new SqlParameter("surgeon", card.Surgeon),
+                    new SqlParameter("owner_user_id", surgeon.UserID),
                     new SqlParameter("preference_card_name", card.PreferenceCardName),
+                    new SqlParameter("item_name", card.ItemName),
                     new SqlParameter("item_type", card.ItemType),
-                    new SqlParameter("lawson_id", card.LawsonID),
-                    new SqlParameter("catalog_nbr", card.CatalogNbr),
-                    new SqlParameter("supply_description", card.SupplyDescription),
-                    new SqlParameter("manufacturer", card.Manufacturer),
-                    new SqlParameter("open_amt", card.OpenAmt),
-                    new SqlParameter("prn_required", card.PrnRequired),
-                    new SqlParameter("cost_per_unit_ot", card.CostPerUnitOt),
-                    new SqlParameter("dosage", card.Dosage),
-                    new SqlParameter("unit", card.Unit)
+                    new SqlParameter("product_nbr", card.ProductNbr),
+                    new SqlParameter("quantity", card.Quantity)
                 };
 
-                result.Identity = await ExecuteNonQueryAsync(@"UpdateStagCardItem", parameters);
+                result.Identity = await ExecuteNonQueryAsync(@"UpdateCardItemImport", parameters);
             }
             else if (sourceData is TrayImport tray)
             {
@@ -7078,21 +7080,39 @@ namespace OpFlow.Service.DataAccess
 
                 result.Identity = await ExecuteNonQueryAsync(@"UpdateTrayImport", parameters);
             }
-            else if (sourceData is ProposedTrayImport proposedTray)
+            else if (sourceData is UserImport user)
             {
+                Specialty specialty = null;
+
+                var role = relations.Roles.FirstOrDefault(r => r.RoleDescription == user.Role);
+                if (role == null)
+                {
+                    result.Messages.Add("Unable to find role: " + user.Role);
+                    return result;
+                }
+
+                if (user.Specialty != null)
+                {
+                    specialty = relations.Specialties.FirstOrDefault(r => r.SpecialtyDescription == user.Specialty);
+
+                    if (specialty == null)
+                    {
+                        result.Messages.Add("Unable to find specialty: " + user.Specialty);
+                        return result;
+                    }
+                }
+
                 var parameters = new[]
                 {
                     new SqlParameter("provider_id", providerId),
                     new SqlParameter("location_id", locationId),
-                    new SqlParameter("proposed_tray_name", proposedTray.ProposedTrayName),
-                    new SqlParameter("tray_name", proposedTray.TrayName),
-                    new SqlParameter("instrument_name", proposedTray.InstrumentName),
-                    new SqlParameter("instrument_type", proposedTray.InstrumentType),
-                    new SqlParameter("quantity", proposedTray.Quantity),
-                    new SqlParameter("category", proposedTray.Category)
+                    new SqlParameter("last_name", user.UserEntity.LastName),
+                    new SqlParameter("first_name", user.UserEntity.FirstName),
+                    new SqlParameter("role_id", role.RoleID),
+                    new SqlParameter("specialty_id", specialty?.SpecialtyID ?? (object)DBNull.Value)
                 };
 
-                result.Identity = await ExecuteNonQueryAsync(@"UpdateProposedTrayImport", parameters);
+                result.Identity = await ExecuteNonQueryAsync(@"UpdateUserImport", parameters);
             }
             else if(sourceData is ScheduleBase scheduleBase)
             {
@@ -7132,7 +7152,7 @@ namespace OpFlow.Service.DataAccess
 
                     if (cardFlowRoom == null)
                     {
-                        result.Messages.Add("Unable to find card with trays: " + cardlessSchedule.Trays);
+                        result.Messages.Add("Unable to find card with trays: " + cardlessSchedule.TrayList);
                     }
                 } 
                 else if (scheduleBase is ScheduleImport schedule)

@@ -9,6 +9,8 @@ namespace OpFlow.Data.Administration
     public class FileParserRelations
     {
         // Need some blac magic for reference data of imports
+        public List<Role> Roles { get; set; }
+        public List<Specialty> Specialties { get; set; }
         public List<Room> Rooms { get; set; }
         public List<Surgeon> Surgeons { get; set; }
     }

@@ -15,7 +15,7 @@ namespace OpFlow.Service.Models
             Schedule = 1,
             Item = 2,
             Tray = 3,
-            ProposedTray = 4,
+            User = 4,
             Card = 5,
             CardlessSchedule = 6
         }
@@ -91,33 +91,23 @@ namespace OpFlow.Service.Models
                                 Category = _csv.GetField(7)
                             });
                             break;
-                        case ImportType.ProposedTray:
-                            result.Add(new ProposedTrayImport
+                        case ImportType.User:
+                            result.Add(new UserImport
                             {
-                                ProposedTrayName = _csv.GetField(0),
-                                TrayName = _csv.GetField(1),
-                                InstrumentName = _csv.GetField(2),
-                                InstrumentType = _csv.GetField(3),
-                                Quantity = int.Parse(_csv.GetField(4)),
-                                Category = _csv.GetField(5)
+                                UserName = _csv.GetField(0),
+                                Role = _csv.GetField(1),
+                                Specialty = _csv.GetField(2)
                             });
                             break;
                         case ImportType.Card:
                             result.Add(new CardImport
                             {
-                                Location = _csv.GetField(0),
                                 Surgeon = _csv.GetField(1),
                                 PreferenceCardName = _csv.GetField(2),
-                                ItemType = _csv.GetField(3),
-                                LawsonID = _csv.GetField(4),
-                                CatalogNbr = _csv.GetField(5),
-                                SupplyDescription = _csv.GetField(6),
-                                Manufacturer = _csv.GetField(7),
-                                OpenAmt = _csv.GetField(8),
-                                PrnRequired = _csv.GetField(9),
-                                CostPerUnitOt = _csv.GetField(10),
-                                Dosage = _csv.GetField(11),
-                                Unit = _csv.GetField(12)
+                                ItemName = _csv.GetField(3),
+                                ItemType = _csv.GetField(4),
+                                ProductNbr = _csv.GetField(5),
+                                Quantity = int.Parse(_csv.GetField(6))
                             });
                             break;
                         case ImportType.CardlessSchedule:

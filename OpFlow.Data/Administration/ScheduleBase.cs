@@ -89,6 +89,8 @@ namespace OpFlow.Data.Administration
 
                 try
                 {
+                    ScheduleTime = ScheduleTime?.Replace(":", "");
+
                     if (ScheduleTime.Length == 3)
                         ScheduleTime = "0" + ScheduleTime;
 
