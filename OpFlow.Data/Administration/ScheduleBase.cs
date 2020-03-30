@@ -146,7 +146,9 @@ namespace OpFlow.Data.Administration
                 return result;
             }
 
-            return null;
+            // Assume string is last name
+            result.LastName = surgeonString;
+            return result;
         }
     }
 }

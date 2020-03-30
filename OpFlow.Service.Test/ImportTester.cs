@@ -18,14 +18,15 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestImportFile()
         {
-            var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\OpFlowJul1.csv";
-            var importTypeId = 1;
-
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\OpFlowMar30.csv";
+            var importTypeId = 6;
+            
             var sqlHelper = new SqlHelper();
             //var secureSqlHelper = new SecureSqlHelper("SecureConnection");
-            //var user = await sqlHelper.GetSecureUser(null, 1);
             var secureSqlHelper = new SecureSqlHelper("InvalidConnection");
-            var user = await sqlHelper.GetSecureUser(null, 166);
+
+            var user = await sqlHelper.GetSecureUser(null, 4); // UNC
+            //var user = await sqlHelper.GetSecureUser(null, 166); // UAB
 
             int? logId = null;
 
@@ -35,7 +36,7 @@ namespace OpFlow.Service.Test
 
                 var fileParser = new FileParser(fileName, fileContents);
 
-                await fileParser.ParseFile(sqlHelper, importTypeId, 1, 1);
+                await fileParser.ParseFile(sqlHelper, importTypeId, user.ProviderID, user.LocationID);
 
                 if (fileParser.Records != null)
                 {
