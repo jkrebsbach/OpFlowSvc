@@ -7094,19 +7094,20 @@ namespace OpFlow.Service.DataAccess
 
                 result.Identity = await ExecuteNonQueryAsync(@"UpdateProposedTrayImport", parameters);
             }
-            else if(sourceData is ScheduleImport schedule)
+            else if(sourceData is ScheduleBase scheduleBase)
             {
                 var surgery = new SurgeryPost()
                 {
                     BundleID = null,
-                    CaseNbr = schedule.CaseNbr,
-                    CptCode = schedule.CptCode,
+                    CaseNbr = scheduleBase.CaseNbr,
+                    CptCode = scheduleBase.CptCode,
                     LateralityID = null,
-                    ScheduleDate = schedule.ScheduleDateTime,
+                    ScheduleDate = scheduleBase.ScheduleDateTime,
                 };
                 
-                var room = relations.Rooms.FirstOrDefault(r => r.RoomDescription == schedule.Room);
-                var surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == schedule.PrimarySurgeon.LastName && r.FirstName == schedule.PrimarySurgeon.FirstName);
+                var room = relations.Rooms.FirstOrDefault(r => r.RoomDescription == scheduleBase.Room);
+                var surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == scheduleBase.PrimarySurgeon.LastName 
+                    && r.FirstName == scheduleBase.PrimarySurgeon.FirstName);
 
                 surgery.RoomID = room?.RoomID;
                 surgery.SurgeonUserID = surgeon?.UserID;
@@ -7114,47 +7115,59 @@ namespace OpFlow.Service.DataAccess
                 if (surgery.RoomID == null)
                 {
                     // Only log when the room is non-empty?...
-                    if (!string.IsNullOrEmpty(schedule.Room) && schedule.Room != "ORW LITHO")
-                        result.Messages.Add("Unable to find room: " + schedule.Room);
+                    if (!string.IsNullOrEmpty(scheduleBase.Room) && scheduleBase.Room != "ORW LITHO")
+                        result.Messages.Add("Unable to find room: " + scheduleBase.Room);
                     return result;
                 }
                 if (surgery.SurgeonUserID == null)
                 {
-                    result.Messages.Add("Unable to find primary surgeon: " + schedule.Surgeon);
+                    result.Messages.Add("Unable to find primary surgeon: " + scheduleBase.Surgeon);
                     return result;
                 }
 
                 CardFlowRoom cardFlowRoom = null;
-                var procedureCards = await DetermineCards(surgery, schedule, relations, providerId, locationId);
-
-                if (procedureCards.Any())
+                if (scheduleBase is CardlessScheduleImport cardlessSchedule)
                 {
-                    cardFlowRoom = await AggregateCards(surgery.SurgeonUserID.Value, procedureCards, providerId, locationId);
+                    cardFlowRoom = await GetCardFromTrays(surgery.SurgeonUserID.Value, cardlessSchedule.Trays, providerId, locationId);
 
                     if (cardFlowRoom == null)
+                    {
+                        result.Messages.Add("Unable to find card with trays: " + cardlessSchedule.Trays);
+                    }
+                } 
+                else if (scheduleBase is ScheduleImport schedule)
+                {
+                    var procedureCards = await DetermineCards(surgery, schedule, relations, providerId, locationId);
+
+                    if (procedureCards.Any())
+                    {
+                        cardFlowRoom = await AggregateCards(surgery.SurgeonUserID.Value, procedureCards, providerId, locationId);
+
+                        if (cardFlowRoom == null)
+                        {
+                            result.Messages.Add("Unable to find card: " + schedule.ProcedurePreferenceCards);
+                        }
+                    }
+                    else
                     {
                         result.Messages.Add("Unable to find card: " + schedule.ProcedurePreferenceCards);
                     }
                 }
-                else
-                {
-                    result.Messages.Add("Unable to find card: " + schedule.ProcedurePreferenceCards);
-                }
-                
+
                 var caseId = await CreateCase(secureId ?? -1, surgery.SurgeonUserID, surgery.SpecialtyID, providerId,
                     locationId, surgery.CaseNbr);
 
                 result.Identity = await CreateSurgery(surgery, secureId ?? -1, caseId,
-                    cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID, 
+                    cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID,
                     providerId, locationId);
 
-                foreach (var secondarySurgeon in schedule.SecondarySurgeons)
+                foreach (var secondarySurgeon in scheduleBase.SecondarySurgeons)
                 {
                     surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == secondarySurgeon.LastName && r.FirstName == secondarySurgeon.FirstName);
 
                     if (surgeon == null)
                     {
-                        result.Messages.Add("Unable to find secondary surgeons: " + schedule.Surgeon);
+                        result.Messages.Add("Unable to find secondary surgeons: " + scheduleBase.Surgeon);
                     }
                     else
                     {
@@ -7164,6 +7177,45 @@ namespace OpFlow.Service.DataAccess
             }
 
             return result;
+        }
+
+        private async Task<CardFlowRoom> GetCardFromTrays(int ownerUserId, List<string> trayList, int providerId, int locationId)
+        {
+            if (trayList == null || !trayList.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var tray in trayList)
+            {
+                var trimTray = tray.Trim();
+
+                // prevent adding invalid data
+                if (string.IsNullOrEmpty(trimTray))
+                    continue;
+
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, trimTray);
+            }
+
+            var cardData = table.OuterXml;
+
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("owner_user_id", ownerUserId),
+                new SqlParameter("tray_data", cardData)
+            };
+
+            var dsCardMatch = await ExecuteCommandAsync("GetCardFromTrays", parameters);
+
+            var matches = dsCardMatch.Tables[0].DataTableToList<CardFlowRoom>();
+            
+            return matches.FirstOrDefault();
         }
 
         private async Task<CardFlowRoom> AggregateCards(int ownerUserId, List<CardFlowRoom> procedureCards, int providerId, int locationId)

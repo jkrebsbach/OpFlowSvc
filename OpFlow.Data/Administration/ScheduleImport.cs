@@ -7,21 +7,15 @@ using System.Text.RegularExpressions;
 
 namespace OpFlow.Data.Administration
 {
-    public class ScheduleImport : IImportData
+    public class ScheduleImport : ScheduleBase
     {
         public string MRN { get; set; }
-        public string CaseNbr { get; set; }
         public string PatientName { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string Gender { get; set; }
         public string BMIText { get; set; }
-        public DateTime ScheduleDate { get; set; }
-        public string ScheduleTime { get; set; }
         public string Location { get; set; }
-        public string Room { get; set; }
-        public string Procedure { get; set; }
         public string Laterality { get; set; }
-        public string Surgeon { get; set; }
         public string ProcedurePreferenceCards { get; set; }
         public string MedicalHistory { get; set; }
         public string RiskFactors { get; set; }
@@ -29,48 +23,6 @@ namespace OpFlow.Data.Administration
         public string Allergies { get; set; }
         public string Notes { get; set; }
 
-        public ImportSurgeon PrimarySurgeon
-        {
-            get
-            {
-                var result = new ImportSurgeon();
-
-                if (string.IsNullOrEmpty(Surgeon))
-                    return result;
-
-                var surgeons = Surgeon.Split('\n');
-                var surgeon = surgeons[0];
-
-                return ImportSurgeon.ParseSurgeon(surgeon);
-            }
-        }
-
-        public List<ImportSurgeon> SecondarySurgeons
-        {
-            get
-            {
-                var result = new List<ImportSurgeon>();
-
-                if (string.IsNullOrEmpty(Surgeon))
-                    return result;
-
-                var surgeons = Surgeon.Split('\n');
-                for (var index = 0; index < surgeons.Length; index++)
-                {
-                    surgeons[index] = surgeons[index].Trim();
-                }
-
-                var distinctSurgeons = surgeons.Distinct().ToList();
-                for (var index = 1; index < distinctSurgeons.Count; index++)
-                {
-                    var surgeon = ImportSurgeon.ParseSurgeon(distinctSurgeons[index].Trim());
-                    if (surgeon != null)
-                        result.Add(surgeon);
-                }
-
-                return result;
-            }
-        }
 
         public string PatientLastName
         {
@@ -145,25 +97,6 @@ namespace OpFlow.Data.Administration
             }
         }
 
-        public string CptCode
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(Procedure))
-                    return null;
-
-                var cptRegex = @"\[([0-9]+)";
-                var match = Regex.Match(Procedure, cptRegex);
-
-                if (match.Groups.Count > 1)
-                {
-                    return match.Groups[1].Value;
-                }
-
-                return null;
-            }
-        }
-
         public List<ImportCard> ProcedureCards
         {
             get
@@ -182,32 +115,6 @@ namespace OpFlow.Data.Administration
                 var distinctCards = cards.Distinct().ToList();
 
                 result.AddRange(distinctCards.Select(distinctCard => ImportCard.ParseCard(distinctCard.Trim())));
-
-                return result;
-            }
-    }
-
-    public DateTime ScheduleDateTime
-        {
-            get
-            {
-                var result = ScheduleDate;
-
-                if (string.IsNullOrEmpty(ScheduleTime))
-                    return result;
-
-                try
-                {
-                    if (ScheduleTime.Length == 3)
-                        ScheduleTime = "0" + ScheduleTime;
-
-                    var ts = DateTime.ParseExact(ScheduleTime, "HHmm", CultureInfo.InvariantCulture).TimeOfDay;
-                    result = ScheduleDate.Add(ts);
-                }
-                catch (Exception)
-                {
-                    // Just ignore
-                }
 
                 return result;
             }
@@ -232,49 +139,6 @@ namespace OpFlow.Data.Administration
                 result.Location = cardData[2];
 
             return result;
-        }
-    }
-
-    public class ImportSurgeon
-    {
-        public string FirstName { get; set; }
-        public string MInit { get; set; }
-        public string LastName { get; set; }
-        public string RawText { get; set; }
-
-        public static ImportSurgeon ParseSurgeon(string surgeonString)
-        {
-            var result = new ImportSurgeon()
-            {
-                RawText = surgeonString
-            };
-
-            // Last, First
-            var regex = @"([A-Za-z\'-\.\s]+), ([A-Za-z]+)";
-            var match = Regex.Match(surgeonString, regex);
-
-            if (match.Success && match.Groups.Count > 2)
-            {
-                result.LastName = match.Groups[1].Value;
-                result.FirstName = match.Groups[2].Value;
-
-                return result;
-            }
-
-            // First M Last
-            regex = @"([A-Za-z]+) ([A-Za-z]?) ?([A-Za-z\'-\.\s]+)";
-            match = Regex.Match(surgeonString, regex);
-
-            if (match.Success && match.Groups.Count > 3)
-            {
-                result.FirstName = match.Groups[1].Value;
-                result.MInit = match.Groups[2].Value;
-                result.LastName = match.Groups[3].Value;
-
-                return result;
-            }
-
-            return null;
         }
     }
 

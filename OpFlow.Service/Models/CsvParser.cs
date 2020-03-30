@@ -16,7 +16,8 @@ namespace OpFlow.Service.Models
             Item = 2,
             Tray = 3,
             ProposedTray = 4,
-            Card = 5
+            Card = 5,
+            CardlessSchedule = 6
         }
 
         public CsvParser(string contents)
@@ -117,6 +118,17 @@ namespace OpFlow.Service.Models
                                 CostPerUnitOt = _csv.GetField(10),
                                 Dosage = _csv.GetField(11),
                                 Unit = _csv.GetField(12)
+                            });
+                            break;
+                        case ImportType.CardlessSchedule:
+                            result.Add(new CardlessScheduleImport
+                            {
+                                CaseNbr = _csv.GetField(0),
+                                Surgeon = _csv.GetField(1),
+                                ScheduleDate = DateTime.Parse(_csv.GetField(2)),
+                                ScheduleTime = _csv.GetField(3),
+                                Room = _csv.GetField(4),
+                                TrayList = _csv.GetField(5)
                             });
                             break;
                         default:
