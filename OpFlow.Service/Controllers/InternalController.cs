@@ -71,33 +71,6 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("PostProvider")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [Route("provider")]
-        [HttpPost]
-        public async Task<HttpResponseMessage> PostProvider([FromBody] LocationPost post)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-
-            if (user.RoleType != "Internal")
-                return Request.CreateResponse(HttpStatusCode.NotFound);
-
-            var sqlHelper = new SqlHelper();
-            var providers = await sqlHelper.GetOpFlowSetup();
-
-            // Try to find the provider in the various databases
-            var provider = providers.FirstOrDefault(p => p.ProviderName.ToLower() == post.Provider.ToLower());
-            if (provider == null)
-            {
-                var createHelper = new SqlHelper();
-                var providerId = await createHelper.CreateProvider(post.Provider);
-            }
-
-
-            return Request.CreateResponse(HttpStatusCode.OK);
-        }
-
-        // GET api/values/5
         [SwaggerOperation("PostLocation")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("location")]
