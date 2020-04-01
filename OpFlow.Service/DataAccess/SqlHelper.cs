@@ -7041,8 +7041,13 @@ namespace OpFlow.Service.DataAccess
             }
             else if (sourceData is CardImport card)
             {
+                if (card.Quantity == null) card.Quantity = 1; // Provide default value
+
+                // Sometimes product nbr is in item name
+                card.ItemName = card.ItemName.Replace($" - {card.ProductNbr}", "");
+
                 var surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == card.PrimarySurgeon.LastName
-                    && r.FirstName == card.PrimarySurgeon.FirstName);
+                        && r.FirstName == card.PrimarySurgeon.FirstName);
 
                 if (surgeon == null)
                 {

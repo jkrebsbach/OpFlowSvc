@@ -100,14 +100,16 @@ namespace OpFlow.Service.Models
                             });
                             break;
                         case ImportType.Card:
+                            _csv.TryGetField(typeof(int?), 5, out var qty);
+
                             result.Add(new CardImport
                             {
-                                Surgeon = _csv.GetField(1),
-                                PreferenceCardName = _csv.GetField(2),
-                                ItemName = _csv.GetField(3),
+                                Surgeon = _csv.GetField(0),
+                                PreferenceCardName = _csv.GetField(1),
+                                ItemName = _csv.GetField(2),
+                                ProductNbr = _csv.GetField(3),
                                 ItemType = _csv.GetField(4),
-                                ProductNbr = _csv.GetField(5),
-                                Quantity = int.Parse(_csv.GetField(6))
+                                Quantity = (int?)qty
                             });
                             break;
                         case ImportType.CardlessSchedule:

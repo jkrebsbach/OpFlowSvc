@@ -11,7 +11,7 @@ namespace OpFlow.Data.Administration
         public string ItemName { get; set; }
         public string ProductNbr { get; set; }
         public string ItemType { get; set; }
-        public int Quantity { get; set; }
+        public int? Quantity { get; set; }
 
         public ImportSurgeon PrimarySurgeon
         {
