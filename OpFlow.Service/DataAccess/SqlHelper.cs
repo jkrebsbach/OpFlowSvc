@@ -343,27 +343,6 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public async Task<List<ReportGroup>> GetPowerBIReports(int providerId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("table_id", DBNull.Value),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetPowerBIAnalytics", parameters);
-
-            var reports = dsSchedules.Tables[0].DataTableToList<AnalyticsSummary>();
-            var result = reports.GroupBy(r => r.Category).Select(c =>
-                new ReportGroup()
-                {
-                    Category = c.Key,
-                    Reports = c.ToList()
-                });
-
-            return result.ToList();
-        }
-
         public async Task<DataSet> GetAnalyticsSalesToolSummary(string systemName, string hospitalName, string city, string state,
             string contactName, string salesperson, int? caseCount, int? spdLaborRate, int? contractDuration, int? annualMaintenance,
             int? depreciation, int? trayCount, int? instrumentAvg,
@@ -7016,6 +6995,70 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteFlow", parameters);
         }
 
+        public async Task<ImportResult> UpdateCardItemImport(List<CardImport> records, FileParserRelations relations, int providerId, int locationId)
+        {
+            var result = new ImportResult();
+
+            foreach (var record in records)
+            {
+                if (record.Quantity == null) record.Quantity = 1; // Provide default value
+
+                // Sometimes product nbr is in item name
+                record.ItemName = record.ItemName.Replace($" - {record.ProductNbr}", "");
+            }
+
+            foreach (var surgeonCard in records.GroupBy(r => new { r.Surgeon, r.PreferenceCardName }))
+            {
+                var card = surgeonCard.First();
+
+                var surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == card.PrimarySurgeon.LastName
+                        && r.FirstName == card.PrimarySurgeon.FirstName);
+
+                if (surgeon == null)
+                {
+                    result.Messages.Add("Unable to find surgeon: " + card.Surgeon);
+                    continue;
+                }
+
+
+                var doc = new XmlDocument();
+                var table = doc.CreateElement("table");
+
+                foreach (var cardItem in surgeonCard)
+                {
+                    var row = doc.CreateElement("row");
+                    table.AppendChild(row);
+
+                    if (cardItem.ItemName?.Length > 100)
+                        cardItem.ItemName = cardItem.ItemName.Substring(0, 100);
+                    if (cardItem.ItemType?.Length > 30)
+                        cardItem.ItemType = cardItem.ItemType.Substring(0, 30);
+                    if (cardItem.ProductNbr?.Length > 30)
+                        cardItem.ProductNbr = cardItem.ProductNbr.Substring(0, 30);
+                    
+                    AddColumn(doc, row, cardItem.ItemName ?? "");
+                    AddColumn(doc, row, cardItem.ItemType ?? "");
+                    AddColumn(doc, row, cardItem.ProductNbr ?? "");
+                    AddColumn(doc, row, cardItem.Quantity);
+                }
+
+                var itemData = table.OuterXml;
+
+                var parameters = new[]
+                {
+                    new SqlParameter("provider_id", providerId),
+                    new SqlParameter("location_id", locationId),
+                    new SqlParameter("owner_user_id", surgeon.UserID),
+                    new SqlParameter("preference_card_name", card.PreferenceCardName),
+                    new SqlParameter("item_data", itemData)
+                };
+
+                result.Identity = await ExecuteNonQueryAsync(@"UpdateCardItemImport", parameters);
+            }
+
+            return result;
+        }
+
         public async Task<ImportResult> InsertStagingData(int providerId, int locationId, int? secureId, IImportData sourceData, FileParserRelations relations)
         {
             var result = new ImportResult();
@@ -7041,33 +7084,7 @@ namespace OpFlow.Service.DataAccess
             }
             else if (sourceData is CardImport card)
             {
-                if (card.Quantity == null) card.Quantity = 1; // Provide default value
-
-                // Sometimes product nbr is in item name
-                card.ItemName = card.ItemName.Replace($" - {card.ProductNbr}", "");
-
-                var surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == card.PrimarySurgeon.LastName
-                        && r.FirstName == card.PrimarySurgeon.FirstName);
-
-                if (surgeon == null)
-                {
-                    result.Messages.Add("Unable to find surgeon: " + card.Surgeon);
-                    return result;
-                }
-
-                var parameters = new[]
-                {
-                    new SqlParameter("provider_id", providerId),
-                    new SqlParameter("location_id", locationId),
-                    new SqlParameter("owner_user_id", surgeon.UserID),
-                    new SqlParameter("preference_card_name", card.PreferenceCardName),
-                    new SqlParameter("item_name", card.ItemName),
-                    new SqlParameter("item_type", card.ItemType),
-                    new SqlParameter("product_nbr", card.ProductNbr),
-                    new SqlParameter("quantity", card.Quantity)
-                };
-
-                result.Identity = await ExecuteNonQueryAsync(@"UpdateCardItemImport", parameters);
+                var tmpInt = 0;
             }
             else if (sourceData is TrayImport tray)
             {

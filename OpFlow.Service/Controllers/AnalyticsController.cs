@@ -29,7 +29,6 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper();
-            var reports = await sqlHelper.GetPowerBIReports(user.ProviderID, user.LocationID);
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
             var procedures = await sqlHelper.GetProcedures(null, user.ProviderID, user.LocationID);
@@ -52,7 +51,6 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
-                ReportCategories = reports,
                 Parameters = new
                 {
                     Specialties = specialties,
@@ -1411,7 +1409,7 @@ namespace OpFlow.Service.Controllers
                         Card = s.Key.Card,
                         CardCount = s.Max(c => c.CardCount),
                         Velocity = velocity.FirstOrDefault(v => v.CardId == s.Key.CardId),
-                        Instruments = s.ToList()
+                        //Instruments = s.ToList()
                     });
                 var surgeons = cards.GroupBy(c => new { c.Surgeon, c.GroupValue }).Select(s =>
                     new CountSampleDispersionReportSurgeon()

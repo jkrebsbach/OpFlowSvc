@@ -26,8 +26,8 @@ namespace OpFlow.Service.Test
             //var secureSqlHelper = new SecureSqlHelper("SecureConnection");
             var secureSqlHelper = new SecureSqlHelper("InvalidConnection");
 
-            var user = await sqlHelper.GetSecureUser(null, 4); // UNC
-            //var user = await sqlHelper.GetSecureUser(null, 166); // UAB
+            //var user = await sqlHelper.GetSecureUser(null, 4); // UNC
+            var user = await sqlHelper.GetSecureUser(null, 166); // UAB
 
             int? logId = null;
 
@@ -39,7 +39,12 @@ namespace OpFlow.Service.Test
 
                 await fileParser.ParseFile(sqlHelper, importTypeId, user.ProviderID, user.LocationID);
 
-                if (fileParser.Records != null)
+                if (importTypeId == 5)
+                {
+                    await sqlHelper.UpdateCardItemImport(fileParser.Records.Select(r => r as CardImport).ToList(),
+                        fileParser.Relations, user.ProviderID, user.LocationID);
+                }
+                else
                 {
                     logId = await sqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, fileParser.Records.Count, fileName);
 
@@ -50,13 +55,12 @@ namespace OpFlow.Service.Test
                         var result = await sqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
                         foreach (var message in result.Messages)
                         {
-                            await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message, 
+                            await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message,
                                 (record as ScheduleImport)?.MRN, (record as ScheduleImport)?.ScheduleDate);
                         }
                     }
-
                 }
-
+            
             }
             catch (Exception e)
             {

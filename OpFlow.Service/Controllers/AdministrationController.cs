@@ -241,24 +241,39 @@ namespace OpFlow.Service.Controllers
                 var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
                 logId = await sqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, fileParser.Records.Count, fileName);
 
-                if (fileParser.Records != null)
-                {
-                    var secureUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                if (fileParser.Records == null)
+                    return Request.CreateResponse(HttpStatusCode.OK, fileParser.Status);
 
+                var secureUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                ImportResult result;
+
+                if (importTypeId == 5)
+                {
+                    result = await sqlHelper.UpdateCardItemImport(fileParser.Records.Select(r => r as CardImport).ToList(),
+                        fileParser.Relations, user.ProviderID, user.LocationID);
+
+                    foreach (var message in result.Messages)
+                    {
+                        await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message, null, null);
+                    }
+                }
+                else
+                {
                     foreach (var record in fileParser.Records)
                     {
-                        var secureId = await secureSqlHelper.InsertStagingData(record, user.UserID, 
+                        var secureId = await secureSqlHelper.InsertStagingData(record, user.UserID,
                             secureUser.FirstName, secureUser.LastName, (int)secureUser.RoleID);
 
-                        var result = await sqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
+                        result = await sqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
                         foreach (var message in result.Messages)
                         {
-                            await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message, 
+                            await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message,
                                 (record as ScheduleImport)?.MRN, (record as ScheduleImport)?.ScheduleDate);
                         }
                     }
                 }
 
+                
                 return Request.CreateResponse(HttpStatusCode.OK, fileParser.Status);
             }
             catch (Exception ex)
