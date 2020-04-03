@@ -25,6 +25,17 @@ namespace OpFlow.Data
         public string LocationName { get; set; }
         public int TrayCount { get; set; }
         public int CardCount { get; set; }
+
+        public int? TrayHigh { get; set; }
+        public int? TrayMed { get; set; }
+        public int? TrayLow { get; set; }
+        public int? SurgeonHigh { get; set; }
+        public int? SurgeonMed { get; set; }
+        public int? SurgeonLow { get; set; }
+        public int? AuditHigh { get; set; }
+        public int? AuditMed { get; set; }
+        public int? AuditLow { get; set; }
+        public int? DailyTarget { get; set; }
     }
 
     public class LocationPost

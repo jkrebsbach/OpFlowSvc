@@ -299,6 +299,38 @@ namespace OpFlow.Data
         public string SurgeryCountType { get; set; }
         public bool AuditSurgery { get; set; }
         public bool CountSurgery { get; set; }
+        public long? ProposalCounts { get; set; }
+        public int? SurgeonCounts { get; set; }
+        public int? AuditCounts { get; set; }
+        public string ProposalStatus { get; set; }
+        public string SurgeonStatus { get; set; }
+        public string AuditStatus { get; set; }
+        public string PriorityStatus 
+        { 
+            get
+            {
+                if (ProposalStatus == "HIGH")
+                    return "Tray - High";
+                if (SurgeonStatus == "HIGH")
+                    return "Surgeon - High";
+                if (AuditStatus == "HIGH")
+                    return "Audit - High";
+                if (ProposalStatus == "MED")
+                    return "Tray - Med";
+                if (SurgeonStatus == "MED")
+                    return "Surgeon - Med";
+                if (AuditStatus == "MED")
+                    return "Audit - Med";
+                if (ProposalStatus == "LOW")
+                    return "Tray - Low";
+                if (SurgeonStatus == "LOW")
+                    return "Surgeon - Low";
+                if (AuditStatus == "LOW")
+                    return "Audit - Low";
+
+                return "None";
+            }
+        }
 
         public List<SurgeryUser> SurgeryUsers { get; set; }
 

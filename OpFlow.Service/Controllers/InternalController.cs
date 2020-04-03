@@ -39,11 +39,11 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("PutLocation")]
+        [SwaggerOperation("PutUserLocation")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [Route("location")]
+        [Route("userLocation")]
         [HttpPut]
-        public async Task<HttpResponseMessage> PutLocation(int providerId, int locationId)
+        public async Task<HttpResponseMessage> PutUserLocation(int providerId, int locationId)
         {
             var user = await CacheUtil.GetUserSecurity();
 
@@ -98,6 +98,28 @@ namespace OpFlow.Service.Controllers
 
             var locationId = await createHelper.CreateLocation(providerId, post.Provider, post.Location);
             
+            return Request.CreateResponse(HttpStatusCode.OK);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PutLocation")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("location/{locationId}")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutLocation(int locationId, [FromBody] OpFlowLocation post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            int? providerId = null;
+
+            var sqlHelper = new SqlHelper();
+            
+            var result = await sqlHelper.UpdateLocation(locationId, post.TrayHigh, post.TrayMed, post.TrayLow,
+                post.SurgeonHigh, post.SurgeonMed, post.SurgeonLow, post.AuditHigh, post.AuditMed, post.AuditLow, post.DailyTarget);
+
             return Request.CreateResponse(HttpStatusCode.OK);
         }
 

@@ -36,6 +36,28 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> UpdateLocation(int locationId, int? trayHigh, int? trayMed, int? trayLow,
+            int? surgeonHigh, int? surgeonMed, int? surgeonLow, int? auditHigh, int? auditMed, int? auditLow, int? dailyTarget)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("tray_high", trayHigh ?? (object)DBNull.Value),
+                new SqlParameter("tray_med", trayMed ?? (object)DBNull.Value),
+                new SqlParameter("tray_low", trayLow ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_high", surgeonHigh ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_med", surgeonMed ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_low", surgeonLow ?? (object)DBNull.Value),
+                new SqlParameter("audit_high", auditHigh ?? (object)DBNull.Value),
+                new SqlParameter("audit_med", auditMed ?? (object)DBNull.Value),
+                new SqlParameter("audit_low", auditLow ?? (object)DBNull.Value),
+                new SqlParameter("daily_target", dailyTarget ?? (object)DBNull.Value)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateLocation", parameters);
+
+            return result;
+        }
+
         public async Task<List<TraySurgeryAudit>> GetDisposableAudits(int providerId, int locationId)
         {
             var parameters = new[]
