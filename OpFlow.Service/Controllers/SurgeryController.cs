@@ -112,7 +112,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/surgery?userId=5
         [SwaggerOperation("SearchCases")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchResult>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySearchCategory>))]
         [SwaggerResponse(HttpStatusCode.Ambiguous)]
         [Route("searchCases")]
         [HttpPost]
@@ -125,6 +125,8 @@ namespace OpFlow.Service.Controllers
                 null, post.procedureId, post.specialtyId,
                 post.BegDate, post.EndDate, user.ProviderID, user.LocationID);
 
+            await sqlHelper.LoadProposalCounts(schedules, user.ProviderID, user.LocationID);
+
             if (post.CountStatus?.Any() == true)
             {
                 var counts = post.CountStatus.Any(c => c == "Count");
@@ -136,7 +138,19 @@ namespace OpFlow.Service.Controllers
                     schedules = schedules.Where(s => s.SurgeryCountType != null).ToList();
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, schedules);
+            var groups = new[] { "Counts", "Audits", "Untargeted", "Completed" };
+
+            var result = new List<SurgerySearchCategory>();
+            foreach (var group in groups)
+            {
+                result.Add(new SurgerySearchCategory()
+                {
+                    CategoryName = group,
+                    Schedule = schedules.Where(s => s.CaseCategory == group).ToList()
+                });
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // GET api/surgery?userId=5
@@ -477,6 +491,10 @@ namespace OpFlow.Service.Controllers
 
             var users = await sqlHelper.GetSurgeryUsers(user.ProviderID, user.LocationID);
 
+            var setup = await sqlHelper.GetOpFlowSetup();
+            var location = setup.FirstOrDefault(p => p.ProviderID == user.ProviderID)?
+                .Locations.FirstOrDefault(l => l.LocationID == user.LocationID);
+
             var result = new SearchScreen
             {
                 Rooms = await sqlHelper.GetRooms(user.LocationID),
@@ -487,7 +505,8 @@ namespace OpFlow.Service.Controllers
                 Trays = await sqlHelper.GetItems("TRAY", null, null, user.ProviderID, user.LocationID),
                 Proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID),
                 Bundles = await sqlHelper.GetBundles(null, user.ProviderID, user.LocationID),
-                Procedures = await sqlHelper.GetProcedures(null, user.ProviderID, user.LocationID)
+                Procedures = await sqlHelper.GetProcedures(null, user.ProviderID, user.LocationID),
+                LocationSetup = location
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -670,6 +689,21 @@ namespace OpFlow.Service.Controllers
                 .ToList();
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // POST api/values
+        [SwaggerOperation("UpdateEstCompTime")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [Route("estCompTime/{surgeryId}", Name = "UpdateEstCompTime")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateEstCompTime(int surgeryId, DateTime estCompTime)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.UpdateSurgeryEstCompTime(surgeryId, estCompTime, user.ProviderID, user.LocationID);
+
+            return await GetSurgeryCardItemCounts(surgeryId);
         }
 
         // POST api/values

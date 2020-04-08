@@ -299,36 +299,60 @@ namespace OpFlow.Data
         public string SurgeryCountType { get; set; }
         public bool AuditSurgery { get; set; }
         public bool CountSurgery { get; set; }
-        public long? ProposalCounts { get; set; }
         public int? SurgeonCounts { get; set; }
         public int? AuditCounts { get; set; }
-        public string ProposalStatus { get; set; }
         public string SurgeonStatus { get; set; }
         public string AuditStatus { get; set; }
+
+        public List<CountPriority> ProposalCounts { get; set; }
+
         public string PriorityStatus 
         { 
             get
             {
-                if (ProposalStatus == "HIGH")
-                    return "Tray - High";
                 if (SurgeonStatus == "HIGH")
                     return "Surgeon - High";
                 if (AuditStatus == "HIGH")
                     return "Audit - High";
-                if (ProposalStatus == "MED")
-                    return "Tray - Med";
                 if (SurgeonStatus == "MED")
                     return "Surgeon - Med";
                 if (AuditStatus == "MED")
                     return "Audit - Med";
-                if (ProposalStatus == "LOW")
-                    return "Tray - Low";
                 if (SurgeonStatus == "LOW")
                     return "Surgeon - Low";
                 if (AuditStatus == "LOW")
                     return "Audit - Low";
 
-                return "None";
+                return "Optional";
+            }
+        }
+        public string CaseCategory
+        {
+            get
+            {
+                if (SurgeryCountType != null)
+                    return "Completed";
+                if (AuditSurgery)
+                    return "Audits";
+                if (CountSurgery)
+                    return "Counts";
+                return "Untargeted";
+            }
+        }
+
+        public DateTime? CompletionTime => ActualCompletionTime ?? EstimatedCompletionTime;
+        public int PriorityStatusSort
+        {
+            get
+            {
+                if (PriorityStatus.Contains("High") || ProposalCounts.Any(pc => pc.ProposalStatus.Contains("High")))
+                    return 3;
+                if (PriorityStatus.Contains("Med") || ProposalCounts.Any(pc => pc.ProposalStatus.Contains("Med")))
+                    return 2;
+                if (PriorityStatus.Contains("Low") || ProposalCounts.Any(pc => pc.ProposalStatus.Contains("Low")))
+                    return 1;
+
+                return 0;
             }
         }
 
@@ -345,7 +369,22 @@ namespace OpFlow.Data
         public SurgerySearchResult()
         {
             SurgeryUsers = new List<SurgeryUser>();
+            ProposalCounts = new List<CountPriority>();
         }
+    }
+
+    public class SurgerySearchCategory
+    {
+        public string CategoryName { get; set; }
+        public List<SurgerySearchResult> Schedule { get; set; }
+    }
+
+    public class CountPriority
+    {
+        public int SurgeryID { get; set; }
+        public long ProposalCounts { get; set; }
+        public string CountName { get; set; }
+        public string ProposalStatus { get; set; }
     }
 
     public class SearchCasePost

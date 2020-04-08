@@ -3346,6 +3346,20 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> UpdateSurgeryEstCompTime(int surgeryId, DateTime estCompTime, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("est_comp_time", estCompTime),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateSurgeryEstCompTime", parameters);
+
+            return result;
+        }
+
         public async Task<List<Card>> GetCardSurgeryDelays(int surgeryId, int providerId, int locationId)
         {
             var parameters = new[]
@@ -6078,6 +6092,27 @@ namespace OpFlow.Service.DataAccess
             }
 
             return surgeries;
+        }
+
+        public async Task<List<SurgerySearchResult>> LoadProposalCounts(List<SurgerySearchResult> schedule, int providerId, int locationId)
+        {
+            var surgeryXml = GetIdentitySummary(schedule.Select(s => s.SurgeryID).ToList());
+
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("SearchCaseProposals", parameters);
+            var results = dsSchedules.Tables[0].DataTableToList<CountPriority>();
+
+            foreach (var surgery in schedule)
+            {
+                surgery.ProposalCounts = results.Where(r => r.SurgeryID == surgery.SurgeryID).ToList();
+            }
+
+            return schedule;
         }
 
         public async Task<List<SurgeryAuditSearchResult>> GetProposedTrayAuditSearch(int? trayProposalId,

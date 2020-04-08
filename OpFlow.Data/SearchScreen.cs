@@ -15,5 +15,6 @@ namespace OpFlow.Data
         public List<Procedure> Procedures { get; set; }
         public List<ItemMaster> Trays { get; set; }
         public List<TrayRationalization> Proposals { get; set; }
+        public OpFlowLocation LocationSetup { get; set; }
     }
 }
