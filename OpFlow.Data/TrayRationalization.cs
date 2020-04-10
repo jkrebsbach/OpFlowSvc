@@ -40,6 +40,8 @@ namespace OpFlow.Data
         public int Audits { get; set; }
         public int CountsScheduled { get; set; }
         public int AuditsScheduled { get; set; }
+        public int CountsWTD { get; set; }
+        public int AuditsWTD { get; set; }
         public decimal ReductionPcnt { get; set; }
         public decimal ReductionCount { get; set; }
         public DateTime? CountCompleteTarget { get; set; }

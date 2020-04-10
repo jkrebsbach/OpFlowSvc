@@ -324,7 +324,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetProcedureProfile(null, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetProcedureProfiles(user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -342,12 +342,13 @@ namespace OpFlow.Service.Controllers
             var trayUsage = new List<ProcedureProfileTrayUsage>();
             if (procedureProfileId.HasValue)
             {
-                var profiles = await sqlHelper.GetProcedureProfile(procedureProfileId, user.ProviderID, user.LocationID);
+                var profiles = await sqlHelper.GetProcedureProfile(procedureProfileId.Value, user.ProviderID, user.LocationID);
                 profile = profiles.FirstOrDefault();
 
 
                 trayUsage = await sqlHelper.GetProcedureProfileTrayUsage(procedureProfileId.Value, user.ProviderID, user.LocationID);
             }
+
             var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var cards = await sqlHelper.GetCards(user.ProviderID, user.LocationID);
