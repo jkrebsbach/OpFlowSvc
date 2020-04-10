@@ -127,17 +127,15 @@ namespace OpFlow.Service.Controllers
 
             await sqlHelper.LoadProposalCounts(schedules, user.ProviderID, user.LocationID);
 
-            if (post.CountStatus?.Any() == true)
-            {
-                var counts = post.CountStatus.Any(c => c == "Count");
-                var audits = post.CountStatus.Any(c => c == "Audit");
-                var complete = post.CountStatus.Any(c => c == "Complete");
-                schedules = schedules.Where(s => (audits && s.AuditSurgery) || (counts && s.CountSurgery)).ToList();
-
-                if (complete)
-                    schedules = schedules.Where(s => s.SurgeryCountType != null).ToList();
-            }
-
+            if (post.CountStatus == "Complete")
+                schedules = schedules.Where(s => s.SurgeryCountType != null).ToList();
+            
+            if (post.CountStatus == "Count")
+                schedules = schedules.Where(s => s.CountSurgery).ToList();
+            
+            if (post.CountStatus == "Audit")
+                schedules = schedules.Where(s => s.AuditSurgery).ToList();
+            
             var groups = new[] { "Counts", "Audits", "Untargeted", "Completed" };
 
             var result = new List<SurgerySearchCategory>();
