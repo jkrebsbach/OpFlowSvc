@@ -206,24 +206,6 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("PutProcedureProfileItem")]
-        [Route("procedureProfileItem")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
-        [HttpPut]
-        public async Task<HttpResponseMessage> PutProcedureProfileItem(int procedureProfileId, string itemType, int itemId, string category, int quantity)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper();
-
-            if (itemType == "I") // Instrument
-                await sqlHelper.UpdateProcedureProfileItem(procedureProfileId, null, itemId, category, quantity, user.ProviderID, user.LocationID);
-            else // Supply
-                await sqlHelper.UpdateProcedureProfileItem(procedureProfileId, itemId, null, category, quantity, user.ProviderID, user.LocationID);
-
-            return Request.CreateResponse(HttpStatusCode.OK, itemId);
-        }
-
-        // GET api/values/5
         [SwaggerOperation("PutProcedureProfileCard")]
         [Route("procedureProfileCard")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
@@ -239,18 +221,42 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("PostProcedureProfileTrayInstrument")]
-        [Route("procedureProfileTrayInstrument")]
+        [SwaggerOperation("PutProcedureProfileItem")]
+        [Route("procedureProfileItem")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
-        [HttpPost]
-        public async Task<HttpResponseMessage> PostProcedureProfileTrayInstrument(int procedureProfileId, int itemId, int trayItemId, int? categoryId, int quantity)
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutProcedureProfileItem(int procedureProfileId, [FromBody] ProcedureProfileItemUpdatePost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateProcedureProfileTrayInstrument(procedureProfileId, itemId, trayItemId, categoryId, quantity, user.ProviderID, user.LocationID);
+            foreach (var item in post.Items)
+            {
+                if (item.ItemType == "I") // Instrument
+                    await sqlHelper.UpdateProcedureProfileItem(procedureProfileId, null, item.ItemID, item.Category, item.Quantity, user.ProviderID, user.LocationID);
+                else // Supply
+                    await sqlHelper.UpdateProcedureProfileItem(procedureProfileId, item.ItemID, null, item.Category, item.Quantity, user.ProviderID, user.LocationID);
+            }
 
-            return Request.CreateResponse(HttpStatusCode.OK, itemId);
+            return Request.CreateResponse(HttpStatusCode.OK, 200);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PostProcedureProfileTrayInstrument")]
+        [Route("procedureProfileTrayInstrument")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostProcedureProfileTrayInstrument(int procedureProfileId, [FromBody] ProcedureProfileItemUpdatePost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            foreach (var item in post.Items)
+            {
+                await sqlHelper.UpdateProcedureProfileTrayInstrument(procedureProfileId, item.ItemID, item.TrayItemID, item.CategoryID, item.Quantity, user.ProviderID, user.LocationID);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, 200);
         }
 
         // GET api/values/5

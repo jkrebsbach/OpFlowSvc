@@ -244,6 +244,20 @@ namespace OpFlow.Data
         public List<int> SpecialtyID { get; set; }
     }
 
+    public class ProcedureProfileItemUpdatePost
+    {
+        public List<ProcedureProfileItemPost> Items { get; set; }
+    }
+    public class ProcedureProfileItemPost
+    {
+        public string ItemType { get; set; }
+        public int ItemID { get; set; }
+        public int TrayItemID { get; set; }
+        public int Quantity { get; set; }
+        public string Category { get; set; }
+        public int CategoryID { get; set; }
+    }
+
     public class ProcedureProfileDashboardPost
     {
         public List<int> Cards { get; set; }
