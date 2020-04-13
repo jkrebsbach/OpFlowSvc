@@ -383,11 +383,11 @@ namespace OpFlow.Service.Controllers
             };
             var trayRationalizationBytes = ReportHelper.GetReport("TrayRationalization", trayDatasets);
 
-            var reports = new[]
+            var reports = new List<byte[]>()
             {
-                Convert.ToBase64String(countSummaryBytes),
-                Convert.ToBase64String(instrumentUsageBytes),
-                Convert.ToBase64String(trayRationalizationBytes)
+                countSummaryBytes,
+                instrumentUsageBytes,
+                trayRationalizationBytes
             };
             
 
@@ -404,6 +404,22 @@ namespace OpFlow.Service.Controllers
             var json = JsonConvert.SerializeObject(imageSummary);
 
             return ResponseHelper.PdfResponse(json);
+            //var pdfDoc = new Object();
+
+            //foreach (var reportBytes in reports ?? new List<byte[]>())
+            //{
+            //    XImage pdfImg = new XImage();
+            //    pdfImg.SetData(reportBytes);
+            //    for (int i = 1; i <= pdfImg.FrameCount; i++)
+            //    {
+            //        pdfImg.Frame = i;
+            //        pdfDoc.Page = pdfDoc.AddPage();
+            //        pdfDoc.AddImageObject(pdfImg, false);
+            //    }
+            //    pdfImg.Clear();
+
+            //    pdfDoc.Page = pdfDoc.AddPage();
+            //}
         }
 
         [SwaggerOperation("PutTrayApproval")]

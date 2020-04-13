@@ -74,6 +74,7 @@
     <Report Include="SupplySavingsEstimator.rdl" />
     <Report Include="SupplyUsageVariance.rdl" />
     <Report Include="SupplyWaste.rdl" />
+    <Report Include="TrayApproval.rdl" />
     <Report Include="TrayConsolidation.rdl" />
     <Report Include="TrayRationalization.rdl" />
     <Report Include="TrayScope.rdl" />
