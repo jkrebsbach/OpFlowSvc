@@ -103,6 +103,25 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
+        [SwaggerOperation("GetHomeDashboard")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("homeDashboard")]
+        public async Task<HttpResponseMessage> GetHomeDashboard()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var proposedTrays = await sqlHelper.GetProposedTrayDashboard(user.ProviderID, user.LocationID);
+            
+            var result = new
+            {
+                Proposals = proposedTrays
+            };
+
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
         private static List<TrayProposalSchedule> ApplyRules(IEnumerable<TrayProposalSchedule> schedule, TrayProposalScheduleRule rules)
         {
             if (rules.Surgeon != null)

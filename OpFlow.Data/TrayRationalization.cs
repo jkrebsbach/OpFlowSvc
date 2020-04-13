@@ -100,6 +100,12 @@ namespace OpFlow.Data
             }
         }
     }
+
+    public class TrayProposalDashboard : TrayRationalization
+    {
+        public string SourceTrayName { get; set; }
+    }
+
     public class TrayProposalLog
     { 
         public int TrayProposalLogID { get; set; }

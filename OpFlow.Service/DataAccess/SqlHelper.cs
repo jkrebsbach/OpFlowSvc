@@ -1675,7 +1675,21 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        
+
+        public async Task<List<TrayProposalDashboard>> GetProposedTrayDashboard(int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayDashboard", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayProposalDashboard>();
+            
+            return result;
+        }
+
         public async Task<TrayProposalScheduleRule> GetProposedTrayScheduleRules(int userId, int providerId, int locationId)
         {
             var parameters = new[]
