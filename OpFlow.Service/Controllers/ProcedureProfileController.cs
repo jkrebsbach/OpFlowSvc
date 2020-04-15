@@ -475,7 +475,8 @@ namespace OpFlow.Service.Controllers
 
             foreach (var item in post.Items)
             {
-                await sqlHelper.UpdateProcedureProfileTrayInstrument(procedureProfileId, item.ItemID, item.TrayItemID, item.CategoryID, item.Quantity, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateProcedureProfileTrayInstrument(procedureProfileId, item.ItemID, item.TrayItemID, 
+                    item.CategoryID, item.Quantity, item.Reason, user.ProviderID, user.LocationID);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, 200);
@@ -519,12 +520,12 @@ namespace OpFlow.Service.Controllers
         [Route("procedureProfileTrayInstrument")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpDelete]
-        public async Task<HttpResponseMessage> DeleteProcedureProfileTrayInstrument(int procedureProfileId, string trayType, int itemId, int trayItemId)
+        public async Task<HttpResponseMessage> DeleteProcedureProfileTrayInstrument(int procedureProfileId, int itemId, int trayItemId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.DeleteProcedureProfileTrayInstrument(procedureProfileId, trayType, itemId, trayItemId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteProcedureProfileTrayInstrument(procedureProfileId, itemId, trayItemId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, itemId);
         }

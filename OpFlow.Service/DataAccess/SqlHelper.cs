@@ -3576,7 +3576,8 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProcedureProfileTrayInstrument(int procedureProfileId, int instrumentId, int trayItemId, int? categoryId, int quantity, int providerId, int locationId)
+        public async Task<int> UpdateProcedureProfileTrayInstrument(int procedureProfileId, int instrumentId, int trayItemId, 
+            int? categoryId, int quantity, string reason, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3584,6 +3585,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("tray_item_id", trayItemId),
                 new SqlParameter("instrument_id", instrumentId),
                 new SqlParameter("category_id", categoryId ?? (object)DBNull.Value),
+                new SqlParameter("reason", reason ?? (object)DBNull.Value),
                 new SqlParameter("quantity", quantity),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
@@ -3622,12 +3624,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> DeleteProcedureProfileTrayInstrument(int procedureProfileId, string trayType, int itemId, int trayItemId, int providerId, int locationId)
+        public async Task<int> DeleteProcedureProfileTrayInstrument(int procedureProfileId, int itemId, int trayItemId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId),
-                new SqlParameter("tray_type", trayType),
                 new SqlParameter("item_id", itemId),
                 new SqlParameter("tray_item_id", trayItemId),
                 new SqlParameter("provider_id", providerId),
@@ -3650,11 +3651,13 @@ namespace OpFlow.Service.DataAccess
             var results = dsSchedules.Tables[0].DataTableToList<ProcedureProfile>();
             var procedures = dsSchedules.Tables[1].DataTableToList<ProfileProcedure>();
             var specialties = dsSchedules.Tables[2].DataTableToList<ProfileSpecialty>();
-            
+            var cardCategories = dsSchedules.Tables[3].DataTableToList<ProfileCardCategory>();
+
             foreach (var result in results)
             {
                 result.Procedures = procedures.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
                 result.Specialties = specialties.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+                result.CardCategories = cardCategories.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
             }
 
             return results;
@@ -3670,37 +3673,30 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("GetProcedureProfile", parameters);
 
-            var profiles = dsSchedules.Tables[0].DataTableToList<ProcedureProfile>();
-            var procedures = dsSchedules.Tables[1].DataTableToList<ProfileProcedure>();
-            var items = dsSchedules.Tables[2].DataTableToList<ProfileItem>();
-            var specialties = dsSchedules.Tables[3].DataTableToList<ProfileSpecialty>();
-            var trayItems = dsSchedules.Tables[4].DataTableToList<ProfileItem>();
-            var cards = dsSchedules.Tables[5].DataTableToList<ProfileCard>();
-            var trays = dsSchedules.Tables[6].DataTableToList<ProfileTray>();
-            var comparableItems = dsSchedules.Tables[7].DataTableToList<ComparableItem>();
+            var result = dsSchedules.Tables[0].DataTableToList<ProcedureProfile>().First();
+            
+            result.Procedures = dsSchedules.Tables[1].DataTableToList<ProfileProcedure>();
+            result.Items = dsSchedules.Tables[2].DataTableToList<ProfileItem>();
+            result.Specialties = dsSchedules.Tables[3].DataTableToList<ProfileSpecialty>();
+            result.TrayItems = dsSchedules.Tables[4].DataTableToList<ProfileItem>();
+            result.Cards = dsSchedules.Tables[5].DataTableToList<ProfileCard>();
+            result.Trays = dsSchedules.Tables[6].DataTableToList<ProfileTray>();
+            result.CardCategories = dsSchedules.Tables[7].DataTableToList<ProfileCardCategory>();
 
-            var result = profiles.First();
+            var comparableItems = dsSchedules.Tables[8].DataTableToList<ComparableItem>();
 
-            foreach (var item in items)
+            foreach (var item in result.Items)
             {
                 item.ComparableItems = comparableItems.Where(c => c.ItemID == item.ItemID && c.ItemType == item.ItemType).ToList();
             }
-            foreach (var item in trayItems)
+            foreach (var item in result.TrayItems)
             {
                 item.ComparableItems = comparableItems.Where(c => c.ItemID == item.ItemID && c.ItemType == "I").ToList();
             }
-
-            result.Procedures = procedures.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-            result.Items = items.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-            result.Specialties = specialties.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-            result.Cards = cards.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-            result.Trays = trays.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-
+            
             result.Cards.ForEach(c => c.ProfileCount = result.NbrInstruments);
             result.Trays.ForEach(t => t.ProfileCount = result.NbrInstruments);
 
-            result.TrayItems = trayItems.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-            
             return result;
         }
 
@@ -3719,16 +3715,17 @@ namespace OpFlow.Service.DataAccess
             return results;
         }
 
-        public async Task<int> UpdateProcedureProfile(int? procedureProfileId, string profileName, int cardCategoryId, List<int> specialtyId,
+        public async Task<int> UpdateProcedureProfile(int? procedureProfileId, string profileName, List<int> cardCategoryId, List<int> specialtyId,
             int providerId, int locationId)
         {
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
             var specialtyXml = GetIdentitySummary(specialtyId);
             
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId ?? (object)DBNull.Value),
                 new SqlParameter("profile_name", profileName),
-                new SqlParameter("card_category_id", cardCategoryId),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
@@ -4678,7 +4675,7 @@ namespace OpFlow.Service.DataAccess
 
         public async Task<int?> ParseCardCategory(string cardCategory, int providerId, int locationId)
         {
-            if (string.IsNullOrEmpty(cardCategory))
+            if (string.IsNullOrEmpty(cardCategory) || cardCategory == "undefined")
                 return null;
 
             if (int.TryParse(cardCategory, out var cardCategoryId))

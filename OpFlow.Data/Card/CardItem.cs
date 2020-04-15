@@ -163,17 +163,16 @@ namespace OpFlow.Data
     {
         public int ProcedureProfileID { get; set; }
         public string ProcedureProfileName { get; set; }
-        public int CardCategoryID { get; set; }
         public int NbrInstruments { get; set; }
         public int NbrCounts { get; set; }
         public int NbrAudits { get; set; }
-        public string CardCategoryName { get; set; }
         public List<ProfileSpecialty> Specialties { get; set; }
         public List<ProfileProcedure> Procedures { get; set; }
         public List<ProfileItem> Items { get; set; }
         public List<ProfileCard> Cards { get; set; }
         public List<ProfileTray> Trays { get; set; }
         public List<ProfileItem> TrayItems { get; set; }
+        public List<ProfileCardCategory> CardCategories { get; set; }
     }
 
     public class ProcedureProfileTrayUsage
@@ -184,6 +183,11 @@ namespace OpFlow.Data
     }
 
     public class ProfileSpecialty : Specialty
+    {
+        public int ProcedureProfileID { get; set; }
+    }
+
+    public class ProfileCardCategory : CardCategory
     {
         public int ProcedureProfileID { get; set; }
     }
@@ -229,6 +233,7 @@ namespace OpFlow.Data
 
 
         public string CategoryID { get; set; }
+        public string Reason { get; set; }
         public int ProfileCount { get; set; }
         public int CountChange => ProfileCount - NbrInstruments;
         public decimal PcntChange => ProfileCount == 0 ? 0 : ((decimal)CountChange / ProfileCount * 100);
@@ -240,7 +245,7 @@ namespace OpFlow.Data
     public class ProcedureProfilePost
     {
         public string ProfileName { get; set; }
-        public int CardCategoryID { get; set; }
+        public List<int> CardCategoryID { get; set; }
         public List<int> SpecialtyID { get; set; }
     }
 
@@ -254,6 +259,7 @@ namespace OpFlow.Data
         public int ItemID { get; set; }
         public int TrayItemID { get; set; }
         public int Quantity { get; set; }
+        public string Reason { get; set; }
         public string Category { get; set; }
         public int CategoryID { get; set; }
     }
