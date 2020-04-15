@@ -19,9 +19,11 @@ namespace OpFlow.Service.Test
         public async Task TestImportFile()
         {
             //var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\TestSchedule.csv";
-            var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\UAB_Neuro_Cards.csv";
-            var importTypeId = 5;
-            
+            //var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\UAB_Neuro_Cards.csv";
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\TrainingTrays.csv";
+            //var importTypeId = 5; // cards
+            var importTypeId = 3; // trays
+
             var sqlHelper = new SqlHelper();
             //var secureSqlHelper = new SecureSqlHelper("SecureConnection");
             var secureSqlHelper = new SecureSqlHelper("InvalidConnection");

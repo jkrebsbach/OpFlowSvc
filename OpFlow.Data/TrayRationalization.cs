@@ -240,12 +240,9 @@ namespace OpFlow.Data
         public string ItemDescription { get; set; }
     }
 
-    public class ComparableItem
+    public class ComparableItem : ItemMaster
     {
-        public int ItemID { get; set; }
         public int ComparableItemID { get; set; }
-        public string ItemDescription { get; set; }
-        public string ItemType { get; set; }
     }
 
     public class TrayRationalizationStatusLog

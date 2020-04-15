@@ -3660,7 +3660,7 @@ namespace OpFlow.Service.DataAccess
             return results;
         }
 
-        public async Task<List<ProcedureProfile>> GetProcedureProfile(int procedureProfileId, int providerId, int locationId)
+        public async Task<ProcedureProfile> GetProcedureProfile(int procedureProfileId, int providerId, int locationId)
         {
             var parameters = new[]
             {
@@ -3670,7 +3670,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("GetProcedureProfile", parameters);
 
-            var results = dsSchedules.Tables[0].DataTableToList<ProcedureProfile>();
+            var profiles = dsSchedules.Tables[0].DataTableToList<ProcedureProfile>();
             var procedures = dsSchedules.Tables[1].DataTableToList<ProfileProcedure>();
             var items = dsSchedules.Tables[2].DataTableToList<ProfileItem>();
             var specialties = dsSchedules.Tables[3].DataTableToList<ProfileSpecialty>();
@@ -3678,6 +3678,8 @@ namespace OpFlow.Service.DataAccess
             var cards = dsSchedules.Tables[5].DataTableToList<ProfileCard>();
             var trays = dsSchedules.Tables[6].DataTableToList<ProfileTray>();
             var comparableItems = dsSchedules.Tables[7].DataTableToList<ComparableItem>();
+
+            var result = profiles.First();
 
             foreach (var item in items)
             {
@@ -3688,21 +3690,18 @@ namespace OpFlow.Service.DataAccess
                 item.ComparableItems = comparableItems.Where(c => c.ItemID == item.ItemID && c.ItemType == "I").ToList();
             }
 
-            foreach (var result in results)
-            {
-                result.Procedures = procedures.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-                result.Items = items.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-                result.Specialties = specialties.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-                result.Cards = cards.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-                result.Trays = trays.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+            result.Procedures = procedures.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+            result.Items = items.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+            result.Specialties = specialties.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+            result.Cards = cards.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+            result.Trays = trays.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
 
-                result.Cards.ForEach(c => c.ProfileCount = result.NbrInstruments);
-                result.Trays.ForEach(t => t.ProfileCount = result.NbrInstruments);
+            result.Cards.ForEach(c => c.ProfileCount = result.NbrInstruments);
+            result.Trays.ForEach(t => t.ProfileCount = result.NbrInstruments);
 
-                result.TrayItems = trayItems.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-            }
-
-            return results;
+            result.TrayItems = trayItems.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+            
+            return result;
         }
 
         public async Task<List<ProcedureProfileTrayUsage>> GetProcedureProfileTrayUsage(int procedureProfileId, int providerId, int locationId)
@@ -7158,6 +7157,9 @@ namespace OpFlow.Service.DataAccess
 
             if (sourceData is ItemImport item)
             {
+                if (string.IsNullOrEmpty(item.Description))
+                    return result;
+
                 var parameters = new[]
                 {
                     new SqlParameter("provider_id", providerId),
@@ -7181,6 +7183,10 @@ namespace OpFlow.Service.DataAccess
             }
             else if (sourceData is TrayImport tray)
             {
+                if (string.IsNullOrEmpty(tray.TrayName) ||
+                    string.IsNullOrEmpty(tray.InstrumentName))
+                    return result;
+
                 var parameters = new[]
                 {
                     new SqlParameter("provider_id", providerId),
