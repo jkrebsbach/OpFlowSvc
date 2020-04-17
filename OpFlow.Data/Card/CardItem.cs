@@ -337,6 +337,7 @@ namespace OpFlow.Data
 
     public class CardCategoryXRef
     {
+        public int CardCategoryXrefID { get; set; }
         public int CardID { get; set; }
         public int CardCategoryID { get; set; }
         public string HierarchyLevel { get; set; }
