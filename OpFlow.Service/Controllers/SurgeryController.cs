@@ -51,9 +51,10 @@ namespace OpFlow.Service.Controllers
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
             var lateralities = await sqlHelper.GetLateralities(user.ProviderID, user.LocationID);
             var surgeons = await sqlHelper.GetSurgeryUsers(user.ProviderID, user.LocationID);
-            var profiles = await sqlHelper.GetProcedureProfiles(user.ProviderID, user.LocationID);
             var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
 
+            var profiles = await sqlHelper.GetProcedureProfiles();
+            
             var result = new NewSurgerySetup()
             {
                 Rooms = rooms,

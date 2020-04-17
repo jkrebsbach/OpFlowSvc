@@ -278,6 +278,14 @@ namespace OpFlow.Data
         public List<ProfileItem> ProfileItems { get; set; }
     }
 
+    public class ProcedureProfileDashboardComparisonRequest
+    {
+
+        public int? SpecialtyID { get; set; }
+        public int? CardCategoryID { get; set; }
+        public int? SurgeonID { get; set; }
+    }
+
     public class ProcedureProfileCardComparisonRequest
     {
 
@@ -301,6 +309,11 @@ namespace OpFlow.Data
         public decimal ProfileAvgCount { get; set; }
         public decimal ProfileAvgCost { get; set; }
         public decimal ProfileAvgInstruments { get; set; }
+    }
+
+    public class ProcedureProfileDashboardComparison
+    {
+        public int Quantity { get; set; }
     }
 
     public class TrayGroup

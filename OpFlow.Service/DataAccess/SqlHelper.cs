@@ -782,6 +782,20 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<DataSet> GetProcedureProfileDashboardComparison(int procedureProfileId, int? specialtyId, int? cardCategoryId, int? surgeonId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryId ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonId ?? (object)DBNull.Value)
+            };
+            var result = await ExecuteCommandAsync("GetProcedureProfileDashboardComparison", parameters);
+
+            return result;
+        }        
+
         public async Task<DataSet> GetProcedureProfileTrayAlignment(int procedureProfileId, List<int> cardId, List<int> trayId, int providerId, int locationId)
         {
             var cardXml = GetIdentitySummary(cardId);
@@ -3639,12 +3653,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<ProcedureProfile>> GetProcedureProfiles(int providerId, int locationId)
+        public async Task<List<ProcedureProfile>> GetProcedureProfiles()
         {
-            var parameters = new[]
+            var parameters = new SqlParameter[]
             {
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
             };
             var dsSchedules = await ExecuteCommandAsync("GetProcedureProfiles", parameters);
 
@@ -3663,13 +3675,11 @@ namespace OpFlow.Service.DataAccess
             return results;
         }
 
-        public async Task<ProcedureProfile> GetProcedureProfile(int procedureProfileId, int providerId, int locationId)
+        public async Task<ProcedureProfile> GetProcedureProfile(int procedureProfileId)
         {
             var parameters = new[]
             {
-                new SqlParameter("procedure_profile_id", procedureProfileId),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
+                new SqlParameter("procedure_profile_id", procedureProfileId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetProcedureProfile", parameters);
 
@@ -6583,7 +6593,19 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
-            var dsSchedules = await ExecuteCommandAsync("GetSpecialtyByLocation", parameters);
+            var dsSchedules = await ExecuteCommandAsync("GetSpecialties", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Specialty>();
+
+            return result;
+        }
+
+        public async Task<List<Specialty>> GetSpecialtiesInternal()
+        {
+            var parameters = new SqlParameter[]
+            {
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSpecialtiesInternal", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Specialty>();
 

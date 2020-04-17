@@ -25,9 +25,13 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetProcedureProfiles()
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetProcedureProfiles(user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetProcedureProfiles();
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -39,19 +43,24 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetProcedureProfile(int? procedureProfileId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
             var sqlHelper = new SqlHelper();
 
             ProcedureProfile profile = null;
             var trayUsage = new List<ProcedureProfileTrayUsage>();
             if (procedureProfileId.HasValue)
             {
-                profile = await sqlHelper.GetProcedureProfile(procedureProfileId.Value, user.ProviderID, user.LocationID);
+                profile = await sqlHelper.GetProcedureProfile(procedureProfileId.Value);
                 
                 trayUsage = await sqlHelper.GetProcedureProfileTrayUsage(procedureProfileId.Value, user.ProviderID, user.LocationID);
             }
 
             var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
-            var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
+            var specialties = await sqlHelper.GetSpecialtiesInternal();
+            var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
             var cards = await sqlHelper.GetCards(user.ProviderID, user.LocationID);
             var trays = await sqlHelper.GetItems("TRAY", null, null, user.ProviderID, user.LocationID);
             var proposed = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
@@ -68,7 +77,8 @@ namespace OpFlow.Service.Controllers
                 Proposed = proposed,
                 TrayUsage = trayUsage,
                 ItemCategories = itemCategories,
-                InstrumentCategories = instrumentCategories
+                InstrumentCategories = instrumentCategories,
+                Surgeons = surgeons
             });
         }
 
@@ -239,6 +249,27 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("PostDashboardComparison")]
+        [Route("dashboardComparison/{procedureProfileId}")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ProcedureProfileCardComparison>))]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostDashboardComparison(int procedureProfileId, [FromBody]ProcedureProfileDashboardComparisonRequest request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.GetProcedureProfileDashboardComparison(procedureProfileId, request.SpecialtyID, request.CardCategoryID, request.SurgeonID);
+
+            var comparison = result.Tables[0].DataTableToList<ProcedureProfileDashboardComparison>();
+
+            return Request.CreateResponse(HttpStatusCode.OK, comparison);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetProcedureProfileCompare")]
         [Route("procedureProfileCompare")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ProcedureProfileCardComparison>))]
@@ -246,9 +277,13 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetProcedureProfileCompare(int procedureProfileId, [FromBody]ProcedureProfileCardComparisonRequest request)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
             var sqlHelper = new SqlHelper();
 
-            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId, user.ProviderID, user.LocationID);
+            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId);
 
             var traySummary = profile.TrayItems.GroupBy(p => p.TrayName).Select(p => new ProfileItem()
             {
@@ -312,10 +347,14 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetProcedureProfileVenn(int procedureProfileId, [FromBody]ProcedureProfileCardComparisonRequest request)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
             var sqlHelper = new SqlHelper();
 
             var cardItems = new List<CardItem>();
-            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId, user.ProviderID, user.LocationID);
+            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId);
             foreach (var cardId in request.Cards)
             {
                 var items = await sqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
