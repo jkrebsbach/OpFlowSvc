@@ -243,12 +243,14 @@ namespace OpFlow.Data
         public string ItemDescription { get; set; }
         public string TrayName { get; set; }
         public string Manufacturer { get; set; }
+        public string InstrumentNbr { get; set; }
     }
 
     public class ComparableItem : ItemMaster
     {
         public int ComparableItemID { get; set; }
         public int RelatedItemID { get; set; }
+        public string ProductNbr { get; set; }
     }
 
     public class TrayRationalizationStatusLog

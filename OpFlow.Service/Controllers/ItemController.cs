@@ -159,12 +159,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("comparableInstrument")]
         [HttpPut]
-        public async Task<HttpResponseMessage> PutComparableInstrument(int instrumentId, int trayItemId, ComparableInstrumentPost post)
+        public async Task<HttpResponseMessage> PutComparableInstrument(int instrumentId, int trayId, ComparableInstrumentPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.InsertComparableInstrument(instrumentId, trayItemId, post.RelatedInstrumentID, post.RelatedTrayID, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.InsertComparableInstrument(instrumentId, trayId, post.RelatedInstrumentID, post.RelatedTrayID, user.ProviderID, user.LocationID);
             
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
