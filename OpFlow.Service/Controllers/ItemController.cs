@@ -142,28 +142,30 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("comparableItem")]
         [HttpPut]
-        public async Task<HttpResponseMessage> PutComparableItem(string itemType, int itemId, ComparableItemPost post)
+        public async Task<HttpResponseMessage> PutComparableItem(int itemId, ComparableItemPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            int comparableItemId;
-            if (post.Status == "NEW")
-            {
-                var newItemType = (itemType == "I" ? "INSTRUMENT" : "SUPPLY");
-                comparableItemId = await sqlHelper.InsertItemMaster(itemType, post.ItemName, user.ProviderID, user.LocationID);
-            }
-            else
-            {
-                comparableItemId = post.ComparableItemID ?? -1;
-            }
+            int comparableItemId = post.RelatedItemID ??  await sqlHelper.InsertItemMaster("SUPPLY", post.ItemName, user.ProviderID, user.LocationID);
+            
+            var result = await sqlHelper.InsertComparableItem(itemId, comparableItemId, user.ProviderID, user.LocationID);
 
-            var result = 0;
-            if (itemType == "I") // Instrument
-                result = await sqlHelper.InsertComparableInstrument(null, itemId, comparableItemId, user.ProviderID, user.LocationID);
-            else
-                result = await sqlHelper.InsertComparableItem(itemId, comparableItemId, user.ProviderID, user.LocationID);
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
 
+        // GET api/values/5
+        [SwaggerOperation("PutComparableInstrument")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("comparableInstrument")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutComparableInstrument(int instrumentId, int trayItemId, ComparableInstrumentPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.InsertComparableInstrument(instrumentId, trayItemId, post.RelatedInstrumentID, post.RelatedTrayID, user.ProviderID, user.LocationID);
+            
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
@@ -172,17 +174,28 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("comparableItem")]
         [HttpDelete]
-        public async Task<HttpResponseMessage> DeleteComparableItem(string itemType, int itemId, int comparableItemId)
+        public async Task<HttpResponseMessage> DeleteComparableItem(int comparableItemId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = 0;
-            if (itemType == "I") // Instrument
-                result = await sqlHelper.DeleteComparableInstrument(null, itemId, comparableItemId, user.ProviderID, user.LocationID);
-            else
-                result = await sqlHelper.DeleteComparableItem(itemId, comparableItemId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.DeleteComparableItem( comparableItemId, user.ProviderID, user.LocationID);
 
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("DeleteComparableInstrument")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("comparableInstrument")]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteComparableInstrument(int comparableInstrumentId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.DeleteComparableInstrument(comparableInstrumentId, user.ProviderID, user.LocationID);
+            
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 

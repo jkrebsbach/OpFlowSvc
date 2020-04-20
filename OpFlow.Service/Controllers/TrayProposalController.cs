@@ -1329,7 +1329,10 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.InsertComparableInstrument(trayProposalId, instrumentId, comparableInstrumentId, user.ProviderID, user.LocationID);
+            var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, user.ProviderID, user.LocationID);
+            var trayItemId = instruments.FirstOrDefault(i => i.InstrumentID == instrumentId)?.TrayItemID;
+
+            var result = await sqlHelper.InsertComparableInstrument(instrumentId, trayItemId ?? -1, comparableInstrumentId, trayItemId ?? -1, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

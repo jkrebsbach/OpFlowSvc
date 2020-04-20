@@ -240,6 +240,7 @@ namespace OpFlow.Data
         public int Increase => CountChange > 0 ? 1 : (CountChange < 0 ? -1 : 0);
 
         public List<ComparableItem> ComparableItems { get; set; }
+        public List<ComparableInstrument> ComparableInstruments { get; set; }
     }
 
     public class ProcedureProfilePost
@@ -282,7 +283,7 @@ namespace OpFlow.Data
     {
 
         public int? SpecialtyID { get; set; }
-        public int? CardCategoryID { get; set; }
+        public List<int> CardCategoryID { get; set; }
         public List<int> SurgeonID { get; set; }
     }
 

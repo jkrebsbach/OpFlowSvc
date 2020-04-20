@@ -56,7 +56,13 @@ namespace OpFlow.Data
     public class ComparableItemPost
     {
         public string Status { get; set; }
-        public int? ComparableItemID { get; set; }
+        public int? RelatedItemID { get; set; }
         public string ItemName { get; set; }
+    }
+    public class ComparableInstrumentPost
+    {
+        public string Status { get; set; }
+        public int RelatedInstrumentID { get; set; }
+        public int RelatedTrayID { get; set; }
     }
 }

@@ -782,15 +782,16 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<ProcedureProfileDashboardComparison>> GetProcedureProfileDashboardComparison(int procedureProfileId, int? specialtyId, int? cardCategoryId, List<int> surgeonId)
+        public async Task<List<ProcedureProfileDashboardComparison>> GetProcedureProfileDashboardComparison(int procedureProfileId, int? specialtyId, List<int> cardCategoryId, List<int> surgeonId)
         {
             var surgeonXml = GetIdentitySummary(surgeonId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
 
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
-                new SqlParameter("card_category_id", cardCategoryId ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value)
             };
             var result = await ExecuteCommandAsync("GetProcedureProfileDashboardComparison", parameters);
@@ -2477,12 +2478,12 @@ namespace OpFlow.Service.DataAccess
             return result.Tables[0].DataTableToList<InsertionResult>().First().Identifier;
         }
 
-        public async Task<int> InsertComparableItem(int itemId, int comparableItemId, int providerId, int locationId)
+        public async Task<int> InsertComparableItem(int itemId, int relatedItemId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("item_id", itemId),
-                new SqlParameter("comparable_item_id", comparableItemId),
+                new SqlParameter("related_item_id", relatedItemId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -2491,13 +2492,14 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> InsertComparableInstrument(int? trayProposalId, int instrumentId, int comparableInstrumentId, int providerId, int locationId)
+        public async Task<int> InsertComparableInstrument(int instrumentId, int trayItemId, int relatedInstrumentId, int relatedTrayItemId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
                 new SqlParameter("instrument_id", instrumentId),
-                new SqlParameter("comparable_instrument_id", comparableInstrumentId),
+                new SqlParameter("tray_item_id", trayItemId),
+                new SqlParameter("related_instrument_id", relatedInstrumentId),
+                new SqlParameter("related_tray_item_id", relatedTrayItemId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -2521,16 +2523,28 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> DeleteComparableItem(int itemId, int comparableItemId, int providerId, int locationId)
+        public async Task<int> DeleteComparableItem(int comparableItemId, int providerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("item_id", itemId),
                 new SqlParameter("comparable_item_id", comparableItemId),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("DeleteComparableItem", parameters);
+
+            return result;
+        }
+
+        public async Task<int> DeleteComparableInstrument(int comparableInstrumentId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("comparable_instrument_id", comparableInstrumentId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("DeleteComparableInstrument", parameters);
 
             return result;
         }
@@ -3698,14 +3712,15 @@ namespace OpFlow.Service.DataAccess
             result.CardCategories = dsSchedules.Tables[7].DataTableToList<ProfileCardCategory>();
 
             var comparableItems = dsSchedules.Tables[8].DataTableToList<ComparableItem>();
+            var comparableInstruments = dsSchedules.Tables[9].DataTableToList<ComparableInstrument>();
 
             foreach (var item in result.Items)
             {
-                item.ComparableItems = comparableItems.Where(c => c.ItemID == item.ItemID && c.ItemType == item.ItemType).ToList();
+                item.ComparableItems = comparableItems.Where(c => c.ItemID == item.ItemID).ToList();
             }
             foreach (var item in result.TrayItems)
             {
-                item.ComparableItems = comparableItems.Where(c => c.ItemID == item.ItemID && c.ItemType == "I").ToList();
+                item.ComparableInstruments = comparableInstruments.Where(c => c.InstrumentID == item.ItemID && c.TrayItemID == item.TrayID).ToList();
             }
             
             result.Cards.ForEach(c => c.ProfileCount = result.NbrInstruments);
