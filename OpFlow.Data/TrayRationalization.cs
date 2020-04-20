@@ -316,7 +316,10 @@ namespace OpFlow.Data
         public DateTime? TrayChanges { get; set; }
         public string Comments { get; set; }
     }
-
+    public class ProposedTrayNotesPost
+    {
+        public string Notes { get; set; }
+    }
     public class ProposedTrayInstrumentPost
     {
         public int InstrumentID { get; set; }

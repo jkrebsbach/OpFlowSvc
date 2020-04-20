@@ -270,6 +270,20 @@ namespace OpFlow.Service.Controllers
             });
         }
 
+        [SwaggerOperation("UpdateProposalNotes")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
+        [Route("proposalNotes/{trayProposalId}")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateProposalNotes(int trayProposalId, [FromBody] ProposedTrayNotesPost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var cases = await sqlHelper.UpdateProposedTrayComments(trayProposalId, request.Notes, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, trayProposalId);
+        }
+
         [SwaggerOperation("SearchCases")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryAuditSearchResult>))]
         [Route("searchCases")]

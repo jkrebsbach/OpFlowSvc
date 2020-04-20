@@ -782,18 +782,22 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<DataSet> GetProcedureProfileDashboardComparison(int procedureProfileId, int? specialtyId, int? cardCategoryId, int? surgeonId)
+        public async Task<List<ProcedureProfileDashboardComparison>> GetProcedureProfileDashboardComparison(int procedureProfileId, int? specialtyId, int? cardCategoryId, List<int> surgeonId)
         {
+            var surgeonXml = GetIdentitySummary(surgeonId);
+
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryId ?? (object)DBNull.Value),
-                new SqlParameter("surgeon_id", surgeonId ?? (object)DBNull.Value)
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value)
             };
             var result = await ExecuteCommandAsync("GetProcedureProfileDashboardComparison", parameters);
 
-            return result;
+            var comparison = result.Tables[0].DataTableToList<ProcedureProfileDashboardComparison>();
+
+            return comparison;
         }        
 
         public async Task<DataSet> GetProcedureProfileTrayAlignment(int procedureProfileId, List<int> cardId, List<int> trayId, int providerId, int locationId)
@@ -6155,6 +6159,20 @@ namespace OpFlow.Service.DataAccess
             }
 
             return schedule;
+        }
+
+        public async Task<int> UpdateProposedTrayComments(int trayProposalId, string comments, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("comments", comments ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProposedTrayComments", parameters);
+            
+            return result;
         }
 
         public async Task<List<SurgeryAuditSearchResult>> GetProposedTrayAuditSearch(int? trayProposalId,

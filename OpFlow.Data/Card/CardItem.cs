@@ -283,7 +283,7 @@ namespace OpFlow.Data
 
         public int? SpecialtyID { get; set; }
         public int? CardCategoryID { get; set; }
-        public int? SurgeonID { get; set; }
+        public List<int> SurgeonID { get; set; }
     }
 
     public class ProcedureProfileCardComparisonRequest
@@ -311,9 +311,40 @@ namespace OpFlow.Data
         public decimal ProfileAvgInstruments { get; set; }
     }
 
+    public class ProcedureProfileDashboardGroup
+    {
+
+        public string TrayName { get; set; }
+        public string InstrumentName { get; set; }
+        public int TrayQuantity => Results.First().TrayQuantity;
+        public decimal AvgUsage => (decimal)Results.Sum(r => r.NetUsage) / Results.Sum(r => r.CaseCount);
+
+        public List<ProcedureProfileDashboardComparison> Results { get; set; }
+    }
+
     public class ProcedureProfileDashboardComparison
     {
-        public int Quantity { get; set; }
+        public string GroupName { get; set; }
+        public string TrayName { get; set; }
+        public string InstrumentName { get; set; }
+        public int TrayQuantity { get; set; }
+        public int NetUsage { get; set; }
+        public int CaseCount { get; set; }
+        public string Reason { get; set; }
+
+        public decimal AvgUsage => (decimal)NetUsage / CaseCount;
+
+        public static List<ProcedureProfileDashboardComparison> Summarize(IEnumerable<string> categories, IEnumerable<ProcedureProfileDashboardComparison> data)
+        {
+            var result = new List<ProcedureProfileDashboardComparison>();
+
+            foreach (var category in categories)
+            {
+                result.Add(data.FirstOrDefault(d => d.GroupName == category) ?? new ProcedureProfileDashboardComparison());
+            }
+
+            return result;
+        }
     }
 
     public class TrayGroup

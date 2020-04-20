@@ -262,11 +262,23 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetProcedureProfileDashboardComparison(procedureProfileId, request.SpecialtyID, request.CardCategoryID, request.SurgeonID);
+            var comparisons = await sqlHelper.GetProcedureProfileDashboardComparison(procedureProfileId, request.SpecialtyID, request.CardCategoryID, request.SurgeonID);
 
-            var comparison = result.Tables[0].DataTableToList<ProcedureProfileDashboardComparison>();
+            var categories = comparisons.OrderBy(c => c.GroupName).Select(c => c.GroupName).Distinct();
 
-            return Request.CreateResponse(HttpStatusCode.OK, comparison);
+            var groups = comparisons.GroupBy(c => new { c.TrayName, c.InstrumentName }).Select(c =>
+                new ProcedureProfileDashboardGroup()
+                {
+                    TrayName = c.Key.TrayName,
+                    InstrumentName = c.Key.InstrumentName,
+                    Results = ProcedureProfileDashboardComparison.Summarize(categories, c.ToList())
+                });
+
+
+            return Request.CreateResponse(HttpStatusCode.OK, new {
+                Categories = categories,
+                Groups = groups
+            });
         }
 
         // GET api/values/5
