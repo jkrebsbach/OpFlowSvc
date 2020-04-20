@@ -317,7 +317,10 @@ namespace OpFlow.Data
         public string TrayName { get; set; }
         public string InstrumentName { get; set; }
         public int TrayQuantity => Results.First().TrayQuantity;
-        public decimal AvgUsage => (decimal)Results.Sum(r => r.NetUsage) / Results.Sum(r => r.CaseCount);
+        public int NetUsage => Results.Sum(r => r.NetUsage);
+        public decimal AvgUsage => NetUsage == 0 ? 0 : (decimal)NetUsage / Results.Sum(r => r.CaseCount);
+        public string Category => Results.First().Category;
+        public string Reason => Results.First().Reason;
 
         public List<ProcedureProfileDashboardComparison> Results { get; set; }
     }
@@ -331,8 +334,9 @@ namespace OpFlow.Data
         public int NetUsage { get; set; }
         public int CaseCount { get; set; }
         public string Reason { get; set; }
+        public string Category { get; set; }
 
-        public decimal AvgUsage => (decimal)NetUsage / CaseCount;
+        public decimal AvgUsage => NetUsage == 0 ? 0 : (decimal)NetUsage / CaseCount;
 
         public static List<ProcedureProfileDashboardComparison> Summarize(IEnumerable<string> categories, IEnumerable<ProcedureProfileDashboardComparison> data)
         {
