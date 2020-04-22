@@ -1332,13 +1332,30 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
                 post.RoomGroupId, user.ProviderID, user.LocationID);
 
+            var group = (post.Group == "card" ? "c" : "t");
             var parameters = new[]
             {
-                new ReportParameter("Group", "t")
+                new ReportParameter("Group", group)
             };
+
+            var countSummary = analytics.Tables[0].DefaultView;
+            switch (post.Order)
+            {
+                case "specialty":
+                    countSummary.Sort = "Specialty";
+                    break;
+                case "card":
+                    countSummary.Sort = "CardCount";
+                    break;
+                case "count":
+                default:
+                    countSummary.Sort = "InstrumentCount";
+                    break;
+            }
+
             var datasets = new Dictionary<string, DataTable>
             {
-                ["CountSummary"] = analytics.Tables[0]
+                ["CountSummary"] = countSummary.ToTable()
             };
             var result = ReportHelper.GetReport("CountSummary", format, datasets, parameters);
 
@@ -1579,59 +1596,6 @@ namespace OpFlow.Service.Controllers
             }).ToList();
 
             return result;
-        }
-
-        // GET api/values/5
-        [SwaggerOperation("CountSummaryByCardReport")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
-        [HttpPut]
-        [HttpPost]
-        [Route("countSummaryByCard")]
-        [Route("countSummaryByCard/{format}")]
-        public async Task<HttpResponseMessage> CountSummaryByCardReport([FromBody] CountSummaryReportPost post, string format = null)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-
-            format = format ?? "IMAGE";
-            
-            var sqlHelper = new SqlHelper();
-            var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
-                post.RoomGroupId, user.ProviderID, user.LocationID);
-
-            /*            switch (post.Order)
-            {
-                case "specialty":
-                    analytics = analytics.OrderBy(a => a.Specialty).ToList();
-                    break;
-                case "card":
-                    analytics = analytics.OrderBy(a => a.Card).ToList();
-                    break;
-                case "count":
-                default:
-                    analytics = analytics.OrderByDescending(a => a.TrayCount).ToList();
-                    break;
-            }*/
-
-            var parameters = new[]
-            {
-                new ReportParameter("Group", "c")
-            };
-            var datasets = new Dictionary<string, DataTable>
-            {
-                ["CountSummary"] = analytics.Tables[0]
-            };
-            var result = ReportHelper.GetReport("CountSummary", format, datasets, parameters);
-
-            if (format?.ToUpper() == "PDF")
-            {
-                return ResponseHelper.PdfResponse(result);
-            }
-            else
-            {
-                var webImage = ImageHelper.CreateWebImage(result);
-
-                return ResponseHelper.ImageResponse(Request, webImage);
-            }
         }
     }
 }
