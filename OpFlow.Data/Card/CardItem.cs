@@ -282,7 +282,7 @@ namespace OpFlow.Data
     public class ProcedureProfileDashboardComparisonRequest
     {
 
-        public int? SpecialtyID { get; set; }
+        public List<int> SpecialtyID { get; set; }
         public List<int> CardCategoryID { get; set; }
         public List<int> SurgeonID { get; set; }
     }
