@@ -319,6 +319,7 @@ namespace OpFlow.Data
         public string InstrumentName { get; set; }
         public int TrayQuantity => Results.First().TrayQuantity;
         public int NetUsage => Results.Sum(r => r.NetUsage);
+        public int MaxUsage => Results.Max(r => r.MaxUsage);
         public decimal AvgUsage => NetUsage == 0 ? 0 : (decimal)NetUsage / Results.Sum(r => r.CaseCount);
         public string Category => Results.First().Category;
         public string Reason => Results.First().Reason;
@@ -333,6 +334,7 @@ namespace OpFlow.Data
         public string InstrumentName { get; set; }
         public int TrayQuantity { get; set; }
         public int NetUsage { get; set; }
+        public int MaxUsage { get; set; }
         public int CaseCount { get; set; }
         public string Reason { get; set; }
         public string Category { get; set; }
