@@ -90,12 +90,63 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PostProcedureProfile(int? procedureProfileId, [FromBody] ProcedureProfilePost request)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.UpdateProcedureProfile(procedureProfileId, request.ProfileName, request.CardCategoryID, request.SpecialtyID,
                 user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetProcedureProfileItemCsv")]
+        [Route("csvItem/{procedureProfileId}")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetProcedureProfileItemCsv(int procedureProfileId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            var sqlHelper = new SqlHelper();
+
+            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId);
+
+            var result = "Item,Type,Category,Avg Used,Quantity\r\n";
+            foreach (var item in profile.Items)
+            {
+                result += $"\"{item.ItemDescription}\",\"{item.ItemType}\",\"{item.Category}\",{item.AvgUsed},{item.Quantity}\r\n";
+            }
+
+            return ResponseHelper.CsvResponse(result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetProcedureProfileTrayCsv")]
+        [Route("csvTray/{procedureProfileId}")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetProcedureProfileTrayCsv(int procedureProfileId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            var sqlHelper = new SqlHelper();
+
+            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId);
+
+            var result = "Tray,Instrument,Category,Reason,Avg Used, Quantity\r\n";
+            foreach (var tray in profile.TrayItems)
+            {
+                result += $"\"{tray.TrayName}\",\"{tray.ItemDescription}\",\"{tray.Category}\",\"{tray.Reason}\",{tray.AvgUsed},{tray.Quantity}\r\n";
+            }
+
+            return ResponseHelper.CsvResponse(result);
         }
 
         // GET api/values/5
@@ -108,6 +159,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetProcedureProfileChart(int procedureProfileId, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
             format = format ?? "IMAGE";
@@ -146,6 +200,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetProcedureProfileTrayAlignment([FromBody] ProcedureProfileAlignmentPost post, int procedureProfileId, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
             format = format ?? "IMAGE";
@@ -202,6 +259,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetProcedureProfileSupplyAlignment([FromBody] ProcedureProfileAlignmentPost post, int procedureProfileId, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
             format = format ?? "IMAGE";
@@ -440,6 +500,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutProcedureProfileDashboard(int? procedureProfileId, [FromBody] ProcedureProfileDashboardPost request)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.UpdateProcedureProfileDashboard(procedureProfileId, request.Cards, request.Trays, request.Proposals,
@@ -456,6 +519,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutProcedureProfileCpt(int procedureProfileId, string cptCode)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.InsertProcedureProfileCpt(procedureProfileId, cptCode, user.ProviderID, user.LocationID);
@@ -471,6 +537,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutProcedureProfileTray(int procedureProfileId, int trayItemId, string trayType)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.InsertProcedureProfileTrayInstrument(procedureProfileId, trayItemId, trayType, user.ProviderID, user.LocationID);
@@ -486,6 +555,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutProcedureProfileCard(int procedureProfileId, int cardId)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
             await sqlHelper.UpdateProcedureProfileCard(procedureProfileId, cardId, user.ProviderID, user.LocationID);
@@ -501,6 +573,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PutProcedureProfileItem(int procedureProfileId, [FromBody] ProcedureProfileItemUpdatePost post)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
             foreach (var item in post.Items)
@@ -522,6 +597,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> PostProcedureProfileTrayInstrument(int procedureProfileId, [FromBody] ProcedureProfileItemUpdatePost post)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
             foreach (var item in post.Items)
@@ -541,6 +619,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeleteProcedureProfileCpt(int procedureProfileId, string cptCode)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.DeleteProcedureProfileCpt(procedureProfileId, cptCode, user.ProviderID, user.LocationID);
@@ -556,6 +637,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeleteProcedureProfileItem(int procedureProfileId, string itemType, int itemId)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
             if (itemType == "I") // Instrument
@@ -574,6 +658,9 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> DeleteProcedureProfileTrayInstrument(int procedureProfileId, int itemId, int trayItemId)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
             await sqlHelper.DeleteProcedureProfileTrayInstrument(procedureProfileId, itemId, trayItemId, user.ProviderID, user.LocationID);
