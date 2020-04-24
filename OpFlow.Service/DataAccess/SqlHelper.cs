@@ -782,24 +782,31 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<ProcedureProfileDashboardComparison>> GetProcedureProfileDashboardComparison(int procedureProfileId, List<int> specialtyId, List<int> cardCategoryId, List<int> surgeonId)
+        public async Task<ProcedureProfileDashboardComparisonQuery> GetProcedureProfileDashboardComparison(int procedureProfileId, List<int> specialtyId, List<int> cardCategoryId, 
+            List<int> surgeonId, List<int> proposalId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+            var proposalXml = GetIdentitySummary(proposalId);
 
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
-                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value)
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_proposal_id", proposalXml ?? (object)DBNull.Value)
             };
-            var result = await ExecuteCommandAsync("GetProcedureProfileDashboardComparison", parameters);
+            var response = await ExecuteCommandAsync("GetProcedureProfileDashboardComparison", parameters);
 
-            var comparison = result.Tables[0].DataTableToList<ProcedureProfileDashboardComparison>();
+            var result = new ProcedureProfileDashboardComparisonQuery()
+            {
+                Comparisons = response.Tables[0].DataTableToList<ProcedureProfileDashboardComparison>(),
+                Proposals = response.Tables[1].DataTableToList<ProcedureProfileProposalData>()
+            };
 
-            return comparison;
+            return result;
         }        
 
         public async Task<DataSet> GetProcedureProfileTrayAlignment(int procedureProfileId, List<int> cardId, List<int> trayId, int providerId, int locationId)

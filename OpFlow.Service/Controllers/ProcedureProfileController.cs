@@ -322,21 +322,25 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
 
-            var comparisons = await sqlHelper.GetProcedureProfileDashboardComparison(procedureProfileId, request.SpecialtyID, request.CardCategoryID, request.SurgeonID);
+            var data = await sqlHelper.GetProcedureProfileDashboardComparison(procedureProfileId, request.SpecialtyID, request.CardCategoryID, request.SurgeonID, request.ProposalID);
+            var comparisons = data.Comparisons;
 
             var categories = comparisons.OrderBy(c => c.GroupName).Select(c => c.GroupName).Distinct();
+            var proposalNames = data.Proposals.Select(c => c.TrayName).Distinct();
 
             var groups = comparisons.GroupBy(c => new { c.TrayName, c.InstrumentName }).Select(c =>
                 new ProcedureProfileDashboardGroup()
                 {
                     TrayName = c.Key.TrayName,
                     InstrumentName = c.Key.InstrumentName,
+                    Proposals = ProcedureProfileProposalData.Summarize(proposalNames, data.Proposals, c.Key.InstrumentName),
                     Results = ProcedureProfileDashboardComparison.Summarize(categories, c.ToList())
                 });
 
 
             return Request.CreateResponse(HttpStatusCode.OK, new {
                 Categories = categories,
+                ProposedTrays = proposalNames,
                 Groups = groups
             });
         }
