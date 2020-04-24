@@ -1302,6 +1302,16 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<TrayRationalization>> GetProposedTraysInternal()
+        {
+            var parameters = new SqlParameter[0];
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTraysInternal", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
+            
+            return result;
+        }
+
         public async Task<List<TrayProposalLog>> GetProposedTrayLog(int proposedTrayId, int providerId, int locationId)
         {
             var parameters = new[]
