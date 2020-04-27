@@ -3626,13 +3626,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> InsertProcedureProfileTrayInstrument(int procedureProfileId, int trayItemId, string trayType, int providerId, int locationId)
+        public async Task<int> InsertProcedureProfileTrayInstrument(int procedureProfileId, int trayItemId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("tray_item_id", trayItemId),
-                new SqlParameter("tray_type", trayType),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };

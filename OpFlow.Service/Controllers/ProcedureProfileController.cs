@@ -1,5 +1,6 @@
 ﻿using OpFlow.Data;
 using OpFlow.Service.DataAccess;
+using OpFlow.Service.Models;
 using Swashbuckle.Swagger.Annotations;
 using System;
 using System.Collections.Generic;
@@ -562,7 +563,7 @@ namespace OpFlow.Service.Controllers
         [Route("procedureProfileTray")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
         [HttpPut]
-        public async Task<HttpResponseMessage> PutProcedureProfileTray(int procedureProfileId, int trayItemId, string trayType)
+        public async Task<HttpResponseMessage> PutProcedureProfileTray(int procedureProfileId, int trayItemId)
         {
             var user = await CacheUtil.GetUserSecurity();
 
@@ -570,7 +571,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.InsertProcedureProfileTrayInstrument(procedureProfileId, trayItemId, trayType, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.InsertProcedureProfileTrayInstrument(procedureProfileId, trayItemId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -694,6 +695,70 @@ namespace OpFlow.Service.Controllers
             await sqlHelper.DeleteProcedureProfileTrayInstrument(procedureProfileId, itemId, trayItemId, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, itemId);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PutTrayImportCsv")]
+        [Route("trayImportCsv")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Procedure>))]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutTrayImportCsv(int procedureProfileId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper();
+            int? logId = null;
+
+            var importTypeId = 3;
+
+            try
+            {
+                var provider = new MultipartMemoryStreamProvider();
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                // extract file name and file contents
+                var fileNameParam = provider.Contents[0].Headers.ContentDisposition.Parameters
+                    .FirstOrDefault(p => p.Name.ToLower() == "filename");
+                var fileName = fileNameParam?.Value.Trim('"') ?? "";
+                var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
+
+                var fileParser = new FileParser(fileName, fileContents);
+
+                await fileParser.ParseFile(sqlHelper, importTypeId, user.ProviderID, user.LocationID);
+
+                var trayIds = new List<int>();
+
+                foreach (var record in fileParser.Records)
+                {
+                    var result = await sqlHelper.InsertStagingData(user.ProviderID, user.LocationID, null, record, fileParser.Relations);
+                    foreach (var message in result.Messages)
+                    {
+                        await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message,
+                            null, null);
+                    }
+
+                    trayIds.Add(result.Identity);
+                }
+
+                foreach (var trayItemId in trayIds.Distinct())
+                {
+                    await sqlHelper.InsertProcedureProfileTrayInstrument(procedureProfileId,
+                        trayItemId, user.ProviderID, user.LocationID);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, fileParser.Status);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.LogException(ex);
+                if (logId != null)
+                    await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "ERROR", ex.Message, null, null);
+
+                throw;
+            }
         }
 
         // GET api/values/5
