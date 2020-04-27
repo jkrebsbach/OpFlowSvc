@@ -445,8 +445,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper();
-            int? logId = null;
-
+            
             try
             {
 

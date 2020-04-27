@@ -25,8 +25,6 @@ namespace OpFlow.Service.Test
         {
             try
             {
-                var patientId = 1;
-
                 var sqlHelper = new SqlHelper();
 
                 var trayProposalId = 1;

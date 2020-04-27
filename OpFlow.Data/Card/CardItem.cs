@@ -330,6 +330,9 @@ namespace OpFlow.Data
     {
         public string CategoryName { get; set; }
         public List<ProcedureProfileDashboardGroup> Groups { get; set; }
+        public int NetUsage => Groups.Sum(r => r.NetUsage);
+        public int MaxUsage => Groups.Max(r => r.MaxUsage);
+        public decimal AvgUsage => NetUsage == 0 ? 0 : (decimal)NetUsage / Groups.Sum(r => r.CaseCount);
     }
 
     public class ProcedureProfileDashboardGroup
@@ -339,6 +342,7 @@ namespace OpFlow.Data
         public string InstrumentName { get; set; }
         public int TrayQuantity => Results.First().TrayQuantity;
         public int NetUsage => Results.Sum(r => r.NetUsage);
+        public int CaseCount => Results.Sum(r => r.CaseCount);
         public int MaxUsage => Results.Max(r => r.MaxUsage);
         public decimal AvgUsage => NetUsage == 0 ? 0 : (decimal)NetUsage / Results.Sum(r => r.CaseCount);
         public string Category => Results.First().Category;

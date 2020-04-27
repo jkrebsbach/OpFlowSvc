@@ -113,14 +113,12 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            int? providerId = null;
-
             var sqlHelper = new SqlHelper();
             
             var result = await sqlHelper.UpdateLocation(locationId, post.TrayHigh, post.TrayMed, post.TrayLow,
                 post.SurgeonHigh, post.SurgeonMed, post.SurgeonLow, post.AuditHigh, post.AuditMed, post.AuditLow, post.DailyTarget);
 
-            return Request.CreateResponse(HttpStatusCode.OK);
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         /// <summary>

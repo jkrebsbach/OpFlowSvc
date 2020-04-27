@@ -77,7 +77,6 @@ namespace OpFlow.Service.Test
             {
 
                 var fileName = @"C:\temp\sample_image.jpg";
-                var importTypeId = 5;
                 var flowImageId = 0;
 
                 var fileContents = File.ReadAllBytes(fileName);
