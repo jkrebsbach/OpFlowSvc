@@ -63,9 +63,9 @@ namespace OpFlow.Service.Controllers
             var cardCategories = await sqlHelper.GetCardCategories();
             var specialties = await sqlHelper.GetSpecialtiesInternal();
             var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
-            var cards = await sqlHelper.GetCards(user.ProviderID, user.LocationID);
-            var trays = await sqlHelper.GetItems("TRAY", null, null, user.ProviderID, user.LocationID);
-            var proposed = await sqlHelper.GetProposedTraysInternal();
+            var cards = await sqlHelper.GetCardsInternal(request.LocationFilter);
+            var trays = await sqlHelper.GetTraysInternal(request.LocationFilter);
+            var proposed = await sqlHelper.GetProposedTraysInternal(request.LocationFilter);
             var itemCategories = await sqlHelper.GetItemCategories(user.ProviderID, user.LocationID);
             var instrumentCategories = await sqlHelper.GetInstrumentCategories(user.ProviderID, user.LocationID);
             var providers = await sqlHelper.GetOpFlowSetup();
@@ -84,6 +84,23 @@ namespace OpFlow.Service.Controllers
                 Surgeons = surgeons,
                 Locations = providers.SelectMany(p => p.Locations)
             });
+        }
+
+        [SwaggerOperation("GetItems")]
+        [Route("items")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
+        [HttpPost]
+        public async Task<HttpResponseMessage> GetItems([FromBody] ProcedureProfileRequestPost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var items = await sqlHelper.GetItemsInternal(request.LocationFilter);
+
+            return Request.CreateResponse(HttpStatusCode.OK, items);
         }
 
         // GET api/values/5

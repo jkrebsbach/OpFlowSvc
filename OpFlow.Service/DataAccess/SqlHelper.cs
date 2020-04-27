@@ -1302,9 +1302,59 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayRationalization>> GetProposedTraysInternal()
+        public async Task<List<Card>> GetCardsInternal(List<int> locationId)
         {
-            var parameters = new SqlParameter[0];
+            var locationXml = GetIdentitySummary(locationId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationXml ?? (object)DBNull.Value),
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetCardsInternal", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Card>();
+
+            return result;
+        }
+
+        public async Task<List<ItemMaster>> GetTraysInternal(List<int> locationId)
+        {
+            var locationXml = GetIdentitySummary(locationId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationXml ?? (object)DBNull.Value),
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetTraysInternal", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
+
+            return result;
+        }
+
+        public async Task<List<ItemMaster>> GetItemsInternal(List<int> locationId)
+        {
+            var locationXml = GetIdentitySummary(locationId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationXml ?? (object)DBNull.Value),
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetItemsInternal", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
+
+            return result;
+        }
+
+        public async Task<List<TrayRationalization>> GetProposedTraysInternal(List<int> locationId)
+        {
+            var locationXml = GetIdentitySummary(locationId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationXml ?? (object)DBNull.Value),
+            };
             var dsSchedules = await ExecuteCommandAsync("GetProposedTraysInternal", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
