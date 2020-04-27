@@ -50,7 +50,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
+            var cardCategories = await sqlHelper.GetCardCategories();
             var result = await sqlHelper.GetCardCategoryXRef(surgeonId, specialtyId, cardName, hierarchyLevel, cardCategoryId,
                 user.ProviderID, user.LocationID);
 

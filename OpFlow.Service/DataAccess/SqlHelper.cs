@@ -3552,13 +3552,9 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<CardCategory>> GetCardCategories(int providerId, int locationId)
+        public async Task<List<CardCategory>> GetCardCategories()
         {
-            var parameters = new[]
-            {
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
-            };
+            var parameters = new SqlParameter[0];
             var dsSchedules = await ExecuteCommandAsync("GetCardCategories", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<CardCategory>();

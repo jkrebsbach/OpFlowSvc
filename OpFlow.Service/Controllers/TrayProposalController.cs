@@ -43,7 +43,7 @@ namespace OpFlow.Service.Controllers
             var vendors = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
             var questions = await sqlHelper.GetTrayQuestions(null, user.ProviderID, user.LocationID);
             var phases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
-            var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
+            var cardCategories = await sqlHelper.GetCardCategories();
             var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
             var proposalCardCategories = await sqlHelper.GetProposedTrayCardCategories(user.ProviderID, user.LocationID);
             var instruments = await sqlHelper.GetItems("instrument", null, true, user.ProviderID, user.LocationID);

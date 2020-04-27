@@ -58,7 +58,7 @@ namespace OpFlow.Service.Controllers
                 card.CardCategories = await sqlHelper.GetCardCategoryXRef(cardId.Value, user.ProviderID, user.LocationID);
             }
 
-            var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
+            var cardCategories = await sqlHelper.GetCardCategories();
             var surgeons = await sqlHelper.SearchUsers(null, 1, null, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
@@ -170,7 +170,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetCardCategories();
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

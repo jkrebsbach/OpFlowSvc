@@ -39,8 +39,10 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetProcedureProfile")]
         [Route("procedureProfile")]
+        [Route("procedureProfile/{procedureProfileId}")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
-        public async Task<HttpResponseMessage> GetProcedureProfile(int? procedureProfileId = null)
+        [HttpPost]
+        public async Task<HttpResponseMessage> GetProcedureProfile([FromBody] ProcedureProfileRequestPost request, int? procedureProfileId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
 
@@ -58,7 +60,7 @@ namespace OpFlow.Service.Controllers
                 trayUsage = await sqlHelper.GetProcedureProfileTrayUsage(procedureProfileId.Value, user.ProviderID, user.LocationID);
             }
 
-            var cardCategories = await sqlHelper.GetCardCategories(user.ProviderID, user.LocationID);
+            var cardCategories = await sqlHelper.GetCardCategories();
             var specialties = await sqlHelper.GetSpecialtiesInternal();
             var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
             var cards = await sqlHelper.GetCards(user.ProviderID, user.LocationID);
@@ -66,6 +68,7 @@ namespace OpFlow.Service.Controllers
             var proposed = await sqlHelper.GetProposedTraysInternal();
             var itemCategories = await sqlHelper.GetItemCategories(user.ProviderID, user.LocationID);
             var instrumentCategories = await sqlHelper.GetInstrumentCategories(user.ProviderID, user.LocationID);
+            var providers = await sqlHelper.GetOpFlowSetup();
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -78,7 +81,8 @@ namespace OpFlow.Service.Controllers
                 TrayUsage = trayUsage,
                 ItemCategories = itemCategories,
                 InstrumentCategories = instrumentCategories,
-                Surgeons = surgeons
+                Surgeons = surgeons,
+                Locations = providers.SelectMany(p => p.Locations)
             });
         }
 
