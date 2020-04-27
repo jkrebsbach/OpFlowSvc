@@ -55,9 +55,7 @@ namespace OpFlow.Service.Controllers
             var trayUsage = new List<ProcedureProfileTrayUsage>();
             if (procedureProfileId.HasValue)
             {
-                profile = await sqlHelper.GetProcedureProfile(procedureProfileId.Value);
-                
-                trayUsage = await sqlHelper.GetProcedureProfileTrayUsage(procedureProfileId.Value, user.ProviderID, user.LocationID);
+                profile = await sqlHelper.GetProcedureProfile(procedureProfileId.Value, request.LocationFilter);
             }
 
             var cardCategories = await sqlHelper.GetCardCategories();
@@ -78,7 +76,6 @@ namespace OpFlow.Service.Controllers
                 Cards = cards,
                 Trays = trays,
                 Proposed = proposed,
-                TrayUsage = trayUsage,
                 ItemCategories = itemCategories,
                 InstrumentCategories = instrumentCategories,
                 Surgeons = surgeons,
@@ -116,7 +113,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateProcedureProfile(procedureProfileId, request.ProfileName, request.CardCategoryID, request.SpecialtyID,
+            var result = await sqlHelper.UpdateProcedureProfile(procedureProfileId, request.ProfileName, request.LocationFilter, request.CardCategoryID, request.SpecialtyID,
                 user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -135,7 +132,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId);
+            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId, null);
 
             var result = "Item,Type,Category,Avg Used,Quantity\r\n";
             foreach (var item in profile.Items)
@@ -159,7 +156,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId);
+            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId, null);
 
             var result = "Tray,Instrument,Category,Reason,Avg Used, Quantity\r\n";
             foreach (var tray in profile.TrayItems)
@@ -380,7 +377,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
 
-            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId);
+            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId, request.LocationFilter);
 
             var traySummary = profile.TrayItems.GroupBy(p => p.TrayName).Select(p => new ProfileItem()
             {
@@ -451,7 +448,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var cardItems = new List<CardItem>();
-            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId);
+            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId, request.LocationFilter);
             foreach (var cardId in request.Cards)
             {
                 var items = await sqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
@@ -522,7 +519,7 @@ namespace OpFlow.Service.Controllers
         [Route("procedureProfileDashboard")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [HttpPost]
-        public async Task<HttpResponseMessage> PutProcedureProfileDashboard(int? procedureProfileId, [FromBody] ProcedureProfileDashboardPost request)
+        public async Task<HttpResponseMessage> PutProcedureProfileDashboard(int procedureProfileId, [FromBody] ProcedureProfileDashboardPost request)
         {
             var user = await CacheUtil.GetUserSecurity();
 
@@ -530,7 +527,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateProcedureProfileDashboard(procedureProfileId, request.Cards, request.Trays, request.Proposals,
+            var result = await sqlHelper.UpdateProcedureProfileDashboard(procedureProfileId, request.LocationFilter, request.Cards, request.Trays, request.Proposals,
                 user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);

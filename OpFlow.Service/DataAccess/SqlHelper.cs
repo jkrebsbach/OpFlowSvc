@@ -3757,11 +3757,14 @@ namespace OpFlow.Service.DataAccess
             return results;
         }
 
-        public async Task<ProcedureProfile> GetProcedureProfile(int procedureProfileId)
+        public async Task<ProcedureProfile> GetProcedureProfile(int procedureProfileId, List<int> locationId)
         {
+            var locationXml = GetIdentitySummary(locationId);
+
             var parameters = new[]
             {
-                new SqlParameter("procedure_profile_id", procedureProfileId)
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("location_id", locationXml ?? (object)DBNull.Value)
             };
             var dsSchedules = await ExecuteCommandAsync("GetProcedureProfile", parameters);
 
@@ -3778,6 +3781,9 @@ namespace OpFlow.Service.DataAccess
             var comparableItems = dsSchedules.Tables[8].DataTableToList<ComparableItem>();
             var comparableInstruments = dsSchedules.Tables[9].DataTableToList<ComparableInstrument>();
 
+            result.TrayUsage = dsSchedules.Tables[10].DataTableToList<ProcedureProfileTrayUsage>();
+            result.AssociatedTrays = dsSchedules.Tables[11].DataTableToList<ProcedureProfileAssociatedTray>();
+
             foreach (var item in result.Items)
             {
                 item.ComparableItems = comparableItems.Where(c => c.ItemID == item.ItemID).ToList();
@@ -3793,24 +3799,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<ProcedureProfileTrayUsage>> GetProcedureProfileTrayUsage(int procedureProfileId, int providerId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("procedure_profile_id", procedureProfileId),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetProcedureProfileTrayUsage", parameters);
-
-            var results = dsSchedules.Tables[0].DataTableToList<ProcedureProfileTrayUsage>();
-            
-            return results;
-        }
-
-        public async Task<int> UpdateProcedureProfile(int? procedureProfileId, string profileName, List<int> cardCategoryId, List<int> specialtyId,
+        public async Task<int> UpdateProcedureProfile(int? procedureProfileId, string profileName, List<int> locationFilter, List<int> cardCategoryId, List<int> specialtyId,
             int providerId, int locationId)
         {
+            var locationXml = GetIdentitySummary(locationFilter);
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
             var specialtyXml = GetIdentitySummary(specialtyId);
             
@@ -3818,6 +3810,7 @@ namespace OpFlow.Service.DataAccess
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId ?? (object)DBNull.Value),
                 new SqlParameter("profile_name", profileName),
+                new SqlParameter("location_filter_id", locationXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
@@ -3830,16 +3823,18 @@ namespace OpFlow.Service.DataAccess
             return results.First().Identifier;
         }
 
-        public async Task<int> UpdateProcedureProfileDashboard(int? procedureProfileId, List<int> cards, List<int> trays, List<int> proposed,
+        public async Task<int> UpdateProcedureProfileDashboard(int procedureProfileId, List<int> locationFilter, List<int> cards, List<int> trays, List<int> proposed,
             int providerId, int locationId)
         {
+            var locationXml = GetIdentitySummary(locationFilter);
             var cardXml = GetIdentitySummary(cards);
             var trayXml = GetIdentitySummary(trays);
             var proposedXml = GetIdentitySummary(proposed);
 
             var parameters = new[]
             {
-                new SqlParameter("procedure_profile_id", procedureProfileId ?? (object)DBNull.Value),
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("location_filter_id", locationXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_proposal_id", proposedXml ?? (object)DBNull.Value),

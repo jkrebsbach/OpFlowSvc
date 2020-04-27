@@ -172,6 +172,8 @@ namespace OpFlow.Data
         public List<ProfileTray> Trays { get; set; }
         public List<ProfileItem> TrayItems { get; set; }
         public List<ProfileCardCategory> CardCategories { get; set; }
+        public List<ProcedureProfileTrayUsage> TrayUsage { get; set; }
+        public List<ProcedureProfileAssociatedTray> AssociatedTrays { get; set; }
     }
 
     public class ProcedureProfileRequestPost
@@ -184,6 +186,11 @@ namespace OpFlow.Data
         public string TrayName { get; set; }
         public int CardCount { get; set; }
         public int SurgeonCount { get; set; }
+    }
+    public class ProcedureProfileAssociatedTray
+    {
+        public string TrayName { get; set; }
+        public string CardName { get; set; }
     }
 
     public class ProfileSpecialty : Specialty
@@ -250,6 +257,7 @@ namespace OpFlow.Data
     public class ProcedureProfilePost
     {
         public string ProfileName { get; set; }
+        public List<int> LocationFilter { get; set; }
         public List<int> CardCategoryID { get; set; }
         public List<int> SpecialtyID { get; set; }
     }
@@ -271,6 +279,7 @@ namespace OpFlow.Data
 
     public class ProcedureProfileDashboardPost
     {
+        public List<int> LocationFilter { get; set; }
         public List<int> Cards { get; set; }
         public List<int> Trays { get; set; }
         public List<int> Proposals { get; set; }
@@ -294,7 +303,7 @@ namespace OpFlow.Data
 
     public class ProcedureProfileCardComparisonRequest
     {
-
+        public List<int> LocationFilter { get; set; }
         public List<int> Cards { get; set; }
         public List<int> Trays { get; set; }
     }
@@ -315,6 +324,12 @@ namespace OpFlow.Data
         public decimal ProfileAvgCount { get; set; }
         public decimal ProfileAvgCost { get; set; }
         public decimal ProfileAvgInstruments { get; set; }
+    }
+
+    public class ProcedureProfileDashboardCategoryGroup
+    {
+        public string CategoryName { get; set; }
+        public List<ProcedureProfileDashboardGroup> Groups { get; set; }
     }
 
     public class ProcedureProfileDashboardGroup
