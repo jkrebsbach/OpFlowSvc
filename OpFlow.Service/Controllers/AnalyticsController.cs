@@ -992,16 +992,24 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetAnalyticsTrayConsolidationData(post.SpecialtyId, post.TrayId, post.Reallocation,
                 post.MaxSize, post.MinCards, post.MinConsolidationInstances, post.MinTargetInstances, post.Overlap, post.Effect, post.ProcedureGroup, post.Group, user.ProviderID, user.LocationID);
             
-            return Request.CreateResponse(HttpStatusCode.OK, analytics);
-            /*
-            var consolidation = new DataView(analytics);
-            consolidation.Sort = "CardCount DESC";
-
             if (format?.ToUpper() == "CSV")
             {
-                return ResponseHelper.CsvResponse(consolidation.ToTable());
+                var result = "Group,TrayName,Cards,Instruments,Instances,Audits,Counts,TrayAvgUsage\r\n";
+
+                foreach (var group in analytics)
+                {
+                    foreach (var c in group.Consolidations)
+                    {
+                        result += $"\"{group.GroupName}\",\"{c.TrayName}\",{c.CardCount},{c.TrayInstrumentCount},{c.TrayInstances}" +
+                            $"{c.TrayAudits},{c.TrayCounts},{c.TrayAvgUsage}\r\n";
+                    }
+                }
+
+                return ResponseHelper.CsvResponse(result);
             }
 
+            return Request.CreateResponse(HttpStatusCode.OK, analytics);
+            /*
             var datasets = new Dictionary<string, DataTable>
             {
                 ["TrayConsolidation"] = consolidation.ToTable()
