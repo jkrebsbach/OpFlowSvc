@@ -179,6 +179,7 @@ namespace OpFlow.Data
     public class ProcedureProfileRequestPost
     {
         public List<int> LocationFilter { get; set; }
+        public List<int> TrayID { get; set; }
     }
 
     public class ProcedureProfileTrayUsage

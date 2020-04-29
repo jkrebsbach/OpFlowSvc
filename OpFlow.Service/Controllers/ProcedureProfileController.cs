@@ -101,6 +101,23 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, items);
         }
 
+        [SwaggerOperation("GetTrayItems")]
+        [Route("trayItems")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(ProcedureProfile))]
+        [HttpPost]
+        public async Task<HttpResponseMessage> GetTrayItems([FromBody] ProcedureProfileRequestPost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var items = await sqlHelper.GetTrayItemsInternal(request.TrayID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, items);
+        }
+
         // GET api/values/5
         [SwaggerOperation("PostProcedureProfile")]
         [Route("procedureProfile")]

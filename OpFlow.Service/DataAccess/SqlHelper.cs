@@ -1347,6 +1347,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<ItemTray>> GetTrayItemsInternal(List<int> trayId)
+        {
+            var trayXml = GetIdentitySummary(trayId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetTrayItemsInternal", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ItemTray>();
+
+            return result;
+        }
+
         public async Task<List<TrayRationalization>> GetProposedTraysInternal(List<int> locationId)
         {
             var locationXml = GetIdentitySummary(locationId);
