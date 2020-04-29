@@ -236,6 +236,7 @@ namespace OpFlow.Data
     public class ComparableInstrument
     {
         public int ComparableInstrumentID { get; set; }
+        public int LocationID { get; set; }
         public int InstrumentID { get; set; }
         public int TrayItemID { get; set; }
         public int RelatedInstrumentID { get; set; }

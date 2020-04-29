@@ -138,7 +138,7 @@ namespace OpFlow.Service.Controllers
             var result = "Item,Type,Category,Avg Used,Quantity\r\n";
             foreach (var item in profile.Items)
             {
-                result += $"\"{item.ItemDescription}\",\"{item.ItemType}\",\"{item.Category}\",{item.AvgUsed},{item.Quantity}\r\n";
+                result += $"\"{item.ItemDescription.Replace("\"", "\"\"")}\",\"{item.ItemType.Replace("\"", "\"\"")}\",\"{item.Category.Replace("\"", "\"\"")}\",{item.AvgUsed},{item.Quantity}\r\n";
             }
 
             return ResponseHelper.CsvResponse(result);
@@ -149,7 +149,7 @@ namespace OpFlow.Service.Controllers
         [Route("csvTray/{procedureProfileId}")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetProcedureProfileTrayCsv(int procedureProfileId)
+        public async Task<HttpResponseMessage> GetProcedureProfileTrayCsv(int procedureProfileId, int locationId)
         {
             var user = await CacheUtil.GetUserSecurity();
 
@@ -160,9 +160,21 @@ namespace OpFlow.Service.Controllers
             var profile = await sqlHelper.GetProcedureProfile(procedureProfileId, null);
 
             var result = "Tray,Instrument,Category,Reason,Avg Used, Quantity\r\n";
-            foreach (var tray in profile.TrayItems)
+            foreach (var instrument in profile.TrayItems)
             {
-                result += $"\"{tray.TrayName}\",\"{tray.ItemDescription}\",\"{tray.Category}\",\"{tray.Reason}\",{tray.AvgUsed},{tray.Quantity}\r\n";
+                var comparables = instrument.ComparableInstruments.Where(ci => ci.LocationID == locationId);
+
+                if (comparables.Any())
+                {
+                    foreach (var comparable in comparables)
+                    {
+                        result += $"\"{instrument.TrayName.Replace("\"", "\"\"")}\",\"{comparable.ItemDescription.Replace("\"", "\"\"")}\",\"{instrument.Category.Replace("\"", "\"\"")}\",\"{instrument.Reason}\",{instrument.AvgUsed},{instrument.Quantity}\r\n";
+                    }
+                }
+                else
+                {
+                    result += $"\"{instrument.TrayName.Replace("\"", "\"\"")}\",\"{instrument.ItemDescription.Replace("\"", "\"\"")}\",\"{instrument.Category.Replace("\"", "\"\"")}\",\"{instrument.Reason}\",{instrument.AvgUsed},{instrument.Quantity}\r\n";
+                }
             }
 
             return ResponseHelper.CsvResponse(result);
