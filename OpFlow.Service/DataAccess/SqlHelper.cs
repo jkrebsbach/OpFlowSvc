@@ -1347,6 +1347,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<CardItem>> GetCardItemsInternal(List<int> cardId)
+        {
+            var cardXml = GetIdentitySummary(cardId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("card_id", cardXml)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetCardItemsInternal", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<CardItem>();
+
+            return result;
+        }
+
         public async Task<List<ItemTray>> GetTrayItemsInternal(List<int> trayId)
         {
             var trayXml = GetIdentitySummary(trayId);

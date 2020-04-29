@@ -177,7 +177,7 @@ namespace OpFlow.Service.Controllers
             var profile = await sqlHelper.GetProcedureProfile(procedureProfileId, null);
 
             var result = "Tray,Instrument,Category,Reason,Avg Used, Quantity\r\n";
-            foreach (var instrument in profile.TrayItems)
+            foreach (var instrument in profile.TrayItems.OrderBy(ti => ti.Category).ThenBy(ti => ti.ItemDescription))
             {
                 var comparables = instrument.ComparableInstruments.Where(ci => ci.LocationID == locationId);
 
@@ -427,26 +427,20 @@ namespace OpFlow.Service.Controllers
             List<CardItem> studyItems = new List<CardItem>();
 
 
-            foreach (var cardId in request.Trays)
+            var cardItems = await sqlHelper.GetCardItemsInternal(request.Cards);
+            studyItems.AddRange(cardItems);
+            
+            var trayItems = await sqlHelper.GetTrayItemsInternal(request.Trays);
+            if (trayItems.Any())
             {
-                var cardItems = await sqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
-                studyItems.AddRange(cardItems);
-            }
-
-            foreach (var trayId in request.Trays)
-            {
-                var trayItems = await sqlHelper.GetTrayItems(trayId, user.ProviderID, user.LocationID);
-                if (trayItems.Any())
+                studyItems.Add(new CardItem()
                 {
-                    studyItems.Add(new CardItem()
-                    {
-                        Category = "TRAY",
-                        ItemDescription = trayItems.First().TrayName,
-                        Quantity = trayItems.Sum(ti => ti.Quantity)
-                    });
-                }
+                    Category = "TRAY",
+                    ItemDescription = trayItems.First().TrayName,
+                    Quantity = trayItems.Sum(ti => ti.Quantity)
+                });
             }
-
+            
             var result = new List<ProcedureProfileCardComparison>();
             result.Add(new ProcedureProfileCardComparison()
             {
