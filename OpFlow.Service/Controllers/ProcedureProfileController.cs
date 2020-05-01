@@ -370,7 +370,8 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
 
-            var data = await sqlHelper.GetProcedureProfileDashboardComparison(procedureProfileId, request.SpecialtyID, request.CardCategoryID, request.SurgeonID, request.ProposalID);
+            var data = await sqlHelper.GetProcedureProfileDashboardComparison(procedureProfileId, 
+                request.LocationFilter, request.SpecialtyID, request.CardCategoryID, request.SurgeonID, request.ProposalID);
             var comparisons = data.Comparisons;
 
             var categories = comparisons.OrderBy(c => c.GroupName).Select(c => c.GroupName).Distinct();

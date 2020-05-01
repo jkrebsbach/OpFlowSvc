@@ -783,9 +783,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<ProcedureProfileDashboardComparisonQuery> GetProcedureProfileDashboardComparison(int procedureProfileId, List<int> specialtyId, List<int> cardCategoryId, 
-            List<int> surgeonId, List<int> proposalId)
+        public async Task<ProcedureProfileDashboardComparisonQuery> GetProcedureProfileDashboardComparison(int procedureProfileId, 
+            List<int> locationId, List<int> specialtyId, List<int> cardCategoryId, List<int> surgeonId, List<int> proposalId)
         {
+            var locationXml = GetIdentitySummary(locationId);
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
@@ -794,6 +795,7 @@ namespace OpFlow.Service.DataAccess
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("location_id", locationXml ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
