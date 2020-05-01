@@ -518,7 +518,7 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
-        public async Task<DataSet> GetAnalyticsTrayScopeData(List<int> specialtyId, List<int> trayId, int providerId, int locationId)
+        public async Task<DataSet> GetAnalyticsTrayScopeData(List<int> specialtyId, List<int> trayId, string group, int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var trayXml = GetIdentitySummary(trayId);
@@ -527,6 +527,7 @@ namespace OpFlow.Service.DataAccess
             {
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("group", group ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

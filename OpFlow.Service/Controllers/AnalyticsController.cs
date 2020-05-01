@@ -107,7 +107,7 @@ namespace OpFlow.Service.Controllers
                     break;
                 case "instrument":
                 default:
-                    usage.Sort = "Instrument";
+                    usage.Sort = "Instrument DESC";
                     break;
             }
 
@@ -1126,7 +1126,7 @@ namespace OpFlow.Service.Controllers
                     rationalization.Sort = "InstrumentCount";
                     break;
                 case "instrument_avg":
-                    rationalization.Sort = "UsageQuantity DESC";
+                    rationalization.Sort = "UsageQuantity";
                     break;
                 case "tray_open":
                     rationalization.Sort = "TrayOpened";
@@ -1247,7 +1247,7 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            var analytics = await sqlHelper.GetAnalyticsTrayScopeData(post.SpecialtyId, post.TrayId, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetAnalyticsTrayScopeData(post.SpecialtyId, post.TrayId, post.Group, user.ProviderID, user.LocationID);
 
             var rationalization = new DataView(analytics.Tables[0]);
 
