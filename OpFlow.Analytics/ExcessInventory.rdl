@@ -439,7 +439,7 @@ where tray.tray_item_id = 59356</CommandText>
                             </ChartLegend>
                           </ChartLegends>
                           <Palette>Pacific</Palette>
-                          <DynamicHeight>=(0.75 + Count(Fields!InstrumentName.Value) * 0.2) &amp; " in"</DynamicHeight>
+                          <DynamicHeight>=(0.5 + Count(Fields!InstrumentName.Value) * 0.2) &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>
@@ -467,6 +467,7 @@ where tray.tray_item_id = 59356</CommandText>
                           </Style>
                         </Chart>
                         <ColSpan>2</ColSpan>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell />
