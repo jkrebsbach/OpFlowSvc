@@ -805,8 +805,7 @@ namespace OpFlow.Service.DataAccess
 
             var result = new ProcedureProfileDashboardComparisonQuery()
             {
-                Comparisons = response.Tables[0].DataTableToList<ProcedureProfileDashboardComparison>(),
-                Proposals = response.Tables[1].DataTableToList<ProcedureProfileProposalData>()
+                Comparisons = response.Tables[0].DataTableToList<ProcedureProfileDashboardComparison>()
             };
 
             return result;

@@ -16,6 +16,10 @@
         <CommandText>exec GetAnalyticsDisposableUsage null, null, null, '&lt;table&gt;&lt;row&gt;&lt;col&gt;1&lt;/col&gt;&lt;/row&gt;&lt;/table&gt;', 1, 1</CommandText>
       </Query>
       <Fields>
+        <Field Name="CardName">
+          <DataField>CardName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="ItemName">
           <DataField>ItemName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -63,7 +67,7 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>4.40625in</Width>
+                  <Width>5.84375in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -79,7 +83,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!ProcedureGroup.Value</Value>
+                                  <Value>="Procedure Group: " &amp; Fields!ProcedureGroup.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                   </Style>
@@ -105,7 +109,43 @@
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>3.34375in</Height>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="CardName1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>="Card: " &amp; Fields!CardName.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>CardName1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>None</Style>
+                            </Border>
+                            <BackgroundColor>White</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>4.11458in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -228,7 +268,7 @@
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Sum(Fields!QtyOpenInit.Value)</Y>
+                                      <Y>=Avg(Fields!QtyOpenInit.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
                                       <Style>
@@ -266,7 +306,7 @@
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Sum(Fields!QtyOpenAdded.Value)</Y>
+                                      <Y>=Avg(Fields!QtyOpenAdded.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
                                       <Style>
@@ -590,22 +630,8 @@
                               <ColumnSeparatorColor>Black</ColumnSeparatorColor>
                             </ChartLegend>
                           </ChartLegends>
-                          <ChartTitles>
-                            <ChartTitle Name="Default">
-                              <Caption>Chart Title</Caption>
-                              <Style>
-                                <BackgroundGradientType>None</BackgroundGradientType>
-                                <FontSize>9pt</FontSize>
-                                <FontWeight>Normal</FontWeight>
-                                <TextAlign>Left</TextAlign>
-                                <VerticalAlign>Top</VerticalAlign>
-                                <Color>#a6a6a6</Color>
-                              </Style>
-                              <Position>TopLeft</Position>
-                            </ChartTitle>
-                          </ChartTitles>
                           <Palette>Pacific</Palette>
-                          <DynamicHeight>=(2 + CountDistinct(Fields!ItemName.Value)) &amp; " in"</DynamicHeight>
+                          <DynamicHeight>=(0.75 + CountDistinct(Fields!ItemName.Value)) &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>
@@ -658,14 +684,33 @@
                   </SortExpressions>
                   <TablixMembers>
                     <TablixMember />
-                    <TablixMember />
+                    <TablixMember>
+                      <TablixMembers>
+                        <TablixMember>
+                          <Group Name="CardName">
+                            <GroupExpressions>
+                              <GroupExpression>=Fields!CardName.Value</GroupExpression>
+                            </GroupExpressions>
+                          </Group>
+                          <SortExpressions>
+                            <SortExpression>
+                              <Value>=Fields!CardName.Value</Value>
+                            </SortExpression>
+                          </SortExpressions>
+                          <TablixMembers>
+                            <TablixMember />
+                            <TablixMember />
+                          </TablixMembers>
+                        </TablixMember>
+                      </TablixMembers>
+                    </TablixMember>
                   </TablixMembers>
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>DisposableUsage</DataSetName>
-            <Height>3.59375in</Height>
-            <Width>4.40625in</Width>
+            <Height>4.61458in</Height>
+            <Width>5.84375in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -673,10 +718,10 @@
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>3.59375in</Height>
+        <Height>4.61458in</Height>
         <Style />
       </Body>
-      <Width>4.40625in</Width>
+      <Width>5.84375in</Width>
       <Page>
         <Style />
       </Page>

@@ -375,7 +375,6 @@ namespace OpFlow.Service.Controllers
             var comparisons = data.Comparisons;
 
             var categories = comparisons.OrderBy(c => c.GroupName).Select(c => c.GroupName).Distinct();
-            var proposalNames = data.Proposals.Select(c => c.TrayName).Distinct();
 
             var results = comparisons.OrderBy(c => c.Category).ThenBy(c => c.TrayName).ThenBy(c => c.InstrumentName).GroupBy(c => c.Category).Select(c =>
                 new ProcedureProfileDashboardCategoryGroup()
@@ -386,7 +385,6 @@ namespace OpFlow.Service.Controllers
                     {
                         TrayName = i.Key.TrayName,
                         InstrumentName = i.Key.InstrumentName,
-                        Proposals = ProcedureProfileProposalData.Summarize(proposalNames, data.Proposals, i.Key.InstrumentName),
                         Results = ProcedureProfileDashboardComparison.Summarize(categories, i.ToList())
                     }).ToList()
                 });
@@ -395,7 +393,6 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, new {
                 Categories = categories,
-                ProposedTrays = proposalNames,
                 Results = results
             });
         }

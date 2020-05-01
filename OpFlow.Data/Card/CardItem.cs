@@ -349,7 +349,6 @@ namespace OpFlow.Data
         public string Category => Results.First().Category;
         public string Reason => Results.First().Reason;
 
-        public List<ProcedureProfileProposalData> Proposals { get; set; }
         public List<ProcedureProfileDashboardComparison> Results { get; set; }
     }
 
@@ -357,7 +356,6 @@ namespace OpFlow.Data
     public class ProcedureProfileDashboardComparisonQuery
     {
         public List<ProcedureProfileDashboardComparison> Comparisons { get; set; }
-        public List<ProcedureProfileProposalData> Proposals { get; set; }
     }
 
     public class ProcedureProfileDashboardComparison
@@ -381,27 +379,6 @@ namespace OpFlow.Data
             foreach (var category in categories)
             {
                 result.Add(data.FirstOrDefault(d => d.GroupName == category) ?? new ProcedureProfileDashboardComparison());
-            }
-
-            return result;
-        }
-    }
-
-    public class ProcedureProfileProposalData
-    {
-        public string TrayName { get; set; }
-        public string InstrumentName { get; set; }
-        public int Quantity { get; set; }
-
-        public static List<ProcedureProfileProposalData> Summarize(IEnumerable<string> proposalNames, List<ProcedureProfileProposalData> proposals, string instrumentName)
-        {
-            var result = new List<ProcedureProfileProposalData>();
-
-            foreach (var proposalName in proposalNames)
-            {
-                result.Add(
-                    proposals.FirstOrDefault(p => p.TrayName == proposalName && p.InstrumentName == instrumentName) ?? new ProcedureProfileProposalData()
-                    );
             }
 
             return result;
