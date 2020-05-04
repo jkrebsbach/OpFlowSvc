@@ -504,7 +504,9 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            if (post.SpecialtyID == null &&
+            if (post.StartDate == null &&
+                post.EndDate == null &&
+                post.SpecialtyID == null &&
                 post.SurgeonID == null &&
                 post.CardID == null &&
                 post.ItemID == null)

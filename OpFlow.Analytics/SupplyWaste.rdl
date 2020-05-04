@@ -18,17 +18,17 @@
 	item_master.description 
 	END ItemName,
 	specialty.description Specialty,
-	item_master.unit_cost ItemCost,
+	IsNull(item_master.unit_cost, 0.0) ItemCost,
 	card.description CardName,
 	card_item.qty_open CardQuantity,
 	CASE WHEN IsNull(card_item.qty_hold, '0') = '0' THEN 0
-		WHEN card_item.qty_open &lt; scic.qty_open THEN 0
-		ELSE card_item.qty_open - scic.qty_open END HoldUsed,
+		WHEN card_item.qty_open &lt; scic.qty_used THEN 0
+		ELSE card_item.qty_open - scic.qty_used END HoldUsed,
 	CASE WHEN IsNull(card_item.qty_hold, '0') &lt;&gt; '0' THEN 0
-		WHEN card_item.qty_open &lt; scic.qty_open THEN 0
-		ELSE card_item.qty_open - scic.qty_open
+		WHEN card_item.qty_open &lt; scic.qty_used THEN 0
+		ELSE card_item.qty_open - scic.qty_used
 	END TotalAdded,
-	scic.qty_open TotalUsed,
+	scic.qty_used TotalUsed,
 	1 Bleeding ,
 	1 Anatomy ,
 	1 Preference ,
@@ -41,7 +41,7 @@
 	1 Miscommunication,
 	1 Surgeon,
 	1 Circulator,
-	1 Scrub 
+	1 Scrub
 from surgery s
 JOIN surgery_card_item_counts scic ON s.surgery_id = scic.surgery_id
 	AND scic.type = 'U'
@@ -140,6 +140,9 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
           <DataField>Scrub</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
+        <Field Name="ItemDescription">
+          <Value>=Trim(Fields!ItemName.Value) &amp; " - $" &amp; Format(Fields!ItemCost.Value, "#,##0.00")</Value>
+        </Field>
       </Fields>
     </DataSet>
   </DataSets>
@@ -167,7 +170,8 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Specialty.Value</Value>
+                                  <Value>=Iif(Fields!CardName.Value IS NOTHING, Fields!Specialty.Value,
+Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                   </Style>
@@ -203,15 +207,15 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                               <ChartMember>
                                 <Group Name="Chart1_CategoryGroup">
                                   <GroupExpressions>
-                                    <GroupExpression>=Fields!ItemName.Value</GroupExpression>
+                                    <GroupExpression>=Fields!ItemDescription.Value</GroupExpression>
                                   </GroupExpressions>
                                 </Group>
                                 <SortExpressions>
                                   <SortExpression>
-                                    <Value>=Fields!ItemName.Value</Value>
+                                    <Value>=Fields!ItemDescription.Value</Value>
                                   </SortExpression>
                                 </SortExpressions>
-                                <Label>=Fields!ItemName.Value</Label>
+                                <Label>=Fields!ItemDescription.Value</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartCategoryHierarchy>
@@ -292,7 +296,7 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
                                       <Style>
-                                        <Format>0.#</Format>
+                                        <Format>$0.##</Format>
                                       </Style>
                                       <UseValueAsLabel>true</UseValueAsLabel>
                                       <Visible>true</Visible>
@@ -869,6 +873,7 @@ Cstr(Sum(Fields!Scrub.Value))</Label>
                   <Group Name="Specialty">
                     <GroupExpressions>
                       <GroupExpression>=Fields!Specialty.Value</GroupExpression>
+                      <GroupExpression>=Fields!CardName.Value</GroupExpression>
                     </GroupExpressions>
                     <PageBreak>
                       <BreakLocation>Between</BreakLocation>
