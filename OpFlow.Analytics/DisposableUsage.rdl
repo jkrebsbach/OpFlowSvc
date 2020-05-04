@@ -160,7 +160,14 @@
                                 </Group>
                                 <SortExpressions>
                                   <SortExpression>
-                                    <Value>=Fields!ItemName.Value</Value>
+                                    <Value>=Iif(Parameters!Order.Value = "item", Fields!ItemName.Value, 0)</Value>
+                                    <Direction>Descending</Direction>
+                                  </SortExpression>
+                                  <SortExpression>
+                                    <Value>=Iif(Parameters!Order.Value = "case", Fields!ItemCounts.Value, 0)</Value>
+                                  </SortExpression>
+                                  <SortExpression>
+                                    <Value>=Iif(Parameters!Order.Value = "qty", Fields!QtyOpen.Value, 0)</Value>
                                   </SortExpression>
                                 </SortExpressions>
                                 <Label>=Fields!ItemName.Value</Label>
@@ -727,10 +734,23 @@
       </Page>
     </ReportSection>
   </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="Order">
+      <DataType>String</DataType>
+      <Prompt>Order</Prompt>
+    </ReportParameter>
+  </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
       <NumberOfColumns>4</NumberOfColumns>
       <NumberOfRows>2</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>Order</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
     </GridLayoutDefinition>
   </ReportParametersLayout>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>

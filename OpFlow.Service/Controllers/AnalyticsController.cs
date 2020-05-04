@@ -183,8 +183,8 @@ namespace OpFlow.Service.Controllers
                 case "qty":
                     usage.Sort = "QtyOpen DESC";
                     break;
-                case "tray":
-                    usage.Sort = "TrayName DESC";
+                case "case":
+                    usage.Sort = "ItemCounts DESC";
                     break;
                 case "item":
                 default:
@@ -196,6 +196,11 @@ namespace OpFlow.Service.Controllers
             {
                 return ResponseHelper.CsvResponse(usage.ToTable());
             }
+            
+            var parameters = new ReportParameter[]
+            {
+                new ReportParameter("Order", post.Order)
+            };
 
             var datasets = new Dictionary<string, DataTable>
             {
@@ -204,7 +209,7 @@ namespace OpFlow.Service.Controllers
 
             var reportName = "DisposableUsage";
 
-            var result = ReportHelper.GetReport(reportName, format, datasets);
+            var result = ReportHelper.GetReport(reportName, format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {

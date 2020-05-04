@@ -341,13 +341,14 @@ namespace OpFlow.Data
 
         public string TrayName { get; set; }
         public string InstrumentName { get; set; }
-        public int TrayQuantity => Results.First().TrayQuantity;
+        public string Relationship { get; set; }
+        public int TrayQuantity => Results.Max(r => r.TrayQuantity);
         public int NetUsage => Results.Sum(r => r.NetUsage);
         public int CaseCount => Results.Sum(r => r.CaseCount);
         public int MaxUsage => Results.Max(r => r.MaxUsage);
         public decimal AvgUsage => NetUsage == 0 ? 0 : (decimal)NetUsage / Results.Sum(r => r.CaseCount);
-        public string Category => Results.First().Category;
-        public string Reason => Results.First().Reason;
+        public string Category => Results.Max(r => r.Category);
+        public string Reason => Results.Max(r => r.Reason);
 
         public List<ProcedureProfileDashboardComparison> Results { get; set; }
     }
@@ -363,6 +364,7 @@ namespace OpFlow.Data
         public string GroupName { get; set; }
         public string TrayName { get; set; }
         public string InstrumentName { get; set; }
+        public string Relationship { get; set; }
         public int TrayQuantity { get; set; }
         public int NetUsage { get; set; }
         public int MaxUsage { get; set; }

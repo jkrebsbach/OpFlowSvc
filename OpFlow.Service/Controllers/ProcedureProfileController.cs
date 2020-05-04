@@ -376,15 +376,16 @@ namespace OpFlow.Service.Controllers
 
             var categories = comparisons.OrderBy(c => c.GroupName).Select(c => c.GroupName).Distinct();
 
-            var results = comparisons.OrderBy(c => c.Category).ThenBy(c => c.TrayName).ThenBy(c => c.InstrumentName).GroupBy(c => c.Category).Select(c =>
+            var results = comparisons.OrderBy(c => c.Category).ThenBy(c => c.Relationship).ThenBy(c => c.InstrumentName).GroupBy(c => c.Category).Select(c =>
                 new ProcedureProfileDashboardCategoryGroup()
                 {
                     CategoryName = c.Key,
-                    Groups = c.GroupBy(i => new { i.TrayName, i.InstrumentName }).Select(i =>
+                    Groups = c.GroupBy(i => new { i.TrayName, i.InstrumentName, i.Relationship }).Select(i =>
                     new ProcedureProfileDashboardGroup()
                     {
                         TrayName = i.Key.TrayName,
                         InstrumentName = i.Key.InstrumentName,
+                        Relationship = i.Key.Relationship,
                         Results = ProcedureProfileDashboardComparison.Summarize(categories, i.ToList())
                     }).ToList()
                 });
