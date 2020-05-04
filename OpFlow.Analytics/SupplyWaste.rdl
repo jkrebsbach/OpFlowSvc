@@ -225,9 +225,6 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                                 <Label>Total Used</Label>
                               </ChartMember>
                               <ChartMember>
-                                <Label>Item Cost</Label>
-                              </ChartMember>
-                              <ChartMember>
                                 <Label>Card Quantity</Label>
                               </ChartMember>
                               <ChartMember>
@@ -281,44 +278,6 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                                 <ChartItemInLegend>
                                   <LegendText>Avg Used</LegendText>
                                 </ChartItemInLegend>
-                                <ValueAxisName>Primary</ValueAxisName>
-                                <CategoryAxisName>Primary</CategoryAxisName>
-                                <ChartSmartLabel>
-                                  <CalloutLineColor>Black</CalloutLineColor>
-                                  <MinMovingDistance>0pt</MinMovingDistance>
-                                </ChartSmartLabel>
-                              </ChartSeries>
-                              <ChartSeries Name="instrument_cost">
-                                <ChartDataPoints>
-                                  <ChartDataPoint>
-                                    <ChartDataPointValues>
-                                      <Y>=Max(Fields!ItemCost.Value)</Y>
-                                    </ChartDataPointValues>
-                                    <ChartDataLabel>
-                                      <Style>
-                                        <Format>$0.##</Format>
-                                      </Style>
-                                      <UseValueAsLabel>true</UseValueAsLabel>
-                                      <Visible>true</Visible>
-                                    </ChartDataLabel>
-                                    <Style />
-                                    <ChartMarker>
-                                      <Style />
-                                    </ChartMarker>
-                                    <DataElementOutput>Output</DataElementOutput>
-                                  </ChartDataPoint>
-                                </ChartDataPoints>
-                                <Type>Bar</Type>
-                                <Style />
-                                <ChartEmptyPoints>
-                                  <Style />
-                                  <ChartMarker>
-                                    <Style />
-                                  </ChartMarker>
-                                  <ChartDataLabel>
-                                    <Style />
-                                  </ChartDataLabel>
-                                </ChartEmptyPoints>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
                                 <ChartSmartLabel>

@@ -20,16 +20,18 @@ namespace OpFlow.Service.Test
         {
             //var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\TestSchedule.csv";
             //var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\UAB_Neuro_Cards.csv";
-            var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\TrainingTrays.csv";
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\UAB_SPM_May4.csv";
+            var importTypeId = 6; // schedule without card
             //var importTypeId = 5; // cards
-            var importTypeId = 3; // trays
+            //var importTypeId = 3; // trays
+
 
             var sqlHelper = new SqlHelper();
             //var secureSqlHelper = new SecureSqlHelper("SecureConnection");
             var secureSqlHelper = new SecureSqlHelper("InvalidConnection");
 
             //var user = await sqlHelper.GetSecureUser(null, 4); // UNC
-            var user = await sqlHelper.GetSecureUser(null, 166); // UAB
+            var user = await sqlHelper.GetSecureUser(null, 459); // UAB
 
             int? logId = null;
 

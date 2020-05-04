@@ -123,10 +123,8 @@ namespace OpFlow.Data.Administration
                 RawText = surgeonString
             };
 
-            // Last, First
-            var regex = @"([A-Za-z\'-\.\s]+), ([A-Za-z]+)";
-            var match = Regex.Match(surgeonString, regex);
-
+            // Last, First Middle
+            var match = Regex.Match(surgeonString, @"([A-Za-z\'-\.\s]+), ([A-Za-z\s]+)");
             if (match.Success && match.Groups.Count > 2)
             {
                 result.LastName = match.Groups[1].Value;
@@ -136,8 +134,7 @@ namespace OpFlow.Data.Administration
             }
 
             // First M Last
-            regex = @"([A-Za-z]+) ([A-Za-z]?) ?([A-Za-z\'-\.\s]+)";
-            match = Regex.Match(surgeonString, regex);
+            match = Regex.Match(surgeonString, @"([A-Za-z]+) ([A-Za-z]?) ?([A-Za-z\'-\.\s]+)");
 
             if (match.Success && match.Groups.Count > 3)
             {
