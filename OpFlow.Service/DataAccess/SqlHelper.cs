@@ -869,7 +869,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetSupplyCardCostReportData(List<int> specialtyId, List<int> surgeonId, List<int> cardCategoryId,
-            DateTime? startDate, DateTime? endDate, int providerId, int locationId)
+            int providerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -880,8 +880,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
-                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
-                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

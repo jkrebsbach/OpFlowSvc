@@ -872,9 +872,7 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            if (post.StartDate == null &&
-                post.EndDate == null &&
-                post.CardCategoryID == null &&
+            if (post.CardCategoryID == null &&
                 post.SpecialtyID == null &&
                 post.SurgeonID == null &&
                 post.CardID == null &&
@@ -884,7 +882,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetSupplyCardCostReportData(post.SpecialtyID, post.SurgeonID, post.CardCategoryID, 
-                post.StartDate, post.EndDate, user.ProviderID, user.LocationID);
+                user.ProviderID, user.LocationID);
 
             var supplyWaste = analytics.Tables[0].DefaultView;
 
