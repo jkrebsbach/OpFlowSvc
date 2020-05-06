@@ -475,37 +475,29 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
 
-            var cardItems = new List<CardItem>();
             var profile = await sqlHelper.GetProcedureProfile(procedureProfileId, request.LocationFilter);
-            foreach (var cardId in request.Cards)
-            {
-                var items = await sqlHelper.GetCardItems(cardId, user.ProviderID, user.LocationID);
-                cardItems.AddRange(items);
-            }
+            var studyItems = await sqlHelper.GetCardItemsInternal(request.Cards, null);
+            var trayItems = await sqlHelper.GetTrayItemsInternal(request.Trays);
 
-            foreach (var trayId in request.Trays)
+            studyItems.AddRange(trayItems.Select(item => new CardItem()
             {
-                var items = await sqlHelper.GetTrayItems(trayId, user.ProviderID, user.LocationID);
-                foreach (var item in items)
-                {
-                    cardItems.Add(new CardItem()
-                    {
-                        TrayName = item.TrayName,
-                        TrayID = item.TrayItemID,
-                        Quantity = item.Quantity,
-                        UnitCost = item.InstrumentCost,
-                        ItemDescription = item.ItemDescription,
-                        AvgUsed = item.AvgUsed
-                    });
-                }
-            }
+                TrayName = item.TrayName,
+                TrayID = item.TrayItemID,
+                Quantity = item.Quantity,
+                UnitCost = item.InstrumentCost,
+                ItemDescription = item.ItemDescription,
+                AvgUsed = item.AvgUsed
+            }));
+
+            studyItems.RemoveAll(s => s.TrayID == null);
 
             var profileTrayItems = profile.TrayItems;
-            var shared = profileTrayItems.Where(t => cardItems.Any(ci => ci.TrayID == t.TrayID)).ToList();
+            var shared = profileTrayItems.Where(t => studyItems.Any(ci => ci.ItemID == t.ItemID)).ToList();
 
             foreach (var sharedItem in shared)
             {
-                profileTrayItems.RemoveAll(p => p.TrayID == sharedItem.TrayID && p.ItemID == sharedItem.ItemID);
+                profileTrayItems.RemoveAll(p => p.ItemID == sharedItem.ItemID);
+                studyItems.RemoveAll(p => p.ItemID == sharedItem.ItemID);
             }
 
             var profileTrays = profileTrayItems.GroupBy(p => p.TrayName).Select(t =>
@@ -533,7 +525,7 @@ namespace OpFlow.Service.Controllers
                     TrayName = p.Key,
                     Instruments = p.ToList()
                 }),
-                Card = cardItems.GroupBy(c => c.TrayName).Select(c =>
+                Card = studyItems.GroupBy(c => c.TrayName).Select(c =>
                 new
                 {
                     TrayName = c.Key ?? "ITEMS",
