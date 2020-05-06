@@ -643,7 +643,7 @@ namespace OpFlow.Service.Controllers
                 post.Group, user.ProviderID, user.LocationID);
 
             var supplyOpen = analytics.Tables[0].DefaultView;
-            var supplyOpenAggregate = analytics.Tables[2].DefaultView;
+            var supplyOpenAggregate = analytics.Tables[1].DefaultView;
             
             if (format?.ToUpper() == "CSV")
             {

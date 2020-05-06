@@ -221,7 +221,7 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox5">
+                        <Textbox Name="Textbox6">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
@@ -237,7 +237,7 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox5</rd:DefaultName>
+                          <rd:DefaultName>Textbox6</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -290,41 +290,10 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <ColSpan>2</ColSpan>
                       </CellContents>
                     </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="Textbox4">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value />
-                                  <Style>
-                                    <FontFamily>Arial</FontFamily>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>Textbox4</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Color>LightGrey</Color>
-                              <Style>None</Style>
-                            </Border>
-                            <BackgroundColor>White</BackgroundColor>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
+                    <TablixCell />
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
@@ -363,45 +332,14 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <ColSpan>2</ColSpan>
                       </CellContents>
                     </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="Textbox7">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value />
-                                  <Style>
-                                    <FontFamily>Arial</FontFamily>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>Textbox7</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Color>LightGrey</Color>
-                              <Style>None</Style>
-                            </Border>
-                            <BackgroundColor>White</BackgroundColor>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
+                    <TablixCell />
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>5.38542in</Height>
+                  <Height>0.60417in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -777,7 +715,7 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                               <ChartElementPosition>
                                 <Top>9.023</Top>
                                 <Left>3</Left>
-                                <Height>98</Height>
+                                <Height>90</Height>
                                 <Width>94</Width>
                               </ChartElementPosition>
                               <ChartInnerPlotPosition>
@@ -799,7 +737,7 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                               <DockOutsideChartArea>true</DockOutsideChartArea>
                               <ChartElementPosition>
                                 <Left>3</Left>
-                                <Height>2</Height>
+                                <Height>10</Height>
                                 <Width>100</Width>
                               </ChartElementPosition>
                               <ChartLegendTitle>
@@ -815,7 +753,7 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                             </ChartLegend>
                           </ChartLegends>
                           <Palette>Pacific</Palette>
-                          <DynamicHeight>=(0.5 + CountDistinct(Fields!ItemName.Value)) * 0.5 &amp; " in"</DynamicHeight>
+                          <DynamicHeight>=(2 + CountDistinct(Fields!CustomLegend.Value)) * 0.5 &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>
@@ -1198,7 +1136,7 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                               <ChartElementPosition>
                                 <Top>9.023</Top>
                                 <Left>3</Left>
-                                <Height>98</Height>
+                                <Height>90</Height>
                                 <Width>94</Width>
                               </ChartElementPosition>
                               <ChartInnerPlotPosition>
@@ -1218,7 +1156,7 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                               <Layout>Row</Layout>
                               <ChartElementPosition>
                                 <Left>3</Left>
-                                <Height>2</Height>
+                                <Height>10</Height>
                                 <Width>57.494</Width>
                               </ChartElementPosition>
                               <ChartLegendTitle>
@@ -1234,7 +1172,7 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                             </ChartLegend>
                           </ChartLegends>
                           <Palette>Excel</Palette>
-                          <DynamicHeight>=(0.5 + CountDistinct(Fields!ItemName.Value)) * 0.5 &amp; " in"</DynamicHeight>
+                          <DynamicHeight>=(2 + CountDistinct(Fields!CustomLegend.Value)) * 0.5 &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>
@@ -1301,7 +1239,7 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>SupplyOpen</DataSetName>
-            <Height>6.38542in</Height>
+            <Height>1.60417in</Height>
             <Width>9.23959in</Width>
             <Style>
               <Border>
@@ -1310,7 +1248,7 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>6.38542in</Height>
+        <Height>1.60417in</Height>
         <Style />
       </Body>
       <Width>9.23959in</Width>
