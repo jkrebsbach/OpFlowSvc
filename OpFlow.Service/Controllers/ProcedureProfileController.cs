@@ -421,12 +421,11 @@ namespace OpFlow.Service.Controllers
                 Quantity = p.Sum(ti => ti.Quantity)
             });
 
-
-            var profileItems = profile.Items.Union(traySummary);
+            var profileItems = profile.Items.Union(profile.TrayItems).Union(traySummary);
             List<CardItem> studyItems = new List<CardItem>();
 
 
-            var cardItems = await sqlHelper.GetCardItemsInternal(request.Cards);
+            var cardItems = await sqlHelper.GetCardItemsInternal(request.Cards, request.CardCategories);
             studyItems.AddRange(cardItems);
             
             var trayItems = await sqlHelper.GetTrayItemsInternal(request.Trays);

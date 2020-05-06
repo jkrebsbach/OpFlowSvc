@@ -307,6 +307,7 @@ namespace OpFlow.Data
         public List<int> LocationFilter { get; set; }
         public List<int> Cards { get; set; }
         public List<int> Trays { get; set; }
+        public List<int> CardCategories { get; set; }
     }
 
     public class ProcedureProfileAlignmentPost

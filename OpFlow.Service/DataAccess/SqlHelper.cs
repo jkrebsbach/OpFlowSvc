@@ -1347,13 +1347,19 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<CardItem>> GetCardItemsInternal(List<int> cardId)
+        public async Task<List<CardItem>> GetCardItemsInternal(List<int> cardId, List<int> cardCategoryId)
         {
+            // Don't query whole database if no filters provided
+            if ((cardId?.Count() ?? 0) + (cardCategoryId?.Count() ?? 0) == 0)
+                return new List<CardItem>();
+
             var cardXml = GetIdentitySummary(cardId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
 
             var parameters = new[]
             {
-                new SqlParameter("card_id", cardXml)
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value)
             };
             var dsSchedules = await ExecuteCommandAsync("GetCardItemsInternal", parameters);
 
