@@ -254,7 +254,7 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
                                       <Style />
-                                      <Label>=Format(Avg(Fields!TotalUsed.Value), "0.#") + " (" + CStr(Sum(Fields!TotalUsed.Value)) + "/" + CStr(Sum(Fields!CardQuantity.Value)) + ")"</Label>
+                                      <Label>=Format(Avg(Fields!TotalUsed.Value), "0.#") + " (" + CStr(Sum(Fields!TotalUsed.Value)) + "/" + CStr(Count(Fields!TotalUsed.Value)) + ")"</Label>
                                       <Visible>true</Visible>
                                     </ChartDataLabel>
                                     <Style />
