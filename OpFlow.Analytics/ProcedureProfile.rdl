@@ -469,7 +469,6 @@ select 'bbb' TrayName,
               </ChartTitle>
             </ChartTitles>
             <Palette>Pacific</Palette>
-            <DynamicHeight>=(3 + CountDistinct(Fields!TrayName.Value, "ProcedureProfile")) &amp; " in"</DynamicHeight>
             <ChartBorderSkin>
               <Style>
                 <BackgroundColor>Gray</BackgroundColor>
@@ -487,8 +486,8 @@ select 'bbb' TrayName,
               </Style>
             </ChartNoDataMessage>
             <DataSetName>ProcedureProfile</DataSetName>
-            <Height>10in</Height>
-            <Width>7.28in</Width>
+            <Height>8in</Height>
+            <Width>9.82167in</Width>
             <Style>
               <Border>
                 <Color>LightGrey</Color>
@@ -499,11 +498,13 @@ select 'bbb' TrayName,
             </Style>
           </Chart>
         </ReportItems>
-        <Height>10in</Height>
+        <Height>8in</Height>
         <Style />
       </Body>
-      <Width>7.28in</Width>
+      <Width>9.82167in</Width>
       <Page>
+        <PageHeight>8.5in</PageHeight>
+        <PageWidth>11in</PageWidth>
         <Style />
       </Page>
     </ReportSection>
