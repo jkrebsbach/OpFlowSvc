@@ -477,8 +477,42 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetProcedureProfiles();
+            var profiles = await sqlHelper.GetProcedureProfiles();
+            var proposals = await sqlHelper.GetProposedTraysInternal(request.LocationFilter);
+            var trays = await sqlHelper.GetTraysInternal(request.LocationFilter);
 
+            if ((request.CardCategoryID?.Count() ?? 0) > 0)
+                profiles = profiles.Where(p => p.CardCategories.Any(cc => request.CardCategoryID.Contains(cc.CardCategoryID))).ToList();
+
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                ProcedureProfiles = profiles,
+                Proposals = proposals,
+                Trays = trays
+            });
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("ExecuteCasePreferencesOpp")]
+        [Route("executeCasePreferencesOpp")]
+        [Route("executeCasePreferencesOpp/{format}")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        public async Task<HttpResponseMessage> ExecuteCasePreferencesOpp([FromBody]ProcedureProfileCasePreferenceReportRequest request, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.GetProcedureProfileCasePreferencesReport(request.ProcedureProfileID, request.ProposalID, request.TrayID);
+            
+            if (format == "CSV")
+            {
+                return ResponseHelper.CsvResponse("THIS IS A TEST");
+            }
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 

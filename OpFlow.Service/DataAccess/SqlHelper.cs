@@ -3848,6 +3848,20 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+        public async Task<List<ProcedureProfileCardComparisonReport>> GetProcedureProfileCasePreferencesReport(int procedureProfileId, int trayProposalId, int trayId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("tray_item_id", trayId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProcedureProfileCasePreferencesReport", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ProcedureProfileCardComparisonReport>();
+
+            return result;
+        }
 
         public async Task<int> UpdateProcedureProfile(int? procedureProfileId, string profileName, List<int> locationFilter, List<int> cardCategoryId, List<int> specialtyId,
             int providerId, int locationId)

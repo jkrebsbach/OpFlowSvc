@@ -304,9 +304,18 @@ namespace OpFlow.Data
 
     public class ProcedureProfileCasePreferenceFilterRequest
     {
+        public List<int> LocationFilter { get; set; }
         public List<int> ProcedureID { get; set; }
         public List<int> CardCategoryID { get; set; }
         public List<int> SurgeonID { get; set; }
+    }
+
+    public class ProcedureProfileCasePreferenceReportRequest
+    {
+        public List<int> LocationFilter { get; set; }
+        public int ProcedureProfileID { get; set; }
+        public int ProposalID { get; set; }
+        public int TrayID { get; set; }
     }
 
     public class ProcedureProfileCardComparisonRequest
@@ -315,6 +324,21 @@ namespace OpFlow.Data
         public List<int> Cards { get; set; }
         public List<int> Trays { get; set; }
         public List<int> CardCategories { get; set; }
+    }
+
+    public class ProcedureProfileCardComparisonReport
+    {
+
+        public string ProcedureProfileName { get; set; }
+        public string InstrumentName { get; set; }
+        public string Category { get; set; }
+        public int OppQuantity { get; set; }
+        public decimal OppAverage { get; set; }
+        public int OppMax { get; set; }
+        public int TrayQty { get; set; }
+        public decimal TrayAvg { get; set; }
+        public int TrayMax { get; set; }
+        public int ProposedQty { get; set; }
     }
 
     public class ProcedureProfileAlignmentPost
