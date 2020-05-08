@@ -302,6 +302,13 @@ namespace OpFlow.Data
         public List<int> ProposalID { get; set; }
     }
 
+    public class ProcedureProfileCasePreferenceFilterRequest
+    {
+        public List<int> ProcedureID { get; set; }
+        public List<int> CardCategoryID { get; set; }
+        public List<int> SurgeonID { get; set; }
+    }
+
     public class ProcedureProfileCardComparisonRequest
     {
         public List<int> LocationFilter { get; set; }

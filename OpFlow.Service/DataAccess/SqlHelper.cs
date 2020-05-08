@@ -1302,6 +1302,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<User>> GetSurgeonsInternal(List<int> locationId)
+        {
+            var locationXml = GetIdentitySummary(locationId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationXml ?? (object)DBNull.Value),
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeonsInternal", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<User>();
+
+            return result;
+        }
+
         public async Task<List<Card>> GetCardsInternal(List<int> locationId)
         {
             var locationXml = GetIdentitySummary(locationId);
@@ -6699,13 +6714,9 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<Procedure>> GetCptCodes(int providerId, int locationId)
+        public async Task<List<Procedure>> GetCptCodes()
         {
-            var parameters = new[]
-            {
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId)
-            };
+            var parameters = new SqlParameter[0];
             var dsSchedules = await ExecuteCommandAsync("GetCptCodes", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Procedure>();

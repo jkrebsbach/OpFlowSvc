@@ -59,9 +59,10 @@ namespace OpFlow.Service.Controllers
                 profile = await sqlHelper.GetProcedureProfile(procedureProfileId.Value, request.LocationFilter);
             }
 
+            var procedures = await sqlHelper.GetCptCodes();
             var cardCategories = await sqlHelper.GetCardCategories();
             var specialties = await sqlHelper.GetSpecialtiesInternal();
-            var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
+            var surgeons = await sqlHelper.GetSurgeonsInternal(request.LocationFilter);
             var cards = await sqlHelper.GetCardsInternal(request.LocationFilter);
             var trays = await sqlHelper.GetTraysInternal(request.LocationFilter);
             var proposed = await sqlHelper.GetProposedTraysInternal(request.LocationFilter);
@@ -72,6 +73,7 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 ProcedureProfile = profile,
+                Procedures = procedures,
                 CardCategories = cardCategories,
                 Specialties = specialties,
                 Cards = cards,
@@ -462,6 +464,24 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
+        // GET api/values/5
+        [SwaggerOperation("FilterCasePreferencesOpp")]
+        [Route("filterCasePreferencesOpp")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        public async Task<HttpResponseMessage> FilterCasePreferencesOpp([FromBody]ProcedureProfileCasePreferenceFilterRequest request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.GetProcedureProfiles();
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
         [SwaggerOperation("GetProcedureProfileVenn")]
         [Route("procedureProfileVenn")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ProcedureProfileCardComparison>))]
@@ -783,7 +803,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetCptCodes(user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetCptCodes();
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
