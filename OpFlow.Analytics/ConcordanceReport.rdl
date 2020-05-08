@@ -13,7 +13,7 @@
     <DataSet Name="ConcordanceReport">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>exec GetAnalyticsConcordanceReport '&lt;table&gt;&lt;row&gt;&lt;col&gt;1&lt;/col&gt;&lt;/row&gt;&lt;/table&gt;', null, null, null, null,null,null, 1,1</CommandText>
+        <CommandText>exec GetAnalyticsConcordanceReport '&lt;table&gt;&lt;row&gt;&lt;col&gt;1&lt;/col&gt;&lt;/row&gt;&lt;/table&gt;', null, null, null, null,null,null, null,1,1</CommandText>
       </Query>
       <Fields>
         <Field Name="SurgeonID">
@@ -26,6 +26,10 @@
         </Field>
         <Field Name="InstrumentName">
           <DataField>InstrumentName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="InstrumentDescription">
+          <DataField>InstrumentDescription</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="QtyOpen">
@@ -43,6 +47,10 @@
         <Field Name="SortOrder">
           <DataField>SortOrder</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MaxOpen">
+          <DataField>MaxOpen</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
@@ -79,6 +87,9 @@
                     <ChartMember>
                       <Label>Tray Qty</Label>
                     </ChartMember>
+                    <ChartMember>
+                      <Label>Max Open</Label>
+                    </ChartMember>
                   </ChartMembers>
                   <Label>=Fields!SurgeonName.Value</Label>
                 </ChartMember>
@@ -91,7 +102,7 @@
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
-                        <Y>=Sum(Fields!QtyOpen.Value)</Y>
+                        <Y>=Max(Fields!QtyOpen.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style>
@@ -161,6 +172,46 @@
                   </ChartEmptyPoints>
                   <ChartItemInLegend>
                     <LegendText>= "Quantity - " &amp; Fields!SurgeonName.Value</LegendText>
+                  </ChartItemInLegend>
+                  <ValueAxisName>Primary</ValueAxisName>
+                  <CategoryAxisName>Primary</CategoryAxisName>
+                  <ChartSmartLabel>
+                    <CalloutLineColor>Black</CalloutLineColor>
+                    <MinMovingDistance>0pt</MinMovingDistance>
+                  </ChartSmartLabel>
+                </ChartSeries>
+                <ChartSeries Name="MaxOpen">
+                  <Hidden>=SUM(Fields!MaxOpen.Value) = 0</Hidden>
+                  <ChartDataPoints>
+                    <ChartDataPoint>
+                      <ChartDataPointValues>
+                        <Y>=Sum(Fields!MaxOpen.Value)</Y>
+                      </ChartDataPointValues>
+                      <ChartDataLabel>
+                        <Style />
+                      </ChartDataLabel>
+                      <Style />
+                      <ChartMarker>
+                        <Type>Diamond</Type>
+                        <Size>8pt</Size>
+                        <Style />
+                      </ChartMarker>
+                      <DataElementOutput>Output</DataElementOutput>
+                    </ChartDataPoint>
+                  </ChartDataPoints>
+                  <Type>Scatter</Type>
+                  <Style />
+                  <ChartEmptyPoints>
+                    <Style />
+                    <ChartMarker>
+                      <Style />
+                    </ChartMarker>
+                    <ChartDataLabel>
+                      <Style />
+                    </ChartDataLabel>
+                  </ChartEmptyPoints>
+                  <ChartItemInLegend>
+                    <LegendText>Max Open</LegendText>
                   </ChartItemInLegend>
                   <ValueAxisName>Primary</ValueAxisName>
                   <CategoryAxisName>Primary</CategoryAxisName>
