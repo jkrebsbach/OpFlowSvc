@@ -12,24 +12,23 @@ namespace OpFlow.Service.DataAccess
 {
     public abstract class EmailHelper
     {
-        public static async Task<Response> SendEmail(User emailTarget, string message)
+        public static async Task<Response> SendEmail(User emailTarget, string subject, string message, List<MessageAttachment> attachments = null)
         {
             var targets = new List<User>()
             {
                 emailTarget
             };
 
-            return await SendEmail(targets, message);
+            return await SendEmail(targets, subject, message, attachments);
         }
 
-        public static async Task<Response> SendEmail(List<User> emailTargets, string message)
+        public static async Task<Response> SendEmail(List<User> emailTargets, string subject, string message, List<MessageAttachment> attachments = null)
         {
             if (emailTargets == null || !emailTargets.Any())
             {
                 return null;
             }
 
-            var subject = "Test Subject";
             var plainTextContent = message;
             var htmlContent = message; // Add <b> tags as appropriate
 
@@ -58,10 +57,24 @@ namespace OpFlow.Service.DataAccess
 
             var msg = MailHelper.CreateSingleEmailToMultipleRecipients(from, tos, subject, plainTextContent, htmlContent);
 
+            if (attachments != null)
+            {
+                foreach (var attachment in attachments)
+                {
+                    msg.AddAttachment(attachment.Filename, attachment.FileContent);
+                }
+            }
+
             msg.AddCc("info@opflow.com");
             var response = await client.SendEmailAsync(msg);
 
             return response;
+        }
+
+        public class MessageAttachment
+        {
+            public string Filename { get; set; }
+            public string FileContent { get; set; }
         }
     }
 }

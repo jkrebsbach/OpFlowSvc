@@ -108,7 +108,7 @@ namespace OpFlow.Service.SignalR
 
             foreach (var member in team)
             {
-                await EmailHelper.SendEmail(member, trayProposal.DeploymentStatus);
+                await EmailHelper.SendEmail(member, "Tray Rationalization", trayProposal.DeploymentStatus);
 
                 var recipientUser =
                     await sqlHelper.GetUser(user.ProviderID, user.LocationID, member.UserID);
@@ -270,7 +270,7 @@ namespace OpFlow.Service.SignalR
 
                 var message = $"Tray status set to {status}";
 
-                await EmailHelper.SendEmail(dbUser, message);
+                await EmailHelper.SendEmail(dbUser, "Tray status updated", message);
                 await sqlHelper.InsertProposedTrayCommunication(dbUser.UserID, trayProposalId, message, user.ProviderID, user.LocationID);
             }
         }

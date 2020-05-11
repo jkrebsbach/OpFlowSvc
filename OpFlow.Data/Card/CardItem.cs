@@ -316,6 +316,7 @@ namespace OpFlow.Data
         public int ProcedureProfileID { get; set; }
         public int ProposalID { get; set; }
         public int TrayID { get; set; }
+        public string Email { get; set; }
     }
 
     public class ProcedureProfileCardComparisonRequest

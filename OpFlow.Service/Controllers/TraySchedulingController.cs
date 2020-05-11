@@ -46,7 +46,7 @@ namespace OpFlow.Service.Controllers
             {
                 var message = $"Proposal for {proposal.TrayName} due by {proposal.TrayChangesTarget.Value.ToShortDateString()} has not been accepted";
 
-                await EmailHelper.SendEmail(proposal.ProposalUsers.ToList<Data.User>(), message);
+                await EmailHelper.SendEmail(proposal.ProposalUsers.ToList<Data.User>(), "Proposal not accepted", message);
 
                 await sqlHelper.InsertProposedTrayCommunication(
                     null, proposal.TrayProposalID, message, proposal.ProviderID, proposal.LocationID);

@@ -500,6 +500,7 @@ namespace OpFlow.Service.Controllers
         [Route("executeCasePreferencesOpp/{format}")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPut]
+        [HttpPost]
         public async Task<HttpResponseMessage> ExecuteCasePreferencesOpp([FromBody]ProcedureProfileCasePreferenceReportRequest request, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -514,6 +515,26 @@ namespace OpFlow.Service.Controllers
             {
                 var workbook = ExcelHelper.GenerateWorkbook(dataTable);
                 return ResponseHelper.ExcelResponse(workbook);
+            }
+            if (format == "email")
+            {
+                var workbook = ExcelHelper.GenerateWorkbook(dataTable);
+                var emailTarget = new User()
+                {
+                    Email = request.Email,
+                    FirstName = request.Email
+                };
+
+                var attachments = new List<EmailHelper.MessageAttachment>()
+                {
+                    new EmailHelper.MessageAttachment()
+                    {
+                        Filename = "CasePreferences.xlsx",
+                        FileContent = Convert.ToBase64String(workbook)
+                    }
+                };
+
+                await EmailHelper.SendEmail(emailTarget, "Case Preference OPP Report", "Requested Case Preference OPP Report", attachments);
             }
 
             var result = dataTable.DataTableToList<ProcedureProfileCardComparisonReport>();
