@@ -221,14 +221,14 @@ namespace OpFlow.Service.Controllers
             foreach (var instrument in profile.TrayItems.OrderBy(ti => ti.Category).ThenBy(ti => ti.ItemDescription))
             {
                 var comparables = instrument.ComparableInstruments.Where(ci => ci.LocationID == locationId);
-                comparableTrays.AddRange(comparables.Select(c => c.TrayItemID));
+                comparableTrays.AddRange(comparables.Select(c => c.RelatedTrayItemID));
             }
 
             var result = "Comparable Tray,Unmapped Instrument, Quantity\r\n";
             var trayInstruments = await sqlHelper.GetTrayItemsInternal(comparableTrays);
-            foreach (var instrument in trayInstruments)
+            foreach (var instrument in trayInstruments.OrderBy(ti => ti.TrayName).ThenBy(ti => ti.InstrumentName))
             {
-                if (!profile.TrayItems.Any(ti => ti.ComparableInstruments.Any(i => i.InstrumentID == instrument.InstrumentID)))
+                if (!profile.TrayItems.Any(ti => ti.ComparableInstruments.Any(i => i.RelatedInstrumentID == instrument.InstrumentID)))
                 {
                     result += $"\"{instrument.TrayName.Replace("\"", "\"\"")}\",\"{instrument.ItemDescription.Replace("\"", "\"\"")}\",{instrument.Quantity}\r\n";
                 }
