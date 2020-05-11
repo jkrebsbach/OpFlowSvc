@@ -6750,14 +6750,14 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<Specialty>> GetSpecialtiesInternal()
+        public async Task<List<InternalSpecialty>> GetSpecialtiesInternal()
         {
             var parameters = new SqlParameter[]
             {
             };
             var dsSchedules = await ExecuteCommandAsync("GetSpecialtiesInternal", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Specialty>();
+            var result = dsSchedules.Tables[0].DataTableToList<InternalSpecialty>();
 
             return result;
         }

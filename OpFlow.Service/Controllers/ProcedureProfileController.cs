@@ -60,7 +60,6 @@ namespace OpFlow.Service.Controllers
                 profile = await sqlHelper.GetProcedureProfile(procedureProfileId.Value, request.LocationFilter);
             }
 
-            var procedures = await sqlHelper.GetCptCodes();
             var cardCategories = await sqlHelper.GetCardCategories();
             var specialties = await sqlHelper.GetSpecialtiesInternal();
             var surgeons = await sqlHelper.GetSurgeonsInternal(request.LocationFilter);
@@ -74,7 +73,6 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 ProcedureProfile = profile,
-                Procedures = procedures,
                 CardCategories = cardCategories,
                 Specialties = specialties,
                 Cards = cards,
@@ -85,6 +83,28 @@ namespace OpFlow.Service.Controllers
                 Surgeons = surgeons,
                 Locations = providers.SelectMany(p => p.Locations)
             });
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetCardCategories")]
+        [Route("cardCategories")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardWithCategory>))]
+        public async Task<HttpResponseMessage> GetCardCategories(int? specialtyId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var cardCategories = await sqlHelper.GetCardCategories();
+            var cards = await sqlHelper.GetCardCategoryXRef(null, specialtyId, null, null, null, user.ProviderID, user.LocationID);
+
+            var result = new List<CardCategory>();
+            foreach (var cardCategory in cardCategories)
+            {
+                if (cards.Any(c => c.CardCategoryID == cardCategory.CardCategoryID))
+                    result.Add(cardCategory);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         [SwaggerOperation("GetItems")]
