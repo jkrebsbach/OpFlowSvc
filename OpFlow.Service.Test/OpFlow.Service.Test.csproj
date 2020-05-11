@@ -198,6 +198,7 @@
     <Compile Include="PDFTester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PushTester.cs" />
+    <Compile Include="QueryTester.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
   </ItemGroup>
   <ItemGroup>
