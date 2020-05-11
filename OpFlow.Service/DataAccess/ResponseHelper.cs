@@ -134,6 +134,23 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+        public static HttpResponseMessage ExcelResponse(byte[] excelData)
+        {
+            var memStream = new MemoryStream(excelData);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                { FileName = "CardListExport.xlsx", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
+        }
 
         public static HttpResponseMessage CompositeImageResponse(HttpRequestMessage request, object summary, List<byte[]> pngResult)
         {

@@ -5,6 +5,7 @@ using Swashbuckle.Swagger.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -498,7 +499,7 @@ namespace OpFlow.Service.Controllers
         [Route("executeCasePreferencesOpp")]
         [Route("executeCasePreferencesOpp/{format}")]
         [SwaggerResponse(HttpStatusCode.OK)]
-        [HttpPost]
+        [HttpPut]
         public async Task<HttpResponseMessage> ExecuteCasePreferencesOpp([FromBody]ProcedureProfileCasePreferenceReportRequest request, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -507,12 +508,16 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetProcedureProfileCasePreferencesReport(request.ProcedureProfileID, request.ProposalID, request.TrayID);
+            var dataTable = await sqlHelper.GetProcedureProfileCasePreferencesReport(request.ProcedureProfileID, request.ProposalID, request.TrayID);
             
-            if (format == "CSV")
+            if (format == "xlsx")
             {
-                return ResponseHelper.CsvResponse("THIS IS A TEST");
+                var workbook = ExcelHelper.GenerateWorkbook(dataTable);
+                return ResponseHelper.ExcelResponse(workbook);
             }
+
+            var result = dataTable.DataTableToList<ProcedureProfileCardComparisonReport>();
+
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 

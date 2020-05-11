@@ -3848,7 +3848,7 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public async Task<List<ProcedureProfileCardComparisonReport>> GetProcedureProfileCasePreferencesReport(int procedureProfileId, int trayProposalId, int trayId)
+        public async Task<DataTable> GetProcedureProfileCasePreferencesReport(int procedureProfileId, int trayProposalId, int trayId)
         {
             var parameters = new[]
             {
@@ -3858,9 +3858,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("GetProcedureProfileCasePreferencesReport", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<ProcedureProfileCardComparisonReport>();
-
-            return result;
+            return dsSchedules.Tables[0];
         }
 
         public async Task<int> UpdateProcedureProfile(int? procedureProfileId, string profileName, List<int> locationFilter, List<int> cardCategoryId, List<int> specialtyId,
