@@ -245,6 +245,7 @@ namespace OpFlow.Data
         public string TrayName { get; set; }
         public string Manufacturer { get; set; }
         public string InstrumentNbr { get; set; }
+        public int Quantity { get; set; }
     }
 
     public class ComparableItem : ItemMaster

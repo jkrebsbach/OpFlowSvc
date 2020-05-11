@@ -179,7 +179,7 @@ namespace OpFlow.Service.Controllers
 
             var profile = await sqlHelper.GetProcedureProfile(procedureProfileId, null);
 
-            var result = "Tray,Instrument,Category,Reason,Avg Used, Quantity\r\n";
+            var result = "Tray,Instrument,Comparable Tray,Comparable Instrument,Category,Reason,Avg Used, Original Quantity, Proposed Quantity\r\n";
             foreach (var instrument in profile.TrayItems.OrderBy(ti => ti.Category).ThenBy(ti => ti.ItemDescription))
             {
                 var comparables = instrument.ComparableInstruments.Where(ci => ci.LocationID == locationId);
@@ -188,15 +188,52 @@ namespace OpFlow.Service.Controllers
                 {
                     foreach (var comparable in comparables)
                     {
-                        result += $"\"{instrument.TrayName.Replace("\"", "\"\"")}\",\"{comparable.ItemDescription.Replace("\"", "\"\"")}\",\"{instrument.Category.Replace("\"", "\"\"")}\",\"{instrument.Reason}\",{instrument.AvgUsed},{instrument.Quantity}\r\n";
+                        result += $"\"{instrument.TrayName.Replace("\"", "\"\"")}\",\"{instrument.ItemDescription.Replace("\"", "\"\"")}\",\"{comparable.TrayName.Replace("\"", "\"\"")}\",\"{comparable.ItemDescription.Replace("\"", "\"\"")}\",\"{instrument.Category.Replace("\"", "\"\"")}\",\"{instrument.Reason}\",{instrument.AvgUsed},{comparable.Quantity},{instrument.Quantity}\r\n";
                     }
                 }
                 else
                 {
-                    result += $"\"{instrument.TrayName.Replace("\"", "\"\"")}\",\"{instrument.ItemDescription.Replace("\"", "\"\"")}\",\"{instrument.Category.Replace("\"", "\"\"")}\",\"{instrument.Reason}\",{instrument.AvgUsed},{instrument.Quantity}\r\n";
+                    result += $"\"{instrument.TrayName.Replace("\"", "\"\"")}\",\"{instrument.ItemDescription.Replace("\"", "\"\"")}\",,,\"{instrument.Category.Replace("\"", "\"\"")}\",\"{instrument.Reason}\",{instrument.AvgUsed},,{instrument.Quantity}\r\n";
                 }
             }
 
+            return ResponseHelper.CsvResponse(result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetUnmappedProcedureProfileTrayCsv")]
+        [Route("csvUnmapped/{procedureProfileId}")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetUnmappedProcedureProfileTrayCsv(int procedureProfileId, int locationId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            var sqlHelper = new SqlHelper();
+
+            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId, null);
+
+            var comparableTrays = new List<int>();
+
+
+            foreach (var instrument in profile.TrayItems.OrderBy(ti => ti.Category).ThenBy(ti => ti.ItemDescription))
+            {
+                var comparables = instrument.ComparableInstruments.Where(ci => ci.LocationID == locationId);
+                comparableTrays.AddRange(comparables.Select(c => c.TrayItemID));
+            }
+
+            var result = "Comparable Tray,Unmapped Instrument, Quantity\r\n";
+            var trayInstruments = await sqlHelper.GetTrayItemsInternal(comparableTrays);
+            foreach (var instrument in trayInstruments)
+            {
+                if (!profile.TrayItems.Any(ti => ti.ComparableInstruments.Any(i => i.InstrumentID == instrument.InstrumentID)))
+                {
+                    result += $"\"{instrument.TrayName.Replace("\"", "\"\"")}\",\"{instrument.ItemDescription.Replace("\"", "\"\"")}\",{instrument.Quantity}\r\n";
+                }
+            }
+            
             return ResponseHelper.CsvResponse(result);
         }
 
