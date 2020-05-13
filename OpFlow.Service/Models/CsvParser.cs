@@ -17,7 +17,8 @@ namespace OpFlow.Service.Models
             Tray = 3,
             User = 4,
             Card = 5,
-            CardlessSchedule = 6
+            CardlessSchedule = 6,
+            SPMSchedule = 7
         }
 
         public CsvParser(string contents)

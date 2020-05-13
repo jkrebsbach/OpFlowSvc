@@ -94,17 +94,15 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var cardCategories = await sqlHelper.GetCardCategories();
             var cards = await sqlHelper.GetCardCategoryXRef(null, specialtyId, null, null, null, user.ProviderID, user.LocationID);
-
-            var result = new List<CardCategory>();
-            foreach (var cardCategory in cardCategories)
-            {
-                if (cards.Any(c => c.CardCategoryID == cardCategory.CardCategoryID))
-                    result.Add(cardCategory);
-            }
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            var cardCategories = cards.SelectMany(c => c.CardCategories ?? new List<CardCategoryXRef>()).GroupBy(c => new { c.CardCategoryID, c.CardCategory })
+                .Select(c => new CardCategory()
+                {
+                    CardCategoryID = c.Key.CardCategoryID,
+                    CategoryName = c.Key.CardCategory
+                });
+            
+            return Request.CreateResponse(HttpStatusCode.OK, cardCategories);
         }
 
         [SwaggerOperation("GetItems")]
@@ -588,16 +586,16 @@ namespace OpFlow.Service.Controllers
             if (request.ProcedureProfileID?.Any() != true)
                 return Request.CreateResponse(HttpStatusCode.OK, -1);
 
-            var dataTable = await sqlHelper.GetProcedureProfileCasePreferencesReport(request.LocationFilter, request.ProcedureProfileID, request.ProposalID, request.TrayID);
+            var profile = await sqlHelper.GetProcedureProfileCasePreferencesReport(request.LocationFilter, request.ProcedureProfileID, request.ProposalID, request.TrayID);
             
             if (format == "xlsx")
             {
-                var workbook = ExcelHelper.GenerateWorkbook(dataTable);
+                var workbook = ExcelHelper.GenerateWorkbook(profile);
                 return ResponseHelper.ExcelResponse(workbook);
             }
             if (format == "email")
             {
-                var workbook = ExcelHelper.GenerateWorkbook(dataTable);
+                var workbook = ExcelHelper.GenerateWorkbook(profile);
                 var emailTarget = new User()
                 {
                     Email = request.Email,
@@ -616,9 +614,7 @@ namespace OpFlow.Service.Controllers
                 await EmailHelper.SendEmail(emailTarget, "Case Preference OPP Report", "Requested Case Preference OPP Report", attachments);
             }
 
-            var result = dataTable.DataTableToList<ProcedureProfileCardComparisonReport>();
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            return Request.CreateResponse(HttpStatusCode.OK, profile);
         }
 
         [SwaggerOperation("GetProcedureProfileVenn")]

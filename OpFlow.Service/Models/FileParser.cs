@@ -28,19 +28,23 @@ namespace OpFlow.Service.Models
 
         public async Task ParseFile(SqlHelper sqlHelper, int importTypeId, int providerId, int locationId)
         {
-            if (Path.GetExtension(_filename) == ".csv")
+            var extension = Path.GetExtension(_filename);
+            switch (extension)
             {
-                var csvData = System.Text.Encoding.UTF8.GetString(_fileContents);
-
-                var parser = new CsvParser(csvData);
-
-                Records = parser.ParseCSV((CsvParser.ImportType)importTypeId);
-
-                Status = "good to go";
-            }
-            else
-            {
-                Status = $"{Path.GetExtension(_filename)} is not an accepted format.";
+                case ".csv":
+                    var csvData = System.Text.Encoding.UTF8.GetString(_fileContents);
+                    var parser = new CsvParser(csvData);
+                    Records = parser.ParseCSV((CsvParser.ImportType)importTypeId);
+                    Status = "good to go";
+                    break;
+                case ".xlsx":
+                    var excelParser = new ExcelParser(_fileContents);
+                    Records = excelParser.ParseExcel((CsvParser.ImportType)importTypeId);
+                    Status = "good to go";
+                    break;
+                default:
+                    Status = $"{extension} is not an accepted format.";
+                    break;
             }
 
             Relations = new FileParserRelations();

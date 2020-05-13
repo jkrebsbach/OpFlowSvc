@@ -3848,7 +3848,7 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public async Task<DataTable> GetProcedureProfileCasePreferencesReport(List<int> locationId, List<int> procedureProfileId, List<int> trayProposalId, List<int> trayId)
+        public async Task<List<ProcedureProfileCardComparisonReport>> GetProcedureProfileCasePreferencesReport(List<int> locationId, List<int> procedureProfileId, List<int> trayProposalId, List<int> trayId)
         {
             var locationXml = GetIdentitySummary(locationId);
             var procedureProfileXml = GetIdentitySummary(procedureProfileId);
@@ -3862,9 +3862,18 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("tray_proposal_id", proposalXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value)
             };
-            var dsSchedules = await ExecuteCommandAsync("GetProcedureProfileCasePreferencesReport", parameters);
+            var dataSet = await ExecuteCommandAsync("GetProcedureProfileCasePreferencesReport", parameters);
 
-            return dsSchedules.Tables[0];
+            var profiles = dataSet.Tables[0].DataTableToList<ProcedureProfileCardComparisonReport>();
+            var tray = dataSet.Tables[1].DataTableToList<ProcedureProfileCardComparisonReport>();
+
+            foreach (var instrument in tray)
+            {
+                if (!profiles.Any(p => p.InstrumentName == instrument.InstrumentName))
+                    profiles.Add(instrument);
+            }
+
+            return profiles;
         }
 
         public async Task<int> UpdateProcedureProfile(int? procedureProfileId, string profileName, List<int> locationFilter, List<int> cardCategoryId, List<int> specialtyId,
