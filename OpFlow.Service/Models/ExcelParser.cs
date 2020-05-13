@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace OpFlow.Service.Models
@@ -21,9 +22,12 @@ namespace OpFlow.Service.Models
         public List<IImportData> ParseExcel(CsvParser.ImportType importType)
         {
             var result = new List<IImportData>();
+            CardlessScheduleImport schedule = null;
 
             if (importType != CsvParser.ImportType.SPMSchedule)
                 return result;
+
+            var caseRegex = @"Case Number: ([A-Z0-9\-]+)";
 
             try
             {
@@ -37,8 +41,32 @@ namespace OpFlow.Service.Models
                         var sheetRow = sheet.GetRow(rowIndex);
                         if (sheetRow != null)
                         {
-                            var abc = sheetRow.GetCell(0).StringCellValue;
-                            var xyz = sheetRow.GetCell(1).StringCellValue;
+                            var columnA = sheetRow.GetCell(0).StringCellValue;
+
+                            var caseNumber = Regex.Match(columnA, caseRegex);
+                            if (caseNumber.Success)
+                            {
+                                schedule = new CardlessScheduleImport()
+                                {
+                                    CaseNbr = caseNumber.Groups[1].Value
+                                };
+
+                                result.Add(schedule);
+                            }
+                            else
+                            {
+                                if (schedule == null)
+                                    continue;
+
+
+                                schedule.Surgeon = sheetRow.GetCell(0).StringCellValue;
+                                schedule.Room = sheetRow.GetCell(1).StringCellValue;
+
+                                var spmDate = sheetRow.GetCell(2).StringCellValue;
+                                schedule.ScheduleDate = DateTime.Parse(spmDate);
+
+                                schedule.TrayList += $"{sheetRow.GetCell(3).StringCellValue},";
+                            }
                         }
                     }
                 }

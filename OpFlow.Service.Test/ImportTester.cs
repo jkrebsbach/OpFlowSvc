@@ -20,8 +20,9 @@ namespace OpFlow.Service.Test
         {
             //var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\TestSchedule.csv";
             //var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\UAB_Neuro_Cards.csv";
-            var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\UAB_SPM_May4.csv";
-            var importTypeId = 6; // schedule without card
+            //var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\UAB_SPM_May4.csv";
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\SMTP.xlsx";
+            var importTypeId = 7; // schedule without card
             //var importTypeId = 5; // cards
             //var importTypeId = 3; // trays
 

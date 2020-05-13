@@ -114,6 +114,7 @@ namespace OpFlow.Data.Administration
         public string FirstName { get; set; }
         public string MInit { get; set; }
         public string LastName { get; set; }
+        public string Title { get; set; }
         public string RawText { get; set; }
 
         public static ImportSurgeon ParseSurgeon(string surgeonString)
@@ -123,8 +124,33 @@ namespace OpFlow.Data.Administration
                 RawText = surgeonString
             };
 
+            if (string.IsNullOrEmpty(surgeonString))
+                return result;
+
+            // Last, First Middle MD
+            var match = Regex.Match(surgeonString, @"([A-Za-z\'-\.\s]+), ([A-Za-z\s]+) MD");
+            if (match.Success && match.Groups.Count > 2)
+            {
+                result.LastName = match.Groups[1].Value;
+                result.FirstName = match.Groups[2].Value;
+                result.Title = "MD";
+
+                return result;
+            }
+
+            // Last, First Middle MD, PhD
+            match = Regex.Match(surgeonString, @"([A-Za-z\'-\.\s]+), ([A-Za-z\s]+) MD, PhD");
+            if (match.Success && match.Groups.Count > 2)
+            {
+                result.LastName = match.Groups[1].Value;
+                result.FirstName = match.Groups[2].Value;
+                result.Title = "MD, PhD";
+
+                return result;
+            }
+
             // Last, First Middle
-            var match = Regex.Match(surgeonString, @"([A-Za-z\'-\.\s]+), ([A-Za-z\s]+)");
+            match = Regex.Match(surgeonString, @"([A-Za-z\'-\.\s]+), ([A-Za-z\s]+)");
             if (match.Success && match.Groups.Count > 2)
             {
                 result.LastName = match.Groups[1].Value;
