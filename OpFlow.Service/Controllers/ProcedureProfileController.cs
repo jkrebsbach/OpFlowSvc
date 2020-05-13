@@ -436,20 +436,39 @@ namespace OpFlow.Service.Controllers
 
             var categories = comparisons.OrderBy(c => c.GroupName).Select(c => c.GroupName).Distinct();
 
-            var results = comparisons.OrderBy(c => c.Category).ThenBy(c => c.Relationship).ThenBy(c => c.InstrumentName).GroupBy(c => c.Category).Select(c =>
-                new ProcedureProfileDashboardCategoryGroup()
-                {
-                    CategoryName = c.Key,
-                    Groups = c.GroupBy(i => new { i.TrayName, i.InstrumentName, i.Relationship }).Select(i =>
-                    new ProcedureProfileDashboardGroup()
+            IEnumerable<ProcedureProfileDashboardCategoryGroup> results;
+
+            if (request.Group == "tray")
+            {
+                results = comparisons.OrderBy(c => c.TrayName).OrderBy(c => c.Category).ThenBy(c => c.Relationship).ThenBy(c => c.InstrumentName).GroupBy(c => new { c.TrayName, c.Category }).Select(c =>
+                   new ProcedureProfileDashboardCategoryGroup()
+                   {
+                       CategoryName = c.Key.TrayName + " - " + c.Key.Category,
+                       Groups = c.GroupBy(i => new { i.TrayName, i.InstrumentName, i.Relationship }).Select(i =>
+                       new ProcedureProfileDashboardGroup()
+                       {
+                           TrayName = i.Key.TrayName,
+                           InstrumentName = i.Key.InstrumentName,
+                           Relationship = i.Key.Relationship,
+                           Results = ProcedureProfileDashboardComparison.Summarize(categories, i.ToList())
+                       }).ToList()
+                   });
+            } else
+            {
+                results = comparisons.OrderBy(c => c.Category).ThenBy(c => c.Relationship).ThenBy(c => c.InstrumentName).GroupBy(c => c.Category).Select(c =>
+                    new ProcedureProfileDashboardCategoryGroup()
                     {
-                        TrayName = i.Key.TrayName,
-                        InstrumentName = i.Key.InstrumentName,
-                        Relationship = i.Key.Relationship,
-                        Results = ProcedureProfileDashboardComparison.Summarize(categories, i.ToList())
-                    }).ToList()
-                });
-            
+                        CategoryName = c.Key,
+                        Groups = c.GroupBy(i => new { i.TrayName, i.InstrumentName, i.Relationship }).Select(i =>
+                        new ProcedureProfileDashboardGroup()
+                        {
+                            TrayName = i.Key.TrayName,
+                            InstrumentName = i.Key.InstrumentName,
+                            Relationship = i.Key.Relationship,
+                            Results = ProcedureProfileDashboardComparison.Summarize(categories, i.ToList())
+                        }).ToList()
+                    });
+            }            
 
 
             return Request.CreateResponse(HttpStatusCode.OK, new {
@@ -565,6 +584,9 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
+
+            if (request.ProcedureProfileID?.Any() != true)
+                return Request.CreateResponse(HttpStatusCode.OK, -1);
 
             var dataTable = await sqlHelper.GetProcedureProfileCasePreferencesReport(request.ProcedureProfileID, request.ProposalID, request.TrayID);
             

@@ -3848,13 +3848,17 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public async Task<DataTable> GetProcedureProfileCasePreferencesReport(int procedureProfileId, int trayProposalId, int trayId)
+        public async Task<DataTable> GetProcedureProfileCasePreferencesReport(List<int> procedureProfileId, List<int> trayProposalId, List<int> trayId)
         {
+            var procedureProfileXml = GetIdentitySummary(procedureProfileId);
+            var proposalXml = GetIdentitySummary(trayProposalId);
+            var trayXml = GetIdentitySummary(trayId);
+
             var parameters = new[]
             {
-                new SqlParameter("procedure_profile_id", procedureProfileId),
-                new SqlParameter("tray_proposal_id", trayProposalId),
-                new SqlParameter("tray_item_id", trayId)
+                new SqlParameter("procedure_profile_id", procedureProfileXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_proposal_id", proposalXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value)
             };
             var dsSchedules = await ExecuteCommandAsync("GetProcedureProfileCasePreferencesReport", parameters);
 

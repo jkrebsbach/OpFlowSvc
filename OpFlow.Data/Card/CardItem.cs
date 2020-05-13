@@ -300,6 +300,7 @@ namespace OpFlow.Data
         public List<int> CardCategoryID { get; set; }
         public List<int> SurgeonID { get; set; }
         public List<int> ProposalID { get; set; }
+        public string Group { get; set; }
     }
 
     public class ProcedureProfileCasePreferenceFilterRequest
@@ -313,9 +314,9 @@ namespace OpFlow.Data
     public class ProcedureProfileCasePreferenceReportRequest
     {
         public List<int> LocationFilter { get; set; }
-        public int ProcedureProfileID { get; set; }
-        public int ProposalID { get; set; }
-        public int TrayID { get; set; }
+        public List<int> ProcedureProfileID { get; set; }
+        public List<int> ProposalID { get; set; }
+        public List<int> TrayID { get; set; }
         public string Email { get; set; }
     }
 
