@@ -248,7 +248,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, 
-                post.CardCategoryID, post.CardID, post.Instruments, post.Label, user.ProviderID, user.LocationID);
+                post.CardCategoryID, post.CardID, post.Instruments, post.ShowMax, post.Label, user.ProviderID, user.LocationID);
 
             var summary = SummarizeConcordanceReport(analytics.Tables[0]);
 
