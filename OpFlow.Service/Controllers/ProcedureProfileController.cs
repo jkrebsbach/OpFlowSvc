@@ -588,7 +588,7 @@ namespace OpFlow.Service.Controllers
             if (request.ProcedureProfileID?.Any() != true)
                 return Request.CreateResponse(HttpStatusCode.OK, -1);
 
-            var dataTable = await sqlHelper.GetProcedureProfileCasePreferencesReport(request.ProcedureProfileID, request.ProposalID, request.TrayID);
+            var dataTable = await sqlHelper.GetProcedureProfileCasePreferencesReport(request.LocationFilter, request.ProcedureProfileID, request.ProposalID, request.TrayID);
             
             if (format == "xlsx")
             {

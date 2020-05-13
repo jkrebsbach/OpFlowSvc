@@ -3848,14 +3848,16 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public async Task<DataTable> GetProcedureProfileCasePreferencesReport(List<int> procedureProfileId, List<int> trayProposalId, List<int> trayId)
+        public async Task<DataTable> GetProcedureProfileCasePreferencesReport(List<int> locationId, List<int> procedureProfileId, List<int> trayProposalId, List<int> trayId)
         {
+            var locationXml = GetIdentitySummary(locationId);
             var procedureProfileXml = GetIdentitySummary(procedureProfileId);
             var proposalXml = GetIdentitySummary(trayProposalId);
             var trayXml = GetIdentitySummary(trayId);
 
             var parameters = new[]
             {
+                new SqlParameter("location_id", locationXml ?? (object)DBNull.Value),
                 new SqlParameter("procedure_profile_id", procedureProfileXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_proposal_id", proposalXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value)
