@@ -6778,13 +6778,14 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateSpecialty(int specialtyId, string name, string description, int providerId, int locationId)
+        public async Task<int> UpdateSpecialty(int specialtyId, string name, string description, int? masterSpecialtyId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("specialty_id", specialtyId),
                 new SqlParameter("name", name),
                 new SqlParameter("description", description),
+                new SqlParameter("master_specialty_id", masterSpecialtyId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
@@ -6793,12 +6794,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> InsertSpecialty(string name, string description, int providerId, int locationId)
+        public async Task<int> InsertSpecialty(string name, string description, int? masterSpecialtyId, int providerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("name", name),
                 new SqlParameter("description", description),
+                new SqlParameter("master_specialty_id", masterSpecialtyId ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

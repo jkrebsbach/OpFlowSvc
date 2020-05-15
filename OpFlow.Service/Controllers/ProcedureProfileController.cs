@@ -33,9 +33,22 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetProcedureProfiles();
+            var profiles = await sqlHelper.GetProcedureProfiles();
+            var providers = await sqlHelper.GetOpFlowSetup();
+            var specialties = await sqlHelper.GetSpecialties(1, 1);
+            var cardCategories = await sqlHelper.GetCardCategories();
+            var surgeons = await sqlHelper.GetSurgeonsInternal(null);
+            var procedures = await sqlHelper.GetProcedures(null, 1, 1);
 
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Profiles = profiles,
+                CardCategories = cardCategories,
+                Specialties = specialties,
+                Locations = providers.SelectMany(p => p.Locations),
+                Surgeons = surgeons,
+                Procedures = procedures
+            });
         }
 
         // GET api/values/5
@@ -60,28 +73,20 @@ namespace OpFlow.Service.Controllers
                 profile = await sqlHelper.GetProcedureProfile(procedureProfileId.Value, request.LocationFilter);
             }
 
-            var cardCategories = await sqlHelper.GetCardCategories();
-            var specialties = await sqlHelper.GetSpecialtiesInternal();
-            var surgeons = await sqlHelper.GetSurgeonsInternal(request.LocationFilter);
             var cards = await sqlHelper.GetCardsInternal(request.LocationFilter);
             var trays = await sqlHelper.GetTraysInternal(request.LocationFilter);
             var proposed = await sqlHelper.GetProposedTraysInternal(request.LocationFilter);
             var itemCategories = await sqlHelper.GetItemCategories(user.ProviderID, user.LocationID);
             var instrumentCategories = await sqlHelper.GetInstrumentCategories(user.ProviderID, user.LocationID);
-            var providers = await sqlHelper.GetOpFlowSetup();
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 ProcedureProfile = profile,
-                CardCategories = cardCategories,
-                Specialties = specialties,
                 Cards = cards,
                 Trays = trays,
                 Proposed = proposed,
                 ItemCategories = itemCategories,
-                InstrumentCategories = instrumentCategories,
-                Surgeons = surgeons,
-                Locations = providers.SelectMany(p => p.Locations)
+                InstrumentCategories = instrumentCategories
             });
         }
 
@@ -555,6 +560,11 @@ namespace OpFlow.Service.Controllers
             var profiles = await sqlHelper.GetProcedureProfiles();
             var proposals = await sqlHelper.GetProposedTraysInternal(request.LocationFilter);
             var trays = await sqlHelper.GetTraysInternal(request.LocationFilter);
+
+            if (request.SpecialtyID.HasValue)
+            {
+                profiles = profiles.Where(p => p.Specialties.Any(s => s.SpecialtyID == request.SpecialtyID.Value)).ToList();
+            }
 
             if ((request.CardCategoryID?.Count() ?? 0) > 0)
                 profiles = profiles.Where(p => p.CardCategories.Any(cc => request.CardCategoryID.Contains(cc.CardCategoryID))).ToList();

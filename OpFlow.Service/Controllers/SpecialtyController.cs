@@ -13,13 +13,13 @@ using Swashbuckle.Swagger.Annotations;
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
+    [RoutePrefix("api/specialty")]
 
     public class SpecialtyController : ApiController
     {
 
         // GET api/values/5
         [SwaggerOperation("Get")]
-        [Route("api/specialty")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Specialty>))]
         [HttpGet]
         public async Task<HttpResponseMessage> GetSpecialties()
@@ -39,10 +39,24 @@ namespace OpFlow.Service.Controllers
                 Request.CreateResponse(HttpStatusCode.NotFound) :
                 Request.CreateResponse(HttpStatusCode.OK, specialties);
         }
+        // GET api/values/5
+        [SwaggerOperation("Get")]
+        [Route("master")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Specialty>))]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetMasterSpecialties()
+        {
+            var sqlHelper = new SqlHelper();
+
+            var specialties = await sqlHelper.GetSpecialties(1, 1);
+            
+            return specialties == null ?
+                Request.CreateResponse(HttpStatusCode.NotFound) :
+                Request.CreateResponse(HttpStatusCode.OK, specialties);
+        }
 
         // PUT api/roomSetup/values/5
         [SwaggerOperation("Update")]
-        [Route("api/specialty")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpPut]
@@ -51,14 +65,13 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateSpecialty(specialtyId, specialty.Name, specialty.Description, user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateSpecialty(specialtyId, specialty.Name, specialty.Description, specialty.MasterSpecialtyID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
         }
 
         // PUT api/roomSetup/values/5
         [SwaggerOperation("Insert")]
-        [Route("api/specialty")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpPost]
@@ -67,14 +80,13 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var specialtyId = await sqlHelper.InsertSpecialty(specialty.Name, specialty.Description, user.ProviderID, user.LocationID);
+            var specialtyId = await sqlHelper.InsertSpecialty(specialty.Name, specialty.Description, specialty.MasterSpecialtyID, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
         }
 
         // PUT api/roomSetup/values/5
         [SwaggerOperation("Delete")]
-        [Route("api/specialty")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpDelete]
@@ -90,7 +102,7 @@ namespace OpFlow.Service.Controllers
 
         // PUT api/roomSetup/values/5
         [SwaggerOperation("PutProcedureGroup")]
-        [Route("api/specialty/procedureGroup")]
+        [Route("procedureGroup")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpPut]
@@ -106,7 +118,7 @@ namespace OpFlow.Service.Controllers
 
         // PUT api/roomSetup/values/5
         [SwaggerOperation("DeleteProcedureGroup")]
-        [Route("api/specialty/procedureGroup")]
+        [Route("procedureGroup")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpDelete]

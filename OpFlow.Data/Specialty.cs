@@ -7,8 +7,10 @@ namespace OpFlow.Data
     public class Specialty : IBindableEntity
     {
         public int SpecialtyID { get; set; }
+        public int? MasterSpecialtyID { get; set; }
         public string SpecialtyName { get; set; }
         public string SpecialtyDescription { get; set; }
+        public string MasterSpecialty { get; set; }
 
         public List<SpecialtyCardCategory> CardCategories { get; set; }
 
@@ -34,5 +36,6 @@ namespace OpFlow.Data
     {
         public string Name { get; set; }
         public string Description { get; set; }
+        public int? MasterSpecialtyID { get; set; }
     }
 }
