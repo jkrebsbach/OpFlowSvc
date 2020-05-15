@@ -160,13 +160,22 @@ namespace OpFlow.Data.Administration
             }
 
             // First M Last
-            match = Regex.Match(surgeonString, @"([A-Za-z]+) ([A-Za-z]?) ?([A-Za-z\'-\.\s]+)");
-
+            match = Regex.Match(surgeonString, @"([A-Za-z]+) ([A-Za-z]) ([A-Za-z\'-\.\s]+)");
             if (match.Success && match.Groups.Count > 3)
             {
                 result.FirstName = match.Groups[1].Value;
                 result.MInit = match.Groups[2].Value;
                 result.LastName = match.Groups[3].Value;
+
+                return result;
+            }
+
+            // First Last
+            match = Regex.Match(surgeonString, @"([A-Za-z]+) ([A-Z][A-Za-z\'-\.\s]+)");
+            if (match.Success && match.Groups.Count > 2)
+            {
+                result.FirstName = match.Groups[1].Value;
+                result.LastName = match.Groups[2].Value;
 
                 return result;
             }

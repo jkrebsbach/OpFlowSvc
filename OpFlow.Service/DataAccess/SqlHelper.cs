@@ -7433,7 +7433,12 @@ namespace OpFlow.Service.DataAccess
                 
                 var room = relations.Rooms.FirstOrDefault(r => r.RoomDescription == scheduleBase.Room);
                 var surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == scheduleBase.PrimarySurgeon.LastName 
-                    && r.FirstName == scheduleBase.PrimarySurgeon.FirstName);
+                    && r.FirstName.Contains(scheduleBase.PrimarySurgeon.FirstName));
+
+                // some source files are LastName FirstName - some source files are FirstName LastName
+                if (surgeon == null)
+                    surgeon = relations.Surgeons.FirstOrDefault(r => r.FirstName.Contains(scheduleBase.PrimarySurgeon.LastName)
+                        && scheduleBase.PrimarySurgeon.FirstName == r.LastName);
 
                 surgery.RoomID = room?.RoomID;
                 surgery.SurgeonUserID = surgeon?.UserID;

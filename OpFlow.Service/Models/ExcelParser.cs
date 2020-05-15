@@ -58,14 +58,23 @@ namespace OpFlow.Service.Models
                                 if (schedule == null)
                                     continue;
 
+                                //// old format?...
+                                //schedule.Surgeon = sheetRow.GetCell(0).StringCellValue;
+                                //schedule.Room = sheetRow.GetCell(1).StringCellValue;
+
+                                //var spmDate = sheetRow.GetCell(2).StringCellValue;
+                                //schedule.ScheduleDate = DateTime.Parse(spmDate);
+
+                                //schedule.TrayList += $"{sheetRow.GetCell(3).StringCellValue},";
 
                                 schedule.Surgeon = sheetRow.GetCell(0).StringCellValue;
                                 schedule.Room = sheetRow.GetCell(1).StringCellValue;
+                                var caseClass = sheetRow.GetCell(2).StringCellValue;
 
-                                var spmDate = sheetRow.GetCell(2).StringCellValue;
+                                var spmDate = sheetRow.GetCell(3).StringCellValue;
                                 schedule.ScheduleDate = DateTime.Parse(spmDate);
 
-                                schedule.TrayList += $"{sheetRow.GetCell(3).StringCellValue},";
+                                schedule.TrayList += $"{sheetRow.GetCell(4).StringCellValue},";
                             }
                         }
                     }

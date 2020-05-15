@@ -21,7 +21,7 @@ namespace OpFlow.Service.Test
             //var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\TestSchedule.csv";
             //var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\UAB_Neuro_Cards.csv";
             //var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\UAB_SPM_May4.csv";
-            var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\SMTP.xlsx";
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\Cases with Needs (Custom) 2020-05-14 09_43_03.xlsx";
             var importTypeId = 7; // schedule without card
             //var importTypeId = 5; // cards
             //var importTypeId = 3; // trays
