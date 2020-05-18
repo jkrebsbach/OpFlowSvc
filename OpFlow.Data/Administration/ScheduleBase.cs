@@ -127,24 +127,24 @@ namespace OpFlow.Data.Administration
             if (string.IsNullOrEmpty(surgeonString))
                 return result;
 
-            // Last, First Middle MD
-            var match = Regex.Match(surgeonString, @"([A-Za-z\'-\.\s]+), ([A-Za-z\s]+) MD");
-            if (match.Success && match.Groups.Count > 2)
-            {
-                result.LastName = match.Groups[1].Value;
-                result.FirstName = match.Groups[2].Value;
-                result.Title = "MD";
-
-                return result;
-            }
-
             // Last, First Middle MD, PhD
-            match = Regex.Match(surgeonString, @"([A-Za-z\'-\.\s]+), ([A-Za-z\s]+) MD, PhD");
+            var match = Regex.Match(surgeonString, @"([A-Za-z\'-\.\s]+), ([A-Za-z\s]+) MD, PhD");
             if (match.Success && match.Groups.Count > 2)
             {
                 result.LastName = match.Groups[1].Value;
                 result.FirstName = match.Groups[2].Value;
                 result.Title = "MD, PhD";
+
+                return result;
+            }
+
+            // Last, First Middle MD
+            match = Regex.Match(surgeonString, @"([A-Za-z\'-\.\s]+), ([A-Za-z\-\s]+) MD");
+            if (match.Success && match.Groups.Count > 2)
+            {
+                result.LastName = match.Groups[1].Value;
+                result.FirstName = match.Groups[2].Value;
+                result.Title = "MD";
 
                 return result;
             }
@@ -176,6 +176,14 @@ namespace OpFlow.Data.Administration
             {
                 result.FirstName = match.Groups[1].Value;
                 result.LastName = match.Groups[2].Value;
+
+                return result;
+            }
+
+            if (surgeonString.Split(' ').Length > 0)
+            {
+                result.FirstName = surgeonString.Split(' ')[0];
+                result.LastName = surgeonString.Split(' ')[1];
 
                 return result;
             }

@@ -32,9 +32,14 @@ namespace OpFlow.Service.Test
             var secureSqlHelper = new SecureSqlHelper("InvalidConnection");
 
             //var user = await sqlHelper.GetSecureUser(null, 4); // UNC
-            var user = await sqlHelper.GetSecureUser(null, 459); // UAB
+            //var user = await sqlHelper.GetSecureUser(null, 459); // LMC
+            var user = await sqlHelper.GetSecureUser(null, 831); // UAB
 
             int? logId = null;
+
+
+            var testA = ImportSurgeon.ParseSurgeon("Atallah, Ihab Nader Tawfik MD, PhD");
+            var testB = ImportSurgeon.ParseSurgeon("Cho, Do-Yeon MD");
 
             try
             {

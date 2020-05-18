@@ -48,7 +48,7 @@ namespace OpFlow.Service.Controllers
         {
             var sqlHelper = new SqlHelper();
 
-            var specialties = await sqlHelper.GetSpecialties(1, 1);
+            var specialties = await sqlHelper.GetSpecialtyMaster();
             
             return specialties == null ?
                 Request.CreateResponse(HttpStatusCode.NotFound) :

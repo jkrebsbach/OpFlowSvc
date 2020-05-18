@@ -35,7 +35,7 @@ namespace OpFlow.Service.Controllers
 
             var profiles = await sqlHelper.GetProcedureProfiles();
             var providers = await sqlHelper.GetOpFlowSetup();
-            var specialties = await sqlHelper.GetSpecialties(1, 1);
+            var specialties = await sqlHelper.GetSpecialtyMaster();
             var cardCategories = await sqlHelper.GetCardCategories();
             var surgeons = await sqlHelper.GetSurgeonsInternal(null);
             var procedures = await sqlHelper.GetProcedures(null, 1, 1);
@@ -97,9 +97,12 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetCardCategories(int? specialtyId)
         {
             var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var cards = await sqlHelper.GetCardCategoryXRef(null, specialtyId, null, null, null, user.ProviderID, user.LocationID);
+            var cards = await sqlHelper.GetCardCategoryXRef(null, specialtyId, null, null, null, 1, 1);
             var cardCategories = cards.SelectMany(c => c.CardCategories ?? new List<CardCategoryXRef>()).GroupBy(c => new { c.CardCategoryID, c.CardCategory })
                 .Select(c => new CardCategory()
                 {
