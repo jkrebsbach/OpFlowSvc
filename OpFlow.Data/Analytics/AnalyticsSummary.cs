@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpFlow.Data.Analytics;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -183,7 +184,7 @@ namespace OpFlow.Data
         public decimal Usage { get; set; }
     }
 
-    public class InstrumentUsagePost
+    public class InstrumentUsagePost : ReportRequest
     {
         public List<int> ProposedTrayID { get; set; }
         public List<int> SpecialtyID { get; set; }

@@ -64,6 +64,9 @@
     <Report Include="InstrumentUsageCardTray.rdl" />
     <Report Include="InstrumentUsageSurgeonCard.rdl" />
     <Report Include="InstrumentUsageTrayCard.rdl" />
+    <Report Include="logo.png">
+      <MimeType>image/x-png</MimeType>
+    </Report>
     <Report Include="ProcedureProfile.rdl" />
     <Report Include="ProfileAlignment.rdl" />
     <Report Include="SalesReport.rdl" />

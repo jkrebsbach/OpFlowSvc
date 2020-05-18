@@ -861,7 +861,7 @@ select 'ABC' Specialty,
         <Height>0.5in</Height>
         <Style />
       </Body>
-      <Width>11.98958in</Width>
+      <Width>10.98958in</Width>
       <Page>
         <PageHeight>8.5in</PageHeight>
         <PageWidth>11in</PageWidth>

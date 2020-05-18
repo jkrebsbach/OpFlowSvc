@@ -69,6 +69,17 @@ namespace OpFlow.Service.Controllers
             });
         }
 
+        private async Task<string> GetLocationName(UserSecurity user)
+        {
+            var sqlHelper = new SqlHelper();
+            var providers = await sqlHelper.GetOpFlowSetup();
+
+            var provider = providers.FirstOrDefault(p => p.ProviderID == user.ProviderID);
+            var location = provider?.Locations?.FirstOrDefault(l => l.LocationID == user.LocationID);
+
+            return location.LocationName ?? "Unknown Location";
+        }
+
         // GET api/values/5
         [SwaggerOperation("InstrumentUsageReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
@@ -251,7 +262,7 @@ namespace OpFlow.Service.Controllers
                 post.CardCategoryID, post.CardID, post.Instruments, post.ShowMax, post.Label, user.ProviderID, user.LocationID);
 
             var summary = SummarizeConcordanceReport(analytics.Tables[0]);
-
+            
             var concordance = analytics.Tables[0].DefaultView;
             switch (post.Order)
             {
@@ -274,12 +285,18 @@ namespace OpFlow.Service.Controllers
             {
                 return ResponseHelper.CsvResponse(concordance.ToTable());
             }
+            
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
 
             var datasets = new Dictionary<string, DataTable>
             {
                 ["ConcordanceReport"] = concordance.ToTable()
             };
-            var result = ReportHelper.GetReport("ConcordanceReport", format, datasets);
+            var result = ReportHelper.GetReport("ConcordanceReport", format, datasets, parameters);
             
             if (format?.ToUpper() == "PDF")
             {

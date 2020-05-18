@@ -322,7 +322,7 @@ namespace OpFlow.Data
         public string Email { get; set; }
     }
 
-    public class ProcedureProfileCardComparisonRequest
+    public class ProcedureProfileCardComparisonRequest : ReportRequest
     {
         public List<int> LocationFilter { get; set; }
         public List<int> Cards { get; set; }
