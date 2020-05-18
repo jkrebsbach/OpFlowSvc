@@ -216,7 +216,9 @@ namespace OpFlow.Service.Controllers
             
             var parameters = new ReportParameter[]
             {
-                new ReportParameter("Order", post.Order)
+                new ReportParameter("Order", post.Order),
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
             };
 
             var datasets = new Dictionary<string, DataTable>
@@ -224,9 +226,7 @@ namespace OpFlow.Service.Controllers
                 ["DisposableUsage"] = usage.ToTable()
             };
 
-            var reportName = "DisposableUsage";
-
-            var result = ReportHelper.GetReport(reportName, format, datasets, parameters);
+            var result = ReportHelper.GetReport($"DisposableUsage{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -499,7 +499,12 @@ namespace OpFlow.Service.Controllers
             {
                 ["ConcordanceReport"] = concordance.ToTable()
             };
-            var result = ReportHelper.GetReport("ConcordanceReport", format, datasets);
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport($"ConcordanceReport", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -546,7 +551,12 @@ namespace OpFlow.Service.Controllers
             {
                 ["SupplyWaste"] = supplyWaste.ToTable()
             };
-            var result = ReportHelper.GetReport("SupplyWaste", format, datasets);
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport($"SupplyWaste{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -733,7 +743,12 @@ namespace OpFlow.Service.Controllers
             {
                 ["SupplyOpen"] = supplyOpenAggregate.ToTable()
             };
-            var result = ReportHelper.GetReport("SupplyOpen", format, datasets);
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport($"SupplyOpen{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -822,7 +837,12 @@ namespace OpFlow.Service.Controllers
             {
                 ["CardRedundancy"] = cardRedundancy.ToTable()
             };
-            var result = ReportHelper.GetReport("CardRedundancy", format, datasets);
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport($"CardRedundancy{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -869,7 +889,12 @@ namespace OpFlow.Service.Controllers
             {
                 ["ExcessInventory"] = excessInventory.ToTable()
             };
-            var result = ReportHelper.GetReport("ExcessInventory", format, datasets);
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport($"ExcessInventory{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -915,7 +940,12 @@ namespace OpFlow.Service.Controllers
             {
                 ["SupplyCost"] = supplyWaste.ToTable()
             };
-            var result = ReportHelper.GetReport("SupplyCost", format, datasets);
+            var parameters = new ReportParameter[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport($"SupplyCost{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -1246,10 +1276,12 @@ namespace OpFlow.Service.Controllers
                 new ReportParameter("FieldCase", post.FieldCase.ToString()),
                 new ReportParameter("FieldInstrument", post.FieldInstrument.ToString()),
                 new ReportParameter("FieldUsage", post.FieldUsage.ToString()),
-                new ReportParameter("FieldTray", post.FieldTray.ToString())
+                new ReportParameter("FieldTray", post.FieldTray.ToString()),
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
             };
 
-            var result = ReportHelper.GetReport("TrayRationalization", format, datasets, parameters);
+            var result = ReportHelper.GetReport($"TrayRationalization{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {

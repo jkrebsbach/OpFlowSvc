@@ -6,43 +6,123 @@
     <DataSource Name="OpFlow">
       <DataSourceReference>OpFlow</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
-      <rd:DataSourceID>c2f690f0-2057-4606-9c35-e6b397a3fa2b</rd:DataSourceID>
+      <rd:DataSourceID>e402514c-2889-41e8-8678-2752ca151e5c</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
-    <DataSet Name="CardRedundancy">
+    <DataSet Name="SupplyOpen">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'ddd' as TrayName, 5 as Quantity, 3.5 as Usage, 3 as TrayOpen
-UNION
-select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'eee' as TrayName, 6 as Quantity, 3.5 as Usage, 3 as TrayOpen
-UNION
-select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Quantity, 3.5 as Usage, 3 as TrayOpen</CommandText>
-        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+        <CommandText>select CASE 'I' WHEN 'I' THEN item_master.description
+	ELSE card.description + '\n' +
+	item_master.description 
+	END ItemName,
+'This is a thing' CustomLegend,
+	specialty.description Specialty,
+	item_master.unit_cost ItemCost,
+	card.description CardName,
+	card_item.qty_open CardQuantity,
+'Setup' UsageType,
+3.1 AvgSetup,
+3.1 AvgSetupOpen,
+2.1 AvgSetupAdded,
+4.1 AvgOpen,
+4.1 AvgOpenInit,
+6.1 AvgOpenAdded,
+4.1 AvgOpenVariance,
+4.1 AvgUsageVariance,
+-1.2 AvgCardQtyVariance,
+40 UsageVariance,
+17 CardQtyVariance,
+72 CaseCount
+from surgery s
+JOIN surgery_card_item_counts scic ON s.surgery_id = scic.surgery_id
+	AND scic.type = 'U'
+join users surgeon ON s.user_id = surgeon.user_id
+join card ON s.card_id = card.card_id
+join card_item ON card.card_id = card_item.card_id
+	AND card_item.item_id = scic.item_id
+join specialty ON surgeon.specialty_id = specialty.specialty_id
+join item_master ON scic.item_id = item_master.item_id
+WHERE 1 = surgeon.provider_id
+	AND 1 = surgeon.location_id
+ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.description</CommandText>
       </Query>
       <Fields>
+        <Field Name="ItemName">
+          <DataField>ItemName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CustomLegend">
+          <DataField>CustomLegend</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Specialty">
+          <DataField>Specialty</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ItemCost">
+          <DataField>ItemCost</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
         <Field Name="CardName">
           <DataField>CardName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="InstrumentName">
-          <DataField>InstrumentName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="TrayName">
-          <DataField>TrayName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="Quantity">
-          <DataField>Quantity</DataField>
+        <Field Name="CardQuantity">
+          <DataField>CardQuantity</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="Usage">
-          <DataField>Usage</DataField>
+        <Field Name="AvgSetup">
+          <DataField>AvgSetup</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
-        <Field Name="TrayOpen">
-          <DataField>TrayOpen</DataField>
+        <Field Name="AvgSetupOpen">
+          <DataField>AvgSetupOpen</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="UsageType">
+          <DataField>UsageType</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="AvgSetupAdded">
+          <DataField>AvgSetupAdded</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="AvgOpenInit">
+          <DataField>AvgOpenInit</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="AvgOpen">
+          <DataField>AvgOpen</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="AvgOpenAdded">
+          <DataField>AvgOpenAdded</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="AvgOpenVariance">
+          <DataField>AvgOpenVariance</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="AvgUsageVariance">
+          <DataField>AvgUsageVariance</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="AvgCardQtyVariance">
+          <DataField>AvgCardQtyVariance</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="UsageVariance">
+          <DataField>UsageVariance</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="CardQtyVariance">
+          <DataField>CardQtyVariance</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="CaseCount">
+          <DataField>CaseCount</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
       </Fields>
@@ -52,11 +132,14 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
     <ReportSection>
       <Body>
         <ReportItems>
-          <Tablix Name="Tablix2">
+          <Tablix Name="Tablix1">
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>6.79042in</Width>
+                  <Width>4.98959in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>4.25in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -65,14 +148,15 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="CardName3">
+                        <Textbox Name="Specialty">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>="Card: " + Fields!CardName.Value</Value>
+                                  <Value>=Iif(Fields!CardName.Value IS NOTHING, Fields!Specialty.Value,
+Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                   </Style>
@@ -81,12 +165,85 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>CardName1</rd:DefaultName>
+                          <rd:DefaultName>Specialty</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
-                              <Style>Solid</Style>
+                              <Style>None</Style>
                             </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>2</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox2">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Total Savings Opportunity</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox2</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>None</Style>
+                            </Border>
+                            <BackgroundColor>White</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox6">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox6</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>None</Style>
+                            </Border>
+                            <BackgroundColor>White</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -102,38 +259,87 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="IntrumentName3">
+                        <Textbox Name="Textbox3">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!InstrumentName.Value</Value>
-                                  <Style />
+                                  <Value>="Total units opened but not used " &amp; SUM(Fields!UsageVariance.Value, "Specialty") &amp;
+" = $" &amp; Format(SUM(Fields!UsageVariance.Value * Fields!ItemCost.Value, "Specialty"), "#,###.00") &amp;
+" for the " &amp; MAX(Fields!CaseCount.Value, "Specialty") &amp; " cases we audited"</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>IntrumentName2</rd:DefaultName>
+                          <rd:DefaultName>Textbox3</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
-                              <Style>Solid</Style>
+                              <Style>None</Style>
                             </Border>
+                            <BackgroundColor>White</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <ColSpan>2</ColSpan>
                       </CellContents>
                     </TablixCell>
+                    <TablixCell />
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>3.155in</Height>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>="Total units allocated but not needed " &amp; SUM(Fields!CardQtyVariance.Value, "Specialty") &amp;
+" = $" &amp; Format(SUM(Fields!CardQtyVariance.Value * Fields!ItemCost.Value, "Specialty"), "#,###.00") &amp;
+" for the " &amp; MAX(Fields!CaseCount.Value, "Specialty") &amp; " cases we audited"</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>None</Style>
+                            </Border>
+                            <BackgroundColor>White</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>2</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.60417in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -143,43 +349,59 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                               <ChartMember>
                                 <Group Name="Chart1_CategoryGroup">
                                   <GroupExpressions>
-                                    <GroupExpression>=Fields!TrayName.Value</GroupExpression>
+                                    <GroupExpression>=Fields!CustomLegend.Value</GroupExpression>
                                   </GroupExpressions>
                                 </Group>
                                 <SortExpressions>
                                   <SortExpression>
-                                    <Value>=Fields!Quantity.Value</Value>
+                                    <Value>=Fields!CustomLegend.Value</Value>
                                   </SortExpression>
                                 </SortExpressions>
-                                <Label>=Fields!TrayName.Value</Label>
+                                <Label>=Fields!CustomLegend.Value</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartCategoryHierarchy>
                           <ChartSeriesHierarchy>
                             <ChartMembers>
                               <ChartMember>
-                                <Label>Quantity</Label>
-                              </ChartMember>
-                              <ChartMember>
-                                <Label>Usage</Label>
-                              </ChartMember>
-                              <ChartMember>
-                                <Label>Tray Open</Label>
+                                <Group Name="Chart1_SeriesGroup">
+                                  <GroupExpressions>
+                                    <GroupExpression>=Fields!UsageType.Value</GroupExpression>
+                                  </GroupExpressions>
+                                </Group>
+                                <SortExpressions>
+                                  <SortExpression>
+                                    <Value>=Fields!UsageType.Value</Value>
+                                  </SortExpression>
+                                </SortExpressions>
+                                <ChartMembers>
+                                  <ChartMember>
+                                    <Label>Avg Setup</Label>
+                                  </ChartMember>
+                                  <ChartMember>
+                                    <Label>Avg Open</Label>
+                                  </ChartMember>
+                                </ChartMembers>
+                                <Label>=Fields!UsageType.Value</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartSeriesHierarchy>
                           <ChartData>
                             <ChartSeriesCollection>
-                              <ChartSeries Name="Quantity">
+                              <ChartSeries Name="Setup">
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Sum(Fields!Quantity.Value)</Y>
+                                      <Y>=Max(Fields!AvgSetup.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
-                                      <Style />
-                                      <UseValueAsLabel>true</UseValueAsLabel>
-                                      <Visible>true</Visible>
+                                      <Style>
+                                        <FontSize>8pt</FontSize>
+                                        <Format>0.##</Format>
+                                      </Style>
+                                      <Label>=Fields!AvgSetup.Value</Label>
+                                      <Visible>=Iif(SUM(Fields!AvgSetup.Value) = 0, False, True)</Visible>
+                                      <Position>Outside</Position>
                                     </ChartDataLabel>
                                     <Style />
                                     <ChartMarker>
@@ -189,6 +411,7 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                                   </ChartDataPoint>
                                 </ChartDataPoints>
                                 <Type>Bar</Type>
+                                <Subtype>Stacked</Subtype>
                                 <Style />
                                 <ChartEmptyPoints>
                                   <Style />
@@ -199,23 +422,32 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                                     <Style />
                                   </ChartDataLabel>
                                 </ChartEmptyPoints>
+                                <LegendName>Default</LegendName>
+                                <ChartItemInLegend>
+                                  <LegendText>=Iif(Fields!UsageType.Value = "1Setup", "Setup Init", "Setup Added")</LegendText>
+                                  <Hidden>=Iif(SUM(Fields!AvgSetup.Value) = 0, True, False)</Hidden>
+                                </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
-                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <CategoryAxisName>Secondary</CategoryAxisName>
                                 <ChartSmartLabel>
                                   <CalloutLineColor>Black</CalloutLineColor>
                                   <MinMovingDistance>0pt</MinMovingDistance>
                                 </ChartSmartLabel>
                               </ChartSeries>
-                              <ChartSeries Name="Usage">
+                              <ChartSeries Name="AvgOpen">
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Sum(Fields!Usage.Value)</Y>
+                                      <Y>=Max(Fields!AvgOpen.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
-                                      <Style />
-                                      <UseValueAsLabel>true</UseValueAsLabel>
-                                      <Visible>true</Visible>
+                                      <Style>
+                                        <FontSize>8pt</FontSize>
+                                        <Format>0.##</Format>
+                                      </Style>
+                                      <Label>=Fields!AvgOpen.Value</Label>
+                                      <Visible>=Iif(SUM(Fields!AvgOpen.Value) = 0, False, True)</Visible>
+                                      <Position>Outside</Position>
                                     </ChartDataLabel>
                                     <Style />
                                     <ChartMarker>
@@ -225,6 +457,7 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                                   </ChartDataPoint>
                                 </ChartDataPoints>
                                 <Type>Bar</Type>
+                                <Subtype>Stacked</Subtype>
                                 <Style />
                                 <ChartEmptyPoints>
                                   <Style />
@@ -235,42 +468,10 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                                     <Style />
                                   </ChartDataLabel>
                                 </ChartEmptyPoints>
-                                <ValueAxisName>Primary</ValueAxisName>
-                                <CategoryAxisName>Primary</CategoryAxisName>
-                                <ChartSmartLabel>
-                                  <CalloutLineColor>Black</CalloutLineColor>
-                                  <MinMovingDistance>0pt</MinMovingDistance>
-                                </ChartSmartLabel>
-                              </ChartSeries>
-                              <ChartSeries Name="TrayOpen">
-                                <ChartDataPoints>
-                                  <ChartDataPoint>
-                                    <ChartDataPointValues>
-                                      <Y>=Sum(Fields!TrayOpen.Value)</Y>
-                                    </ChartDataPointValues>
-                                    <ChartDataLabel>
-                                      <Style />
-                                      <UseValueAsLabel>true</UseValueAsLabel>
-                                      <Visible>true</Visible>
-                                    </ChartDataLabel>
-                                    <Style />
-                                    <ChartMarker>
-                                      <Style />
-                                    </ChartMarker>
-                                    <DataElementOutput>Output</DataElementOutput>
-                                  </ChartDataPoint>
-                                </ChartDataPoints>
-                                <Type>Bar</Type>
-                                <Style />
-                                <ChartEmptyPoints>
-                                  <Style />
-                                  <ChartMarker>
-                                    <Style />
-                                  </ChartMarker>
-                                  <ChartDataLabel>
-                                    <Style />
-                                  </ChartDataLabel>
-                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>=Iif(Fields!UsageType.Value = "2Usage", "PeriOp Used", "PeriOp Added")</LegendText>
+                                  <Hidden>=Iif(SUM(Fields!AvgOpen.Value) = 0, True, False)</Hidden>
+                                </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
                                 <ChartSmartLabel>
@@ -299,8 +500,9 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                                       <Color>#5c5c5c</Color>
                                     </Style>
                                   </ChartAxisTitle>
+                                  <Interval>1</Interval>
                                   <ChartMajorGridLines>
-                                    <Enabled>False</Enabled>
+                                    <Enabled>True</Enabled>
                                     <Style>
                                       <Border>
                                         <Color>Gainsboro</Color>
@@ -510,6 +712,17 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                                 <BackgroundColor>#00ffffff</BackgroundColor>
                                 <BackgroundGradientType>None</BackgroundGradientType>
                               </Style>
+                              <ChartElementPosition>
+                                <Top>9.023</Top>
+                                <Left>3</Left>
+                                <Height>90</Height>
+                                <Width>94</Width>
+                              </ChartElementPosition>
+                              <ChartInnerPlotPosition>
+                                <Left>29.047</Left>
+                                <Height>100</Height>
+                                <Width>70.953</Width>
+                              </ChartInnerPlotPosition>
                             </ChartArea>
                           </ChartAreas>
                           <ChartLegends>
@@ -519,6 +732,14 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                                 <FontSize>8pt</FontSize>
                               </Style>
                               <Position>TopLeft</Position>
+                              <Layout>Row</Layout>
+                              <DockToChartArea>Default</DockToChartArea>
+                              <DockOutsideChartArea>true</DockOutsideChartArea>
+                              <ChartElementPosition>
+                                <Left>3</Left>
+                                <Height>10</Height>
+                                <Width>100</Width>
+                              </ChartElementPosition>
                               <ChartLegendTitle>
                                 <Caption />
                                 <Style>
@@ -532,6 +753,7 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                             </ChartLegend>
                           </ChartLegends>
                           <Palette>Pacific</Palette>
+                          <DynamicHeight>=(2 + CountDistinct(Fields!CustomLegend.Value)) * 0.5 &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>
@@ -548,7 +770,426 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                               <VerticalAlign>Top</VerticalAlign>
                             </Style>
                           </ChartNoDataMessage>
-                          <DataSetName>CardRedundancy</DataSetName>
+                          <DataSetName>SupplyOpen</DataSetName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>None</Style>
+                            </Border>
+                            <BackgroundColor>White</BackgroundColor>
+                            <BackgroundGradientType>None</BackgroundGradientType>
+                          </Style>
+                        </Chart>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Chart Name="Chart3">
+                          <ChartCategoryHierarchy>
+                            <ChartMembers>
+                              <ChartMember>
+                                <Group Name="Chart1_CategoryGroup2">
+                                  <GroupExpressions>
+                                    <GroupExpression>=Fields!CustomLegend.Value</GroupExpression>
+                                  </GroupExpressions>
+                                </Group>
+                                <SortExpressions>
+                                  <SortExpression>
+                                    <Value>=Fields!CustomLegend.Value</Value>
+                                  </SortExpression>
+                                </SortExpressions>
+                                <Label>=" "</Label>
+                              </ChartMember>
+                            </ChartMembers>
+                          </ChartCategoryHierarchy>
+                          <ChartSeriesHierarchy>
+                            <ChartMembers>
+                              <ChartMember>
+                                <Label>Avg Usage Variance</Label>
+                              </ChartMember>
+                              <ChartMember>
+                                <Label>Avg Card Qty Variance</Label>
+                              </ChartMember>
+                            </ChartMembers>
+                          </ChartSeriesHierarchy>
+                          <ChartData>
+                            <ChartSeriesCollection>
+                              <ChartSeries Name="UsageVariance">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Sum(Fields!AvgUsageVariance.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style>
+                                        <FontSize>8pt</FontSize>
+                                        <Format>0.##</Format>
+                                      </Style>
+                                      <Label>=Format(Fields!AvgUsageVariance.Value, "0.##") &amp; " - Setup Variance"</Label>
+                                      <Visible>true</Visible>
+                                      <Position>Outside</Position>
+                                    </ChartDataLabel>
+                                    <Style />
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Bar</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>Usage Variance</LegendText>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="AvgCardQtyVariance">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Sum(Fields!AvgCardQtyVariance.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style>
+                                        <FontSize>8pt</FontSize>
+                                        <Format>0.##</Format>
+                                      </Style>
+                                      <Label>=Format(Fields!AvgCardQtyVariance.Value, "0.##") &amp; " - Card Variance"</Label>
+                                      <Visible>true</Visible>
+                                      <Position>Outside</Position>
+                                    </ChartDataLabel>
+                                    <Style />
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Bar</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>Card Variance</LegendText>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                            </ChartSeriesCollection>
+                          </ChartData>
+                          <ChartAreas>
+                            <ChartArea Name="Default">
+                              <ChartCategoryAxes>
+                                <ChartAxis Name="Primary">
+                                  <Style>
+                                    <Border>
+                                      <Color>Gainsboro</Color>
+                                      <Style>None</Style>
+                                    </Border>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#5c5c5c</Color>
+                                  </Style>
+                                  <ChartAxisTitle>
+                                    <Caption />
+                                    <Style>
+                                      <FontSize>9pt</FontSize>
+                                      <Color>#5c5c5c</Color>
+                                    </Style>
+                                  </ChartAxisTitle>
+                                  <Interval>1</Interval>
+                                  <ChartMajorGridLines>
+                                    <Enabled>True</Enabled>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                      </Border>
+                                    </Style>
+                                  </ChartMajorGridLines>
+                                  <ChartMinorGridLines>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                        <Style>Dotted</Style>
+                                      </Border>
+                                    </Style>
+                                  </ChartMinorGridLines>
+                                  <ChartMajorTickMarks>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                        <Style>None</Style>
+                                      </Border>
+                                    </Style>
+                                  </ChartMajorTickMarks>
+                                  <ChartMinorTickMarks>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                      </Border>
+                                    </Style>
+                                    <Length>0.5</Length>
+                                  </ChartMinorTickMarks>
+                                  <CrossAt>NaN</CrossAt>
+                                  <Minimum>NaN</Minimum>
+                                  <Maximum>NaN</Maximum>
+                                  <ChartAxisScaleBreak>
+                                    <Style />
+                                  </ChartAxisScaleBreak>
+                                </ChartAxis>
+                                <ChartAxis Name="Secondary">
+                                  <Style>
+                                    <Border>
+                                      <Color>Gainsboro</Color>
+                                      <Style>None</Style>
+                                    </Border>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#5c5c5c</Color>
+                                  </Style>
+                                  <ChartAxisTitle>
+                                    <Caption />
+                                    <Style>
+                                      <FontSize>9pt</FontSize>
+                                      <Color>#5c5c5c</Color>
+                                    </Style>
+                                  </ChartAxisTitle>
+                                  <ChartMajorGridLines>
+                                    <Enabled>False</Enabled>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                      </Border>
+                                    </Style>
+                                  </ChartMajorGridLines>
+                                  <ChartMinorGridLines>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                        <Style>Dotted</Style>
+                                      </Border>
+                                    </Style>
+                                  </ChartMinorGridLines>
+                                  <ChartMajorTickMarks>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                        <Style>None</Style>
+                                      </Border>
+                                    </Style>
+                                  </ChartMajorTickMarks>
+                                  <ChartMinorTickMarks>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                      </Border>
+                                    </Style>
+                                    <Length>0.5</Length>
+                                  </ChartMinorTickMarks>
+                                  <CrossAt>NaN</CrossAt>
+                                  <Location>Opposite</Location>
+                                  <Minimum>NaN</Minimum>
+                                  <Maximum>NaN</Maximum>
+                                  <ChartAxisScaleBreak>
+                                    <Style />
+                                  </ChartAxisScaleBreak>
+                                </ChartAxis>
+                              </ChartCategoryAxes>
+                              <ChartValueAxes>
+                                <ChartAxis Name="Primary">
+                                  <Style>
+                                    <Border>
+                                      <Color>Gainsboro</Color>
+                                      <Style>None</Style>
+                                    </Border>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#5c5c5c</Color>
+                                  </Style>
+                                  <ChartAxisTitle>
+                                    <Caption />
+                                    <Style>
+                                      <FontSize>9pt</FontSize>
+                                      <Color>#5c5c5c</Color>
+                                    </Style>
+                                  </ChartAxisTitle>
+                                  <ChartMajorGridLines>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                      </Border>
+                                    </Style>
+                                  </ChartMajorGridLines>
+                                  <ChartMinorGridLines>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                        <Style>Dotted</Style>
+                                      </Border>
+                                    </Style>
+                                  </ChartMinorGridLines>
+                                  <ChartMajorTickMarks>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                        <Style>None</Style>
+                                      </Border>
+                                    </Style>
+                                  </ChartMajorTickMarks>
+                                  <ChartMinorTickMarks>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                      </Border>
+                                    </Style>
+                                    <Length>0.5</Length>
+                                  </ChartMinorTickMarks>
+                                  <CrossAt>NaN</CrossAt>
+                                  <Minimum>NaN</Minimum>
+                                  <Maximum>NaN</Maximum>
+                                  <ChartAxisScaleBreak>
+                                    <Style />
+                                  </ChartAxisScaleBreak>
+                                </ChartAxis>
+                                <ChartAxis Name="Secondary">
+                                  <Style>
+                                    <Border>
+                                      <Color>Gainsboro</Color>
+                                      <Style>None</Style>
+                                    </Border>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#5c5c5c</Color>
+                                  </Style>
+                                  <ChartAxisTitle>
+                                    <Caption />
+                                    <Style>
+                                      <FontSize>9pt</FontSize>
+                                      <Color>#5c5c5c</Color>
+                                    </Style>
+                                  </ChartAxisTitle>
+                                  <ChartMajorGridLines>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                      </Border>
+                                    </Style>
+                                  </ChartMajorGridLines>
+                                  <ChartMinorGridLines>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                        <Style>Dotted</Style>
+                                      </Border>
+                                    </Style>
+                                  </ChartMinorGridLines>
+                                  <ChartMajorTickMarks>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                        <Style>None</Style>
+                                      </Border>
+                                    </Style>
+                                  </ChartMajorTickMarks>
+                                  <ChartMinorTickMarks>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                      </Border>
+                                    </Style>
+                                    <Length>0.5</Length>
+                                  </ChartMinorTickMarks>
+                                  <CrossAt>NaN</CrossAt>
+                                  <Location>Opposite</Location>
+                                  <Minimum>NaN</Minimum>
+                                  <Maximum>NaN</Maximum>
+                                  <ChartAxisScaleBreak>
+                                    <Style />
+                                  </ChartAxisScaleBreak>
+                                </ChartAxis>
+                              </ChartValueAxes>
+                              <Style>
+                                <BackgroundColor>#00ffffff</BackgroundColor>
+                                <BackgroundGradientType>None</BackgroundGradientType>
+                              </Style>
+                              <ChartElementPosition>
+                                <Top>9.023</Top>
+                                <Left>3</Left>
+                                <Height>90</Height>
+                                <Width>94</Width>
+                              </ChartElementPosition>
+                              <ChartInnerPlotPosition>
+                                <Left>7.843</Left>
+                                <Height>100</Height>
+                                <Width>92.157</Width>
+                              </ChartInnerPlotPosition>
+                            </ChartArea>
+                          </ChartAreas>
+                          <ChartLegends>
+                            <ChartLegend Name="Default">
+                              <Style>
+                                <BackgroundGradientType>None</BackgroundGradientType>
+                                <FontSize>8pt</FontSize>
+                              </Style>
+                              <Position>TopLeft</Position>
+                              <Layout>Row</Layout>
+                              <ChartElementPosition>
+                                <Left>3</Left>
+                                <Height>10</Height>
+                                <Width>57.494</Width>
+                              </ChartElementPosition>
+                              <ChartLegendTitle>
+                                <Caption />
+                                <Style>
+                                  <FontSize>8pt</FontSize>
+                                  <FontWeight>Bold</FontWeight>
+                                  <TextAlign>Center</TextAlign>
+                                </Style>
+                              </ChartLegendTitle>
+                              <HeaderSeparatorColor>Black</HeaderSeparatorColor>
+                              <ColumnSeparatorColor>Black</ColumnSeparatorColor>
+                            </ChartLegend>
+                          </ChartLegends>
+                          <Palette>Excel</Palette>
+                          <DynamicHeight>=(2 + CountDistinct(Fields!CustomLegend.Value)) * 0.5 &amp; " in"</DynamicHeight>
+                          <ChartBorderSkin>
+                            <Style>
+                              <BackgroundColor>Gray</BackgroundColor>
+                              <BackgroundGradientType>None</BackgroundGradientType>
+                              <Color>White</Color>
+                            </Style>
+                          </ChartBorderSkin>
+                          <ChartNoDataMessage Name="NoDataMessage">
+                            <Caption>No Data Available</Caption>
+                            <Style>
+                              <BackgroundGradientType>None</BackgroundGradientType>
+                              <FontWeight>Bold</FontWeight>
+                              <TextAlign>General</TextAlign>
+                              <VerticalAlign>Top</VerticalAlign>
+                            </Style>
+                          </ChartNoDataMessage>
+                          <DataSetName>SupplyOpen</DataSetName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -567,50 +1208,40 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
             <TablixColumnHierarchy>
               <TablixMembers>
                 <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
               <TablixMembers>
                 <TablixMember>
-                  <Group Name="CardName">
+                  <Group Name="Specialty">
                     <GroupExpressions>
+                      <GroupExpression>=Fields!Specialty.Value</GroupExpression>
                       <GroupExpression>=Fields!CardName.Value</GroupExpression>
                     </GroupExpressions>
+                    <PageBreak>
+                      <BreakLocation>Between</BreakLocation>
+                    </PageBreak>
                   </Group>
                   <SortExpressions>
                     <SortExpression>
-                      <Value>=Fields!CardName.Value</Value>
+                      <Value>=Fields!Specialty.Value</Value>
                     </SortExpression>
                   </SortExpressions>
                   <TablixMembers>
-                    <TablixMember>
-                      <KeepWithGroup>After</KeepWithGroup>
-                    </TablixMember>
-                    <TablixMember>
-                      <Group Name="InstrumentName">
-                        <GroupExpressions>
-                          <GroupExpression>=Fields!InstrumentName.Value</GroupExpression>
-                        </GroupExpressions>
-                      </Group>
-                      <SortExpressions>
-                        <SortExpression>
-                          <Value>=Fields!InstrumentName.Value</Value>
-                        </SortExpression>
-                      </SortExpressions>
-                      <TablixMembers>
-                        <TablixMember />
-                        <TablixMember />
-                      </TablixMembers>
-                    </TablixMember>
+                    <TablixMember />
+                    <TablixMember />
+                    <TablixMember />
+                    <TablixMember />
+                    <TablixMember />
                   </TablixMembers>
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
-            <NoRowsMessage>No redundant instruments found</NoRowsMessage>
-            <DataSetName>CardRedundancy</DataSetName>
+            <DataSetName>SupplyOpen</DataSetName>
             <Top>0.4in</Top>
-            <Height>3.655in</Height>
-            <Width>6.79042in</Width>
+            <Height>1.60417in</Height>
+            <Width>9.23959in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -630,14 +1261,14 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
               </Border>
             </Style>
           </Image>
-          <Textbox Name="Textbox1">
+          <Textbox Name="Textbox4">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Card Instrument Redundancy</Value>
+                    <Value>Supply Open</Value>
                     <Style>
                       <FontFamily>Arial</FontFamily>
                       <FontSize>14pt</FontSize>
@@ -651,8 +1282,7 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox1</rd:DefaultName>
-            <Top>0.01562in</Top>
-            <Left>1.70771in</Left>
+            <Left>2.68229in</Left>
             <Height>0.37375in</Height>
             <Width>3.875in</Width>
             <ZIndex>2</ZIndex>
@@ -667,11 +1297,58 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>4.055in</Height>
+        <Height>2.00417in</Height>
         <Style />
       </Body>
-      <Width>6.79042in</Width>
+      <Width>9.23959in</Width>
       <Page>
+        <PageFooter>
+          <Height>0.25in</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="Textbox5">
+              <CanGrow>true</CanGrow>
+              <CanShrink>true</CanShrink>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>="Confidential use by: " &amp; Parameters!Target.Value &amp; " - " &amp; "Run at: " &amp; Format(Globals!ExecutionTime.AddMinutes(Parameters!Timezone.Value), "M/d/yyyy HH:mm") &amp; " - " &amp; "*** CONFIDENTIAL ***"</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Height>0.25in</Height>
+              <Width>6.82291in</Width>
+              <Visibility>
+                <Hidden>=Iif(Parameters!Target.Value = "", True, False)</Hidden>
+              </Visibility>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageFooter>
+        <PageHeight>8.5in</PageHeight>
+        <PageWidth>11in</PageWidth>
         <Style />
       </Page>
     </ReportSection>
@@ -732,5 +1409,5 @@ k71kqRWcQZOE34vp2veHXmyYhv+nNG3atHy/elOuXDkkJyfj8ccf/8tlWZ3j8KfevXvnHHa3ouXLl+d8
     </EmbeddedImage>
   </EmbeddedImages>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
-  <rd:ReportID>0c3a311c-b3e2-448b-b68c-9846e237f178</rd:ReportID>
+  <rd:ReportID>1a03658d-2264-4c18-a126-ccdebbf769e4</rd:ReportID>
 </Report>

@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Report Include="CardRedundancy.rdl" />
+    <Report Include="CardRedundancyExport.rdl" />
     <Report Include="ConcordanceReport.rdl" />
     <Report Include="CountDistribution.rdl" />
     <Report Include="CountDistributionExport.rdl" />
@@ -60,7 +61,9 @@
     <Report Include="CountSummary.rdl" />
     <Report Include="CountSummaryExport.rdl" />
     <Report Include="DisposableUsage.rdl" />
+    <Report Include="DisposableUsageExport.rdl" />
     <Report Include="ExcessInventory.rdl" />
+    <Report Include="ExcessInventoryExport.rdl" />
     <Report Include="InstrumentUsage.rdl" />
     <Report Include="InstrumentUsageCard.rdl" />
     <Report Include="InstrumentUsageCardExport.rdl" />
@@ -79,11 +82,14 @@
     <Report Include="SalesReport.rdl" />
     <Report Include="ServiceLineReview.rdl" />
     <Report Include="SupplyCost.rdl" />
+    <Report Include="SupplyCostExport.rdl" />
     <Report Include="SupplyCount.rdl" />
     <Report Include="SupplyOpen.rdl" />
+    <Report Include="SupplyOpenExport.rdl" />
     <Report Include="SupplySavingsEstimator.rdl" />
     <Report Include="SupplyUsageVariance.rdl" />
     <Report Include="SupplyWaste.rdl" />
+    <Report Include="SupplyWasteExport.rdl" />
     <Report Include="TrayApproval.rdl" />
     <Report Include="TrayConsolidation.rdl" />
     <Report Include="TrayRationalization.rdl" />

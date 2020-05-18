@@ -6,44 +6,142 @@
     <DataSource Name="OpFlow">
       <DataSourceReference>OpFlow</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
-      <rd:DataSourceID>c2f690f0-2057-4606-9c35-e6b397a3fa2b</rd:DataSourceID>
+      <rd:DataSourceID>3e07071b-ea4d-4a16-8fef-b74011888c61</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
-    <DataSet Name="CardRedundancy">
+    <DataSet Name="SupplyWaste">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'ddd' as TrayName, 5 as Quantity, 3.5 as Usage, 3 as TrayOpen
-UNION
-select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'eee' as TrayName, 6 as Quantity, 3.5 as Usage, 3 as TrayOpen
-UNION
-select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Quantity, 3.5 as Usage, 3 as TrayOpen</CommandText>
-        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+        <CommandText>select CASE 'I' WHEN 'I' THEN item_master.description
+	ELSE card.description + '\n' +
+	item_master.description 
+	END ItemName,
+	specialty.description Specialty,
+	IsNull(item_master.unit_cost, 0.0) ItemCost,
+	card.description CardName,
+	card_item.qty_open CardQuantity,
+	CASE WHEN IsNull(card_item.qty_hold, '0') = '0' THEN 0
+		WHEN card_item.qty_open &lt; scic.qty_used THEN 0
+		ELSE card_item.qty_open - scic.qty_used END HoldUsed,
+	CASE WHEN IsNull(card_item.qty_hold, '0') &lt;&gt; '0' THEN 0
+		WHEN card_item.qty_open &lt; scic.qty_used THEN 0
+		ELSE card_item.qty_open - scic.qty_used
+	END TotalAdded,
+	scic.qty_used TotalUsed,
+	1 Bleeding ,
+	1 Anatomy ,
+	1 Preference ,
+	1 CirculatorOpened,
+	1 ScrubRequest,
+	1 Error,
+	1 Extra,
+	1 Needed,
+	1 NoTrust,
+	1 Miscommunication,
+	1 Surgeon,
+	1 Circulator,
+	1 Scrub
+from surgery s
+JOIN surgery_card_item_counts scic ON s.surgery_id = scic.surgery_id
+	AND scic.type = 'U'
+join users surgeon ON s.user_id = surgeon.user_id
+join card ON s.card_id = card.card_id
+join card_item ON card.card_id = card_item.card_id
+	AND card_item.item_id = scic.item_id
+join specialty ON surgeon.specialty_id = specialty.specialty_id
+join item_master ON scic.item_id = item_master.item_id
+WHERE 1 = surgeon.provider_id
+	AND 1 = surgeon.location_id
+ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.description</CommandText>
       </Query>
       <Fields>
+        <Field Name="ItemName">
+          <DataField>ItemName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Specialty">
+          <DataField>Specialty</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ItemCost">
+          <DataField>ItemCost</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
         <Field Name="CardName">
           <DataField>CardName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="InstrumentName">
-          <DataField>InstrumentName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="TrayName">
-          <DataField>TrayName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="Quantity">
-          <DataField>Quantity</DataField>
+        <Field Name="CardQuantity">
+          <DataField>CardQuantity</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="Usage">
-          <DataField>Usage</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="TrayOpen">
-          <DataField>TrayOpen</DataField>
+        <Field Name="HoldUsed">
+          <DataField>HoldUsed</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="TotalUsed">
+          <DataField>TotalUsed</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="TotalAdded">
+          <DataField>TotalAdded</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Bleeding">
+          <DataField>Bleeding</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Anatomy">
+          <DataField>Anatomy</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Preference">
+          <DataField>Preference</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="CirculatorOpened">
+          <DataField>CirculatorOpened</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="ScrubRequest">
+          <DataField>ScrubRequest</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Error">
+          <DataField>Error</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Extra">
+          <DataField>Extra</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Needed">
+          <DataField>Needed</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="NoTrust">
+          <DataField>NoTrust</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Miscommunication">
+          <DataField>Miscommunication</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Surgeon">
+          <DataField>Surgeon</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Circulator">
+          <DataField>Circulator</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Scrub">
+          <DataField>Scrub</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="ItemDescription">
+          <Value>=Trim(Fields!ItemName.Value) &amp; " - $" &amp; Format(Fields!ItemCost.Value, "#,##0.00")</Value>
         </Field>
       </Fields>
     </DataSet>
@@ -52,11 +150,11 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
     <ReportSection>
       <Body>
         <ReportItems>
-          <Tablix Name="Tablix2">
+          <Tablix Name="Tablix1">
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>6.79042in</Width>
+                  <Width>6.91667in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -65,14 +163,15 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="CardName3">
+                        <Textbox Name="Specialty">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>="Card: " + Fields!CardName.Value</Value>
+                                  <Value>=Iif(Fields!CardName.Value IS NOTHING, Fields!Specialty.Value,
+Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                   </Style>
@@ -81,11 +180,11 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>CardName1</rd:DefaultName>
+                          <rd:DefaultName>Specialty</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
-                              <Style>Solid</Style>
+                              <Style>None</Style>
                             </Border>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
@@ -98,42 +197,7 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>0.25in</Height>
-                  <TablixCells>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="IntrumentName3">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>=Fields!InstrumentName.Value</Value>
-                                  <Style />
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>IntrumentName2</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Color>LightGrey</Color>
-                              <Style>Solid</Style>
-                            </Border>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                  </TablixCells>
-                </TablixRow>
-                <TablixRow>
-                  <Height>3.155in</Height>
+                  <Height>8.96875in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -143,41 +207,94 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                               <ChartMember>
                                 <Group Name="Chart1_CategoryGroup">
                                   <GroupExpressions>
-                                    <GroupExpression>=Fields!TrayName.Value</GroupExpression>
+                                    <GroupExpression>=Fields!ItemDescription.Value</GroupExpression>
                                   </GroupExpressions>
                                 </Group>
                                 <SortExpressions>
                                   <SortExpression>
-                                    <Value>=Fields!Quantity.Value</Value>
+                                    <Value>=Fields!ItemDescription.Value</Value>
                                   </SortExpression>
                                 </SortExpressions>
-                                <Label>=Fields!TrayName.Value</Label>
+                                <Label>=Fields!ItemDescription.Value</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartCategoryHierarchy>
                           <ChartSeriesHierarchy>
                             <ChartMembers>
                               <ChartMember>
-                                <Label>Quantity</Label>
+                                <Label>Total Used</Label>
                               </ChartMember>
                               <ChartMember>
-                                <Label>Usage</Label>
+                                <Label>Card Quantity</Label>
                               </ChartMember>
                               <ChartMember>
-                                <Label>Tray Open</Label>
+                                <Label>Item Name</Label>
+                              </ChartMember>
+                              <ChartMember>
+                                <Label>Hold Used</Label>
+                              </ChartMember>
+                              <ChartMember>
+                                <Label>Total Added</Label>
+                              </ChartMember>
+                              <ChartMember>
+                                <Label>Bleeding</Label>
+                              </ChartMember>
+                              <ChartMember>
+                                <Label>Surgeon</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartSeriesHierarchy>
                           <ChartData>
                             <ChartSeriesCollection>
-                              <ChartSeries Name="Quantity">
+                              <ChartSeries Name="AvgUsed">
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Sum(Fields!Quantity.Value)</Y>
+                                      <Y>=Avg(Fields!TotalUsed.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
                                       <Style />
+                                      <Label>=Format(Avg(Fields!TotalUsed.Value), "0.#") + " (" + CStr(Sum(Fields!TotalUsed.Value)) + "/" + CStr(Count(Fields!TotalUsed.Value)) + ")"</Label>
+                                      <Visible>true</Visible>
+                                    </ChartDataLabel>
+                                    <Style />
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Bar</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>Avg Used</LegendText>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="tray_quantity">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Max(Fields!CardQuantity.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style>
+                                        <Format>0.#</Format>
+                                      </Style>
                                       <UseValueAsLabel>true</UseValueAsLabel>
                                       <Visible>true</Visible>
                                     </ChartDataLabel>
@@ -206,11 +323,11 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                                   <MinMovingDistance>0pt</MinMovingDistance>
                                 </ChartSmartLabel>
                               </ChartSeries>
-                              <ChartSeries Name="Usage">
+                              <ChartSeries Name="ItemName">
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Sum(Fields!Usage.Value)</Y>
+                                      <Y>=Count(Fields!ItemName.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
                                       <Style />
@@ -235,6 +352,9 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                                     <Style />
                                   </ChartDataLabel>
                                 </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>Nbr Counts</LegendText>
+                                </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
                                 <ChartSmartLabel>
@@ -242,14 +362,16 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                                   <MinMovingDistance>0pt</MinMovingDistance>
                                 </ChartSmartLabel>
                               </ChartSeries>
-                              <ChartSeries Name="TrayOpen">
+                              <ChartSeries Name="AvgHold">
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Sum(Fields!TrayOpen.Value)</Y>
+                                      <Y>=Avg(Fields!HoldUsed.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
-                                      <Style />
+                                      <Style>
+                                        <Format>0.##</Format>
+                                      </Style>
                                       <UseValueAsLabel>true</UseValueAsLabel>
                                       <Visible>true</Visible>
                                     </ChartDataLabel>
@@ -271,6 +393,139 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                                     <Style />
                                   </ChartDataLabel>
                                 </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>Avg Hold</LegendText>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="AvgAdded">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Avg(Fields!TotalAdded.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style>
+                                        <Format>0.##</Format>
+                                      </Style>
+                                      <UseValueAsLabel>true</UseValueAsLabel>
+                                      <Visible>true</Visible>
+                                    </ChartDataLabel>
+                                    <Style />
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Bar</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>Avg Added</LegendText>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="Types">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Sum(Fields!Bleeding.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style />
+                                      <Label>= Cstr(Sum(Fields!Bleeding.Value)) + "/" +
+Cstr(Sum(Fields!Anatomy.Value)) + "/" +
+Cstr(Sum(Fields!Preference.Value)) + "/" +
+Cstr(Sum(Fields!CirculatorOpened.Value)) + "/" +
+Cstr(Sum(Fields!ScrubRequest.Value)) + "/" +
+Cstr(Sum(Fields!Error.Value)) + "/" +
+Cstr(Sum(Fields!Extra.Value)) + "/" +
+Cstr(Sum(Fields!Needed.Value)) + "/" +
+Cstr(Sum(Fields!NoTrust.Value)) + "/" +
+Cstr(Sum(Fields!Miscommunication.Value))</Label>
+                                      <Visible>true</Visible>
+                                    </ChartDataLabel>
+                                    <Style />
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Bar</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>Types</LegendText>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="Requestor">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Sum(Fields!Surgeon.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style />
+                                      <Label>= Cstr(Sum(Fields!Surgeon.Value)) + "/" +
+Cstr(Sum(Fields!Circulator.Value)) + "/" +
+Cstr(Sum(Fields!Scrub.Value))</Label>
+                                      <Visible>true</Visible>
+                                    </ChartDataLabel>
+                                    <Style />
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Bar</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>Requestor</LegendText>
+                                </ChartItemInLegend>
                                 <ValueAxisName>Primary</ValueAxisName>
                                 <CategoryAxisName>Primary</CategoryAxisName>
                                 <ChartSmartLabel>
@@ -299,6 +554,7 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                                       <Color>#5c5c5c</Color>
                                     </Style>
                                   </ChartAxisTitle>
+                                  <Interval>1</Interval>
                                   <ChartMajorGridLines>
                                     <Enabled>False</Enabled>
                                     <Style>
@@ -532,6 +788,7 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                             </ChartLegend>
                           </ChartLegends>
                           <Palette>Pacific</Palette>
+                          <DynamicHeight>=(2 + CountDistinct(Fields!ItemName.Value)) &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>
@@ -548,7 +805,7 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
                               <VerticalAlign>Top</VerticalAlign>
                             </Style>
                           </ChartNoDataMessage>
-                          <DataSetName>CardRedundancy</DataSetName>
+                          <DataSetName>SupplyWaste</DataSetName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -572,45 +829,31 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
             <TablixRowHierarchy>
               <TablixMembers>
                 <TablixMember>
-                  <Group Name="CardName">
+                  <Group Name="Specialty">
                     <GroupExpressions>
+                      <GroupExpression>=Fields!Specialty.Value</GroupExpression>
                       <GroupExpression>=Fields!CardName.Value</GroupExpression>
                     </GroupExpressions>
+                    <PageBreak>
+                      <BreakLocation>Between</BreakLocation>
+                    </PageBreak>
                   </Group>
                   <SortExpressions>
                     <SortExpression>
-                      <Value>=Fields!CardName.Value</Value>
+                      <Value>=Fields!Specialty.Value</Value>
                     </SortExpression>
                   </SortExpressions>
                   <TablixMembers>
-                    <TablixMember>
-                      <KeepWithGroup>After</KeepWithGroup>
-                    </TablixMember>
-                    <TablixMember>
-                      <Group Name="InstrumentName">
-                        <GroupExpressions>
-                          <GroupExpression>=Fields!InstrumentName.Value</GroupExpression>
-                        </GroupExpressions>
-                      </Group>
-                      <SortExpressions>
-                        <SortExpression>
-                          <Value>=Fields!InstrumentName.Value</Value>
-                        </SortExpression>
-                      </SortExpressions>
-                      <TablixMembers>
-                        <TablixMember />
-                        <TablixMember />
-                      </TablixMembers>
-                    </TablixMember>
+                    <TablixMember />
+                    <TablixMember />
                   </TablixMembers>
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
-            <NoRowsMessage>No redundant instruments found</NoRowsMessage>
-            <DataSetName>CardRedundancy</DataSetName>
+            <DataSetName>SupplyWaste</DataSetName>
             <Top>0.4in</Top>
-            <Height>3.655in</Height>
-            <Width>6.79042in</Width>
+            <Height>9.21875in</Height>
+            <Width>6.91667in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -630,14 +873,14 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
               </Border>
             </Style>
           </Image>
-          <Textbox Name="Textbox1">
+          <Textbox Name="Textbox2">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Card Instrument Redundancy</Value>
+                    <Value>Supply Waste</Value>
                     <Style>
                       <FontFamily>Arial</FontFamily>
                       <FontSize>14pt</FontSize>
@@ -651,8 +894,8 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox1</rd:DefaultName>
-            <Top>0.01562in</Top>
-            <Left>1.70771in</Left>
+            <Top>0.02625in</Top>
+            <Left>1.6875in</Left>
             <Height>0.37375in</Height>
             <Width>3.875in</Width>
             <ZIndex>2</ZIndex>
@@ -667,11 +910,58 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>4.055in</Height>
+        <Height>9.61875in</Height>
         <Style />
       </Body>
-      <Width>6.79042in</Width>
+      <Width>6.91667in</Width>
       <Page>
+        <PageFooter>
+          <Height>0.25in</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="Textbox4">
+              <CanGrow>true</CanGrow>
+              <CanShrink>true</CanShrink>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>="Confidential use by: " &amp; Parameters!Target.Value &amp; " - " &amp; "Run at: " &amp; Format(Globals!ExecutionTime.AddMinutes(Parameters!Timezone.Value), "M/d/yyyy HH:mm") &amp; " - " &amp; "*** CONFIDENTIAL ***"</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Height>0.25in</Height>
+              <Width>6.82291in</Width>
+              <Visibility>
+                <Hidden>=Iif(Parameters!Target.Value = "", True, False)</Hidden>
+              </Visibility>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageFooter>
+        <LeftMargin>0.25in</LeftMargin>
+        <RightMargin>0.25in</RightMargin>
         <Style />
       </Page>
     </ReportSection>
@@ -732,5 +1022,5 @@ k71kqRWcQZOE34vp2veHXmyYhv+nNG3atHy/elOuXDkkJyfj8ccf/8tlWZ3j8KfevXvnHHa3ouXLl+d8
     </EmbeddedImage>
   </EmbeddedImages>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
-  <rd:ReportID>0c3a311c-b3e2-448b-b68c-9846e237f178</rd:ReportID>
+  <rd:ReportID>86ef7662-ef4c-43d4-9d45-6ece932bbfdc</rd:ReportID>
 </Report>

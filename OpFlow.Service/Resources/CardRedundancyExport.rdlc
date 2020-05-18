@@ -56,7 +56,7 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>6.79042in</Width>
+                  <Width>6.82291in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -610,7 +610,7 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
             <DataSetName>CardRedundancy</DataSetName>
             <Top>0.4in</Top>
             <Height>3.655in</Height>
-            <Width>6.79042in</Width>
+            <Width>6.82291in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -621,6 +621,7 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
             <Source>Embedded</Source>
             <Value>logo</Value>
             <Sizing>FitProportional</Sizing>
+            <Left>0.01625in</Left>
             <Height>0.4in</Height>
             <Width>1.5in</Width>
             <ZIndex>1</ZIndex>
@@ -652,7 +653,7 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
             </Paragraphs>
             <rd:DefaultName>Textbox1</rd:DefaultName>
             <Top>0.01562in</Top>
-            <Left>1.70771in</Left>
+            <Left>1.72396in</Left>
             <Height>0.37375in</Height>
             <Width>3.875in</Width>
             <ZIndex>2</ZIndex>
@@ -670,8 +671,55 @@ select 'aaaabc' as CardName, 'zzz' as InstrumentName, 'fff' as TrayName, 7 as Qu
         <Height>4.055in</Height>
         <Style />
       </Body>
-      <Width>6.79042in</Width>
+      <Width>6.82291in</Width>
       <Page>
+        <PageFooter>
+          <Height>0.25in</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="Textbox2">
+              <CanGrow>true</CanGrow>
+              <CanShrink>true</CanShrink>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>="Confidential use by: " &amp; Parameters!Target.Value &amp; " - " &amp;
+"Run at: " &amp; Format(Globals!ExecutionTime.AddMinutes(Parameters!Timezone.Value), "M/d/yyyy HH:mm") &amp; " - " &amp;
+"*** CONFIDENTIAL ***"</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Height>0.25in</Height>
+              <Width>6.82291in</Width>
+              <Visibility>
+                <Hidden>=Iif(Parameters!Target.Value = "", True, False)</Hidden>
+              </Visibility>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageFooter>
         <Style />
       </Page>
     </ReportSection>
