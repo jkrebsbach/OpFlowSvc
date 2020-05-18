@@ -8,6 +8,7 @@ namespace OpFlow.Data
     public class CardItem : ItemMaster
     {
         public int CardID { get; set; }
+        public string CardName { get; set; }
         public int QtyOpen { get; set; }
         public decimal QtyOpenCost { get; set; }
         public string QtyHold { get; set; }

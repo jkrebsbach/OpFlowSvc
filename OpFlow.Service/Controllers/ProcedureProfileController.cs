@@ -519,6 +519,7 @@ namespace OpFlow.Service.Controllers
                 studyItems.Add(new CardItem()
                 {
                     Category = "TRAY",
+                    CardName = "No Card",
                     ItemDescription = trayItems.First().TrayName,
                     Quantity = trayItems.Sum(ti => ti.Quantity)
                 });

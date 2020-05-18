@@ -13,19 +13,25 @@
     <DataSet Name="ProcedureProfile">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>select 'aaa' TrayName, 
+        <CommandText>select 4 SortOrder,
+'aaa' TrayName, 
 123 InstrumentCount, 
 45.3655555 AvgUsage,
 16 Variance,
 12.45 InstrumentCost
 UNION
-select 'bbb' TrayName, 
+select 2 SortOrder,
+'bbb' TrayName, 
 213 InstrumentCount, 
 45.3655555 AvgUsage,
 16 Variance,
 21.45 InstrumentCost</CommandText>
       </Query>
       <Fields>
+        <Field Name="SortOrder">
+          <DataField>SortOrder</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
         <Field Name="TrayName">
           <DataField>TrayName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -62,6 +68,14 @@ select 'bbb' TrayName,
                       <GroupExpression>=Fields!TrayName.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!SortOrder.Value</Value>
+                    </SortExpression>
+                    <SortExpression>
+                      <Value>=Fields!TrayName.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
                   <Label>=Fields!TrayName.Value</Label>
                 </ChartMember>
               </ChartMembers>
