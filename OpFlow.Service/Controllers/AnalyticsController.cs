@@ -149,7 +149,13 @@ namespace OpFlow.Service.Controllers
                     break;
             }
 
-            var result = ReportHelper.GetReport(reportName, format, datasets);
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+
+            var result = ReportHelper.GetReport($"{reportName}{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -1167,14 +1173,16 @@ namespace OpFlow.Service.Controllers
                 new ReportParameter("FieldCase", post.FieldCase.ToString()),
                 new ReportParameter("FieldInstrument", post.FieldInstrument.ToString()),
                 new ReportParameter("FieldUsage", post.FieldUsage.ToString()),
-                new ReportParameter("FieldTray", post.FieldTray.ToString())
+                new ReportParameter("FieldTray", post.FieldTray.ToString()),
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
             };
 
             var datasets = new Dictionary<string, DataTable>
             {
                 ["TrayRationalization"] = rationalization.ToTable()
             };
-            var result = ReportHelper.GetReport("TrayRationalization", format, datasets, parameters);
+            var result = ReportHelper.GetReport($"TrayRationalization{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
             
             if (format?.ToUpper() == "PDF")
             {
@@ -1277,7 +1285,12 @@ namespace OpFlow.Service.Controllers
             {
                 ["TrayScope"] = rationalization.ToTable()
             };
-            var result = ReportHelper.GetReport("TrayScope", format, datasets);
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport($"TrayScope{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -1365,7 +1378,9 @@ namespace OpFlow.Service.Controllers
             var group = (post.Group == "card" ? "c" : "t");
             var parameters = new[]
             {
-                new ReportParameter("Group", group)
+                new ReportParameter("Group", group),
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
             };
 
             var countSummary = analytics.Tables[0].DefaultView;
@@ -1387,7 +1402,7 @@ namespace OpFlow.Service.Controllers
             {
                 ["CountSummary"] = countSummary.ToTable()
             };
-            var result = ReportHelper.GetReport("CountSummary", format, datasets, parameters);
+            var result = ReportHelper.GetReport($"CountSummary{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -1439,7 +1454,12 @@ namespace OpFlow.Service.Controllers
                 {
                     ["CountSampleDispersion"] = analytics.Tables[0]
                 };
-                var result = ReportHelper.GetReport("CountSampleDispersion", format, datasets);
+                var parameters = new[]
+                {
+                    new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                    new ReportParameter("Timezone", post.Timezone.ToString())
+                };
+                var result = ReportHelper.GetReport("CountSampleDispersion", format, datasets, parameters);
 
                 return ResponseHelper.PdfResponse(result);
             }
@@ -1528,7 +1548,9 @@ namespace OpFlow.Service.Controllers
             var parameters = new[]
             {
                 new ReportParameter("card_filter", post.CardFilter),
-                new ReportParameter("surgeon_filter", post.SurgeonFilter)
+                new ReportParameter("surgeon_filter", post.SurgeonFilter),
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
             };
 
             if (format?.ToUpper() == "PDF")
@@ -1538,7 +1560,7 @@ namespace OpFlow.Service.Controllers
                 {
                     ["SupplyDistribution"] = analytics.Tables[0]
                 };
-                var result = ReportHelper.GetReport("CountDistribution", format, datasets, parameters);
+                var result = ReportHelper.GetReport($"CountDistribution{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
                 return ResponseHelper.PdfResponse(result);
             }

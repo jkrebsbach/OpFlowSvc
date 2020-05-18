@@ -220,7 +220,7 @@ namespace OpFlow.Data
         public DateTime? EndDate { get; set; }
     }
 
-    public class TrayRationalizationReportPost
+    public class TrayRationalizationReportPost : ReportRequest
     {
         public List<int> SpecialtyId { get; set; }
         public List<int> SurgeonId { get; set; }
@@ -278,7 +278,7 @@ namespace OpFlow.Data
         public decimal OverallocatedReduction => (OverallocatedCost / TotalCost) * 100;
     }
 
-    public class CountSampleDispersionReportPost
+    public class CountSampleDispersionReportPost : ReportRequest
     {
         public string CountType { get; set; }
         public List<int> SpecialtyId { get; set; }
@@ -345,7 +345,7 @@ namespace OpFlow.Data
         public string GroupValue { get; set; }
         public List<CountSampleDispersionReportCard> Cards { get; set; }
     }
-    public class CountSummaryReportPost
+    public class CountSummaryReportPost : ReportRequest
     {
         public List<int> SpecialtyId { get; set; }
         public List<int> SurgeonId { get; set; }

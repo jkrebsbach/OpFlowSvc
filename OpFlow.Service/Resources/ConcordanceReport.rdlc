@@ -477,20 +477,6 @@
                 <ColumnSeparatorColor>Black</ColumnSeparatorColor>
               </ChartLegend>
             </ChartLegends>
-            <ChartTitles>
-              <ChartTitle Name="Default">
-                <Caption>Concordance Report</Caption>
-                <Style>
-                  <BackgroundGradientType>None</BackgroundGradientType>
-                  <FontSize>9pt</FontSize>
-                  <FontWeight>Normal</FontWeight>
-                  <TextAlign>Left</TextAlign>
-                  <VerticalAlign>Top</VerticalAlign>
-                  <Color>#a6a6a6</Color>
-                </Style>
-                <Position>TopLeft</Position>
-              </ChartTitle>
-            </ChartTitles>
             <Palette>Pacific</Palette>
             <DynamicWidth>=(2 + CountDistinct(Fields!InstrumentName.Value, "ConcordanceReport") / 3) &amp; " in"</DynamicWidth>
             <ChartBorderSkin>
@@ -535,6 +521,41 @@
               </Border>
             </Style>
           </Image>
+          <Textbox Name="Textbox1">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Concordance Report</Value>
+                    <Style>
+                      <FontFamily>Arial</FontFamily>
+                      <FontSize>14pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox1</rd:DefaultName>
+            <Left>2.08208in</Left>
+            <Height>0.36333in</Height>
+            <Width>5.72in</Width>
+            <ZIndex>2</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
         </ReportItems>
         <Height>8in</Height>
         <Style />
@@ -542,19 +563,21 @@
       <Width>10.45833in</Width>
       <Page>
         <PageFooter>
-          <Height>0.5in</Height>
+          <Height>0.25in</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
             <Textbox Name="Textbox2">
               <CanGrow>true</CanGrow>
+              <CanShrink>true</CanShrink>
               <KeepTogether>true</KeepTogether>
               <Paragraphs>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>="Confidential use by: " &amp; Parameters!Target.Value &amp; VbCrLf &amp;
-"Run at: " &amp; Format(Globals!ExecutionTime.AddMinutes(Parameters!Timezone.Value), "M/d/yyyy HH:mm")</Value>
+                      <Value>="Confidential use by: " &amp; Parameters!Target.Value &amp; " - " &amp;
+"Run at: " &amp; Format(Globals!ExecutionTime.AddMinutes(Parameters!Timezone.Value), "M/d/yyyy HH:mm") &amp; " - " &amp;
+"*** CONFIDENTIAL ***"</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
                       </Style>
@@ -564,8 +587,8 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox2</rd:DefaultName>
-              <Height>0.5in</Height>
-              <Width>4.45833in</Width>
+              <Height>0.25in</Height>
+              <Width>7.80208in</Width>
               <Visibility>
                 <Hidden>=Iif(Parameters!Target.Value = "", True, False)</Hidden>
               </Visibility>

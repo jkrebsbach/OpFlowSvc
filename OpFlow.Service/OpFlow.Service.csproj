@@ -426,6 +426,15 @@
     <Content Include="Resources\TrayApproval.rdlc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\TrayRationalizationExport.rdlc" />
+    <Content Include="Resources\CountSummaryExport.rdlc" />
+    <Content Include="Resources\CountDistributionExport.rdlc" />
+    <Content Include="Resources\TrayScopeExport.rdlc" />
+    <Content Include="Resources\InstrumentUsageExport.rdlc" />
+    <Content Include="Resources\InstrumentUsageCardExport.rdlc" />
+    <Content Include="Resources\InstrumentUsageCardTrayExport.rdlc" />
+    <Content Include="Resources\InstrumentUsageTrayCardExport.rdlc" />
+    <Content Include="Resources\InstrumentUsageSurgeonCardExport.rdlc" />
     <None Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />

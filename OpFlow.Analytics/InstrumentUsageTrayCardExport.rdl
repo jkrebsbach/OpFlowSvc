@@ -6,7 +6,7 @@
     <DataSource Name="OpFlow">
       <DataSourceReference>OpFlow</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
-      <rd:DataSourceID>18203637-6e33-4b1d-bb03-4ef3046feaaf</rd:DataSourceID>
+      <rd:DataSourceID>6f36d402-ffac-4391-bfe7-0c533a39511e</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
@@ -22,10 +22,6 @@
         </Field>
         <Field Name="CardName">
           <DataField>CardName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="SurgeonName">
-          <DataField>SurgeonName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="Instrument">
@@ -63,7 +59,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!SurgeonName.Value &amp; " - Card: " &amp; Fields!CardName.Value</Value>
+                                  <Value>="Card: " &amp; Fields!CardName.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                   </Style>
@@ -114,7 +110,17 @@
                           <ChartSeriesHierarchy>
                             <ChartMembers>
                               <ChartMember>
-                                <Label>Qty Open</Label>
+                                <Group Name="Chart4_SeriesGroup1">
+                                  <GroupExpressions>
+                                    <GroupExpression>=Fields!TrayName.Value</GroupExpression>
+                                  </GroupExpressions>
+                                </Group>
+                                <SortExpressions>
+                                  <SortExpression>
+                                    <Value>=Fields!TrayName.Value</Value>
+                                  </SortExpression>
+                                </SortExpressions>
+                                <Label>=Fields!TrayName.Value</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartSeriesHierarchy>
@@ -393,6 +399,25 @@
                               </Style>
                             </ChartArea>
                           </ChartAreas>
+                          <ChartLegends>
+                            <ChartLegend Name="Default">
+                              <Style>
+                                <BackgroundGradientType>None</BackgroundGradientType>
+                                <FontSize>8pt</FontSize>
+                              </Style>
+                              <Position>TopLeft</Position>
+                              <ChartLegendTitle>
+                                <Caption />
+                                <Style>
+                                  <FontSize>8pt</FontSize>
+                                  <FontWeight>Bold</FontWeight>
+                                  <TextAlign>Center</TextAlign>
+                                </Style>
+                              </ChartLegendTitle>
+                              <HeaderSeparatorColor>Black</HeaderSeparatorColor>
+                              <ColumnSeparatorColor>Black</ColumnSeparatorColor>
+                            </ChartLegend>
+                          </ChartLegends>
                           <Palette>Pacific</Palette>
                           <ChartBorderSkin>
                             <Style>
@@ -438,13 +463,9 @@
                   <Group Name="CardName">
                     <GroupExpressions>
                       <GroupExpression>=Fields!CardName.Value</GroupExpression>
-                      <GroupExpression>=Fields!SurgeonName.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
                   <SortExpressions>
-                    <SortExpression>
-                      <Value>=Fields!SurgeonName.Value</Value>
-                    </SortExpression>
                     <SortExpression>
                       <Value>=Fields!CardName.Value</Value>
                     </SortExpression>
@@ -500,8 +521,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox1</rd:DefaultName>
-            <Top>0.00062in</Top>
-            <Left>1.77083in</Left>
+            <Left>1.9375in</Left>
             <Height>0.37375in</Height>
             <Width>3.875in</Width>
             <ZIndex>2</ZIndex>
@@ -521,6 +541,57 @@
       </Body>
       <Width>7.75in</Width>
       <Page>
+        <PageFooter>
+          <Height>0.25in</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="Textbox2">
+              <CanGrow>true</CanGrow>
+              <CanShrink>true</CanShrink>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>="Confidential use by: " &amp; Parameters!Target.Value &amp; " - " &amp;
+"Run at: " &amp; Format(Globals!ExecutionTime.AddMinutes(Parameters!Timezone.Value), "M/d/yyyy HH:mm") &amp; " - " &amp;
+"*** CONFIDENTIAL ***"</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Height>0.25in</Height>
+              <Width>6.82291in</Width>
+              <Visibility>
+                <Hidden>=Iif(Parameters!Target.Value = "", True, False)</Hidden>
+              </Visibility>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageFooter>
+        <LeftMargin>1in</LeftMargin>
+        <RightMargin>1in</RightMargin>
+        <TopMargin>1in</TopMargin>
+        <BottomMargin>1in</BottomMargin>
         <Style />
       </Page>
     </ReportSection>
@@ -581,5 +652,5 @@ k71kqRWcQZOE34vp2veHXmyYhv+nNG3atHy/elOuXDkkJyfj8ccf/8tlWZ3j8KfevXvnHHa3ouXLl+d8
     </EmbeddedImage>
   </EmbeddedImages>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
-  <rd:ReportID>ff5848c4-3690-4ec7-9147-2a634de690f2</rd:ReportID>
+  <rd:ReportID>9f54d9ad-d56f-44f6-b756-7859c7f652f2</rd:ReportID>
 </Report>

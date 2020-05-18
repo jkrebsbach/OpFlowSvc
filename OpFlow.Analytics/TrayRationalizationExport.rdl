@@ -5,52 +5,45 @@
   <DataSources>
     <DataSource Name="OpFlow">
       <DataSourceReference>OpFlow</DataSourceReference>
-      <rd:SecurityType>None</rd:SecurityType>
-      <rd:DataSourceID>5c89ab9a-43b6-4330-be0a-8b0fa927b3c8</rd:DataSourceID>
+      <rd:SecurityType>DataBase</rd:SecurityType>
+      <rd:DataSourceID>aaf72f52-fbd2-4a83-9ee0-c295afd65466</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
-    <DataSet Name="ConcordanceReport">
+    <DataSet Name="TrayRationalization">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>exec GetAnalyticsConcordanceReport '&lt;table&gt;&lt;row&gt;&lt;col&gt;1&lt;/col&gt;&lt;/row&gt;&lt;/table&gt;', null, null, null, null,null,null, null,1,1</CommandText>
+        <CommandText>
+SELECT TrayName,
+	SUM(CaseCount) CaseCount,
+	MAX(InstrumentCount) InstrumentCount,
+	AVG(UsageQuantity ) UsageQuantity,
+	SUM(TrayOpened) TrayOpened
+FROM tray_rationalization_view
+WHERE SpecialtyID=1
+GROUP BY TrayName
+ORDER BY TrayName</CommandText>
       </Query>
       <Fields>
-        <Field Name="SurgeonID">
-          <DataField>SurgeonID</DataField>
+        <Field Name="TrayName">
+          <DataField>TrayName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CaseCount">
+          <DataField>CaseCount</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="SurgeonName">
-          <DataField>SurgeonName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="InstrumentName">
-          <DataField>InstrumentName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="InstrumentDescription">
-          <DataField>InstrumentDescription</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="QtyOpen">
-          <DataField>QtyOpen</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="TrayQty">
-          <DataField>TrayQty</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="TrayUsage">
-          <DataField>TrayUsage</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="SortOrder">
-          <DataField>SortOrder</DataField>
+        <Field Name="InstrumentCount">
+          <DataField>InstrumentCount</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="MaxOpen">
-          <DataField>MaxOpen</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
+        <Field Name="UsageQuantity">
+          <DataField>UsageQuantity</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="TrayOpened">
+          <DataField>TrayOpened</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
@@ -59,67 +52,131 @@
     <ReportSection>
       <Body>
         <ReportItems>
-          <Chart Name="Chart1">
+          <Chart Name="Chart2">
             <ChartCategoryHierarchy>
               <ChartMembers>
                 <ChartMember>
-                  <Group Name="Chart1_CategoryGroup">
+                  <Group Name="Chart2_CategoryGroup">
                     <GroupExpressions>
-                      <GroupExpression>=Fields!InstrumentName.Value</GroupExpression>
+                      <GroupExpression>=Fields!TrayName.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
-                  <Label>=Fields!InstrumentName.Value</Label>
+                  <Label>=Fields!TrayName.Value</Label>
                 </ChartMember>
               </ChartMembers>
             </ChartCategoryHierarchy>
             <ChartSeriesHierarchy>
               <ChartMembers>
                 <ChartMember>
-                  <Group Name="Chart1_SeriesGroup">
-                    <GroupExpressions>
-                      <GroupExpression>=Fields!SurgeonName.Value</GroupExpression>
-                    </GroupExpressions>
-                  </Group>
-                  <ChartMembers>
-                    <ChartMember>
-                      <Label>Qty Open</Label>
-                    </ChartMember>
-                    <ChartMember>
-                      <Label>Tray Qty</Label>
-                    </ChartMember>
-                    <ChartMember>
-                      <Label>Max Open</Label>
-                    </ChartMember>
-                  </ChartMembers>
-                  <Label>=Fields!SurgeonName.Value</Label>
+                  <Label>Case Count</Label>
+                </ChartMember>
+                <ChartMember>
+                  <Label>Instrument Count</Label>
+                </ChartMember>
+                <ChartMember>
+                  <Label>Usage Quantity</Label>
+                </ChartMember>
+                <ChartMember>
+                  <Label>Tray Opened</Label>
                 </ChartMember>
               </ChartMembers>
             </ChartSeriesHierarchy>
             <ChartData>
               <ChartSeriesCollection>
-                <ChartSeries Name="QtyOpen">
-                  <Hidden>=SUM(Fields!QtyOpen.Value) = 0</Hidden>
+                <ChartSeries Name="CaseCount">
+                  <Hidden>=Parameters!FieldCase.Value = False</Hidden>
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
-                        <Y>=Max(Fields!QtyOpen.Value)</Y>
+                        <Y>=Sum(Fields!CaseCount.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
-                        <Style>
-                          <Format>0.#</Format>
-                        </Style>
+                        <Style />
                         <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
-                        <Type>Circle</Type>
-                        <Size>10pt</Size>
                         <Style />
                       </ChartMarker>
                       <DataElementOutput>Output</DataElementOutput>
                     </ChartDataPoint>
                   </ChartDataPoints>
-                  <Type>Scatter</Type>
+                  <Type>Bar</Type>
+                  <Style />
+                  <ChartEmptyPoints>
+                    <Style />
+                    <ChartMarker>
+                      <Style />
+                    </ChartMarker>
+                    <ChartDataLabel>
+                      <Style />
+                    </ChartDataLabel>
+                  </ChartEmptyPoints>
+                  <ValueAxisName>Primary</ValueAxisName>
+                  <CategoryAxisName>Primary</CategoryAxisName>
+                  <ChartSmartLabel>
+                    <CalloutLineColor>Black</CalloutLineColor>
+                    <MinMovingDistance>0pt</MinMovingDistance>
+                  </ChartSmartLabel>
+                </ChartSeries>
+                <ChartSeries Name="InstrumentCount">
+                  <Hidden>=Parameters!FieldInstrument.Value = False</Hidden>
+                  <ChartDataPoints>
+                    <ChartDataPoint>
+                      <ChartDataPointValues>
+                        <Y>=Max(Fields!InstrumentCount.Value)</Y>
+                      </ChartDataPointValues>
+                      <ChartDataLabel>
+                        <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
+                      </ChartDataLabel>
+                      <Style />
+                      <ChartMarker>
+                        <Style />
+                      </ChartMarker>
+                      <DataElementOutput>Output</DataElementOutput>
+                    </ChartDataPoint>
+                  </ChartDataPoints>
+                  <Type>Bar</Type>
+                  <Style />
+                  <ChartEmptyPoints>
+                    <Style />
+                    <ChartMarker>
+                      <Style />
+                    </ChartMarker>
+                    <ChartDataLabel>
+                      <Style />
+                    </ChartDataLabel>
+                  </ChartEmptyPoints>
+                  <ValueAxisName>Primary</ValueAxisName>
+                  <CategoryAxisName>Primary</CategoryAxisName>
+                  <ChartSmartLabel>
+                    <CalloutLineColor>Black</CalloutLineColor>
+                    <MinMovingDistance>0pt</MinMovingDistance>
+                  </ChartSmartLabel>
+                </ChartSeries>
+                <ChartSeries Name="UsageQuantity">
+                  <Hidden>=Parameters!FieldUsage.Value = False</Hidden>
+                  <ChartDataPoints>
+                    <ChartDataPoint>
+                      <ChartDataPointValues>
+                        <Y>=Avg(Fields!UsageQuantity.Value)</Y>
+                      </ChartDataPointValues>
+                      <ChartDataLabel>
+                        <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
+                      </ChartDataLabel>
+                      <Style />
+                      <ChartMarker>
+                        <Style />
+                      </ChartMarker>
+                      <DataElementOutput>Output</DataElementOutput>
+                    </ChartDataPoint>
+                  </ChartDataPoints>
+                  <Type>Bar</Type>
                   <Style />
                   <ChartEmptyPoints>
                     <Style />
@@ -131,7 +188,7 @@
                     </ChartDataLabel>
                   </ChartEmptyPoints>
                   <ChartItemInLegend>
-                    <LegendText>=Fields!SurgeonName.Value</LegendText>
+                    <LegendText>Avg Usage Quantity</LegendText>
                   </ChartItemInLegend>
                   <ValueAxisName>Primary</ValueAxisName>
                   <CategoryAxisName>Primary</CategoryAxisName>
@@ -140,26 +197,26 @@
                     <MinMovingDistance>0pt</MinMovingDistance>
                   </ChartSmartLabel>
                 </ChartSeries>
-                <ChartSeries Name="TrayQty">
-                  <Hidden>=SUM(Fields!TrayQty.Value) = 0</Hidden>
+                <ChartSeries Name="TrayOpened">
+                  <Hidden>=Parameters!FieldTray.Value = False</Hidden>
                   <ChartDataPoints>
                     <ChartDataPoint>
                       <ChartDataPointValues>
-                        <Y>=Sum(Fields!TrayQty.Value)</Y>
+                        <Y>=Max(Fields!TrayOpened.Value)</Y>
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
-                        <Type>Cross</Type>
-                        <Size>10pt</Size>
                         <Style />
                       </ChartMarker>
                       <DataElementOutput>Output</DataElementOutput>
                     </ChartDataPoint>
                   </ChartDataPoints>
-                  <Type>Scatter</Type>
+                  <Type>Bar</Type>
                   <Style />
                   <ChartEmptyPoints>
                     <Style />
@@ -170,49 +227,6 @@
                       <Style />
                     </ChartDataLabel>
                   </ChartEmptyPoints>
-                  <ChartItemInLegend>
-                    <LegendText>= "Quantity - " &amp; Fields!SurgeonName.Value</LegendText>
-                  </ChartItemInLegend>
-                  <ValueAxisName>Primary</ValueAxisName>
-                  <CategoryAxisName>Primary</CategoryAxisName>
-                  <ChartSmartLabel>
-                    <CalloutLineColor>Black</CalloutLineColor>
-                    <MinMovingDistance>0pt</MinMovingDistance>
-                  </ChartSmartLabel>
-                </ChartSeries>
-                <ChartSeries Name="MaxOpen">
-                  <Hidden>=SUM(Fields!MaxOpen.Value) = 0</Hidden>
-                  <ChartDataPoints>
-                    <ChartDataPoint>
-                      <ChartDataPointValues>
-                        <Y>=Sum(Fields!MaxOpen.Value)</Y>
-                      </ChartDataPointValues>
-                      <ChartDataLabel>
-                        <Style />
-                      </ChartDataLabel>
-                      <Style />
-                      <ChartMarker>
-                        <Type>Diamond</Type>
-                        <Size>8pt</Size>
-                        <Style />
-                      </ChartMarker>
-                      <DataElementOutput>Output</DataElementOutput>
-                    </ChartDataPoint>
-                  </ChartDataPoints>
-                  <Type>Scatter</Type>
-                  <Style />
-                  <ChartEmptyPoints>
-                    <Style />
-                    <ChartMarker>
-                      <Style />
-                    </ChartMarker>
-                    <ChartDataLabel>
-                      <Style />
-                    </ChartDataLabel>
-                  </ChartEmptyPoints>
-                  <ChartItemInLegend>
-                    <LegendText>Max Open</LegendText>
-                  </ChartItemInLegend>
                   <ValueAxisName>Primary</ValueAxisName>
                   <CategoryAxisName>Primary</CategoryAxisName>
                   <ChartSmartLabel>
@@ -243,7 +257,7 @@
                     </ChartAxisTitle>
                     <Interval>1</Interval>
                     <ChartMajorGridLines>
-                      <Enabled>True</Enabled>
+                      <Enabled>False</Enabled>
                       <Style>
                         <Border>
                           <Color>Gainsboro</Color>
@@ -265,6 +279,7 @@
                           <Style>None</Style>
                         </Border>
                       </Style>
+                      <Interval>1</Interval>
                     </ChartMajorTickMarks>
                     <ChartMinorTickMarks>
                       <Style>
@@ -275,7 +290,6 @@
                       <Length>0.5</Length>
                     </ChartMinorTickMarks>
                     <CrossAt>NaN</CrossAt>
-                    <Scalar>true</Scalar>
                     <Minimum>NaN</Minimum>
                     <Maximum>NaN</Maximum>
                     <ChartAxisScaleBreak>
@@ -332,7 +346,6 @@
                     </ChartMinorTickMarks>
                     <CrossAt>NaN</CrossAt>
                     <Location>Opposite</Location>
-                    <Scalar>true</Scalar>
                     <Minimum>NaN</Minimum>
                     <Maximum>NaN</Maximum>
                     <ChartAxisScaleBreak>
@@ -351,14 +364,13 @@
                       <Color>#5c5c5c</Color>
                     </Style>
                     <ChartAxisTitle>
-                      <Caption>Number Used</Caption>
+                      <Caption />
                       <Style>
                         <FontSize>9pt</FontSize>
                         <Color>#5c5c5c</Color>
                       </Style>
                     </ChartAxisTitle>
                     <ChartMajorGridLines>
-                      <Enabled>True</Enabled>
                       <Style>
                         <Border>
                           <Color>Gainsboro</Color>
@@ -464,7 +476,7 @@
                   <BackgroundGradientType>None</BackgroundGradientType>
                   <FontSize>8pt</FontSize>
                 </Style>
-                <Position>TopLeft</Position>
+                <Position>TopCenter</Position>
                 <ChartLegendTitle>
                   <Caption />
                   <Style>
@@ -478,7 +490,7 @@
               </ChartLegend>
             </ChartLegends>
             <Palette>Pacific</Palette>
-            <DynamicWidth>=(2 + CountDistinct(Fields!InstrumentName.Value, "ConcordanceReport") / 3) &amp; " in"</DynamicWidth>
+            <DynamicHeight>=(3 + CountDistinct(Fields!TrayName.Value, "TrayRationalization")) &amp; " in"</DynamicHeight>
             <ChartBorderSkin>
               <Style>
                 <BackgroundColor>Gray</BackgroundColor>
@@ -495,10 +507,10 @@
                 <VerticalAlign>Top</VerticalAlign>
               </Style>
             </ChartNoDataMessage>
-            <DataSetName>ConcordanceReport</DataSetName>
+            <DataSetName>TrayRationalization</DataSetName>
             <Top>0.4in</Top>
-            <Height>7.6in</Height>
-            <Width>10.45833in</Width>
+            <Height>10in</Height>
+            <Width>7.28in</Width>
             <Style>
               <Border>
                 <Color>LightGrey</Color>
@@ -528,7 +540,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Concordance Report</Value>
+                    <Value>Tray Rationalization</Value>
                     <Style>
                       <FontFamily>Arial</FontFamily>
                       <FontSize>14pt</FontSize>
@@ -542,10 +554,9 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox1</rd:DefaultName>
-            <Top>0.00889in</Top>
-            <Left>2.08208in</Left>
-            <Height>0.36333in</Height>
-            <Width>5.72in</Width>
+            <Left>1.7025in</Left>
+            <Height>0.37375in</Height>
+            <Width>3.875in</Width>
             <ZIndex>2</ZIndex>
             <Style>
               <Border>
@@ -558,10 +569,10 @@
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>8in</Height>
+        <Height>10.4in</Height>
         <Style />
       </Body>
-      <Width>10.45833in</Width>
+      <Width>7.28in</Width>
       <Page>
         <PageFooter>
           <Height>0.25in</Height>
@@ -589,7 +600,7 @@
               </Paragraphs>
               <rd:DefaultName>Textbox2</rd:DefaultName>
               <Height>0.25in</Height>
-              <Width>7.80208in</Width>
+              <Width>6.82291in</Width>
               <Visibility>
                 <Hidden>=Iif(Parameters!Target.Value = "", True, False)</Hidden>
               </Visibility>
@@ -610,15 +621,49 @@
             </Border>
           </Style>
         </PageFooter>
-        <PageHeight>8.5in</PageHeight>
-        <PageWidth>11in</PageWidth>
-        <TopMargin>0.25in</TopMargin>
-        <BottomMargin>25in</BottomMargin>
+        <LeftMargin>0.25in</LeftMargin>
+        <RightMargin>0.25in</RightMargin>
         <Style />
       </Page>
     </ReportSection>
   </ReportSections>
   <ReportParameters>
+    <ReportParameter Name="FieldCase">
+      <DataType>Boolean</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>true</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>FieldCase</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="FieldInstrument">
+      <DataType>Boolean</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>true</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>FieldInstrument</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="FieldUsage">
+      <DataType>Boolean</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>true</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>FieldUsage</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="FieldTray">
+      <DataType>Boolean</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>true</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>FieldTray</Prompt>
+    </ReportParameter>
     <ReportParameter Name="Target">
       <DataType>String</DataType>
       <DefaultValue>
@@ -647,11 +692,31 @@
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>0</RowIndex>
-          <ParameterName>Target</ParameterName>
+          <ParameterName>FieldCase</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>1</ColumnIndex>
           <RowIndex>0</RowIndex>
+          <ParameterName>FieldInstrument</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>FieldUsage</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>3</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>FieldTray</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>Target</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>1</RowIndex>
           <ParameterName>Timezone</ParameterName>
         </CellDefinition>
       </CellDefinitions>
@@ -674,5 +739,5 @@ k71kqRWcQZOE34vp2veHXmyYhv+nNG3atHy/elOuXDkkJyfj8ccf/8tlWZ3j8KfevXvnHHa3ouXLl+d8
     </EmbeddedImage>
   </EmbeddedImages>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
-  <rd:ReportID>084efa0f-41b1-4611-8325-3c13c7f88ce5</rd:ReportID>
+  <rd:ReportID>16f7d035-f5e1-4aae-aa67-a9d858e8c895</rd:ReportID>
 </Report>

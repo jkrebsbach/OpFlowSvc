@@ -55,15 +55,22 @@
     <Report Include="CardRedundancy.rdl" />
     <Report Include="ConcordanceReport.rdl" />
     <Report Include="CountDistribution.rdl" />
+    <Report Include="CountDistributionExport.rdl" />
     <Report Include="CountSampleDispersion.rdl" />
     <Report Include="CountSummary.rdl" />
+    <Report Include="CountSummaryExport.rdl" />
     <Report Include="DisposableUsage.rdl" />
     <Report Include="ExcessInventory.rdl" />
     <Report Include="InstrumentUsage.rdl" />
     <Report Include="InstrumentUsageCard.rdl" />
+    <Report Include="InstrumentUsageCardExport.rdl" />
     <Report Include="InstrumentUsageCardTray.rdl" />
+    <Report Include="InstrumentUsageCardTrayExport.rdl" />
+    <Report Include="InstrumentUsageExport.rdl" />
     <Report Include="InstrumentUsageSurgeonCard.rdl" />
+    <Report Include="InstrumentUsageSurgeonCardExport.rdl" />
     <Report Include="InstrumentUsageTrayCard.rdl" />
+    <Report Include="InstrumentUsageTrayCardExport.rdl" />
     <Report Include="logo.png">
       <MimeType>image/x-png</MimeType>
     </Report>
@@ -80,7 +87,9 @@
     <Report Include="TrayApproval.rdl" />
     <Report Include="TrayConsolidation.rdl" />
     <Report Include="TrayRationalization.rdl" />
+    <Report Include="TrayRationalizationExport.rdl" />
     <Report Include="TrayScope.rdl" />
+    <Report Include="TrayScopeExport.rdl" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Reporting Services\Microsoft.ReportingServices.MSBuilder.targets" />
 </Project>

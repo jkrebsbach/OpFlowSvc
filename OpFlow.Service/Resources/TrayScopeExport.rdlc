@@ -6,35 +6,62 @@
     <DataSource Name="OpFlow">
       <DataSourceReference>OpFlow</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
-      <rd:DataSourceID>18203637-6e33-4b1d-bb03-4ef3046feaaf</rd:DataSourceID>
+      <rd:DataSourceID>bbb82fb5-72e1-4b01-a93f-ca2052ab005b</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
-    <DataSet Name="InstrumentUsage">
+    <DataSet Name="TrayScope">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>exec [GetAnalyticsInstrumentUsage] '&lt;table&gt;&lt;row&gt;&lt;col&gt;1&lt;/col&gt;&lt;/row&gt;&lt;/table&gt;', null, null, null, null, null, 1,1</CommandText>
+        <CommandText>SELECT tray.tray_name TrayName,
+	specialty.description SpecialtyName,
+	card.description CardName,
+	SUM(tray_audit) TrayAudits,
+	SUM(tray_count) TrayCounts
+FROM surgery
+JOIN users surgeon ON surgery.user_id = surgeon.user_id
+JOIN specialty ON surgeon.specialty_id = specialty.specialty_id
+JOIN card ON surgery.card_id = card.card_id
+JOIN card_item ON card.card_id = card_item.card_id
+JOIN tray ON card_item.item_id = tray.tray_item_id
+LEFT JOIN (
+	select surgery_id, tray_item_id, 1 tray_count
+	from surgery_tray
+	where tray_opened = 1	
+	) tray_counts ON tray.tray_item_id = tray_counts.tray_item_id
+LEFT JOIN (
+	select surgery_id, count(*) tray_audit
+	from tray_proposal_audit
+	where audit_user_id IS NOT NULL
+	group by surgery_id
+	) tray_audits ON surgery.surgery_id = tray_audits.surgery_id
+WHERE tray.tray_item_id = 59141
+	AND 1 = tray.location_id
+	AND 1 = tray.provider_id
+
+GROUP BY tray.tray_name, specialty.description, card.description
+ORDER BY tray.tray_name</CommandText>
       </Query>
       <Fields>
         <Field Name="TrayName">
           <DataField>TrayName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="SpecialtyName">
+          <DataField>SpecialtyName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="CardName">
           <DataField>CardName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="SurgeonName">
-          <DataField>SurgeonName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="TrayAudits">
+          <DataField>TrayAudits</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="Instrument">
-          <DataField>Instrument</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="QtyOpen">
-          <DataField>QtyOpen</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
+        <Field Name="TrayCounts">
+          <DataField>TrayCounts</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
@@ -47,7 +74,7 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>7.75in</Width>
+                  <Width>6.82291in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -56,14 +83,14 @@
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="CardName">
+                        <Textbox Name="TrayName2">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!SurgeonName.Value &amp; " - Card: " &amp; Fields!CardName.Value</Value>
+                                  <Value>="Tray: " + Fields!TrayName.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                   </Style>
@@ -72,7 +99,7 @@
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>CardName</rd:DefaultName>
+                          <rd:DefaultName>TrayName2</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -89,47 +116,121 @@
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>10in</Height>
+                  <Height>0.25in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Chart Name="Chart4">
+                        <Textbox Name="SpecialtyName1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>="Specialty: " + Fields!SpecialtyName.Value</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>SpecialtyName1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>6.125in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Chart Name="Chart1">
                           <ChartCategoryHierarchy>
                             <ChartMembers>
                               <ChartMember>
-                                <Group Name="Chart4_CategoryGroup">
+                                <Group Name="Chart1_CategoryGroup">
                                   <GroupExpressions>
-                                    <GroupExpression>=Fields!Instrument.Value</GroupExpression>
+                                    <GroupExpression>=Fields!CardName.Value</GroupExpression>
                                   </GroupExpressions>
                                 </Group>
                                 <SortExpressions>
                                   <SortExpression>
-                                    <Value>=Fields!Instrument.Value</Value>
+                                    <Value>=Fields!CardName.Value</Value>
                                   </SortExpression>
                                 </SortExpressions>
-                                <Label>=Fields!Instrument.Value</Label>
+                                <Label>=Fields!CardName.Value</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartCategoryHierarchy>
                           <ChartSeriesHierarchy>
                             <ChartMembers>
                               <ChartMember>
-                                <Label>Qty Open</Label>
+                                <Label>Tray Counts</Label>
+                              </ChartMember>
+                              <ChartMember>
+                                <Label>Tray Audits</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartSeriesHierarchy>
                           <ChartData>
                             <ChartSeriesCollection>
-                              <ChartSeries Name="QtyOpen">
+                              <ChartSeries Name="CaseCount">
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Avg(Fields!QtyOpen.Value)</Y>
+                                      <Y>=Sum(Fields!TrayCounts.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
-                                      <Style>
-                                        <Format>0.#</Format>
-                                      </Style>
+                                      <Style />
+                                      <UseValueAsLabel>true</UseValueAsLabel>
+                                      <Visible>true</Visible>
+                                    </ChartDataLabel>
+                                    <Style />
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Bar</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="TrayAudits">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Sum(Fields!TrayAudits.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style />
                                       <UseValueAsLabel>true</UseValueAsLabel>
                                       <Visible>true</Visible>
                                     </ChartDataLabel>
@@ -393,7 +494,27 @@
                               </Style>
                             </ChartArea>
                           </ChartAreas>
+                          <ChartLegends>
+                            <ChartLegend Name="Default">
+                              <Style>
+                                <BackgroundGradientType>None</BackgroundGradientType>
+                                <FontSize>8pt</FontSize>
+                              </Style>
+                              <Position>TopLeft</Position>
+                              <ChartLegendTitle>
+                                <Caption />
+                                <Style>
+                                  <FontSize>8pt</FontSize>
+                                  <FontWeight>Bold</FontWeight>
+                                  <TextAlign>Center</TextAlign>
+                                </Style>
+                              </ChartLegendTitle>
+                              <HeaderSeparatorColor>Black</HeaderSeparatorColor>
+                              <ColumnSeparatorColor>Black</ColumnSeparatorColor>
+                            </ChartLegend>
+                          </ChartLegends>
                           <Palette>Pacific</Palette>
+                          <DynamicHeight>=(1 + Count(Fields!CardName.Value) * 0.25) &amp; " in"</DynamicHeight>
                           <ChartBorderSkin>
                             <Style>
                               <BackgroundColor>Gray</BackgroundColor>
@@ -410,8 +531,7 @@
                               <VerticalAlign>Top</VerticalAlign>
                             </Style>
                           </ChartNoDataMessage>
-                          <DataSetName>InstrumentUsage</DataSetName>
-                          <ZIndex>2</ZIndex>
+                          <DataSetName>TrayScope</DataSetName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -435,31 +555,42 @@
             <TablixRowHierarchy>
               <TablixMembers>
                 <TablixMember>
-                  <Group Name="CardName">
+                  <Group Name="TrayName">
                     <GroupExpressions>
-                      <GroupExpression>=Fields!CardName.Value</GroupExpression>
-                      <GroupExpression>=Fields!SurgeonName.Value</GroupExpression>
+                      <GroupExpression>=Fields!TrayName.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
                   <SortExpressions>
                     <SortExpression>
-                      <Value>=Fields!SurgeonName.Value</Value>
-                    </SortExpression>
-                    <SortExpression>
-                      <Value>=Fields!CardName.Value</Value>
+                      <Value>=Fields!TrayName.Value</Value>
                     </SortExpression>
                   </SortExpressions>
                   <TablixMembers>
                     <TablixMember />
-                    <TablixMember />
+                    <TablixMember>
+                      <Group Name="SpecialtyName">
+                        <GroupExpressions>
+                          <GroupExpression>=Fields!SpecialtyName.Value</GroupExpression>
+                        </GroupExpressions>
+                      </Group>
+                      <SortExpressions>
+                        <SortExpression>
+                          <Value>=Fields!SpecialtyName.Value</Value>
+                        </SortExpression>
+                      </SortExpressions>
+                      <TablixMembers>
+                        <TablixMember />
+                        <TablixMember />
+                      </TablixMembers>
+                    </TablixMember>
                   </TablixMembers>
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
-            <DataSetName>InstrumentUsage</DataSetName>
+            <DataSetName>TrayScope</DataSetName>
             <Top>0.4in</Top>
-            <Height>10.25in</Height>
-            <Width>7.75in</Width>
+            <Height>6.625in</Height>
+            <Width>6.82291in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -479,14 +610,14 @@
               </Border>
             </Style>
           </Image>
-          <Textbox Name="Textbox1">
+          <Textbox Name="Textbox2">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
             <Paragraphs>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Instrument Usage</Value>
+                    <Value>Tray Scope</Value>
                     <Style>
                       <FontFamily>Arial</FontFamily>
                       <FontSize>14pt</FontSize>
@@ -500,8 +631,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox1</rd:DefaultName>
-            <Top>0.00062in</Top>
-            <Left>1.77083in</Left>
+            <Left>1.71702in</Left>
             <Height>0.37375in</Height>
             <Width>3.875in</Width>
             <ZIndex>2</ZIndex>
@@ -516,11 +646,56 @@
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>10.65in</Height>
+        <Height>7.025in</Height>
         <Style />
       </Body>
-      <Width>7.75in</Width>
+      <Width>6.82291in</Width>
       <Page>
+        <PageFooter>
+          <Height>0.25in</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="Textbox3">
+              <CanGrow>true</CanGrow>
+              <CanShrink>true</CanShrink>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>="Confidential use by: " &amp; Parameters!Target.Value &amp; " - " &amp; "Run at: " &amp; Format(Globals!ExecutionTime.AddMinutes(Parameters!Timezone.Value), "M/d/yyyy HH:mm") &amp; " - " &amp; "*** CONFIDENTIAL ***"</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Height>0.25in</Height>
+              <Width>6.82291in</Width>
+              <Visibility>
+                <Hidden>=Iif(Parameters!Target.Value = "", True, False)</Hidden>
+              </Visibility>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageFooter>
         <Style />
       </Page>
     </ReportSection>
@@ -581,5 +756,5 @@ k71kqRWcQZOE34vp2veHXmyYhv+nNG3atHy/elOuXDkkJyfj8ccf/8tlWZ3j8KfevXvnHHa3ouXLl+d8
     </EmbeddedImage>
   </EmbeddedImages>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
-  <rd:ReportID>ff5848c4-3690-4ec7-9147-2a634de690f2</rd:ReportID>
+  <rd:ReportID>c60c49c1-db9d-4582-9017-182f7352b344</rd:ReportID>
 </Report>
