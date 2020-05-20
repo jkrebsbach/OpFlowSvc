@@ -24,6 +24,7 @@ namespace OpFlow.Data
         public string RoleType { get; set; }
         public string LocationName { get; set; }
         public bool PHILocation { get; set; }
+        public bool Vendor { get; set; }
 
         public string DeriveInitials()
         {
@@ -74,7 +75,7 @@ namespace OpFlow.Data
     public class UserSecurity
     {
         public int UserID { get; set; }
-        public int? VendorID { get; set; }
+        public bool Vendor { get; set; }
         public Guid UserAuthID { get; set; }
         public string CaseDatabaseName { get; set; }
         public string SecureDatabaseName { get; set; }

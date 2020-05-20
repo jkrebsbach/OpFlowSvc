@@ -77,12 +77,9 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            if (user.VendorID == null)
-            {
-                if (user.RoleType != "Internal")
-                    return Request.CreateResponse(HttpStatusCode.NotFound);
-            }
-
+            if (!user.Vendor  && user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            
             var providers = await sqlHelper.GetOpFlowSetup();
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
             var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
@@ -923,7 +920,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(secureUser.SecureDatabaseName);
 
-            if (secureUser.VendorID == null)
+            if (!secureUser.Vendor)
                 surgery.VendorLocationID = null;
 
             var user = await sqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID,  secureUser.UserID);

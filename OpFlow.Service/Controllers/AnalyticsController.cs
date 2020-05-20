@@ -371,7 +371,12 @@ namespace OpFlow.Service.Controllers
             {
                 ["ConcordanceReport"] = concordance.ToTable()
             };
-            var result = ReportHelper.GetReport("ConcordanceReport", format, datasets);
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport("ConcordanceReport", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -617,7 +622,12 @@ namespace OpFlow.Service.Controllers
             {
                 ["ServiceLineReview"] = supplyOpenAggregate.ToTable()
             };
-            var result = ReportHelper.GetReport("ServiceLineReview", format, datasets);
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport($"ServiceLineReview{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -793,7 +803,12 @@ namespace OpFlow.Service.Controllers
             {
                 ["SupplyUsageVariance"] = supplyOpen.ToTable()
             };
-            var result = ReportHelper.GetReport("SupplyUsageVariance", format, datasets);
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport($"SupplyUsageVariance{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -990,7 +1005,12 @@ namespace OpFlow.Service.Controllers
             {
                 ["SupplySavings"] = supplySavings.ToTable()
             };
-            var result = ReportHelper.GetReport("SupplySavingsEstimator", format, datasets);
+            var parameters = new ReportParameter[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport($"SupplySavingsEstimator{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {

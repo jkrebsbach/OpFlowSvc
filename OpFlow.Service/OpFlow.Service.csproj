@@ -441,6 +441,9 @@
     <Content Include="Resources\SupplyCostExport.rdlc" />
     <Content Include="Resources\SupplyWasteExport.rdlc" />
     <Content Include="Resources\SupplyOpenExport.rdlc" />
+    <Content Include="Resources\SupplyUsageVarianceExport.rdlc" />
+    <Content Include="Resources\ServiceLineReviewExport.rdlc" />
+    <Content Include="Resources\SupplySavingsEstimatorExport.rdlc" />
     <None Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />

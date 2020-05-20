@@ -39,7 +39,7 @@ namespace OpFlow.Service.Controllers
             var collections = await sqlHelper.GetItems("collection", null, null, user.ProviderID, user.LocationID);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
             var baselineTrays = await sqlHelper.GetBaselineTrays(user.ProviderID, user.LocationID);
-            var schedules = await sqlHelper.GetProposedTraySchedule(null, user.VendorID, user.UserID, user.ProviderID, user.LocationID);
+            var schedules = await sqlHelper.GetProposedTraySchedule(null, null, user.UserID, user.ProviderID, user.LocationID);
             var vendors = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
             var questions = await sqlHelper.GetTrayQuestions(null, user.ProviderID, user.LocationID);
             var phases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
@@ -57,9 +57,9 @@ namespace OpFlow.Service.Controllers
 
             schedules = ApplyRules(schedules, rules);
 
-            if (user.VendorID.HasValue)
+            if (user.Vendor)
             {
-                vendors = vendors.Where(v => v.VendorID == user.VendorID).ToList();
+                vendors = vendors.Where(v => v.VendorID == user.ProviderID).ToList();
             }
 
             foreach (var surgeonPreference in surgeonPreferences)
@@ -199,7 +199,7 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
-                ReadOnly = (user.VendorID.HasValue && proposedTray?.VendorID != user.VendorID),
+                ReadOnly = (user.Vendor && proposedTray?.VendorID != user.ProviderID),
                 ProposedTray = proposedTray,
                 Instruments = instruments,
                 ApprovalDocuments = documents,
@@ -748,7 +748,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var trayProposals = await sqlHelper.GetSurgeryTraySchedule(surgeryId, user.VendorID, user.ProviderID, user.LocationID);
+            var trayProposals = await sqlHelper.GetSurgeryTraySchedule(surgeryId, null, user.ProviderID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -1554,7 +1554,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetProposedTraySchedule(null, user.VendorID, user.UserID, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetProposedTraySchedule(null, null, user.UserID, user.ProviderID, user.LocationID);
             var rules = await sqlHelper.GetProposedTrayScheduleRules(user.UserID, user.ProviderID, user.LocationID);
 
             result = ApplyRules(result, rules);
