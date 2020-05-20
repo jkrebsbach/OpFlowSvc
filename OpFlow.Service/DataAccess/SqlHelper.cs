@@ -4231,6 +4231,18 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+        public async Task<List<Location>> GetVendorLocations(int providerId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetVendorLocations", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Location>();
+
+            return result;
+        }
         public async Task<int> InitializeLocation(int locationId)
         {
             var dsParameters = new[]

@@ -18,11 +18,8 @@ namespace OpFlow.Data
         }
     }
 
-    public class OpFlowLocation
+    public class OpFlowLocation : Location
     {
-        public int ProviderID { get; set; }
-        public int LocationID { get; set; }
-        public string LocationName { get; set; }
         public int TrayCount { get; set; }
         public int CardCount { get; set; }
 

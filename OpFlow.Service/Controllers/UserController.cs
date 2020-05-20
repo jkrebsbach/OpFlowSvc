@@ -43,6 +43,28 @@ namespace OpFlow.Service.Controllers
         }
 
         /// <summary>
+        /// Vendor Portal Home screen for vendors
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("VendorPortal", Name = "VendorPortal")]
+        public async Task<HttpResponseMessage> GetVendorPortal()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var vendorLocations = await sqlHelper.GetVendorLocations(user.ProviderID);
+
+            var result = new
+            {
+                Locations = vendorLocations
+            };
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        /// <summary>
         /// Search users
         /// </summary>
         /// <param name="nameSearchText">Will filter based on first/last name string match</param>
