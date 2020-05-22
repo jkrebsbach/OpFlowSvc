@@ -4231,7 +4231,7 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public async Task<List<Location>> GetVendorLocations(int providerId)
+        public async Task<List<OpFlowLocation>> GetVendorLocations(int providerId)
         {
             var dsParameters = new[]
             {
@@ -4239,7 +4239,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("GetVendorLocations", dsParameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Location>();
+            var result = dsSchedules.Tables[0].DataTableToList<OpFlowLocation>();
 
             return result;
         }
@@ -4253,6 +4253,23 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("UpdateUserVendorLocation", dsParameters);
+
+            return result;
+        }
+        public async Task<int> InsertVendorLocation(int? providerId, string provider, string location, string street, string city, string state, string zip, int vendorId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_id", providerId ?? (object)DBNull.Value),
+                new SqlParameter("provider", provider ?? (object)DBNull.Value),
+                new SqlParameter("location", location ?? (object)DBNull.Value),
+                new SqlParameter("street", street ?? (object)DBNull.Value),
+                new SqlParameter("city", city ?? (object)DBNull.Value),
+                new SqlParameter("state", state ?? (object)DBNull.Value),
+                new SqlParameter("zip", zip ?? (object)DBNull.Value),
+                new SqlParameter("vendor_id", vendorId)
+            };
+            var result = await ExecuteNonQueryAsync("InsertUserVendorLocation", dsParameters);
 
             return result;
         }

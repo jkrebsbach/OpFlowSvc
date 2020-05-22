@@ -61,8 +61,16 @@ namespace OpFlow.Service.Controllers
             var procedureProfiles = await sqlHelper.GetProcedureProfiles();
             var surgeons = await sqlHelper.GetSurgeons(null, user.VendorLocationID ?? -1);
 
+            var providers = vendorLocations.GroupBy(v => new { v.ProviderID, v.ProviderName }).Select(v => new OpFlowProvider()
+            {
+                ProviderID = v.Key.ProviderID,
+                ProviderName = v.Key.ProviderName,
+                Locations = v.ToList()
+            });
+
             var result = new
             {
+                Providers = providers,
                 Locations = vendorLocations,
                 ProcedureProfiles = procedureProfiles,
                 Surgeons = surgeons
@@ -88,6 +96,29 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound, "Put not found");
 
             var result = await sqlHelper.UpdateUserVendorLocation(user.UserID, locationId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        /// <summary>
+        /// Vendor Portal Home screen for vendors
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("vendorLocation", Name = "PostVendorLocation")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostVendorLocation([FromBody] VendorCreateLocationPost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (!user.Vendor)
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Put not found");
+
+            var valid = int.TryParse(request.Provider, out var providerId);
+            var result = await sqlHelper.InsertVendorLocation(valid ? providerId : (int?)null, 
+                request.Provider, request.Location, request.Street, request.City, request.State, request.Zip, user.ProviderID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
