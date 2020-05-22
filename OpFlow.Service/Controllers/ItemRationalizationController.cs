@@ -27,7 +27,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
-            var surgeons = await sqlHelper.GetSurgeons(null, user.ProviderID, user.LocationID);
+            var surgeons = await sqlHelper.GetSurgeons(null, user.LocationID);
             var audits = await sqlHelper.GetDisposableAudits(user.ProviderID, user.LocationID);
             var counts = await sqlHelper.GetDisposableCounts(user.ProviderID, user.LocationID);
 

@@ -54,14 +54,66 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
+            if (!user.Vendor)
+                return Request.CreateResponse(HttpStatusCode.NotFound, "User not found");
+
             var vendorLocations = await sqlHelper.GetVendorLocations(user.ProviderID);
+            var procedureProfiles = await sqlHelper.GetProcedureProfiles();
+            var surgeons = await sqlHelper.GetSurgeons(null, user.VendorLocationID ?? -1);
 
             var result = new
             {
-                Locations = vendorLocations
+                Locations = vendorLocations,
+                ProcedureProfiles = procedureProfiles,
+                Surgeons = surgeons
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        /// <summary>
+        /// Vendor Portal Home screen for vendors
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("vendorLocation/{locationId}", Name = "PutVendorLocation")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutVendorLocation(int locationId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (!user.Vendor)
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Put not found");
+
+            var result = await sqlHelper.UpdateUserVendorLocation(user.UserID, locationId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        /// <summary>
+        /// Map OPP to surgeon card
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("surgeonProfile/{procedureProfileId}", Name = "PutSurgeonProfile")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutSurgeonProfile(int procedureProfileId, [FromBody] SurgeonProfilePost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (!user.Vendor)
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Put not found");
+
+            foreach (var surgeonId in request.SurgeonID)
+            {
+                await sqlHelper.UpdateSurgeonProfile(procedureProfileId, surgeonId, user.VendorLocationID.Value);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, procedureProfileId);
         }
 
         /// <summary>
@@ -251,7 +303,7 @@ namespace OpFlow.Service.Controllers
             if (authUserSecurity.ProviderID == user.ProviderID &&
                 authUserSecurity.LocationID == user.LocationID)
             {
-                var applicationUser = await sqlHelper.UpdateUser(userId, (int)model.RoleID, model.VendorID, model.SpecialtyID, model.FirstName, model.LastName,
+                var applicationUser = await sqlHelper.UpdateUser(userId, (int)model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
                     model.Email, model.CellPhone, model.Initials, model.Title, user.ProviderID, user.LocationID);
 
                 // make certain user auth matches what we sent

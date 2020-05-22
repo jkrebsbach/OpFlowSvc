@@ -62,7 +62,6 @@ namespace OpFlow.Data
     public class UserEdit
     {
         public RoleEnum RoleID { get; set; }
-        public int? VendorID { get; set; }
         public int? SpecialtyID { get; set; }
         public string Initials { get; set; }
         public string FirstName { get; set; }
@@ -84,6 +83,7 @@ namespace OpFlow.Data
         public string BlobContainer { get; set; }
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
+        public int? VendorLocationID { get; set; }
     }
 
     public class Role : IBindableEntity

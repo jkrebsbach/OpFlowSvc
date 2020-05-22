@@ -51,7 +51,7 @@ namespace OpFlow.Service.Models
             Relations.Roles = await sqlHelper.GetRoles(providerId, locationId);
             Relations.Specialties = await sqlHelper.GetSpecialties(providerId, locationId);
             Relations.Rooms = await sqlHelper.GetRooms(locationId);
-            Relations.Surgeons = await sqlHelper.GetSurgeons(null, providerId, locationId);
+            Relations.Surgeons = await sqlHelper.GetSurgeons(null, locationId);
         }
     }
 }
