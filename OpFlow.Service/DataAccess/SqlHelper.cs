@@ -4261,7 +4261,7 @@ namespace OpFlow.Service.DataAccess
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId ?? (object)DBNull.Value),
-                new SqlParameter("provider", provider ?? (object)DBNull.Value),
+                new SqlParameter("provider_name", provider ?? (object)DBNull.Value),
                 new SqlParameter("location", location ?? (object)DBNull.Value),
                 new SqlParameter("street", street ?? (object)DBNull.Value),
                 new SqlParameter("city", city ?? (object)DBNull.Value),
@@ -4269,9 +4269,11 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("zip", zip ?? (object)DBNull.Value),
                 new SqlParameter("vendor_id", vendorId)
             };
-            var result = await ExecuteNonQueryAsync("InsertUserVendorLocation", dsParameters);
+            var dsLocation = await ExecuteCommandAsync("InsertUserVendorLocation", dsParameters);
 
-            return result;
+            var result = dsLocation.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.First().Identifier;
         }
         public async Task<int> UpdateSurgeonProfile(int procedureProfileId, int surgeonId, int locationId)
         {
