@@ -7506,6 +7506,14 @@ namespace OpFlow.Service.DataAccess
                     surgeon = relations.Surgeons.FirstOrDefault(r => r.FirstName.Contains(scheduleBase.PrimarySurgeon.LastName)
                         && scheduleBase.PrimarySurgeon.FirstName == r.LastName);
 
+                // Another attempt - try removing middle name token from surgeon
+                if (surgeon == null && scheduleBase.PrimarySurgeon.FirstName.Trim().Contains(' '))
+                {
+                    scheduleBase.PrimarySurgeon.FirstName = scheduleBase.PrimarySurgeon.FirstName.Trim().Split(' ')[0];
+                    surgeon = relations.Surgeons.FirstOrDefault(r => r.LastName == scheduleBase.PrimarySurgeon.LastName
+                        && r.FirstName.Contains(scheduleBase.PrimarySurgeon.FirstName));
+                }
+
                 surgery.RoomID = room?.RoomID;
                 surgery.SurgeonUserID = surgeon?.UserID;
 

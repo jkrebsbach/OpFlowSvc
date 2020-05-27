@@ -21,7 +21,7 @@ namespace OpFlow.Service.Test
             //var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\TestSchedule.csv";
             //var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\UAB_Neuro_Cards.csv";
             //var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\UAB_SPM_May4.csv";
-            var fileName = @"F:\ColdStorage\Documents\OpFlow\Imports\New OpFlow Pilot May 26.csv";
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\Imports\OpFlow Pilot May 26.csv";
             var importTypeId = 1; // schedule 
             //var importTypeId = 7; // schedule without card
             //var importTypeId = 5; // cards
@@ -55,6 +55,11 @@ namespace OpFlow.Service.Test
                     if (record is ScheduleImport schedule)
                     {
                         var surgeon = schedule.PrimarySurgeon;
+
+                        if (schedule.PrimarySurgeon.FirstName.Trim().Contains(' '))
+                        {
+                            schedule.PrimarySurgeon.FirstName = schedule.PrimarySurgeon.FirstName.Trim().Split(' ')[0];
+                        }
 
                         foreach (var procedureCard in schedule.ProcedureCards)
                         {
