@@ -21,8 +21,9 @@ namespace OpFlow.Service.Test
             //var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\TestSchedule.csv";
             //var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\UAB_Neuro_Cards.csv";
             //var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\UAB_SPM_May4.csv";
-            var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\Cases with Needs (Custom) 2020-05-14 09_43_03.xlsx";
-            var importTypeId = 7; // schedule without card
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\Imports\New OpFlow Pilot May 26.csv";
+            var importTypeId = 1; // schedule 
+            //var importTypeId = 7; // schedule without card
             //var importTypeId = 5; // cards
             //var importTypeId = 3; // trays
 
@@ -31,9 +32,9 @@ namespace OpFlow.Service.Test
             //var secureSqlHelper = new SecureSqlHelper("SecureConnection");
             var secureSqlHelper = new SecureSqlHelper("InvalidConnection");
 
-            //var user = await sqlHelper.GetSecureUser(null, 4); // UNC
+            var user = await sqlHelper.GetSecureUser(null, 4); // UNC
             //var user = await sqlHelper.GetSecureUser(null, 459); // LMC
-            var user = await sqlHelper.GetSecureUser(null, 831); // UAB
+            //var user = await sqlHelper.GetSecureUser(null, 831); // UAB
 
             int? logId = null;
 
@@ -48,6 +49,19 @@ namespace OpFlow.Service.Test
                 var fileParser = new FileParser(fileName, fileContents);
 
                 await fileParser.ParseFile(sqlHelper, importTypeId, user.ProviderID, user.LocationID);
+
+                foreach (var record in fileParser.Records)
+                {
+                    if (record is ScheduleImport schedule)
+                    {
+                        var surgeon = schedule.PrimarySurgeon;
+
+                        foreach (var procedureCard in schedule.ProcedureCards)
+                        {
+                            var card = procedureCard.ImportSurgeon;
+                        }
+                    }
+                }
 
                 if (importTypeId == 5)
                 {

@@ -133,11 +133,21 @@ namespace OpFlow.Data.Administration
 
             var cardData = sourceCardString.Split(';');
             result.CardName = cardData[0];
-            if (cardData.Length > 1)
-                result.ImportSurgeon = ImportSurgeon.ParseSurgeon(cardData[1].Trim());
-            if (cardData.Length > 2)
-                result.Location = cardData[2];
 
+            // sometimes specialty included in tokens
+            // card;specialty;surgeon;room
+            if (cardData.Length > 3)
+            {
+                result.ImportSurgeon = ImportSurgeon.ParseSurgeon(cardData[2].Trim());
+                result.Location = cardData[3].Trim();
+            }
+            else
+            {
+                if (cardData.Length > 1)
+                    result.ImportSurgeon = ImportSurgeon.ParseSurgeon(cardData[1].Trim());
+                if (cardData.Length > 2)
+                    result.Location = cardData[2];
+            }
             return result;
         }
     }
