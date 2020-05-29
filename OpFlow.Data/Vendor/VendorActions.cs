@@ -9,6 +9,12 @@ namespace OpFlow.Data
         public List<int> SurgeonID { get; set; }
     }
 
+    public class VendorCardNamePost
+    {
+        public int CardID { get; set; }
+        public string CardName { get; set; }
+    }
+
     public class VendorCreateProviderPost
     {
         public string Provider { get; set; }
