@@ -2867,14 +2867,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<ItemMaster>> GetItems(string itemType, int? trayId, bool? countNeeded, int providerId, int locationId)
+        public async Task<List<ItemMaster>> GetItems(string itemType, int? trayId, bool? countNeeded, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("item_type", itemType ?? (object)DBNull.Value),
                 new SqlParameter("tray_id", trayId ?? (object)DBNull.Value),
                 new SqlParameter("count_needed", countNeeded ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetItems", parameters);
@@ -2966,17 +2965,28 @@ namespace OpFlow.Service.DataAccess
             };
         }
 
-        public async Task<List<ItemTray>> GetTrayItems(int trayId, int providerId, int locationId)
+        public async Task<List<ItemTray>> GetTrayItems(int trayId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("tray_item_id", trayId)
             };
             var dsItems = await ExecuteCommandAsync("GetTrayItems", parameters);
 
             return dsItems.Tables[0].DataTableToList<ItemTray>();
+        }
+
+        public async Task<List<ProcedureProfile>> GetTrayProcedureProfiles(int trayId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("tray_item_id", trayId)
+            };
+            var dsItems = await ExecuteCommandAsync("GetTrayProcedureProfiles", parameters);
+
+            return dsItems.Tables[0].DataTableToList<ProcedureProfile>();
         }
 
         public async Task<List<ItemTray>> GetTrayItemCategories(int trayId, int providerId, int locationId)

@@ -498,7 +498,7 @@ namespace OpFlow.Service.Controllers
                 Specialties = await sqlHelper.GetSpecialties(user.SelectedLocation),
                 Users = users,
                 Surgeons = users.Where(u => u.RoleID == RoleEnum.Surgeon).ToList(),
-                Trays = await sqlHelper.GetItems("TRAY", null, null, user.ProviderID, user.LocationID),
+                Trays = await sqlHelper.GetItems("TRAY", null, null, user.SelectedLocation),
                 Proposals = await sqlHelper.GetProposedTrays(null, user.SelectedLocation),
                 Bundles = await sqlHelper.GetBundles(null, user.ProviderID, user.LocationID),
                 Procedures = await sqlHelper.GetProcedures(null, user.ProviderID, user.LocationID),

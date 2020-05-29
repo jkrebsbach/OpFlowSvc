@@ -16,14 +16,14 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestExportCsv()
         {
-            var user = new User()
+            var user = new UserSecurity()
             {
                 ProviderID = 1,
                 LocationID = 1
             };
             var sqlHelper = new SqlHelper();
 
-            var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
+            var proposedTrays = await sqlHelper.GetProposedTrays(null, user.SelectedLocation);
 
             var extract = "Tray Name, Source Tray, # Instruments, Service Line, Categories\r\n";
 

@@ -32,10 +32,10 @@ namespace OpFlow.Service.Controllers
             var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
             var surgeons = await sqlHelper.GetSurgeons(null, user.LocationID);
             var procedures = await sqlHelper.GetProcedures(null, user.ProviderID, user.LocationID);
-            var trays = await sqlHelper.GetItems("TRAY", null, null, user.ProviderID, user.LocationID);
+            var trays = await sqlHelper.GetItems("TRAY", null, null, user.SelectedLocation);
             var cardCategories = await sqlHelper.GetCardCategories();
             var lookups = await sqlHelper.GetTrayInstrumentLookups(user.ProviderID, user.LocationID);
-            var items = await sqlHelper.GetItems(null, null, true, user.ProviderID, user.LocationID);
+            var items = await sqlHelper.GetItems(null, null, true, user.SelectedLocation);
             var roomGroups = await sqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
             var cpts = await sqlHelper.GetKnownCPTCodes(user.ProviderID, user.LocationID);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.SelectedLocation);

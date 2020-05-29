@@ -26,7 +26,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var items = await sqlHelper.GetItems(itemType, trayId, countNeeded, user.ProviderID, user.LocationID);
+            var items = await sqlHelper.GetItems(itemType, trayId, countNeeded, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, items);
         }
@@ -68,9 +68,28 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var items = await sqlHelper.GetTrayItems(trayId, user.ProviderID, user.LocationID);
+            var items = await sqlHelper.GetTrayItems(trayId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, items);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetTrayAdmin")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemTray>))]
+        [Route("trayAdmin")]
+        public async Task<HttpResponseMessage> GetTrayAdmin(int trayId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var instruments = await sqlHelper.GetTrayItems(trayId, user.SelectedLocation);
+            var procedureProfiles = await sqlHelper.GetTrayProcedureProfiles(trayId, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Instruments = instruments,
+                ProcedureProfiles = procedureProfiles
+            });
         }
 
         // GET api/values/5

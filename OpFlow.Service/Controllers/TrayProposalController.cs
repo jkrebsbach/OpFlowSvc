@@ -35,8 +35,8 @@ namespace OpFlow.Service.Controllers
             var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
             var users = await sqlHelper.SearchUsers(null, null, null, user.SelectedLocation);
             var instrumentLookups = await sqlHelper.GetTrayInstrumentLookups(user.ProviderID, user.LocationID);
-            var trays = await sqlHelper.GetItems("tray", null, null, user.ProviderID, user.LocationID);
-            var collections = await sqlHelper.GetItems("collection", null, null, user.ProviderID, user.LocationID);
+            var trays = await sqlHelper.GetItems("tray", null, null, user.SelectedLocation);
+            var collections = await sqlHelper.GetItems("collection", null, null, user.SelectedLocation);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.SelectedLocation);
             var baselineTrays = await sqlHelper.GetBaselineTrays(user.ProviderID, user.LocationID);
             var schedules = await sqlHelper.GetProposedTraySchedule(null, null, user.UserID, user.ProviderID, user.LocationID);
@@ -46,7 +46,7 @@ namespace OpFlow.Service.Controllers
             var cardCategories = await sqlHelper.GetCardCategories();
             var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
             var proposalCardCategories = await sqlHelper.GetProposedTrayCardCategories(user.ProviderID, user.LocationID);
-            var instruments = await sqlHelper.GetItems("instrument", null, true, user.ProviderID, user.LocationID);
+            var instruments = await sqlHelper.GetItems("instrument", null, true, user.SelectedLocation);
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
             var surgeonPreferences = await sqlHelper.GetSurgeonPreferences(user.ProviderID, user.LocationID);
             var rules = await sqlHelper.GetProposedTrayScheduleRules(user.UserID, user.ProviderID, user.LocationID);
@@ -1782,7 +1782,7 @@ namespace OpFlow.Service.Controllers
             foreach (var source in sources)
             {
                 var trayDetail = post.Rollup == "I" ?
-                    await sqlHelper.GetTrayItems(source.Key.TrayItemID, user.ProviderID, user.LocationID)
+                    await sqlHelper.GetTrayItems(source.Key.TrayItemID, user.SelectedLocation)
                     : await sqlHelper.GetTrayItemCategories(source.Key.TrayItemID, user.ProviderID, user.LocationID);
 
                 var sourceTray = new TrayRationalizationSummary()

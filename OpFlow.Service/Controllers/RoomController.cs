@@ -95,8 +95,8 @@ namespace OpFlow.Service.Controllers
             var lateralities = await sqlHelper.GetLateralities(user.SelectedLocation);
             var bedOrientations = await sqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
 
-            var equipment = await sqlHelper.GetItems("EQUIPMENT", null, null, user.ProviderID, user.LocationID);
-            var instruments = await sqlHelper.GetItems("INSTRUMENT", null, null, user.ProviderID, user.LocationID);
+            var equipment = await sqlHelper.GetItems("EQUIPMENT", null, null, user.SelectedLocation);
+            var instruments = await sqlHelper.GetItems("INSTRUMENT", null, null, user.SelectedLocation);
 
             var result = new RoomSetupDetail()
             {
