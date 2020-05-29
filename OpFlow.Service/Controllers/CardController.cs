@@ -424,7 +424,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.DeleteCardItem(cardId, itemId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.DeleteCardItem(cardId, itemId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK);
         }
@@ -439,7 +439,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateCardItem(cardId, itemId, value.OpenQty, value.HoldQty, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.UpdateCardItem(cardId, itemId, value.OpenQty, value.HoldQty, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK);
         }

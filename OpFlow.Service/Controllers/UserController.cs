@@ -97,6 +97,29 @@ namespace OpFlow.Service.Controllers
 
             var result = await sqlHelper.UpdateUserVendorLocation(user.UserID, locationId, user.ProviderID, user.LocationID);
 
+            CacheUtil.RefreshUserCache();
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        /// <summary>
+        /// Vendor Portal Home screen for vendors
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("vendorProvider", Name = "PostVendorProvider")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostVendorProvider([FromBody] VendorCreateProviderPost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (!user.Vendor)
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Put not found");
+
+            var result = await sqlHelper.InsertVendorProvider(request.Provider, user.ProviderID);
+
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
@@ -116,9 +139,8 @@ namespace OpFlow.Service.Controllers
             if (!user.Vendor)
                 return Request.CreateResponse(HttpStatusCode.NotFound, "Put not found");
 
-            var valid = int.TryParse(request.Provider, out var providerId);
-            var result = await sqlHelper.InsertVendorLocation(valid ? providerId : (int?)null, 
-                request.Provider, request.Location, request.Street, request.City, request.State, request.Zip, user.ProviderID);
+            var result = await sqlHelper.InsertVendorLocation(request.ProviderID, 
+                request.Location, request.Street, request.City, request.State, request.Zip, user.ProviderID);
 
             CacheUtil.RefreshUserCache();
 

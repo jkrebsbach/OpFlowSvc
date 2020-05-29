@@ -4284,12 +4284,24 @@ namespace OpFlow.Service.DataAccess
 
             return result.First();
         }
-        public async Task<int> InsertVendorLocation(int? providerId, string provider, string location, string street, string city, string state, string zip, int vendorId)
+        public async Task<int> InsertVendorProvider(string provider, int vendorId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_name", provider ?? (object)DBNull.Value),
+                new SqlParameter("vendor_id", vendorId)
+            };
+            var dsLocation = await ExecuteCommandAsync("InsertVendorProvider", dsParameters);
+
+            var result = dsLocation.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.First().Identifier;
+        }
+        public async Task<int> InsertVendorLocation(int? providerId, string location, string street, string city, string state, string zip, int vendorId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("provider_id", providerId ?? (object)DBNull.Value),
-                new SqlParameter("provider_name", provider ?? (object)DBNull.Value),
                 new SqlParameter("location", location ?? (object)DBNull.Value),
                 new SqlParameter("street", street ?? (object)DBNull.Value),
                 new SqlParameter("city", city ?? (object)DBNull.Value),
@@ -4297,7 +4309,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("zip", zip ?? (object)DBNull.Value),
                 new SqlParameter("vendor_id", vendorId)
             };
-            var dsLocation = await ExecuteCommandAsync("InsertUserVendorLocation", dsParameters);
+            var dsLocation = await ExecuteCommandAsync("InsertVendorLocation", dsParameters);
 
             var result = dsLocation.Tables[0].DataTableToList<InsertionResult>();
 
@@ -4847,11 +4859,10 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteCardUser", dsParameters);
         }
 
-        public async Task<int> DeleteCardItem(int cardId, int itemId, int providerId, int locationId)
+        public async Task<int> DeleteCardItem(int cardId, int itemId, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("card_id", cardId),
                 new SqlParameter("item_id", itemId)
@@ -4859,11 +4870,10 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteCardItem", dsParameters);
         }
 
-        public async Task<int> UpdateCardItem(int cardId, int itemId, int qtyOpen, int qtyHold, int providerId, int locationId)
+        public async Task<int> UpdateCardItem(int cardId, int itemId, int qtyOpen, int qtyHold, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("card_id", cardId),
                 new SqlParameter("item_id", itemId),
