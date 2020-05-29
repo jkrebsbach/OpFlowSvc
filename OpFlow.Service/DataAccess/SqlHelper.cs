@@ -4280,6 +4280,19 @@ namespace OpFlow.Service.DataAccess
             var result = await ExecuteNonQueryAsync("UpdateVendorCardName", dsParameters);
 
             return result;
+        }        
+        public async Task<int> UpdateVendorCardReplicate(int cardId, string cardName, int surgeonId, int providerId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("card_name", cardName),
+                new SqlParameter("surgeon_id", surgeonId),
+                new SqlParameter("vendor_id", providerId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateVendorCardReplicate", dsParameters);
+
+            return result;
         }
         public async Task<OpFlowLocation> UpdateUserVendorLocation(int userId, int vendorLocationId, int providerId, int locationId)
         {

@@ -129,6 +129,27 @@ namespace OpFlow.Service.Controllers
         /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("replicateCard", Name = "ReplicateVendorCard")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> ReplicateVendorCard([FromBody] VendorCardNamePost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (!user.Vendor)
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Put not found");
+
+            var result = await sqlHelper.UpdateVendorCardReplicate(request.CardID, request.CardName, request.SurgeonID, user.ProviderID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        /// <summary>
+        /// Vendor Portal Home screen for vendors
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("vendorProvider", Name = "PostVendorProvider")]
         [HttpPost]
         public async Task<HttpResponseMessage> PostVendorProvider([FromBody] VendorCreateProviderPost request)
