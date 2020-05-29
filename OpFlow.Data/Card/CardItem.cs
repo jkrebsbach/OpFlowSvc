@@ -170,7 +170,9 @@ namespace OpFlow.Data
         public List<ProfileProcedure> Procedures { get; set; }
         public List<ProfileItem> Items { get; set; }
         public List<ProfileCard> Cards { get; set; }
+        public List<User> Surgeons { get; set; }
         public List<ProfileTray> Trays { get; set; }
+        public List<ProfileTray> ProposedTrays { get; set; }
         public List<ProfileItem> TrayItems { get; set; }
         public List<ProfileCardCategory> CardCategories { get; set; }
         public List<ProcedureProfileTrayUsage> TrayUsage { get; set; }
@@ -208,6 +210,7 @@ namespace OpFlow.Data
     public class ProfileCard : Card
     {
         public int ProcedureProfileID { get; set; }
+        public int LocationID { get; set; }
         public int NbrInstruments { get; set; }
 
         public int ProfileCount { get; set; }

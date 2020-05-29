@@ -103,7 +103,7 @@ namespace OpFlow.Service.SignalR
 
             var insertTimestamp = DateTime.Now;
 
-            var trayProposal = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).First();
+            var trayProposal = (await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation)).First();
             var team = await sqlHelper.GetProposedTrayCommunicationTeam(trayProposalId, user.ProviderID, user.LocationID);
 
             foreach (var member in team)
@@ -261,7 +261,7 @@ namespace OpFlow.Service.SignalR
             var user = await CacheUtil.GetUserSecurity(userAuthId);
             var sqlHelper = new SqlHelper();
 
-            var trayProposal = (await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID)).First();
+            var trayProposal = (await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation)).First();
 
             if (trayProposal.DeploymentStatus != status)
             {

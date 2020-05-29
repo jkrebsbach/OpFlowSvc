@@ -58,7 +58,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound, "User not found");
 
             var vendorLocations = await sqlHelper.GetVendorLocations(user.ProviderID);
-            var procedureProfiles = await sqlHelper.GetProcedureProfiles();
+            var procedureProfiles = await sqlHelper.GetProcedureProfilesVendor(user.ProviderID);
             var surgeons = await sqlHelper.GetSurgeons(null, user.VendorLocationID ?? -1);
 
             var providers = vendorLocations.GroupBy(v => new { v.ProviderID, v.ProviderName }).Select(v => new OpFlowProvider()
@@ -72,7 +72,7 @@ namespace OpFlow.Service.Controllers
             {
                 Providers = providers,
                 Locations = vendorLocations,
-                ProcedureProfiles = procedureProfiles,
+                ProcedureProfiles = procedureProfiles.Where(p => p.Cards.Any()),
                 Surgeons = surgeons
             };
 
@@ -86,7 +86,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("vendorLocation/{locationId}", Name = "PutVendorLocation")]
-        [HttpPut]
+        [HttpPost]
         public async Task<HttpResponseMessage> PutVendorLocation(int locationId)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -119,6 +119,8 @@ namespace OpFlow.Service.Controllers
             var valid = int.TryParse(request.Provider, out var providerId);
             var result = await sqlHelper.InsertVendorLocation(valid ? providerId : (int?)null, 
                 request.Provider, request.Location, request.Street, request.City, request.State, request.Zip, user.ProviderID);
+
+            CacheUtil.RefreshUserCache();
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -159,7 +161,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var users = await sqlHelper.SearchUsers(nameSearchText, roleId, specialtyId, user.ProviderID, user.LocationID);
+            var users = await sqlHelper.SearchUsers(nameSearchText, roleId, specialtyId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, users);
         }

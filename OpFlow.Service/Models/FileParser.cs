@@ -49,7 +49,7 @@ namespace OpFlow.Service.Models
 
             Relations = new FileParserRelations();
             Relations.Roles = await sqlHelper.GetRoles(providerId, locationId);
-            Relations.Specialties = await sqlHelper.GetSpecialties(providerId, locationId);
+            Relations.Specialties = await sqlHelper.GetSpecialties(locationId);
             Relations.Rooms = await sqlHelper.GetRooms(locationId);
             Relations.Surgeons = await sqlHelper.GetSurgeons(null, locationId);
         }

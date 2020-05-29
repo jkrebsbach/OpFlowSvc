@@ -542,8 +542,8 @@ namespace OpFlow.Service.Controllers
             var result = new SmartPhraseAdmin()
             {
                 Categories = await sqlHelper.GetSmartPhraseCategories(user.ProviderID, user.LocationID),
-                Specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID),
-                Users = await sqlHelper.SearchUsers(null, 1, null, user.ProviderID, user.LocationID)
+                Specialties = await sqlHelper.GetSpecialties(user.SelectedLocation),
+                Users = await sqlHelper.SearchUsers(null, 1, null, user.SelectedLocation)
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);

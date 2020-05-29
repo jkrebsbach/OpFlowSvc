@@ -27,7 +27,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
+            var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
             var cardCategories = await sqlHelper.GetSpecialtyProcedureGroup(user.ProviderID, user.LocationID);
 
             foreach (var specialty in specialties)

@@ -47,11 +47,11 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var rooms = await sqlHelper.GetRooms(user.LocationID);
-            var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
-            var lateralities = await sqlHelper.GetLateralities(user.ProviderID, user.LocationID);
-            var surgeons = await sqlHelper.GetSurgeryUsers(user.ProviderID, user.LocationID);
-            var proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
+            var rooms = await sqlHelper.GetRooms(user.SelectedLocation);
+            var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
+            var lateralities = await sqlHelper.GetLateralities(user.SelectedLocation);
+            var surgeons = await sqlHelper.GetSurgeryUsers(user.SelectedLocation);
+            var proposals = await sqlHelper.GetProposedTrays(null, user.SelectedLocation);
 
             var profiles = await sqlHelper.GetProcedureProfiles();
             
@@ -485,7 +485,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var users = await sqlHelper.GetSurgeryUsers(user.ProviderID, user.LocationID);
+            var users = await sqlHelper.GetSurgeryUsers(user.SelectedLocation);
 
             var setup = await sqlHelper.GetOpFlowSetup();
             var location = setup.FirstOrDefault(p => p.ProviderID == user.ProviderID)?
@@ -495,11 +495,11 @@ namespace OpFlow.Service.Controllers
             {
                 Rooms = await sqlHelper.GetRooms(user.LocationID),
                 RoomGroups = await sqlHelper.GetRoomGroups(user.ProviderID, user.LocationID),
-                Specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID),
+                Specialties = await sqlHelper.GetSpecialties(user.SelectedLocation),
                 Users = users,
                 Surgeons = users.Where(u => u.RoleID == RoleEnum.Surgeon).ToList(),
                 Trays = await sqlHelper.GetItems("TRAY", null, null, user.ProviderID, user.LocationID),
-                Proposals = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID),
+                Proposals = await sqlHelper.GetProposedTrays(null, user.SelectedLocation),
                 Bundles = await sqlHelper.GetBundles(null, user.ProviderID, user.LocationID),
                 Procedures = await sqlHelper.GetProcedures(null, user.ProviderID, user.LocationID),
                 LocationSetup = location

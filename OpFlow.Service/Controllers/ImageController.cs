@@ -125,7 +125,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var trayProposals = await sqlHelper.GetProposedTrays(trayProposalId, user.ProviderID, user.LocationID);
+            var trayProposals = await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation);
             var trayProposal = trayProposals.FirstOrDefault();
             if (trayProposal != null)
             {
@@ -162,7 +162,7 @@ namespace OpFlow.Service.Controllers
 
                 if (type == "T")
                 {
-                    var proposals = await sqlHelper.GetProposedTrays(id, user.ProviderID, user.LocationID);
+                    var proposals = await sqlHelper.GetProposedTrays(id, user.SelectedLocation);
                     var proposal = proposals.First();
 
                     filename = proposal.OrgChart;

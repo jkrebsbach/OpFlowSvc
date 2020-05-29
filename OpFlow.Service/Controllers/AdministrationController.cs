@@ -235,7 +235,7 @@ namespace OpFlow.Service.Controllers
 
                 var fileParser = new FileParser(fileName, fileContents);
 
-                await fileParser.ParseFile(sqlHelper, importTypeId, user.ProviderID, user.LocationID);
+                await fileParser.ParseFile(sqlHelper, importTypeId, user.ProviderID, user.SelectedLocation);
 
 
                 var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);

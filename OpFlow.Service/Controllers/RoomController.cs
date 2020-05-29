@@ -92,7 +92,7 @@ namespace OpFlow.Service.Controllers
             
             var roomTypes = await sqlHelper.GetRoomTypes(user.LocationID);
             var patientPositions = await sqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
-            var lateralities = await sqlHelper.GetLateralities(user.ProviderID, user.LocationID);
+            var lateralities = await sqlHelper.GetLateralities(user.SelectedLocation);
             var bedOrientations = await sqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
 
             var equipment = await sqlHelper.GetItems("EQUIPMENT", null, null, user.ProviderID, user.LocationID);
@@ -133,7 +133,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            return await sqlHelper.GetLateralities(user.ProviderID, user.LocationID);
+            return await sqlHelper.GetLateralities(user.SelectedLocation);
         }
 
         // GET api/values

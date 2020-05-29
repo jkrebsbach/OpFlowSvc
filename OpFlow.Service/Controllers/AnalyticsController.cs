@@ -29,7 +29,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper();
-            var specialties = await sqlHelper.GetSpecialties(user.ProviderID, user.LocationID);
+            var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
             var surgeons = await sqlHelper.GetSurgeons(null, user.LocationID);
             var procedures = await sqlHelper.GetProcedures(null, user.ProviderID, user.LocationID);
             var trays = await sqlHelper.GetItems("TRAY", null, null, user.ProviderID, user.LocationID);
@@ -38,7 +38,7 @@ namespace OpFlow.Service.Controllers
             var items = await sqlHelper.GetItems(null, null, true, user.ProviderID, user.LocationID);
             var roomGroups = await sqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
             var cpts = await sqlHelper.GetKnownCPTCodes(user.ProviderID, user.LocationID);
-            var proposedTrays = await sqlHelper.GetProposedTrays(null, user.ProviderID, user.LocationID);
+            var proposedTrays = await sqlHelper.GetProposedTrays(null, user.SelectedLocation);
             var proposalPhases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
 

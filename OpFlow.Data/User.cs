@@ -84,6 +84,8 @@ namespace OpFlow.Data
         public int ProviderID { get; set; }
         public int LocationID { get; set; }
         public int? VendorLocationID { get; set; }
+
+        public int SelectedLocation => VendorLocationID ?? LocationID;
     }
 
     public class Role : IBindableEntity
