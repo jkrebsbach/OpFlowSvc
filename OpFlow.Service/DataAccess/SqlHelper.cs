@@ -1302,15 +1302,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<User>> GetSurgeonsInternal(List<int> locationId)
+        public async Task<List<User>> GetSurgeonsProcedureProfile()
         {
-            var locationXml = GetIdentitySummary(locationId);
-
-            var parameters = new[]
-            {
-                new SqlParameter("location_id", locationXml ?? (object)DBNull.Value),
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetSurgeonsInternal", parameters);
+            var parameters = new SqlParameter[0];
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeonsProcedureProfile", parameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<User>();
 
@@ -4281,13 +4276,14 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }        
-        public async Task<int> UpdateVendorCardReplicate(int cardId, string cardName, int surgeonId, int providerId)
+        public async Task<int> UpdateVendorCardReplicate(int cardId, string cardName, int surgeonId, int procedureProfileId, int providerId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("card_id", cardId),
                 new SqlParameter("card_name", cardName),
                 new SqlParameter("surgeon_id", surgeonId),
+                new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("vendor_id", providerId)
             };
             var result = await ExecuteNonQueryAsync("UpdateVendorCardReplicate", dsParameters);
@@ -4322,11 +4318,11 @@ namespace OpFlow.Service.DataAccess
 
             return result.First().Identifier;
         }
-        public async Task<int> InsertVendorLocation(int? providerId, string location, string street, string city, string state, string zip, int vendorId)
+        public async Task<int> InsertVendorLocation(int providerId, string location, string street, string city, string state, string zip, int vendorId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location", location ?? (object)DBNull.Value),
                 new SqlParameter("street", street ?? (object)DBNull.Value),
                 new SqlParameter("city", city ?? (object)DBNull.Value),

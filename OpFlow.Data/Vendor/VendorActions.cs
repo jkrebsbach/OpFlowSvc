@@ -14,6 +14,7 @@ namespace OpFlow.Data
         public int CardID { get; set; }
         public string CardName { get; set; }
         public int SurgeonID { get; set; }
+        public int ProcedureProfileID { get; set; }
     }
 
     public class VendorCreateProviderPost

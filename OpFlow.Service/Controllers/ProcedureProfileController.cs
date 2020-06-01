@@ -37,7 +37,7 @@ namespace OpFlow.Service.Controllers
             var providers = await sqlHelper.GetOpFlowSetup();
             var specialties = await sqlHelper.GetSpecialtyMaster();
             var cardCategories = await sqlHelper.GetCardCategories();
-            var surgeons = await sqlHelper.GetSurgeonsInternal(null);
+            var surgeons = await sqlHelper.GetSurgeonsProcedureProfile();
             var procedures = await sqlHelper.GetProcedures(null, 1, 1);
 
             return Request.CreateResponse(HttpStatusCode.OK, new

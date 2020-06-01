@@ -139,7 +139,7 @@ namespace OpFlow.Service.Controllers
             if (!user.Vendor)
                 return Request.CreateResponse(HttpStatusCode.NotFound, "Put not found");
 
-            var result = await sqlHelper.UpdateVendorCardReplicate(request.CardID, request.CardName, request.SurgeonID, user.ProviderID);
+            var result = await sqlHelper.UpdateVendorCardReplicate(request.CardID, request.CardName, request.SurgeonID, request.ProcedureProfileID, user.ProviderID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
