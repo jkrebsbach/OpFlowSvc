@@ -2920,11 +2920,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<ItemMaster>> GetInstruments(int providerId, int locationId)
+        public async Task<List<ItemMaster>> GetInstruments(int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetInstruments", parameters);
@@ -3269,7 +3268,22 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public async Task<int> InsertTrayInstrument(string instrumentName, string instrumentNbr, 
+        public async Task<int> InsertTray(string trayName, string productNbr, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("product_nbr", productNbr),
+                new SqlParameter("tray_name", trayName)
+            };
+            var dsItems = await ExecuteCommandAsync("InsertTray", parameters);
+
+            var result = dsItems.Tables[0].DataTableToList<InsertionResult>().First();
+
+            return result.Identifier;
+        }
+
+        public async Task<int> InsertTrayInstrumentByName(string instrumentName, string instrumentNbr, 
             int trayId, int trayQuantity, int providerId, int locationId)
         {
             var parameters = new[]
@@ -3281,7 +3295,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("tray_id", trayId),
                 new SqlParameter("tray_quantity", trayQuantity)
             };
-            var dsItems = await ExecuteCommandAsync("InsertTrayInstrument", parameters);
+            var dsItems = await ExecuteCommandAsync("InsertTrayInstrumentByName", parameters);
 
             var result = dsItems.Tables[0].DataTableToList<InsertionResult>().First();
 
@@ -3674,13 +3688,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> InsertProcedureProfileTrayInstrument(int procedureProfileId, int trayItemId, int providerId, int locationId)
+        public async Task<int> InsertProcedureProfileTrayInstrument(int procedureProfileId, int trayItemId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("tray_item_id", trayItemId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
             var result = await ExecuteNonQueryAsync("InsertProcedureProfileTrayInstrument", parameters);

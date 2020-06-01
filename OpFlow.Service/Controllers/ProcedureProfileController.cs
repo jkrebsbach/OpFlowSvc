@@ -749,11 +749,11 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
 
-            if (user.RoleType != "Internal")
+            if (user.RoleType != "Internal" && user.Vendor == false)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.InsertProcedureProfileTrayInstrument(procedureProfileId, trayItemId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.InsertProcedureProfileTrayInstrument(procedureProfileId, trayItemId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -927,8 +927,7 @@ namespace OpFlow.Service.Controllers
 
                 foreach (var trayItemId in trayIds.Distinct())
                 {
-                    await sqlHelper.InsertProcedureProfileTrayInstrument(procedureProfileId,
-                        trayItemId, user.ProviderID, user.LocationID);
+                    await sqlHelper.InsertProcedureProfileTrayInstrument(procedureProfileId, trayItemId, user.SelectedLocation);
                 }
 
                 return Request.CreateResponse(HttpStatusCode.OK, fileParser.Status);
