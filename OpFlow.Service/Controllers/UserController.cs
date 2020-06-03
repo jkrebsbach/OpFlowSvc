@@ -59,7 +59,6 @@ namespace OpFlow.Service.Controllers
 
             var vendorLocations = await sqlHelper.GetVendorLocations(user.ProviderID);
             var procedureProfiles = await sqlHelper.GetProcedureProfilesVendor(user.ProviderID);
-            var surgeons = await sqlHelper.GetSurgeons(null, user.VendorLocationID ?? -1);
 
             var providers = vendorLocations.GroupBy(v => new { v.ProviderID, v.ProviderName }).Select(v => new OpFlowProvider()
             {
@@ -72,8 +71,7 @@ namespace OpFlow.Service.Controllers
             {
                 Providers = providers,
                 Locations = vendorLocations,
-                ProcedureProfiles = procedureProfiles.Where(p => p.Cards.Any()),
-                Surgeons = surgeons
+                ProcedureProfiles = procedureProfiles.Where(p => p.Cards.Any())
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -134,16 +132,44 @@ namespace OpFlow.Service.Controllers
         /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("vendorCard/{cardId}", Name = "VendorCard")]
-        public async Task<HttpResponseMessage> GetVendorCard(int cardId)
+        [Route("vendorSurgeons/{locationId}", Name = "VendorSurgeons")]
+        public async Task<HttpResponseMessage> GetVendorSurgeries(int locationId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
             if (!user.Vendor)
-                return Request.CreateResponse(HttpStatusCode.NotFound, "Surgeries not found");
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Surgeons not found");
 
-            var cardItems = await sqlHelper.GetCardItems(cardId, user.SelectedLocation);
+            var vendorLocations = await sqlHelper.GetVendorLocations(user.ProviderID);
+            if (!vendorLocations.Any(l => l.LocationID == locationId))
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Surgeons not found");
+
+            var surgeons = await sqlHelper.GetSurgeons(null, locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, surgeons);
+        }
+
+        /// <summary>
+        /// Vendor Portal Home screen for vendors
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("vendorCard/{cardId}", Name = "VendorCard")]
+        public async Task<HttpResponseMessage> GetVendorCard(int cardId, int locationId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (!user.Vendor)
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Card not found");
+
+            var vendorLocations = await sqlHelper.GetVendorLocations(user.ProviderID);
+            if (!vendorLocations.Any(l => l.LocationID == locationId))
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Card not found");
+
+            var cardItems = await sqlHelper.GetCardItems(cardId, locationId);
 
             var result = "Item, Quantity\r\n";
             
@@ -191,6 +217,10 @@ namespace OpFlow.Service.Controllers
 
             if (!user.Vendor)
                 return Request.CreateResponse(HttpStatusCode.NotFound, "Put not found");
+
+            var vendorLocations = await sqlHelper.GetVendorLocations(user.ProviderID);
+            if (!vendorLocations.Any(l => l.LocationID == request.LocationID))
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Surgeries not found");
 
             var result = await sqlHelper.UpdateVendorCardReplicate(request.CardID, request.CardName, request.SurgeonID, request.ProcedureProfileID, user.ProviderID);
 
