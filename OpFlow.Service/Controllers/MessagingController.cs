@@ -83,7 +83,7 @@ namespace OpFlow.Service.Controllers
 
             if (surgeryId != null)
             {
-                var recipients = await sqlHelper.GetSurgeryUsers(surgeryId.Value, user.ProviderID, user.LocationID);
+                var recipients = await sqlHelper.GetSurgeryUsers(surgeryId.Value, user.SelectedLocation);
 
                 var sender = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
 
@@ -93,7 +93,7 @@ namespace OpFlow.Service.Controllers
                     if (recipient.Email == sender.Email)
                         continue;
 
-                    var surgery = await sqlHelper.GetSurgery(surgeryId ?? -1, user.ProviderID, user.LocationID);
+                    var surgery = await sqlHelper.GetSurgery(surgeryId ?? -1, user.SelectedLocation);
                     var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
                     var patient = await secureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
                         userObject.LastName, (int)userObject.RoleID);

@@ -2012,11 +2012,10 @@ namespace OpFlow.Service.DataAccess
             return caseProfiles;
         }
 
-        public async Task<List<SurgeonPreference>> GetSurgeonPreferences(int providerId, int locationId)
+        public async Task<List<SurgeonPreference>> GetSurgeonPreferences(int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSurgeonPreferences", parameters);
@@ -2531,7 +2530,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProposedTrayAudit(int? trayProposalId, int surgeryId, int? scrubTechUserId, int? auditUserId, int providerId, int locationId)
+        public async Task<int> UpdateProposedTrayAudit(int? trayProposalId, int surgeryId, int? scrubTechUserId, int? auditUserId, int locationId)
         {
             var parameters = new[]
             {
@@ -2539,7 +2538,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("scrub_tech_user_id", scrubTechUserId ?? (object)DBNull.Value),
                 new SqlParameter("audit_user_id", auditUserId ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("UpdateProposedTrayAudit", parameters);
@@ -2547,7 +2545,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProposedTrayCount(int? trayProposalId, int surgeryId, int? scrubTechUserId, int? countUserId, int providerId, int locationId)
+        public async Task<int> UpdateProposedTrayCount(int? trayProposalId, int surgeryId, int? scrubTechUserId, int? countUserId, int locationId)
         {
             var parameters = new[]
             {
@@ -2555,7 +2553,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("scrub_tech_user_id", scrubTechUserId ?? (object)DBNull.Value),
                 new SqlParameter("count_user_id", countUserId ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("UpdateProposedTrayCount", parameters);
@@ -2906,11 +2903,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<ItemMaster>> GetItemSutures(int providerId, int locationId)
+        public async Task<List<ItemMaster>> GetItemSutures(int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetItemSutures", parameters);
@@ -3433,12 +3429,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<SurgeryCardItem>> GetSurgeryCardItems(int surgeryId, int providerId, int locationId)
+        public async Task<List<SurgeryCardItem>> GetSurgeryCardItems(int surgeryId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSurgeryCardItems", parameters);
@@ -3476,12 +3471,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<CardItemCountQueryResult> GetSurgeryCardItemCounts(int surgeryId, int providerId, int locationId)
+        public async Task<CardItemCountQueryResult> GetSurgeryCardItemCounts(int surgeryId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSurgeryCardItemCounts", parameters);
@@ -3496,12 +3490,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
         
-        public async Task<List<SurgerySutureCount>> GetSurgerySutureCounts(int surgeryId, int providerId, int locationId)
+        public async Task<List<SurgerySutureCount>> GetSurgerySutureCounts(int surgeryId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSurgerySutureCounts", parameters);
@@ -3509,12 +3502,11 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules.Tables[0].DataTableToList<SurgerySutureCount>();
         }
 
-        public async Task<List<SurgeryTrayOpen>> GetSurgeryTrayOpens(int surgeryId, int providerId, int locationId)
+        public async Task<List<SurgeryTrayOpen>> GetSurgeryTrayOpens(int surgeryId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSurgeryTrayOpens", parameters);
@@ -4004,11 +3996,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayGroup>> GetTrayGroups(int providerId, int locationId)
+        public async Task<List<TrayGroup>> GetTrayGroups(int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
             var dsSchedules = await ExecuteCommandAsync("GetTrayGroups", parameters);
@@ -4125,12 +4116,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<SurgeryCard>> GetSurgeryCardList(int surgeryId, int providerId, int locationId)
+        public async Task<List<SurgeryCard>> GetSurgeryCardList(int surgeryId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSurgeryCardList", parameters);
@@ -4146,12 +4136,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<SurgeryFlow>> GetSurgeryFlowList(int surgeryId, int providerId, int locationId)
+        public async Task<List<SurgeryFlow>> GetSurgeryFlowList(int surgeryId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSurgeryFlowList", parameters);
@@ -4237,7 +4226,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<User>> GetSurgeryUsers( int locationId)
+        public async Task<List<User>> GetSurgeryUsers(int locationId)
         {
             var dsParameters = new[]
             {
@@ -4499,12 +4488,11 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<int> CreateUser(Guid userAuthId, int? roleId, int? specialtyId, string firstName, string lastName,
-            string email, string cellPhone, string initials, string title, int providerId, int locationId)
+            string email, string cellPhone, string initials, string title, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("user_auth_id", userAuthId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("role_id", roleId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
@@ -4523,12 +4511,11 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<int> UpdateUser(int userId, int? roleId, int? specialtyId, string firstName, string lastName,
-            string email, string cellPhone, string initials, string title, int providerId, int locationId)
+            string email, string cellPhone, string initials, string title, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("user_id", userId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("role_id", roleId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
@@ -5107,11 +5094,10 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateCardItemQty", dsParameters);
         }
 
-        public async Task<int> UpdateCardQuantityRequest(int cardId, CardQuantityEdit quantity, int providerId, int locationId)
+        public async Task<int> UpdateCardQuantityRequest(int cardId, CardQuantityEdit quantity, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("card_id", cardId),
                 new SqlParameter("item_id", quantity.ItemID),
@@ -5122,11 +5108,10 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateCardItemQtyRequest", dsParameters);
         }
 
-        public async Task<int> UpdateSurgeryItemQuantity(int surgeryId, CardQuantityEdit quantity, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryItemQuantity(int surgeryId, CardQuantityEdit quantity, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("item_id", quantity.ItemID),
@@ -5138,12 +5123,10 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<int> CreateSurgery(SurgeryPost surgery, int patientId, int caseId, 
-            int? defaultCardId, int? defaultFlowId, int? defaultRoomId,
-            int providerId, int locationId)
+            int? defaultCardId, int? defaultFlowId, int? defaultRoomId, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("vendor_location_id", surgery.VendorLocationID ?? (object)DBNull.Value),
                 new SqlParameter("patient_id", patientId),
@@ -5168,11 +5151,10 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public async Task<int> AddCustomSurgeryItem(int surgeryId, int itemId, int quantity, int providerId, int locationId)
+        public async Task<int> AddCustomSurgeryItem(int surgeryId, int itemId, int quantity, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("item_id", itemId),
@@ -5203,11 +5185,10 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("InsertSurgeryProposedTrayGroup", dsParameters);
         }
 
-        public async Task<int> AddSurgeryUser(int surgeryId, int userId, int providerId, int locationId)
+        public async Task<int> AddSurgeryUser(int surgeryId, int userId, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("user_id", userId)
@@ -5215,11 +5196,10 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("InsertSurgeryUser", dsParameters);
         }
 
-        public async Task<int> DeleteSurgeryUser(int surgeryId, int userId, int providerId, int locationId)
+        public async Task<int> DeleteSurgeryUser(int surgeryId, int userId, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("user_id", userId)
@@ -5291,11 +5271,10 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateSurgeryStaffChange", dsParameters);
         }
 
-        public async Task<int> AddCustomSurgeryTrayItem(int surgeryId, int trayId, int itemId, int quantity, int providerId, int locationId)
+        public async Task<int> AddCustomSurgeryTrayItem(int surgeryId, int trayId, int itemId, int quantity, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("tray_id", trayId),
@@ -5459,7 +5438,7 @@ namespace OpFlow.Service.DataAccess
 
         public async Task<int> UpdateSurgeryCPTs(int surgeryId, List<string> surgeryCpts, int providerId, int locationId)
         {
-            var codes = await GetSurgeryCPTCodes(surgeryId, providerId, locationId);
+            var codes = await GetSurgeryCPTCodes(surgeryId, locationId);
 
             foreach (var surgeryCpt in surgeryCpts)
             {
@@ -5491,12 +5470,11 @@ namespace OpFlow.Service.DataAccess
             return codes;
         }
 
-        public async Task<List<SurgeryCPTCode>> GetSurgeryCPTCodes(int surgeryId, int providerId, int locationId)
+        public async Task<List<SurgeryCPTCode>> GetSurgeryCPTCodes(int surgeryId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsResults = await ExecuteCommandAsync("GetSurgeryCPTCodes", dsParameters);
@@ -5661,14 +5639,13 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
-        public async Task<int> CreateCase(int patientId, int? userId, int? specialtyId, int providerId, int locationId, string caseNbr)
+        public async Task<int> CreateCase(int patientId, int? userId, int? specialtyId, int locationId, string caseNbr)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("patient_id", patientId),
                 new SqlParameter("user_id", userId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("case_nbr", caseNbr)
             };
@@ -5705,11 +5682,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<RoomGroup>> GetRoomGroups(int providerId, int locationId)
+        public async Task<List<RoomGroup>> GetRoomGroups(int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
             var dsSchedules = await ExecuteCommandAsync("GetRoomGroups", dsParameters);
@@ -6394,12 +6370,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<PatientSurgery> GetSurgery(int surgeryId, int providerId, int locationId)
+        public async Task<PatientSurgery> GetSurgery(int surgeryId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
 
@@ -6411,12 +6386,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<Surgery> GetCase(int caseId, int providerId, int locationId)
+        public async Task<Surgery> GetCase(int caseId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("case_id", caseId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
 
@@ -6429,7 +6403,7 @@ namespace OpFlow.Service.DataAccess
 
         public async Task<List<SurgerySearchResult>> SearchCases(int? userId, int? surgeonUserId, 
             int? roomGroupId, int? roomId, int? bundleId, int? procedureId, int? specialtyId, 
-            DateTime? begDate, DateTime? endDate, int providerId, int locationId)
+            DateTime? begDate, DateTime? endDate, int locationId)
         {
             var parameters = new[]
             {
@@ -6442,7 +6416,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("beg_date", begDate ?? (object)DBNull.Value),
                 new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
 
@@ -6460,14 +6433,13 @@ namespace OpFlow.Service.DataAccess
             return surgeries;
         }
 
-        public async Task<List<SurgerySearchResult>> LoadProposalCounts(List<SurgerySearchResult> schedule, int providerId, int locationId)
+        public async Task<List<SurgerySearchResult>> LoadProposalCounts(List<SurgerySearchResult> schedule, int locationId)
         {
             var surgeryXml = GetIdentitySummary(schedule.Select(s => s.SurgeryID).ToList());
 
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("SearchCaseProposals", parameters);
@@ -6528,14 +6500,13 @@ namespace OpFlow.Service.DataAccess
             return surgeries;
         }
 
-        public async Task<List<SurgerySearchResult>> GetSurgeonCases(int userId, DateTime begDate, DateTime endDate, int providerId, int locationId)
+        public async Task<List<SurgerySearchResult>> GetSurgeonCases(int userId, DateTime begDate, DateTime endDate, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("user_id", userId),
                 new SqlParameter("beg_date", begDate),
                 new SqlParameter("end_date", endDate),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
 
@@ -6564,8 +6535,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<SurgerySchedule>> GetScheduledSurgeries(int? userID, int providerId, int locationId,
-            DateTime? scheduleDate, int? roomId)
+        public async Task<List<SurgerySchedule>> GetScheduledSurgeries(int? userID, DateTime? scheduleDate, int? roomId, int locationId)
         {
             if (roomId.HasValue)
                 userID = null;
@@ -6573,10 +6543,9 @@ namespace OpFlow.Service.DataAccess
             var parameters = new[]
             {
                 new SqlParameter("user_id", userID ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
                 new SqlParameter("SurgeryScheduleDate", scheduleDate ?? (object)DBNull.Value),
-                new SqlParameter("room_id", roomId ?? (object)DBNull.Value)
+                new SqlParameter("room_id", roomId ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSurgeriesByUser", parameters);
 
@@ -6585,12 +6554,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<Surgery>> GetSurgeryAlerts(int surgeryId, int providerId, int locationId)
+        public async Task<List<Surgery>> GetSurgeryAlerts(int surgeryId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetCaseAlerts", parameters);
@@ -6600,11 +6568,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task <List<SurgeryDelayReason>> GetSurgeryDelayReasons(int providerId, int locationId)
+        public async Task <List<SurgeryDelayReason>> GetSurgeryDelayReasons(int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSurgeryDelayReasons", parameters);
@@ -6614,12 +6581,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<SurgeryUser>> GetSurgeryUsers(int surgeryId, int providerId, int locationId)
+        public async Task<List<SurgeryUser>> GetSurgeryUsers(int surgeryId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetCheckInCase", parameters);
@@ -6629,12 +6595,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<SurgeryVendorRep>> GetSurgeryVendorReps(int surgeryId, int locationId, int providerId)
+        public async Task<List<SurgeryVendorRep>> GetSurgeryVendorReps(int surgeryId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSurgeryVendorReps", parameters);
@@ -6644,13 +6609,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<CardFlowRoom> GetBundleDefaultCardFlowRoom(int bundleId, int userId, int providerId, int locationId)
+        public async Task<CardFlowRoom> GetBundleDefaultCardFlowRoom(int bundleId, int userId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("bundle_id", bundleId),
                 new SqlParameter("user_id", userId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
             var dsSchedules = await ExecuteCommandAsync("GetBundleDefaultCardFlowRoom", parameters);
@@ -6689,11 +6653,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<CardFlowRoom>> GetProcedureDefaultCardFlowRoom(int providerId, int locationId, string cptCode)
+        public async Task<List<CardFlowRoom>> GetProcedureDefaultCardFlowRoom(string cptCode, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("cpt_code", cptCode ?? (object)DBNull.Value)
             };
@@ -6880,12 +6843,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<BundleProcedure>> GetSurgeryProcedures(int surgeryId, int providerId, int locationId)
+        public async Task<List<BundleProcedure>> GetSurgeryProcedures(int surgeryId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSurgeryProcedures", parameters);
@@ -7671,12 +7633,12 @@ namespace OpFlow.Service.DataAccess
                     }
                 }
 
-                var caseId = await CreateCase(secureId ?? -1, surgery.SurgeonUserID, surgery.SpecialtyID, providerId,
+                var caseId = await CreateCase(secureId ?? -1, surgery.SurgeonUserID, surgery.SpecialtyID, 
                     locationId, surgery.CaseNbr);
 
                 result.Identity = await CreateSurgery(surgery, secureId ?? -1, caseId,
                     cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID,
-                    providerId, locationId);
+                    locationId);
 
                 foreach (var secondarySurgeon in scheduleBase.SecondarySurgeons)
                 {
@@ -7688,7 +7650,7 @@ namespace OpFlow.Service.DataAccess
                     }
                     else
                     {
-                        await AddSurgeryUser(result.Identity, surgeon.UserID, providerId, locationId);
+                        await AddSurgeryUser(result.Identity, surgeon.UserID, locationId);
                     }
                 }
             }

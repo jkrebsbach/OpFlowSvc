@@ -24,7 +24,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var caseId = await sqlHelper.CreateCase(newCase.PatientID, user.UserID, newCase.SpecialtyID,
-                user.ProviderID, user.LocationID, newCase.CaseNbr);
+                user.SelectedLocation, newCase.CaseNbr);
 
             return Request.CreateResponse(HttpStatusCode.Created, caseId);
         }

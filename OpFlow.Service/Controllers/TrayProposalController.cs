@@ -44,11 +44,11 @@ namespace OpFlow.Service.Controllers
             var questions = await sqlHelper.GetTrayQuestions(null, user.ProviderID, user.LocationID);
             var phases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);
             var cardCategories = await sqlHelper.GetCardCategories();
-            var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
+            var trayGroups = await sqlHelper.GetTrayGroups(user.SelectedLocation);
             var proposalCardCategories = await sqlHelper.GetProposedTrayCardCategories(user.ProviderID, user.LocationID);
             var instruments = await sqlHelper.GetItems("instrument", null, true, user.SelectedLocation);
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
-            var surgeonPreferences = await sqlHelper.GetSurgeonPreferences(user.ProviderID, user.LocationID);
+            var surgeonPreferences = await sqlHelper.GetSurgeonPreferences(user.SelectedLocation);
             var rules = await sqlHelper.GetProposedTrayScheduleRules(user.UserID, user.ProviderID, user.LocationID);
             var orgCharts = await sqlHelper.GetOrgChartAttachments(user.ProviderID, user.LocationID);
 
@@ -1134,8 +1134,8 @@ namespace OpFlow.Service.Controllers
             await sqlHelper.UpdateSurgeonPreference(preferenceId, post.PreferenceName, post.SurgeonID, post.CaseProfileID, trayGroup,
                 post.Comments, user.ProviderID, user.LocationID);
 
-            var surgeonPreferences = await sqlHelper.GetSurgeonPreferences(user.ProviderID, user.LocationID);
-            var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
+            var surgeonPreferences = await sqlHelper.GetSurgeonPreferences(user.SelectedLocation);
+            var trayGroups = await sqlHelper.GetTrayGroups(user.SelectedLocation);
 
             foreach (var surgeonPreference in surgeonPreferences)
             {
@@ -1279,9 +1279,9 @@ namespace OpFlow.Service.Controllers
             foreach (var surgeryId in auditPost.Surgeries)
             {
                 if (auditPost.Target == "A")
-                    result = await sqlHelper.UpdateProposedTrayAudit(trayProposalId, surgeryId, null, null, user.ProviderID, user.LocationID);
+                    result = await sqlHelper.UpdateProposedTrayAudit(trayProposalId, surgeryId, null, null, user.SelectedLocation);
                 else
-                    result = await sqlHelper.UpdateProposedTrayCount(trayProposalId, surgeryId, null, null, user.ProviderID, user.LocationID);
+                    result = await sqlHelper.UpdateProposedTrayCount(trayProposalId, surgeryId, null, null, user.SelectedLocation);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -1298,9 +1298,9 @@ namespace OpFlow.Service.Controllers
 
             var result = -1;
             if (target == "A")
-                result = await sqlHelper.UpdateProposedTrayAudit(trayProposalId, surgeryId, scrubTechUserId, user.UserID, user.ProviderID, user.LocationID);
+                result = await sqlHelper.UpdateProposedTrayAudit(trayProposalId, surgeryId, scrubTechUserId, user.UserID, user.SelectedLocation);
             else
-                result = await sqlHelper.UpdateProposedTrayCount(trayProposalId, surgeryId, scrubTechUserId, user.UserID, user.ProviderID, user.LocationID);
+                result = await sqlHelper.UpdateProposedTrayCount(trayProposalId, surgeryId, scrubTechUserId, user.UserID, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -2098,7 +2098,7 @@ namespace OpFlow.Service.Controllers
 
             var trayGroupId = await sqlHelper.UpdateTrayGroup(post.TrayGroupID, post.TrayGroup, post.Trays, user.ProviderID, user.LocationID);
 
-            var trayGroups = await sqlHelper.GetTrayGroups(user.ProviderID, user.LocationID);
+            var trayGroups = await sqlHelper.GetTrayGroups(user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, new {
                 TrayGroupID = trayGroupId,
@@ -2191,7 +2191,7 @@ namespace OpFlow.Service.Controllers
 
             foreach (var audit in post.Audits)
             {
-                await sqlHelper.UpdateSurgeryCPTs(audit.SurgeryID, audit.SurgeryCpts, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateSurgeryCPTs(audit.SurgeryID, audit.SurgeryCpts, user.ProviderID, user.SelectedLocation);
                 await sqlHelper.UpdateProposedTrayAuditComments(trayProposalId, audit.SurgeryID, audit.Comments, target, user.ProviderID, user.LocationID);
             }
 

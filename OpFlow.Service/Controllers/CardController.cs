@@ -211,7 +211,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetBundleDefaultCardFlowRoom(bundleId, userId ?? user.UserID, user.ProviderID, user.LocationID) ??
+            var result = await sqlHelper.GetBundleDefaultCardFlowRoom(bundleId, userId ?? user.UserID, user.SelectedLocation) ??
                 new CardFlowRoom()
                 {
                     CardDescription = "None",
@@ -262,8 +262,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var cards = await sqlHelper.GetProcedureDefaultCardFlowRoom(
-                user.ProviderID, user.LocationID, cptCode);
+            var cards = await sqlHelper.GetProcedureDefaultCardFlowRoom(cptCode, user.SelectedLocation);
             var result = cards.FirstOrDefault();
 
             return result == null ?
@@ -298,7 +297,7 @@ namespace OpFlow.Service.Controllers
 
             foreach (var cptCode in cptCodes)
             {
-                var procedures = await sqlHelper.GetProcedureDefaultCardFlowRoom(user.ProviderID, user.LocationID, cptCode);
+                var procedures = await sqlHelper.GetProcedureDefaultCardFlowRoom(cptCode, user.SelectedLocation);
 
                 result.AddRange(procedures);
             }
@@ -348,11 +347,11 @@ namespace OpFlow.Service.Controllers
             foreach (var editRequest in cardQuantity.EditData)
             {
                 if (cardQuantity.Target == "C")
-                    await sqlHelper.UpdateCardQuantityRequest(cardId, editRequest, user.ProviderID, user.LocationID);
+                    await sqlHelper.UpdateCardQuantityRequest(cardId, editRequest, user.SelectedLocation);
                 else if (editRequest.TrayID.HasValue)
-                    await sqlHelper.AddCustomSurgeryTrayItem(surgeryId, editRequest.TrayID.Value, editRequest.ItemID, editRequest.OpenQty ?? 0, user.ProviderID, user.LocationID);
+                    await sqlHelper.AddCustomSurgeryTrayItem(surgeryId, editRequest.TrayID.Value, editRequest.ItemID, editRequest.OpenQty ?? 0, user.SelectedLocation);
                 else
-                    await sqlHelper.UpdateSurgeryItemQuantity(surgeryId, editRequest, user.ProviderID, user.LocationID);
+                    await sqlHelper.UpdateSurgeryItemQuantity(surgeryId, editRequest, user.SelectedLocation);
             }
 
             return Ok();

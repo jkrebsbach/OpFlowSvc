@@ -30,8 +30,8 @@ namespace OpFlow.Service.SignalR
                 await sqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
                     surgeryId, null, message);
 
-                var recipients = await sqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
-                var surgery = await sqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+                var recipients = await sqlHelper.GetSurgeryUsers(surgeryId, user.SelectedLocation);
+                var surgery = await sqlHelper.GetSurgery(surgeryId, user.SelectedLocation);
                 var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
                 var patient = await secureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
                     userObject.LastName, (int)userObject.RoleID);
@@ -151,7 +151,7 @@ namespace OpFlow.Service.SignalR
 
             if (flowNotification.MessagingRoleID.HasValue)
             {
-                var surgeryUsers = await sqlHelper.GetSurgeryUsers(surgeryId, user.ProviderID, user.LocationID);
+                var surgeryUsers = await sqlHelper.GetSurgeryUsers(surgeryId, user.SelectedLocation);
 
                 foreach (var surgeryUser in surgeryUsers)
                 {

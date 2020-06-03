@@ -58,7 +58,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            return await sqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
+            return await sqlHelper.GetRoomGroups(user.SelectedLocation);
         }
 
         // GET api/values

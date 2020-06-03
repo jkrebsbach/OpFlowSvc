@@ -36,7 +36,7 @@ namespace OpFlow.Service.Controllers
             var cardCategories = await sqlHelper.GetCardCategories();
             var lookups = await sqlHelper.GetTrayInstrumentLookups(user.ProviderID, user.LocationID);
             var items = await sqlHelper.GetItems(null, null, true, user.SelectedLocation);
-            var roomGroups = await sqlHelper.GetRoomGroups(user.ProviderID, user.LocationID);
+            var roomGroups = await sqlHelper.GetRoomGroups(user.SelectedLocation);
             var cpts = await sqlHelper.GetKnownCPTCodes(user.ProviderID, user.LocationID);
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.SelectedLocation);
             var proposalPhases = await sqlHelper.GetTrayProposalPhases(user.ProviderID, user.LocationID);

@@ -236,7 +236,7 @@ namespace OpFlow.Service.Controllers
         /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<User>))]
         [Route("Roles", Name = "GetRoles")]
-        public async Task<HttpResponseMessage> GetRoles(string nameSearchText = null, int? roleId = null, int? specialtyId = null)
+        public async Task<HttpResponseMessage> GetRoles()
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -367,8 +367,7 @@ namespace OpFlow.Service.Controllers
             {
                 var applicationUserId = await sqlHelper.CreateUser(userAuthId, model.RoleID, model.SpecialtyID,
                     model.FirstName, model.LastName,
-                    model.Email, model.CellPhone, model.Initials, model.Title, user.ProviderID,
-                    user.LocationID);
+                    model.Email, model.CellPhone, model.Initials, model.Title, user.SelectedLocation);
 
                 return Ok(applicationUserId);
             }
@@ -401,7 +400,7 @@ namespace OpFlow.Service.Controllers
                 authUserSecurity.LocationID == user.LocationID)
             {
                 var applicationUser = await sqlHelper.UpdateUser(userId, (int)model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
-                    model.Email, model.CellPhone, model.Initials, model.Title, user.ProviderID, user.LocationID);
+                    model.Email, model.CellPhone, model.Initials, model.Title, user.SelectedLocation);
 
                 // make certain user auth matches what we sent
                 var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();

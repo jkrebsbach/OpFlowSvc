@@ -54,7 +54,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var surgery = await sqlHelper.GetSurgery(surgeryId, user.ProviderID, user.LocationID);
+            var surgery = await sqlHelper.GetSurgery(surgeryId, user.SelectedLocation);
 
             if (surgery == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);

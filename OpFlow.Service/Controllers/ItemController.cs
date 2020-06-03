@@ -123,7 +123,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var counts = await sqlHelper.GetSurgeryCardItemCounts(surgeryId, user.ProviderID, user.LocationID);
+            var counts = await sqlHelper.GetSurgeryCardItemCounts(surgeryId, user.SelectedLocation);
 
             var items = counts.TrayCollectionCounts.Where(c => c.CollectionItemID == trayId && c.Usage > 0).ToList();
 
