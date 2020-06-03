@@ -171,7 +171,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var questions = await sqlHelper.GetTrayQuestions(itemId, user.ProviderID, user.LocationID);
+            var questions = await sqlHelper.GetTrayQuestions(itemId, user.SelectedLocation);
 
 
             return Request.CreateResponse(HttpStatusCode.OK, questions);

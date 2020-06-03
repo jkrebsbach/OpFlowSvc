@@ -81,7 +81,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             
             var providers = await sqlHelper.GetOpFlowSetup();
-            var caseProfiles = await sqlHelper.GetCaseProfiles(user.ProviderID, user.LocationID);
+            var caseProfiles = await sqlHelper.GetCaseProfiles(user.SelectedLocation);
             var trayGroups = await sqlHelper.GetTrayGroups(user.SelectedLocation);
 
             var result = new NewSurgeryVendor()
@@ -569,10 +569,10 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var instrumentLookups = await sqlHelper.GetTrayInstrumentLookups(user.ProviderID, user.LocationID);
+            var instrumentLookups = await sqlHelper.GetTrayInstrumentLookups(user.SelectedLocation);
             var audits = await sqlHelper.GetSurgeryProposedTrays(surgeryId, user.ProviderID, user.LocationID);
             var groups = await sqlHelper.GetTrayGroups(user.SelectedLocation);
-            var caseProfile = await sqlHelper.GetSurgeryCaseProfile(surgeryId, user.ProviderID, user.LocationID);
+            var caseProfile = await sqlHelper.GetSurgeryCaseProfile(surgeryId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {

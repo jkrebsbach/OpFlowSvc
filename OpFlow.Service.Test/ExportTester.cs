@@ -29,8 +29,8 @@ namespace OpFlow.Service.Test
 
             foreach (var proposedTray in proposedTrays)
             {
-                var proposedInstruments = await sqlHelper.GetProposedTrayInstruments(proposedTray.TrayProposalID, user.ProviderID, user.LocationID);
-                var sourceTrays = await sqlHelper.GetSourceTraySummary(proposedTray.TrayProposalID, user.ProviderID, user.LocationID);
+                var proposedInstruments = await sqlHelper.GetProposedTrayInstruments(proposedTray.TrayProposalID, user.SelectedLocation);
+                var sourceTrays = await sqlHelper.GetSourceTraySummary(proposedTray.TrayProposalID, user.SelectedLocation);
 
                 foreach (var sourceTray in sourceTrays)
                 {

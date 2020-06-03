@@ -172,7 +172,7 @@ namespace OpFlow.Service.Controllers
                 }
                 else
                 {
-                    var attachments = await sqlHelper.GetOrgChartAttachments(user.ProviderID, user.LocationID);
+                    var attachments = await sqlHelper.GetOrgChartAttachments(user.SelectedLocation);
                     var attachment = attachments.First(a => a.OrgChartID == id);
 
                     filename = attachment.Filename;
