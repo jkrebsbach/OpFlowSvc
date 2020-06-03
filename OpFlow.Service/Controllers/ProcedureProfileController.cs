@@ -862,6 +862,24 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("DeleteProcedureProfileTray")]
+        [Route("procedureProfileTray")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteProcedureProfileTray(int procedureProfileId, int trayId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal" && user.Vendor == false)
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.DeleteProcedureProfileTray(procedureProfileId, trayId, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, trayId);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("DeleteProcedureProfileTrayInstrument")]
         [Route("procedureProfileTrayInstrument")]
         [SwaggerResponse(HttpStatusCode.OK)]

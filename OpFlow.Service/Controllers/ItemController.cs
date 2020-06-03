@@ -248,6 +248,21 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("PutTrayInstrument")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("trayInstrument/{trayId}")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutTrayInstrument(int trayId, int instrumentId, int quantity)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.InsertTrayInstrument(trayId, instrumentId, quantity, user.SelectedLocation);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PutTrayInstrument")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("trayInstrument")]
         [HttpPut]
         public async Task<HttpResponseMessage> PutTrayInstrument(int trayId, [FromBody] TrayInstrumentPost post)
@@ -261,6 +276,21 @@ namespace OpFlow.Service.Controllers
                 result = await sqlHelper.InsertTrayInstrumentByName(instrument.InstrumentName, instrument.InstrumentNbr, trayId, instrument.Quantity, user.ProviderID, user.LocationID);
             }
 
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("DeleteTrayInstrument")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("trayInstrument")]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteTrayInstrument(int trayId, int instrumentId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.DeleteTrayInstrument(trayId, instrumentId, user.SelectedLocation);
+            
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 

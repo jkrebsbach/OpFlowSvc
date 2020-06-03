@@ -3283,6 +3283,22 @@ namespace OpFlow.Service.DataAccess
             return result.Identifier;
         }
 
+        public async Task<int> InsertTrayInstrument(int trayId, int instrumentId, int trayQuantity, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("tray_id", trayId),
+                new SqlParameter("instrument_id", instrumentId),
+                new SqlParameter("tray_quantity", trayQuantity)
+            };
+            var dsItems = await ExecuteCommandAsync("InsertTrayInstrument", parameters);
+
+            var result = dsItems.Tables[0].DataTableToList<InsertionResult>().First();
+
+            return result.Identifier;
+        }
+
         public async Task<int> InsertTrayInstrumentByName(string instrumentName, string instrumentNbr, 
             int trayId, int trayQuantity, int providerId, int locationId)
         {
@@ -3300,6 +3316,19 @@ namespace OpFlow.Service.DataAccess
             var result = dsItems.Tables[0].DataTableToList<InsertionResult>().First();
 
             return result.Identifier;
+        }
+
+        public async Task<int> DeleteTrayInstrument(int trayId, int instrumentId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_id", trayId),
+                new SqlParameter("instrument_id", instrumentId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("DeleteTrayInstrument", parameters);
+
+            return result;
         }
 
         public async Task<List<ItemMaster>> GetCollectionTrays(int itemId, int providerId, int locationId)
@@ -3777,6 +3806,19 @@ namespace OpFlow.Service.DataAccess
             };
             var result = await ExecuteNonQueryAsync("DeleteProcedureProfileItem", parameters);
                 
+            return result;
+        }
+
+        public async Task<int> DeleteProcedureProfileTray(int procedureProfileId, int trayItemId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("tray_item_id", trayItemId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("DeleteProcedureProfileTray", parameters);
+
             return result;
         }
 
