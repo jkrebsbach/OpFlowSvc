@@ -108,6 +108,55 @@ namespace OpFlow.Service.Controllers
         /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("vendorSurgeries/{cardId}", Name = "VendorSurgeries")]
+        public async Task<HttpResponseMessage> GetVendorSurgeries(int cardId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (!user.Vendor)
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Surgeries not found");
+
+            var beginDate = DateTime.Today;
+            var endDate = DateTime.Today.AddDays(14);
+            var surgeries = await sqlHelper.SearchCases(null, null, null, null, cardId, null, null, beginDate, endDate, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, surgeries);
+        }
+
+        /// <summary>
+        /// Vendor Portal Home screen for vendors
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("vendorCard/{cardId}", Name = "VendorCard")]
+        public async Task<HttpResponseMessage> GetVendorCard(int cardId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (!user.Vendor)
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Surgeries not found");
+
+            var cardItems = await sqlHelper.GetCardItems(cardId, user.SelectedLocation);
+
+            var result = "Item, Quantity\r\n";
+            
+            foreach (var item in cardItems)
+            {
+                result += $"\"{item.ItemDescription}\", {item.Quantity}\r\n";
+            }
+
+            return ResponseHelper.CsvResponse(result);
+        }
+
+        /// <summary>
+        /// Vendor Portal Home screen for vendors
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("vendorCard", Name = "PostVendorCard")]
         [HttpPost]
         public async Task<HttpResponseMessage> PostVendorCard([FromBody] VendorCardNamePost request)

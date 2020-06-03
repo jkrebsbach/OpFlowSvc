@@ -6402,7 +6402,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<List<SurgerySearchResult>> SearchCases(int? userId, int? surgeonUserId, 
-            int? roomGroupId, int? roomId, int? bundleId, int? procedureId, int? specialtyId, 
+            int? roomGroupId, int? roomId, int? cardId, int? procedureId, int? specialtyId, 
             DateTime? begDate, DateTime? endDate, int locationId)
         {
             var parameters = new[]
@@ -6411,7 +6411,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgeon_user_id", surgeonUserId ?? (object)DBNull.Value),
                 new SqlParameter("room_group_id", roomGroupId ?? (object)DBNull.Value),
                 new SqlParameter("room_id", roomId ?? (object)DBNull.Value),
-                new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardId ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("beg_date", begDate ?? (object)DBNull.Value),
