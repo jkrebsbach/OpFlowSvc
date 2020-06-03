@@ -109,7 +109,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("vendorSurgeries/{cardId}", Name = "VendorSurgeries")]
-        public async Task<HttpResponseMessage> GetVendorSurgeries(int cardId)
+        public async Task<HttpResponseMessage> GetVendorSurgeries(int cardId, int locationId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -117,9 +117,13 @@ namespace OpFlow.Service.Controllers
             if (!user.Vendor)
                 return Request.CreateResponse(HttpStatusCode.NotFound, "Surgeries not found");
 
+            var vendorLocations = await sqlHelper.GetVendorLocations(user.ProviderID);
+            if (!vendorLocations.Any(l => l.LocationID == locationId))
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Surgeries not found");
+
             var beginDate = DateTime.Today;
             var endDate = DateTime.Today.AddDays(14);
-            var surgeries = await sqlHelper.SearchCases(null, null, null, null, cardId, null, null, beginDate, endDate, user.SelectedLocation);
+            var surgeries = await sqlHelper.SearchCases(null, null, null, null, cardId, null, null, beginDate, endDate, locationId);
 
             return Request.CreateResponse(HttpStatusCode.OK, surgeries);
         }
