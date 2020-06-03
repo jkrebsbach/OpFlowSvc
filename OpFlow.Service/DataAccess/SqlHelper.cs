@@ -1429,11 +1429,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayRationalization>> GetBaselineTrays(int providerId, int locationId)
+        public async Task<List<TrayRationalization>> GetBaselineTrays(int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetBaselineTrays", parameters);
@@ -1693,11 +1692,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<InstrumentLookup> GetTrayInstrumentLookups(int providerId, int locationId)
+        public async Task<InstrumentLookup> GetTrayInstrumentLookups(int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetInstrumentLookups", parameters);
@@ -1784,14 +1782,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }        
 
-        public async Task<List<TrayProposalSchedule>> GetProposedTraySchedule(int? trayProposalId, int? vendorId, int userId, int providerId, int locationId)
+        public async Task<List<TrayProposalSchedule>> GetProposedTraySchedule(int? trayProposalId, int? vendorId, int userId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
                 new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
                 new SqlParameter("user_id", userId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetProposedTraySchedule", parameters);
@@ -1823,12 +1820,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<TrayProposalScheduleRule> GetProposedTrayScheduleRules(int userId, int providerId, int locationId)
+        public async Task<TrayProposalScheduleRule> GetProposedTrayScheduleRules(int userId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("user_id", userId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetProposedTrayScheduleRules", parameters);
@@ -1889,12 +1885,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayRationalizationCardCategory>> GetProposedTrayCardCategories(int trayProposalId, int providerId, int locationId)
+        public async Task<List<TrayRationalizationCardCategory>> GetProposedTrayCardCategories(int trayProposalId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", trayProposalId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCardCategories", parameters);
@@ -1991,12 +1986,11 @@ namespace OpFlow.Service.DataAccess
             return caseProfile;
         }
 
-        public async Task<List<CaseProfile>> GetCaseProfiles(int providerId, int locationId)
+        public async Task<List<CaseProfile>> GetCaseProfiles(int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("case_profile_id", DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetCaseProfile", parameters);
@@ -2207,11 +2201,10 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public async Task<List<ProposedTrayOrgChart>> GetOrgChartAttachments(int providerId, int locationId)
+        public async Task<List<ProposedTrayOrgChart>> GetOrgChartAttachments(int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsAttachments = await ExecuteCommandAsync("GetProposedTrayOrgChartAttachments", parameters);
@@ -2250,11 +2243,10 @@ namespace OpFlow.Service.DataAccess
             return result.Identifier;
         }
 
-        public async Task<List<ImplementationAttachment>> GetImplementationAttachments(int providerId, int locationId)
+        public async Task<List<ImplementationAttachment>> GetImplementationAttachments(int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetImplementationAttachments", parameters);
@@ -3038,11 +3030,10 @@ namespace OpFlow.Service.DataAccess
             }
         }
 
-        public async Task<List<TrayQuestionSummary>> GetTrayQuestions(int? itemId, int providerId, int locationId)
+        public async Task<List<TrayQuestionSummary>> GetTrayQuestions(int? itemId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("item_id", itemId ?? (object)DBNull.Value)
             };
@@ -3062,11 +3053,10 @@ namespace OpFlow.Service.DataAccess
             return questions;
         }
 
-        public async Task<List<TrayProposalPhase>> GetTrayProposalPhases(int providerId, int locationId)
+        public async Task<List<TrayProposalPhase>> GetTrayProposalPhases(int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsItems = await ExecuteCommandAsync("GetTrayProposalPhases", parameters);
@@ -4015,12 +4005,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayRationalizationCardCategory>> GetProposedTrayCardCategories(int providerId, int locationId)
+        public async Task<List<TrayRationalizationCardCategory>> GetProposedTrayCardCategories(int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
             var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCardCategories", parameters);
