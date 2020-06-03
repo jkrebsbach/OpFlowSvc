@@ -308,7 +308,7 @@ namespace OpFlow.Service.Controllers
 
             var secureUser = await sqlHelper.GetSecureUser(null, userId);
             
-            if (secureUser != null && secureUser.ProviderID == user.ProviderID && secureUser.LocationID == user.LocationID)
+            if (secureUser?.SelectedLocation == user.SelectedLocation)
             {
                 var code = await userManager.GeneratePasswordResetTokenAsync(secureUser.UserAuthID.ToString());
 
@@ -396,8 +396,7 @@ namespace OpFlow.Service.Controllers
 
             var authUserSecurity = await sqlHelper.GetSecureUser(null, userId);
 
-            if (authUserSecurity.ProviderID == user.ProviderID &&
-                authUserSecurity.LocationID == user.LocationID)
+            if (authUserSecurity.SelectedLocation == user.SelectedLocation)
             {
                 var applicationUser = await sqlHelper.UpdateUser(userId, (int)model.RoleID, model.SpecialtyID, model.FirstName, model.LastName,
                     model.Email, model.CellPhone, model.Initials, model.Title, user.SelectedLocation);
