@@ -3258,11 +3258,10 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<int> InsertTrayInstrumentByName(string instrumentName, string instrumentNbr, 
-            int trayId, int trayQuantity, int providerId, int locationId)
+            int trayId, int trayQuantity, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("instrument_name", instrumentName),
                 new SqlParameter("instrument_nbr", instrumentNbr ?? (object)DBNull.Value),

@@ -273,7 +273,7 @@ namespace OpFlow.Service.Controllers
             var result = 0;
             foreach (var instrument in post.Instruments)
             {
-                result = await sqlHelper.InsertTrayInstrumentByName(instrument.InstrumentName, instrument.InstrumentNbr, trayId, instrument.Quantity, user.ProviderID, user.LocationID);
+                result = await sqlHelper.InsertTrayInstrumentByName(instrument.InstrumentName, instrument.InstrumentNbr, trayId, instrument.Quantity, user.SelectedLocation);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, result);

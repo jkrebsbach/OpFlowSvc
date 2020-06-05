@@ -171,11 +171,22 @@ namespace OpFlow.Service.Controllers
 
             var cardItems = await sqlHelper.GetCardItems(cardId, locationId);
 
-            var result = "Item, Quantity\r\n";
+            var result = "Tray, Item, Quantity\r\n";
             
             foreach (var item in cardItems)
             {
-                result += $"\"{item.ItemDescription}\", {item.Quantity}\r\n";
+                if (item.ItemType == "TRAY")
+                {
+                    var trayItems = await sqlHelper.GetTrayItems(item.ItemID, locationId);
+                    foreach (var trayItem in trayItems)
+                    {
+                        result += $"{item.ItemDescription},\"{trayItem.InstrumentName}\", {trayItem.Quantity}\r\n";
+                    }
+                }
+                else
+                {
+                    result += $"No Tray,\"{item.ItemDescription}\", {item.Quantity}\r\n";
+                }
             }
 
             return ResponseHelper.CsvResponse(result);
