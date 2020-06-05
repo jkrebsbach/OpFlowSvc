@@ -663,6 +663,69 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> UpdatePatientMetric(int metricId, string question, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("patient_metric_id", metricId),
+                new SqlParameter("question_text", question),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdatePatientMetric", parameters);
+
+            return result;
+        }
+
+        public async Task<int> DeletePatientMetric(int patientMetricId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("patient_metric_id", patientMetricId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("DeletePatientMetric", parameters);
+
+            return result;
+        }
+
+        public async Task<int> InsertPatientMetricAnswer(int patientMetricId, string answer, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("patient_metric_answer_id", patientMetricId),
+                new SqlParameter("answer_text", answer),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("InsertPatientMetricAnswer", parameters);
+
+            return result;
+        }
+
+        public async Task<int> UpdatePatientMetricAnswer(int answerId, string answer, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("patient_metric_answer_id", answerId),
+                new SqlParameter("answer_text", answer),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdatePatientMetricAnswer", parameters);
+
+            return result;
+        }
+
+        public async Task<int> DeletePatientMetricAnswer(int patientMetricAnswerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("patient_metric_answer_id", patientMetricAnswerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("DeletePatientMetricAnswer", parameters);
+
+            return result;
+        }
+
         public async Task<DataSet> GetVendorTrayConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
             List<int> procedureId, List<int> trayId, List<int> cardCategoryId, List<int> cardId, string instruments, 
             int? caseProfileId, List<int> questionId, List<int> answerId,
