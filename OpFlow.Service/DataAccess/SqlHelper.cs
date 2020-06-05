@@ -642,6 +642,36 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<PatientMetric>> GetPatientMetrics(int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("GetPatientMetrics", parameters);
+
+            var metrics = result.Tables[0].DataTableToList<PatientMetric>();
+            var answers = result.Tables[1].DataTableToList<PatientMetricAnswer>();
+
+            foreach (var metric in metrics)
+            {
+                metric.Answers = answers.Where(a => a.PatientMetricID == metric.PatientMetricID).ToList();
+            }
+            return metrics;
+        }
+
+        public async Task<int> InsertPatientMetric(string question, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("question_text", question),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("InsertPatientMetric", parameters);
+
+            return result;
+        }
+
         public async Task<DataSet> GetVendorTrayConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
             List<int> procedureId, List<int> trayId, List<int> cardCategoryId, List<int> cardId, string instruments, 
             int? caseProfileId, List<int> questionId, List<int> answerId,

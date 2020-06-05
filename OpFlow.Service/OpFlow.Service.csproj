@@ -458,6 +458,7 @@
     <Compile Include="Controllers\ItemRationalizationController.cs" />
     <Compile Include="Controllers\LookupController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
+    <Compile Include="Controllers\PatientMetricController.cs" />
     <Compile Include="Controllers\ProcedureProfileController.cs" />
     <Compile Include="Controllers\SalesController.cs" />
     <Compile Include="Controllers\SamlController.cs" />
