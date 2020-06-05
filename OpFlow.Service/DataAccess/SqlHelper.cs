@@ -396,7 +396,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<List<TrayConsolidationResult>> GetAnalyticsTrayConsolidationData(List<int> specialtyId, List<int> trayId, int? reallocationId,
-            int? maxSize, int? minCards, int? minConsolidationInstances, int? minTargetInstances, int? minOverlap, int? maxEffect, List<int> procedureGroup, string group, int providerId, int locationId)
+            int? maxSize, int? minCards, int? minConsolidationInstances, int? minTargetInstances, int? minOverlap, int? maxEffect, List<int> procedureGroup, string group, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var trayXml = GetIdentitySummary(trayId);
@@ -413,7 +413,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("min_target_instances", minTargetInstances ?? (object)DBNull.Value),
                 new SqlParameter("min_overlap", minOverlap ?? (object)DBNull.Value),
                 new SqlParameter("card_category", procedureXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             DataSet dsSchedules;
@@ -450,7 +449,6 @@ namespace OpFlow.Service.DataAccess
                             new SqlParameter("instrument_id", filterInstrumentId ?? (object)DBNull.Value),
                             new SqlParameter("tray_item_id", tray.TrayItemID),
                             new SqlParameter("reallocation_id", reallocationId ?? (object)DBNull.Value),
-                            new SqlParameter("provider_id", providerId),
                             new SqlParameter("location_id", locationId)
                         };
 
@@ -466,7 +464,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetAnalyticsTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId, List<int> cardCategoryId,
-            int? minSize, int providerId, int locationId)
+            int? minSize, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -480,7 +478,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("min_size", minSize ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayRationalization", parameters);
@@ -489,7 +486,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetAnalyticsVendorTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId, List<int> cardCategoryId,
-            int? minSize, DateTime? startDate, DateTime? endDate, int? caseProfileId, List<int> questionId, List<int> answerId, int providerId, int locationId)
+            int? minSize, DateTime? startDate, DateTime? endDate, int? caseProfileId, List<int> questionId, List<int> answerId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -510,7 +507,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("case_profile_id", caseProfileId ?? (object)DBNull.Value),
                 new SqlParameter("question_id", questionXml ?? (object)DBNull.Value),
                 new SqlParameter("answer_id", answerXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsVendorTrayRationalization", parameters);
@@ -518,7 +514,7 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
-        public async Task<DataSet> GetAnalyticsTrayScopeData(List<int> specialtyId, List<int> trayId, string group, int providerId, int locationId)
+        public async Task<DataSet> GetAnalyticsTrayScopeData(List<int> specialtyId, List<int> trayId, string group, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var trayXml = GetIdentitySummary(trayId);
@@ -528,7 +524,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("group", group ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayScope", parameters);
@@ -537,7 +532,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetInstrumentUsageReportData(List<int> specialtyId, List<int> surgeonId, List<int> categoryId,
-            List<int> procedureId, List<string> cptList, List<int> trayId, List<int> instrumentId, int providerId, int locationId)
+            List<int> procedureId, List<string> cptList, List<int> trayId, List<int> instrumentId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -556,7 +551,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("cpts", cptXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("instrument_id", instrumentXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteCommandAsync("GetAnalyticsInstrumentUsage", parameters);
@@ -565,7 +559,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetDisposableUsageReportData(List<int> specialtyId, List<int> surgeonId, List<int> cardId,
-            List<int> cardCategoryId, int providerId, int locationId)
+            List<int> cardCategoryId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -578,7 +572,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteCommandAsync("GetAnalyticsDisposableUsage", parameters);
@@ -588,7 +581,7 @@ namespace OpFlow.Service.DataAccess
 
         public async Task<DataSet> GetConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
             List<int> procedureId, List<int> trayId, List<int> cardCategoryId, List<int> cardId, 
-            string instruments, bool showMax, string label, int providerId, int locationId)
+            string instruments, bool showMax, string label,  int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -608,7 +601,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("instruments", instruments),
                 new SqlParameter("show_max", showMax),
                 new SqlParameter("label", label),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteCommandAsync("GetAnalyticsConcordanceReport", parameters);
@@ -617,7 +609,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetSupplyConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
-            List<int> procedureId, List<int> cardCategoryId, List<int> cardId, string instruments, string label, int providerId, int locationId)
+            List<int> procedureId, List<int> cardCategoryId, List<int> cardId, string instruments, string label, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -634,7 +626,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("instruments", instruments),
                 new SqlParameter("label", label),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteCommandAsync("GetAnalyticsSupplyConcordanceReport", parameters);
@@ -675,7 +666,7 @@ namespace OpFlow.Service.DataAccess
         public async Task<DataSet> GetVendorTrayConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
             List<int> procedureId, List<int> trayId, List<int> cardCategoryId, List<int> cardId, string instruments, 
             int? caseProfileId, List<int> questionId, List<int> answerId,
-            int providerId, int locationId, string group)
+            int locationId, string group)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -698,7 +689,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("case_profile_id", caseProfileId ?? (object)DBNull.Value),
                 new SqlParameter("question_id", questionXml ?? (object)DBNull.Value),
                 new SqlParameter("answer_id", answerXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("group", group ?? (object)DBNull.Value)
             };
@@ -711,7 +701,7 @@ namespace OpFlow.Service.DataAccess
             List<int> cardId, List<int> itemId, List<int> cardCategoryId, int? minCost, decimal? minOpen, decimal? minHold,
             bool fieldAll, bool fieldWaste, bool fieldOver, bool fieldUnder,
             DateTime? startDate, DateTime? endDate,
-            string groupBy, int providerId, int locationId)
+            string groupBy, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -736,7 +726,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("field_over", fieldOver),
                 new SqlParameter("field_under", fieldUnder),
                 new SqlParameter("group_by", groupBy),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteCommandAsync("GetAnalyticsServiceLineReview", parameters);
@@ -747,7 +736,7 @@ namespace OpFlow.Service.DataAccess
         public async Task<DataSet> GetSupplyWasteReportData(List<int> specialtyId, List<int> surgeonId,
             List<int> cardId, List<int>itemId, List<int> cardCategoryId, int? minCost, decimal? minOpen, decimal? minHold, 
             DateTime? startDate, DateTime? endDate, 
-            bool fieldAll, bool fieldWaste, bool fieldOver, bool fieldUnder, string groupBy, int providerId, int locationId)
+            bool fieldAll, bool fieldWaste, bool fieldOver, bool fieldUnder, string groupBy, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -772,7 +761,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("field_over", fieldOver),
                 new SqlParameter("field_under", fieldUnder),
                 new SqlParameter("group_by", groupBy),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteCommandAsync("GetAnalyticsSupplyWaste", parameters);
@@ -780,7 +768,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<DataSet> GetCardRedundancyReport(List<int> specialtyId, List<int> surgeonId, List<int> cardId, int? minQty, int? redundancy, int providerId, int locationId)
+        public async Task<DataSet> GetCardRedundancyReport(List<int> specialtyId, List<int> surgeonId, List<int> cardId, int? minQty, int? redundancy, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -793,7 +781,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("min_quantity", minQty ?? (object)DBNull.Value),
                 new SqlParameter("redundancy", redundancy ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteCommandAsync("GetAnalyticsCardRedundancy", parameters);
@@ -877,7 +864,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetExcessInventoryReport(List<int> specialtyId, List<int> proposedTrayId, List<string> trayStatus, List<int> trayPhaseId,
-            string group, int providerId, int locationId)
+            string group, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var proposedXml = GetIdentitySummary(proposedTrayId);
@@ -891,7 +878,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("tray_status", statusXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_phase_id", phaseXml ?? (object)DBNull.Value),
                 new SqlParameter("group_by", group),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteCommandAsync("GetAnalyticsExcessInventory", parameters);
@@ -900,7 +886,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetSupplyCardCostReportData(List<int> specialtyId, List<int> surgeonId, List<int> cardCategoryId,
-            int providerId, int locationId)
+            int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -911,7 +897,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteCommandAsync("GetAnalyticsSupplyCardCost", parameters);
@@ -920,7 +905,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetSupplySavingsEstimatorReportData(List<int> specialtyId, List<int> surgeonId, List<int> cardCategoryId,
-            List<int> itemId, int providerId, int locationId)
+            List<int> itemId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -933,7 +918,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("item_id", itemXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteCommandAsync("GetAnalyticsSupplySavings", parameters);
@@ -961,7 +945,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetAnalyticsSupplyCountData(List<int> specialtyId, List<int> surgeonId, List<int> cardId, List<int> cardCategoryId,
-            string group, int providerId, int locationId)
+            string group, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -975,7 +959,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("group", group ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsSupplyCount", parameters);
@@ -984,7 +967,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetAnalyticsCountDistributionData(List<int> specialtyId, List<int> surgeonId, List<int> cardCategoryId, 
-            List<int> itemCategoryId, List<int> itemId, int? minCost, int providerId, int locationId)
+            List<int> itemCategoryId, List<int> itemId, int? minCost, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -1000,7 +983,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("item_category_id", itemCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("item_id", itemXml ?? (object)DBNull.Value),
                 new SqlParameter("min_cost", minCost ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsCountDistribution", parameters);
@@ -1009,7 +991,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetAnalyticsCountSummaryData(List<int> specialtyId, List<int> surgeonId, List<int> cardId, List<int> cardCategoryId,
-            List<int> roomGroupId, int providerId, int locationId)
+            List<int> roomGroupId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -1024,7 +1006,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("room_group_id", roomGroupXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsCountSummary", parameters);
@@ -1033,7 +1014,7 @@ namespace OpFlow.Service.DataAccess
         }
         
         public async Task<DataSet> GetAnalyticsCountSampleDispersion(string countType, List<int> specialtyId, List<int> surgeonId, List<int> trayId, List<int> itemId,
-            List<int> cardCategoryId, DateTime? startDate, DateTime? endDate, string group, int providerId, int locationId)
+            List<int> cardCategoryId, DateTime? startDate, DateTime? endDate, string group, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -1054,7 +1035,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
                 new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
                 new SqlParameter("group", group),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsCountSampleDispersion", parameters);
@@ -1650,12 +1630,11 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public async Task<List<TrayCardOverlap>> GetTrayCards(int trayId, int providerId, int locationId)
+        public async Task<List<TrayCardOverlap>> GetTrayCards(int trayId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_item_id", trayId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetTrayCards", parameters);
@@ -6905,7 +6884,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateSpecialty(int specialtyId, string name, string description, int? masterSpecialtyId, int providerId, int locationId)
+        public async Task<int> UpdateSpecialty(int specialtyId, string name, string description, int? masterSpecialtyId, int locationId)
         {
             var parameters = new[]
             {
@@ -6913,7 +6892,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("name", name),
                 new SqlParameter("description", description),
                 new SqlParameter("master_specialty_id", masterSpecialtyId ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("UpdateSpecialty", parameters);
@@ -6921,14 +6899,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> InsertSpecialty(string name, string description, int? masterSpecialtyId, int providerId, int locationId)
+        public async Task<int> InsertSpecialty(string name, string description, int? masterSpecialtyId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("name", name),
                 new SqlParameter("description", description),
                 new SqlParameter("master_specialty_id", masterSpecialtyId ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsResult = await ExecuteCommandAsync("InsertSpecialty", parameters);
@@ -6938,11 +6915,10 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public async Task<int> DeleteSpecialty(int specialtyId, int providerId, int locationId)
+        public async Task<int> DeleteSpecialty(int specialtyId, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("specialty_id", specialtyId)
             };
@@ -6951,11 +6927,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<SpecialtyCardCategory>> GetSpecialtyProcedureGroup(int providerId, int locationId)
+        public async Task<List<SpecialtyCardCategory>> GetSpecialtyProcedureGroup(int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSpecialtyProcedureGroup", parameters);
@@ -6965,13 +6940,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> InsertSpecialtyProcedureGroup(int specialtyId, int procedureGroupId, int providerId, int locationId)
+        public async Task<int> InsertSpecialtyProcedureGroup(int specialtyId, int procedureGroupId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("specialty_id", specialtyId),
                 new SqlParameter("procedure_group_id", procedureGroupId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("InsertSpecialtyProcedureGroup", parameters);
@@ -6979,13 +6953,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> DeleteSpecialtyProcedureGroup(int specialtyId, int procedureGroupId, int providerId, int locationId)
+        public async Task<int> DeleteSpecialtyProcedureGroup(int specialtyId, int procedureGroupId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("specialty_id", specialtyId),
                 new SqlParameter("procedure_group_id", procedureGroupId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             

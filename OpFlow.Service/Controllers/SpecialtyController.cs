@@ -28,7 +28,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
-            var cardCategories = await sqlHelper.GetSpecialtyProcedureGroup(user.ProviderID, user.LocationID);
+            var cardCategories = await sqlHelper.GetSpecialtyProcedureGroup(user.SelectedLocation);
 
             foreach (var specialty in specialties)
             {
@@ -65,7 +65,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateSpecialty(specialtyId, specialty.Name, specialty.Description, specialty.MasterSpecialtyID, user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateSpecialty(specialtyId, specialty.Name, specialty.Description, specialty.MasterSpecialtyID, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
         }
@@ -80,7 +80,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var specialtyId = await sqlHelper.InsertSpecialty(specialty.Name, specialty.Description, specialty.MasterSpecialtyID, user.ProviderID, user.LocationID);
+            var specialtyId = await sqlHelper.InsertSpecialty(specialty.Name, specialty.Description, specialty.MasterSpecialtyID, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
         }
@@ -95,7 +95,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.DeleteSpecialty(specialtyId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteSpecialty(specialtyId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
         }
@@ -111,7 +111,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.InsertSpecialtyProcedureGroup(specialtyId, procedureGroupId, user.ProviderID, user.LocationID);
+            await sqlHelper.InsertSpecialtyProcedureGroup(specialtyId, procedureGroupId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
         }
@@ -127,7 +127,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.DeleteSpecialtyProcedureGroup(specialtyId, procedureGroupId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteSpecialtyProcedureGroup(specialtyId, procedureGroupId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
         }

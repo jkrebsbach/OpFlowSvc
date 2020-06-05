@@ -369,12 +369,12 @@ namespace OpFlow.Service.Controllers
                 post.TrayId = null;
 
             var countAnalytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, null, null, null, null,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
             var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, null, null, null,
                 null, post.TrayId, null,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
             var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId, null, null,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
 
             var parameters = new[]

@@ -30,7 +30,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
-            var surgeons = await sqlHelper.GetSurgeons(null, user.LocationID);
+            var surgeons = await sqlHelper.GetSurgeons(null, user.SelectedLocation);
             var procedures = await sqlHelper.GetProcedures(null, user.ProviderID, user.LocationID);
             var trays = await sqlHelper.GetItems("TRAY", null, null, user.SelectedLocation);
             var cardCategories = await sqlHelper.GetCardCategories();
@@ -42,7 +42,7 @@ namespace OpFlow.Service.Controllers
             var proposalPhases = await sqlHelper.GetTrayProposalPhases(user.SelectedLocation);
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.SelectedLocation);
 
-            var cardCategoryXref = await sqlHelper.GetSpecialtyProcedureGroup(user.ProviderID, user.LocationID);
+            var cardCategoryXref = await sqlHelper.GetSpecialtyProcedureGroup(user.SelectedLocation);
 
             foreach (var specialty in specialties)
             {
@@ -105,7 +105,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
-            var analytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyID, post.SurgeonID, post.CategoryID, post.ProcedureID, post.Cpt, post.TrayID, post.InstrumentID, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyID, post.SurgeonID, post.CategoryID, post.ProcedureID, post.Cpt, post.TrayID, post.InstrumentID, user.SelectedLocation);
 
             var usage = analytics.Tables[0].DefaultView;
             switch (post.Order)
@@ -192,7 +192,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetDisposableUsageReportData(post.SpecialtyID, post.SurgeonID, post.CardID, post.CardCategoryID, 
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
             var usage = analytics.Tables[0].DefaultView;
             switch (post.Order)
@@ -265,7 +265,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, 
-                post.CardCategoryID, post.CardID, post.Instruments, post.ShowMax, post.Label, user.ProviderID, user.LocationID);
+                post.CardCategoryID, post.CardID, post.Instruments, post.ShowMax, post.Label, user.SelectedLocation);
 
             var summary = SummarizeConcordanceReport(analytics.Tables[0]);
             
@@ -341,7 +341,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetSupplyConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, 
-                post.CardCategoryID, post.CardID, post.Instruments, post.Label, user.ProviderID, user.LocationID);
+                post.CardCategoryID, post.CardID, post.Instruments, post.Label, user.SelectedLocation);
 
             var summary = SummarizeConcordanceReport(analytics.Tables[0]);
 
@@ -478,7 +478,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetVendorTrayConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID,
-                post.CardCategoryID, post.CardID, post.Instruments, post.CaseProfileId, post.QuestionId, post.AnswerId, user.ProviderID, user.LocationID,
+                post.CardCategoryID, post.CardID, post.Instruments, post.CaseProfileId, post.QuestionId, post.AnswerId, user.SelectedLocation,
                 post.Group);
 
             var concordance = analytics.Tables[0].DefaultView;
@@ -548,7 +548,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetSupplyWasteReportData(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID, post.CardCategoryID,
-                post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, true, true, true, true, post.Group, user.ProviderID, user.LocationID);
+                post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, true, true, true, true, post.Group, user.SelectedLocation);
 
             var supplyWaste = analytics.Tables[0].DefaultView;
             
@@ -608,7 +608,7 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetServiceLineReviewReportData(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID,
                 post.CardCategoryID, post.MinCost, post.MinOpen, post.MinHold, 
                 post.FieldAll, post.FieldWaste, post.FieldOver, post.FieldUnder,
-                post.StartDate, post.EndDate, post.Group, user.ProviderID, user.LocationID);
+                post.StartDate, post.EndDate, post.Group, user.SelectedLocation);
 
             var supplyOpen = analytics.Tables[0].DefaultView;
             var supplyOpenAggregate = analytics.Tables[1].DefaultView;
@@ -683,7 +683,7 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetSupplyWasteReportData(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID, post.CardCategoryID,
                 post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, 
                 post.FieldAll, post.FieldWaste, post.FieldOver, post.FieldUnder,
-                post.Group, user.ProviderID, user.LocationID);
+                post.Group, user.SelectedLocation);
 
             var supplyOpen = analytics.Tables[0].DefaultView;
             var supplyOpenAggregate = analytics.Tables[1].DefaultView;
@@ -795,7 +795,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetSupplyWasteReportData(post.SpecialtyID, post.SurgeonID, post.CardID, post.ItemID, post.CardCategoryID,
-                post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, true, true, true, true, post.Group, user.ProviderID, user.LocationID);
+                post.MinCost, post.MinOpen, post.MinHold, post.StartDate, post.EndDate, true, true, true, true, post.Group, user.SelectedLocation);
 
             var supplyOpen = analytics.Tables[0].DefaultView;
 
@@ -844,7 +844,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
-            var analytics = await sqlHelper.GetCardRedundancyReport(post.SpecialtyID, post.SurgeonID, post.CardID, post.MinQty, post.Redundancy, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetCardRedundancyReport(post.SpecialtyID, post.SurgeonID, post.CardID, post.MinQty, post.Redundancy, user.SelectedLocation);
 
             var cardRedundancy = analytics.Tables[0].DefaultView;
 
@@ -891,7 +891,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetExcessInventoryReport(post.SpecialtyID, post.ProposedTrayID, post.TrayStatus, post.TrayPhaseID,                 
-                post.Group, user.ProviderID, user.LocationID);
+                post.Group, user.SelectedLocation);
 
             var excessInventory = analytics.Tables[0].DefaultView;
 
@@ -947,7 +947,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetSupplyCardCostReportData(post.SpecialtyID, post.SurgeonID, post.CardCategoryID, 
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
             var supplyWaste = analytics.Tables[0].DefaultView;
 
@@ -997,7 +997,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetSupplySavingsEstimatorReportData(post.SpecialtyID, post.SurgeonID, post.CardCategoryID,
-                post.ItemID, user.ProviderID, user.LocationID);
+                post.ItemID, user.SelectedLocation);
 
             var supplySavings = analytics.Tables[0].DefaultView;
 
@@ -1068,7 +1068,7 @@ namespace OpFlow.Service.Controllers
 
 
             var analytics = await sqlHelper.GetAnalyticsTrayConsolidationData(post.SpecialtyId, post.TrayId, post.Reallocation,
-                post.MaxSize, post.MinCards, post.MinConsolidationInstances, post.MinTargetInstances, post.Overlap, post.Effect, post.ProcedureGroup, post.Group, user.ProviderID, user.LocationID);
+                post.MaxSize, post.MinCards, post.MinConsolidationInstances, post.MinTargetInstances, post.Overlap, post.Effect, post.ProcedureGroup, post.Group, user.SelectedLocation);
             
             if (format?.ToUpper() == "CSV")
             {
@@ -1129,7 +1129,7 @@ namespace OpFlow.Service.Controllers
 
             foreach (var exportTray in post.Exports)
             {
-                var cards = await sqlHelper.GetTrayCards(exportTray.TrayID, user.ProviderID, user.LocationID);
+                var cards = await sqlHelper.GetTrayCards(exportTray.TrayID, user.SelectedLocation);
 
                 if (exportTray.Children == null || !exportTray.Children.Any())
                 {
@@ -1141,7 +1141,7 @@ namespace OpFlow.Service.Controllers
 
                 foreach (var child in exportTray?.Children ?? new List<TrayConsolidationExport>())
                 {
-                    var cards2 = await sqlHelper.GetTrayCards(child.TrayID, user.ProviderID, user.LocationID);
+                    var cards2 = await sqlHelper.GetTrayCards(child.TrayID, user.SelectedLocation);
 
                     foreach (var card2 in cards2.Where(c2 => cards.Any(c => c2.CardID == c.CardID)))
                     {
@@ -1151,7 +1151,7 @@ namespace OpFlow.Service.Controllers
                     
                     foreach (var child2 in child?.Children ?? new List<TrayConsolidationExport>())
                     {
-                        var cards3 = await sqlHelper.GetTrayCards(child2.TrayID, user.ProviderID, user.LocationID);
+                        var cards3 = await sqlHelper.GetTrayCards(child2.TrayID, user.SelectedLocation);
 
                         foreach (var card3 in cards3.Where(c3 => cards2.Any(c2 => c3.CardID == c2.CardID)))
                         {
@@ -1194,7 +1194,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.CardCategoryId,
-                post.MinSize, user.ProviderID, user.LocationID);
+                post.MinSize, user.SelectedLocation);
 
             var rationalization = new DataView(analytics.Tables[0]);
             
@@ -1261,7 +1261,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsVendorTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.CardCategoryId,
-                post.MinSize, post.StartDate, post.EndDate, post.CaseProfileId, post.QuestionId, post.AnswerId, user.ProviderID, user.LocationID);
+                post.MinSize, post.StartDate, post.EndDate, post.CaseProfileId, post.QuestionId, post.AnswerId, user.SelectedLocation);
 
             var rationalization = new DataView(analytics.Tables[0]);
 
@@ -1329,7 +1329,7 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            var analytics = await sqlHelper.GetAnalyticsTrayScopeData(post.SpecialtyId, post.TrayId, post.Group, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetAnalyticsTrayScopeData(post.SpecialtyId, post.TrayId, post.Group, user.SelectedLocation);
 
             var rationalization = new DataView(analytics.Tables[0]);
 
@@ -1370,7 +1370,7 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.CardCategoryId, post.MinSize, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.CardCategoryId, post.MinSize, user.SelectedLocation);
             /*
             switch (post.Order)
             {
@@ -1425,7 +1425,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
-                post.RoomGroupId, user.ProviderID, user.LocationID);
+                post.RoomGroupId, user.SelectedLocation);
 
             var group = (post.Group == "card" ? "c" : "t");
             var parameters = new[]
@@ -1483,7 +1483,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsCountSampleDispersion(post.CountType, post.SpecialtyId, post.SurgeonId, post.TrayId, post.ItemId,
-                post.CardCategoryId, post.StartDate, post.EndDate, post.Group, user.ProviderID, user.LocationID);
+                post.CardCategoryId, post.StartDate, post.EndDate, post.Group, user.SelectedLocation);
 
             string groupType;
             switch (post.Group)
@@ -1560,7 +1560,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsSupplyCountData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
-                post.Group, user.ProviderID, user.LocationID);
+                post.Group, user.SelectedLocation);
 
             var datasets = new Dictionary<string, DataTable>
             {
@@ -1595,7 +1595,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsCountDistributionData(post.SpecialtyId, post.SurgeonId, post.CardCategoryId, 
-                post.ItemCategoryId, post.ItemId, post.MinCost, user.ProviderID, user.LocationID);
+                post.ItemCategoryId, post.ItemId, post.MinCost, user.SelectedLocation);
 
             var parameters = new[]
             {
