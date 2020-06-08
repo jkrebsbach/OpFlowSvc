@@ -170,9 +170,8 @@ namespace OpFlow.Data
         public List<ProfileProcedure> Procedures { get; set; }
         public List<ProfileItem> Items { get; set; }
         public List<ProfileCard> Cards { get; set; }
-        public List<User> Surgeons { get; set; }
         public List<ProfileTray> Trays { get; set; }
-        public List<ProfileTray> ProposedTrays { get; set; }
+        public List<User> Surgeons { get; set; }
         public List<ProfileItem> TrayItems { get; set; }
         public List<ProfileCardCategory> CardCategories { get; set; }
         public List<ProcedureProfileTrayUsage> TrayUsage { get; set; }
@@ -217,6 +216,8 @@ namespace OpFlow.Data
         public int CountChange => ProfileCount - NbrInstruments;
         public decimal PcntChange => ProfileCount == 0 ? 0 : ((decimal)CountChange / ProfileCount * 100);
         public int Increase => CountChange > 0 ? 1 : (CountChange < 0 ? -1 : 0);
+
+        public List<ProfileTray> Trays { get; set; }
     }
 
     public class ProfileTray
@@ -224,10 +225,12 @@ namespace OpFlow.Data
         public int ProcedureProfileID { get; set; }
         public string TrayType { get; set; }
         public int ItemID { get; set; }
+        public int CardID { get; set; }
         public int NbrInstruments { get; set; }
         public string ItemDescription { get; set; }
         public int? TrayProposalID { get; set; }
         public string TrayName { get; set; }
+        public string VendorID { get; set; }
 
         public int ProfileCount { get; set; }
         public int CountChange => ProfileCount - NbrInstruments;

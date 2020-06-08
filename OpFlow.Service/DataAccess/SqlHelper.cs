@@ -3919,8 +3919,11 @@ namespace OpFlow.Service.DataAccess
                 result.Specialties = specialties.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
                 result.CardCategories = cardCategories.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
                 result.Cards = cards.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-                result.Trays = trays.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-                result.ProposedTrays = proposedTrays.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+                
+                foreach (var card in result.Cards)
+                {
+                    card.Trays = trays.Where(p => p.CardID == card.CardID).ToList();
+                }
             }
 
             return results;

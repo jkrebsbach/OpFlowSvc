@@ -109,7 +109,7 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 Instruments = items,
-                ProcedureProfiles = profiles.Where(p => p.Trays.Any(t => t.ItemID == trayId))
+                ProcedureProfiles = profiles.Where(p => p.Cards.Any(c => c.Trays.Any(t => t.ItemID == trayId)))
             });
         }
 
