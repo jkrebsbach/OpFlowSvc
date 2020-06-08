@@ -692,7 +692,7 @@ namespace OpFlow.Service.DataAccess
         {
             var parameters = new[]
             {
-                new SqlParameter("patient_metric_answer_id", patientMetricId),
+                new SqlParameter("patient_metric_id", patientMetricId),
                 new SqlParameter("answer_text", answer),
                 new SqlParameter("location_id", locationId)
             };

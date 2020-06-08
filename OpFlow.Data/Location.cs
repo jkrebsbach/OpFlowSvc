@@ -16,5 +16,6 @@ namespace OpFlow.Data
         public string Zip { get; set; }
         public int CaseToday { get; set; }
         public int CaseWeek { get; set; }
+        public int CaseNextWeek { get; set; }
     }
 }
