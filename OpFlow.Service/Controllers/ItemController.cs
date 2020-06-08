@@ -308,5 +308,20 @@ namespace OpFlow.Service.Controllers
             
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
+
+        // GET api/values/5
+        [SwaggerOperation("PostItem")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("item/{itemId}")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostItem(int itemId, string vendorId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.UpdateItem(itemId, vendorId, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
     }
 }

@@ -3298,6 +3298,19 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
+        public async Task<int> UpdateItem(int itemId, string vendorId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("item_id", itemId),
+                new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateItem", parameters);
+
+            return result;
+        }
+
         public async Task<int> InsertTray(string trayName, string productNbr, int locationId)
         {
             var parameters = new[]
