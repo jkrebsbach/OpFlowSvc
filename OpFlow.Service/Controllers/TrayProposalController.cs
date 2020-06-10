@@ -677,7 +677,7 @@ namespace OpFlow.Service.Controllers
                     var storageHelper = BlobStorageHelper.GetHelper(user);
 
                     await storageHelper.DeleteBlob(folder, attachmentId.ToString());
-                    await sqlHelper.DeleteImplementationAttachment(attachmentId, user.ProviderID, user.LocationID);
+                    await sqlHelper.DeleteImplementationAttachment(attachmentId, user.SelectedLocation);
                 }
             }
             catch (Exception ex)
@@ -899,7 +899,7 @@ namespace OpFlow.Service.Controllers
             var trayProposals = await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation);
             if (trayProposals.Any())
             {
-                await sqlHelper.UpdateProposedTrayImageFilename(trayProposalId, null, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateProposedTrayImageFilename(trayProposalId, null, user.SelectedLocation);
 
                 var storageHelper = BlobStorageHelper.GetHelper(user);
                 var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.TrayProposalImages, trayProposalId);
@@ -936,7 +936,7 @@ namespace OpFlow.Service.Controllers
 
                     var storageHelper = BlobStorageHelper.GetHelper(user);
 
-                    await sqlHelper.UpdateProposedTrayImageFilename(trayProposalId, fileName, user.ProviderID, user.LocationID);
+                    await sqlHelper.UpdateProposedTrayImageFilename(trayProposalId, fileName, user.SelectedLocation);
                     await storageHelper.PutBlobBytes(folder, trayProposalId.ToString(), fileContents);
                 }
 
@@ -960,7 +960,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             caseProfileId = await sqlHelper.UpdateCaseProfile(caseProfileId, post.ProfileName, post.ProfileType, post.Questions,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, caseProfileId);
         }
@@ -978,7 +978,7 @@ namespace OpFlow.Service.Controllers
             var categoryJson = JsonConvert.SerializeObject(post.Category);
 
             var result = await sqlHelper.UpdateScheduleRules(user.UserID, surgeonJson, categoryJson, post.BeginDate, post.EndDate,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -992,7 +992,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateProposedTrayRep(trayProposalId, user.UserID, post.Ignore, user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateProposedTrayRep(trayProposalId, user.UserID, post.Ignore, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayProposalId);
         }
@@ -1021,7 +1021,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var proposedTrayId = await sqlHelper.UpdateProposedTrayLog(trayProposalLogId, post.Requestor, post.Audience,
-                post.ChangeType, post.ChangeDescription, post.AffectedItems, post.ChangeDate, post.Comments, user.ProviderID, user.LocationID);
+                post.ChangeType, post.ChangeDescription, post.AffectedItems, post.ChangeDate, post.Comments, user.SelectedLocation);
 
             var logs = await sqlHelper.GetProposedTrayLog(proposedTrayId, user.SelectedLocation);
 
@@ -1090,7 +1090,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var surgeries = await sqlHelper.GetProposedTrayScheduleHistory(caseProfileId, vendorId, surgeonId, trayProposalId, categoryId, questionId, user.ProviderID, user.LocationID);
+            var surgeries = await sqlHelper.GetProposedTrayScheduleHistory(caseProfileId, vendorId, surgeonId, trayProposalId, categoryId, questionId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -1113,7 +1113,7 @@ namespace OpFlow.Service.Controllers
                     continue;
             
                 await sqlHelper.UpdateProposedTraySchedule(surgeryId, tray.TrayProposalID, tray.TrayGroupID, post.CaseProfiles.First()?.CaseProfileID ?? -1,
-                    post.CaseProfiles.First()?.Questions, user.ProviderID, user.LocationID);
+                    post.CaseProfiles.First()?.Questions, user.SelectedLocation);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, surgeryId);
@@ -1131,7 +1131,7 @@ namespace OpFlow.Service.Controllers
             var trayGroup = JsonConvert.SerializeObject(post.TrayGroupID);
 
             await sqlHelper.UpdateSurgeonPreference(preferenceId, post.PreferenceName, post.SurgeonID, post.CaseProfileID, trayGroup,
-                post.Comments, user.ProviderID, user.LocationID);
+                post.Comments, user.SelectedLocation);
 
             var surgeonPreferences = await sqlHelper.GetSurgeonPreferences(user.SelectedLocation);
             var trayGroups = await sqlHelper.GetTrayGroups(user.SelectedLocation);
@@ -1156,7 +1156,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateProposedTrayScheduleDetails(scheduleId, post.Supplies, user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateProposedTrayScheduleDetails(scheduleId, post.Supplies, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, scheduleId);
         }
@@ -1170,7 +1170,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateProposedTrayRoles(trayProposalId, post.OwnerID, post.Approvers, post.Users, user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateProposedTrayRoles(trayProposalId, post.OwnerID, post.Approvers, post.Users, user.SelectedLocation);
 
             var users = await sqlHelper.SearchUsers(null, null, null, user.SelectedLocation);
             var proposals = await sqlHelper.GetProposedTrays(null, user.SelectedLocation);
@@ -1191,7 +1191,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var team = await sqlHelper.GetProposedTrayCommunicationTeam(trayProposalId, user.ProviderID, user.LocationID);
+            var team = await sqlHelper.GetProposedTrayCommunicationTeam(trayProposalId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -1209,7 +1209,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var messages = await sqlHelper.GetProposedTrayCommunication(user.UserID, trayProposalId, user.ProviderID, user.LocationID);
+            var messages = await sqlHelper.GetProposedTrayCommunication(user.UserID, trayProposalId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -1227,7 +1227,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var communication = await sqlHelper.GetProposedTrayCommunicationHistory(post.TrayProposalIds, post.PhaseID, post.UserID,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -1245,7 +1245,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var communication = await sqlHelper.InsertProposedTrayCommunicationHistory(post.Phase, post.Activity, post.Tray, post.Audience,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK);
         }
@@ -1260,7 +1260,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var communication = await sqlHelper.UpdateProposedTrayCommunicationHistory(historyId, post.Comments,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK);
         }
@@ -1313,7 +1313,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.DeleteProposedTrayAudit(trayProposalId, surgeryId, target, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.DeleteProposedTrayAudit(trayProposalId, surgeryId, target, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -1330,7 +1330,7 @@ namespace OpFlow.Service.Controllers
             var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, user.SelectedLocation);
             var trayItemId = instruments.FirstOrDefault(i => i.InstrumentID == instrumentId)?.TrayItemID;
 
-            var result = await sqlHelper.InsertComparableInstrument(instrumentId, trayItemId ?? -1, comparableInstrumentId, trayItemId ?? -1, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.InsertComparableInstrument(instrumentId, trayItemId ?? -1, comparableInstrumentId, trayItemId ?? -1, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -1344,7 +1344,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.DeleteComparableInstrument(trayProposalId, instrumentId, comparableInstrumentId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.DeleteComparableInstrument(trayProposalId, instrumentId, comparableInstrumentId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -1431,7 +1431,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var export = await sqlHelper.GetProposedTrayInstrumentExport(trayProposalId, user.ProviderID, user.LocationID);
+            var export = await sqlHelper.GetProposedTrayInstrumentExport(trayProposalId, user.SelectedLocation);
 
             var proposed = export.ProposedInstruments;
             
@@ -1540,7 +1540,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.PutProposedTrayCards(trayProposalId, post.Trays, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.PutProposedTrayCards(trayProposalId, post.Trays, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -1569,7 +1569,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var trays = await sqlHelper.GetProposedTrayCards(trayProposalId, post.Trays, user.ProviderID, user.LocationID);
+            var trays = await sqlHelper.GetProposedTrayCards(trayProposalId, post.Trays, user.SelectedLocation);
 
             var extract = "Surgeon, Card, Specialty, Old Tray, New Tray, Intrument, Proposed\r\n";
             foreach (var tray in trays)
@@ -1695,7 +1695,7 @@ namespace OpFlow.Service.Controllers
                 var rationalization = await sqlHelper.GetTrayRationalizationDetail(
                     post.TrayProposalID,
                     trayId.Type, trayId.ID,
-                    user.ProviderID, user.LocationID);
+                    user.SelectedLocation);
 
                 details[$"{trayId.Type}-{trayId.ID}"] = rationalization.Instruments;
 
@@ -1812,7 +1812,7 @@ namespace OpFlow.Service.Controllers
                 var rationalization = await sqlHelper.GetTrayRationalizationDetail(
                     post.TrayProposalID,
                     trayId.Type, trayId.ID,
-                    user.ProviderID, user.LocationID);
+                    user.SelectedLocation);
 
                 details[$"{trayId.Type}-{trayId.ID}"] = rationalization.Instruments;
 
@@ -1897,7 +1897,7 @@ namespace OpFlow.Service.Controllers
 
             var rationalization = await sqlHelper.GetTrayRationalization(trayProposalId,
                 post.Specialties, post.Trays, post.Surgeons, post.Cards, post.CptCode, post.Questions,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, rationalization);
         }
@@ -1916,7 +1916,7 @@ namespace OpFlow.Service.Controllers
             var result = new List<TrayRationalizationCompareResult>();
             foreach (var comparison in post.Comparisons)
             {
-                var rationalization = await sqlHelper.GetTrayRationalizationCompare(comparison.CustomerID, comparison.BaselineID, user.ProviderID, user.LocationID);
+                var rationalization = await sqlHelper.GetTrayRationalizationCompare(comparison.CustomerID, comparison.BaselineID, user.SelectedLocation);
 
                 result.Add(rationalization);
             }
@@ -2058,8 +2058,8 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var trayId = await sqlHelper.InsertProposedTray(trayProposalId, post.SpecialtyID, post.Customized, post.TrayName, post.Instruments, user.ProviderID, user.LocationID);
-            await sqlHelper.InsertProposedTrayInstrumentLog(trayId, user.ProviderID, user.LocationID);
+            var trayId = await sqlHelper.InsertProposedTray(trayProposalId, post.SpecialtyID, post.Customized, post.TrayName, post.Instruments, user.SelectedLocation);
+            await sqlHelper.InsertProposedTrayInstrumentLog(trayId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }
@@ -2076,12 +2076,12 @@ namespace OpFlow.Service.Controllers
             var trayGroups = new List<int>();
             foreach (var trayGroup in post.TrayGroups ?? new List<string>())
             {
-                var trayGroupId = await sqlHelper.InsertTrayGroup(trayGroup, user.ProviderID, user.LocationID);
+                var trayGroupId = await sqlHelper.InsertTrayGroup(trayGroup, user.SelectedLocation);
                 trayGroups.Add(trayGroupId);
             }
 
             var trayId = await sqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, post.VendorID, 
-                post.SpecialtyID, post.PhaseID, post.Customized, post.CardCategories, trayGroups, user.ProviderID, user.LocationID);
+                post.SpecialtyID, post.PhaseID, post.Customized, post.CardCategories, trayGroups, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }
@@ -2095,7 +2095,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var trayGroupId = await sqlHelper.UpdateTrayGroup(post.TrayGroupID, post.TrayGroup, post.Trays, user.ProviderID, user.LocationID);
+            var trayGroupId = await sqlHelper.UpdateTrayGroup(post.TrayGroupID, post.TrayGroup, post.Trays, user.SelectedLocation);
 
             var trayGroups = await sqlHelper.GetTrayGroups(user.SelectedLocation);
 
@@ -2115,7 +2115,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var trayId = await sqlHelper.UpdateProposedTrayDashboard(trayProposalId, post.Instances, post.DeploymentStatus,
-                post.CountComplete, post.AuditComplete, post.TrayChanges, post.Comments, user.ProviderID, user.LocationID);
+                post.CountComplete, post.AuditComplete, post.TrayChanges, post.Comments, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }
@@ -2129,7 +2129,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var trayId = await sqlHelper.DeleteProposedTray(trayProposalId, user.UserID, user.ProviderID, user.LocationID);
+            var trayId = await sqlHelper.DeleteProposedTray(trayProposalId, user.UserID, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }
@@ -2143,8 +2143,8 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateProposedTrayInstruments(trayProposalId, post.Instruments, user.ProviderID, user.LocationID);
-            await sqlHelper.InsertProposedTrayInstrumentLog(trayProposalId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.UpdateProposedTrayInstruments(trayProposalId, post.Instruments, user.SelectedLocation);
+            await sqlHelper.InsertProposedTrayInstrumentLog(trayProposalId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -2158,7 +2158,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var trayId = await sqlHelper.UpdateProposedTrayQuantities(trayProposalId, post.Instruments, user.ProviderID, user.LocationID);
+            var trayId = await sqlHelper.UpdateProposedTrayQuantities(trayProposalId, post.Instruments, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }
@@ -2172,8 +2172,8 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var trayId = await sqlHelper.DeleteProposedTrayInstrument(trayProposalId, instrumentId, user.ProviderID, user.LocationID);
-            await sqlHelper.InsertProposedTrayInstrumentLog(trayProposalId, user.ProviderID, user.LocationID);
+            var trayId = await sqlHelper.DeleteProposedTrayInstrument(trayProposalId, instrumentId, user.SelectedLocation);
+            await sqlHelper.InsertProposedTrayInstrumentLog(trayProposalId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
         }
@@ -2191,7 +2191,7 @@ namespace OpFlow.Service.Controllers
             foreach (var audit in post.Audits)
             {
                 await sqlHelper.UpdateSurgeryCPTs(audit.SurgeryID, audit.SurgeryCpts, user.ProviderID, user.SelectedLocation);
-                await sqlHelper.UpdateProposedTrayAuditComments(trayProposalId, audit.SurgeryID, audit.Comments, target, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateProposedTrayAuditComments(trayProposalId, audit.SurgeryID, audit.Comments, target, user.SelectedLocation);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, trayProposalId);

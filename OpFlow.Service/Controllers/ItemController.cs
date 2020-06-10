@@ -204,7 +204,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.InsertComparableInstrument(instrumentId, trayId, post.RelatedInstrumentID, post.RelatedTrayID, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.InsertComparableInstrument(instrumentId, trayId, post.RelatedInstrumentID, post.RelatedTrayID, user.SelectedLocation);
             
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

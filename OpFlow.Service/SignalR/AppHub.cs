@@ -104,7 +104,7 @@ namespace OpFlow.Service.SignalR
             var insertTimestamp = DateTime.Now;
 
             var trayProposal = (await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation)).First();
-            var team = await sqlHelper.GetProposedTrayCommunicationTeam(trayProposalId, user.ProviderID, user.LocationID);
+            var team = await sqlHelper.GetProposedTrayCommunicationTeam(trayProposalId, user.SelectedLocation);
 
             foreach (var member in team)
             {
