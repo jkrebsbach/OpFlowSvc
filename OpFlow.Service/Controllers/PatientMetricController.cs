@@ -22,7 +22,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var metrics = await sqlHelper.GetPatientMetrics(user.SelectedLocation);
+            var metrics = await sqlHelper.GetPatientMetrics(user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, metrics);
         }
@@ -36,7 +36,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.InsertPatientMetric(request.TextPayload, user.SelectedLocation);
+            var result = await sqlHelper.InsertPatientMetric(request.TextPayload, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -50,7 +50,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdatePatientMetric(patientMetricId, request.TextPayload, user.SelectedLocation);
+            var result = await sqlHelper.UpdatePatientMetric(patientMetricId, request.TextPayload, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -64,7 +64,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.DeletePatientMetric(patientMetricId, user.SelectedLocation);
+            var result = await sqlHelper.DeletePatientMetric(patientMetricId, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -80,7 +80,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.InsertPatientMetricAnswer(patientMetricId, request.TextPayload, user.SelectedLocation);
+            var result = await sqlHelper.InsertPatientMetricAnswer(patientMetricId, request.TextPayload, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -96,7 +96,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdatePatientMetricAnswer(patientMetricAnswerId, request.TextPayload, user.SelectedLocation);
+            var result = await sqlHelper.UpdatePatientMetricAnswer(patientMetricAnswerId, request.TextPayload, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -112,7 +112,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.DeletePatientMetricAnswer(patientMetricAnswerId, user.SelectedLocation);
+            var result = await sqlHelper.DeletePatientMetricAnswer(patientMetricAnswerId, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

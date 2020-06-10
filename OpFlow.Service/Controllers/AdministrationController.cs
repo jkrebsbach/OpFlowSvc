@@ -134,6 +134,11 @@ namespace OpFlow.Service.Controllers
                     dataField = "5";
                 }
 
+                if (column.DataType?.ToLower()?.Contains("decimal") == true)
+                {
+                    dataField = "1.23";
+                }
+
                 if (column.DataType?.ToLower() == "date")
                 {
                     dataField = "1/1/1990";
