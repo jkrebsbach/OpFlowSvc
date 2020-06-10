@@ -116,5 +116,21 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
+
+        // GET api/values/5
+        [SwaggerOperation("PutProfile")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("profile")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutProfile(int procedureProfileId, int patientMetricId, [FromBody] PatientMetricProfilePost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.UpdateProcedureProfilePatientMetric(procedureProfileId, patientMetricId, request.Answers, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
     }
 }

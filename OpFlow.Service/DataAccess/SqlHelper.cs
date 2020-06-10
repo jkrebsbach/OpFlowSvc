@@ -726,6 +726,22 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> UpdateProcedureProfilePatientMetric(int procedureProfileId, int patientMetricId, List<int> patientMetricAnswerId, int locationId)
+        {
+            var answerXml = GetIdentitySummary(patientMetricAnswerId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("patient_metric_id", patientMetricId),
+                new SqlParameter("patient_metric_answer_id", answerXml),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProcedureProfilePatientMetric", parameters);
+
+            return result;
+        }
+
         public async Task<DataSet> GetVendorTrayConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
             List<int> procedureId, List<int> trayId, List<int> cardCategoryId, List<int> cardId, string instruments, 
             int? caseProfileId, List<int> questionId, List<int> answerId,
@@ -3910,6 +3926,7 @@ namespace OpFlow.Service.DataAccess
             var cards = dsSchedules.Tables[4].DataTableToList<ProfileCard>();
             var trays = dsSchedules.Tables[5].DataTableToList<ProfileTray>();
             var proposedTrays = dsSchedules.Tables[6].DataTableToList<ProfileTray>();
+            var profileMetrics = dsSchedules.Tables[7].DataTableToList<ProfilePatientMetric>();
 
             foreach (var result in results)
             {
@@ -3917,10 +3934,27 @@ namespace OpFlow.Service.DataAccess
                 result.Specialties = specialties.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
                 result.CardCategories = cardCategories.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
                 result.Cards = cards.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-                
+
+                result.PatientMetrics = profileMetrics.GroupBy(p => new { p.PatientMetricID, p.QuestionText }).Select(p =>
+                    new PatientMetric()
+                    {
+                        PatientMetricID = p.Key.PatientMetricID,
+                        QuestionText = p.Key.QuestionText
+                    }).ToList();
+
                 foreach (var card in result.Cards)
                 {
                     card.Trays = trays.Where(p => p.CardID == card.CardID).ToList();
+                }
+                foreach (var patientMetric in result.PatientMetrics)
+                {
+                    patientMetric.Answers = profileMetrics.Where(p => p.PatientMetricID == patientMetric.PatientMetricID).Select(p =>
+                        new PatientMetricAnswer()
+                        {
+                            PatientMetricID = p.PatientMetricID,
+                            PatientMetricAnswerID = p.PatientMetricAnswerID,
+                            AnswerText = p.AnswerText
+                        }).ToList();
                 }
             }
 

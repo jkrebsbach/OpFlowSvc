@@ -22,4 +22,9 @@ namespace OpFlow.Data
     {
         public string TextPayload { get; set; }
     }
+
+    public class PatientMetricProfilePost
+    {
+        public List<int> Answers { get; set; }
+    }
 }

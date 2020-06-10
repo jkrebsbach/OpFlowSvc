@@ -171,6 +171,7 @@ namespace OpFlow.Data
         public List<ProfileItem> Items { get; set; }
         public List<ProfileCard> Cards { get; set; }
         public List<ProfileTray> Trays { get; set; }
+        public List<PatientMetric> PatientMetrics { get; set; }
         public List<User> Surgeons { get; set; }
         public List<ProfileItem> TrayItems { get; set; }
         public List<ProfileCardCategory> CardCategories { get; set; }
@@ -236,6 +237,13 @@ namespace OpFlow.Data
         public int CountChange => ProfileCount - NbrInstruments;
         public decimal PcntChange => ProfileCount == 0 ? 0 : ((decimal)CountChange / ProfileCount * 100);
         public int Increase => CountChange > 0 ? 1 : (CountChange < 0 ? -1 : 0);
+    }
+
+    public class ProfilePatientMetric : PatientMetric
+    {
+        public int ProcedureProfileID { get; set; }
+        public int PatientMetricAnswerID { get; set; }
+        public string AnswerText { get; set; }
     }
 
     public class ProfileProcedure : Procedure
