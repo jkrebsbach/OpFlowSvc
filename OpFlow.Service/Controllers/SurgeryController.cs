@@ -28,7 +28,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
-            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+            var userObject = await sqlHelper.GetUser(user.SelectedLocation, user.UserID);
 
             var patientSurgery = await sqlHelper.GetSurgery(surgeryId, user.SelectedLocation);
             patientSurgery.Patient =
@@ -596,7 +596,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
-            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+            var userObject = await sqlHelper.GetUser(user.SelectedLocation, user.UserID);
 
             var result = await sqlHelper.GetSurgeryRoomSummary(surgeryId, user.ProviderID, user.LocationID);
 
@@ -636,7 +636,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
-            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+            var userObject = await sqlHelper.GetUser(user.SelectedLocation, user.UserID);
 
             var surgeries = await sqlHelper.GetSurgeryRoomOverview(
                 post.SpecialtyId, post.RoomGroupId, post.RoomId, post.SurgeonId,
@@ -925,7 +925,7 @@ namespace OpFlow.Service.Controllers
                 if (!secureUser.Vendor)
                     surgery.VendorLocationID = null;
 
-                var user = await sqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID, secureUser.UserID);
+                var user = await sqlHelper.GetUser(secureUser.SelectedLocation, secureUser.UserID);
 
                 var patientId = await secureSqlHelper.CreatePatient(surgery.PtAcctNbr,
                     surgery.PtDOB, surgery.PtGender, surgery.PtFirstName, surgery.PtLastName, surgery.PtMiddleInitial, surgery.PtBMI,
@@ -1349,14 +1349,14 @@ namespace OpFlow.Service.Controllers
 
 
             var surgery = await sqlHelper.GetSurgery(surgeryId, user.SelectedLocation);
-            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+            var userObject = await sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
 
             var patient = await secureSqlHelper.GetPatient(surgery.PatientID,
                 user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
 
             var message = $"Surgery #{surgery.CaseNumber} patient {patient.LastName} room {surgery.RoomDescription} {surgery.ScheduleTime:hh\\:mm} modified - please review schedule";
 
-            var notificationUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  surgeryEditPost.NotificationUser.Value);
+            var notificationUser = await sqlHelper.GetUser(user.SelectedLocation,  surgeryEditPost.NotificationUser.Value);
             if (notificationUser?.CellPhone != null)
                 SmsNotification.NotifyUser(notificationUser.CellPhone, message);
 

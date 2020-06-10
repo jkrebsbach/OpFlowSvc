@@ -74,7 +74,7 @@ namespace OpFlow.Service.Controllers
             var result = new ImportDetail()
             {
                 ImportDefinitions = await sqlHelper.GetImportDefinition(importTypeId, user.ProviderID, user.LocationID),
-                ImportLogs = await sqlHelper.GetImportLog(importTypeId, user.ProviderID, user.LocationID)
+                ImportLogs = await sqlHelper.GetImportLog(importTypeId, user.SelectedLocation)
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -92,7 +92,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
             var sqlHelper = new SqlHelper();
-            var result = await sqlHelper.GetImportMessages(importLogId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetImportMessages(importLogId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -233,26 +233,26 @@ namespace OpFlow.Service.Controllers
 
                 var fileParser = new FileParser(fileName, fileContents);
 
-                await fileParser.ParseFile(sqlHelper, importTypeId, user.ProviderID, user.SelectedLocation);
+                await fileParser.ParseFile(sqlHelper, importTypeId, user.SelectedLocation);
 
 
                 var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
-                logId = await sqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, fileParser.Records.Count, fileName);
+                logId = await sqlHelper.InsertImportLog(user.SelectedLocation, importTypeId, user.UserID, fileParser.Records.Count, fileName);
 
                 if (fileParser.Records == null)
                     return Request.CreateResponse(HttpStatusCode.OK, fileParser.Status);
 
-                var secureUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                var secureUser = await sqlHelper.GetUser(user.SelectedLocation, user.UserID);
                 ImportResult result;
 
                 if (importTypeId == 5)
                 {
                     result = await sqlHelper.UpdateCardItemImport(fileParser.Records.Select(r => r as CardImport).ToList(),
-                        fileParser.Relations, user.ProviderID, user.LocationID);
+                        fileParser.Relations, user.SelectedLocation);
 
                     foreach (var message in result.Messages)
                     {
-                        await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message, null, null);
+                        await sqlHelper.InsertImportMessage(user.SelectedLocation, logId.Value, "WARN", message, null, null);
                     }
                 }
                 else
@@ -262,10 +262,10 @@ namespace OpFlow.Service.Controllers
                         var secureId = await secureSqlHelper.InsertStagingData(record, user.UserID,
                             secureUser.FirstName, secureUser.LastName, (int)secureUser.RoleID);
 
-                        result = await sqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
+                        result = await sqlHelper.InsertStagingData(user.SelectedLocation, secureId, record, fileParser.Relations);
                         foreach (var message in result.Messages)
                         {
-                            await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message,
+                            await sqlHelper.InsertImportMessage(user.SelectedLocation, logId.Value, "WARN", message,
                                 (record as ScheduleImport)?.MRN, (record as ScheduleImport)?.ScheduleDate);
                         }
                     }
@@ -278,7 +278,7 @@ namespace OpFlow.Service.Controllers
             {
                 LogHelper.LogException(ex);
                 if (logId != null)
-                    await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "ERROR", ex.Message, null, null);
+                    await sqlHelper.InsertImportMessage(user.SelectedLocation, logId.Value, "ERROR", ex.Message, null, null);
 
                 throw;
             }

@@ -73,7 +73,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var sender = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+            var sender = await sqlHelper.GetUser(user.SelectedLocation, user.UserID);
 
             var senderName = $"{sender.LastName}, {sender.FirstName}";
             var outcome = await PushNotification.PostNotification(sendingUser, senderName, message.UserName, message.Message);

@@ -36,8 +36,10 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserAuthID);
-            result.PHILocation = (user.SecureDatabaseName != "InvalidConnection");
+            // This is the actual location the authenticated user is assigned to
+            var result = await sqlHelper.GetUser(user.LocationID, user.UserAuthID);
+            if (result != null)
+                result.PHILocation = (user.SecureDatabaseName != "InvalidConnection");
 
             return result == null ? Request.CreateResponse(HttpStatusCode.NotFound, "User not found") : Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -335,7 +337,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var roles = await sqlHelper.GetRoles(user.ProviderID, user.LocationID);
+            var roles = await sqlHelper.GetRoles(user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, roles);
         }
@@ -527,7 +529,7 @@ namespace OpFlow.Service.Controllers
 
             var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
-            var applicationUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  userId);
+            var applicationUser = await sqlHelper.GetUser(user.SelectedLocation,  userId);
 
             var authenticationUser = await userManager.FindByEmailAsync(applicationUser.Email);
 

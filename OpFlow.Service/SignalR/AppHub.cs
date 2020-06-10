@@ -32,7 +32,7 @@ namespace OpFlow.Service.SignalR
 
                 var recipients = await sqlHelper.GetSurgeryUsers(surgeryId, user.SelectedLocation);
                 var surgery = await sqlHelper.GetSurgery(surgeryId, user.SelectedLocation);
-                var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                var userObject = await sqlHelper.GetUser(user.SelectedLocation, user.UserID);
                 var patient = await secureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
                     userObject.LastName, (int)userObject.RoleID);
 
@@ -77,10 +77,10 @@ namespace OpFlow.Service.SignalR
                 null, communicationUserId, message);
 
             var recipientUser = 
-                await sqlHelper.GetUser(user.ProviderID, user.LocationID,  communicationUserId);
+                await sqlHelper.GetUser(user.SelectedLocation,  communicationUserId);
 
             var sender =
-                await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+                await sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
 
             var groups = new List<string>()
             {
@@ -111,13 +111,13 @@ namespace OpFlow.Service.SignalR
                 await EmailHelper.SendEmail(member, "Tray Rationalization", trayProposal.DeploymentStatus);
 
                 var recipientUser =
-                    await sqlHelper.GetUser(user.ProviderID, user.LocationID, member.UserID);
+                    await sqlHelper.GetUser(user.SelectedLocation, member.UserID);
             }
 
             await sqlHelper.InsertProposedTrayCommunication(user.UserID, trayProposalId, message, user.ProviderID, user.LocationID);
 
             var sender =
-                await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                await sqlHelper.GetUser(user.SelectedLocation, user.UserID);
 
             var groups = new List<string>()
             {
@@ -163,7 +163,7 @@ namespace OpFlow.Service.SignalR
         private async Task SendNotification(UserSecurity user, User sender, int targetUserId, string message)
         {
             var sqlHelper = new SqlHelper();
-            var recipientUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID, targetUserId);
+            var recipientUser = await sqlHelper.GetUser(user.SelectedLocation, targetUserId);
 
             await PushNotificationMessage(sender, recipientUser.Email, message);
 
@@ -211,7 +211,7 @@ namespace OpFlow.Service.SignalR
                     var nextNotifications = notifications.Where(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
                     var prevNotifications = notifications.Where(n => n.StepID == flowStep.PreviousStepID && n.NotificationType == 2);
 
-                    var sender = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                    var sender = await sqlHelper.GetUser(user.SelectedLocation, user.UserID);
 
                     foreach (var nextNotification in nextNotifications)
                         await SendNotification(user, sender, surgeryId, nextNotification); // Next step
@@ -266,7 +266,7 @@ namespace OpFlow.Service.SignalR
             if (trayProposal.DeploymentStatus != status)
             {
                 await sqlHelper.UpdateProposedTrayCommunicationStatus(trayProposalId, status, user.UserID, user.ProviderID, user.LocationID);
-                var dbUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                var dbUser = await sqlHelper.GetUser(user.SelectedLocation, user.UserID);
 
                 var message = $"Tray status set to {status}";
 

@@ -691,7 +691,7 @@ namespace OpFlow.Service.Controllers
             if (format?.ToUpper() == "CSV")
             {
                 var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
-                var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+                var userObject = await sqlHelper.GetUser(user.SelectedLocation, user.UserID);
 
                 var dtSupply = supplyOpen.ToTable();
                 dtSupply.Columns.Add("MRN", typeof(string));

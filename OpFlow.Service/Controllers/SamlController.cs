@@ -339,7 +339,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserAuthID);
+            var result = await sqlHelper.GetUser(user.SelectedLocation, user.UserAuthID);
 
             if (result == null)
                 throw new HttpException(404, "User not found");

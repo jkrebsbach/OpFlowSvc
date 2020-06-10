@@ -18,11 +18,9 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestImportFile()
         {
-            //var fileName = @"F:\ColdStorage\Documents\OpFlow\ScheduleImport\TestSchedule.csv";
-            //var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\UAB_Neuro_Cards.csv";
-            //var fileName = @"F:\ColdStorage\Documents\OpFlow\CardImport\UAB_SPM_May4.csv";
-            var fileName = @"F:\ColdStorage\Documents\OpFlow\Imports\OpFlow Pilot May 26.csv";
-            var importTypeId = 1; // schedule 
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\Imports\Item Master Sample.csv";
+            //var importTypeId = 1; // schedule 
+            var importTypeId = 2; // item master
             //var importTypeId = 7; // schedule without card
             //var importTypeId = 5; // cards
             //var importTypeId = 3; // trays
@@ -48,7 +46,7 @@ namespace OpFlow.Service.Test
 
                 var fileParser = new FileParser(fileName, fileContents);
 
-                await fileParser.ParseFile(sqlHelper, importTypeId, user.ProviderID, user.SelectedLocation);
+                await fileParser.ParseFile(sqlHelper, importTypeId, user.SelectedLocation);
 
                 foreach (var record in fileParser.Records)
                 {
@@ -71,20 +69,20 @@ namespace OpFlow.Service.Test
                 if (importTypeId == 5)
                 {
                     await sqlHelper.UpdateCardItemImport(fileParser.Records.Select(r => r as CardImport).ToList(),
-                        fileParser.Relations, user.ProviderID, user.LocationID);
+                        fileParser.Relations, user.SelectedLocation);
                 }
                 else
                 {
-                    logId = await sqlHelper.InsertImportLog(user.ProviderID, user.LocationID, importTypeId, user.UserID, fileParser.Records.Count, fileName);
+                    logId = await sqlHelper.InsertImportLog(user.SelectedLocation, importTypeId, user.UserID, fileParser.Records.Count, fileName);
 
                     foreach (var record in fileParser.Records)
                     {
                         var secureId = await secureSqlHelper.InsertStagingData(record, user.UserID, "TEST", "TEST", 1);
 
-                        var result = await sqlHelper.InsertStagingData(user.ProviderID, user.LocationID, secureId, record, fileParser.Relations);
+                        var result = await sqlHelper.InsertStagingData(user.SelectedLocation, secureId, record, fileParser.Relations);
                         foreach (var message in result.Messages)
                         {
-                            await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message,
+                            await sqlHelper.InsertImportMessage(user.SelectedLocation, logId.Value, "WARN", message,
                                 (record as ScheduleImport)?.MRN, (record as ScheduleImport)?.ScheduleDate);
                         }
                     }

@@ -2744,12 +2744,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<ImportMessage>> GetImportMessages(int importLogId, int providerId, int locationId)
+        public async Task<List<ImportMessage>> GetImportMessages(int importLogId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("import_log_id", importLogId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetImportMessages", parameters);
@@ -2795,12 +2794,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<ImportLog>> GetImportLog(int importTypeId, int providerId, int locationId)
+        public async Task<List<ImportLog>> GetImportLog(int importTypeId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("import_id", importTypeId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetImportLog", parameters);
@@ -4226,11 +4224,10 @@ namespace OpFlow.Service.DataAccess
 
         }
 
-        public async Task<User> GetUser(int providerId, int locationId, Guid userAuthId)
+        public async Task<User> GetUser(int locationId, Guid userAuthId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("user_auth_id", userAuthId),
                 new SqlParameter("user_id", DBNull.Value)
@@ -4242,11 +4239,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<User> GetUser(int providerId, int locationId, int userId)
+        public async Task<User> GetUser(int locationId, int userId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("user_auth_id", DBNull.Value),
                 new SqlParameter("user_id", userId),
@@ -4304,11 +4300,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<Role>> GetRoles(int providerId, int locationId)
+        public async Task<List<Role>> GetRoles(int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetRoles", dsParameters);
@@ -6713,11 +6708,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<CardFlowRoom> GetImportDefaultCardFlowRoom(int providerId, int locationId, int ownerUserId, string procedureCard)
+        public async Task<CardFlowRoom> GetImportDefaultCardFlowRoom(int locationId, int ownerUserId, string procedureCard)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("owner_user_id", ownerUserId),
                 new SqlParameter("procedure_card", procedureCard ?? (object)DBNull.Value)
@@ -7452,7 +7446,7 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("DeleteFlow", parameters);
         }
 
-        public async Task<ImportResult> UpdateCardItemImport(List<CardImport> records, FileParserRelations relations, int providerId, int locationId)
+        public async Task<ImportResult> UpdateCardItemImport(List<CardImport> records, FileParserRelations relations, int locationId)
         {
             var result = new ImportResult();
 
@@ -7503,7 +7497,6 @@ namespace OpFlow.Service.DataAccess
 
                 var parameters = new[]
                 {
-                    new SqlParameter("provider_id", providerId),
                     new SqlParameter("location_id", locationId),
                     new SqlParameter("owner_user_id", surgeon.UserID),
                     new SqlParameter("preference_card_name", card.PreferenceCardName),
@@ -7516,7 +7509,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<ImportResult> InsertStagingData(int providerId, int locationId, int? secureId, IImportData sourceData, FileParserRelations relations)
+        public async Task<ImportResult> InsertStagingData(int locationId, int? secureId, IImportData sourceData, FileParserRelations relations)
         {
             var result = new ImportResult();
 
@@ -7527,7 +7520,6 @@ namespace OpFlow.Service.DataAccess
 
                 var parameters = new[]
                 {
-                    new SqlParameter("provider_id", providerId),
                     new SqlParameter("location_id", locationId),
                     new SqlParameter("catalog_id", item.Catalog),
                     new SqlParameter("ehr_id", item.EHR_ID),
@@ -7554,7 +7546,6 @@ namespace OpFlow.Service.DataAccess
 
                 var parameters = new[]
                 {
-                    new SqlParameter("provider_id", providerId),
                     new SqlParameter("location_id", locationId),
                     new SqlParameter("tray_id", tray.TrayID),
                     new SqlParameter("tray_name", tray.TrayName),
@@ -7590,7 +7581,6 @@ namespace OpFlow.Service.DataAccess
 
                 var parameters = new[]
                 {
-                    new SqlParameter("provider_id", providerId),
                     new SqlParameter("location_id", locationId),
                     new SqlParameter("last_name", user.UserEntity.LastName),
                     new SqlParameter("first_name", user.UserEntity.FirstName),
@@ -7647,7 +7637,7 @@ namespace OpFlow.Service.DataAccess
                 CardFlowRoom cardFlowRoom = null;
                 if (scheduleBase is CardlessScheduleImport cardlessSchedule)
                 {
-                    cardFlowRoom = await GetCardFromTrays(surgery.SurgeonUserID.Value, cardlessSchedule.Trays, providerId, locationId);
+                    cardFlowRoom = await GetCardFromTrays(surgery.SurgeonUserID.Value, cardlessSchedule.Trays, locationId);
 
                     if (cardFlowRoom == null)
                     {
@@ -7656,11 +7646,11 @@ namespace OpFlow.Service.DataAccess
                 } 
                 else if (scheduleBase is ScheduleImport schedule)
                 {
-                    var procedureCards = await DetermineCards(surgery, schedule, relations, providerId, locationId);
+                    var procedureCards = await DetermineCards(surgery, schedule, relations, locationId);
 
                     if (procedureCards.Any())
                     {
-                        cardFlowRoom = await AggregateCards(surgery.SurgeonUserID.Value, procedureCards, providerId, locationId);
+                        cardFlowRoom = await AggregateCards(surgery.SurgeonUserID.Value, procedureCards, locationId);
 
                         if (cardFlowRoom == null)
                         {
@@ -7698,7 +7688,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        private async Task<CardFlowRoom> GetCardFromTrays(int ownerUserId, List<string> trayList, int providerId, int locationId)
+        private async Task<CardFlowRoom> GetCardFromTrays(int ownerUserId, List<string> trayList, int locationId)
         {
             if (trayList == null || !trayList.Any())
                 return null;
@@ -7724,7 +7714,6 @@ namespace OpFlow.Service.DataAccess
 
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("owner_user_id", ownerUserId),
                 new SqlParameter("tray_data", cardData)
@@ -7737,7 +7726,7 @@ namespace OpFlow.Service.DataAccess
             return matches.FirstOrDefault();
         }
 
-        private async Task<CardFlowRoom> AggregateCards(int ownerUserId, List<CardFlowRoom> procedureCards, int providerId, int locationId)
+        private async Task<CardFlowRoom> AggregateCards(int ownerUserId, List<CardFlowRoom> procedureCards, int locationId)
         {
             if (procedureCards == null || !procedureCards.Any())
                 return null;
@@ -7764,7 +7753,6 @@ namespace OpFlow.Service.DataAccess
 
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("card_data", cardData)
             };
@@ -7784,7 +7772,6 @@ namespace OpFlow.Service.DataAccess
 
             parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("card_data", cardData),
                 new SqlParameter("card_name", cardName),
@@ -7831,12 +7818,12 @@ namespace OpFlow.Service.DataAccess
             return null;
         }
 
-        private async Task<List<CardFlowRoom>> DetermineCards(SurgeryPost surgery, ScheduleImport schedule, FileParserRelations relations, int providerId, int locationId)
+        private async Task<List<CardFlowRoom>> DetermineCards(SurgeryPost surgery, ScheduleImport schedule, FileParserRelations relations, int locationId)
         {
             var result = new List<CardFlowRoom>();
             foreach (var procedureCard in schedule.ProcedureCards)
             {
-                var cardFlowRoom = await CheckCard(procedureCard.CardName, procedureCard, surgery, schedule, relations, providerId, locationId);
+                var cardFlowRoom = await CheckCard(procedureCard.CardName, procedureCard, surgery, schedule, relations, locationId);
 
                 if (cardFlowRoom != null)
                 {
@@ -7845,7 +7832,7 @@ namespace OpFlow.Service.DataAccess
                 }
 
                 // Sometimes card name appears where the surgeon should be
-                cardFlowRoom = await CheckCard(procedureCard.ImportSurgeon?.RawText, procedureCard, surgery, schedule, relations, providerId, locationId);
+                cardFlowRoom = await CheckCard(procedureCard.ImportSurgeon?.RawText, procedureCard, surgery, schedule, relations, locationId);
 
                 if (cardFlowRoom != null)
                 {
@@ -7856,7 +7843,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        private async Task<CardFlowRoom> CheckCard(string cardName, ImportCard procedureCard, SurgeryPost surgery, ScheduleImport schedule, FileParserRelations relations, int providerId, int locationId)
+        private async Task<CardFlowRoom> CheckCard(string cardName, ImportCard procedureCard, SurgeryPost surgery, ScheduleImport schedule, FileParserRelations relations, int locationId)
         {
             if (string.IsNullOrEmpty(cardName))
                 return null;
@@ -7865,7 +7852,7 @@ namespace OpFlow.Service.DataAccess
 
             CardFlowRoom cardFlowRoom = null;
             if (cardSurgeon.HasValue)
-                cardFlowRoom = await GetImportDefaultCardFlowRoom(providerId, locationId, cardSurgeon.Value, cardName);
+                cardFlowRoom = await GetImportDefaultCardFlowRoom(locationId, cardSurgeon.Value, cardName);
 
             if (cardFlowRoom != null)
             {
@@ -7880,19 +7867,17 @@ namespace OpFlow.Service.DataAccess
                 if (surgeon == null) continue;
                 if (cardFlowRoom == null)
                 {
-                    cardFlowRoom = await GetImportDefaultCardFlowRoom(providerId, locationId,
-                        surgeon.UserID, cardName);
+                    cardFlowRoom = await GetImportDefaultCardFlowRoom(locationId, surgeon.UserID, cardName);
                 }
             }
 
             return cardFlowRoom;
         }
 
-        public async Task<int> InsertImportLog(int providerId, int locationId, int importTypeId, int userId, int recordCount, string filename)
+        public async Task<int> InsertImportLog(int locationId, int importTypeId, int userId, int recordCount, string filename)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("import_id", importTypeId),
                 new SqlParameter("user_id", userId),
@@ -7907,11 +7892,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task InsertImportMessage(int providerId, int locationId, int logId, string logType, string logMessage, string logMrn, DateTime? logServiceDate)
+        public async Task InsertImportMessage(int locationId, int logId, string logType, string logMessage, string logMrn, DateTime? logServiceDate)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("import_log_id", logId),
                 new SqlParameter("error_type", logType),

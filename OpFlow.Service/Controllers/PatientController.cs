@@ -26,7 +26,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
-            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+            var userObject = await sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
 
             var patient = await secureSqlHelper.GetPatient(patientId,
                 user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
@@ -52,7 +52,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
-            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+            var userObject = await sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
 
             foreach (var patientId in post?.PatientArray)
             {
@@ -83,7 +83,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
-            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID, user.UserID);
+            var userObject = await sqlHelper.GetUser(user.SelectedLocation, user.UserID);
 
             foreach (var patientId in patientIds)
             { 
@@ -106,7 +106,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(secureUser.SecureDatabaseName);
 
-            var user = await sqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID,  secureUser.UserID);
+            var user = await sqlHelper.GetUser(secureUser.SelectedLocation,  secureUser.UserID);
 
             var patientId = await secureSqlHelper.CreatePatient(patient.PatientAcctNbr,
                 patient.BirthDate, patient.Gender, patient.FirstName, patient.LastName, patient.MiddleInitial, patient.BMI,

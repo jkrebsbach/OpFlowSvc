@@ -45,7 +45,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
             var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
-            var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+            var userObject = await sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
 
             var groups = await sqlHelper.GetMessageGroups(userId ?? user.UserID, startDate, endDate, user.ProviderID, user.LocationID);
 
@@ -85,7 +85,7 @@ namespace OpFlow.Service.Controllers
             {
                 var recipients = await sqlHelper.GetSurgeryUsers(surgeryId.Value, user.SelectedLocation);
 
-                var sender = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+                var sender = await sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
 
                 foreach (var recipient in recipients)
                 {
@@ -94,7 +94,7 @@ namespace OpFlow.Service.Controllers
                         continue;
 
                     var surgery = await sqlHelper.GetSurgery(surgeryId ?? -1, user.SelectedLocation);
-                    var userObject = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+                    var userObject = await sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
                     var patient = await secureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
                         userObject.LastName, (int)userObject.RoleID);
 
@@ -109,9 +109,9 @@ namespace OpFlow.Service.Controllers
             }
             else if (communicationUserId != null)
             {
-                var recipientUser = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  communicationUserId ?? -1);
+                var recipientUser = await sqlHelper.GetUser(user.SelectedLocation,  communicationUserId ?? -1);
 
-                var sender = await sqlHelper.GetUser(user.ProviderID, user.LocationID,  user.UserID);
+                var sender = await sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
 
                 var senderName = $"{sender.LastName}, {sender.FirstName}";
                 notificationOutcome = await PushNotification.PostNotification(sender.Email, senderName, recipientUser.Email, messagePost.Message);

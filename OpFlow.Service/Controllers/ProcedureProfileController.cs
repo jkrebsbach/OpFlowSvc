@@ -927,16 +927,16 @@ namespace OpFlow.Service.Controllers
 
                 var fileParser = new FileParser(fileName, fileContents);
 
-                await fileParser.ParseFile(sqlHelper, importTypeId, user.ProviderID, user.SelectedLocation);
+                await fileParser.ParseFile(sqlHelper, importTypeId, user.SelectedLocation);
 
                 var trayIds = new List<int>();
 
                 foreach (var record in fileParser.Records)
                 {
-                    var result = await sqlHelper.InsertStagingData(user.ProviderID, user.LocationID, null, record, fileParser.Relations);
+                    var result = await sqlHelper.InsertStagingData(user.SelectedLocation, null, record, fileParser.Relations);
                     foreach (var message in result.Messages)
                     {
-                        await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "WARN", message,
+                        await sqlHelper.InsertImportMessage(user.SelectedLocation, logId.Value, "WARN", message,
                             null, null);
                     }
 
@@ -954,7 +954,7 @@ namespace OpFlow.Service.Controllers
             {
                 LogHelper.LogException(ex);
                 if (logId != null)
-                    await sqlHelper.InsertImportMessage(user.ProviderID, user.LocationID, logId.Value, "ERROR", ex.Message, null, null);
+                    await sqlHelper.InsertImportMessage(user.SelectedLocation, logId.Value, "ERROR", ex.Message, null, null);
 
                 throw;
             }

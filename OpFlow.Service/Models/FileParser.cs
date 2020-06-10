@@ -26,7 +26,7 @@ namespace OpFlow.Service.Models
             _fileContents = filecontents;
         }
 
-        public async Task ParseFile(SqlHelper sqlHelper, int importTypeId, int providerId, int locationId)
+        public async Task ParseFile(SqlHelper sqlHelper, int importTypeId, int locationId)
         {
             var extension = Path.GetExtension(_filename);
             switch (extension)
@@ -48,7 +48,7 @@ namespace OpFlow.Service.Models
             }
 
             Relations = new FileParserRelations();
-            Relations.Roles = await sqlHelper.GetRoles(providerId, locationId);
+            Relations.Roles = await sqlHelper.GetRoles(locationId);
             Relations.Specialties = await sqlHelper.GetSpecialties(locationId);
             Relations.Rooms = await sqlHelper.GetRooms(locationId);
             Relations.Surgeons = await sqlHelper.GetSurgeons(null, locationId);
