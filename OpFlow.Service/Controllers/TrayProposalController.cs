@@ -9,7 +9,6 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Reporting.WebForms;
-using Mindscape.Raygun4Net;
 using Newtonsoft.Json;
 using OpFlow.Data;
 using OpFlow.Service.DataAccess;

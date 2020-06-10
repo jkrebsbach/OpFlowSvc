@@ -916,57 +916,65 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created)]
         public async Task<HttpResponseMessage> Post([FromBody]SurgeryPost surgery)
         {
-            var secureUser = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper();
-            var secureSqlHelper = new SecureSqlHelper(secureUser.SecureDatabaseName);
-
-            if (!secureUser.Vendor)
-                surgery.VendorLocationID = null;
-
-            var user = await sqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID,  secureUser.UserID);
-            
-            var patientId = await secureSqlHelper.CreatePatient(surgery.PtAcctNbr,
-                surgery.PtDOB, surgery.PtGender, surgery.PtFirstName, surgery.PtLastName, surgery.PtMiddleInitial, surgery.PtBMI, 
-                user.UserID, user.FirstName, user.LastName, (int)user.RoleID);
-
-            var caseId = await sqlHelper.CreateCase(patientId, secureUser.UserID, surgery.SpecialtyID, 
-                secureUser.SelectedLocation, surgery.CaseNbr);
-
-            var cardFlowRoom = (surgery.BundleID.HasValue && surgery.SurgeonUserID.HasValue) ? 
-                await sqlHelper.GetBundleDefaultCardFlowRoom(surgery.BundleID.Value, surgery.SurgeonUserID.Value, secureUser.SelectedLocation) : 
-                (await sqlHelper.GetProcedureDefaultCardFlowRoom(surgery.CptCode, secureUser.SelectedLocation)).FirstOrDefault();
-
-            var surgeryId = await sqlHelper.CreateSurgery(surgery, patientId, caseId, 
-                surgery.CardID ?? cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID,
-                secureUser.SelectedLocation);
-
-            if (surgery.SecondarySurgeons != null && surgery.SecondarySurgeons.Any())
+            try
             {
-                foreach (var userId in surgery.SecondarySurgeons)
-                {
-                    await sqlHelper.AddSurgeryUser(surgeryId, userId, secureUser.SelectedLocation);
-                }
-            }
+                var secureUser = await CacheUtil.GetUserSecurity();
+                var sqlHelper = new SqlHelper();
+                var secureSqlHelper = new SecureSqlHelper(secureUser.SecureDatabaseName);
 
-            if (surgery.TrayGroupID != null && surgery.TrayGroupID.Any())
-            {
-                var trayGroups = await sqlHelper.GetTrayGroups(secureUser.SelectedLocation);
+                if (!secureUser.Vendor)
+                    surgery.VendorLocationID = null;
 
-                foreach (var trayGroup in trayGroups.Where(t => surgery.TrayGroupID.Any(stg => t.TrayGroupID == stg)))
+                var user = await sqlHelper.GetUser(secureUser.ProviderID, secureUser.LocationID, secureUser.UserID);
+
+                var patientId = await secureSqlHelper.CreatePatient(surgery.PtAcctNbr,
+                    surgery.PtDOB, surgery.PtGender, surgery.PtFirstName, surgery.PtLastName, surgery.PtMiddleInitial, surgery.PtBMI,
+                    user.UserID, user.FirstName, user.LastName, (int)user.RoleID);
+
+                var caseId = await sqlHelper.CreateCase(patientId, secureUser.UserID, surgery.SpecialtyID,
+                    secureUser.SelectedLocation, surgery.CaseNbr);
+
+                var cardFlowRoom = (surgery.BundleID.HasValue && surgery.SurgeonUserID.HasValue) ?
+                    await sqlHelper.GetBundleDefaultCardFlowRoom(surgery.BundleID.Value, surgery.SurgeonUserID.Value, secureUser.SelectedLocation) :
+                    (await sqlHelper.GetProcedureDefaultCardFlowRoom(surgery.CptCode, secureUser.SelectedLocation)).FirstOrDefault();
+
+                var surgeryId = await sqlHelper.CreateSurgery(surgery, patientId, caseId,
+                    surgery.CardID ?? cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID,
+                    secureUser.SelectedLocation);
+
+                if (surgery.SecondarySurgeons != null && surgery.SecondarySurgeons.Any())
                 {
-                    foreach (var tray in trayGroup.Trays)
+                    foreach (var userId in surgery.SecondarySurgeons)
                     {
-                        await sqlHelper.AddCustomSurgeryItem(surgeryId, tray.TrayItemID, 1, secureUser.SelectedLocation);
+                        await sqlHelper.AddSurgeryUser(surgeryId, userId, secureUser.SelectedLocation);
                     }
                 }
-            }
 
-            if (surgery.TrayProposalID != null)
+                if (surgery.TrayGroupID != null && surgery.TrayGroupID.Any())
+                {
+                    var trayGroups = await sqlHelper.GetTrayGroups(secureUser.SelectedLocation);
+
+                    foreach (var trayGroup in trayGroups.Where(t => surgery.TrayGroupID.Any(stg => t.TrayGroupID == stg)))
+                    {
+                        foreach (var tray in trayGroup.Trays)
+                        {
+                            await sqlHelper.AddCustomSurgeryItem(surgeryId, tray.TrayItemID, 1, secureUser.SelectedLocation);
+                        }
+                    }
+                }
+
+                if (surgery.TrayProposalID != null)
+                {
+                    await sqlHelper.UpdateProposedTrayCount(surgery.TrayProposalID.Value, surgeryId, null, null, secureUser.SelectedLocation);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.Created, surgeryId);
+            }
+            catch(Exception ex)
             {
-                await sqlHelper.UpdateProposedTrayCount(surgery.TrayProposalID.Value, surgeryId, null, null, secureUser.SelectedLocation);
+                LogHelper.LogException(ex);
+                throw;
             }
-
-            return Request.CreateResponse(HttpStatusCode.Created, surgeryId);
         }
 
         // POST api/values
