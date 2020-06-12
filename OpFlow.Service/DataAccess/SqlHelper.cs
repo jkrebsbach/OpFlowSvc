@@ -740,6 +740,19 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> DeleteProcedureProfilePatientMetric(int procedureProfileId, int patientMetricId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("patient_metric_id", patientMetricId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("DeleteProcedureProfilePatientMetric", parameters);
+
+            return result;
+        }
+
         public async Task<DataSet> GetVendorTrayConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
             List<int> procedureId, List<int> trayId, List<int> cardCategoryId, List<int> cardId, string instruments, 
             int? caseProfileId, List<int> questionId, List<int> answerId,

@@ -132,5 +132,21 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
+
+        // GET api/values/5
+        [SwaggerOperation("PutProfile")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("profile")]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteProfile(int procedureProfileId, int patientMetricId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.DeleteProcedureProfilePatientMetric(procedureProfileId, patientMetricId, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
     }
 }
