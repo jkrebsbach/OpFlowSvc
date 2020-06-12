@@ -372,7 +372,7 @@ namespace OpFlow.Service.Controllers
             var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, null, null, null,
                 null, post.TrayId, null,
                 user.SelectedLocation);
-            var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId, null, null,
+            var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId, null, null, null,
                 user.SelectedLocation);
 
 

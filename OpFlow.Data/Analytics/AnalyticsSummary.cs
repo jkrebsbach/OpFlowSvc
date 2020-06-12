@@ -226,6 +226,7 @@ namespace OpFlow.Data
         public List<int> SurgeonId { get; set; }
         public List<int> TrayId { get; set; }
         public List<int> CardCategoryId { get; set; }
+        public List<int> CardId { get; set; }
         public int? MinSize { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }

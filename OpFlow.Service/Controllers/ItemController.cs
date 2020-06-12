@@ -104,7 +104,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var items = await sqlHelper.GetTrayItems(trayId, user.SelectedLocation);
-            var profiles = await sqlHelper.GetProcedureProfilesVendor(user.ProviderID);
+            var profiles = await sqlHelper.GetProcedureProfilesVendor(user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {

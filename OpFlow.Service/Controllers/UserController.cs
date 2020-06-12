@@ -60,17 +60,13 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound, "User not found");
 
             var vendorLocations = await sqlHelper.GetVendorLocations(user.ProviderID);
-            var procedureProfiles = await sqlHelper.GetProcedureProfilesVendor(user.ProviderID);
+            var procedureProfiles = await sqlHelper.GetProcedureProfilesVendor(user.SelectedLocation);
+            var surgeons = await sqlHelper.GetSurgeons(null, user.SelectedLocation);
 
             var selectedLocation = vendorLocations.FirstOrDefault(l => l.LocationID == user.SelectedLocation);
             if (selectedLocation != null) selectedLocation.ActiveLocation = true;
 
-            var surgeons = new List<Surgeon>();
-            foreach (var location in vendorLocations)
-            {
-                surgeons.AddRange(await sqlHelper.GetSurgeons(null, location.LocationID));
-            }
-
+            
             var providers = vendorLocations.GroupBy(v => new { v.ProviderID, v.ProviderName }).Select(v => new OpFlowProvider()
             {
                 ProviderID = v.Key.ProviderID,

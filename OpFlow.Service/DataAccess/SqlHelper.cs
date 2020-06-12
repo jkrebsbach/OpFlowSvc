@@ -459,13 +459,14 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<DataSet> GetAnalyticsTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId, List<int> cardCategoryId,
-            int? minSize, int locationId)
+        public async Task<DataSet> GetAnalyticsTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId, 
+            List<int> cardCategoryId, List<int> cardId, int? minSize, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
             var trayXml = GetIdentitySummary(trayId);
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+            var cardXml = GetIdentitySummary(cardId);
 
             var parameters = new[]
             {
@@ -473,6 +474,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("min_size", minSize ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
@@ -3872,11 +3874,11 @@ namespace OpFlow.Service.DataAccess
             return results;
         }
 
-        public async Task<List<ProcedureProfile>> GetProcedureProfilesVendor(int vendorId)
+        public async Task<List<ProcedureProfile>> GetProcedureProfilesVendor(int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("vendor_id", vendorId)
+                new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetProcedureProfilesVendor", parameters);
 
@@ -3896,7 +3898,8 @@ namespace OpFlow.Service.DataAccess
                 result.CardCategories = cardCategories.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
                 result.Cards = cards.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
 
-                result.PatientMetrics = profileMetrics.GroupBy(p => new { p.PatientMetricID, p.QuestionText }).Select(p =>
+                result.PatientMetrics = profileMetrics.Where(p => p.ProcedureProfileID == result.ProcedureProfileID)
+                    .GroupBy(p => new { p.PatientMetricID, p.QuestionText }).Select(p =>
                     new PatientMetric()
                     {
                         PatientMetricID = p.Key.PatientMetricID,
