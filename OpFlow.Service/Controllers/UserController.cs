@@ -62,6 +62,12 @@ namespace OpFlow.Service.Controllers
             var vendorLocations = await sqlHelper.GetVendorLocations(user.ProviderID);
             var procedureProfiles = await sqlHelper.GetProcedureProfilesVendor(user.ProviderID);
 
+            var surgeons = new List<Surgeon>();
+            foreach (var location in vendorLocations)
+            {
+                surgeons.AddRange(await sqlHelper.GetSurgeons(null, location.LocationID));
+            }
+
             var providers = vendorLocations.GroupBy(v => new { v.ProviderID, v.ProviderName }).Select(v => new OpFlowProvider()
             {
                 ProviderID = v.Key.ProviderID,
@@ -73,7 +79,8 @@ namespace OpFlow.Service.Controllers
             {
                 Providers = providers,
                 Locations = vendorLocations,
-                ProcedureProfiles = procedureProfiles.Where(p => p.Cards.Any())
+                ProcedureProfiles = procedureProfiles.Where(p => p.Cards.Any()),
+                Surgeons = surgeons.OrderBy(s => s.LastName).ThenBy(s => s.FirstName)
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -135,7 +142,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("vendorSurgeons/{locationId}", Name = "VendorSurgeons")]
-        public async Task<HttpResponseMessage> GetVendorSurgeries(int locationId)
+        public async Task<HttpResponseMessage> GetVendorSurgeons(int locationId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
