@@ -62,6 +62,9 @@ namespace OpFlow.Service.Controllers
             var vendorLocations = await sqlHelper.GetVendorLocations(user.ProviderID);
             var procedureProfiles = await sqlHelper.GetProcedureProfilesVendor(user.ProviderID);
 
+            var selectedLocation = vendorLocations.FirstOrDefault(l => l.LocationID == user.SelectedLocation);
+            if (selectedLocation != null) selectedLocation.ActiveLocation = true;
+
             var surgeons = new List<Surgeon>();
             foreach (var location in vendorLocations)
             {

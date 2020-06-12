@@ -91,6 +91,24 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetVendorSupply")]
+        [Route("vendorSupply/{procedureProfileId}")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardWithCategory>))]
+        public async Task<HttpResponseMessage> GetVendorSupply(int procedureProfileId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal" && !user.Vendor)
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper();
+
+            var profile = await sqlHelper.GetProcedureProfile(procedureProfileId, null);
+
+            return Request.CreateResponse(HttpStatusCode.OK, profile);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetCardCategories")]
         [Route("cardCategories")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardWithCategory>))]

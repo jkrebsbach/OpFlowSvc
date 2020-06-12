@@ -33,6 +33,7 @@ namespace OpFlow.Data
         public int? AuditMed { get; set; }
         public int? AuditLow { get; set; }
         public int? DailyTarget { get; set; }
+        public bool ActiveLocation { get; set; }
     }
 
     public class LocationPost
