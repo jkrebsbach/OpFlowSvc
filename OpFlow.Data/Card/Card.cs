@@ -105,6 +105,8 @@ namespace OpFlow.Data
 
     public class CardItemPost
     {
+        public int? ItemID { get; set; }
+        public string ItemName { get; set; }
         public int OpenQty { get; set; }
         public int HoldQty { get; set; }
     }

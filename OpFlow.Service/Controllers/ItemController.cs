@@ -187,7 +187,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            int comparableItemId = post.RelatedItemID ??  await sqlHelper.InsertItemMaster("SUPPLY", post.ItemName, user.ProviderID, user.LocationID);
+            int comparableItemId = post.RelatedItemID ??  await sqlHelper.InsertItemMaster("SUPPLY", post.ItemName, user.SelectedLocation);
             
             var result = await sqlHelper.InsertComparableItem(itemId, comparableItemId, user.ProviderID, user.LocationID);
 

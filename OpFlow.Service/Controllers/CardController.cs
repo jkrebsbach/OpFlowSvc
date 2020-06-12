@@ -423,7 +423,7 @@ namespace OpFlow.Service.Controllers
 
             var result = await sqlHelper.DeleteCardItem(cardId, itemId, user.SelectedLocation);
 
-            return Request.CreateResponse(HttpStatusCode.OK);
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // PUT api/values
@@ -431,14 +431,17 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
         [Route("cardItem", Name = "AssignCardItem")]
         [HttpPut]
-        public async Task<HttpResponseMessage> PutCardItem(int cardId, int itemId, [FromBody]CardItemPost value)
+        public async Task<HttpResponseMessage> PutCardItem(int cardId, [FromBody]CardItemPost value)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateCardItem(cardId, itemId, value.OpenQty, value.HoldQty, user.SelectedLocation);
+            if (value.ItemID == null)
+                value.ItemID = await sqlHelper.InsertItemMaster("SUPPLY", value.ItemName, user.SelectedLocation);
 
-            return Request.CreateResponse(HttpStatusCode.OK);
+            var result = await sqlHelper.UpdateCardItem(cardId, value.ItemID ?? -1, value.OpenQty, value.HoldQty, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // PUT api/values
