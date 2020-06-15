@@ -178,7 +178,7 @@ namespace OpFlow.Data
         public List<ProcedureProfileTrayUsage> TrayUsage { get; set; }
         public List<ProcedureProfileAssociatedTray> AssociatedTrays { get; set; }
 
-        public int ProcedureProfileCounts => Cards.Sum(c => c.ProfileCount);
+        public int ProcedureProfileCounts => Cards?.Sum(c => c.ProfileCount) ?? 0;
     }
 
     public class ProcedureProfileRequestPost
