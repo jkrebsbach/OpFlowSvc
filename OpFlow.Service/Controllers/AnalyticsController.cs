@@ -1567,7 +1567,12 @@ namespace OpFlow.Service.Controllers
             {
                 ["SupplyCount"] = analytics.Tables[0]
             };
-            var result = ReportHelper.GetReport("SupplyCount", format, datasets);
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport($"SupplyCount{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {

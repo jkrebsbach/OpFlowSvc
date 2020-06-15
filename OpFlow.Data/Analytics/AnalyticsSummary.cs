@@ -275,8 +275,8 @@ namespace OpFlow.Data
         public decimal WasteCost { get; set; }
         public decimal OverallocatedUnits { get; set; }
         public decimal OverallocatedCost { get; set; }
-        public decimal WasteReduction => (WasteCost / TotalCost) * 100;
-        public decimal OverallocatedReduction => (OverallocatedCost / TotalCost) * 100;
+        public decimal WasteReduction => TotalCost == 0 ? 0 : (WasteCost / TotalCost) * 100;
+        public decimal OverallocatedReduction => TotalCost == 0 ? 0 : (OverallocatedCost / TotalCost) * 100;
     }
 
     public class CountSampleDispersionReportPost : ReportRequest
