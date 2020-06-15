@@ -41,4 +41,9 @@ namespace OpFlow.Data
         public string Provider { get; set; }
         public string Location { get; set; }
     }
+
+    public class UserSettingsPost
+    {
+        public string UserSettings { get; set; }
+    }
 }

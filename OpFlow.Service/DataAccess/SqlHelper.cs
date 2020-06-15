@@ -4402,6 +4402,18 @@ namespace OpFlow.Service.DataAccess
 
             return result.First();
         }
+        public async Task<int> UpdateUserSettings(int userId, string userSettings, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("user_id", userId),
+                new SqlParameter("user_settings", userSettings ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateUserSettings", dsParameters);
+
+            return result;
+        }
         public async Task<int> InsertVendorProvider(string provider, int vendorId)
         {
             var dsParameters = new[]

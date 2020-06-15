@@ -56,9 +56,6 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            if (!user.Vendor)
-                return Request.CreateResponse(HttpStatusCode.NotFound, "User not found");
-
             var vendorLocations = await sqlHelper.GetVendorLocations(user.ProviderID);
             var procedureProfiles = await sqlHelper.GetProcedureProfilesVendor(user.SelectedLocation);
             var surgeons = await sqlHelper.GetSurgeons(null, user.SelectedLocation);
@@ -91,17 +88,37 @@ namespace OpFlow.Service.Controllers
         /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("vendorLocation/{locationId}", Name = "PutVendorLocation")]
+        [Route("vendorLocation/{locationId}", Name = "PostVendorLocation")]
         [HttpPost]
-        public async Task<HttpResponseMessage> PutVendorLocation(int locationId)
+        public async Task<HttpResponseMessage> PostVendorLocation(int locationId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
             if (!user.Vendor)
-                return Request.CreateResponse(HttpStatusCode.NotFound, "Put not found");
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Post not found");
 
             var result = await sqlHelper.UpdateUserVendorLocation(user.UserID, locationId, user.ProviderID, user.LocationID);
+
+            CacheUtil.RefreshUserCache();
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        /// <summary>
+        /// Vendor Portal Home screen for vendors
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("userSettings", Name = "PostUserSettings")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostUserSettings([FromBody] UserSettingsPost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.UpdateUserSettings(user.UserID, request.UserSettings, user.LocationID);
 
             CacheUtil.RefreshUserCache();
 
@@ -273,9 +290,9 @@ namespace OpFlow.Service.Controllers
         /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("vendorLocation", Name = "PostVendorLocation")]
+        [Route("vendorLocation", Name = "CreateVendorLocation")]
         [HttpPost]
-        public async Task<HttpResponseMessage> PostVendorLocation([FromBody] VendorCreateLocationPost request)
+        public async Task<HttpResponseMessage> CreateVendorLocation([FromBody] VendorCreateLocationPost request)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
