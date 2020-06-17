@@ -4361,6 +4361,31 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+        public async Task<List<UserLocation>> GetUserLocations(int userId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("user_id", userId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetUserLocations", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<UserLocation>();
+
+            return result;
+        }
+        public async Task<int> UpdateUserLocations(List<int> locationId, int userId)
+        {
+            var locationXml = GetIdentitySummary(locationId);
+
+            var dsParameters = new[]
+            {
+                new SqlParameter("location_id", locationXml),
+                new SqlParameter("user_id", userId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateUserLocations", dsParameters);
+
+            return result;
+        }
         public async Task<int> UpdateVendorCardName(int cardId, string cardName, int providerId)
         {
             var dsParameters = new[]

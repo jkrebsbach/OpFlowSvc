@@ -43,8 +43,7 @@ namespace OpFlow.Data
 
     public class InternalUser : User
     {
-        public int VendorID { get; set; }   
-        public string Vendor { get; set; }
+        public int VendorID { get; set; } 
     }
 
     public class UserPost

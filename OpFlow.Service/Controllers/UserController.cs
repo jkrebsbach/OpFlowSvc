@@ -57,6 +57,14 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var vendorLocations = await sqlHelper.GetVendorLocations(user.ProviderID);
+            var userLocations = await sqlHelper.GetUserLocations(user.UserID);
+
+            // If this user has limited locations, limit portal result here
+            if (userLocations.Any(l => l.SelectedLocation))
+            {
+                vendorLocations = vendorLocations.Where(vl => userLocations.Any(ul => ul.SelectedLocation && ul.LocationID == vl.LocationID)).ToList();
+            }
+
             var procedureProfiles = await sqlHelper.GetProcedureProfilesVendor(user.SelectedLocation);
             var surgeons = await sqlHelper.GetSurgeons(null, user.SelectedLocation);
 
@@ -79,6 +87,74 @@ namespace OpFlow.Service.Controllers
                 Surgeons = surgeons.OrderBy(s => s.LastName).ThenBy(s => s.FirstName)
             };
 
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        /// <summary>
+        /// User location assignment
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("locationAssignment", Name = "GetLocationAssignment")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetLocationAssignment()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var locations = await sqlHelper.GetUserLocations(user.UserID);
+            var providers = locations.GroupBy(p => new { p.ProviderID, p.ProviderName })
+                .Select(p => new OpFlowProvider()
+                {
+                    ProviderID = p.Key.ProviderID,
+                    ProviderName = p.Key.ProviderName
+                });
+
+            // If no locations selected, then all locations selected
+            if (!locations.Any(l => l.SelectedLocation))
+                locations.ForEach(l => l.SelectedLocation = true);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Providers = providers,
+                Locations = locations
+            });
+        }
+
+        /// <summary>
+        /// User location assignment
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("cardVariance", Name = "PostCardVariance")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostCardVariance([FromBody] TrayRationalizationReportPost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var locations = await sqlHelper.GetUserLocations(user.UserID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, locations);
+        }
+
+        /// <summary>
+        /// User location assignment
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("locationAssignment", Name = "PostLocationAssignment")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostLocationAssignment([FromBody] UserLocationPost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.UpdateUserLocations(request.LocationID, user.UserID);
+            
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 

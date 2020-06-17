@@ -36,6 +36,25 @@ namespace OpFlow.Data
         public bool ActiveLocation { get; set; }
     }
 
+    public class UserLocation
+    {
+        public int UserID { get; set; }
+        public int LocationID { get; set; }
+        public int ProviderID { get; set; }
+        public string ProviderName { get; set; }
+        public string LocationName { get; set; }
+        public string Street { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Zip { get; set; }
+        public bool SelectedLocation { get; set; }
+    }
+
+    public class UserLocationPost
+    {
+        public List<int> LocationID { get; set; }
+    }
+
     public class LocationPost
     {
         public string Provider { get; set; }
