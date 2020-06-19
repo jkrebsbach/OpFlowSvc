@@ -135,9 +135,30 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var locations = await sqlHelper.GetUserLocations(user.UserID);
+            var summary = await sqlHelper.GetProcedureProfileCardVariance(request.CardId, user.SelectedLocation);
 
-            return Request.CreateResponse(HttpStatusCode.OK, locations);
+            var items = summary.GroupBy(s => new { s.ItemID, s.ItemName, s.TrayName, s.SourceType });
+            var cardCount = request?.CardId?.Count ?? 0;
+
+
+            var shared = items.Where(i => i.Count() == cardCount);
+            var variance = items.Where(i => i.Count() != cardCount);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                InternalTrays = summary.Where(s => s.SourceType == "T").Select(i => i.TrayName).Distinct(),
+                ExternalTrays = summary.Where(s => s.SourceType == "V").Select(i => i.TrayName).Distinct(),
+                Trays = new
+                {
+                    Shared = shared.Where(i => i.Key.TrayName != null).SelectMany(s => s.ToList()),
+                    Variance = variance.Where(i => i.Key.TrayName != null).SelectMany(s => s.ToList())
+                },
+                Supplies = new
+                {
+                    Shared = shared.Where(i => i.Key.TrayName == null).SelectMany(s => s.ToList()),
+                    Variance = variance.Where(i => i.Key.TrayName == null).SelectMany(s => s.ToList())
+                }
+            });
         }
 
         /// <summary>

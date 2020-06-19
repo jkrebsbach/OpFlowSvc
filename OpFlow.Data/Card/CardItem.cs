@@ -223,6 +223,18 @@ namespace OpFlow.Data
         public List<ProfileTray> Trays { get; set; }
     }
 
+    public class ProfileCardVariance
+    {
+        public int ItemID { get; set; }
+        public string TrayName { get; set; }
+        public string ItemName { get; set; }
+        public string SourceType { get; set; }
+        public string CardName { get; set; }
+        public string SurgeonName { get; set; }
+        public int CardQty { get; set; }
+        public int OppQty { get; set; }
+    }
+
     public class ProfileTray
     {
         public int ProcedureProfileID { get; set; }

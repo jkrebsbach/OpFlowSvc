@@ -4005,6 +4005,21 @@ namespace OpFlow.Service.DataAccess
 
             return profiles;
         }
+        public async Task<List<ProfileCardVariance>> GetProcedureProfileCardVariance(List<int> cardId, int locationId)
+        {
+            var cardXml = GetIdentitySummary(cardId);
+        
+            var parameters = new[]
+            {
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var dataSet = await ExecuteCommandAsync("GetProcedureProfileCardVariance", parameters);
+
+            var result = dataSet.Tables[0].DataTableToList<ProfileCardVariance>();
+            
+            return result;
+        }        
 
         public async Task<int> UpdateProcedureProfile(int? procedureProfileId, string profileName, List<int> locationFilter, List<int> cardCategoryId, List<int> specialtyId,
             int providerId, int locationId)
