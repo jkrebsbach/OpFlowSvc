@@ -150,12 +150,14 @@ namespace OpFlow.Service.Controllers
                 ExternalTrays = summary.Where(s => s.SourceType == "V").Select(i => i.TrayName).Distinct(),
                 Trays = new
                 {
-                    Shared = shared.Where(i => i.Key.TrayName != null).SelectMany(s => s.ToList()),
+                    Shared = shared.Where(i => i.Key.TrayName != null).SelectMany(s => s.ToList()).GroupBy(s => new { s.TrayName, s.ItemName })
+                        .Select(s => new { s.Key.TrayName, s.Key.ItemName, CardQty = s.Max(i => i.CardQty) }),
                     Variance = variance.Where(i => i.Key.TrayName != null).SelectMany(s => s.ToList())
                 },
                 Supplies = new
                 {
-                    Shared = shared.Where(i => i.Key.TrayName == null).SelectMany(s => s.ToList()),
+                    Shared = shared.Where(i => i.Key.TrayName == null).SelectMany(s => s.ToList()).GroupBy(s => new { s.TrayName, s.ItemName })
+                        .Select(s => new { s.Key.TrayName, s.Key.ItemName, CardQty = s.Max(i => i.CardQty) }),
                     Variance = variance.Where(i => i.Key.TrayName == null).SelectMany(s => s.ToList())
                 }
             });
