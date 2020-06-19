@@ -57,7 +57,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var vendorLocations = await sqlHelper.GetVendorLocations(user.ProviderID);
-            var userLocations = await sqlHelper.GetUserLocations(user.UserID);
+            var userLocations = await sqlHelper.GetUserLocations(user.UserID, user.LocationID);
 
             // If this user has limited locations, limit portal result here
             if (userLocations.Any(l => l.SelectedLocation))
@@ -98,12 +98,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("locationAssignment", Name = "GetLocationAssignment")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetLocationAssignment()
+        public async Task<HttpResponseMessage> GetLocationAssignment(int userId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var locations = await sqlHelper.GetUserLocations(user.UserID);
+            var locations = await sqlHelper.GetUserLocations(userId, user.SelectedLocation);
             var providers = locations.GroupBy(p => new { p.ProviderID, p.ProviderName })
                 .Select(p => new OpFlowProvider()
                 {
@@ -176,7 +176,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateUserLocations(request.LocationID, user.UserID);
+            var result = await sqlHelper.UpdateUserLocations(user.UserID, request.LocationID);
             
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

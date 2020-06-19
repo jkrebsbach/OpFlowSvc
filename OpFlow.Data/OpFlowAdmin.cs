@@ -52,6 +52,7 @@ namespace OpFlow.Data
 
     public class UserLocationPost
     {
+        public int UserID { get; set; }
         public List<int> LocationID { get; set; }
     }
 
