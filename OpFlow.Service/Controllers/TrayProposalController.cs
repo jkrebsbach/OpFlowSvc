@@ -1650,6 +1650,8 @@ namespace OpFlow.Service.Controllers
                 : await sqlHelper.GetProposedTrayInstrumentCategories(post.TrayProposalID, user.SelectedLocation);
 
 
+            var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(post.TrayProposalID, user.SelectedLocation);
+
             var details = new Dictionary<string, List<TrayRationalizationDetail>>();
 
             var comparableTrays = new List<TrayRationalizationSummary>();
@@ -1738,7 +1740,8 @@ namespace OpFlow.Service.Controllers
                 ProposedTray = proposedTray,
                 Details = result,
                 SourceTrays = sourceTrays,
-                ComparableTrays = comparableTrays
+                ComparableTrays = comparableTrays,
+                Cards = cardOverlaps
             });
         }
 

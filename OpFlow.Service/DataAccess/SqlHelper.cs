@@ -1751,14 +1751,15 @@ namespace OpFlow.Service.DataAccess
                     TrayID = grp.Key.TrayID,
                     CardDescription = grp.First().CardDescription,
                     TrayName = grp.First().TrayName,
-                    ReplaceCard = grp.First().ReplaceCard,
                     SpecialtyName = grp.First().SpecialtyName,
                     SurgeonName = grp.First().SurgeonName,
                     TimesUsed = grp.First().TimesUsed,
                     MissingInstruments = grp.Sum(g => g.UsedInstruments - g.CurrentTrayItems),
                     CommonInstruments = grp.Sum(g => g.CommonInstruments),
                     UsedInstruments = grp.Sum(g => g.UsedInstruments),
-                    CurrentTrayItems = grp.Sum(g => g.CurrentTrayItems)
+                    CurrentTrayItems = grp.Sum(g => g.CurrentTrayItems),
+                    CountsComplete = grp.Max(g => g.CountsComplete),
+                    AuditsComplete = grp.Max(g => g.AuditsComplete)
                 };
 
                 result.Add(overlap);

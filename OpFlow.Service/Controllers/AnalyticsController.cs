@@ -182,9 +182,12 @@ namespace OpFlow.Service.Controllers
             var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation)).FirstOrDefault();
             var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, user.SelectedLocation);
             var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.SelectedLocation);
-            var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.SelectedLocation);
+            var trayCounts = await sqlHelper.GetTrayCountSummary(trayProposalId, user.SelectedLocation);
             var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.SelectedLocation);
             var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.SelectedLocation);
+
+            // Error path
+            if (proposedTray == null) proposedTray = new TrayRationalization();
 
             proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
             foreach (var sourceTray in sourceTrays)
@@ -204,10 +207,10 @@ namespace OpFlow.Service.Controllers
                 ["ProposedTray"] = (new List<TrayRationalization>() { proposedTray }).ToDataTable(),
                 ["TrayInstruments"] = instruments.ToDataTable(),
                 ["Audits"] = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList().ToDataTable(),
-                ["TrayCounts"] = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList().ToDataTable(),
+                ["TrayCounts"] = trayCounts.ToDataTable(),
                 ["SourceTrays"] = sourceTrays.ToDataTable(),
                 ["Instruments"] = instruments.ToDataTable(),
-                ["Cards"] = cardOverlaps.Where(c => c.ReplaceCard).ToList().ToDataTable()
+                ["Cards"] = cardOverlaps.ToDataTable()
             };
 
             var result = ReportHelper.GetReport($"TrayApproval", "PDF", datasets, parameters);
@@ -226,7 +229,7 @@ namespace OpFlow.Service.Controllers
             var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation)).FirstOrDefault();
             var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, user.SelectedLocation);
             var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.SelectedLocation);
-            var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.SelectedLocation);
+            var trayCounts = await sqlHelper.GetTrayCountSummary(trayProposalId, user.SelectedLocation);
             var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.SelectedLocation);
             var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.SelectedLocation);
 
@@ -292,10 +295,10 @@ namespace OpFlow.Service.Controllers
                 ["ProposedTray"] = (new List<TrayRationalization>() { proposedTray }).ToDataTable(),
                 ["TrayInstruments"] = instruments.ToDataTable(),
                 ["Audits"] = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList().ToDataTable(),
-                ["TrayCounts"] = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList().ToDataTable(),
+                ["TrayCounts"] = trayCounts.ToDataTable(),
                 ["SourceTrays"] = sourceTrays.ToDataTable(),
                 ["Instruments"] = instruments.ToDataTable(),
-                ["Cards"] = cardOverlaps.Where(c => c.ReplaceCard).ToList().ToDataTable()
+                ["Cards"] = cardOverlaps.ToDataTable()
             };
 
             var result = ReportHelper.GetReport($"TrayApproval", "PDF", datasets, baseParameters);

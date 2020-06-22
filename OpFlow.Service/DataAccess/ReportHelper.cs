@@ -30,7 +30,14 @@ namespace OpFlow.Service.DataAccess
                 viewer.LocalReport.DataSources.Add(new ReportDataSource(dataset, datasets[dataset])); 
             }
 
-            return viewer.LocalReport.Render(format, null, out _, out _, out _, out _, out _);
+            try
+            {
+                return viewer.LocalReport.Render(format, null, out _, out _, out _, out _, out _);
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
