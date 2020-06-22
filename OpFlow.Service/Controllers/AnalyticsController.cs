@@ -252,8 +252,12 @@ namespace OpFlow.Service.Controllers
             var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId, null, null, null,
                 user.SelectedLocation);
 
-
-            var parameters = new[]
+            var baseParameters = new[]
+            {
+                new ReportParameter("Target", await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var groupParameters = new[]
             {
                 new ReportParameter("Group", "t"),
                 new ReportParameter("Target", await GetLocationName(user)),
@@ -264,17 +268,17 @@ namespace OpFlow.Service.Controllers
             {
                 ["CountSummary"] = countAnalytics.Tables[0]
             };
-            var countSummaryBytes = ReportHelper.GetReport("CountSummaryExport", "PDF", countDatasets, parameters);
+            var countSummaryBytes = ReportHelper.GetReport("CountSummaryExport", "PDF", countDatasets, groupParameters);
             var instrumentDatasets = new Dictionary<string, DataTable>
             {
                 ["InstrumentUsage"] = instrumentAnalytics.Tables[0]
             };
-            var instrumentUsageBytes = ReportHelper.GetReport("InstrumentUsageExport", "PDF", instrumentDatasets);
+            var instrumentUsageBytes = ReportHelper.GetReport("InstrumentUsageExport", "PDF", instrumentDatasets, baseParameters);
             var trayDatasets = new Dictionary<string, DataTable>
             {
                 ["TrayRationalization"] = trayAnalytics.Tables[0]
             };
-            var trayRationalizationBytes = ReportHelper.GetReport("TrayRationalizationExport", "PDF", trayDatasets);
+            var trayRationalizationBytes = ReportHelper.GetReport("TrayRationalizationExport", "PDF", trayDatasets, baseParameters);
 
             //    countSummaryBytes,
             //    instrumentUsageBytes,
@@ -294,7 +298,7 @@ namespace OpFlow.Service.Controllers
                 ["Cards"] = cardOverlaps.Where(c => c.ReplaceCard).ToList().ToDataTable()
             };
 
-            var result = ReportHelper.GetReport($"TrayApproval", "PDF", datasets, parameters);
+            var result = ReportHelper.GetReport($"TrayApproval", "PDF", datasets, baseParameters);
             var summaryStream = new MemoryStream(result);
 
             var resultStream = new MemoryStream();

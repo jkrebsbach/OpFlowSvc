@@ -3892,7 +3892,6 @@ IIF(Fields!Reason.Value = "S", "Safety", "Buffer"))</Value>
   <ReportParameters>
     <ReportParameter Name="Target">
       <DataType>String</DataType>
-      <Nullable>true</Nullable>
       <DefaultValue>
         <Values>
           <Value />
@@ -3910,17 +3909,6 @@ IIF(Fields!Reason.Value = "S", "Safety", "Buffer"))</Value>
       </DefaultValue>
       <Prompt>Timezone</Prompt>
     </ReportParameter>
-    <ReportParameter Name="Group">
-      <DataType>String</DataType>
-      <Nullable>true</Nullable>
-      <DefaultValue>
-        <Values>
-          <Value />
-        </Values>
-      </DefaultValue>
-      <AllowBlank>true</AllowBlank>
-      <Prompt>Group</Prompt>
-    </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
@@ -3936,11 +3924,6 @@ IIF(Fields!Reason.Value = "S", "Safety", "Buffer"))</Value>
           <ColumnIndex>1</ColumnIndex>
           <RowIndex>0</RowIndex>
           <ParameterName>Timezone</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>2</ColumnIndex>
-          <RowIndex>0</RowIndex>
-          <ParameterName>Group</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>
