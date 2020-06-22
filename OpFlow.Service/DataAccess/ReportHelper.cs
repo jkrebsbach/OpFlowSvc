@@ -30,7 +30,7 @@ namespace OpFlow.Service.DataAccess
                 viewer.LocalReport.DataSources.Add(new ReportDataSource(dataset, datasets[dataset])); 
             }
 
-            return viewer.LocalReport.Render(format, null, out var mimeType, out var encoding, out var filenameExtension, out var streamids, out var warnings);
+            return viewer.LocalReport.Render(format, null, out _, out _, out _, out _, out _);
         }
     }
 }

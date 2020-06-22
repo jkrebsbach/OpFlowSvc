@@ -12,6 +12,8 @@ using System.Web.Http;
 using Microsoft.Reporting.WebForms;
 using OpFlow.Data;
 using OpFlow.Service.DataAccess;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
 using Swashbuckle.Swagger.Annotations;
 
 namespace OpFlow.Service.Controllers
@@ -166,6 +168,161 @@ namespace OpFlow.Service.Controllers
                 var webImage = ImageHelper.CreateWebImage(result);
 
                 return ResponseHelper.ImageResponse(Request, webImage);
+            }
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
+        [Route("traySummary/{trayProposalId}", Name = "GetTraySummary")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetTraySummary(int trayProposalId, int timezone)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation)).FirstOrDefault();
+            var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, user.SelectedLocation);
+            var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.SelectedLocation);
+            var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.SelectedLocation);
+            var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.SelectedLocation);
+            var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.SelectedLocation);
+
+            proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
+            foreach (var sourceTray in sourceTrays)
+            {
+                sourceTray.InstrumentCount = sourceTray.Instruments.Sum(i => i.Quantity);
+                sourceTray.ProposedInstrumentCount = instruments.Sum(i => i.Quantity);
+            }
+
+            var parameters = new[]
+            {
+                new ReportParameter("Target", await GetLocationName(user)),
+                new ReportParameter("Timezone", timezone.ToString())
+            };
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["ProposedTray"] = (new List<TrayRationalization>() { proposedTray }).ToDataTable(),
+                ["TrayInstruments"] = instruments.ToDataTable(),
+                ["Audits"] = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList().ToDataTable(),
+                ["TrayCounts"] = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList().ToDataTable(),
+                ["SourceTrays"] = sourceTrays.ToDataTable(),
+                ["Instruments"] = instruments.ToDataTable(),
+                ["Cards"] = cardOverlaps.Where(c => c.ReplaceCard).ToList().ToDataTable()
+            };
+
+            var result = ReportHelper.GetReport($"TrayApproval", "PDF", datasets, parameters);
+
+            return ResponseHelper.PdfResponse(result);
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
+        [Route("trayAnalyticSummary/{trayProposalId}", Name = "GetTrayAnalyticSummary")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> GetTrayAnalyticSummary(int trayProposalId, [FromBody] TrayRationalizationReportPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation)).FirstOrDefault();
+            var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, user.SelectedLocation);
+            var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.SelectedLocation);
+            var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.SelectedLocation);
+            var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.SelectedLocation);
+            var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.SelectedLocation);
+
+            proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
+            foreach (var sourceTray in sourceTrays)
+            {
+                sourceTray.InstrumentCount = sourceTray.Instruments.Sum(i => i.Quantity);
+                sourceTray.ProposedInstrumentCount = instruments.Sum(i => i.Quantity);
+            }
+
+            // Something strange about how jquery & api controllers working here...
+            if (post.SpecialtyId != null && post.SpecialtyId.Count == 1 && post.SpecialtyId[0] == 0)
+                post.SpecialtyId = null;
+
+            if (post.TrayId != null && post.TrayId.Count == 1 && post.TrayId[0] == 0)
+                post.TrayId = null;
+
+            var countAnalytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, null, null, null, null,
+                user.SelectedLocation);
+            var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, null, null, null,
+                null, post.TrayId, null,
+                user.SelectedLocation);
+            var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId, null, null, null,
+                user.SelectedLocation);
+
+
+            var parameters = new[]
+            {
+                new ReportParameter("Group", "t"),
+                new ReportParameter("Target", await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+
+            var countDatasets = new Dictionary<string, DataTable>
+            {
+                ["CountSummary"] = countAnalytics.Tables[0]
+            };
+            var countSummaryBytes = ReportHelper.GetReport("CountSummaryExport", "PDF", countDatasets, parameters);
+            var instrumentDatasets = new Dictionary<string, DataTable>
+            {
+                ["InstrumentUsage"] = instrumentAnalytics.Tables[0]
+            };
+            var instrumentUsageBytes = ReportHelper.GetReport("InstrumentUsageExport", "PDF", instrumentDatasets);
+            var trayDatasets = new Dictionary<string, DataTable>
+            {
+                ["TrayRationalization"] = trayAnalytics.Tables[0]
+            };
+            var trayRationalizationBytes = ReportHelper.GetReport("TrayRationalizationExport", "PDF", trayDatasets);
+
+            //    countSummaryBytes,
+            //    instrumentUsageBytes,
+            //    trayRationalizationBytes
+            var countStream = new MemoryStream(countSummaryBytes);
+            var usageStream = new MemoryStream(instrumentUsageBytes);
+            var rationalizationStream = new MemoryStream(trayRationalizationBytes);
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["ProposedTray"] = (new List<TrayRationalization>() { proposedTray }).ToDataTable(),
+                ["TrayInstruments"] = instruments.ToDataTable(),
+                ["Audits"] = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList().ToDataTable(),
+                ["TrayCounts"] = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList().ToDataTable(),
+                ["SourceTrays"] = sourceTrays.ToDataTable(),
+                ["Instruments"] = instruments.ToDataTable(),
+                ["Cards"] = cardOverlaps.Where(c => c.ReplaceCard).ToList().ToDataTable()
+            };
+
+            var result = ReportHelper.GetReport($"TrayApproval", "PDF", datasets, parameters);
+            var summaryStream = new MemoryStream(result);
+
+            var resultStream = new MemoryStream();
+
+            using (var summaryPdf = PdfReader.Open(summaryStream, PdfDocumentOpenMode.Import))
+            using (var countsPdf = PdfReader.Open(countStream, PdfDocumentOpenMode.Import))
+            using (var usagePdf = PdfReader.Open(usageStream, PdfDocumentOpenMode.Import))
+            using (var rationalizationPdf = PdfReader.Open(rationalizationStream, PdfDocumentOpenMode.Import))
+            using (var responsePdf = new PdfDocument())
+            {
+                CopyPages(countsPdf, responsePdf);
+                CopyPages(usagePdf, responsePdf);
+                CopyPages(rationalizationPdf, responsePdf);
+
+                CopyPages(summaryPdf, responsePdf);
+
+                responsePdf.Save(resultStream);
+            }
+
+            var resultBytes = resultStream.GetBuffer();
+            return ResponseHelper.PdfResponse(resultBytes);
+        }
+
+        private void CopyPages(PdfDocument from, PdfDocument to)
+        {
+            for (int i = 0; i < from.PageCount; i++)
+            {
+                to.AddPage(from.Pages[i]);
             }
         }
 

@@ -302,139 +302,6 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, cases);
         }
 
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
-        [Route("traySummary/{trayProposalId}", Name = "GetTraySummary")]
-        [HttpGet]
-        public async Task<HttpResponseMessage> GetTraySummary(int trayProposalId)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper();
-
-            var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation)).FirstOrDefault();
-            var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, user.SelectedLocation);
-            var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.SelectedLocation);
-            var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.SelectedLocation);
-            var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.SelectedLocation);
-            var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.SelectedLocation);
-
-            proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
-            foreach (var sourceTray in sourceTrays)
-            {
-                sourceTray.InstrumentCount = sourceTray.Instruments.Sum(i => i.Quantity);
-                sourceTray.ProposedInstrumentCount = instruments.Sum(i => i.Quantity);
-            }
-
-            var imageSummary = new
-            {
-                ProposedTray = proposedTray,
-                Instruments = instruments,
-                Audits = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList(),
-                Counts = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList(),
-                SourceTrays = sourceTrays,
-                Cards = cardOverlaps.Where(c => c.ReplaceCard).ToList()
-            };
-            var json = JsonConvert.SerializeObject(imageSummary);
-
-            return ResponseHelper.PdfResponse(json);
-        }
-
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
-        [Route("trayAnalyticSummary/{trayProposalId}", Name = "GetTrayAnalyticSummary")]
-        [HttpPut]
-        public async Task<HttpResponseMessage> GetTrayAnalyticSummary(int trayProposalId, [FromBody] TrayRationalizationReportPost post)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper();
-
-            var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation)).FirstOrDefault();
-            var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, user.SelectedLocation);
-            var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.SelectedLocation);
-            var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.SelectedLocation);
-            var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.SelectedLocation);
-            var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.SelectedLocation);
-
-            proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
-            foreach (var sourceTray in sourceTrays)
-            {
-                sourceTray.InstrumentCount = sourceTray.Instruments.Sum(i => i.Quantity);
-                sourceTray.ProposedInstrumentCount = instruments.Sum(i => i.Quantity);
-            }
-
-            // Something strange about how jquery & api controllers working here...
-            if (post.SpecialtyId != null && post.SpecialtyId.Count == 1 && post.SpecialtyId[0] == 0)
-                post.SpecialtyId = null;
-
-            if (post.TrayId != null && post.TrayId.Count == 1 && post.TrayId[0] == 0)
-                post.TrayId = null;
-
-            var countAnalytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, null, null, null, null,
-                user.SelectedLocation);
-            var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, null, null, null,
-                null, post.TrayId, null,
-                user.SelectedLocation);
-            var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId, null, null, null,
-                user.SelectedLocation);
-
-
-            var parameters = new[]
-            {
-                new ReportParameter("Group", "t")
-            };
-            var countDatasets = new Dictionary<string, DataTable>
-            {
-                ["CountSummary"] = countAnalytics.Tables[0]
-            };
-            var countSummaryBytes = ReportHelper.GetReport("CountSummary", countDatasets, parameters);
-            var instrumentDatasets = new Dictionary<string, DataTable>
-            {
-                ["InstrumentUsage"] = instrumentAnalytics.Tables[0]
-            };
-            var instrumentUsageBytes = ReportHelper.GetReport("InstrumentUsage", instrumentDatasets);
-            var trayDatasets = new Dictionary<string, DataTable>
-            {
-                ["TrayRationalization"] = trayAnalytics.Tables[0]
-            };
-            var trayRationalizationBytes = ReportHelper.GetReport("TrayRationalization", trayDatasets);
-
-            var reports = new List<byte[]>()
-            {
-                countSummaryBytes,
-                instrumentUsageBytes,
-                trayRationalizationBytes
-            };
-            
-
-            var imageSummary = new
-            {
-                ProposedTray = proposedTray,
-                Instruments = instruments,
-                Audits = audits.Where(a => a.AuditUserID.HasValue).OrderBy(a => a.SurgeonName).ToList(),
-                Counts = counts.Where(c => c.AuditUserID.HasValue).OrderBy(c => c.SurgeonName).ToList(),
-                SourceTrays = sourceTrays,
-                Cards = cardOverlaps.Where(c => c.ReplaceCard).ToList(),
-                Reports = reports
-            };
-            var json = JsonConvert.SerializeObject(imageSummary);
-
-            return ResponseHelper.PdfResponse(json);
-            //var pdfDoc = new Object();
-
-            //foreach (var reportBytes in reports ?? new List<byte[]>())
-            //{
-            //    XImage pdfImg = new XImage();
-            //    pdfImg.SetData(reportBytes);
-            //    for (int i = 1; i <= pdfImg.FrameCount; i++)
-            //    {
-            //        pdfImg.Frame = i;
-            //        pdfDoc.Page = pdfDoc.AddPage();
-            //        pdfDoc.AddImageObject(pdfImg, false);
-            //    }
-            //    pdfImg.Clear();
-
-            //    pdfDoc.Page = pdfDoc.AddPage();
-            //}
-        }
-
         [SwaggerOperation("PutTrayApproval")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [HttpPut]
@@ -444,7 +311,11 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
 
             var sqlHelper = new SqlHelper();
-            
+            // validate location auth
+            var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation)).First();
+            if (proposedTray == null)
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
             try
             {
 
@@ -698,7 +569,13 @@ namespace OpFlow.Service.Controllers
         public async Task<HttpResponseMessage> GetTrayApproval(int trayProposalId, int typeId)
         {
             var user = await CacheUtil.GetUserSecurity();
-            
+            var sqlHelper = new SqlHelper();
+
+            // validate location auth
+            var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation)).First();
+            if (proposedTray == null)
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.ApprovalImages, trayProposalId);
 
             var storageHelper = BlobStorageHelper.GetHelper(user);
