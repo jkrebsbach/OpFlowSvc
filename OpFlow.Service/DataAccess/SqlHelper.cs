@@ -3887,6 +3887,32 @@ namespace OpFlow.Service.DataAccess
             return results;
         }
 
+        public async Task<List<ProcedureProfileCategory>> GetProcedureProfileCategories()
+        {
+            var parameters = new SqlParameter[]
+            {
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProcedureProfileCategories", parameters);
+
+            var results = dsSchedules.Tables[0].DataTableToList<ProcedureProfileCategory>();
+            
+            return results;
+        }
+
+        public async Task<List<ProcedureProfileCategory>> UpdateProcedureProfileCategoryList(int? categoryId, string categoryName)
+        {
+            var parameters = new SqlParameter[]
+            {
+                new SqlParameter("category_id", categoryId ?? (object)DBNull.Value),
+                new SqlParameter("category_name", categoryName)
+            };
+            var dsSchedules = await ExecuteCommandAsync("UpdateProcedureProfileCategoryList", parameters);
+
+            var results = dsSchedules.Tables[0].DataTableToList<ProcedureProfileCategory>();
+
+            return results;
+        }
+
         public async Task<List<ProcedureProfile>> GetProcedureProfilesVendor(int locationId)
         {
             var parameters = new[]
@@ -4044,6 +4070,23 @@ namespace OpFlow.Service.DataAccess
             var results = dsSchedules.Tables[0].DataTableToList<InsertionResult>();
             
             return results.First().Identifier;
+        }
+
+        public async Task<int> UpdateProcedureProfileCategory(int procedureProfileId, string profileName, int? categoryId, int? ownerId,
+            int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("profile_name", profileName),
+                new SqlParameter("category_id", categoryId ?? (object)DBNull.Value),
+                new SqlParameter("owner_id", ownerId ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProcedureProfileCategory", parameters);
+
+            return result;
         }
 
         public async Task<int> UpdateProcedureProfileDashboard(int procedureProfileId, List<int> locationFilter, List<int> cards, List<int> trays, List<int> proposed,

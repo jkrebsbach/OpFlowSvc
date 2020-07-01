@@ -58,6 +58,7 @@ namespace OpFlow.Service.Controllers
 
             var vendorLocations = await sqlHelper.GetVendorLocations(user.ProviderID);
             var userLocations = await sqlHelper.GetUserLocations(user.UserID, user.LocationID);
+            var categories = await sqlHelper.GetProcedureProfileCategories();
 
             // If this user has limited locations, limit portal result here
             if (userLocations.Any(l => l.SelectedLocation))
@@ -67,6 +68,13 @@ namespace OpFlow.Service.Controllers
 
             var procedureProfiles = await sqlHelper.GetProcedureProfilesVendor(user.SelectedLocation);
             var surgeons = await sqlHelper.GetSurgeons(null, user.SelectedLocation);
+
+            var owners = procedureProfiles.GroupBy(pp => new { pp.OwnerID, pp.OwnerName }).Select(pp => new OpFlowProvider()
+            { 
+                ProviderID = pp.Key.OwnerID ?? -1,
+                ProviderName = pp.Key.OwnerName
+            });
+
 
             var selectedLocation = vendorLocations.FirstOrDefault(l => l.LocationID == user.SelectedLocation);
             if (selectedLocation != null) selectedLocation.ActiveLocation = true;
@@ -84,7 +92,9 @@ namespace OpFlow.Service.Controllers
                 Providers = providers,
                 Locations = vendorLocations,
                 ProcedureProfiles = procedureProfiles.Where(p => p.Cards.Any()),
-                Surgeons = surgeons.OrderBy(s => s.LastName).ThenBy(s => s.FirstName)
+                Surgeons = surgeons.OrderBy(s => s.LastName).ThenBy(s => s.FirstName),
+                Owners = owners,
+                ProcedureProfileCategories = categories
             };
 
             return Request.CreateResponse(HttpStatusCode.OK, result);

@@ -163,6 +163,10 @@ namespace OpFlow.Data
     {
         public int ProcedureProfileID { get; set; }
         public string ProcedureProfileName { get; set; }
+        public int ProcedureCategoryID { get; set; }
+        public int? OwnerID { get; set; }
+        public string OwnerName { get; set; }
+        public string ProcedureCategoryName { get; set; }
         public int NbrInstruments { get; set; }
         public int NbrCounts { get; set; }
         public int NbrAudits { get; set; }
@@ -179,6 +183,12 @@ namespace OpFlow.Data
         public List<ProcedureProfileAssociatedTray> AssociatedTrays { get; set; }
 
         public int ProcedureProfileCounts => Cards?.Sum(c => c.ProfileCount) ?? 0;
+    }
+
+    public class ProcedureProfileCategory
+    {
+        public int ProcedureProfileCategoryID { get; set; }
+        public string CategoryName { get; set; }
     }
 
     public class ProcedureProfileRequestPost
@@ -305,6 +315,13 @@ namespace OpFlow.Data
         public string Reason { get; set; }
         public string Category { get; set; }
         public int CategoryID { get; set; }
+    }
+
+    public class ProcedureProfileCategoryPost
+    {
+        public string Name { get; set; }
+        public int? CategoryID { get; set; }
+        public int? OwnerID { get; set; }
     }
 
     public class ProcedureProfileDashboardPost

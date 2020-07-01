@@ -39,15 +39,18 @@ namespace OpFlow.Service.Controllers
             var cardCategories = await sqlHelper.GetCardCategories();
             var surgeons = await sqlHelper.GetSurgeonsProcedureProfile();
             var procedures = await sqlHelper.GetProcedures(null, 1, 1);
+            var categories = await sqlHelper.GetProcedureProfileCategories();
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 Profiles = profiles,
                 CardCategories = cardCategories,
                 Specialties = specialties,
+                Providers = providers,
                 Locations = providers.SelectMany(p => p.Locations),
                 Surgeons = surgeons,
-                Procedures = procedures
+                Procedures = procedures,
+                ProcedureProfileCategories = categories
             });
         }
 
@@ -719,6 +722,61 @@ namespace OpFlow.Service.Controllers
                     Instruments = c.ToList()
                 })
             });
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetProcedureProfileCategories")]
+        [Route("category")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetProcedureProfileCategories()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.GetProcedureProfileCategories();
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("UpdateProcedureProfileCategories")]
+        [Route("category")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateProcedureProfileCategories(int? categoryId, string categoryName)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.UpdateProcedureProfileCategoryList(categoryId, categoryName);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PostProcedureProfileUpdate")]
+        [Route("procedureProfileUpdate")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostProcedureProfileUpdate(int procedureProfileId, [FromBody] ProcedureProfileCategoryPost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.UpdateProcedureProfileCategory(procedureProfileId, request.Name, request.CategoryID, request.OwnerID,
+                user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // GET api/values/5
