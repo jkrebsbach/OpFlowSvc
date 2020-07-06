@@ -1713,6 +1713,7 @@ GetDate() ScheduleTime,
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>=Iif(Fields!SourceQty.Value=Fields!Quantity.Value,"White","LightGrey")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1743,6 +1744,7 @@ GetDate() ScheduleTime,
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>=Iif(Fields!SourceQty.Value=Fields!Quantity.Value,"White","LightGrey")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1773,6 +1775,7 @@ GetDate() ScheduleTime,
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>=Iif(Fields!SourceQty.Value=Fields!Quantity.Value,"White","LightGrey")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1805,6 +1808,7 @@ GetDate() ScheduleTime,
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>=Iif(Fields!SourceQty.Value=Fields!Quantity.Value,"White","LightGrey")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1837,6 +1841,7 @@ GetDate() ScheduleTime,
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>=Iif(Fields!SourceQty.Value=Fields!Quantity.Value,"White","LightGrey")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1870,6 +1875,7 @@ IIF(Fields!Reason.Value = "S", "Safety", "Buffer"))</Value>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>=Iif(Fields!SourceQty.Value=Fields!Quantity.Value,"White","LightGrey")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1902,6 +1908,7 @@ IIF(Fields!Reason.Value = "S", "Safety", "Buffer"))</Value>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>=Iif(Fields!SourceQty.Value=Fields!Quantity.Value,"White","LightGrey")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -2073,10 +2080,10 @@ IIF(Fields!Reason.Value = "S", "Safety", "Buffer"))</Value>
                   <Width>1in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1in</Width>
+                  <Width>1.17729in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1in</Width>
+                  <Width>1.10417in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -2488,7 +2495,7 @@ IIF(Fields!Reason.Value = "S", "Safety", "Buffer"))</Value>
             <Top>5.355in</Top>
             <Left>0.17688in</Left>
             <Height>0.5in</Height>
-            <Width>6in</Width>
+            <Width>6.28146in</Width>
             <ZIndex>10</ZIndex>
             <Style>
               <Border>
