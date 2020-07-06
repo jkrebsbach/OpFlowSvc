@@ -4197,6 +4197,26 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        private string SummarizeSpecialties(List<Specialty> specialties)
+        {
+            if (specialties == null || !specialties.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var specialty in specialties)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, specialty.SpecialtyID);
+                AddColumn(doc, row, specialty.SpecialtyName);
+            }
+
+            return table.OuterXml;
+        }
+
         private string SummarizeCategories(List<CardCategoryXRef> categories)
         {
             if (categories == null || !categories.Any())
@@ -7042,12 +7062,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<Specialty>> GetSpecialtyMaster()
+        public async Task<List<MasterSpecialty>> GetSpecialtyMaster()
         {
             var parameters = new SqlParameter[0];
             var dsSchedules = await ExecuteCommandAsync("GetSpecialtyMaster", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Specialty>();
+            var result = dsSchedules.Tables[0].DataTableToList<MasterSpecialty>();
 
             return result;
         }
@@ -7064,43 +7084,16 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateSpecialty(int specialtyId, string name, int masterSpecialtyId, int locationId)
+        public async Task<int> UpdateSpecialty(List<Specialty> specialties, int locationId)
         {
+            var specialtyXml = SummarizeSpecialties(specialties);
+
             var parameters = new[]
             {
-                new SqlParameter("specialty_id", specialtyId),
-                new SqlParameter("name", name ?? (object)DBNull.Value),
-                new SqlParameter("master_specialty_id", masterSpecialtyId),
+                new SqlParameter("specialty_id", specialtyXml),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("UpdateSpecialty", parameters);
-
-            return result;
-        }
-
-        public async Task<int> InsertSpecialty(string name, int masterSpecialtyId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("name", name ?? (object)DBNull.Value),
-                new SqlParameter("master_specialty_id", masterSpecialtyId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsResult = await ExecuteCommandAsync("InsertSpecialty", parameters);
-
-            var result = dsResult.Tables[0].DataTableToList<InsertionResult>();
-
-            return result.FirstOrDefault()?.Identifier ?? -1;
-        }
-
-        public async Task<int> DeleteSpecialty(int specialtyId, int locationId)
-        {
-            var dsParameters = new[]
-            {
-                new SqlParameter("location_id", locationId),
-                new SqlParameter("specialty_id", specialtyId)
-            };
-            var result = await ExecuteNonQueryAsync("DeleteSpecialty", dsParameters);
 
             return result;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace OpFlow.Data
@@ -25,6 +26,15 @@ namespace OpFlow.Data
         }
     }
 
+    public class MasterSpecialty : Specialty
+    {
+        public List<Specialty> SpecialtyList { get; set; }
+        public bool IsAssigned => (SpecialtyList?.Any() == true);
+
+        public string SpecialtyAlias => SpecialtyList?.FirstOrDefault()?.SpecialtyName;
+        public int? SpecialtyAliasID => SpecialtyList?.FirstOrDefault()?.SpecialtyID;
+    }
+
     public class SpecialtyCardCategory
     { 
         public int SpecialtyID { get; set; }
@@ -34,8 +44,6 @@ namespace OpFlow.Data
 
     public class SpecialtyPost
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public int MasterSpecialtyID { get; set; }
+        public List<Specialty> Specialties { get; set; }
     }
 }

@@ -46,32 +46,29 @@ namespace OpFlow.Service.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> GetMasterSpecialties()
         {
+            var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var specialties = await sqlHelper.GetSpecialtyMaster();
+            var masterSpecialties = await sqlHelper.GetSpecialtyMaster();
+            var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
+            var cardCategories = await sqlHelper.GetSpecialtyProcedureGroup(user.SelectedLocation);
+
+            foreach (var specialty in specialties)
+            {
+                specialty.CardCategories = cardCategories.Where(c => c.SpecialtyID == specialty.SpecialtyID).ToList();
+            }
+
+            foreach (var masterSpecialty in masterSpecialties)
+            {
+                masterSpecialty.SpecialtyList = specialties.Where(s => s.MasterSpecialtyID == masterSpecialty.SpecialtyID).ToList();
+                masterSpecialty.CardCategories = masterSpecialty.SpecialtyList.SelectMany(s => s.CardCategories).ToList();
+            }
             
-            return specialties == null ?
-                Request.CreateResponse(HttpStatusCode.NotFound) :
-                Request.CreateResponse(HttpStatusCode.OK, specialties);
+            return Request.CreateResponse(HttpStatusCode.OK, masterSpecialties);
         }
 
         // PUT api/roomSetup/values/5
         [SwaggerOperation("Update")]
-        [SwaggerResponse(HttpStatusCode.OK)]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [HttpPut]
-        public async Task<HttpResponseMessage> PutSpecialty(int specialtyId, [FromBody]SpecialtyPost specialty)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper();
-
-            await sqlHelper.UpdateSpecialty(specialtyId, specialty.Name, specialty.MasterSpecialtyID, user.SelectedLocation);
-
-            return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
-        }
-
-        // PUT api/roomSetup/values/5
-        [SwaggerOperation("Insert")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [HttpPost]
@@ -80,24 +77,9 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var specialtyId = await sqlHelper.InsertSpecialty(specialty.Name, specialty.MasterSpecialtyID, user.SelectedLocation);
+            var result = await sqlHelper.UpdateSpecialty(specialty.Specialties, user.SelectedLocation);
 
-            return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
-        }
-
-        // PUT api/roomSetup/values/5
-        [SwaggerOperation("Delete")]
-        [SwaggerResponse(HttpStatusCode.OK)]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [HttpDelete]
-        public async Task<HttpResponseMessage> DeleteSpecialty(int specialtyId)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper();
-
-            await sqlHelper.DeleteSpecialty(specialtyId, user.SelectedLocation);
-
-            return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // PUT api/roomSetup/values/5
