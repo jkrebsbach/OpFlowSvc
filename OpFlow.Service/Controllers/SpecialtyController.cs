@@ -65,7 +65,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateSpecialty(specialtyId, specialty.Name, specialty.Description, specialty.MasterSpecialtyID, user.SelectedLocation);
+            await sqlHelper.UpdateSpecialty(specialtyId, specialty.Name, specialty.MasterSpecialtyID, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
         }
@@ -80,7 +80,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var specialtyId = await sqlHelper.InsertSpecialty(specialty.Name, specialty.Description, specialty.MasterSpecialtyID, user.SelectedLocation);
+            var specialtyId = await sqlHelper.InsertSpecialty(specialty.Name, specialty.MasterSpecialtyID, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
         }

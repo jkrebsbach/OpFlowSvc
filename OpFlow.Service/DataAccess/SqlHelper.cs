@@ -7064,14 +7064,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateSpecialty(int specialtyId, string name, string description, int? masterSpecialtyId, int locationId)
+        public async Task<int> UpdateSpecialty(int specialtyId, string name, int masterSpecialtyId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("specialty_id", specialtyId),
-                new SqlParameter("name", name),
-                new SqlParameter("description", description),
-                new SqlParameter("master_specialty_id", masterSpecialtyId ?? (object)DBNull.Value),
+                new SqlParameter("name", name ?? (object)DBNull.Value),
+                new SqlParameter("master_specialty_id", masterSpecialtyId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("UpdateSpecialty", parameters);
@@ -7079,13 +7078,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> InsertSpecialty(string name, string description, int? masterSpecialtyId, int locationId)
+        public async Task<int> InsertSpecialty(string name, int masterSpecialtyId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("name", name),
-                new SqlParameter("description", description),
-                new SqlParameter("master_specialty_id", masterSpecialtyId ?? (object)DBNull.Value),
+                new SqlParameter("name", name ?? (object)DBNull.Value),
+                new SqlParameter("master_specialty_id", masterSpecialtyId),
                 new SqlParameter("location_id", locationId)
             };
             var dsResult = await ExecuteCommandAsync("InsertSpecialty", parameters);

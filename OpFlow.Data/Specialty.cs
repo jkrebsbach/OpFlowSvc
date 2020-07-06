@@ -36,6 +36,6 @@ namespace OpFlow.Data
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public int? MasterSpecialtyID { get; set; }
+        public int MasterSpecialtyID { get; set; }
     }
 }
