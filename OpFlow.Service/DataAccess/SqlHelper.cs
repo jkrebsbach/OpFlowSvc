@@ -7098,6 +7098,41 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> UpdateSpecialtyMaster(int specialtyMasterId, string specialtyName)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_master_id", specialtyMasterId),
+                new SqlParameter("specialty_name", specialtyName)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateSpecialtyMaster", parameters);
+
+            return result;
+        }
+
+        public async Task<int> InsertSpecialtyMaster(string specialtyName)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_name", specialtyName)
+            };
+            var dsResult = await ExecuteCommandAsync("InsertSpecialtyMaster", parameters);
+            var identity = dsResult.Tables[0].DataTableToList<InsertionResult>().First().Identifier;
+
+            return identity;
+        }
+
+        public async Task<int> DeleteSpecialtyMaster(int specialtyMasterId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_master_id", specialtyMasterId)
+            };
+            var result = await ExecuteNonQueryAsync("DeleteSpecialtyMaster", parameters);
+
+            return result;
+        }
+
         public async Task<List<SpecialtyCardCategory>> GetSpecialtyProcedureGroup(int locationId)
         {
             var parameters = new[]

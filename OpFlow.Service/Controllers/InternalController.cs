@@ -33,9 +33,12 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var providers = await sqlHelper.GetOpFlowSetup();
-
+            var masterSpecialties = await sqlHelper.GetSpecialtyMaster();
             
-            return Request.CreateResponse(HttpStatusCode.OK, providers);
+            return Request.CreateResponse(HttpStatusCode.OK, new {
+                Providers =  providers,
+                MasterSpecialties = masterSpecialties
+            });
         }
 
         // GET api/values/5
@@ -201,6 +204,54 @@ namespace OpFlow.Service.Controllers
             var roles = await sqlHelper.InitializeLocation(locationId);
 
             return Request.CreateResponse(HttpStatusCode.OK, roles);
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("Specialty/{specialtyId}", Name = "UpdateSpecialtyMaster")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> UpdateSpecialtyMaster(int specialtyId, [FromBody] SpecialtyMasterPost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper();
+            var result = await sqlHelper.UpdateSpecialtyMaster(specialtyId, request.SpecialtyName);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("Specialty", Name = "CreateSpecialtyMaster")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> CreateSpecialtyMaster([FromBody] SpecialtyMasterPost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper();
+            var specialtyId = await sqlHelper.InsertSpecialtyMaster(request.SpecialtyName);
+
+            return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("Specialty/{specialtyId}", Name = "DeleteSpecialtyMaster")]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteSpecialtyMaster(int specialtyId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper();
+            var result = await sqlHelper.DeleteSpecialtyMaster(specialtyId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, specialtyId);
         }
     }
 }

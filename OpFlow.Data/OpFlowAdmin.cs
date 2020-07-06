@@ -56,6 +56,10 @@ namespace OpFlow.Data
         public List<int> LocationID { get; set; }
     }
 
+    public class SpecialtyMasterPost
+    {
+        public string SpecialtyName { get; set; }
+    }
     public class LocationPost
     {
         public string Provider { get; set; }
