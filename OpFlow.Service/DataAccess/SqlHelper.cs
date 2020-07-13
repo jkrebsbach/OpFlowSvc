@@ -2794,7 +2794,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetExportUsage(DateTime? startDate, DateTime? endDate,
-            int? specialtyId, int? userId, List<int> itemId, string countType, int locationId)
+            int? specialtyId, int? userId, List<int> itemId, int? cardCategoryId, int locationId)
         {
             var itemXml = GetIdentitySummary(itemId);
 
@@ -2805,7 +2805,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("user_id", userId ?? (object)DBNull.Value),
                 new SqlParameter("item_id", itemXml ?? (object)DBNull.Value),
-                new SqlParameter("count_type", countType ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryId ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
             var dsResult = await ExecuteCommandAsync("GetExportUsage", parameters);

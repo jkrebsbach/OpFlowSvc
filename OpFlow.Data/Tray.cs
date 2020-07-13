@@ -49,6 +49,7 @@ namespace OpFlow.Data
         public int? SpecialtyID { get; set; }
         public int? UserID { get; set; }
         public List<int> ItemID { get; set; }
+        public int? CardCategoryID { get; set; }
         public int? LocationID { get; set; }
         public string CountType { get; set; }
     }

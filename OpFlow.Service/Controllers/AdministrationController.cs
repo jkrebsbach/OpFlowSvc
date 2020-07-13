@@ -188,6 +188,7 @@ namespace OpFlow.Service.Controllers
             var users = await sqlHelper.GetSurgeons(null, user.SelectedLocation);
             var trays = await sqlHelper.GetItems("TRAY", null, null, user.SelectedLocation);
             var supplies = await sqlHelper.GetItems("SUPPLY", null, null, user.SelectedLocation);
+            var cardCategories = await sqlHelper.GetCardCategories();
             var locations = await sqlHelper.GetUserLocations(user.UserID, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
@@ -196,6 +197,7 @@ namespace OpFlow.Service.Controllers
                 Users = users,
                 Trays = trays,
                 Supplies = supplies,
+                CardCategories = cardCategories,
                 Locations = locations
             });
         }
@@ -224,7 +226,7 @@ namespace OpFlow.Service.Controllers
                     break;
                 case "USAGE":
                     dsUsage = await sqlHelper.GetExportUsage(request.StartDate, request.EndDate,
-                        request.SpecialtyID, request.UserID, request.ItemID, request.CountType, user.SelectedLocation);
+                        request.SpecialtyID, request.UserID, request.ItemID, request.CardCategoryID, user.SelectedLocation);
                     break;
                 case "TRAY":
                     dsUsage = await sqlHelper.GetExportTray(request.SpecialtyID, request.UserID, request.ItemID, user.SelectedLocation);
