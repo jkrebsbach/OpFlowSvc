@@ -42,6 +42,17 @@ namespace OpFlow.Data
         public List<TrayQuestion> Questions { get; set; }
     }
 
+    public class DataExportPost
+    {
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public int? SpecialtyID { get; set; }
+        public int? UserID { get; set; }
+        public List<int> ItemID { get; set; }
+        public int? LocationID { get; set; }
+        public string CountType { get; set; }
+    }
+
     public class TrayInstrumentPost
     {
         public List<NewTrayInstrument> Instruments { get; set; }

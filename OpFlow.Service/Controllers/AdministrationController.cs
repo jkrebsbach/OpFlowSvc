@@ -201,11 +201,11 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("GetExport")]
+        [SwaggerOperation("PutExport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ImportMessage>))]
         [Route("export/{exportType}")]
-        public async Task<HttpResponseMessage> GetExport(string exportType, DateTime? startDate = null, DateTime? endDate = null, 
-            int? specialtyId = null, int? userId = null, int? itemId = null, int? locationId = null, string countType = null)
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutExport(string exportType, [FromBody] DataExportPost request)
         {
             var user = await CacheUtil.GetUserSecurity();
 
@@ -217,17 +217,20 @@ namespace OpFlow.Service.Controllers
             
             switch (exportType)
             {
-                case "COUNT":
-                    dsUsage = await sqlHelper.GetExportCounts(startDate, endDate, specialtyId, userId, itemId, countType, user.SelectedLocation);
+                case "COUNT-SUMMARY":
+                case "COUNT-DATA":
+                    dsUsage = await sqlHelper.GetExportCounts(request.StartDate, request.EndDate, 
+                        request.SpecialtyID, request.UserID, request.ItemID, request.CountType, exportType.Contains("DATA"), user.SelectedLocation);
                     break;
                 case "USAGE":
-                    dsUsage = await sqlHelper.GetExportUsage(startDate, endDate, specialtyId, userId, itemId, countType, user.SelectedLocation);
+                    dsUsage = await sqlHelper.GetExportUsage(request.StartDate, request.EndDate,
+                        request.SpecialtyID, request.UserID, request.ItemID, request.CountType, user.SelectedLocation);
                     break;
                 case "TRAY":
-                    dsUsage = await sqlHelper.GetExportTray(specialtyId, userId, user.SelectedLocation);
+                    dsUsage = await sqlHelper.GetExportTray(request.SpecialtyID, request.UserID, request.ItemID, user.SelectedLocation);
                     break;
                 case "CARD":
-                    dsUsage = await sqlHelper.GetExportCard(specialtyId, userId, user.SelectedLocation);
+                    dsUsage = await sqlHelper.GetExportCard(request.SpecialtyID, request.UserID, user.SelectedLocation);
                     break;
                 default:
                     return ResponseHelper.CsvResponse("Unknown export type");
