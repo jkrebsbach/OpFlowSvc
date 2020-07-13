@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Microsoft.ReportingServices.Diagnostics.Internal;
 using OpFlow.Data;
 using OpFlow.Data.Administration;
 using OpFlow.Data.Analytics;
@@ -170,8 +171,72 @@ namespace OpFlow.Service.Controllers
 
             return result;
         }
+        // GET api/values/5
+        [SwaggerOperation("GetExportData")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ImportMessage>))]
+        [Route("exportData")]
+        public async Task<HttpResponseMessage> GetExportData()
+        {
+            var user = await CacheUtil.GetUserSecurity();
 
+            if (user.RoleType != "Internal" && user.RoleType != "Admin")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
 
+            var sqlHelper = new SqlHelper();
+
+            var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
+            var users = await sqlHelper.GetSurgeons(null, user.SelectedLocation);
+            var trays = await sqlHelper.GetItems("TRAY", null, null, user.SelectedLocation);
+            var supplies = await sqlHelper.GetItems("SUPPLY", null, null, user.SelectedLocation);
+            var locations = await sqlHelper.GetUserLocations(user.UserID, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Specialties = specialties,
+                Users = users,
+                Trays = trays,
+                Supplies = supplies,
+                Locations = locations
+            });
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetExport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ImportMessage>))]
+        [Route("export/{exportType}")]
+        public async Task<HttpResponseMessage> GetExport(string exportType, DateTime? startDate = null, DateTime? endDate = null, 
+            int? specialtyId = null, int? userId = null, int? itemId = null, int? locationId = null, string countType = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal" && user.RoleType != "Admin")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper();
+            System.Data.DataSet dsUsage;
+            
+            switch (exportType)
+            {
+                case "COUNT":
+                    dsUsage = await sqlHelper.GetExportCounts(startDate, endDate, specialtyId, userId, itemId, countType, user.SelectedLocation);
+                    break;
+                case "USAGE":
+                    dsUsage = await sqlHelper.GetExportUsage(startDate, endDate, specialtyId, userId, itemId, countType, user.SelectedLocation);
+                    break;
+                case "TRAY":
+                    dsUsage = await sqlHelper.GetExportTray(specialtyId, userId, user.SelectedLocation);
+                    break;
+                case "CARD":
+                    dsUsage = await sqlHelper.GetExportCard(specialtyId, userId, user.SelectedLocation);
+                    break;
+                default:
+                    return ResponseHelper.CsvResponse("Unknown export type");
+            }
+
+            var dataExport = dsUsage.Tables[0].DefaultView;
+
+            return ResponseHelper.CsvResponse(dataExport.ToTable());
+        }
 
         // GET api/values/5
         [SwaggerOperation("GetCaseOverview")]

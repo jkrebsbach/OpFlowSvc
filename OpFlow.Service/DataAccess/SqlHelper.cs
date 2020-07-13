@@ -2772,6 +2772,68 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<DataSet> GetExportCounts(DateTime? startDate, DateTime? endDate,
+            int? specialtyId, int? userId, int? trayItemId, string countType, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayItemId ?? (object)DBNull.Value),
+                new SqlParameter("count_type", countType ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsResult = await ExecuteCommandAsync("GetExportCounts", parameters);
+
+            return dsResult;
+        }
+
+        public async Task<DataSet> GetExportUsage(DateTime? startDate, DateTime? endDate,
+            int? specialtyId, int? userId, int? itemId, string countType, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("item_id", itemId ?? (object)DBNull.Value),
+                new SqlParameter("count_type", countType ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsResult = await ExecuteCommandAsync("GetExportUsage", parameters);
+
+            return dsResult;
+        }
+
+        public async Task<DataSet> GetExportTray(int? specialtyId, int? userId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)                
+            };
+            var dsResult = await ExecuteCommandAsync("GetExportTray", parameters);
+
+            return dsResult;
+        }
+
+        public async Task<DataSet> GetExportCard(int? specialtyId, int? userId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsResult = await ExecuteCommandAsync("GetExportCard", parameters);
+
+            return dsResult;
+        }
+
         public async Task<List<Patient>> GetCleanupPatients(int providerId, int locationId)
         {
             var parameters = new[]

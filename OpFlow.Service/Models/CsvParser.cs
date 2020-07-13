@@ -87,7 +87,7 @@ namespace OpFlow.Service.Models
                                 InstrumentName = _csv.GetField(2),
                                 Manufacturer = _csv.GetField(3),
                                 InstrumentType = _csv.GetField(4),
-                                Quantity = int.Parse(_csv.GetField(5)),
+                                Quantity = string.IsNullOrEmpty(_csv.GetField(5)) ? 1 : int.Parse(_csv.GetField(5)),
                                 Category = _csv.GetField(6)
                             });
                             break;
