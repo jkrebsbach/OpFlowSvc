@@ -238,6 +238,26 @@ namespace OpFlow.Service.Controllers
 
             var dataExport = dsUsage.Tables[0].DefaultView;
 
+            if (request.IncludeColumns?.Any() == true)
+            {
+                var idx = 0;
+                var columnCount = dataExport.Table.Columns.Count;
+                while (idx < columnCount)
+                {
+                    var columnName = dataExport.Table.Columns[idx].ColumnName;
+                    if (request.IncludeColumns.Any(c => c.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
+                    {
+                        idx++;
+                    }
+                    else
+                    {
+                        dataExport.Table.Columns.RemoveAt(idx);
+                    }
+
+                    columnCount = dataExport.Table.Columns.Count;
+                }
+            }
+
             return ResponseHelper.CsvResponse(dataExport.ToTable());
         }
 

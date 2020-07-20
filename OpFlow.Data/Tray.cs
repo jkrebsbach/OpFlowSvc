@@ -52,6 +52,7 @@ namespace OpFlow.Data
         public int? CardCategoryID { get; set; }
         public int? LocationID { get; set; }
         public string CountType { get; set; }
+        public List<string> IncludeColumns { get; set; }
     }
 
     public class TrayInstrumentPost
