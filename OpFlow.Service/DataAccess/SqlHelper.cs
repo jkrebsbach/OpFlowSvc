@@ -3055,6 +3055,32 @@ namespace OpFlow.Service.DataAccess
             };
         }
 
+        public async Task<PaginationController> GetSuppliesPaged(string searchTerm, int page, int providerId, int locationId)
+        {
+            var pageSize = 50;
+            var parameters = new[]
+            {
+                new SqlParameter("search_term", searchTerm ?? (object)DBNull.Value),
+                new SqlParameter("page", page),
+                new SqlParameter("page_size", pageSize),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSuppliesPaged", parameters);
+
+            var instruments = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
+            var totalCount = dsSchedules.Tables[1].DataTableToList<RowCountEntity>().First().TotalCount;
+
+            var results = instruments.Select(i => new KeyPair() { id = i.ItemID, text = i.ItemDescription }).ToList();
+            var skipped = (page - 1) * pageSize;
+
+            return new PaginationController()
+            {
+                pagination = new PaginationResult(instruments.Count, skipped, totalCount),
+                results = results
+            };
+        }
+
         public async Task<List<ItemTray>> GetTrayItems(int trayId, int locationId)
         {
             var parameters = new[]

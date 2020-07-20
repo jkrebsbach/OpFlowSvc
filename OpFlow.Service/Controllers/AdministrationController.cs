@@ -187,7 +187,6 @@ namespace OpFlow.Service.Controllers
             var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
             var users = await sqlHelper.GetSurgeons(null, user.SelectedLocation);
             var trays = await sqlHelper.GetItems("TRAY", null, null, user.SelectedLocation);
-            var supplies = await sqlHelper.GetItems("SUPPLY", null, null, user.SelectedLocation);
             var cardCategories = await sqlHelper.GetCardCategories();
             var locations = await sqlHelper.GetUserLocations(user.UserID, user.SelectedLocation);
 
@@ -196,7 +195,6 @@ namespace OpFlow.Service.Controllers
                 Specialties = specialties,
                 Users = users,
                 Trays = trays,
-                Supplies = supplies,
                 CardCategories = cardCategories,
                 Locations = locations
             });

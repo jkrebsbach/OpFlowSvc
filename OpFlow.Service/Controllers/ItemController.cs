@@ -60,6 +60,20 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetSuppliesPaged")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
+        [Route("suppliesPaged")]
+        public async Task<HttpResponseMessage> GetSuppliesPaged(string term = null, int page = 1)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var instruments = await sqlHelper.GetSuppliesPaged(term, page, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, instruments);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetTrayItems")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemTray>))]
         [Route("trayItems")]
