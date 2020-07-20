@@ -10,8 +10,8 @@ using Swashbuckle.Swagger.Annotations;
 namespace OpFlow.Service.Controllers
 {
     [Authorize]
-    [RoutePrefix("api/patientMetric")]
-    public class PatientMetricController : ApiController
+    [RoutePrefix("api/procedureProfileMetric")]
+    public class ProcedureProfileMetricController : ApiController
     {
         // GET api/values/5
         [SwaggerOperation("Get")]
