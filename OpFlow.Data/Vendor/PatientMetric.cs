@@ -7,8 +7,12 @@ namespace OpFlow.Data
     public class ProcedureProfileMetric
     {
         public int ProcedureProfileMetricID { get; set; }
+        public int? ParentMetricID { get; set; }
+        public int? ParentMetricAnswerID { get; set; }
         public string QuestionText { get; set; }
         public string MetricType { get; set; }
+        public string ParentMetric { get; set; }
+        public string ParentMetricAnswer { get; set; }
 
         public List<ProcedureProfileMetricAnswer> Answers { get; set; }
     }
@@ -21,6 +25,8 @@ namespace OpFlow.Data
 
     public class ProcedureProfileMetricPost
     {
+        public int? ParentMetricID { get; set; }
+        public int? ParentMetricAnswerID { get; set; }
         public string MetricType { get; set; }
         public string TextPayload { get; set; }
     }
