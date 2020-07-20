@@ -4,26 +4,28 @@ using System.Text;
 
 namespace OpFlow.Data
 {
-    public class PatientMetric
+    public class ProcedureProfileMetric
     {
-        public int PatientMetricID { get; set; }
+        public int ProcedureProfileMetricID { get; set; }
         public string QuestionText { get; set; }
+        public string MetricType { get; set; }
 
-        public List<PatientMetricAnswer> Answers { get; set; }
+        public List<ProcedureProfileMetricAnswer> Answers { get; set; }
     }
-    public class PatientMetricAnswer
+    public class ProcedureProfileMetricAnswer
     {
-        public int PatientMetricAnswerID { get; set; }
-        public int PatientMetricID { get; set; }
+        public int ProcedureProfileMetricAnswerID { get; set; }
+        public int ProcedureProfileMetricID { get; set; }
         public string AnswerText { get; set; }
     }
 
-    public class PatientMetricPost
+    public class ProcedureProfileMetricPost
     {
+        public string MetricType { get; set; }
         public string TextPayload { get; set; }
     }
 
-    public class PatientMetricProfilePost
+    public class ProcedureProfileMetricXrefPost
     {
         public List<int> Answers { get; set; }
     }

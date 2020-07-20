@@ -631,124 +631,125 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<PatientMetric>> GetPatientMetrics(int locationId)
+        public async Task<List<ProcedureProfileMetric>> GetProcedureProfileMetrics(int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("location_id", locationId)
             };
-            var result = await ExecuteCommandAsync("GetPatientMetrics", parameters);
+            var result = await ExecuteCommandAsync("GetProcedureProfileMetrics", parameters);
 
-            var metrics = result.Tables[0].DataTableToList<PatientMetric>();
-            var answers = result.Tables[1].DataTableToList<PatientMetricAnswer>();
+            var metrics = result.Tables[0].DataTableToList<ProcedureProfileMetric>();
+            var answers = result.Tables[1].DataTableToList<ProcedureProfileMetricAnswer>();
 
             foreach (var metric in metrics)
             {
-                metric.Answers = answers.Where(a => a.PatientMetricID == metric.PatientMetricID).ToList();
+                metric.Answers = answers.Where(a => a.ProcedureProfileMetricID == metric.ProcedureProfileMetricID).ToList();
             }
             return metrics;
         }
 
-        public async Task<int> InsertPatientMetric(string question, int locationId)
+        public async Task<int> InsertProcedureProfileMetric(string metricType, string question, int locationId)
         {
             var parameters = new[]
             {
+                new SqlParameter("metric_type", metricType),
                 new SqlParameter("question_text", question),
                 new SqlParameter("location_id", locationId)
             };
-            var result = await ExecuteNonQueryAsync("InsertPatientMetric", parameters);
+            var result = await ExecuteNonQueryAsync("InsertProcedureProfileMetric", parameters);
 
             return result;
         }
 
-        public async Task<int> UpdatePatientMetric(int metricId, string question, int locationId)
+        public async Task<int> UpdateProcedureProfileMetric(int metricId, string question, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("patient_metric_id", metricId),
+                new SqlParameter("procedure_profile_metric_id", metricId),
                 new SqlParameter("question_text", question),
                 new SqlParameter("location_id", locationId)
             };
-            var result = await ExecuteNonQueryAsync("UpdatePatientMetric", parameters);
+            var result = await ExecuteNonQueryAsync("UpdateProcedureProfileMetric", parameters);
 
             return result;
         }
 
-        public async Task<int> DeletePatientMetric(int patientMetricId, int locationId)
+        public async Task<int> DeleteProcedureProfileMetric(int metricId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("patient_metric_id", patientMetricId),
+                new SqlParameter("procedure_profile_metric_id", metricId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = await ExecuteNonQueryAsync("DeletePatientMetric", parameters);
+            var result = await ExecuteNonQueryAsync("DeleteProcedureProfileMetric", parameters);
 
             return result;
         }
 
-        public async Task<int> InsertPatientMetricAnswer(int patientMetricId, string answer, int locationId)
+        public async Task<int> InsertProcedureProfileMetricAnswer(int metricId, string answer, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("patient_metric_id", patientMetricId),
+                new SqlParameter("procedure_profile_metric_id", metricId),
                 new SqlParameter("answer_text", answer),
                 new SqlParameter("location_id", locationId)
             };
-            var result = await ExecuteNonQueryAsync("InsertPatientMetricAnswer", parameters);
+            var result = await ExecuteNonQueryAsync("InsertProcedureProfileMetricAnswer", parameters);
 
             return result;
         }
 
-        public async Task<int> UpdatePatientMetricAnswer(int answerId, string answer, int locationId)
+        public async Task<int> UpdateProcedureProfileMetricAnswer(int answerId, string answer, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("patient_metric_answer_id", answerId),
+                new SqlParameter("procedure_profile_metric_answer_id", answerId),
                 new SqlParameter("answer_text", answer),
                 new SqlParameter("location_id", locationId)
             };
-            var result = await ExecuteNonQueryAsync("UpdatePatientMetricAnswer", parameters);
+            var result = await ExecuteNonQueryAsync("UpdateProcedureProfileMetricAnswer", parameters);
 
             return result;
         }
 
-        public async Task<int> DeletePatientMetricAnswer(int patientMetricAnswerId, int locationId)
+        public async Task<int> DeleteProcedureProfileMetricAnswer(int metricAnswerId, int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("patient_metric_answer_id", patientMetricAnswerId),
+                new SqlParameter("procedure_profile_metric_answer_id", metricAnswerId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = await ExecuteNonQueryAsync("DeletePatientMetricAnswer", parameters);
+            var result = await ExecuteNonQueryAsync("DeleteProcedureProfileMetricAnswer", parameters);
 
             return result;
         }
 
-        public async Task<int> UpdateProcedureProfilePatientMetric(int procedureProfileId, int patientMetricId, List<int> patientMetricAnswerId, int locationId)
+        public async Task<int> UpdateProcedureProfileMetricXref(int procedureProfileId, int metricId, List<int> metricAnswerId, int locationId)
         {
-            var answerXml = GetIdentitySummary(patientMetricAnswerId);
+            var answerXml = GetIdentitySummary(metricAnswerId);
 
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId),
-                new SqlParameter("patient_metric_id", patientMetricId),
-                new SqlParameter("patient_metric_answer_id", answerXml),
+                new SqlParameter("procedure_profile_metric_id", metricId),
+                new SqlParameter("procedure_profile_metric_answer_id", answerXml),
                 new SqlParameter("location_id", locationId)
             };
-            var result = await ExecuteNonQueryAsync("UpdateProcedureProfilePatientMetric", parameters);
+            var result = await ExecuteNonQueryAsync("UpdateProcedureProfileMetricXref", parameters);
 
             return result;
         }
 
-        public async Task<int> DeleteProcedureProfilePatientMetric(int procedureProfileId, int patientMetricId, int locationId)
+        public async Task<int> DeleteProcedureProfileMetricXref(int procedureProfileId, int metricId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId),
-                new SqlParameter("patient_metric_id", patientMetricId),
+                new SqlParameter("procedure_profile_metric_id", metricId),
                 new SqlParameter("location_id", locationId)
             };
-            var result = await ExecuteNonQueryAsync("DeleteProcedureProfilePatientMetric", parameters);
+            var result = await ExecuteNonQueryAsync("DeleteProcedureProfileMetricXref", parameters);
 
             return result;
         }
@@ -4024,7 +4025,7 @@ namespace OpFlow.Service.DataAccess
             var cards = dsSchedules.Tables[4].DataTableToList<ProfileCard>();
             var trays = dsSchedules.Tables[5].DataTableToList<ProfileTray>();
             var proposedTrays = dsSchedules.Tables[6].DataTableToList<ProfileTray>();
-            var profileMetrics = dsSchedules.Tables[7].DataTableToList<ProfilePatientMetric>();
+            var profileMetrics = dsSchedules.Tables[7].DataTableToList<ProcedureProfileMetricXref>();
 
             foreach (var result in results)
             {
@@ -4033,27 +4034,31 @@ namespace OpFlow.Service.DataAccess
                 result.CardCategories = cardCategories.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
                 result.Cards = cards.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
 
-                result.PatientMetrics = profileMetrics.Where(p => p.ProcedureProfileID == result.ProcedureProfileID)
-                    .GroupBy(p => new { p.PatientMetricID, p.QuestionText }).Select(p =>
-                    new PatientMetric()
+                var metrics = profileMetrics.Where(p => p.ProcedureProfileID == result.ProcedureProfileID)
+                    .GroupBy(p => new { p.ProcedureProfileMetricID, p.MetricType, p.QuestionText }).Select(p =>
+                    new ProcedureProfileMetric()
                     {
-                        PatientMetricID = p.Key.PatientMetricID,
+                        ProcedureProfileMetricID = p.Key.ProcedureProfileMetricID,
+                        MetricType = p.Key.MetricType,
                         QuestionText = p.Key.QuestionText
                     }).ToList();
+                foreach (var patientMetric in metrics)
+                {
+                    patientMetric.Answers = profileMetrics.Where(p => p.ProcedureProfileMetricID == patientMetric.ProcedureProfileMetricID).Select(p =>
+                        new ProcedureProfileMetricAnswer()
+                        {
+                            ProcedureProfileMetricID = p.ProcedureProfileMetricID,
+                            ProcedureProfileMetricAnswerID = p.ProcedureProfileMetricAnswerID,
+                            AnswerText = p.AnswerText
+                        }).ToList();
+                }
+
+                result.PatientMetrics = metrics.Where(m => m.MetricType == "PAT").ToList();
+                result.ProcedureMetrics = metrics.Where(m => m.MetricType == "PROC").ToList();
 
                 foreach (var card in result.Cards)
                 {
                     card.Trays = trays.Where(p => p.CardID == card.CardID).ToList();
-                }
-                foreach (var patientMetric in result.PatientMetrics)
-                {
-                    patientMetric.Answers = profileMetrics.Where(p => p.PatientMetricID == patientMetric.PatientMetricID).Select(p =>
-                        new PatientMetricAnswer()
-                        {
-                            PatientMetricID = p.PatientMetricID,
-                            PatientMetricAnswerID = p.PatientMetricAnswerID,
-                            AnswerText = p.AnswerText
-                        }).ToList();
                 }
             }
 

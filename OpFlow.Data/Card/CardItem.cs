@@ -175,7 +175,8 @@ namespace OpFlow.Data
         public List<ProfileItem> Items { get; set; }
         public List<ProfileCard> Cards { get; set; }
         public List<ProfileTray> Trays { get; set; }
-        public List<PatientMetric> PatientMetrics { get; set; }
+        public List<ProcedureProfileMetric> PatientMetrics { get; set; }
+        public List<ProcedureProfileMetric> ProcedureMetrics { get; set; }
         public List<User> Surgeons { get; set; }
         public List<ProfileItem> TrayItems { get; set; }
         public List<ProfileCardCategory> CardCategories { get; set; }
@@ -263,10 +264,10 @@ namespace OpFlow.Data
         public int Increase => CountChange > 0 ? 1 : (CountChange < 0 ? -1 : 0);
     }
 
-    public class ProfilePatientMetric : PatientMetric
+    public class ProcedureProfileMetricXref : ProcedureProfileMetric
     {
         public int ProcedureProfileID { get; set; }
-        public int PatientMetricAnswerID { get; set; }
+        public int ProcedureProfileMetricAnswerID { get; set; }
         public string AnswerText { get; set; }
     }
 

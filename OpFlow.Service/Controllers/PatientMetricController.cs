@@ -15,14 +15,14 @@ namespace OpFlow.Service.Controllers
     {
         // GET api/values/5
         [SwaggerOperation("Get")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<PatientMetric>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ProcedureProfileMetric>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         public async Task<HttpResponseMessage> Get()
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var metrics = await sqlHelper.GetPatientMetrics(user.LocationID);
+            var metrics = await sqlHelper.GetProcedureProfileMetrics(user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, metrics);
         }
@@ -31,12 +31,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Post")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public async Task<HttpResponseMessage> Post([FromBody] PatientMetricPost request)
+        public async Task<HttpResponseMessage> Post([FromBody] ProcedureProfileMetricPost request)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.InsertPatientMetric(request.TextPayload, user.LocationID);
+            var result = await sqlHelper.InsertProcedureProfileMetric(request.MetricType, request.TextPayload, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -45,12 +45,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Put")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public async Task<HttpResponseMessage> Put(int patientMetricId, [FromBody] PatientMetricPost request)
+        public async Task<HttpResponseMessage> Put(int patientMetricId, [FromBody] ProcedureProfileMetricPost request)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdatePatientMetric(patientMetricId, request.TextPayload, user.LocationID);
+            var result = await sqlHelper.UpdateProcedureProfileMetric(patientMetricId, request.TextPayload, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -59,12 +59,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Delete")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public async Task<HttpResponseMessage> Delete(int patientMetricId)
+        public async Task<HttpResponseMessage> Delete(int procedureProfileMetricId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.DeletePatientMetric(patientMetricId, user.LocationID);
+            var result = await sqlHelper.DeleteProcedureProfileMetric(procedureProfileMetricId, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -75,12 +75,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("answer")]
         [HttpPost]
-        public async Task<HttpResponseMessage> PostAnswer(int patientMetricId, [FromBody] PatientMetricPost request)
+        public async Task<HttpResponseMessage> PostAnswer(int procedureProfileMetricId, [FromBody] ProcedureProfileMetricPost request)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.InsertPatientMetricAnswer(patientMetricId, request.TextPayload, user.LocationID);
+            var result = await sqlHelper.InsertProcedureProfileMetricAnswer(procedureProfileMetricId, request.TextPayload, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -91,12 +91,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("answer")]
         [HttpPut]
-        public async Task<HttpResponseMessage> PutAnswer(int patientMetricAnswerId, [FromBody] PatientMetricPost request)
+        public async Task<HttpResponseMessage> PutAnswer(int procedureProfileMetricAnswerId, [FromBody] ProcedureProfileMetricPost request)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdatePatientMetricAnswer(patientMetricAnswerId, request.TextPayload, user.LocationID);
+            var result = await sqlHelper.UpdateProcedureProfileMetricAnswer(procedureProfileMetricAnswerId, request.TextPayload, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -107,12 +107,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("answer")]
         [HttpDelete]
-        public async Task<HttpResponseMessage> DeleteAnswer(int patientMetricAnswerId)
+        public async Task<HttpResponseMessage> DeleteAnswer(int procedureProfileMetricAnswerId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.DeletePatientMetricAnswer(patientMetricAnswerId, user.LocationID);
+            var result = await sqlHelper.DeleteProcedureProfileMetricAnswer(procedureProfileMetricAnswerId, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -123,12 +123,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("profile")]
         [HttpPut]
-        public async Task<HttpResponseMessage> PutProfile(int procedureProfileId, int patientMetricId, [FromBody] PatientMetricProfilePost request)
+        public async Task<HttpResponseMessage> PutProfile(int procedureProfileId, int procedureProfileMetricId, [FromBody] ProcedureProfileMetricXrefPost request)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateProcedureProfilePatientMetric(procedureProfileId, patientMetricId, request.Answers, user.LocationID);
+            var result = await sqlHelper.UpdateProcedureProfileMetricXref(procedureProfileId, procedureProfileMetricId, request.Answers, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -139,12 +139,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("profile")]
         [HttpDelete]
-        public async Task<HttpResponseMessage> DeleteProfile(int procedureProfileId, int patientMetricId)
+        public async Task<HttpResponseMessage> DeleteProfile(int procedureProfileId, int procedureProfileMetricId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.DeleteProcedureProfilePatientMetric(procedureProfileId, patientMetricId, user.LocationID);
+            var result = await sqlHelper.DeleteProcedureProfileMetricXref(procedureProfileId, procedureProfileMetricId, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
