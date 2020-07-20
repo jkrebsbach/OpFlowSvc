@@ -631,10 +631,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<ProcedureProfileMetric>> GetProcedureProfileMetrics(int locationId)
+        public async Task<List<ProcedureProfileMetric>> GetProcedureProfileMetrics(string metricType, int locationId)
         {
             var parameters = new[]
             {
+                new SqlParameter("metric_type", metricType),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteCommandAsync("GetProcedureProfileMetrics", parameters);

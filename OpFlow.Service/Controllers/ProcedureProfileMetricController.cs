@@ -17,12 +17,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Get")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ProcedureProfileMetric>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public async Task<HttpResponseMessage> Get()
+        public async Task<HttpResponseMessage> Get(string metricType)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var metrics = await sqlHelper.GetProcedureProfileMetrics(user.LocationID);
+            var metrics = await sqlHelper.GetProcedureProfileMetrics(metricType, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, metrics);
         }
