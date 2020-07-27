@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -505,6 +506,108 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("PutTrayRequest")]
+        [Route("trayRequest/{procedureProfileId}")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ProcedureProfileCardComparison>))]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutTrayRequest(int procedureProfileId, [FromBody] TrayRequestEmailRequest request)
+        {
+            var sqlHelper = new SqlHelper();
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var procedureProfile = await sqlHelper.GetProcedureProfile(procedureProfileId, null);
+
+            var targets = request.Emails.Select(e => new User() { Email = e });
+            var message = await GenerateTrayRequestMessage(procedureProfile);
+            var attachments = await GenerateTrayRequestAttachments(procedureProfile);
+
+            await EmailHelper.SendEmail(targets, "Tray Request Summary", message, attachments);
+
+            return Request.CreateResponse(HttpStatusCode.OK, 200);
+        }
+
+        private async Task<string> GenerateTrayRequestMessage(ProcedureProfile procedureProfile)
+        {
+            var sqlHelper = new SqlHelper();
+            var result = string.Empty;
+
+            result += $"{procedureProfile.ProcedureProfileName} Summary\r\n--------\r\n";
+
+            result += "<table><thead><tr><th>Location</th>" +
+                "<th>Date</th>" +
+                "<th>Surgeon</th>" +
+                "<th>Procedure</th>" +
+                "<th>CPT</th>" +
+                "<th>Questions</th></tr></thead><tbody>";
+
+            var profileSurgeries = await sqlHelper.GetProcedureProfileSurgeries(procedureProfile.ProcedureProfileID);
+            foreach (var profileSurgery in profileSurgeries)
+            {
+                result += $"<tr><td>{profileSurgery.Location}</td>" +
+                    $"<td>{profileSurgery.SurgeryDateTime}</td>" +
+                    $"<td>{profileSurgery.Surgeon}</td>" +
+                    $"<td>{profileSurgery.Procedure}</td>" +
+                    $"<td>{profileSurgery.CPTCodes}</td>" +
+                    $"<td>{profileSurgery.Questions}</td></tr>";
+            }
+
+            result += "</tbody></table>";
+
+            foreach (var card in procedureProfile.Cards)
+            {
+                var cardItems = await sqlHelper.GetCardItems(card.CardID, card.LocationID);
+
+                result += $"Card - {card.CardDescription}\r\n--------\r\n";
+                foreach (var item in cardItems.Where(c => c.ItemType == "TRAY"))
+                {
+                    result += $"Tray - {item.ItemDescription}\r\n";
+                }
+            }
+
+            return result;
+        }
+
+        private async Task<List<EmailHelper.MessageAttachment>> GenerateTrayRequestAttachments(ProcedureProfile procedureProfile)
+        {
+            var sqlHelper = new SqlHelper();
+            var result = new List<EmailHelper.MessageAttachment>();
+
+            foreach (var card in procedureProfile.Cards)
+            {
+                var cardItems = await sqlHelper.GetCardItems(card.CardID, card.LocationID);
+
+                var csvData = "Tray, Item, Quantity\r\n";
+
+                foreach (var item in cardItems)
+                {
+                    if (item.ItemType == "TRAY")
+                    {
+                        var trayItems = await sqlHelper.GetTrayItems(item.ItemID, card.LocationID);
+                        foreach (var trayItem in trayItems)
+                        {
+                            csvData += $"{item.ItemDescription},\"{trayItem.InstrumentName}\", {trayItem.Quantity}\r\n";
+                        }
+                    }
+                    else
+                    {
+                        csvData += $"No Tray,\"{item.ItemDescription}\", {item.Quantity}\r\n";
+                    }
+                }
+
+                result.Add(new EmailHelper.MessageAttachment()
+                {
+                    Filename = $"{card.CardDescription}_CardExport.csv",
+                    FileContent = Encoding.ASCII.GetBytes(csvData)
+                });
+            }
+
+            return result;
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetProcedureProfileCompare")]
         [Route("procedureProfileCompare")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ProcedureProfileCardComparison>))]
@@ -642,7 +745,7 @@ namespace OpFlow.Service.Controllers
                     new EmailHelper.MessageAttachment()
                     {
                         Filename = "CasePreferences.xlsx",
-                        FileContent = Convert.ToBase64String(workbook)
+                        FileContent = workbook
                     }
                 };
 

@@ -192,6 +192,20 @@ namespace OpFlow.Data
         public string CategoryName { get; set; }
     }
 
+    public class ProcedureProfileSurgery
+    {
+        public int ProcedureProfileID { get; set; }
+        public string Location { get; set; }
+        public string Surgeon { get; set; }
+        public string Procedure { get; set; }
+        public string CPTCodes { get; set; }
+        public string Questions { get; set; }
+        public DateTime ScheduleDate { get; set; }
+        public TimeSpan ScheduleTime { get; set; }
+
+        public DateTime SurgeryDateTime => ScheduleDate.Add(ScheduleTime);
+    }
+
     public class ProcedureProfileRequestPost
     {
         public List<int> LocationFilter { get; set; }
@@ -348,6 +362,11 @@ namespace OpFlow.Data
         public List<int> SurgeonID { get; set; }
         public List<int> ProposalID { get; set; }
         public string Group { get; set; }
+    }
+
+    public class TrayRequestEmailRequest
+    {
+        public List<string> Emails { get; set; }
     }
 
     public class ProcedureProfileCasePreferenceFilterRequest

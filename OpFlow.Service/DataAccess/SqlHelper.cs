@@ -4110,6 +4110,19 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+        public async Task<List<ProcedureProfileSurgery>> GetProcedureProfileSurgeries(int procedureProfileId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProcedureProfileSurgeries", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ProcedureProfileSurgery>();
+
+            return result;
+        }
+
         public async Task<List<ProcedureProfileCardComparisonReport>> GetProcedureProfileCasePreferencesReport(List<int> locationId, List<int> procedureProfileId, List<int> trayProposalId, List<int> trayId)
         {
             var locationXml = GetIdentitySummary(locationId);

@@ -22,7 +22,7 @@ namespace OpFlow.Service.DataAccess
             return await SendEmail(targets, subject, message, attachments);
         }
 
-        public static async Task<Response> SendEmail(List<User> emailTargets, string subject, string message, List<MessageAttachment> attachments = null)
+        public static async Task<Response> SendEmail(IEnumerable<User> emailTargets, string subject, string message, List<MessageAttachment> attachments = null)
         {
             if (emailTargets == null || !emailTargets.Any())
             {
@@ -61,7 +61,8 @@ namespace OpFlow.Service.DataAccess
             {
                 foreach (var attachment in attachments)
                 {
-                    msg.AddAttachment(attachment.Filename, attachment.FileContent);
+                    var base64Content = Convert.ToBase64String(attachment.FileContent);
+                    msg.AddAttachment(attachment.Filename, base64Content);
                 }
             }
 
@@ -74,7 +75,7 @@ namespace OpFlow.Service.DataAccess
         public class MessageAttachment
         {
             public string Filename { get; set; }
-            public string FileContent { get; set; }
+            public byte[] FileContent { get; set; }
         }
     }
 }
