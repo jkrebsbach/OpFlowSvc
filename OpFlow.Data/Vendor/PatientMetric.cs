@@ -25,7 +25,6 @@ namespace OpFlow.Data
 
     public class ProcedureProfileMetricPost
     {
-        public int? ParentMetricID { get; set; }
         public int? ParentMetricAnswerID { get; set; }
         public string MetricType { get; set; }
         public string TextPayload { get; set; }
