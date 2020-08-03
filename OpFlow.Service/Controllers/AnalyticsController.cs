@@ -528,7 +528,27 @@ namespace OpFlow.Service.Controllers
 
             if (format == "CSV")
             {
-                return ResponseHelper.CsvResponse(concordance.ToTable());
+                // rename columns from SSRS to human readable
+                var tblConcordance = concordance.ToTable();
+                tblConcordance.Columns["TrayQty"].ColumnName = "CardQty";
+                tblConcordance.Columns["TrayUsage"].ColumnName = "CardUsage";
+
+                tblConcordance.Columns.Add(new DataColumn("UnderAlloc"));
+                tblConcordance.Columns.Add(new DataColumn("OverAlloc"));
+
+                foreach (DataRow drConcordance in tblConcordance.Rows)
+                {
+                    var qty = drConcordance["CardQty"];
+                    var usage = drConcordance["CardUsage"];
+                    if (qty != DBNull.Value && usage != DBNull.Value)
+                    {
+                        var delta = (decimal)qty - (decimal)usage;
+                        drConcordance["UnderAlloc"] = delta < 0 ? delta * -1 : 0;
+                        drConcordance["OverAlloc"] = delta > 0 ? delta : 0;
+                    }
+                }
+
+                return ResponseHelper.CsvResponse(tblConcordance);
             }
 
             var datasets = new Dictionary<string, DataTable>

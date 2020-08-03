@@ -34,6 +34,7 @@
 -1.2 AvgCardQtyVariance,
 40 UsageVariance,
 17 CardQtyVariance,
+5 CardUnderAlloc,
 72 CaseCount
 from surgery s
 JOIN surgery_card_item_counts scic ON s.surgery_id = scic.surgery_id
@@ -119,6 +120,10 @@ ORDER BY CASE 'I' WHEN 'I' THEN card.description ELSE NULL END, item_master.desc
         </Field>
         <Field Name="CardQtyVariance">
           <DataField>CardQtyVariance</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="CardUnderAlloc">
+          <DataField>CardUnderAlloc</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="CaseCount">
@@ -311,6 +316,46 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                                   <Value>="Total units allocated but not needed " &amp; SUM(Fields!CardQtyVariance.Value, "Specialty") &amp;
 " = $" &amp; Format(SUM(Fields!CardQtyVariance.Value * Fields!ItemCost.Value, "Specialty"), "#,###.00") &amp;
 " for the " &amp; MAX(Fields!CaseCount.Value, "Specialty") &amp; " cases we audited"</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>None</Style>
+                            </Border>
+                            <BackgroundColor>White</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>2</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox7">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>="Total units needed but not allocated " &amp; Sum(Fields!CardUnderAlloc.Value, "Specialty") &amp; " = $" &amp; Format(Sum(Fields!CardUnderAlloc.Value * Fields!ItemCost.Value, "Specialty"), "#,###.00") &amp; " for the " &amp; Max(Fields!CaseCount.Value, "Specialty") &amp; " cases we audited"</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                   </Style>
@@ -1234,13 +1279,14 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
                     <TablixMember />
                     <TablixMember />
                     <TablixMember />
+                    <TablixMember />
                   </TablixMembers>
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>SupplyOpen</DataSetName>
             <Top>0.4in</Top>
-            <Height>1.60417in</Height>
+            <Height>1.85417in</Height>
             <Width>9.23959in</Width>
             <Style>
               <Border>
@@ -1297,7 +1343,7 @@ Fields!Specialty.Value &amp; " - " &amp; Fields!CardName.Value)</Value>
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>2.00417in</Height>
+        <Height>2.25417in</Height>
         <Style />
       </Body>
       <Width>9.23959in</Width>
