@@ -48,6 +48,7 @@ namespace OpFlow.Data
         public DateTime? EndDate { get; set; }
         public int? SpecialtyID { get; set; }
         public int? UserID { get; set; }
+        public List<int> CardID { get; set; }
         public List<int> ItemID { get; set; }
         public int? CardCategoryID { get; set; }
         public int? LocationID { get; set; }

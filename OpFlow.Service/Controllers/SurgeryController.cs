@@ -26,14 +26,14 @@ namespace OpFlow.Service.Controllers
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
-            var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
+            //var secureSqlHelper = new SecureSqlHelper(user.SecureDatabaseName);
 
-            var userObject = await sqlHelper.GetUser(user.SelectedLocation, user.UserID);
+            //var userObject = await sqlHelper.GetUser(user.SelectedLocation, user.UserID);
 
             var patientSurgery = await sqlHelper.GetSurgery(surgeryId, user.SelectedLocation);
-            patientSurgery.Patient =
-                await secureSqlHelper.GetPatient(patientSurgery.PatientID,
-                user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
+            //patientSurgery.Patient =
+            //    await secureSqlHelper.GetPatient(patientSurgery.PatientID,
+            //    user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
 
             return Request.CreateResponse(HttpStatusCode.OK, patientSurgery);
         }
@@ -106,6 +106,22 @@ namespace OpFlow.Service.Controllers
             var schedules = await sqlHelper.GetCase(caseId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
+        }
+
+        [SwaggerOperation("GetSurgeryMetrics")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(PatientSurgery))]
+        [Route("metrics")]
+        public async Task<HttpResponseMessage> GetSurgeryMetrics(int surgeryId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+            
+            var surgeryMetrics = await sqlHelper.GetSurgeryMetrics(surgeryId, user.SelectedLocation);
+            
+            return Request.CreateResponse(HttpStatusCode.OK,
+            new {
+                Metrics = surgeryMetrics
+            });
         }
 
         // GET api/surgery?userId=5

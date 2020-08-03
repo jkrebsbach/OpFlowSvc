@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OpFlow.Data;
 using OpFlow.Data.Administration;
 using OpFlow.Data.Analytics;
@@ -2778,8 +2779,9 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetExportCounts(DateTime? startDate, DateTime? endDate,
-            int? specialtyId, int? userId, List<int> trayItemId, string countType, bool detail, int locationId)
+            int? specialtyId, int? userId, List<int> cardId, List<int> trayItemId, string countType, bool detail, int locationId)
         {
+            var cardXml = GetIdentitySummary(cardId);
             var trayXml = GetIdentitySummary(trayItemId);
 
             var parameters = new[]
@@ -2788,6 +2790,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("count_type", countType ?? (object)DBNull.Value),
                 new SqlParameter("detail", detail),
@@ -2799,8 +2802,9 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetExportUsage(DateTime? startDate, DateTime? endDate,
-            int? specialtyId, int? userId, List<int> itemId, int? cardCategoryId, int locationId)
+            int? specialtyId, int? userId, List<int> cardId, List<int> itemId, int? cardCategoryId, int locationId)
         {
+            var cardXml = GetIdentitySummary(cardId);
             var itemXml = GetIdentitySummary(itemId);
 
             var parameters = new[]
@@ -2809,6 +2813,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("item_id", itemXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryId ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
@@ -2818,14 +2823,16 @@ namespace OpFlow.Service.DataAccess
             return dsResult;
         }
 
-        public async Task<DataSet> GetExportTray(int? specialtyId, int? userId, List<int> trayItemId, int locationId)
+        public async Task<DataSet> GetExportTray(int? specialtyId, int? userId, List<int> cardId, List<int> trayItemId, int locationId)
         {
+            var cardXml = GetIdentitySummary(cardId);
             var trayXml = GetIdentitySummary(trayItemId);
 
             var parameters = new[]
             {
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)                
             };
@@ -2834,12 +2841,15 @@ namespace OpFlow.Service.DataAccess
             return dsResult;
         }
 
-        public async Task<DataSet> GetExportCard(int? specialtyId, int? userId, int locationId)
+        public async Task<DataSet> GetExportCard(int? specialtyId, int? userId, List<int> cardId, int locationId)
         {
+            var cardXml = GetIdentitySummary(cardId);
+
             var parameters = new[]
             {
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
             var dsResult = await ExecuteCommandAsync("GetExportCard", parameters);
@@ -6673,6 +6683,39 @@ namespace OpFlow.Service.DataAccess
             var result = dsSchedules.Tables[0].DataTableToList<PatientSurgery>().FirstOrDefault();
 
             return result;
+        }
+
+        public async Task<List<SurgeryMetric>> GetSurgeryMetrics(int surgeryId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("location_id", locationId)
+            };
+
+            var command = "GetSurgeryMetrics";
+            var dsSchedules = await ExecuteCommandAsync(command, parameters);
+
+            var metrics = dsSchedules.Tables[0].DataTableToList<SurgeryMetric>();
+            var answers = dsSchedules.Tables[1].DataTableToList<SurgeryMetricAnswer>();
+
+            foreach (var metric in metrics)
+            {
+                metric.SurgeryAnswers = answers.Where(a => a.ProcedureProfileMetricID == metric.ProcedureProfileMetricID).ToList();
+                var selectedAnswers = new List<int>();
+
+                foreach (var answer in metric.SurgeryAnswers)
+                {
+                    try
+                    {
+                        selectedAnswers = JsonConvert.DeserializeObject<List<int>>(metric.AnswerText);
+                    }
+                    catch { }
+                    answer.Selected = selectedAnswers.Contains(answer.ProcedureProfileMetricAnswerID);
+                }
+            }
+
+            return metrics;
         }
 
         public async Task<Surgery> GetCase(int caseId, int locationId)

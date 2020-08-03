@@ -145,6 +145,18 @@ namespace OpFlow.Data
         public List<SurgeryUser> SurgeryUsers { get; set; }
     }
 
+    public class SurgeryMetric : ProcedureProfileMetric
+    {
+        public string AnswerText { get; set; }
+
+        public List<SurgeryMetricAnswer> SurgeryAnswers { get; set; }
+    }
+
+    public class SurgeryMetricAnswer : ProcedureProfileMetricAnswer
+    {
+        public bool Selected { get; set; }
+    }
+
     public class SurgeryPost
     {
         public int? VendorLocationID { get; set; }

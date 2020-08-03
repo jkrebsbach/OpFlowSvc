@@ -220,17 +220,17 @@ namespace OpFlow.Service.Controllers
                 case "COUNT-SUMMARY":
                 case "COUNT-DATA":
                     dsUsage = await sqlHelper.GetExportCounts(request.StartDate, request.EndDate, 
-                        request.SpecialtyID, request.UserID, request.ItemID, request.CountType, exportType.Contains("DATA"), user.SelectedLocation);
+                        request.SpecialtyID, request.UserID, request.CardID, request.ItemID, request.CountType, exportType.Contains("DATA"), user.SelectedLocation);
                     break;
                 case "USAGE":
                     dsUsage = await sqlHelper.GetExportUsage(request.StartDate, request.EndDate,
-                        request.SpecialtyID, request.UserID, request.ItemID, request.CardCategoryID, user.SelectedLocation);
+                        request.SpecialtyID, request.UserID, request.CardID, request.ItemID, request.CardCategoryID, user.SelectedLocation);
                     break;
                 case "TRAY":
-                    dsUsage = await sqlHelper.GetExportTray(request.SpecialtyID, request.UserID, request.ItemID, user.SelectedLocation);
+                    dsUsage = await sqlHelper.GetExportTray(request.SpecialtyID, request.UserID, request.CardID, request.ItemID, user.SelectedLocation);
                     break;
                 case "CARD":
-                    dsUsage = await sqlHelper.GetExportCard(request.SpecialtyID, request.UserID, user.SelectedLocation);
+                    dsUsage = await sqlHelper.GetExportCard(request.SpecialtyID, request.UserID, request.CardID, user.SelectedLocation);
                     break;
                 default:
                     return ResponseHelper.CsvResponse("Unknown export type");
