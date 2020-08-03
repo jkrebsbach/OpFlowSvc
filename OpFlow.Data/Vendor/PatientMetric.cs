@@ -23,6 +23,8 @@ namespace OpFlow.Data
                 {
                     case "TXT":
                         return "Text";
+                    case "MANY":
+                        return "Choose Many";
                     case "SEL":
                     default:
                         return "Multiple Choice";

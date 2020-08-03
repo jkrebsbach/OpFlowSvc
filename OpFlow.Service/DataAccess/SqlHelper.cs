@@ -5430,7 +5430,8 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("default_room_id", defaultRoomId ?? (object)DBNull.Value),
                 new SqlParameter("cpt_codes", surgery.CptCode ?? (object)DBNull.Value),
                 new SqlParameter("laterality_id", surgery.LateralityID ?? (object)DBNull.Value),
-                new SqlParameter("case_profile_id", surgery.CaseProfileID ?? (object)DBNull.Value)
+                new SqlParameter("case_profile_id", surgery.CaseProfileID ?? (object)DBNull.Value),
+                new SqlParameter("metrics_required", surgery.MetricRequired)
             };
             var insert = await ExecuteCommandAsync("InsertSurgery", dsParameters);
 
