@@ -5420,14 +5420,14 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateSurgeryCardItemQty", dsParameters);
         }
 
-        public async Task<int> CreateSurgery(SurgeryPost surgery, int patientId, int caseId, 
+        public async Task<int> CreateSurgery(SurgeryPost surgery, int? patientId, int caseId, 
             int? defaultCardId, int? defaultFlowId, int? defaultRoomId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("vendor_location_id", surgery.VendorLocationID ?? (object)DBNull.Value),
-                new SqlParameter("patient_id", patientId),
+                new SqlParameter("patient_id", patientId ?? (object)DBNull.Value),
                 new SqlParameter("user_id", surgery.SurgeonUserID ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", surgery.SpecialtyID ?? (object)DBNull.Value),
                 new SqlParameter("bundle_id", surgery.BundleID ?? (object)DBNull.Value),
@@ -5441,7 +5441,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("cpt_codes", surgery.CptCode ?? (object)DBNull.Value),
                 new SqlParameter("laterality_id", surgery.LateralityID ?? (object)DBNull.Value),
                 new SqlParameter("case_profile_id", surgery.CaseProfileID ?? (object)DBNull.Value),
-                new SqlParameter("metrics_required", surgery.MetricRequired)
+                new SqlParameter("metrics_required", surgery.MetricsRequired)
             };
             var insert = await ExecuteCommandAsync("InsertSurgery", dsParameters);
 
@@ -5976,11 +5976,11 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
-        public async Task<int> CreateCase(int patientId, int? userId, int? specialtyId, int locationId, string caseNbr)
+        public async Task<int> CreateCase(int? patientId, int? userId, int? specialtyId, int locationId, string caseNbr)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("patient_id", patientId),
+                new SqlParameter("patient_id", patientId ?? (object)DBNull.Value),
                 new SqlParameter("user_id", userId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId),

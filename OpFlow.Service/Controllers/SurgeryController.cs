@@ -943,9 +943,10 @@ namespace OpFlow.Service.Controllers
 
                 var user = await sqlHelper.GetUser(secureUser.SelectedLocation, secureUser.UserID);
 
-                var patientId = await secureSqlHelper.CreatePatient(surgery.PtAcctNbr,
-                    surgery.PtDOB, surgery.PtGender, surgery.PtFirstName, surgery.PtLastName, surgery.PtMiddleInitial, surgery.PtBMI,
-                    user.UserID, user.FirstName, user.LastName, (int)user.RoleID);
+                //var patientId = await secureSqlHelper.CreatePatient(surgery.PtAcctNbr,
+                //    surgery.PtDOB, surgery.PtGender, surgery.PtFirstName, surgery.PtLastName, surgery.PtMiddleInitial, surgery.PtBMI,
+                //    user.UserID, user.FirstName, user.LastName, (int)user.RoleID);
+                int? patientId = null;
 
                 var caseId = await sqlHelper.CreateCase(patientId, secureUser.UserID, surgery.SpecialtyID,
                     secureUser.SelectedLocation, surgery.CaseNbr);

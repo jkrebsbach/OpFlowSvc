@@ -182,7 +182,7 @@ namespace OpFlow.Data
         public int? TrayProposalID { get; set; }
         public string CptCode { get; set; }
         public DateTime ScheduleDate { get; set; }
-        public bool MetricRequired { get; set; }
+        public bool MetricsRequired { get; set; }
     }
 
     public class SurgeryCountSummaryPost
