@@ -147,7 +147,7 @@ namespace OpFlow.Data
 
     public class SurgeryMetric : ProcedureProfileMetric
     {
-        public string AnswerText { get; set; }
+        public string SurgeryAnswer { get; set; }
 
         public List<SurgeryMetricAnswer> SurgeryAnswers { get; set; }
     }
@@ -194,6 +194,7 @@ namespace OpFlow.Data
         public List<int> DeletedSutures { get; set; }
         public List<TrayQuestion> Answers { get; set; }
         public List<string> SurgeryCpts { get; set; }
+        public List<SurgeryMetricAnswer> MetricAnswers { get; set; }
         public string CountComments { get; set; }
         public string SurgeryType { get; set; }
     }

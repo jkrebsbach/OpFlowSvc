@@ -5658,6 +5658,20 @@ namespace OpFlow.Service.DataAccess
 
             return update;
         }
+        public async Task<int> UpdateSurgeryMetricAnswers(int surgeryId, List<SurgeryMetricAnswer> metricAnswers, int locationId)
+        {
+            var metricAnswerXml = GetMetricAnswerSummary(metricAnswers);
+
+            var dsParameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("metric_answers", metricAnswerXml ?? (object)DBNull.Value)
+            };
+            var update = await ExecuteNonQueryAsync("UpdateSurgeryMetricAnswers", dsParameters);
+
+            return update;
+        }
 
         private string GetUsageSummary(List<SurgeryCountItemPost> countData)
         {
@@ -5715,6 +5729,30 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, customItem.SetupAdded);
                 AddColumn(doc, row, customItem.Usage);
                 AddColumn(doc, row, customItem.Notes);
+            }
+
+            return table.OuterXml;
+        }
+
+        private string GetMetricAnswerSummary(List<SurgeryMetricAnswer> metricAnswers)
+        {
+            if (metricAnswers == null || !metricAnswers.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var metricAnswer in metricAnswers)
+            {
+                // prevent adding invalid data
+                if (metricAnswer.ProcedureProfileMetricID <= 0)
+                    continue;
+
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, metricAnswer.ProcedureProfileMetricID);
+                AddColumn(doc, row, metricAnswer.AnswerText);
             }
 
             return table.OuterXml;
@@ -6708,7 +6746,7 @@ namespace OpFlow.Service.DataAccess
                 {
                     try
                     {
-                        selectedAnswers = JsonConvert.DeserializeObject<List<int>>(metric.AnswerText);
+                        selectedAnswers = JsonConvert.DeserializeObject<List<int>>(metric.SurgeryAnswer);
                     }
                     catch { }
                     answer.Selected = selectedAnswers.Contains(answer.ProcedureProfileMetricAnswerID);

@@ -1285,6 +1285,7 @@ namespace OpFlow.Service.Controllers
                 await sqlHelper.UpdateSurgeryInstrumentCount(surgeryId, post.InstrumentCounts, user.ProviderID, user.LocationID);
                 await sqlHelper.UpdateSurgeryProposedCount(surgeryId, post.ProposedCounts, user.ProviderID, user.LocationID);
                 await sqlHelper.UpdateSurgerySutureCount(surgeryId, post.SutureCounts, post.DeletedSutures, user.ProviderID, user.LocationID);
+                await sqlHelper.UpdateSurgeryMetricAnswers(surgeryId, post.MetricAnswers, user.LocationID);
 
                 if (post?.Answers.Any() == true)
                 {
