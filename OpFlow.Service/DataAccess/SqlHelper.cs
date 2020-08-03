@@ -650,11 +650,12 @@ namespace OpFlow.Service.DataAccess
             return metrics;
         }
 
-        public async Task<int> InsertProcedureProfileMetric(string metricType, string question, int? parentMetricAnswerId, int locationId)
+        public async Task<int> InsertProcedureProfileMetric(string metricType, string questionType, string question, int? parentMetricAnswerId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("metric_type", metricType),
+                new SqlParameter("question_type", questionType),
                 new SqlParameter("question_text", question),
                 new SqlParameter("parent_metric_answer_id", parentMetricAnswerId ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
@@ -664,11 +665,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProcedureProfileMetric(int metricId, string question, int locationId)
+        public async Task<int> UpdateProcedureProfileMetric(int metricId, string questionType, string question, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_metric_id", metricId),
+                new SqlParameter("question_type", questionType),
                 new SqlParameter("question_text", question),
                 new SqlParameter("location_id", locationId)
             };

@@ -36,7 +36,8 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.InsertProcedureProfileMetric(request.MetricType, request.TextPayload, request.ParentMetricAnswerID, user.LocationID);
+            var result = await sqlHelper.InsertProcedureProfileMetric(request.MetricType, request.QuestionType, 
+                request.TextPayload, request.ParentMetricAnswerID, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -50,7 +51,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateProcedureProfileMetric(metricId, request.TextPayload, user.LocationID);
+            var result = await sqlHelper.UpdateProcedureProfileMetric(metricId, request.QuestionType, request.TextPayload, user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

@@ -9,10 +9,26 @@ namespace OpFlow.Data
         public int ProcedureProfileMetricID { get; set; }
         public int? ParentMetricID { get; set; }
         public int? ParentMetricAnswerID { get; set; }
+        public string QuestionType { get; set; }
         public string QuestionText { get; set; }
         public string MetricType { get; set; }
         public string ParentMetric { get; set; }
         public string ParentMetricAnswer { get; set; }
+
+        public string QuestionTypeDescription
+        {
+            get
+            {
+                switch (QuestionType)
+                {
+                    case "TXT":
+                        return "Text";
+                    case "SEL":
+                    default:
+                        return "Multiple Choice";
+                }
+            }
+        }
 
         public List<ProcedureProfileMetricAnswer> Answers { get; set; }
     }
@@ -27,6 +43,7 @@ namespace OpFlow.Data
     {
         public int? ParentMetricAnswerID { get; set; }
         public string MetricType { get; set; }
+        public string QuestionType { get; set; }
         public string TextPayload { get; set; }
     }
 
