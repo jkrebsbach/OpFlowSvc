@@ -5596,14 +5596,12 @@ namespace OpFlow.Service.DataAccess
         }
         
 
-        public async Task<int> UpdateSurgeryCount(int surgeryId, List<SurgeryCountItemPost> itemUsage, string countComments, string surgeryType,
-            int providerId, int locationId)
+        public async Task<int> UpdateSurgeryCount(int surgeryId, List<SurgeryCountItemPost> itemUsage, string countComments, string surgeryType, int locationId)
         {
             var usageSummary = GetUsageSummary(itemUsage);
             var dsParameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("count_comments", countComments ?? (object)DBNull.Value),
                 new SqlParameter("surgery_type", surgeryType ?? (object)DBNull.Value),
@@ -5613,13 +5611,12 @@ namespace OpFlow.Service.DataAccess
 
             return update;
         }
-        public async Task<int> UpdateSurgeryInstrumentCount(int surgeryId, List<SurgeryCountItemPost> instrumentUsage, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryInstrumentCount(int surgeryId, List<SurgeryCountItemPost> instrumentUsage, int locationId)
         {
             var usageSummary = GetUsageSummary(instrumentUsage);
             var dsParameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("usage_summary", usageSummary ?? (object)DBNull.Value)
             };
@@ -5627,13 +5624,12 @@ namespace OpFlow.Service.DataAccess
 
             return update;
         }
-        public async Task<int> UpdateSurgeryProposedCount(int surgeryId, List<SurgeryCountItemPost> proposedUsage, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryProposedCount(int surgeryId, List<SurgeryCountItemPost> proposedUsage, int locationId)
         {
             var usageSummary = GetUsageSummary(proposedUsage);
             var dsParameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("usage_summary", usageSummary ?? (object)DBNull.Value)
             };
@@ -5641,7 +5637,7 @@ namespace OpFlow.Service.DataAccess
 
             return update;
         }
-        public async Task<int> UpdateSurgerySutureCount(int surgeryId, List<SurgeryCountSuturePost> sutureUsage, List<int> deletedSutures, int providerId, int locationId)
+        public async Task<int> UpdateSurgerySutureCount(int surgeryId, List<SurgeryCountSuturePost> sutureUsage, List<int> deletedSutures, int locationId)
         {
             var usageSummary = GetSutureSummary(sutureUsage);
             var deletedSutureXml = GetIdentitySummary(deletedSutures);
@@ -5649,7 +5645,6 @@ namespace OpFlow.Service.DataAccess
             var dsParameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("usage_summary", usageSummary ?? (object)DBNull.Value),
                 new SqlParameter("deleted_sutures", deletedSutureXml ?? (object)DBNull.Value)
@@ -5658,7 +5653,7 @@ namespace OpFlow.Service.DataAccess
 
             return update;
         }
-        public async Task<int> UpdateSurgeryMetricAnswers(int surgeryId, List<SurgeryMetricAnswer> metricAnswers, int locationId)
+        public async Task<int> UpdateSurgeryMetricAnswers(int surgeryId, List<SurgeryMetricPost> metricAnswers, int locationId)
         {
             var metricAnswerXml = GetMetricAnswerSummary(metricAnswers);
 
@@ -5675,7 +5670,7 @@ namespace OpFlow.Service.DataAccess
 
         private string GetUsageSummary(List<SurgeryCountItemPost> countData)
         {
-            if (!countData.Any())
+            if (countData == null || !countData.Any())
                 return null;
 
             var doc = new XmlDocument();
@@ -5734,7 +5729,7 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        private string GetMetricAnswerSummary(List<SurgeryMetricAnswer> metricAnswers)
+        private string GetMetricAnswerSummary(List<SurgeryMetricPost> metricAnswers)
         {
             if (metricAnswers == null || !metricAnswers.Any())
                 return null;
@@ -5758,13 +5753,12 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public async Task<int> UpdateSurgeryQuestionAnswers(int surgeryId, List<TrayQuestion> answers, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryQuestionAnswers(int surgeryId, List<TrayQuestion> answers, int locationId)
         {
             var answerSummary = GetAnswerSummary(answers);
             var dsParameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("answer_summary", answerSummary ?? (object)DBNull.Value)
             };
@@ -5773,7 +5767,7 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
-        public async Task<int> UpdateSurgeryCPTs(int surgeryId, List<string> surgeryCpts, int providerId, int locationId)
+        public async Task<int> UpdateSurgeryCPTs(int surgeryId, List<string> surgeryCpts, int locationId)
         {
             var codes = await GetSurgeryCPTCodes(surgeryId, locationId);
 
@@ -5781,14 +5775,14 @@ namespace OpFlow.Service.DataAccess
             {
                 var existing = codes.FirstOrDefault(c => c.CptCode == surgeryCpt);
                 if (existing == null && !string.IsNullOrEmpty(surgeryCpt))
-                    await InsertSurgeryCPTCode(surgeryId, surgeryCpt, providerId, locationId);
+                    await InsertSurgeryCPTCode(surgeryId, surgeryCpt, locationId);
             }
 
             foreach (var code in codes)
             {
                 var desired = surgeryCpts.FirstOrDefault(c => code.CptCode == c);
                 if (desired == null)
-                    await DeleteSurgeryCPTCode(surgeryId, code.CptCode, providerId, locationId);
+                    await DeleteSurgeryCPTCode(surgeryId, code.CptCode, locationId);
             }
 
             return surgeryCpts.Count;
@@ -5820,13 +5814,12 @@ namespace OpFlow.Service.DataAccess
             return codes;
         }
 
-        public async Task<int> InsertSurgeryCPTCode(int surgeryId, string cptCode, int providerId, int locationId)
+        public async Task<int> InsertSurgeryCPTCode(int surgeryId, string cptCode, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("cpt_code", cptCode),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("AssignCPTCodestoSurgery", dsParameters);
@@ -5834,12 +5827,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> DeleteSurgeryCPTCode(int surgeryId, string cptCode, int providerId, int locationId)
+        public async Task<int> DeleteSurgeryCPTCode(int surgeryId, string cptCode, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("cpt_code", cptCode)
             };
@@ -6746,7 +6738,7 @@ namespace OpFlow.Service.DataAccess
                 {
                     try
                     {
-                        selectedAnswers = JsonConvert.DeserializeObject<List<int>>(metric.SurgeryAnswer);
+                        selectedAnswers = JsonConvert.DeserializeObject<List<int>>($"[{metric.SurgeryAnswer}]");
                     }
                     catch { }
                     answer.Selected = selectedAnswers.Contains(answer.ProcedureProfileMetricAnswerID);

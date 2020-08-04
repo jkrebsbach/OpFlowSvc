@@ -157,6 +157,12 @@ namespace OpFlow.Data
         public bool Selected { get; set; }
     }
 
+    public class SurgeryMetricPost
+    {
+        public int ProcedureProfileMetricID { get; set; }
+        public string AnswerText { get; set; }
+    }
+
     public class SurgeryPost
     {
         public int? VendorLocationID { get; set; }
@@ -194,7 +200,7 @@ namespace OpFlow.Data
         public List<int> DeletedSutures { get; set; }
         public List<TrayQuestion> Answers { get; set; }
         public List<string> SurgeryCpts { get; set; }
-        public List<SurgeryMetricAnswer> MetricAnswers { get; set; }
+        public List<SurgeryMetricPost> MetricAnswers { get; set; }
         public string CountComments { get; set; }
         public string SurgeryType { get; set; }
     }

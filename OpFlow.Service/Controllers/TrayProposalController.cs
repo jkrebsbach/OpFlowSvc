@@ -2070,7 +2070,7 @@ namespace OpFlow.Service.Controllers
 
             foreach (var audit in post.Audits)
             {
-                await sqlHelper.UpdateSurgeryCPTs(audit.SurgeryID, audit.SurgeryCpts, user.ProviderID, user.SelectedLocation);
+                await sqlHelper.UpdateSurgeryCPTs(audit.SurgeryID, audit.SurgeryCpts, user.SelectedLocation);
                 await sqlHelper.UpdateProposedTrayAuditComments(trayProposalId, audit.SurgeryID, audit.Comments, target, user.SelectedLocation);
             }
 

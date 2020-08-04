@@ -1282,18 +1282,18 @@ namespace OpFlow.Service.Controllers
 
             try
             {
-                await sqlHelper.UpdateSurgeryCount(surgeryId, post.ItemCounts, post.CountComments, post.SurgeryType, user.ProviderID, user.LocationID);
-                await sqlHelper.UpdateSurgeryInstrumentCount(surgeryId, post.InstrumentCounts, user.ProviderID, user.LocationID);
-                await sqlHelper.UpdateSurgeryProposedCount(surgeryId, post.ProposedCounts, user.ProviderID, user.LocationID);
-                await sqlHelper.UpdateSurgerySutureCount(surgeryId, post.SutureCounts, post.DeletedSutures, user.ProviderID, user.LocationID);
-                await sqlHelper.UpdateSurgeryMetricAnswers(surgeryId, post.MetricAnswers, user.LocationID);
+                await sqlHelper.UpdateSurgeryCount(surgeryId, post.ItemCounts, post.CountComments, post.SurgeryType, user.SelectedLocation);
+                await sqlHelper.UpdateSurgeryInstrumentCount(surgeryId, post.InstrumentCounts, user.SelectedLocation);
+                await sqlHelper.UpdateSurgeryProposedCount(surgeryId, post.ProposedCounts, user.SelectedLocation);
+                await sqlHelper.UpdateSurgerySutureCount(surgeryId, post.SutureCounts, post.DeletedSutures, user.SelectedLocation);
+                await sqlHelper.UpdateSurgeryMetricAnswers(surgeryId, post.MetricAnswers, user.SelectedLocation);
 
                 if (post?.Answers.Any() == true)
                 {
-                    await sqlHelper.UpdateSurgeryQuestionAnswers(surgeryId, post.Answers, user.ProviderID, user.LocationID);
+                    await sqlHelper.UpdateSurgeryQuestionAnswers(surgeryId, post.Answers, user.SelectedLocation);
                 }
 
-                await sqlHelper.UpdateSurgeryCPTs(surgeryId, post.SurgeryCpts, user.ProviderID, user.SelectedLocation);
+                await sqlHelper.UpdateSurgeryCPTs(surgeryId, post.SurgeryCpts, user.SelectedLocation);
             }
             catch (Exception e)
             {
