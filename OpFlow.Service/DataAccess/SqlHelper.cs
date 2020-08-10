@@ -7877,7 +7877,8 @@ namespace OpFlow.Service.DataAccess
                     new SqlParameter("instrument_name", tray.InstrumentName),
                     new SqlParameter("manufacturer", tray.Manufacturer),
                     new SqlParameter("quantity", tray.Quantity),
-                    new SqlParameter("category", tray.Category)
+                    new SqlParameter("category", tray.Category),
+                    new SqlParameter("vendor_tray", tray.VendorTray)
                 };
 
                 result.Identity = await ExecuteNonQueryAsync(@"UpdateTrayImport", parameters);

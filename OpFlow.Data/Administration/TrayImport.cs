@@ -14,5 +14,6 @@ namespace OpFlow.Data.Administration
         public int Quantity { get; set; }
         public string Manufacturer { get; set; }
         public string Category { get; set; }
+        public bool VendorTray { get; set; }
     }
 }

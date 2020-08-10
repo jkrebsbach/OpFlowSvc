@@ -125,6 +125,7 @@ namespace OpFlow.Service.Controllers
             foreach (var column in columns)
             {
                 var dataField = string.Empty;
+
                 if (column.DataType?.ToLower()?.Contains("varchar") == true)
                 {
                     dataField = "ABC";
@@ -149,6 +150,12 @@ namespace OpFlow.Service.Controllers
                 {
                     dataField = "11:30";
                 }
+
+                if (column.DataType?.ToLower() == "bool")
+                {
+                    dataField = "Y";
+                }
+
                 sample += $"{strDelim}{dataField}";
                 strDelim = ",";
             }

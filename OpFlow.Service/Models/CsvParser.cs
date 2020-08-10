@@ -88,7 +88,8 @@ namespace OpFlow.Service.Models
                                 Manufacturer = _csv.GetField(3),
                                 InstrumentType = _csv.GetField(4),
                                 Quantity = string.IsNullOrEmpty(_csv.GetField(5)) ? 1 : int.Parse(_csv.GetField(5)),
-                                Category = _csv.GetField(6)
+                                Category = _csv.GetField(6),
+                                VendorTray = _csv.GetField(7) == "Y"
                             });
                             break;
                         case ImportType.User:
