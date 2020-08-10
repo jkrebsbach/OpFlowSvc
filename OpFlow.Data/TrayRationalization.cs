@@ -474,6 +474,32 @@ namespace OpFlow.Data
         public int? StandardizedTrayID { get; set; }
     }
 
+    public class TrayRationalizationOverlap
+    {
+        public List<TrayCardOverlapSummary> TraySummary { get; set; }
+        public List<TrayRationalizationOverlapProposed> Proposed { get; set; }
+        public List<TrayRationalizationOverlapShared> Shared { get; set; }
+        public List<TrayRationalizationOverlapTray> Trays { get; set; }
+    }
+
+    public class TrayRationalizationOverlapProposed
+    {
+        public string TrayName { get; set; }
+        public List<TrayRationalizationItem> Instruments { get; set; }
+    }
+
+    public class TrayRationalizationOverlapShared
+    {
+        public string TrayName { get; set; }
+        public List<ItemTrayOverlap> Instruments { get; set; }
+    }
+
+    public class TrayRationalizationOverlapTray
+    {
+        public string TrayName { get; set; }
+        public List<ItemTray> Instruments { get; set; }
+    }
+
     public class TrayRationalizationTrayPost
     {
         public string TrayType { get; set; }

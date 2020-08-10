@@ -1839,12 +1839,75 @@ namespace OpFlow.Service.Controllers
             });
         }
 
-        [SwaggerOperation("PostTrayRationalizationOverlap")]
+        [SwaggerOperation("ExportTrayRationalizationOverlap")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalizationDetail>))]
+        [Route("trayRationalizationOverlap/csv")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> ExportTrayRationalizationOverlap(int trayProposalId, [FromBody] TrayRationalizationOverlapPost post)
+        {
+            var rationalization = await GetTrayRationalizationOverlap(trayProposalId, post.Trays);
+
+            var extract = "Proposed\r\nInstrument,Quantity,Avg Used, Cost\r\n";
+            foreach (var proposal in rationalization.Proposed)
+            {
+                extract += $"{proposal.TrayName}\r\n";
+                foreach (var instrument in proposal.Instruments)
+                {
+                    extract += $"{instrument.InstrumentName}, {instrument.Quantity}, {instrument.AvgUsed}, {instrument.InstrumentCost}\r\n";
+                }
+            }
+
+            extract += "\r\nShared\r\nInstrument,Quantity,Avg Used, Cost\r\n";
+            foreach (var proposal in rationalization.Shared)
+            {
+                extract += $"{proposal.TrayName}\r\n";
+                foreach (var instrument in proposal.Instruments)
+                {
+                    extract += $"{instrument.InstrumentName}, {instrument.Quantity}, {instrument.AvgUsed}, {instrument.InstrumentCost}\r\n";
+                }
+            }
+
+            extract += "\r\nTrays\r\nInstrument,Quantity,Avg Used, Cost\r\n";
+            foreach (var proposal in rationalization.Trays)
+            {
+                extract += $"{proposal.TrayName}\r\n";
+                foreach (var instrument in proposal.Instruments)
+                {
+                    extract += $"{instrument.InstrumentName}, {instrument.Quantity} - {instrument.AvgUsed}, {instrument.InstrumentCost}\r\n";
+                }
+            }
+
+
+            var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
+            var memStream = new MemoryStream(extractBytes);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                { FileName = "TrayRationalizationOverlap.csv", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
+        }
+
+        [SwaggerOperation("PostTrayRationalizationOverlap")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(TrayRationalizationOverlap))]
         [Route("trayRationalizationOverlap")]
         [HttpPost]
         public async Task<HttpResponseMessage> PostTrayRationalizationOverlap(int trayProposalId, [FromBody] TrayRationalizationOverlapPost post)
         {
+            var rationalization = await GetTrayRationalizationOverlap(trayProposalId, post.Trays);
+
+            return Request.CreateResponse(HttpStatusCode.OK, rationalization);
+        }
+
+        private async Task<TrayRationalizationOverlap> GetTrayRationalizationOverlap(int trayProposalId, List<TrayRationalizationTrayPost> traySources)
+        { 
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
@@ -1868,7 +1931,7 @@ namespace OpFlow.Service.Controllers
                     proposal.Warning = true;
             }
 
-            foreach (var tray in post.Trays)
+            foreach (var tray in traySources)
             {
                 List<ItemTrayOverlap> trayInstruments;
 
@@ -1919,13 +1982,14 @@ namespace OpFlow.Service.Controllers
                 traySummary.Add(overlapSummary);
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, new
+
+            return new TrayRationalizationOverlap()
             {
                 TraySummary = traySummary,
-                Proposed = proposed.GroupBy(s => "Proposed Tray").Select(s => new { TrayName = s.Key, Instruments = s.OrderByDescending(p => p.Warning).ToList() }),
-                Shared = shared.GroupBy(s => s.TrayName).Select(s => new { TrayName = s.Key, Instruments = s.ToList()}),
-                Trays = trays.GroupBy(s => s.TrayName).Select(s => new { TrayName = s.Key, Instruments = s.ToList() })
-            });
+                Proposed = proposed.GroupBy(s => "Proposed Tray").Select(s => new TrayRationalizationOverlapProposed(){ TrayName = s.Key, Instruments = s.OrderByDescending(p => p.Warning).ToList() }).ToList(),
+                Shared = shared.GroupBy(s => s.TrayName).Select(s => new TrayRationalizationOverlapShared(){ TrayName = s.Key, Instruments = s.ToList() }).ToList(),
+                Trays = trays.GroupBy(s => s.TrayName).Select(s => new TrayRationalizationOverlapTray (){ TrayName = s.Key, Instruments = s.ToList() }).ToList()
+            };
         }
 
 
