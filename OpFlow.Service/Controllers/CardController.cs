@@ -431,15 +431,31 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.Created, Type = typeof(int))]
         [Route("cardItem", Name = "AssignCardItem")]
         [HttpPut]
-        public async Task<HttpResponseMessage> PutCardItem(int cardId, [FromBody]CardItemPost value)
+        public async Task<HttpResponseMessage> PutCardItem(int cardId, [FromBody]CardItemPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            if (value.ItemID == null)
-                value.ItemID = await sqlHelper.InsertItemMaster("SUPPLY", value.ItemName, user.SelectedLocation);
+            var result = -1;
 
-            var result = await sqlHelper.UpdateCardItem(cardId, value.ItemID ?? -1, value.OpenQty, value.HoldQty, user.SelectedLocation);
+            if (post.ItemType == "tray-group")
+            {
+                var trayGroups = await sqlHelper.GetTrayGroups(user.SelectedLocation);
+                var trayGroup = trayGroups.First(t => t.TrayGroupID == post.ItemID);
+
+                foreach (var tray in trayGroup.Trays)
+                {
+                    result = await sqlHelper.UpdateCardItem(cardId, tray.TrayItemID, 0, 1, user.SelectedLocation);
+                }
+            }
+            else
+            {
+
+                if (post.ItemID == null)
+                    post.ItemID = await sqlHelper.InsertItemMaster("SUPPLY", post.ItemName, user.SelectedLocation);
+
+                result = await sqlHelper.UpdateCardItem(cardId, post.ItemID.Value, post.OpenQty, post.HoldQty, user.SelectedLocation);
+            }
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

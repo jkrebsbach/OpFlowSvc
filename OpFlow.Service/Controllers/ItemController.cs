@@ -132,7 +132,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         [Route("trayExport")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetTrayExport(int surgeryId, int? trayId = null, string itemType = null)
+        public async Task<HttpResponseMessage> GetTrayExport(int surgeryId, int? trayId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();

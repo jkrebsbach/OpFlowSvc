@@ -107,6 +107,7 @@ namespace OpFlow.Data
     {
         public int? ItemID { get; set; }
         public string ItemName { get; set; }
+        public string ItemType { get; set; }
         public int OpenQty { get; set; }
         public int HoldQty { get; set; }
     }
