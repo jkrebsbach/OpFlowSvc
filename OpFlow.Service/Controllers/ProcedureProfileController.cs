@@ -92,6 +92,27 @@ namespace OpFlow.Service.Controllers
             });
         }
 
+        // GET api/surgery?userId=5
+        [SwaggerOperation("GetSurgeonPreferences")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeonPreference>))]
+        [Route("surgeonPreferences")]
+        public async Task<HttpResponseMessage> GetSurgeonPreferences(int procedureProfileId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var preferences = await sqlHelper.GetSurgeonPreferences(user.SelectedLocation);
+
+            int? caseProfileId = null;
+            var users = new List<int>();
+            var surgeonPreferences = new List<SurgeonPreference>();
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                SurgeonPreferences = surgeonPreferences
+            });
+        }
+
         // GET api/values/5
         [SwaggerOperation("GetVendorSupply")]
         [Route("vendorSupply/{procedureProfileId}")]
