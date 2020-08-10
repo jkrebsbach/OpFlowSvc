@@ -240,7 +240,6 @@ namespace OpFlow.Data
         public bool FieldInstrument { get; set; }
         public bool FieldUsage { get; set; }
         public bool FieldTray { get; set; }
-        public int Timezone { get; set; }
     }
 
     public class TrayConsolidationReportPost

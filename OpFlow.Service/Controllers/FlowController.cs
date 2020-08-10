@@ -27,7 +27,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var flow = await sqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
+            var flow = await sqlHelper.GetFlow(flowId, user.SelectedLocation);
 
             return flow == null ? 
                 Request.CreateResponse(HttpStatusCode.NotFound) : 
@@ -47,7 +47,7 @@ namespace OpFlow.Service.Controllers
 
             try
             {
-                await sqlHelper.AddFlowSmartPhrase(flowId, smartPhraseId, stepId, user.ProviderID, user.LocationID);
+                await sqlHelper.AddFlowSmartPhrase(flowId, smartPhraseId, stepId, user.SelectedLocation);
             }
             catch (SqlException sqlEx)
             {
@@ -77,7 +77,7 @@ namespace OpFlow.Service.Controllers
             {
                 try
                 {
-                    await sqlHelper.AddFlowSmartPhrase(flowId, smartPhraseId, stepId, user.ProviderID, user.LocationID);
+                    await sqlHelper.AddFlowSmartPhrase(flowId, smartPhraseId, stepId, user.SelectedLocation);
                 }
                 catch (SqlException sqlEx)
                 {
@@ -105,7 +105,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var flow = await sqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
+            var flow = await sqlHelper.GetFlow(flowId, user.SelectedLocation);
 
             if (flow == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
@@ -125,7 +125,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var flow = await sqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
+            var flow = await sqlHelper.GetFlow(flowId, user.SelectedLocation);
 
             if (flow == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
@@ -144,7 +144,7 @@ namespace OpFlow.Service.Controllers
 
             var storageHelper = BlobStorageHelper.GetHelper(user);
 
-            var sourceImage = await sqlHelper.GetFlowImage(sourceFlowImageId, user.ProviderID, user.LocationID);
+            var sourceImage = await sqlHelper.GetFlowImage(sourceFlowImageId, user.SelectedLocation);
             var sourceFolder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, sourceImage.FlowID);
             var targetFolder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, targetFlowId);
 
@@ -167,7 +167,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             await sqlHelper.UpdateFlowPhrase(flowId, smartPhraseId,
-                debriefUpdate.Comments, debriefUpdate.StepID, debriefUpdate.RoleID, user.ProviderID, user.LocationID);
+                debriefUpdate.Comments, debriefUpdate.StepID, debriefUpdate.RoleID, user.SelectedLocation);
 
             return Ok();
         }
@@ -182,7 +182,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.DeleteFlowPhrase(flowId, smartPhraseId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteFlowPhrase(flowId, smartPhraseId, user.SelectedLocation);
 
             return Ok();
         }
@@ -198,16 +198,15 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var smartPhraseId = await sqlHelper.NewSmartPhrase(smartPhrase.Phrase, smartPhrase.CategoryID, smartPhrase.StepID, smartPhrase.RoleID,
-                smartPhrase.UserID ?? user.UserID, user.ProviderID, user.LocationID);
+                smartPhrase.UserID ?? user.UserID, user.SelectedLocation);
 
             if (smartPhrase.FlowID.HasValue)
             {
-                await sqlHelper.AddFlowSmartPhrase(smartPhrase.FlowID.Value, smartPhraseId, smartPhrase.StepID, user.ProviderID, user.LocationID);
+                await sqlHelper.AddFlowSmartPhrase(smartPhrase.FlowID.Value, smartPhraseId, smartPhrase.StepID, user.SelectedLocation);
             }
             else if (smartPhrase.SurgeryID.HasValue)
             {
-                await sqlHelper.AddSurgerySmartPhrase(smartPhrase.SurgeryID.Value, smartPhraseId, user.ProviderID,
-                    user.LocationID);
+                await sqlHelper.AddSurgerySmartPhrase(smartPhrase.SurgeryID.Value, smartPhraseId, user.SelectedLocation);
             }
 
             return Ok();
@@ -223,7 +222,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.EditSmartPhrase(smartPhraseId, smartPhrase.Phrase, smartPhrase.CategoryID, smartPhrase.UserID ??  user.UserID, smartPhrase.StepID, smartPhrase.RoleID, user.ProviderID, user.LocationID);
+            await sqlHelper.EditSmartPhrase(smartPhraseId, smartPhrase.Phrase, smartPhrase.CategoryID, smartPhrase.UserID ??  user.UserID, smartPhrase.StepID, smartPhrase.RoleID, user.SelectedLocation);
 
             return Ok();
         }
@@ -238,7 +237,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.DeleteSmartPhrase(smartPhraseId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteSmartPhrase(smartPhraseId, user.SelectedLocation);
 
             return Ok();
         }
@@ -291,7 +290,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateFlowImage(flowImageId, flowImage.Comment, flowImage.StepID, flowImage.RoleID, user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateFlowImage(flowImageId, flowImage.Comment, flowImage.StepID, flowImage.RoleID, user.SelectedLocation);
 
             return Ok();
         }
@@ -330,7 +329,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.DeleteFlowImage(flowImageId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteFlowImage(flowImageId, user.SelectedLocation);
 
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.FlowImages, flowId);
 
@@ -352,7 +351,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.AddFlowFeedback(flowId, flowFeedback.Feedback, user.UserID, user.ProviderID, user.LocationID);
+            await sqlHelper.AddFlowFeedback(flowId, flowFeedback.Feedback, user.UserID, user.SelectedLocation);
 
             return Ok();
         }
@@ -368,7 +367,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.DeleteFlowFeedback(flowFeedbackId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteFlowFeedback(flowFeedbackId, user.SelectedLocation);
 
             return Ok();
         }
@@ -382,7 +381,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var flowList = await sqlHelper.GetCardFlowList(cardId, user.ProviderID, user.LocationID);
+            var flowList = await sqlHelper.GetCardFlowList(cardId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, flowList);
         }
@@ -396,7 +395,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetFlowInstructions(flowId, surgeryId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetFlowInstructions(flowId, surgeryId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -412,12 +411,12 @@ namespace OpFlow.Service.Controllers
 
             var result = new FlowImageResult
             {
-                FlowImages = await sqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID)
+                FlowImages = await sqlHelper.GetFlowImages(flowId, user.SelectedLocation)
             };
 
             if (surgeryId.HasValue)
             {
-                result.SurgeryImages = await sqlHelper.GetSurgeryImages(surgeryId.Value, user.ProviderID, user.LocationID);
+                result.SurgeryImages = await sqlHelper.GetSurgeryImages(surgeryId.Value, user.SelectedLocation);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -432,7 +431,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetFlowTimings(flowId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -446,7 +445,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetFlowSurgeryTimings(surgeryId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetFlowSurgeryTimings(surgeryId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -460,7 +459,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetFlowComments(flowId, surgeryId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetFlowComments(flowId, surgeryId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -474,7 +473,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetFlowMessaging(flowId, user.ProviderID, user.LocationID, stepId);
+            var result = await sqlHelper.GetFlowMessaging(flowId, stepId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -489,23 +488,23 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var flow = await sqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
+            var flow = await sqlHelper.GetFlow(flowId, user.SelectedLocation);
 
             if (flow == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var feedback = await sqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
-            var notifications = await sqlHelper.GetFlowNotifications(flowId, null, user.ProviderID, user.LocationID);
-            var flowInstructions = await sqlHelper.GetFlowInstructions(flowId, surgeryId, user.ProviderID, user.LocationID);
-            var content = await sqlHelper.GetFlowContent(flowId, 1, user.ProviderID, user.LocationID);
-            var timings = await sqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
-            var flowImages = await sqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
-            var surgeryDelays = await sqlHelper.GetFlowSurgeryDelays(flowId, user.ProviderID, user.LocationID);
+            var feedback = await sqlHelper.GetFlowFeedback(flowId, user.SelectedLocation);
+            var notifications = await sqlHelper.GetFlowNotifications(flowId, null, user.SelectedLocation);
+            var flowInstructions = await sqlHelper.GetFlowInstructions(flowId, surgeryId, user.SelectedLocation);
+            var content = await sqlHelper.GetFlowContent(flowId, 1, user.SelectedLocation);
+            var timings = await sqlHelper.GetFlowTimings(flowId, user.SelectedLocation);
+            var flowImages = await sqlHelper.GetFlowImages(flowId, user.SelectedLocation);
+            var surgeryDelays = await sqlHelper.GetFlowSurgeryDelays(flowId, user.SelectedLocation);
             var surgeryImages = new List<SurgeryImage>();
 
             if (surgeryId.HasValue)
             {
-                surgeryImages = await sqlHelper.GetSurgeryImages(surgeryId.Value, user.ProviderID, user.LocationID);
+                surgeryImages = await sqlHelper.GetSurgeryImages(surgeryId.Value, user.SelectedLocation);
             }
 
             foreach (var timing in timings)
@@ -541,7 +540,7 @@ namespace OpFlow.Service.Controllers
 
             var result = new SmartPhraseAdmin()
             {
-                Categories = await sqlHelper.GetSmartPhraseCategories(user.ProviderID, user.LocationID),
+                Categories = await sqlHelper.GetSmartPhraseCategories(user.SelectedLocation),
                 Specialties = await sqlHelper.GetSpecialties(user.SelectedLocation),
                 Users = await sqlHelper.SearchUsers(null, 1, null, user.SelectedLocation)
             };
@@ -559,7 +558,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var categories = await sqlHelper.GetSmartPhrases(categoryId, specialtyId, null, user.ProviderID, user.LocationID);
+            var categories = await sqlHelper.GetSmartPhrases(categoryId, specialtyId, null, user.SelectedLocation);
 
             if (userId.HasValue)
                 categories = categories.Where(c => c.UserID == userId.Value).ToList();
@@ -576,7 +575,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetFlowContent(flowId, surgeryId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetFlowContent(flowId, surgeryId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -590,7 +589,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetFlowNotifications(flowId, stepId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetFlowNotifications(flowId, stepId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -604,7 +603,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetSteps(user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetSteps(user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -618,7 +617,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.GetFlowFeedback(flowId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -634,7 +633,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.DeleteFlowStep(flowId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteFlowStep(flowId, user.SelectedLocation);
 
             for (var index = 0; index < flowStepDetail.FlowSteps.Count; index++)
             {
@@ -658,7 +657,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             await sqlHelper.UpdateSurgeryStep(stepId, 
-                flowStepDetail.StepName, flowStepDetail.StepNotificationType, flowStepDetail.StepTiming, user.ProviderID, user.LocationID);
+                flowStepDetail.StepName, flowStepDetail.StepNotificationType, flowStepDetail.StepTiming, user.SelectedLocation);
 
             return Ok();
         }
@@ -675,7 +674,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             await sqlHelper.AddSurgeryStep(
-                flowStepDetail.StepName, flowStepDetail.StepNotificationType, flowStepDetail.StepTiming, user.ProviderID, user.LocationID);
+                flowStepDetail.StepName, flowStepDetail.StepNotificationType, flowStepDetail.StepTiming, user.SelectedLocation);
 
             return Ok();
         }
@@ -691,7 +690,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.DeleteSurgeryStep(stepId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteSurgeryStep(stepId, user.SelectedLocation);
 
             return Ok();
         }
@@ -707,7 +706,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.InsertFlowNotification(flowId, value.StepID, value.NotificationType, value.Message, value.SmsNumber, 
-                value.EmailAddress, value.MessagingUserID, value.MessagingRoleID, user.ProviderID, user.LocationID);
+                value.EmailAddress, value.MessagingUserID, value.MessagingRoleID, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.Created, result);
         }
@@ -723,7 +722,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.EditFlowNotification(flowNotificationId, value.Message, value.StepID, value.SmsNumber,
-                value.EmailAddress, value.MessagingUserID, value.MessagingRoleID, user.ProviderID, user.LocationID);
+                value.EmailAddress, value.MessagingUserID, value.MessagingRoleID, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -738,7 +737,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.DeleteFlowNotification(flowNotificationId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.DeleteFlowNotification(flowNotificationId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -751,7 +750,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.NewFlow(value.CardID, value.RoomSetupID, value.FlowDescription, user.UserID, value.DefaultFlow, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.NewFlow(value.CardID, value.RoomSetupID, value.FlowDescription, user.UserID, value.DefaultFlow, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -765,7 +764,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateFlow(id, value.CardID, value.RoomSetupID, value.FlowDescription, user.UserID, value.DefaultFlow, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.UpdateFlow(id, value.CardID, value.RoomSetupID, value.FlowDescription, user.UserID, value.DefaultFlow, user.SelectedLocation);
 
             return Ok();
         }
@@ -779,7 +778,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.DeleteFlow(id, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.DeleteFlow(id, user.SelectedLocation);
 
             return Ok();
         }

@@ -533,21 +533,21 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var flow = await sqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
-            var categories = await sqlHelper.GetSmartPhraseCategories(user.ProviderID, user.LocationID);
+            var flow = await sqlHelper.GetFlow(flowId, user.SelectedLocation);
+            var categories = await sqlHelper.GetSmartPhraseCategories(user.SelectedLocation);
             var flowPhrases = await sqlHelper.GetFlowPhrases(flowId, user.ProviderID, user.LocationID);
 
             var smartPhrases = new List<SmartPhrase>();
             if (flow != null)
-                smartPhrases = await sqlHelper.GetSmartPhrases(null, null, flow.OwnerUserID, user.ProviderID, user.LocationID);
+                smartPhrases = await sqlHelper.GetSmartPhrases(null, null, flow.OwnerUserID, user.SelectedLocation);
 
-            var flowFeedback = await sqlHelper.GetFlowFeedback(flowId, user.ProviderID, user.LocationID);
+            var flowFeedback = await sqlHelper.GetFlowFeedback(flowId, user.SelectedLocation);
             var surgeonNotes = await sqlHelper.GetSurgeonNotes(flowId, user.ProviderID, user.LocationID);
-            var flowSteps = await sqlHelper.GetFlowTimings(flowId, user.ProviderID, user.LocationID);
+            var flowSteps = await sqlHelper.GetFlowTimings(flowId, user.SelectedLocation);
             var messages =
                 await sqlHelper.GetMessaging(user.UserID, surgeryId, null, null, user.ProviderID, user.LocationID);
 
-            var flowImages = await sqlHelper.GetFlowImages(flowId, user.ProviderID, user.LocationID);
+            var flowImages = await sqlHelper.GetFlowImages(flowId, user.SelectedLocation);
 
             var surgeryPhrases = new List<SurgeryPhrase>();
             var surgeryImages = new List<SurgeryImage>();
@@ -555,7 +555,7 @@ namespace OpFlow.Service.Controllers
             if (surgeryId.HasValue)
             {
                 surgeryPhrases = await sqlHelper.GetSurgeryPhrases(surgeryId.Value, user.ProviderID, user.LocationID);
-                surgeryImages = await sqlHelper.GetSurgeryImages(surgeryId.Value, user.ProviderID, user.LocationID);
+                surgeryImages = await sqlHelper.GetSurgeryImages(surgeryId.Value, user.SelectedLocation);
             }
 
             var result = new DebriefResult()
@@ -791,7 +791,7 @@ namespace OpFlow.Service.Controllers
             try
             {
                 await sqlHelper.AddSurgerySmartPhrase(surgeryId, smartPhraseId,
-                    user.ProviderID, user.LocationID);
+                    user.SelectedLocation);
             }
             catch (SqlException sqlEx)
             {
@@ -1201,7 +1201,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var surgeryImageId = await sqlHelper.NewSurgeryImage(surgeryId, stepId, roleId, comment,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.SurgeryImages, surgeryId);
 
@@ -1398,7 +1398,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var success = await sqlHelper.DeleteSurgery(id, user.ProviderID, user.LocationID);
+            var success = await sqlHelper.DeleteSurgery(id, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, success);
         }

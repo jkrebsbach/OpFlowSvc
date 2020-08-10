@@ -28,7 +28,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var flow = await sqlHelper.GetFlow(flowId, user.ProviderID, user.LocationID);
+            var flow = await sqlHelper.GetFlow(flowId, user.SelectedLocation);
 
             if (flow == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
