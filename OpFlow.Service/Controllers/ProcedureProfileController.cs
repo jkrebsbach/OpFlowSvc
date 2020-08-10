@@ -5,13 +5,11 @@ using Swashbuckle.Swagger.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
 
 namespace OpFlow.Service.Controllers
@@ -933,6 +931,31 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.InsertProcedureProfileTrayInstrument(procedureProfileId, trayItemId, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PutProcedureProfileTrayGroup")]
+        [Route("procedureProfileTrayGroup")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutProcedureProfileTrayGroup(int procedureProfileId, int trayGroupId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal" && user.Vendor == false)
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            var sqlHelper = new SqlHelper();
+
+            var trayGroups = await sqlHelper.GetTrayGroups(user.SelectedLocation);
+            var trayGroup = trayGroups.First(t => t.TrayGroupID == trayGroupId);
+
+            var result = -1;
+            foreach (var tray in trayGroup.Trays)
+            {
+                result = await sqlHelper.InsertProcedureProfileTrayInstrument(procedureProfileId, tray.TrayItemID, user.SelectedLocation);
+            }
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
