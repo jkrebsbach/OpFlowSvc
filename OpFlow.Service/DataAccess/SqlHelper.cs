@@ -2095,6 +2095,27 @@ namespace OpFlow.Service.DataAccess
             return surgeonPreferences;
         }
 
+        public async Task<SurgeonUsagePreferenceSummary> GetSurgeonUsagePreferences(int procedureProfileId, int userId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("user_id", userId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeonUsagePreferences", parameters);
+
+            var instrumentPreferences = dsSchedules.Tables[0].DataTableToList<SurgeonUsagePreference>();
+            var itemPreferences = dsSchedules.Tables[0].DataTableToList<SurgeonUsagePreference>();
+
+            return new SurgeonUsagePreferenceSummary()
+            {
+                VendorTrays = instrumentPreferences.Where(i => i.VendorTray).ToList(),
+                InternalTrays = instrumentPreferences.Where(i => !i.VendorTray).ToList(),
+                Supplies = itemPreferences.Where(i => i.VendorTray).ToList(),
+            };
+        }
+
         public async Task<CaseProfile> GetSurgeryCaseProfile(int surgeryId, int locationId)
         {
             var parameters = new[]
@@ -3856,6 +3877,19 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> InsertProcedureProfileTrayGroup(int procedureProfileId, int trayGroupId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("tray_group_id", trayGroupId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("InsertProcedureProfileTrayGroup", parameters);
+
+            return result;
+        }
+
         public async Task<int> InsertProcedureProfileTrayInstrument(int procedureProfileId, int trayItemId, int locationId)
         {
             var parameters = new[]
@@ -4105,6 +4139,7 @@ namespace OpFlow.Service.DataAccess
 
             result.TrayUsage = dsSchedules.Tables[10].DataTableToList<ProcedureProfileTrayUsage>();
             result.AssociatedTrays = dsSchedules.Tables[11].DataTableToList<ProcedureProfileAssociatedTray>();
+            result.TrayGroups = dsSchedules.Tables[12].DataTableToList<ProcedureProfileTrayGroup>();
 
             foreach (var item in result.Items)
             {

@@ -182,6 +182,7 @@ namespace OpFlow.Data
         public List<ProfileCardCategory> CardCategories { get; set; }
         public List<ProcedureProfileTrayUsage> TrayUsage { get; set; }
         public List<ProcedureProfileAssociatedTray> AssociatedTrays { get; set; }
+        public List<ProcedureProfileTrayGroup> TrayGroups { get; set; }
 
         public int ProcedureProfileCounts => Cards?.Sum(c => c.ProfileCount) ?? 0;
     }
@@ -222,6 +223,11 @@ namespace OpFlow.Data
     {
         public string TrayName { get; set; }
         public string CardName { get; set; }
+    }
+    public class ProcedureProfileTrayGroup
+    {
+        public int TrayGroupID { get; set; }
+        public string TrayGroup { get; set; }
     }
 
     public class ProfileSpecialty : Specialty
