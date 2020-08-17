@@ -600,8 +600,8 @@ namespace OpFlow.Service.Controllers
 
                 preferences = await sqlHelper.GetSurgeonUsagePreferences(procedureProfile.ProcedureProfileID, surgery.UserID, user.SelectedLocation);
 
-                profileMetrics = await sqlHelper.GetProcedureProfileMetrics("PROC", user.SelectedLocation);
-                var patientMetrics = await sqlHelper.GetProcedureProfileMetrics("PAT", user.SelectedLocation);
+                profileMetrics = await sqlHelper.GetProcedureProfileMetrics("PROC", user.LocationID);
+                var patientMetrics = await sqlHelper.GetProcedureProfileMetrics("PAT", user.LocationID);
 
                 profileMetrics.AddRange(patientMetrics);
             }

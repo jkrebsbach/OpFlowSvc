@@ -109,8 +109,8 @@ namespace OpFlow.Service.Controllers
             var surgeon = await sqlHelper.GetUser(user.SelectedLocation, card.OwnerUserID);
             var preferences = await sqlHelper.GetSurgeonUsagePreferences(procedureProfile.ProcedureProfileID, card.OwnerUserID, user.SelectedLocation);
 
-            var profileMetrics = await sqlHelper.GetProcedureProfileMetrics("PROC", user.SelectedLocation);
-            var patientMetrics = await sqlHelper.GetProcedureProfileMetrics("PAT", user.SelectedLocation);
+            var profileMetrics = await sqlHelper.GetProcedureProfileMetrics("PROC", user.LocationID);
+            var patientMetrics = await sqlHelper.GetProcedureProfileMetrics("PAT", user.LocationID);
 
             profileMetrics.AddRange(patientMetrics);
 
