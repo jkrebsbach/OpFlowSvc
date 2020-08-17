@@ -96,20 +96,31 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSurgeonPreferences")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeonPreference>))]
         [Route("surgeonPreferences")]
-        public async Task<HttpResponseMessage> GetSurgeonPreferences(int procedureProfileId, int cardId)
+        public async Task<HttpResponseMessage> GetSurgeonPreferences(int cardId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var procedureProfile = await sqlHelper.GetProcedureProfile(procedureProfileId, new List<int>() { user.SelectedLocation });
-            var card = procedureProfile.Cards.FirstOrDefault(c => c.CardID == cardId);
-            
-            var preferences = await sqlHelper.GetSurgeonUsagePreferences(procedureProfileId, card.OwnerUserID, user.SelectedLocation);
+            var card = (await sqlHelper.GetCardData(cardId, user.SelectedLocation)).FirstOrDefault();            
+            var procedureProfile = await sqlHelper.GetProcedureProfileByCard(cardId, user.SelectedLocation);
+
+            if (card == null) return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var surgeon = await sqlHelper.GetUser(user.SelectedLocation, card.OwnerUserID);
+            var preferences = await sqlHelper.GetSurgeonUsagePreferences(procedureProfile.ProcedureProfileID, card.OwnerUserID, user.SelectedLocation);
+
+            var profileMetrics = await sqlHelper.GetProcedureProfileMetrics("PROC", user.SelectedLocation);
+            var patientMetrics = await sqlHelper.GetProcedureProfileMetrics("PAT", user.SelectedLocation);
+
+            profileMetrics.AddRange(patientMetrics);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 ProcedureProfile = procedureProfile,
-                SurgeonPreferences = preferences
+                Surgeon = surgeon,
+                Card = card,
+                SurgeonPreferences = preferences,
+                ProcedureProfileMetrics = profileMetrics
             });
         }
 

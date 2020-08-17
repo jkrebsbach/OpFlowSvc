@@ -586,9 +586,25 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var instrumentLookups = await sqlHelper.GetTrayInstrumentLookups(user.SelectedLocation);
-            var audits = await sqlHelper.GetSurgeryProposedTrays(surgeryId, user.ProviderID, user.LocationID);
+            var audits = await sqlHelper.GetSurgeryProposedTrays(surgeryId, user.SelectedLocation);
             var groups = await sqlHelper.GetTrayGroups(user.SelectedLocation);
             var caseProfile = await sqlHelper.GetSurgeryCaseProfile(surgeryId, user.SelectedLocation);
+
+            var surgery = await sqlHelper.GetSurgery(surgeryId, user.SelectedLocation);
+            var procedureProfile = await sqlHelper.GetProcedureProfileByCard(surgery.CardID ?? -1, user.SelectedLocation);
+
+            SurgeonUsagePreferenceSummary preferences = new SurgeonUsagePreferenceSummary();
+            List<ProcedureProfileMetric> profileMetrics = new List<ProcedureProfileMetric>();
+            if (procedureProfile != null)
+            {
+
+                preferences = await sqlHelper.GetSurgeonUsagePreferences(procedureProfile.ProcedureProfileID, surgery.UserID, user.SelectedLocation);
+
+                profileMetrics = await sqlHelper.GetProcedureProfileMetrics("PROC", user.SelectedLocation);
+                var patientMetrics = await sqlHelper.GetProcedureProfileMetrics("PAT", user.SelectedLocation);
+
+                profileMetrics.AddRange(patientMetrics);
+            }
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -598,7 +614,10 @@ namespace OpFlow.Service.Controllers
                 Types = instrumentLookups.Types,
                 Audits = audits.Audits,
                 ScrubTechs = audits.ScrubTechs,
-                CaseProfile = caseProfile
+                CaseProfile = caseProfile,
+                ProcedureProfile = procedureProfile,
+                SurgeonPreferences = preferences,
+                ProcedureProfileMetrics = profileMetrics
             });
         }
 

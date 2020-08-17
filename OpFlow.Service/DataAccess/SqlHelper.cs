@@ -2106,13 +2106,26 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetSurgeonUsagePreferences", parameters);
 
             var instrumentPreferences = dsSchedules.Tables[0].DataTableToList<SurgeonUsagePreference>();
-            var itemPreferences = dsSchedules.Tables[0].DataTableToList<SurgeonUsagePreference>();
+            var itemPreferences = dsSchedules.Tables[1].DataTableToList<SurgeonUsagePreference>();
+
+            var vendorTrays = instrumentPreferences.Where(i => i.VendorTray).GroupBy(i => i.TrayName)
+                .Select(i => new SurgeonUsageTraySummary()
+                {
+                    TrayName = i.Key,
+                    Instruments = i.ToList()
+                });
+            var internalTrays = instrumentPreferences.Where(i => !i.VendorTray).GroupBy(i => i.TrayName)
+                .Select(i => new SurgeonUsageTraySummary()
+                {
+                    TrayName = i.Key,
+                    Instruments = i.ToList()
+                });
 
             return new SurgeonUsagePreferenceSummary()
             {
-                VendorTrays = instrumentPreferences.Where(i => i.VendorTray).ToList(),
-                InternalTrays = instrumentPreferences.Where(i => !i.VendorTray).ToList(),
-                Supplies = itemPreferences.Where(i => i.VendorTray).ToList(),
+                VendorTrays = vendorTrays.ToList(),
+                InternalTrays = internalTrays.ToList(),
+                Supplies = itemPreferences,
             };
         }
 
@@ -4155,6 +4168,20 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+        public async Task<ProcedureProfile> GetProcedureProfileByCard(int cardId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProcedureProfileByCard", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ProcedureProfile>().FirstOrDefault();
+
+            return result;
+        }
+        
         public async Task<List<ProcedureProfileSurgery>> GetProcedureProfileSurgeries(int procedureProfileId)
         {
             var parameters = new[]
@@ -6249,12 +6276,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<SurgeryAudits> GetSurgeryProposedTrays(int surgeryId, int providerId, int locationId)
+        public async Task<SurgeryAudits> GetSurgeryProposedTrays(int surgeryId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSurgeryProposedTrays", dsParameters);
