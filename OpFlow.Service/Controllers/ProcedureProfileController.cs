@@ -111,6 +111,8 @@ namespace OpFlow.Service.Controllers
             var preferences = await sqlHelper.GetSurgeonUsagePreferences(procedureProfile.ProcedureProfileID, card.OwnerUserID, 
                 request.Answers, user.SelectedLocation);
 
+            var variances = await sqlHelper.GetSurgeonUsagePreferenceVariants(procedureProfile.ProcedureProfileID);
+
             var profileMetrics = await sqlHelper.GetProcedureProfileMetrics("PROC", user.LocationID);
             var patientMetrics = await sqlHelper.GetProcedureProfileMetrics("PAT", user.LocationID);
 
@@ -122,7 +124,8 @@ namespace OpFlow.Service.Controllers
                 Surgeon = surgeon,
                 Card = card,
                 SurgeonPreferences = preferences,
-                ProcedureProfileMetrics = profileMetrics
+                ProcedureProfileMetrics = profileMetrics,
+                Variances = variances
             });
         }
 

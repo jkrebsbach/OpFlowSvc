@@ -53,4 +53,20 @@ namespace OpFlow.Data
         public decimal? PeerUsage => PeerOpen == 0 ? 0 : (PeerNet / PeerOpen);
         public decimal? BaselineUsage => BaselineOpen == 0 ? 0 : (BaselineNet / BaselineOpen);
     }
+
+    public class RawSurgeonUsageVariant
+    {
+        public int VariantCount { get; set; }
+        public string AnswerXml { get; set; }
+
+        public List<SurgeonUsageVariant> Questions { get; set; }
+        public List<SurgeonUsagePreference> InternalTrays { get; set; }
+        public List<SurgeonUsagePreference> Instruments { get; set; }
+    }
+
+    public class SurgeonUsageVariant
+    {
+        public string Question { get; set; }
+        public string AnswerXml { get; set; }
+    }
 }

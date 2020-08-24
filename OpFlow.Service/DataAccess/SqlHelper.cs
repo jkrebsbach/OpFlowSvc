@@ -2132,6 +2132,20 @@ namespace OpFlow.Service.DataAccess
             };
         }
 
+        public async Task<List<RawSurgeonUsageVariant>> GetSurgeonUsagePreferenceVariants(int procedureProfileId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeonUsagePreferenceVariants", parameters);
+
+            var rawVariants = dsSchedules.Tables[0].DataTableToList<RawSurgeonUsageVariant>();
+            var answers = dsSchedules.Tables[1].DataTableToList<ProcedureProfileMetricAnswer>();
+
+            return rawVariants;
+        }
+
         public async Task<CaseProfile> GetSurgeryCaseProfile(int surgeryId, int locationId)
         {
             var parameters = new[]
