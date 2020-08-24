@@ -91,6 +91,7 @@ namespace OpFlow.Service.Controllers
             {
                 Providers = providers,
                 Locations = vendorLocations,
+                AllProcedureProfiles = procedureProfiles,
                 ProcedureProfiles = procedureProfiles.Where(p => p.Cards.Any()),
                 Surgeons = surgeons.OrderBy(s => s.LastName).ThenBy(s => s.FirstName),
                 Owners = owners,
