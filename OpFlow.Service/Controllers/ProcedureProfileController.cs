@@ -96,7 +96,8 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSurgeonPreferences")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeonPreference>))]
         [Route("surgeonPreferences")]
-        public async Task<HttpResponseMessage> GetSurgeonPreferences(int cardId)
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostSurgeonPreferences(int cardId, [FromBody] SurgeonPreferencesFilter request)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -107,7 +108,8 @@ namespace OpFlow.Service.Controllers
             if (card == null) return Request.CreateResponse(HttpStatusCode.NotFound);
 
             var surgeon = await sqlHelper.GetUser(user.SelectedLocation, card.OwnerUserID);
-            var preferences = await sqlHelper.GetSurgeonUsagePreferences(procedureProfile.ProcedureProfileID, card.OwnerUserID, user.SelectedLocation);
+            var preferences = await sqlHelper.GetSurgeonUsagePreferences(procedureProfile.ProcedureProfileID, card.OwnerUserID, 
+                request.Answers, user.SelectedLocation);
 
             var profileMetrics = await sqlHelper.GetProcedureProfileMetrics("PROC", user.LocationID);
             var patientMetrics = await sqlHelper.GetProcedureProfileMetrics("PAT", user.LocationID);

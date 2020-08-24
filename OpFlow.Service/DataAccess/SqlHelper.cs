@@ -2095,12 +2095,15 @@ namespace OpFlow.Service.DataAccess
             return surgeonPreferences;
         }
 
-        public async Task<SurgeonUsagePreferenceSummary> GetSurgeonUsagePreferences(int procedureProfileId, int userId, int locationId)
+        public async Task<SurgeonUsagePreferenceSummary> GetSurgeonUsagePreferences(int procedureProfileId, int userId, List<int> answerId, int locationId)
         {
+            var answerXml = GetIdentitySummary(answerId);
+
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId),
                 new SqlParameter("user_id", userId),
+                new SqlParameter("answer_id", answerXml ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSurgeonUsagePreferences", parameters);

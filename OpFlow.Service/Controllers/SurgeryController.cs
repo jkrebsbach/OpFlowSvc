@@ -590,22 +590,6 @@ namespace OpFlow.Service.Controllers
             var groups = await sqlHelper.GetTrayGroups(user.SelectedLocation);
             var caseProfile = await sqlHelper.GetSurgeryCaseProfile(surgeryId, user.SelectedLocation);
 
-            var surgery = await sqlHelper.GetSurgery(surgeryId, user.SelectedLocation);
-            var procedureProfile = await sqlHelper.GetProcedureProfileByCard(surgery.CardID ?? -1, user.SelectedLocation);
-
-            SurgeonUsagePreferenceSummary preferences = new SurgeonUsagePreferenceSummary();
-            List<ProcedureProfileMetric> profileMetrics = new List<ProcedureProfileMetric>();
-            if (procedureProfile != null)
-            {
-
-                preferences = await sqlHelper.GetSurgeonUsagePreferences(procedureProfile.ProcedureProfileID, surgery.UserID, user.SelectedLocation);
-
-                profileMetrics = await sqlHelper.GetProcedureProfileMetrics("PROC", user.LocationID);
-                var patientMetrics = await sqlHelper.GetProcedureProfileMetrics("PAT", user.LocationID);
-
-                profileMetrics.AddRange(patientMetrics);
-            }
-
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 TrayGroups = groups,
@@ -615,9 +599,6 @@ namespace OpFlow.Service.Controllers
                 Audits = audits.Audits,
                 ScrubTechs = audits.ScrubTechs,
                 CaseProfile = caseProfile,
-                ProcedureProfile = procedureProfile,
-                SurgeonPreferences = preferences,
-                ProcedureProfileMetrics = profileMetrics
             });
         }
 

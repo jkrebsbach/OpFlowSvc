@@ -580,6 +580,11 @@ namespace OpFlow.Data
         public List<int> TrayGroupID { get; set; }
         public string Comments { get; set; }
     }
+
+    public class SurgeonPreferencesFilter
+    {
+        public List<int> Answers { get; set; }
+    }
     public class CaseProfile
     {
         public int CaseProfileID { get; set; }
