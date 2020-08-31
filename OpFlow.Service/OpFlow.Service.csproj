@@ -451,6 +451,12 @@
     <Content Include="Resources\ServiceLineReviewExport.rdlc" />
     <Content Include="Resources\SupplySavingsEstimatorExport.rdlc" />
     <Content Include="Resources\SupplyCountExport.rdlc" />
+    <Content Include="Resources\TrayReductionSummary.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TrayReductionSummaryExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />

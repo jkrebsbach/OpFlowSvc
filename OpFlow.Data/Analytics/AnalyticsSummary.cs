@@ -242,7 +242,7 @@ namespace OpFlow.Data
         public bool FieldTray { get; set; }
     }
 
-    public class TrayConsolidationReportPost
+    public class TrayConsolidationReportPost : ReportRequest
     {
         public List<int> SpecialtyId { get; set; }
         public List<int> TrayId { get; set; }

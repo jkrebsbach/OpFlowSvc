@@ -98,6 +98,8 @@
     <Report Include="TrayConsolidation.rdl" />
     <Report Include="TrayRationalization.rdl" />
     <Report Include="TrayRationalizationExport.rdl" />
+    <Report Include="TrayReductionSummary.rdl" />
+    <Report Include="TrayReductionSummaryExport.rdl" />
     <Report Include="TrayScope.rdl" />
     <Report Include="TrayScopeExport.rdl" />
   </ItemGroup>

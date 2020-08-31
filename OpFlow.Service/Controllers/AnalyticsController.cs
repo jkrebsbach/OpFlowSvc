@@ -1295,6 +1295,57 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("TrayReductionSummary")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsSummary>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("trayReductionSummary")]
+        [Route("trayReductionSummary/{format}")]
+        public async Task<HttpResponseMessage> TrayReductionSummaryReport([FromBody] TrayConsolidationReportPost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+
+
+            var analytics = await sqlHelper.GetAnalyticsTrayReductionSummaryData(post.SpecialtyId, user.SelectedLocation);
+
+            var reduction = new DataView(analytics.Tables[0]);
+
+            if (format == "CSV")
+            {
+                return ResponseHelper.CsvResponse(reduction.ToTable());
+            }
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["TrayReductionSummary"] = reduction.ToTable()
+            };
+
+
+            var parameters = new ReportParameter[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+
+            var result = ReportHelper.GetReport($"TrayReductionSummary{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
+        }
+
+        // GET api/values/5
         [SwaggerOperation("TrayConsolidationDownload")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsSummary>))]
         [HttpPut]

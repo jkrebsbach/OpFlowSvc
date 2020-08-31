@@ -484,6 +484,20 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
+        public async Task<DataSet> GetAnalyticsTrayReductionSummaryData(List<int> specialtyId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayReductionSummaryData", parameters);
+
+            return dsSchedules;
+        }
+
         public async Task<DataSet> GetAnalyticsVendorTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId, List<int> cardCategoryId,
             int? minSize, DateTime? startDate, DateTime? endDate, int? caseProfileId, List<int> questionId, List<int> answerId, int locationId)
         {
