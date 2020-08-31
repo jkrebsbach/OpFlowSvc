@@ -13,16 +13,18 @@
     <DataSet Name="TrayReductionSummary">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>select top 10 tray_name TrayName,
-'zz' Status,
-10 InstrumentCount,
-5 OriginalQty,
-6 ProposedQty,
-200 InstrumentsRemoved,
-.2203 ReductionPercentage,
-5 CaseCount,
-11 Audits
-from tray</CommandText>
+        <CommandText>SELECT TrayName,
+	'Count' Status,
+	MAX(UniqueInstruments) InstrumentCount,
+	MAX(InstrumentCount) OriginalQty,
+	-1 ProposedQty,
+	MAX(vw.TrayInstances) TrayInstances,
+	SUM(CaseCount) CaseCount,
+	-1 Audits
+FROM tray_rationalization_view vw
+WHERE vw.SpecialtyID = 1
+GROUP BY TrayName
+ORDER BY TrayName</CommandText>
       </Query>
       <Fields>
         <Field Name="TrayName">
@@ -49,13 +51,9 @@ from tray</CommandText>
           <DataField>ProposedQty</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="InstrumentsRemoved">
-          <DataField>InstrumentsRemoved</DataField>
+        <Field Name="TrayInstances">
+          <DataField>TrayInstances</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="ReductionPercentage">
-          <DataField>ReductionPercentage</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
         <Field Name="Audits">
           <DataField>Audits</DataField>
@@ -537,7 +535,7 @@ from tray</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!InstrumentsRemoved.Value</Value>
+                                  <Value>=(Fields!OriginalQty.Value - Fields!ProposedQty.Value) * Fields!TrayInstances.Value</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -567,8 +565,10 @@ from tray</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!ReductionPercentage.Value</Value>
-                                  <Style />
+                                  <Value>=((Fields!OriginalQty.Value - Fields!ProposedQty.Value) / Fields!OriginalQty.Value)</Value>
+                                  <Style>
+                                    <Format>P</Format>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
