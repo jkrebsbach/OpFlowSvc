@@ -112,7 +112,7 @@ namespace OpFlow.Service.Controllers
         // GET api/values/5
         [SwaggerOperation("GetCardList")]
         [Route("list")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardListScreen>))]
         public async Task<HttpResponseMessage> GetCardList(int? userId = null, int? specialtyId = null, int? procedureId = null, int? bundleId = null, bool? defaultFilter = null)
         {
             var user = await CacheUtil.GetUserSecurity();

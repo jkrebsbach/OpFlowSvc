@@ -50,6 +50,12 @@ namespace OpFlow.Data
         }
     }
 
+    public class CardListScreen : Card
+    {
+        public int TrayCount { get; set; }
+        public int PeelPackCount { get; set; }
+    }
+
     public class CardDetail : Card
     {
         public List<SurgeryUser> CardUsers { get; set; }

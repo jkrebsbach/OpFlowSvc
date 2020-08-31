@@ -3773,7 +3773,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<Card>> GetCardList(int? userId, int? specialtyId, int? procedureId, int? bundleId, bool defaultCardOnly, int locationId)
+        public async Task<List<CardListScreen>> GetCardList(int? userId, int? specialtyId, int? procedureId, int? bundleId, bool defaultCardOnly, int locationId)
         {
             var parameters = new[]
             {
@@ -3786,7 +3786,7 @@ namespace OpFlow.Service.DataAccess
             };
             var dsSchedules = await ExecuteCommandAsync("GetCardListbyProcedure", parameters);
 
-            var result = dsSchedules.Tables[0].DataTableToList<Card>();
+            var result = dsSchedules.Tables[0].DataTableToList<CardListScreen>();
             var cardSources = dsSchedules.Tables[1].DataTableToList<CardSource>()
                 .GroupBy(cs => cs.CardID);
 
