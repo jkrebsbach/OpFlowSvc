@@ -200,6 +200,7 @@ namespace OpFlow.Data
         public List<string> Cpt { get; set; }
         public List<string> TrayStatus { get; set; }
         public string Instruments { get; set; }
+        public string TrayType { get; set; }
         public int? MinCost { get; set; }
         public int? MinQty { get; set; }
         public decimal? MinOpen { get; set; }
@@ -233,6 +234,7 @@ namespace OpFlow.Data
         public int? CaseProfileId { get; set; }
         public List<int> QuestionId { get; set; }
         public List<int> AnswerId { get; set; }
+        public string TrayType { get; set; }
         public string Order { get; set; }
         public string Group { get; set; }
 

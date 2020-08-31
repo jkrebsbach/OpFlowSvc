@@ -461,7 +461,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetAnalyticsTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId, 
-            List<int> cardCategoryId, List<int> cardId, int? minSize, int locationId)
+            string trayType, List<int> cardCategoryId, List<int> cardId, int? minSize, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -474,6 +474,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_type", trayType ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("min_size", minSize ?? (object)DBNull.Value),
@@ -593,7 +594,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
-            List<int> procedureId, List<int> trayId, List<int> cardCategoryId, List<int> cardId, 
+            List<int> procedureId, List<int> trayId, string trayType, List<int> cardCategoryId, List<int> cardId, 
             string instruments, bool showMax, string label,  int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
@@ -609,6 +610,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_type", trayType ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("instruments", instruments),

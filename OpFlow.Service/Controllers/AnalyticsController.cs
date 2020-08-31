@@ -252,7 +252,7 @@ namespace OpFlow.Service.Controllers
             var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, null, null, null,
                 null, post.TrayId, null,
                 user.SelectedLocation);
-            var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId, null, null, null,
+            var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId, post.TrayType, null, null, null,
                 user.SelectedLocation);
 
             var baseParameters = new[]
@@ -428,7 +428,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error= true});
             }
 
-            var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, 
+            var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, post.TrayType,
                 post.CardCategoryID, post.CardID, post.Instruments, post.ShowMax, post.Label, user.SelectedLocation);
 
             var summary = SummarizeConcordanceReport(analytics.Tables[0]);
@@ -1428,8 +1428,8 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.CardCategoryId, post.CardId,
-                post.MinSize, user.SelectedLocation);
+            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.TrayType,
+                post.CardCategoryId, post.CardId, post.MinSize, user.SelectedLocation);
 
             var rationalization = new DataView(analytics.Tables[0]);
             
@@ -1605,7 +1605,7 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.CardCategoryId, post.CardId,
+            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.TrayType, post.CardCategoryId, post.CardId,
                 post.MinSize, user.SelectedLocation);
             /*
             switch (post.Order)
