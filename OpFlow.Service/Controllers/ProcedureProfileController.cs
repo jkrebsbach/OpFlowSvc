@@ -102,12 +102,27 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var card = (await sqlHelper.GetCardData(cardId, user.SelectedLocation)).FirstOrDefault();            
-            var procedureProfile = await sqlHelper.GetProcedureProfileByCard(cardId, user.SelectedLocation);
+            var card = (await sqlHelper.GetCardData(cardId, user.SelectedLocation)).FirstOrDefault();
 
             if (card == null) return Request.CreateResponse(HttpStatusCode.NotFound);
 
+            var procedureProfile = await sqlHelper.GetProcedureProfileByCard(cardId, user.SelectedLocation);
             var surgeon = await sqlHelper.GetUser(user.SelectedLocation, card.OwnerUserID);
+
+            if (procedureProfile == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    ProcedureProfile = procedureProfile,
+                    Surgeon = surgeon,
+                    Card = card,
+                    SurgeonPreferences = new SurgeonUsagePreferenceSummary(),
+                    ProcedureProfileMetrics = new List<ProcedureProfileMetric>(),
+                    Variances = new List<RawSurgeonUsageVariant>()
+                });
+
+            }
+
             var preferences = await sqlHelper.GetSurgeonUsagePreferences(procedureProfile.ProcedureProfileID, card.OwnerUserID, 
                 request.Answers, user.SelectedLocation);
 

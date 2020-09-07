@@ -3466,15 +3466,16 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public async Task<int> UpdateItem(int itemId, string vendorId, int locationId)
+        public async Task<int> UpdateTray(int itemId, string vendorId, int? trayTypeId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("item_id", itemId),
                 new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
+                new SqlParameter("tray_type_id", trayTypeId ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
-            var result = await ExecuteNonQueryAsync("UpdateItem", parameters);
+            var result = await ExecuteNonQueryAsync("UpdateTray", parameters);
 
             return result;
         }

@@ -22,6 +22,7 @@ namespace OpFlow.Data
         public decimal? AvgUsed { get; set; }
         public int? TrayID { get; set; }
         public string TrayName { get; set; }
+        public int? TrayTypeID { get; set; }
         public int Quantity { get; set; }
     }
 

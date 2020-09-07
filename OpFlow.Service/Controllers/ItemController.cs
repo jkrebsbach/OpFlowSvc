@@ -324,16 +324,16 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("PostItem")]
+        [SwaggerOperation("PostTray")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [Route("item/{itemId}")]
+        [Route("tray/{itemId}")]
         [HttpPost]
-        public async Task<HttpResponseMessage> PostItem(int itemId, string vendorId)
+        public async Task<HttpResponseMessage> PostTray(int itemId, string vendorId, int? trayTypeId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateItem(itemId, vendorId, user.SelectedLocation);
+            var result = await sqlHelper.UpdateTray(itemId, vendorId, trayTypeId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
