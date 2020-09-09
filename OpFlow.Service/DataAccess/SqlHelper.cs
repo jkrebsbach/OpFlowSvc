@@ -3910,6 +3910,76 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> InsertProcedureProfileStep(int procedureProfileId, int stepId, int duration, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("duration", duration),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("InsertProcedureProfileStep", parameters);
+
+            return result;
+        }
+
+        public async Task<int> DeleteProcedureProfileStep(int procedureProfileId, int stepId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("step_id", stepId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("DeleteProcedureProfileStep", parameters);
+
+            return result;
+        }
+
+        public async Task<int> UpdateProcedureProfileSteps(int procedureProfileId, List<ProcedureProfileStep> steps, int providerId, int locationId)
+        {
+            var stepXml = GetStepSummary(steps);
+
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("steps", stepXml ?? (object)DBNull.Value),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProcedureProfileSteps", parameters);
+
+            return result;
+        }
+
+        private string GetStepSummary(List<ProcedureProfileStep> steps)
+        {
+            if (steps == null || !steps.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            var sequence = 1;
+            foreach (var step in steps.OrderBy(s => s.Sequence))
+            {
+                var row = doc.CreateElement("row");
+
+                table.AppendChild(row);
+
+                AddColumn(doc, row, step.StepID);
+                AddColumn(doc, row, sequence);
+                AddColumn(doc, row, step.Duration);
+
+                sequence++;
+            }
+
+            return table.OuterXml;
+        }
+
         public async Task<int> InsertProcedureProfileCpt(int procedureProfileId, string cptCode, int providerId, int locationId)
         {
             var parameters = new[]
@@ -4187,6 +4257,7 @@ namespace OpFlow.Service.DataAccess
             result.TrayUsage = dsSchedules.Tables[10].DataTableToList<ProcedureProfileTrayUsage>();
             result.AssociatedTrays = dsSchedules.Tables[11].DataTableToList<ProcedureProfileAssociatedTray>();
             result.TrayGroups = dsSchedules.Tables[12].DataTableToList<ProcedureProfileTrayGroup>();
+            result.Steps = dsSchedules.Tables[13].DataTableToList<ProcedureProfileStep>();
 
             foreach (var item in result.Items)
             {

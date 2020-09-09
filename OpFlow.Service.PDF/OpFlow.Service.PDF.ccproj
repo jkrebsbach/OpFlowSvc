@@ -45,15 +45,6 @@
     <DiagnosticsConfiguration Include="OpFlow.PDFContent\diagnostics.wadcfgx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpFlow.PDF\OpFlow.PDF.csproj">
-      <Name>OpFlow.PDF</Name>
-      <Project>{4829b56c-c920-4507-9c68-a84e8ed0ed8f}</Project>
-      <Private>True</Private>
-      <RoleType>Web</RoleType>
-      <RoleName>OpFlow.PDF</RoleName>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PublishProfile Include="Profiles\Test.azurePubxml" />
   </ItemGroup>
   <!-- Import the target files for this project template -->

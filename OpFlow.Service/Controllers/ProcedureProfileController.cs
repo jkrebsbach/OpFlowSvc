@@ -953,6 +953,60 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values/5
         [SwaggerOperation("PutProcedureProfileCpt")]
+        [Route("procedureProfileStep")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutProcedureProfileStep(int procedureProfileId, int stepId, int duration)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.InsertProcedureProfileStep(procedureProfileId, stepId, duration, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PutProcedureProfileCpt")]
+        [Route("procedureProfileStep")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteProcedureProfileStep(int procedureProfileId, int stepId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.DeleteProcedureProfileStep(procedureProfileId, stepId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PostProcedureProfileSteps")]
+        [Route("procedureProfileStep")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostProcedureProfileSteps(int procedureProfileId, [FromBody] ProcedureProfileStepUpdate request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.UpdateProcedureProfileSteps(procedureProfileId, request.Steps, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PutProcedureProfileCpt")]
         [Route("procedureProfileCpt")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
         [HttpPut]
