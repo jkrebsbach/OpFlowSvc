@@ -247,13 +247,12 @@ namespace OpFlow.Service.Controllers
             if (post.TrayId != null && post.TrayId.Count == 1 && post.TrayId[0] == 0)
                 post.TrayId = null;
 
-            var countAnalytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, null, null, null, null,
-                user.SelectedLocation);
-            var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, null, null, null,
-                null, post.TrayId, null,
-                user.SelectedLocation);
-            var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, null, post.TrayId, post.TrayType, null, null, null,
-                user.SelectedLocation);
+            var countAnalytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, 
+                null, null, null, null, "tray", user.SelectedLocation);
+            var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, 
+                null, null, null, null, post.TrayId, null, user.SelectedLocation);
+            var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, 
+                null, post.TrayId, post.TrayType, null, null, null, user.SelectedLocation);
 
             var baseParameters = new[]
             {
@@ -1661,12 +1660,10 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
-                post.RoomGroupId, user.SelectedLocation);
+                post.RoomGroupId, post.Group, user.SelectedLocation);
 
-            var group = (post.Group == "card" ? "c" : "t");
             var parameters = new[]
             {
-                new ReportParameter("Group", group),
                 new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
                 new ReportParameter("Timezone", post.Timezone.ToString())
             };
@@ -1686,6 +1683,12 @@ namespace OpFlow.Service.Controllers
                     break;
             }
 
+            if (format?.ToUpper() == "CSV")
+            {
+                var dtblCountSummary = countSummary.ToTable();
+                return ResponseHelper.CsvResponse(dtblCountSummary);
+            }
+
             var datasets = new Dictionary<string, DataTable>
             {
                 ["CountSummary"] = countSummary.ToTable()
@@ -1696,7 +1699,7 @@ namespace OpFlow.Service.Controllers
             {
                 return ResponseHelper.PdfResponse(result);
             }
-            else
+            else 
             {
                 var webImage = ImageHelper.CreateWebImage(result);
 
@@ -1797,6 +1800,44 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsSupplyCountData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
                 post.Group, user.SelectedLocation);
+
+            if (format?.ToUpper() == "CSV")
+            {
+                // pivot export to be items by surgeons
+                var itemUsageCollection = new Dictionary<string, Dictionary<string, int>>();
+                var categories = new List<string>();
+                foreach (DataRow drSummary in analytics.Tables[0].Rows)
+                {
+                    var category = drSummary["CategoryName"].ToString();
+                    var itemName = drSummary["ItemName"].ToString();
+                    var itemCount = (int)drSummary["InstrumentCount"];
+                    if (!categories.Contains(category))
+                    {
+                        categories.Add(category);
+                    }
+                    if (!itemUsageCollection.ContainsKey(itemName))
+                    {
+                        var itemUsage = new Dictionary<string, int>();
+                        itemUsageCollection[itemName] = itemUsage;
+                    }
+
+                    itemUsageCollection[itemName][category] = itemCount;
+                }
+
+                var csvResult = "Item Name," + string.Join(",", categories) + "\r\n";
+                foreach (var itemUsage in itemUsageCollection)
+                {
+                    csvResult += $"\"{itemUsage.Key}\"";
+                    var itemUsages = itemUsage.Value;
+                    foreach (var category in categories)
+                    {
+                        var categoryUsage = itemUsage.Value.ContainsKey(category) ? itemUsage.Value[category] : 0;
+                        csvResult += $",{categoryUsage}";
+                    }
+                    csvResult += "\r\n";
+                }
+                return ResponseHelper.CsvResponse(csvResult);
+            }
 
             var datasets = new Dictionary<string, DataTable>
             {

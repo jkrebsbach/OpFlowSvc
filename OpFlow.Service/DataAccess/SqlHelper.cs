@@ -1103,7 +1103,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetAnalyticsCountSummaryData(List<int> specialtyId, List<int> surgeonId, List<int> cardId, List<int> cardCategoryId,
-            List<int> roomGroupId, int locationId)
+            List<int> roomGroupId, string group, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -1118,6 +1118,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("room_group_id", roomGroupXml ?? (object)DBNull.Value),
+                new SqlParameter("group", group ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsCountSummary", parameters);
