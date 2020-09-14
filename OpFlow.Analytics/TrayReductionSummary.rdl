@@ -170,7 +170,7 @@ ORDER BY TrayName</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Inst Count</Value>
+                                  <Value>Instances</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -438,21 +438,21 @@ ORDER BY TrayName</CommandText>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="InstrumentCount">
+                        <Textbox Name="TrayInstances">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!InstrumentCount.Value</Value>
+                                  <Value>=Fields!TrayInstances.Value</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>InstrumentCount</rd:DefaultName>
+                          <rd:DefaultName>TrayInstances</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -464,6 +464,7 @@ ORDER BY TrayName</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -586,7 +587,6 @@ ORDER BY TrayName</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>

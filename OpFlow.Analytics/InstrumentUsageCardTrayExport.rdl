@@ -93,32 +93,17 @@
                           <ChartCategoryHierarchy>
                             <ChartMembers>
                               <ChartMember>
-                                <Group Name="Chart5_CategoryGroup1">
+                                <Group Name="Chart5_CategoryGroup">
                                   <GroupExpressions>
-                                    <GroupExpression>=Fields!TrayName.Value</GroupExpression>
+                                    <GroupExpression>=Fields!Instrument.Value</GroupExpression>
                                   </GroupExpressions>
                                 </Group>
                                 <SortExpressions>
                                   <SortExpression>
-                                    <Value>=Fields!TrayName.Value</Value>
+                                    <Value>=Fields!Instrument.Value</Value>
                                   </SortExpression>
                                 </SortExpressions>
-                                <ChartMembers>
-                                  <ChartMember>
-                                    <Group Name="Chart5_CategoryGroup">
-                                      <GroupExpressions>
-                                        <GroupExpression>=Fields!Instrument.Value</GroupExpression>
-                                      </GroupExpressions>
-                                    </Group>
-                                    <SortExpressions>
-                                      <SortExpression>
-                                        <Value>=Fields!Instrument.Value</Value>
-                                      </SortExpression>
-                                    </SortExpressions>
-                                    <Label>=Fields!Instrument.Value</Label>
-                                  </ChartMember>
-                                </ChartMembers>
-                                <Label>=Fields!TrayName.Value</Label>
+                                <Label>=Fields!Instrument.Value</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartCategoryHierarchy>

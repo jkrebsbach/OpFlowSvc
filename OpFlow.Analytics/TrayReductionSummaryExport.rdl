@@ -170,7 +170,7 @@ ORDER BY TrayName</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Inst Count</Value>
+                                  <Value>Instances</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -445,7 +445,7 @@ ORDER BY TrayName</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!InstrumentCount.Value</Value>
+                                  <Value>=Fields!TrayInstances.Value</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -464,6 +464,7 @@ ORDER BY TrayName</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>

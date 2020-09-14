@@ -107,7 +107,8 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
-            var analytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyID, post.SurgeonID, post.CategoryID, post.ProcedureID, post.Cpt, post.TrayID, post.InstrumentID, user.SelectedLocation);
+            var analytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyID, post.SurgeonID, 
+                post.CategoryID, post.ProcedureID, post.Cpt, post.TrayID, post.InstrumentID, post.Group, user.SelectedLocation);
 
             var usage = analytics.Tables[0].DefaultView;
             switch (post.Order)
@@ -134,30 +135,13 @@ namespace OpFlow.Service.Controllers
                 ["InstrumentUsage"] = usage.ToTable()
             };
 
-            var reportName = "InstrumentUsage";
-            switch (post.Group)
-            {
-                case "c":
-                    reportName = "InstrumentUsageCard";
-                    break;
-                case "t_c":
-                    reportName = "InstrumentUsageTrayCard";
-                    break;
-                case "c_t":
-                    reportName = "InstrumentUsageCardTray";
-                    break;
-                case "s_c":
-                    reportName = "InstrumentUsageSurgeonCard";
-                    break;
-            }
-
             var parameters = new[]
             {
                 new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
                 new ReportParameter("Timezone", post.Timezone.ToString())
             };
 
-            var result = ReportHelper.GetReport($"{reportName}{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
+            var result = ReportHelper.GetReport($"InstrumentUsage{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
 
             if (format?.ToUpper() == "PDF")
             {
@@ -250,7 +234,7 @@ namespace OpFlow.Service.Controllers
             var countAnalytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, 
                 null, null, null, null, "tray", user.SelectedLocation);
             var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, 
-                null, null, null, null, post.TrayId, null, user.SelectedLocation);
+                null, null, null, null, post.TrayId, null, "t", user.SelectedLocation);
             var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, 
                 null, post.TrayId, post.TrayType, null, null, null, user.SelectedLocation);
 

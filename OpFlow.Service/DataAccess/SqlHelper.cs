@@ -546,7 +546,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetInstrumentUsageReportData(List<int> specialtyId, List<int> surgeonId, List<int> categoryId,
-            List<int> procedureId, List<string> cptList, List<int> trayId, List<int> instrumentId, int locationId)
+            List<int> procedureId, List<string> cptList, List<int> trayId, List<int> instrumentId, string group, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -565,6 +565,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("cpts", cptXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("instrument_id", instrumentXml ?? (object)DBNull.Value),
+                new SqlParameter("group", group ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteCommandAsync("GetAnalyticsInstrumentUsage", parameters);
