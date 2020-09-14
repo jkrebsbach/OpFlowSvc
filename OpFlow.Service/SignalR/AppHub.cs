@@ -200,12 +200,12 @@ namespace OpFlow.Service.SignalR
                 var sqlHelper = new SqlHelper();
 
                 if (startSurgery)
-                    await sqlHelper.StartSurgery(surgeryId, user.ProviderID, user.LocationID, stepTime);
+                    await sqlHelper.StartSurgery(surgeryId, user.SelectedLocation, stepTime);
 
                 var advanceSurgery = true;
                 while (advanceSurgery)
                 {
-                    var flowStep = await sqlHelper.SurgeryMoveNextStep(surgeryId, user.ProviderID, user.LocationID, stepTime);
+                    var flowStep = await sqlHelper.SurgeryMoveNextStep(surgeryId, user.SelectedLocation, stepTime);
                     var notifications = await sqlHelper.GetFlowNotifications(flowStep.FlowID, null, user.SelectedLocation);
 
                     var nextNotifications = notifications.Where(n => n.StepID == flowStep.StepID && n.NotificationType == 1);
@@ -243,12 +243,12 @@ namespace OpFlow.Service.SignalR
 
             if (customReason != null)
             {
-                var surgeryDelayReasonId = await sqlHelper.SurgeryToggleDelayCustom(surgeryId, user.ProviderID, user.LocationID,
+                var surgeryDelayReasonId = await sqlHelper.SurgeryToggleDelayCustom(surgeryId, user.SelectedLocation,
                     startTime, endTime, customReason);
             }
             else
             {
-                var success = await sqlHelper.SurgeryToggleDelay(surgeryId, user.ProviderID, user.LocationID,
+                var success = await sqlHelper.SurgeryToggleDelay(surgeryId, user.SelectedLocation,
                     startTime, endTime, delayReasonId);
             }
 

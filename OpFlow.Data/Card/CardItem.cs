@@ -138,6 +138,7 @@ namespace OpFlow.Data
         public List<TrayUsage> Trays { get; set; }
         public List<SurgeryCPTCode> CptCodes { get; set; }
         public List<TrayUsage> ProposedTrays { get; set; }
+        public List<SurgeryFlow> FlowSteps { get; set; }
 
         public CardItemCountResult()
         {

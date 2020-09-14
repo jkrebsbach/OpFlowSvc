@@ -404,6 +404,7 @@ namespace OpFlow.Service.Controllers
                 Surgery = surgery,
                 Collections = new List<TrayCollection>(),
                 Trays = new List<TrayUsage>(),
+                FlowSteps = await sqlHelper.GetSurgeryFlowList(surgeryId, user.SelectedLocation),
                 Sutures = await sqlHelper.GetItemSutures(user.SelectedLocation),
                 CptCodes = await sqlHelper.GetSurgeryCPTCodes(surgeryId, user.SelectedLocation),
                 SutureCounts = await sqlHelper.GetSurgerySutureCounts(surgeryId, user.SelectedLocation)

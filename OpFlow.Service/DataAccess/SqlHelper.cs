@@ -6025,11 +6025,10 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public async Task<int> StartSurgery(int surgeryId, int providerId, int locationId, DateTime startTime)
+        public async Task<int> StartSurgery(int surgeryId, int locationId, DateTime startTime)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("start_time", startTime)
@@ -6047,12 +6046,11 @@ namespace OpFlow.Service.DataAccess
         /// <param name="locationId"></param>
         /// <param name="startTime"></param>
         /// <returns>Current flow step after advancing</returns>
-        public async Task<FlowStepResult> SurgeryMoveNextStep(int surgeryId, int providerId, int locationId, DateTime startTime)
+        public async Task<FlowStepResult> SurgeryMoveNextStep(int surgeryId, int locationId, DateTime startTime)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
-                new SqlParameter("location_id", locationId),
+                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("step_time", startTime)
             };
@@ -6064,11 +6062,10 @@ namespace OpFlow.Service.DataAccess
             return flowStep;
         }
 
-        public async Task<int> SurgeryToggleDelay(int surgeryId, int providerId, int locationId, DateTime? startTime, DateTime? endTime, int? delayReasonId)
+        public async Task<int> SurgeryToggleDelay(int surgeryId, int locationId, DateTime? startTime, DateTime? endTime, int? delayReasonId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("delay_start_time", startTime ?? (object)DBNull.Value),
@@ -6080,11 +6077,10 @@ namespace OpFlow.Service.DataAccess
             return update;
         }
 
-        public async Task<int> SurgeryToggleDelayCustom(int surgeryId, int providerId, int locationId, DateTime? startTime, DateTime? endTime, string customReason)
+        public async Task<int> SurgeryToggleDelayCustom(int surgeryId, int locationId, DateTime? startTime, DateTime? endTime, string customReason)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
                 new SqlParameter("delay_start_time", startTime ?? (object)DBNull.Value),
