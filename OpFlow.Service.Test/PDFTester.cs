@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OpFlow.PDF;
 using OpFlow.Service.DataAccess;
 using WebSupergoo.ABCpdf11;
 
@@ -41,18 +40,19 @@ namespace OpFlow.Service.Test
                 var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.SelectedLocation);
                 var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.SelectedLocation);
 
-                var traySummary = new TraySummary()
-                {
-                    ProposedTray = proposedTray,
-                    Audits = audits,
-                    Counts = counts,
-                    Instruments = instruments,
-                    SourceTrays = sourceTrays,
-                    Cards = cardOverlaps
-                };
-                var logoImage = @"C:\temp\opflow_logo.png";
-                var imageBytes = ApprovalSummary.GenerateSummaryPDF(traySummary, logoImage);
+                //var traySummary = new TraySummary()
+                //{
+                //    ProposedTray = proposedTray,
+                //    Audits = audits,
+                //    Counts = counts,
+                //    Instruments = instruments,
+                //    SourceTrays = sourceTrays,
+                //    Cards = cardOverlaps
+                //};
+                //var logoImage = @"C:\temp\opflow_logo.png";
+                //var imageBytes = ApprovalSummary.GenerateSummaryPDF(traySummary, logoImage);
 
+                byte[] imageBytes = new byte[0];
                 File.WriteAllBytes(@"C:\temp\test.pdf", imageBytes);
             }
             catch (Exception e)

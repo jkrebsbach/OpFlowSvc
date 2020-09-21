@@ -223,7 +223,7 @@ namespace OpFlow.Service.SignalR
                     advanceSurgery = (flowStep.StepDuration ?? -1) == 0;
                 }
 
-                NotifySurgeryChange(user.ProviderID, "FLOW", surgeryId);
+                NotifySurgeryChange(user.SelectedLocation, "FLOW", surgeryId);
             }
             catch (Exception ex)
             {
@@ -252,7 +252,7 @@ namespace OpFlow.Service.SignalR
                     startTime, endTime, delayReasonId);
             }
 
-            NotifySurgeryChange(user.ProviderID, "FLOW", surgeryId);
+            NotifySurgeryChange(user.SelectedLocation, "FLOW", surgeryId);
         }
 
         public async Task UpdateCommunicationStatus(int trayProposalId, string status)
@@ -275,11 +275,11 @@ namespace OpFlow.Service.SignalR
             }
         }
 
-        private void NotifySurgeryChange(int providerId, string property, int surgeryId)
+        private void NotifySurgeryChange(int locationId, string property, int surgeryId)
         {
             var groups = new List<string>()
             {
-                providerId.ToString()
+                locationId.ToString()
             };
             Clients.Groups(groups).surgeryChange(property, surgeryId);
             //Clients.All.surgeryChange(property, surgeryId);

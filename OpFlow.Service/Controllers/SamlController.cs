@@ -13,10 +13,10 @@ using System.Web.Configuration;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
-using ComponentPro.Saml;
-using ComponentPro.Saml.Binding;
-using ComponentPro.Saml2;
-using ComponentPro.Saml2.Binding;
+//using ComponentPro.Saml;
+//using ComponentPro.Saml.Binding;
+//using ComponentPro.Saml2;
+//using ComponentPro.Saml2.Binding;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Mindscape.Raygun4Net;
@@ -34,7 +34,7 @@ namespace OpFlow.Service.Controllers
     {
         private const string CertKeyName = "Cert";
         private const string RequestorCertKeyName = "RequestorCert";
-
+        /*
         /// <summary>
         /// Handles the IdpLogin button to requests login at the Identify Provider site.
         /// </summary>
@@ -121,7 +121,7 @@ namespace OpFlow.Service.Controllers
 
                 var exportedKeyMaterial = x509Certificate.PrivateKey.ToXmlString(true);
 
-                var key = new RSACryptoServiceProvider(new CspParameters(24 /* PROV_RSA_AES */));
+                var key = new RSACryptoServiceProvider(new CspParameters(24)); // PROV_RSA_AES 
                 key.PersistKeyInCsp = false;
                 key.FromXmlString(exportedKeyMaterial);
 
@@ -364,5 +364,6 @@ namespace OpFlow.Service.Controllers
                 return new Uri(context.Request.Url, System.Web.Mvc.UrlHelper.GenerateContentUrl(relativeUrl, context)).ToString();
             }
         }
+        */
     }
 }

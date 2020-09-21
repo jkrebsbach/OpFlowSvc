@@ -6,19 +6,19 @@ using System.Web;
 using System.Web.Configuration;
 using System.Web.Security;
 using System.Xml;
-using ComponentPro.Saml;
-using ComponentPro.Saml.Diagnostics;
-using ComponentPro.Saml1;
-using ComponentPro.Saml2;
-using ComponentPro.Saml2.Binding;
-using Assertion = ComponentPro.Saml2.Assertion;
-using Response = ComponentPro.Saml2.Response;
-using Status = ComponentPro.Saml2.Status;
+//using ComponentPro.Saml;
+//using ComponentPro.Saml.Diagnostics;
+//using ComponentPro.Saml1;
+//using ComponentPro.Saml2;
+//using ComponentPro.Saml2.Binding;
+//using Assertion = ComponentPro.Saml2.Assertion;
+//using Response = ComponentPro.Saml2.Response;
+//using Status = ComponentPro.Saml2.Status;
 
 namespace OpFlow.Service.DataAccess
 {
     public class SamlHelper
-    {
+    {/*
         public const string CertKeyName = "Cert";
 
         private static X509Certificate2 _appCert;
@@ -238,5 +238,6 @@ namespace OpFlow.Service.DataAccess
         {
             return new Uri(request.Url, relativeUrl).ToString();
         }
+        */
     }
 }

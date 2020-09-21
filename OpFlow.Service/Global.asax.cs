@@ -33,8 +33,8 @@ namespace OpFlow.Service
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
             // Load the certificates.
-            LoadCertificate();
-            LoadRequestorCertificate();
+            //LoadCertificate();
+            //LoadRequestorCertificate();
         }
 
         public const string CertKeyName = "Cert";
