@@ -479,6 +479,47 @@ namespace OpFlow.Service.Controllers
         }
 
 
+        [SwaggerOperation("UpdateStepEnd")]
+        [Route("updateStepEnd")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateSurgeryStepEndTime(int surgeryId, int stepId, DateTime surgeryEnd)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var steps = await sqlHelper.GetFlowSurgeryTimings(surgeryId, user.SelectedLocation);
+            var step = steps.FirstOrDefault(s => s.StepID == stepId);
+            if (step == null) return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            foreach (var adjustStep in steps.OrderBy(s => s.StepSequence))
+            {
+                if (adjustStep.StepSequence < step.StepSequence) continue;
+
+                if (adjustStep.StepSequence == step.StepSequence)
+                {
+                    adjustStep.EndTime = surgeryEnd.TimeOfDay;
+                    continue;
+                }
+
+                // move out all subsequent steps as needed
+                if (adjustStep.StartTime <= surgeryEnd.TimeOfDay)
+                {
+                    adjustStep.StartTime = surgeryEnd.TimeOfDay;
+                }
+                if (adjustStep.EndTime <= surgeryEnd.TimeOfDay)
+                {
+                    adjustStep.EndTime = surgeryEnd.TimeOfDay;
+                }
+            }
+
+            await sqlHelper.UpdateSurgeryFlowTimingOverride(surgeryId, stepId, steps);
+
+            return Request.CreateResponse(HttpStatusCode.OK, surgeryId);
+
+        }
+
+
         [SwaggerOperation("UpdateTrayOpen")]
         [Route("updateTrayOpen")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]

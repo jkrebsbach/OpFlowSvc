@@ -6061,6 +6061,42 @@ namespace OpFlow.Service.DataAccess
 
             return flowStep;
         }
+        public async Task<int> UpdateSurgeryFlowTimingOverride(int surgeryId, int locationId, List<FlowStepSurgeryTiming> steps)
+        {
+            var surgerySteps = GenerateSteps(steps);
+
+            var dsParameters = new[]
+            {
+                 new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("surgery_steps", surgerySteps)
+            };
+
+            var result = await ExecuteNonQueryAsync("UpdateSurgeryFlowTimingOverride", dsParameters);
+            
+            return result;
+        }
+
+        private string GenerateSteps(List<FlowStepSurgeryTiming> steps)
+        {
+            if (steps == null || !steps.Any())
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var step in steps)
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+                
+                AddColumn(doc, row, step.StepID);
+                AddColumn(doc, row, step.StartTime);
+                AddColumn(doc, row, step.EndTime);
+            }
+
+            return table.OuterXml;
+        }
 
         public async Task<int> SurgeryToggleDelay(int surgeryId, int locationId, DateTime? startTime, DateTime? endTime, int? delayReasonId)
         {
