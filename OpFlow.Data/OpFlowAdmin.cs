@@ -56,6 +56,17 @@ namespace OpFlow.Data
         public List<int> LocationID { get; set; }
     }
 
+    public class InternalTrayProposalHistory : TrayProposalHistory
+    {
+        public int LocationID { get; set; }
+        public string LocationName { get; set; }
+    }
+
+    public class InternalTrayCommunicationHistoryPost : TrayCommunicationHistoryPost
+    {
+        public int? LocationID { get; set; }
+    }
+
     public class SpecialtyMasterPost
     {
         public string SpecialtyName { get; set; }

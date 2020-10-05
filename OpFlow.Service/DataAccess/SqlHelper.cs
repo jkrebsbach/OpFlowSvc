@@ -1568,6 +1568,52 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<InternalTrayProposalHistory>> GetInternalProposedTrayCommunicationHistory(
+            int? locationId, int? phaseId, List<int> trayProposalIds,
+            List<int> specialtyIds, List<int> userIds)
+        {
+            var trayProposals = GetIdentitySummary(trayProposalIds);
+            var specialties = GetIdentitySummary(specialtyIds);
+            var users = GetIdentitySummary(userIds);
+
+            var parameters = new[]
+            {
+                new SqlParameter("location_Id", locationId ?? (object)DBNull.Value),
+                new SqlParameter("phase_id", phaseId ?? (object)DBNull.Value),
+                new SqlParameter("tray_proposal_id", trayProposals ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialties ?? (object)DBNull.Value),
+                new SqlParameter("user_id", users ?? (object)DBNull.Value),
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCommunicationHistoryInternal", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<InternalTrayProposalHistory>();
+
+            return result;
+        }
+
+        public async Task<List<InternalTrayProposalHistory>> UpdateInternalProposedTrayCommunicationHistory(
+            int? locationId, int? phaseId, List<int> trayProposalIds,
+            List<int> specialtyIds, List<int> userIds)
+        {
+            var trayProposals = GetIdentitySummary(trayProposalIds);
+            var specialties = GetIdentitySummary(specialtyIds);
+            var users = GetIdentitySummary(userIds);
+
+            var parameters = new[]
+            {
+                new SqlParameter("location_Id", locationId ?? (object)DBNull.Value),
+                new SqlParameter("phase_id", phaseId ?? (object)DBNull.Value),
+                new SqlParameter("tray_proposal_id", trayProposals ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialties ?? (object)DBNull.Value),
+                new SqlParameter("user_id", users ?? (object)DBNull.Value),
+            };
+            var dsSchedules = await ExecuteCommandAsync("UpdateProposedTrayCommunicationHistoryInternal", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<InternalTrayProposalHistory>();
+
+            return result;
+        }
+
         public async Task<List<TrayProposalHistory>> GetProposedTrayCommunicationHistory(int? phaseId, List<int> trayProposalIds, 
             List<int> specialtyIds, List<int> userIds, int locationId)
         {

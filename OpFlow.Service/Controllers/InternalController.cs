@@ -207,6 +207,86 @@ namespace OpFlow.Service.Controllers
         }
 
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("CommunicationScreen", Name = "GetCommunicationScreen")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetCommunicationScreen(int? locationId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper();
+
+            if (locationId == null)
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    Phases = new List<string>()
+                });
+
+            var phases = await sqlHelper.GetTrayProposalPhases(locationId.Value);
+            var specialties = await sqlHelper.GetSpecialties(locationId.Value);
+            var proposedTrays = await sqlHelper.GetProposedTrays(null, locationId.Value);
+            var users = await sqlHelper.SearchUsers(null, null, null, locationId.Value);
+            var communicationMethods = await sqlHelper.GetTrayCommunicationMethods(locationId.Value);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Phases = phases,
+                Specialties = specialties,
+                Proposals = proposedTrays,
+                Users = users,
+                CommunicationMethods = communicationMethods,
+            });
+        }
+
+        [SwaggerOperation("GetCommunicationHistory")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InternalTrayProposalHistory>))]
+        [Route("communication")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> GetCommunicationHistory([FromBody] InternalTrayCommunicationHistoryPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper();
+
+            var communication = await sqlHelper.GetInternalProposedTrayCommunicationHistory(
+                post.LocationID, post.PhaseID,
+                post.TrayProposalIds, post.SpecialtyIds, post.UserIds);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Communication = communication
+            });
+        }
+
+        [SwaggerOperation("UpdateCommunicationHistory")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InternalTrayProposalHistory>))]
+        [Route("communicationHistory")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateCommunicationHistory([FromBody] InternalTrayCommunicationHistoryPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper();
+
+            var communication = await sqlHelper.UpdateInternalProposedTrayCommunicationHistory(
+                post.LocationID, post.PhaseID,
+                post.TrayProposalIds, post.SpecialtyIds, post.UserIds);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Communication = communication
+            });
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("Specialty/{specialtyId}", Name = "UpdateSpecialtyMaster")]
         [HttpPut]
         public async Task<HttpResponseMessage> UpdateSpecialtyMaster(int specialtyId, [FromBody] SpecialtyMasterPost request)
