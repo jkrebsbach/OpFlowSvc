@@ -18,21 +18,21 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestImportFile()
         {
-            var fileName = @"F:\ColdStorage\Documents\OpFlow\Imports\LLUMC_Trays.csv";
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\Imports\UAB_Ortho_Cards.csv";
             //var importTypeId = 1; // schedule 
             //var importTypeId = 2; // item master
             //var importTypeId = 7; // schedule without card
-            //var importTypeId = 5; // cards
-            var importTypeId = 3; // trays
+            var importTypeId = 5; // cards
+            //var importTypeId = 3; // trays
 
 
             var sqlHelper = new SqlHelper();
             //var secureSqlHelper = new SecureSqlHelper("SecureConnection");
             var secureSqlHelper = new SecureSqlHelper("InvalidConnection");
 
-            var user = await sqlHelper.GetSecureUser(null, 4); // UNC
+            //var user = await sqlHelper.GetSecureUser(null, 4); // UNC
             //var user = await sqlHelper.GetSecureUser(null, 459); // LMC
-            //var user = await sqlHelper.GetSecureUser(null, 831); // UAB
+            var user = await sqlHelper.GetSecureUser(null, 831); // UAB
 
             int? logId = null;
 

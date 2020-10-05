@@ -1757,7 +1757,7 @@ namespace OpFlow.Service.Controllers
             var result = new List<Card>();
             foreach (var userId in post.Surgeons)
             {
-                result.AddRange(await sqlHelper.GetCardList(userId, null, null, null, false, user.SelectedLocation));
+                result.AddRange(await sqlHelper.GetCardList(userId, null, null, null, null, false, user.SelectedLocation));
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, result);

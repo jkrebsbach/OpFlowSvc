@@ -3792,7 +3792,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<CardListScreen>> GetCardList(int? userId, int? specialtyId, int? procedureId, int? bundleId, bool defaultCardOnly, int locationId)
+        public async Task<List<CardListScreen>> GetCardList(int? userId, int? specialtyId, int? procedureId, int? bundleId, string cardName, bool defaultCardOnly, int locationId)
         {
             var parameters = new[]
             {
@@ -3800,6 +3800,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
+                new SqlParameter("card_name", cardName ?? (object)DBNull.Value),
                 new SqlParameter("default_flag", defaultCardOnly),
                 new SqlParameter("location_id", locationId)
             };

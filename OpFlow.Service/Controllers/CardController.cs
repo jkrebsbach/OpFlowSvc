@@ -113,13 +113,13 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetCardList")]
         [Route("list")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardListScreen>))]
-        public async Task<HttpResponseMessage> GetCardList(int? userId = null, int? specialtyId = null, int? procedureId = null, int? bundleId = null, bool? defaultFilter = null)
+        public async Task<HttpResponseMessage> GetCardList(int? userId = null, int? specialtyId = null, int? procedureId = null, string cardName = null, bool? defaultFilter = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
             var defaultCardOnly = defaultFilter ?? false;
-            var cardList = await sqlHelper.GetCardList(userId, specialtyId, procedureId, bundleId, defaultCardOnly, user.SelectedLocation);
+            var cardList = await sqlHelper.GetCardList(userId, specialtyId, procedureId, null, cardName, defaultCardOnly, user.SelectedLocation);
             var result = cardList.OrderBy(c => c.CardDescription).ToList();
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -217,7 +217,7 @@ namespace OpFlow.Service.Controllers
                     RoomDescription = "None"
                 };
 
-            result.Cards = await sqlHelper.GetCardList(userId, null, null, bundleId, false, user.SelectedLocation);
+            result.Cards = await sqlHelper.GetCardList(userId, null, null, bundleId, null, false, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
