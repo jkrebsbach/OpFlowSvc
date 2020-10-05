@@ -934,7 +934,9 @@ namespace OpFlow.Data
     public class TrayProposalHistory
     { 
         public int HistoryID { get; set; }
+        public int? CommunicationMethodID { get; set; }
         public string Phase { get; set; }
+        public string CommunicationMethod { get; set; }
         public string TrayName { get; set; }
         public string Audience { get; set; }
         public string Activity { get; set; }
@@ -979,11 +981,17 @@ namespace OpFlow.Data
         public int SurgeryID { get; set; }
         public string TrayName { get; set; }
     }
+    public class TrayCommunicationMethod
+    {
+        public int CommunicationMethodID { get; set; }
+        public string Description { get; set; }
+    }
     public class TrayCommunicationHistoryPost
     {
-        public List<int> TrayProposalIds { get; set; }
         public int? PhaseID { get; set; }
-        public int? UserID { get; set; }
+        public List<int> TrayProposalIds { get; set; }
+        public List<int> SpecialtyIds { get; set; }
+        public List<int> UserIds { get; set; }
     }
     public class TrayCommunicationHistoryInsertPost
     {
@@ -991,6 +999,7 @@ namespace OpFlow.Data
         public int Tray { get; set; }
         public string Activity { get; set; }
         public int Audience { get; set; }
+        public int Method { get; set; }
     }
     public class TrayCommunicationHistoryUpdatePost
     {

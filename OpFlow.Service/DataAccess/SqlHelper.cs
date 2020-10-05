@@ -1568,16 +1568,19 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayProposalHistory>> GetProposedTrayCommunicationHistory(List<int> trayProposalIds, int? phaseId, int? userId,
-            int locationId)
+        public async Task<List<TrayProposalHistory>> GetProposedTrayCommunicationHistory(int? phaseId, List<int> trayProposalIds, 
+            List<int> specialtyIds, List<int> userIds, int locationId)
         {
             var trayProposals = GetIdentitySummary(trayProposalIds);
+            var specialties = GetIdentitySummary(specialtyIds);
+            var users = GetIdentitySummary(userIds);
 
             var parameters = new[]
             {
-                new SqlParameter("tray_proposal_id", trayProposals ?? (object)DBNull.Value),
                 new SqlParameter("phase_id", phaseId ?? (object)DBNull.Value),
-                new SqlParameter("user_id", userId ?? (object)DBNull.Value),
+                new SqlParameter("tray_proposal_id", trayProposals ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialties ?? (object)DBNull.Value),
+                new SqlParameter("user_id", users ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCommunicationHistory", parameters);
@@ -1587,8 +1590,8 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> InsertProposedTrayCommunicationHistory(int phaseId, string activity, int trayProposalId, int audienceUserId,
-            int locationId)
+        public async Task<int> InsertProposedTrayCommunicationHistory(int phaseId, string activity, 
+            int trayProposalId, int audienceUserId, int? communicationMethodId, int locationId)
         {
             var parameters = new[]
             {
@@ -1596,6 +1599,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("activity", activity ?? (object)DBNull.Value),
                 new SqlParameter("tray_proposal_id", trayProposalId),
                 new SqlParameter("audience_user_id", audienceUserId),
+                new SqlParameter("communication_method_id", communicationMethodId ?? (object) DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("InsertProposedTrayCommunicationHistory", parameters);
@@ -2094,6 +2098,19 @@ namespace OpFlow.Service.DataAccess
             }
 
             return caseProfiles;
+        }
+
+        public async Task<List<TrayCommunicationMethod>> GetTrayCommunicationMethods(int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetTrayCommunicationMethods", parameters);
+
+            var methods = dsSchedules.Tables[0].DataTableToList<TrayCommunicationMethod>();
+            
+            return methods;
         }
 
         public async Task<List<SurgeonPreference>> GetSurgeonPreferences(int locationId)

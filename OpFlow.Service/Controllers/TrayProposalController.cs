@@ -48,6 +48,7 @@ namespace OpFlow.Service.Controllers
             var instruments = await sqlHelper.GetItems("instrument", null, true, user.SelectedLocation);
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.SelectedLocation);
             var surgeonPreferences = await sqlHelper.GetSurgeonPreferences(user.SelectedLocation);
+            var communicationMethods = await sqlHelper.GetTrayCommunicationMethods(user.SelectedLocation);
             var rules = await sqlHelper.GetProposedTrayScheduleRules(user.UserID, user.SelectedLocation);
             var orgCharts = await sqlHelper.GetOrgChartAttachments(user.SelectedLocation);
 
@@ -95,7 +96,8 @@ namespace OpFlow.Service.Controllers
                 SurgeonPreferences = surgeonPreferences,
                 Rules = rules,
                 Implementation = implementation,
-                OrgCharts = orgCharts
+                OrgCharts = orgCharts,
+                CommunicationMethods = communicationMethods
             };
 
 
@@ -1103,8 +1105,8 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var communication = await sqlHelper.GetProposedTrayCommunicationHistory(post.TrayProposalIds, post.PhaseID, post.UserID,
-                user.SelectedLocation);
+            var communication = await sqlHelper.GetProposedTrayCommunicationHistory(post.PhaseID, 
+                post.TrayProposalIds, post.SpecialtyIds, post.UserIds, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -1121,8 +1123,8 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var communication = await sqlHelper.InsertProposedTrayCommunicationHistory(post.Phase, post.Activity, post.Tray, post.Audience,
-                user.SelectedLocation);
+            var communication = await sqlHelper.InsertProposedTrayCommunicationHistory(post.Phase, post.Activity, 
+                post.Tray, post.Audience, post.Method, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK);
         }
