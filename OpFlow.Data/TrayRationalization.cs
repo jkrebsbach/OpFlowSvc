@@ -337,6 +337,7 @@ namespace OpFlow.Data
     public class ProposedTraySummaryUpdate
     {
         public int SourceTrayID { get; set; }
+        public int SourceInstanceCount { get; set; }
         public int ProposedInstanceCount { get; set; }
         public int ProcessingTimes { get; set; }
     }

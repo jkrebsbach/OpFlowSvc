@@ -1333,13 +1333,14 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<int> UpdateProposedTrayInstances(int proposedTrayId, int trayItemId,
-            int instances, int processingTimes, int locationId)
+            int proposedInstances, int sourceInstances, int processingTimes, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_proposal_id", proposedTrayId),
                 new SqlParameter("tray_item_id", trayItemId),
-                new SqlParameter("tray_instances", instances),
+                new SqlParameter("proposed_tray_instances", proposedInstances),
+                new SqlParameter("source_tray_instances", sourceInstances),
                 new SqlParameter("processing_times", processingTimes),
                 new SqlParameter("location_id", locationId)
             };
@@ -3192,7 +3193,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<PaginationController> GetInstrumentsPaged(string searchTerm, int page, int providerId, int locationId)
+        public async Task<PaginationController> GetInstrumentsPaged(string searchTerm, int page, int locationId)
         {
             var pageSize = 50;
             var parameters = new[]
@@ -3200,7 +3201,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("search_term", searchTerm ?? (object)DBNull.Value),
                 new SqlParameter("page", page),
                 new SqlParameter("page_size", pageSize),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetInstrumentsPaged", parameters);
@@ -3218,7 +3218,21 @@ namespace OpFlow.Service.DataAccess
             };
         }
 
-        public async Task<PaginationController> GetSuppliesPaged(string searchTerm, int page, int providerId, int locationId)
+        public async Task<List<ItemMaster>> GetInstrumentTrays(int instrumentId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("instrument_id", instrumentId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetInstrumentTrays", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
+
+            return result;
+        }
+
+        public async Task<PaginationController> GetSuppliesPaged(string searchTerm, int page, int locationId)
         {
             var pageSize = 50;
             var parameters = new[]
@@ -3226,7 +3240,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("search_term", searchTerm ?? (object)DBNull.Value),
                 new SqlParameter("page", page),
                 new SqlParameter("page_size", pageSize),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSuppliesPaged", parameters);

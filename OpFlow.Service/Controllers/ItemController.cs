@@ -54,9 +54,23 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var instruments = await sqlHelper.GetInstrumentsPaged(term, page, user.ProviderID, user.LocationID);
+            var instruments = await sqlHelper.GetInstrumentsPaged(term, page, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, instruments);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetInstrumentTrays")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
+        [Route("instrumentTrays")]
+        public async Task<HttpResponseMessage> GetInstrumentTrays(int instrumentId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var trays = await sqlHelper.GetInstrumentTrays(instrumentId, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, trays);
         }
 
         // GET api/values/5
@@ -68,7 +82,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var instruments = await sqlHelper.GetSuppliesPaged(term, page, user.ProviderID, user.LocationID);
+            var instruments = await sqlHelper.GetSuppliesPaged(term, page, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, instruments);
         }

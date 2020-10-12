@@ -2080,7 +2080,7 @@ namespace OpFlow.Service.Controllers
             foreach (var update in post.Updates)
             {
                 var trayId = await sqlHelper.UpdateProposedTrayInstances(trayProposalId, update.SourceTrayID,
-                    proposedInstances, update.ProcessingTimes, user.SelectedLocation);
+                    proposedInstances, update.SourceInstanceCount, update.ProcessingTimes, user.SelectedLocation);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, trayProposalId);
