@@ -1062,6 +1062,21 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [SwaggerOperation("AddCustomSurgeryMudBox")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        [Route("addSurgeryMudBox", Name = "AddCustomSurgeryMudBox")]
+        public async Task<HttpResponseMessage> AddSurgeryMudBox(int surgeryId, int instrumentId, int trayId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.AddCustomSurgeryMudBox(surgeryId, instrumentId, trayId, user.SelectedLocation);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
+        // POST api/values
         [SwaggerOperation("AddTemporaryTray")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
