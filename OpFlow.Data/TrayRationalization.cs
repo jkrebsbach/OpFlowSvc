@@ -186,6 +186,7 @@ namespace OpFlow.Data
         public int TrayItemID { get; set; }
         public string TrayName { get; set; }
         public string CardCategories { get; set; }
+        public int ProcessingTimes { get; set; }
         public int CountsComplete { get; set; }
         public int CountsScheduled { get; set; }
         public int AuditsComplete { get; set; }
@@ -193,6 +194,8 @@ namespace OpFlow.Data
 
         public int InstrumentCount { get; set; }
         public int ProposedInstrumentCount { get; set; }
+        public int InstanceCount { get; set; }
+        public int ProposedInstanceCount { get; set; }
         public int CountChange => InstrumentCount - ProposedInstrumentCount;
         public decimal PcntChange => InstrumentCount == 0 ? 0 : ((decimal)CountChange / InstrumentCount * 100);
 
@@ -325,6 +328,17 @@ namespace OpFlow.Data
         public DateTime? AuditComplete { get; set; }
         public DateTime? TrayChanges { get; set; }
         public string Comments { get; set; }
+    }
+
+    public class ProposedTraySummaryUpdatePost
+    {
+        public List<ProposedTraySummaryUpdate> Updates { get; set; }
+    }
+    public class ProposedTraySummaryUpdate
+    {
+        public int SourceTrayID { get; set; }
+        public int ProposedInstanceCount { get; set; }
+        public int ProcessingTimes { get; set; }
     }
     public class ProposedTrayNotesPost
     {

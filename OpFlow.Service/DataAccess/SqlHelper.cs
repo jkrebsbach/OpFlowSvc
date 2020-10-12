@@ -1332,6 +1332,22 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> UpdateProposedTrayInstances(int proposedTrayId, int trayItemId,
+            int instances, int processingTimes, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", proposedTrayId),
+                new SqlParameter("tray_item_id", trayItemId),
+                new SqlParameter("tray_instances", instances),
+                new SqlParameter("processing_times", processingTimes),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProposedTrayInstances", parameters);
+
+            return result;
+        }
+
         public async Task<int> DeleteProposedTray(int proposedTrayId, int statusUserId, int locationId)
         {
             var parameters = new[]

@@ -176,7 +176,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
         [Route("proposedTray/{trayProposalId}")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetProposedTray(int trayProposalId, int? overlapPcnt = 0)
+        public async Task<HttpResponseMessage> GetProposedTray(int trayProposalId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -194,8 +194,8 @@ namespace OpFlow.Service.Controllers
             proposedTray.InstrumentCount = instruments.Sum(i => i.Quantity);
             foreach (var sourceTray in sourceTrays)
             {
-                sourceTray.InstrumentCount = sourceTray.Instruments.Sum(i => i.Quantity);
-                sourceTray.ProposedInstrumentCount = instruments.Sum(i => i.Quantity);
+                sourceTray.InstrumentCount = sourceTray.Instruments.Sum(i => i.Quantity) * sourceTray.InstanceCount;
+                sourceTray.ProposedInstrumentCount = instruments.Sum(i => i.Quantity) * sourceTray.ProposedInstanceCount;
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, new
@@ -2064,6 +2064,26 @@ namespace OpFlow.Service.Controllers
                 post.CountComplete, post.AuditComplete, post.TrayChanges, post.Comments, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, trayId);
+        }
+
+        [SwaggerOperation("UpdateProposedTrayInstances")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("proposedTrayInstances")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> UpdateProposedTrayInstances(int trayProposalId, [FromBody] ProposedTraySummaryUpdatePost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var proposedInstances = post.Updates.Max(u => u.ProposedInstanceCount);
+
+            foreach (var update in post.Updates)
+            {
+                var trayId = await sqlHelper.UpdateProposedTrayInstances(trayProposalId, update.SourceTrayID,
+                    proposedInstances, update.ProcessingTimes, user.SelectedLocation);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, trayProposalId);
         }
 
         [SwaggerOperation("DeleteProposedTray")]
