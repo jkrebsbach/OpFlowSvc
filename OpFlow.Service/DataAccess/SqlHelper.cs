@@ -5837,16 +5837,19 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("InsertCustomSurgeryTrayInstrument", dsParameters);
         }
 
-        public async Task<int> AddCustomSurgeryMudBox(int surgeryId, int instrumentId, int trayId, int locationId)
+        public async Task<int> AddSurgeryMudBox(int surgeryId, string trayName, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("instrument_id", instrumentId),
-                new SqlParameter("tray_id", trayId),
+                new SqlParameter("tray_name", trayName),
             };
-            return await ExecuteNonQueryAsync("InsertCustomSurgeryMudBox", dsParameters);
+            var dsResult = await ExecuteCommandAsync("InsertSurgeryMudBox", dsParameters);
+
+            var identity = dsResult.Tables[0].DataTableToList<InsertionResult>();
+
+            return identity.First().Identifier;
         }
 
         public async Task<int> AddCustomSurgeryTray(int surgeryId, int itemId, int providerId, int locationId)

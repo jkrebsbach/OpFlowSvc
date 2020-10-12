@@ -1062,17 +1062,43 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [SwaggerOperation("AddCustomSurgeryMudBox")]
+        [SwaggerOperation("AddSurgeryMudBox")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [HttpPost]
-        [Route("addSurgeryMudBox", Name = "AddCustomSurgeryMudBox")]
+        [Route("addSurgeryMudBox", Name = "AddSurgeryMudBox")]
         public async Task<HttpResponseMessage> AddSurgeryMudBox(int surgeryId, int instrumentId, int trayId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.AddCustomSurgeryMudBox(surgeryId, instrumentId, trayId, user.SelectedLocation);
-            
+            var surgery = await sqlHelper.GetSurgery(surgeryId, user.SelectedLocation);
+            var cards = await sqlHelper.GetCardData(surgery?.CardID ?? -1, user.SelectedLocation);
+            var card = cards.FirstOrDefault();
+
+            if (card == null) return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var opp = await sqlHelper.GetProcedureProfileByCard(card.CardID, user.SelectedLocation);
+            var surgeon = await sqlHelper.GetUser(user.SelectedLocation, surgery.UserID);
+
+            var boxName = opp?.ProcedureProfileName ?? card.CardDescription;
+
+            var items = await sqlHelper.GetSurgeryCardItems(surgeryId, user.SelectedLocation);
+            var trayItems = await sqlHelper.GetTrayItems(trayId, user.SelectedLocation);
+
+            var quantity = trayItems.First(ti => ti.InstrumentID == instrumentId).Quantity;
+
+            var trayName = $"MB {boxName} {surgeon.LastName}";
+            var item = items.FirstOrDefault(i => i.ItemDescription == trayName);
+
+            var mudBoxId = item?.ItemID;
+
+            if (mudBoxId == null)
+            {
+                mudBoxId = await sqlHelper.AddSurgeryMudBox(surgeryId, trayName, user.SelectedLocation);
+            }
+
+            await sqlHelper.InsertTrayInstrument(mudBoxId.Value, instrumentId, quantity, user.SelectedLocation);
+
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }
 
