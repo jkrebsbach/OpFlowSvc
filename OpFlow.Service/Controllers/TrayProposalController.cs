@@ -39,7 +39,7 @@ namespace OpFlow.Service.Controllers
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.SelectedLocation);
             var baselineTrays = await sqlHelper.GetBaselineTrays(user.SelectedLocation);
             var schedules = await sqlHelper.GetProposedTraySchedule(null, null, user.UserID, user.SelectedLocation);
-            var vendors = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
+            var vendors = await sqlHelper.GetVendors(user.LocationID);
             var questions = await sqlHelper.GetTrayQuestions(null, user.SelectedLocation);
             var phases = await sqlHelper.GetTrayProposalPhases(user.SelectedLocation);
             var cardCategories = await sqlHelper.GetCardCategories();

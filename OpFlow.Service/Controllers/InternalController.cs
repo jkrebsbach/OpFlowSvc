@@ -171,7 +171,7 @@ namespace OpFlow.Service.Controllers
         /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Vendor>))]
         [Route("Vendors", Name = "GetVendors")]
-        public async Task<HttpResponseMessage> GetVendors(string nameSearchText = null, int? roleId = null, int? specialtyId = null)
+        public async Task<HttpResponseMessage> GetVendors()
         {
             var user = await CacheUtil.GetUserSecurity();
 
@@ -180,7 +180,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
 
-            var roles = await sqlHelper.GetVendors(user.ProviderID, user.LocationID);
+            var roles = await sqlHelper.GetVendors(user.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, roles);
         }

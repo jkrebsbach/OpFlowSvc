@@ -336,6 +336,22 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
 
+        [SwaggerOperation("GetVendors")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryVendorRep>))]
+        [Route("Vendors")]
+        public async Task<HttpResponseMessage> GetVendors()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.OK);
+
+            var schedules = await sqlHelper.GetVendors(user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, schedules);
+        }
+
         [SwaggerOperation("GetVendorReps")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryVendorRep>))]
         [Route("VendorReps")]
@@ -988,7 +1004,7 @@ namespace OpFlow.Service.Controllers
                 var secureSqlHelper = new SecureSqlHelper(secureUser.SecureDatabaseName);
 
                 if (!secureUser.Vendor)
-                    surgery.VendorLocationID = null;
+                    surgery.VendorID = null;
 
                 var user = await sqlHelper.GetUser(secureUser.SelectedLocation, secureUser.UserID);
 
@@ -1479,6 +1495,9 @@ namespace OpFlow.Service.Controllers
 
             var success = await sqlHelper.SurgeryEditProperties(surgeryId,
                 surgeryEditPost.RoomID, surgeryEditPost.ScheduleDateTime, user.SelectedLocation);
+
+            if (user.RoleType == "Internal")
+                await sqlHelper.SurgeryEditVendor(surgeryId, surgeryEditPost.VendorID, user.SelectedLocation);
 
             if (!surgeryEditPost.NotificationUser.HasValue) return Request.CreateResponse(HttpStatusCode.OK, success);
 

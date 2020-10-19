@@ -12,6 +12,7 @@ namespace OpFlow.Data
         public int LocationID { get; set; }
         public int PatientID { get; set; }
         public int? CardID { get; set; }
+        public int? VendorID { get; set; }
         public int CaseID { get; set; }
         public int? ProcedureID { get; set; }
         public int? BundleID { get; set; }
@@ -186,7 +187,7 @@ namespace OpFlow.Data
 
     public class SurgeryPost
     {
-        public int? VendorLocationID { get; set; }
+        public int? VendorID { get; set; }
         public string CaseNbr { get; set; }
         public string PtAcctNbr { get; set; }
         public DateTime? PtDOB { get; set; }
@@ -264,6 +265,7 @@ namespace OpFlow.Data
     {
         public int RoomID { get; set; }
         public DateTime ScheduleDateTime { get; set; }
+        public int? VendorID { get; set; }
         public int? NotificationUser { get; set; }
     }
     public abstract class SurgeryCountPost

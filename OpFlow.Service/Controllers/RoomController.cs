@@ -27,7 +27,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var rooms = await sqlHelper.GetRooms(user.LocationID);
+            var rooms = await sqlHelper.GetRooms(user.SelectedLocation);
             if (roomId.HasValue)
                 rooms = rooms.Where(r => r.RoomID == roomId).ToList();
 
@@ -46,7 +46,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            return await sqlHelper.GetRoomTypes(user.LocationID);
+            return await sqlHelper.GetRoomTypes(user.SelectedLocation);
         }
 
         // GET api/values
@@ -70,7 +70,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var setups = await sqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID);
+            var setups = await sqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.SelectedLocation);
 
             if (roomSetupId != null)
                 setups = setups.Where(s => s.RoomSetupID == roomSetupId).ToList();
@@ -87,13 +87,13 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var setups = (await sqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.LocationID))
+            var setups = (await sqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.SelectedLocation))
                 .Where(s => s.RoomSetupID == roomSetupId).ToList();
             
-            var roomTypes = await sqlHelper.GetRoomTypes(user.LocationID);
-            var patientPositions = await sqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
+            var roomTypes = await sqlHelper.GetRoomTypes(user.SelectedLocation);
+            var patientPositions = await sqlHelper.GetPatientPositions(user.ProviderID, user.SelectedLocation);
             var lateralities = await sqlHelper.GetLateralities(user.SelectedLocation);
-            var bedOrientations = await sqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
+            var bedOrientations = await sqlHelper.GetBedOrientations(user.ProviderID, user.SelectedLocation);
 
             var equipment = await sqlHelper.GetItems("EQUIPMENT", null, null, user.SelectedLocation);
             var instruments = await sqlHelper.GetItems("INSTRUMENT", null, null, user.SelectedLocation);
@@ -121,7 +121,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            return await sqlHelper.GetPatientPositions(user.ProviderID, user.LocationID);
+            return await sqlHelper.GetPatientPositions(user.ProviderID, user.SelectedLocation);
         }
 
         // GET api/values
@@ -145,7 +145,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            return await sqlHelper.GetBedOrientations(user.ProviderID, user.LocationID);
+            return await sqlHelper.GetBedOrientations(user.ProviderID, user.SelectedLocation);
         }
 
         // PUT api/roomSetup/values/5
@@ -158,7 +158,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateRoom(roomId, room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateRoom(roomId, room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomId);
         }

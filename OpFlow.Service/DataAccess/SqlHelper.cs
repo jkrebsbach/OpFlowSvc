@@ -4807,11 +4807,10 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public async Task<List<Vendor>> GetVendors(int providerId, int locationId)
+        public async Task<List<Vendor>> GetVendors(int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetVendors", dsParameters);
@@ -5679,7 +5678,7 @@ namespace OpFlow.Service.DataAccess
             var dsParameters = new[]
             {
                 new SqlParameter("location_id", locationId),
-                new SqlParameter("vendor_location_id", surgery.VendorLocationID ?? (object)DBNull.Value),
+                new SqlParameter("vendor_id", surgery.VendorID ?? (object)DBNull.Value),
                 new SqlParameter("patient_id", patientId ?? (object)DBNull.Value),
                 new SqlParameter("user_id", surgery.SurgeonUserID ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", surgery.SpecialtyID ?? (object)DBNull.Value),
@@ -6265,6 +6264,19 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("schedule_time", surgeryScheduleDate.TimeOfDay)
             };
             var update = await ExecuteNonQueryAsync("UpdateSurgeryProperties", dsParameters);
+
+            return update;
+        }
+
+        public async Task<int> SurgeryEditVendor(int surgeryId, int? vendorId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
+            };
+            var update = await ExecuteNonQueryAsync("UpdateSurgeryVendor", dsParameters);
 
             return update;
         }
