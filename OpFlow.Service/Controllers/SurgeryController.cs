@@ -109,7 +109,7 @@ namespace OpFlow.Service.Controllers
         }
 
         [SwaggerOperation("GetSurgeryMetrics")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(PatientSurgery))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryMetricCategory>))]
         [Route("metrics")]
         public async Task<HttpResponseMessage> GetSurgeryMetrics(int surgeryId)
         {
@@ -117,10 +117,17 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
             
             var surgeryMetrics = await sqlHelper.GetSurgeryMetrics(surgeryId, user.SelectedLocation);
-            
+
+            var categories = surgeryMetrics.GroupBy(r => r.MetricType)
+                .Select(r => new SurgeryMetricCategory()
+                {
+                    CategoryType = r.Key,
+                    Metrics = r.ToList()
+                });
+
             return Request.CreateResponse(HttpStatusCode.OK,
             new {
-                Metrics = surgeryMetrics
+                Categories = categories
             });
         }
 

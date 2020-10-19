@@ -144,7 +144,28 @@ namespace OpFlow.Data
     {
         public List<SurgeryUser> SurgeryUsers { get; set; }
     }
+    public class SurgeryMetricCategory
+    {
+        public string CategoryType { get; set; }
+        public List<SurgeryMetric> Metrics { get; set; }
 
+        public string CategoryName
+        {
+            get
+            {
+                switch (CategoryType)
+                {
+                    case "PAT":
+                        return "Patient";
+                    case "VND":
+                        return "Vendor";
+                    case "PROC":
+                    default:
+                        return "Procedure";
+                }
+            }
+        }
+    }
     public class SurgeryMetric : ProcedureProfileMetric
     {
         public string SurgeryAnswer { get; set; }
