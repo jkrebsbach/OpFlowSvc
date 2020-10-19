@@ -10,6 +10,7 @@ namespace OpFlow.Data
         public int? ParentMetricID { get; set; }
         public int? ParentMetricAnswerID { get; set; }
         public string QuestionType { get; set; }
+        public string QuestionOwner { get; set; }
         public string QuestionText { get; set; }
         public string MetricType { get; set; }
         public string ParentMetric { get; set; }
@@ -31,6 +32,26 @@ namespace OpFlow.Data
                 }
             }
         }
+        public string QuestionOwnerDescription
+        {
+            get
+            {
+                switch (QuestionOwner)
+                {
+                    case "OPF":
+                        return "OpFlow Rep";
+                    case "SUR":
+                        return "Surgeon";
+                    case "CIR":
+                        return "Circulator";
+                    case "SCR":
+                        return "Scrub";
+                    case "VEN":
+                    default:
+                        return "Vendor Rep";
+                }
+            }
+        }
 
         public List<ProcedureProfileMetricAnswer> Answers { get; set; }
     }
@@ -45,6 +66,7 @@ namespace OpFlow.Data
     {
         public int? ParentMetricAnswerID { get; set; }
         public string MetricType { get; set; }
+        public string QuestionOwner { get; set; }
         public string QuestionType { get; set; }
         public string TextPayload { get; set; }
     }

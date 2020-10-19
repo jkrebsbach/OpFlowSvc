@@ -683,11 +683,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProcedureProfileMetric(int metricId, string questionType, string question, int locationId)
+        public async Task<int> UpdateProcedureProfileMetric(int metricId, 
+            string questionOwner, string questionType, string question, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_metric_id", metricId),
+                new SqlParameter("question_owner", questionOwner),
                 new SqlParameter("question_type", questionType),
                 new SqlParameter("question_text", question),
                 new SqlParameter("location_id", locationId)
