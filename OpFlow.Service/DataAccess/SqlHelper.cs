@@ -883,6 +883,18 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<DataSet> GetProcedureProfileSummaryReportData(int procedureProfileId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("GetAnalyticsProcedureProfileSummary", parameters);
+
+            return result;
+        }
+
         public async Task<DataSet> GetCardRedundancyReport(List<int> specialtyId, List<int> surgeonId, List<int> cardId, int? minQty, int? redundancy, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);

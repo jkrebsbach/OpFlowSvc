@@ -184,6 +184,12 @@ namespace OpFlow.Data
         public decimal Usage { get; set; }
     }
 
+    public class ProcedureProfileReportPost: ReportRequest
+    {
+        public int ProcedureProfileID { get; set; }
+        public string Order { get; set; }
+    }
+
     public class InstrumentUsagePost : ReportRequest
     {
         public List<int> ProposedTrayID { get; set; }

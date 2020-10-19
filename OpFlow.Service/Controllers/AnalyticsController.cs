@@ -43,6 +43,7 @@ namespace OpFlow.Service.Controllers
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.SelectedLocation);
             var proposalPhases = await sqlHelper.GetTrayProposalPhases(user.SelectedLocation);
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.SelectedLocation);
+            var procedureProfiles = await sqlHelper.GetProcedureProfiles();
 
             var cardCategoryXref = await sqlHelper.GetSpecialtyProcedureGroup(user.SelectedLocation);
 
@@ -66,7 +67,8 @@ namespace OpFlow.Service.Controllers
                     CPTs = cpts,
                     ProposedTrays = proposedTrays,
                     ProposalPhases = proposalPhases,
-                    CaseProfiles = caseProfiles
+                    CaseProfiles = caseProfiles,
+                    ProcedureProfiles = procedureProfiles
                 }
             });
         }
@@ -647,6 +649,65 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetVendorTrayConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID,
                 post.CardCategoryID, post.CardID, post.Instruments, post.CaseProfileId, post.QuestionId, post.AnswerId, user.SelectedLocation,
                 post.Group);
+
+            var concordance = analytics.Tables[0].DefaultView;
+            switch (post.Order)
+            {
+                case "instrument_avg":
+                    concordance.Sort = "QtyOpen DESC";
+                    break;
+                case "instrument_name":
+                default:
+                    concordance.Sort = "InstrumentName";
+                    break;
+            }
+
+            var summary = SummarizeConcordanceReport(analytics.Tables[0]);
+
+            if (format == "CSV")
+            {
+                return ResponseHelper.CsvResponse(concordance.ToTable());
+            }
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["ConcordanceReport"] = concordance.ToTable()
+            };
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport($"ConcordanceReport", format, datasets, parameters);
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
+            }
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("OPPSummaryReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("oppSummary")]
+        [Route("oppSummary/{format}")]
+        public async Task<HttpResponseMessage> OPPSummaryReport([FromBody] ProcedureProfileReportPost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+            
+            var analytics = await sqlHelper.GetProcedureProfileSummaryReportData(post.ProcedureProfileID, user.SelectedLocation);
 
             var concordance = analytics.Tables[0].DefaultView;
             switch (post.Order)
