@@ -6010,7 +6010,7 @@ namespace OpFlow.Service.DataAccess
             foreach (var metricAnswer in metricAnswers)
             {
                 // prevent adding invalid data
-                if (metricAnswer.ProcedureProfileMetricID <= 0)
+                if (metricAnswer.ProcedureProfileMetricID <= 0 || string.IsNullOrEmpty(metricAnswer.AnswerText))
                     continue;
 
                 var row = doc.CreateElement("row");
