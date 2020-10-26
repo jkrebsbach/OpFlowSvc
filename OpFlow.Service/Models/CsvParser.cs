@@ -45,12 +45,15 @@ namespace OpFlow.Service.Models
                     switch (importType)
                     {
                         case ImportType.Schedule:
+                            DateTime dob;
+                            dob = DateTime.TryParse(_csv.GetField(3), out dob) ? dob : new DateTime(1900, 1, 1);
+
                             result.Add(new ScheduleImport
                             {
                                 MRN = _csv.GetField(0),
                                 CaseNbr = _csv.GetField(1),
                                 PatientName = _csv.GetField(2),
-                                DateOfBirth = DateTime.Parse(_csv.GetField(3)),
+                                DateOfBirth = dob,
                                 Gender = _csv.GetField(4),
                                 BMIText = _csv.GetField(5),
                                 Medications = _csv.GetField(6),

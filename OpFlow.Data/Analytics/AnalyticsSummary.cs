@@ -147,6 +147,45 @@ namespace OpFlow.Data
         public List<ConcordanceReportItemData> Items { get; set; }
     }
 
+    public class OpFlowProcedureProfileSummary
+    {
+        public int TotalSystems { get; set; }
+        public int SurgeryCounts { get; set; }
+        public int SurgeryAudits { get; set; }
+
+        public List<OpFlowProcedureProfileSummaryDetail> InternalTrays { get; set; }
+        public List<OpFlowProcedureProfileSummaryDetail> VendorTrays { get; set; }
+        public List<OpFlowProcedureProfileSummaryDetail> Items { get; set; }
+    }
+
+    public class OpFlowProcedureProfileSummaryData
+    {
+        public int SurgeonID { get; set; }
+        public int LocationID { get; set; }
+        public string ItemType { get; set; }
+        public string ContainerName { get; set; }
+        public string ItemName { get; set; }
+        public int OPPQty { get; set; }
+        public int LocationQty { get; set; }
+        public int SurgeonCount { get; set; }
+        public int SurgeonUsage { get; set; }
+    }
+
+    public class OpFlowProcedureProfileSummaryDetail
+    {
+        public string ItemType { get; set; }
+        public string ContainerName { get; set; }
+        public string ItemName { get; set; }
+        public int OPPQty { get; set; }
+        public int LocationQty { get; set; }
+        public int SurgeonCount { get; set; }
+        public decimal? OppUsage { get; set; }
+        public decimal? LocationUsage { get; set; }
+        public decimal? SurgeonUsage { get; set; }
+
+        public string Reduction => (LocationUsage > OppUsage) ? "Y" : "";
+    }
+
     public class ConcordanceReportItemData
     {
         public string ID { get; set; }
@@ -187,6 +226,10 @@ namespace OpFlow.Data
     public class ProcedureProfileReportPost: ReportRequest
     {
         public int ProcedureProfileID { get; set; }
+        public int? SpecialtyID { get; set; }
+        public List<int> ProcedureID { get; set; }
+        public int? SurgeonID { get; set; }
+        public int? MetricID { get; set; }
         public string Order { get; set; }
     }
 

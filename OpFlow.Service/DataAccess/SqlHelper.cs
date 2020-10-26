@@ -883,14 +883,74 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<DataSet> GetProcedureProfileSummaryReportData(int procedureProfileId, int locationId)
+        public async Task<OpFlowProcedureProfileSummary> GetProcedureProfileSummaryReportData(int procedureProfileId, 
+            int? specialtyId, List<int> procedureId, int? surgeonId, int? metricId, int? locationId)
         {
+            var procedureXml = GetIdentitySummary(procedureId);
+
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId),
-                new SqlParameter("location_id", locationId)
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("procedure_id", procedureXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonId ?? (object)DBNull.Value),
+                new SqlParameter("metric_id", metricId ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId ?? (object)DBNull.Value)
             };
-            var result = await ExecuteCommandAsync("GetAnalyticsProcedureProfileSummary", parameters);
+            var summaryData = await ExecuteCommandAsync("GetAnalyticsProcedureProfileSummary", parameters);
+            
+            var summaries = summaryData.Tables[0].DataTableToList<OpFlowProcedureProfileSummary>();
+            var result = new OpFlowProcedureProfileSummary();
+            foreach (var summary in summaries)
+            {
+                if (summary.SurgeryCounts > 0 || summary.SurgeryAudits > 0) result.TotalSystems++;
+                result.SurgeryCounts += summary.SurgeryCounts;
+                result.SurgeryAudits += summary.SurgeryAudits;
+            }
+
+            result.InternalTrays = new List<OpFlowProcedureProfileSummaryDetail>();
+            result.VendorTrays = new List<OpFlowProcedureProfileSummaryDetail>();
+            result.Items = new List<OpFlowProcedureProfileSummaryDetail>();
+
+            var items = summaryData.Tables[1].DataTableToList<OpFlowProcedureProfileSummaryData>();
+
+            foreach (var item in items.GroupBy(i => new { i.ItemName, i.ItemType, i.ContainerName }))
+            {
+                var summary = new OpFlowProcedureProfileSummaryDetail()
+                {
+                    ItemName = item.Key.ItemName,
+                    ContainerName = item.Key.ContainerName,
+                    ItemType = item.Key.ItemType
+                };
+
+                summary.OPPQty = item.Max(i => i.OPPQty);
+                summary.LocationQty = item.Max(i => i.LocationQty);
+                
+                var oppUsages = items;
+                var locationUsages = item.Where(i => i.LocationID == locationId);
+                var surgeonUsages = item.Where(i => i.SurgeonID == surgeonId);
+
+                if (oppUsages.Sum(o => o.SurgeonCount) > 0)
+                    summary.OppUsage = oppUsages.Sum(o => (decimal)o.SurgeonUsage) / oppUsages.Sum(o => (decimal)o.SurgeonCount);
+                if (locationUsages.Sum(o => o.SurgeonCount) > 0)
+                    summary.LocationUsage = locationUsages.Sum(o => (decimal)o.SurgeonUsage) / locationUsages.Sum(o => (decimal)o.SurgeonCount);
+                if (surgeonUsages.Sum(o => o.SurgeonCount) > 0)
+                    summary.SurgeonUsage = surgeonUsages.Sum(o => (decimal)o.SurgeonUsage) / surgeonUsages.Sum(o => (decimal)o.SurgeonCount);
+
+                switch (summary.ItemType)
+                {
+                    case "T":
+                        result.InternalTrays.Add(summary);
+                        break;
+                    case "V":
+                        result.VendorTrays.Add(summary);
+                        break;
+                    case "I":
+                    default:
+                        result.Items.Add(summary);
+                        break;
+                }
+            }
 
             return result;
         }

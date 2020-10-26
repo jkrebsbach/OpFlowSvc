@@ -43,7 +43,9 @@ namespace OpFlow.Service.Controllers
             var proposedTrays = await sqlHelper.GetProposedTrays(null, user.SelectedLocation);
             var proposalPhases = await sqlHelper.GetTrayProposalPhases(user.SelectedLocation);
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.SelectedLocation);
+
             var procedureProfiles = await sqlHelper.GetProcedureProfiles();
+            var metrics = await sqlHelper.GetProcedureProfileMetrics("VND", user.LocationID);
 
             var cardCategoryXref = await sqlHelper.GetSpecialtyProcedureGroup(user.SelectedLocation);
 
@@ -68,7 +70,8 @@ namespace OpFlow.Service.Controllers
                     ProposedTrays = proposedTrays,
                     ProposalPhases = proposalPhases,
                     CaseProfiles = caseProfiles,
-                    ProcedureProfiles = procedureProfiles
+                    ProcedureProfiles = procedureProfiles,
+                    Metrics = metrics
                 }
             });
         }
@@ -707,48 +710,40 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             
-            var analytics = await sqlHelper.GetProcedureProfileSummaryReportData(post.ProcedureProfileID, user.SelectedLocation);
-
-            var concordance = analytics.Tables[0].DefaultView;
-            switch (post.Order)
-            {
-                case "instrument_avg":
-                    concordance.Sort = "QtyOpen DESC";
-                    break;
-                case "instrument_name":
-                default:
-                    concordance.Sort = "InstrumentName";
-                    break;
-            }
-
-            var summary = SummarizeConcordanceReport(analytics.Tables[0]);
+            var analytics = await sqlHelper.GetProcedureProfileSummaryReportData(post.ProcedureProfileID, 
+                post.SpecialtyID, post.ProcedureID, post.SurgeonID, post.MetricID, null);
 
             if (format == "CSV")
             {
-                return ResponseHelper.CsvResponse(concordance.ToTable());
+                var result = "Internal Trays\r\n";
+                result += $"Tray,Instrument,OPPQty,OppUsage,LocationQty,LocationUsage,SurgeonQty,SurgeonUsage,Reduction\r\n";
+                foreach (var item in analytics.InternalTrays)
+                {
+                    result += $"{item.ContainerName},{item.ItemName},{item.OPPQty},{item.OppUsage},{item.LocationQty},{item.LocationUsage},{item.LocationQty},{item.SurgeonUsage},{item.Reduction}\r\n"; 
+                }
+
+                result += "\r\n\r\nVendor Trays\r\n";
+                result += $"Tray,Instrument,OPPQty,OppUsage,LocationQty,LocationUsage,SurgeonQty,SurgeonUsage,Reduction\r\n";
+                foreach (var item in analytics.VendorTrays)
+                {
+                    result += $"{item.ContainerName},{item.ItemName},{item.OPPQty},{item.OppUsage},{item.LocationQty},{item.LocationUsage},{item.LocationQty},{item.SurgeonUsage},{item.Reduction}\r\n";
+                }
+
+                result += "\r\n\r\nDisposables\r\n";
+                result += $"Card,Instrument,OPPQty,OppUsage,LocationQty,LocationUsage,SurgeonQty,SurgeonUsage,Reduction\r\n";
+                foreach (var item in analytics.Items)
+                {
+                    result += $"{item.ContainerName},{item.ItemName},{item.OPPQty},{item.OppUsage},{item.LocationQty},{item.LocationUsage},{item.LocationQty},{item.SurgeonUsage},{item.Reduction}\r\n";
+                }
+
+                return ResponseHelper.CsvResponse(result);
             }
 
-            var datasets = new Dictionary<string, DataTable>
-            {
-                ["ConcordanceReport"] = concordance.ToTable()
-            };
-            var parameters = new[]
-            {
-                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
-                new ReportParameter("Timezone", post.Timezone.ToString())
-            };
-            var result = ReportHelper.GetReport($"ConcordanceReport", format, datasets, parameters);
-
-            if (format?.ToUpper() == "PDF")
-            {
-                return ResponseHelper.PdfResponse(result);
-            }
-            else
-            {
-                var webImage = ImageHelper.CreateWebImage(result);
-
-                return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
-            }
+            return Request.CreateResponse(HttpStatusCode.OK,
+                new
+                {
+                    Summary = analytics,                    
+                });
         }
 
         // GET api/values/5

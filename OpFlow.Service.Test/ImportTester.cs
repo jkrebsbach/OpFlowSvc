@@ -18,11 +18,11 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestImportFile()
         {
-            var fileName = @"F:\ColdStorage\Documents\OpFlow\Imports\UAB_Ortho_Cards.csv";
-            //var importTypeId = 1; // schedule 
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\Imports\LomaLinda_Schedule1.csv";
+            var importTypeId = 1; // schedule 
             //var importTypeId = 2; // item master
             //var importTypeId = 7; // schedule without card
-            var importTypeId = 5; // cards
+            //var importTypeId = 5; // cards
             //var importTypeId = 3; // trays
 
 
