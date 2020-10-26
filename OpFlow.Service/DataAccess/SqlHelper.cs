@@ -925,8 +925,10 @@ namespace OpFlow.Service.DataAccess
 
                 summary.OPPQty = item.Max(i => i.OPPQty);
                 summary.LocationQty = item.Max(i => i.LocationQty);
+
+                if (surgeonId.HasValue) summary.SurgeonQty = summary.LocationQty;
                 
-                var oppUsages = items;
+                var oppUsages = item;
                 var locationUsages = item.Where(i => i.LocationID == locationId);
                 var surgeonUsages = item.Where(i => i.SurgeonID == surgeonId);
 

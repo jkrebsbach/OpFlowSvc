@@ -178,6 +178,7 @@ namespace OpFlow.Data
         public string ItemName { get; set; }
         public int OPPQty { get; set; }
         public int LocationQty { get; set; }
+        public int? SurgeonQty { get; set; }
         public int SurgeonCount { get; set; }
         public decimal? OppUsage { get; set; }
         public decimal? LocationUsage { get; set; }
