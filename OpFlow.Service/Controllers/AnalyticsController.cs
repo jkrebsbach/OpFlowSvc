@@ -711,7 +711,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
             
             var analytics = await sqlHelper.GetProcedureProfileSummaryReportData(post.ProcedureProfileID, 
-                post.SpecialtyID, post.ProcedureID, post.SurgeonID, post.MetricID, null);
+                post.SpecialtyID, post.ProcedureID, post.SurgeonID, post.MetricID, user.SelectedLocation);
 
             if (format == "CSV")
             {
