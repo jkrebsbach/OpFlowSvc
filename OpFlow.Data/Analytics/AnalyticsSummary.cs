@@ -154,10 +154,21 @@ namespace OpFlow.Data
         public int SurgeryAudits { get; set; }
         public int AvgDuration { get; set; }
 
+        public List<OpFlowProcedureProfileSystemSummaryData> SystemSummaries { get; set; }
         public List<OpFlowProcedureProfileSummaryDetail> InternalTrays { get; set; }
         public List<OpFlowProcedureProfileSummaryDetail> VendorTrays { get; set; }
         public List<OpFlowProcedureProfileSummaryDetail> Items { get; set; }
         public List<Flow> Timings { get; set; }
+    }
+
+    public class OpFlowProcedureProfileSystemSummaryData
+    {
+        public string System { get; set; }
+        public int TraysOpened { get; set; }
+        public int InstrumentsUsed { get; set; }
+        public int CaseDuration { get; set; }
+        public int Turnover { get; set; }
+        public int ProcedureDuration { get; set; }
     }
 
     public class OpFlowProcedureProfileSummaryData

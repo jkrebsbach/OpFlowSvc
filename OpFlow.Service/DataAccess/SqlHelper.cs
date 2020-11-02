@@ -913,6 +913,7 @@ namespace OpFlow.Service.DataAccess
             result.Items = new List<OpFlowProcedureProfileSummaryDetail>();
             result.Timings = summaryData.Tables[2].DataTableToList<Flow>();
             result.AvgDuration = result.Timings.Count > 0 ? result.Timings.Max(t => t.TotalMinutes) : 0;
+            result.SystemSummaries = summaryData.Tables[3].DataTableToList<OpFlowProcedureProfileSystemSummaryData>();
 
             var items = summaryData.Tables[1].DataTableToList<OpFlowProcedureProfileSummaryData>();
 
