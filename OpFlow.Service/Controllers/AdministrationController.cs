@@ -345,7 +345,7 @@ namespace OpFlow.Service.Controllers
                 var secureUser = await sqlHelper.GetUser(user.SelectedLocation, user.UserID);
                 ImportResult result;
 
-                if (importTypeId == 5)
+                if (importTypeId == 5 || importTypeId == 8)
                 {
                     result = await sqlHelper.UpdateCardItemImport(fileParser.Records.Select(r => r as CardImport).ToList(),
                         fileParser.Relations, user.SelectedLocation);

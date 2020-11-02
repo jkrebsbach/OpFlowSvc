@@ -18,21 +18,23 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestImportFile()
         {
-            var fileName = @"F:\ColdStorage\Documents\OpFlow\Imports\LomaLinda_Schedule1.csv";
-            var importTypeId = 1; // schedule 
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\Imports\2020 Log STERIS Jan_2019 Log STERIS Dec_062920_sent.xlsx";
+            //var importTypeId = 1; // schedule 
             //var importTypeId = 2; // item master
             //var importTypeId = 7; // schedule without card
             //var importTypeId = 5; // cards
             //var importTypeId = 3; // trays
+            var importTypeId = 8; // loma linda cards
 
 
             var sqlHelper = new SqlHelper();
             //var secureSqlHelper = new SecureSqlHelper("SecureConnection");
             var secureSqlHelper = new SecureSqlHelper("InvalidConnection");
 
-            //var user = await sqlHelper.GetSecureUser(null, 4); // UNC
+            //var user = await sqlHelper.GetSecureUser(null, 4); // UNC REX
             //var user = await sqlHelper.GetSecureUser(null, 459); // LMC
-            var user = await sqlHelper.GetSecureUser(null, 831); // UAB
+            //var user = await sqlHelper.GetSecureUser(null, 831); // UAB
+            var user = await sqlHelper.GetSecureUser(null, 1851); // UNC MAIN
 
             int? logId = null;
 
@@ -66,7 +68,7 @@ namespace OpFlow.Service.Test
                     }
                 }
 
-                if (importTypeId == 5)
+                if (importTypeId == 5 || importTypeId == 8)
                 {
                     await sqlHelper.UpdateCardItemImport(fileParser.Records.Select(r => r as CardImport).ToList(),
                         fileParser.Relations, user.SelectedLocation);

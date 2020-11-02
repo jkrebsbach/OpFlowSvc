@@ -2883,20 +2883,6 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> DeleteComparableInstrument(int? trayProposalId, int instrumentId, int comparableInstrumentId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
-                new SqlParameter("instrument_id", instrumentId),
-                new SqlParameter("comparable_instrument_id", comparableInstrumentId),
-                new SqlParameter("location_id", locationId)
-            };
-            var result = await ExecuteNonQueryAsync("DeleteComparableInstrument", parameters);
-
-            return result;
-        }
-
         public async Task<int> DeleteComparableItem(int comparableItemId, int providerId, int locationId)
         {
             var parameters = new[]

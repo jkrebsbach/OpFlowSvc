@@ -1214,20 +1214,6 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
-        [SwaggerOperation("DeleteComparableInstrument")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        [Route("comparableInstrument")]
-        [HttpDelete]
-        public async Task<HttpResponseMessage> DeleteComparableInstrument(int trayProposalId, int instrumentId, int comparableInstrumentId)
-        {
-            var user = await CacheUtil.GetUserSecurity();
-            var sqlHelper = new SqlHelper();
-
-            var result = await sqlHelper.DeleteComparableInstrument(trayProposalId, instrumentId, comparableInstrumentId, user.SelectedLocation);
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
-        }
-
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
         [Route("dashboard/csv", Name = "GetDashboardCsv")]
         [HttpGet]

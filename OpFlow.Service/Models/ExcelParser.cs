@@ -22,63 +22,14 @@ namespace OpFlow.Service.Models
         public List<IImportData> ParseExcel(CsvParser.ImportType importType)
         {
             var result = new List<IImportData>();
-            CardlessScheduleImport schedule = null;
-
-            if (importType != CsvParser.ImportType.SPMSchedule)
-                return result;
-
-            var caseRegex = @"Case Number: ([A-Z0-9\-]+)";
 
             try
             {
-                using (var memStream = new MemoryStream(_fileContents))
-                {
-                    var wb = new XSSFWorkbook(memStream);
-                    var sheet = wb.GetSheetAt(0);
+                if (importType == CsvParser.ImportType.SPMSchedule)
+                    return ParseSchedule();
 
-                    for (var rowIndex = 1; rowIndex <= sheet.LastRowNum; rowIndex++)
-                    {
-                        var sheetRow = sheet.GetRow(rowIndex);
-                        if (sheetRow != null)
-                        {
-                            var columnA = sheetRow.GetCell(0).StringCellValue;
-
-                            var caseNumber = Regex.Match(columnA, caseRegex);
-                            if (caseNumber.Success)
-                            {
-                                schedule = new CardlessScheduleImport()
-                                {
-                                    CaseNbr = caseNumber.Groups[1].Value
-                                };
-
-                                result.Add(schedule);
-                            }
-                            else
-                            {
-                                if (schedule == null)
-                                    continue;
-
-                                //// old format?...
-                                //schedule.Surgeon = sheetRow.GetCell(0).StringCellValue;
-                                //schedule.Room = sheetRow.GetCell(1).StringCellValue;
-
-                                //var spmDate = sheetRow.GetCell(2).StringCellValue;
-                                //schedule.ScheduleDate = DateTime.Parse(spmDate);
-
-                                //schedule.TrayList += $"{sheetRow.GetCell(3).StringCellValue},";
-
-                                schedule.Surgeon = sheetRow.GetCell(0).StringCellValue;
-                                schedule.Room = sheetRow.GetCell(1).StringCellValue;
-                                var caseClass = sheetRow.GetCell(2).StringCellValue;
-
-                                var spmDate = sheetRow.GetCell(3).StringCellValue;
-                                schedule.ScheduleDate = DateTime.Parse(spmDate);
-
-                                schedule.TrayList += $"{sheetRow.GetCell(4).StringCellValue},";
-                            }
-                        }
-                    }
-                }
+                if (importType == CsvParser.ImportType.LomaLindaCard)
+                    return ParseLomaLindaCard();
 
                 return result;
             }
@@ -86,6 +37,129 @@ namespace OpFlow.Service.Models
             {
                 throw;
             }
+        }
+
+        private List<IImportData> ParseLomaLindaCard()
+        {
+            var result = new List<IImportData>();
+            
+            using (var memStream = new MemoryStream(_fileContents))
+            {
+                var wb = new XSSFWorkbook(memStream);
+                var sheet = wb.GetSheetAt(0);
+
+                var surgeonRegex = @"(\s\[[0-9]+\])";
+
+                for (var rowIndex = 1; rowIndex <= sheet.LastRowNum; rowIndex++)
+                {
+                    var sheetRow = sheet.GetRow(rowIndex);
+                    if (sheetRow != null)
+                    {
+                        var columnA = sheetRow.GetCell(0).NumericCellValue;
+                        var columnB = sheetRow.GetCell(1)?.StringCellValue;
+                        var columnC = sheetRow.GetCell(2).StringCellValue;
+                        var columnD = sheetRow.GetCell(3).StringCellValue;
+                        var columnE = sheetRow.GetCell(4).StringCellValue;
+                        var columnF = sheetRow.GetCell(5)?.StringCellValue ?? string.Empty;
+                        var columnG = sheetRow.GetCell(6)?.StringCellValue ?? string.Empty;
+
+                        var surgeonMatch = Regex.Match(columnC, surgeonRegex);
+                        if (surgeonMatch.Success) columnC = columnC.Replace(surgeonMatch.Groups[1].Value, "");
+
+                        foreach (var item in columnF.Split('\n'))
+                        {
+                            if (item == "") continue;
+
+                            var cardData = new CardImport()
+                            {
+                                Surgeon = columnC,
+                                PreferenceCardName = columnE,
+                                ItemType = "EQUIPMENT",                                
+                                ItemName = item.Trim(),
+                                Quantity = 1
+                            };
+
+                            result.Add(cardData);
+                        }
+
+                        foreach (var instrument in columnG.Split('\n'))
+                        {
+                            if (instrument == "") continue;
+
+                            var cardData = new CardImport()
+                            {
+                                Surgeon = columnC,
+                                PreferenceCardName = columnE,
+                                ItemName = instrument.Trim(),
+                                ItemType = "TRAY",
+                                Quantity = 1,
+                                
+                            };
+
+                            result.Add(cardData);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        private List<IImportData> ParseSchedule()
+        {
+            var result = new List<IImportData>();
+            var caseRegex = @"Case Number: ([A-Z0-9\-]+)";
+
+            CardlessScheduleImport schedule = null;
+
+            using (var memStream = new MemoryStream(_fileContents))
+            {
+                var wb = new XSSFWorkbook(memStream);
+                var sheet = wb.GetSheetAt(0);
+
+                for (var rowIndex = 1; rowIndex <= sheet.LastRowNum; rowIndex++)
+                {
+                    var sheetRow = sheet.GetRow(rowIndex);
+                    if (sheetRow != null)
+                    {
+                        var columnA = sheetRow.GetCell(0).StringCellValue;
+
+                        var caseNumber = Regex.Match(columnA, caseRegex);
+                        if (caseNumber.Success)
+                        {
+                            schedule = new CardlessScheduleImport()
+                            {
+                                CaseNbr = caseNumber.Groups[1].Value
+                            };
+
+                            result.Add(schedule);
+                        }
+                        else
+                        {
+                            if (schedule == null)
+                                continue;
+
+                            //// old format?...
+                            //schedule.Surgeon = sheetRow.GetCell(0).StringCellValue;
+                            //schedule.Room = sheetRow.GetCell(1).StringCellValue;
+
+                            //var spmDate = sheetRow.GetCell(2).StringCellValue;
+                            //schedule.ScheduleDate = DateTime.Parse(spmDate);
+
+                            //schedule.TrayList += $"{sheetRow.GetCell(3).StringCellValue},";
+
+                            schedule.Surgeon = sheetRow.GetCell(0).StringCellValue;
+                            schedule.Room = sheetRow.GetCell(1).StringCellValue;
+                            var caseClass = sheetRow.GetCell(2).StringCellValue;
+
+                            var spmDate = sheetRow.GetCell(3).StringCellValue;
+                            schedule.ScheduleDate = DateTime.Parse(spmDate);
+
+                            schedule.TrayList += $"{sheetRow.GetCell(4).StringCellValue},";
+                        }
+                    }
+                }
+            }
+            return result;
         }
     }
 }

@@ -138,6 +138,17 @@ namespace OpFlow.Data.Administration
                 return result;
             }
 
+            // Last, First Middle, Md
+            match = Regex.Match(surgeonString, @"([A-Za-z\'-\.\s]+), ([A-Za-z\-\s]+), Md");
+            if (match.Success && match.Groups.Count > 2)
+            {
+                result.LastName = match.Groups[1].Value;
+                result.FirstName = match.Groups[2].Value;
+                result.Title = "MD";
+
+                return result;
+            }
+
             // Last, First Middle MD
             match = Regex.Match(surgeonString, @"([A-Za-z\'-\.\s]+), ([A-Za-z\-\s]+) MD");
             if (match.Success && match.Groups.Count > 2)

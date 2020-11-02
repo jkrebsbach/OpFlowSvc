@@ -129,6 +129,7 @@ namespace OpFlow.Data.Administration
 
         public static ImportCard ParseCard(string sourceCardString)
         {
+
             var result = new ImportCard();
 
             var cardData = sourceCardString.Split(';');
@@ -143,10 +144,14 @@ namespace OpFlow.Data.Administration
             }
             else
             {
+                // New UNC import file should not be parsed(?)
+                result.CardName = sourceCardString;
+                /*
                 if (cardData.Length > 1)
                     result.ImportSurgeon = ImportSurgeon.ParseSurgeon(cardData[1].Trim());
                 if (cardData.Length > 2)
                     result.Location = cardData[2];
+                */
             }
             return result;
         }

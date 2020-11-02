@@ -18,7 +18,8 @@ namespace OpFlow.Service.Models
             User = 4,
             Card = 5,
             CardlessSchedule = 6,
-            SPMSchedule = 7
+            SPMSchedule = 7,
+            LomaLindaCard = 8
         }
 
         public CsvParser(string contents)
