@@ -911,6 +911,8 @@ namespace OpFlow.Service.DataAccess
             result.InternalTrays = new List<OpFlowProcedureProfileSummaryDetail>();
             result.VendorTrays = new List<OpFlowProcedureProfileSummaryDetail>();
             result.Items = new List<OpFlowProcedureProfileSummaryDetail>();
+            result.Timings = summaryData.Tables[2].DataTableToList<Flow>();
+            result.AvgDuration = result.Timings.Count > 0 ? result.Timings.Max(t => t.TotalMinutes) : 0;
 
             var items = summaryData.Tables[1].DataTableToList<OpFlowProcedureProfileSummaryData>();
 
