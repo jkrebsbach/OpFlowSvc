@@ -123,6 +123,7 @@ namespace OpFlow.Data
         public int SurgeryID { get; set; }
         public int TrayID { get; set; }
         public bool TrayOpened { get; set; }
+        public bool OffsiteTray { get; set; }
         public string Feedback { get; set; }
     }
 

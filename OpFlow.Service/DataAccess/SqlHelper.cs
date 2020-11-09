@@ -3890,12 +3890,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateSurgeryTrayOpens(int surgeryId, int providerId, int locationId, int trayId, bool trayOpened)
+        public async Task<int> UpdateSurgeryTrayOpens(int surgeryId, int locationId, int trayId, bool trayOpened)
         {
             var parameters = new[]
             {
                 new SqlParameter("surgery_id", surgeryId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("tray_id", trayId),
                 new SqlParameter("tray_opened", trayOpened)
@@ -6027,6 +6026,7 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, customItem.Setup);
                 AddColumn(doc, row, customItem.SetupAdded);
                 AddColumn(doc, row, customItem.Notes);
+                AddColumn(doc, row, (int)(customItem.OffsiteTray ? 1 : 0));
             }
 
             return table.OuterXml;

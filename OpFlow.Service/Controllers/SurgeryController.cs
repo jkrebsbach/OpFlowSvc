@@ -492,6 +492,7 @@ namespace OpFlow.Service.Controllers
                 else
                 {
                     tray.TrayOpened = trayOpen.TrayOpened;
+                    tray.OffsiteTray = trayOpen.OffsiteTray;
                     tray.Feedback = trayOpen.Feedback;
                 }
             }
@@ -551,7 +552,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateSurgeryTrayOpens(surgeryId, user.ProviderID, user.LocationID, trayId, trayOpened);
+            var result = await sqlHelper.UpdateSurgeryTrayOpens(surgeryId, user.SelectedLocation, trayId, trayOpened);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
 

@@ -9,6 +9,7 @@ namespace OpFlow.Data
     {
         public int TrayID { get; set; }
         public bool TrayOpened { get; set; }
+        public bool OffsiteTray { get; set; }
         public string Feedback { get; set; }
         public List<CardItemCount> TrayItems { get; set; }
     }

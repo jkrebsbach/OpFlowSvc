@@ -279,6 +279,7 @@ namespace OpFlow.Data
     public class SurgeryCountItemPost : SurgeryCountPost
     {
         public int TrayID { get; set; }
+        public bool OffsiteTray { get; set; }
         public int? RoleID { get; set; }
         public int? UsageType { get; set; }
     }
