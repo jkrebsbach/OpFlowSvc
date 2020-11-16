@@ -113,12 +113,14 @@ namespace OpFlow.Service.Controllers
             var trays = await sqlHelper.GetItems("TRAY", null, null, user.SelectedLocation);
             var instruments = await sqlHelper.GetInstruments(user.SelectedLocation);
             var profiles = await sqlHelper.GetProcedureProfiles();
+            var trayTypes = await sqlHelper.GetTrayTypes();
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 Trays = trays,
                 Instruments = instruments,
-                ProcedureProfiles = profiles
+                ProcedureProfiles = profiles,
+                TrayTypes = trayTypes
             });
         }
 
@@ -332,7 +334,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.InsertTray(post.TrayName, post.ProductNbr, user.SelectedLocation);
+            var result = await sqlHelper.InsertTray(post.TrayName, post.ProductNbr, post.TrayTypeID, user.SelectedLocation);
             
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -342,12 +344,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("tray/{itemId}")]
         [HttpPost]
-        public async Task<HttpResponseMessage> PostTray(int itemId, string vendorId, int? trayTypeId)
+        public async Task<HttpResponseMessage> PostTray(int itemId, string vendorId, string productNbr, int? trayTypeId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateTray(itemId, vendorId, trayTypeId, user.SelectedLocation);
+            var result = await sqlHelper.UpdateTray(itemId, vendorId, productNbr, trayTypeId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

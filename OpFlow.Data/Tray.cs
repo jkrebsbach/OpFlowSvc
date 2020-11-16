@@ -8,6 +8,7 @@ namespace OpFlow.Data
     public class TrayUsage
     {
         public int TrayID { get; set; }
+        public bool SetupAdded { get; set; }
         public bool TrayOpened { get; set; }
         public bool OffsiteTray { get; set; }
         public string Feedback { get; set; }
@@ -65,6 +66,7 @@ namespace OpFlow.Data
     {
         public string TrayName { get; set; }
         public string ProductNbr { get; set; }
+        public int? TrayTypeID { get; set; }
     }
     public class NewTrayInstrument
     {

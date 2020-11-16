@@ -40,6 +40,12 @@ namespace OpFlow.Data
         public bool Peel { get; set; }
     }
 
+    public class TrayType
+    {
+        public int TrayTypeID { get; set; }
+        public string Description { get; set; }
+    }
+
     public class TrayPlanInstrumentSummary
     {
         public string Type { get; set; }

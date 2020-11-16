@@ -45,6 +45,7 @@ namespace OpFlow.Service.Controllers
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.SelectedLocation);
 
             var procedureProfiles = await sqlHelper.GetProcedureProfiles();
+            var trayTypes = await sqlHelper.GetTrayTypes();
             var metrics = await sqlHelper.GetProcedureProfileMetrics("VND", user.LocationID);
 
             var cardCategoryXref = await sqlHelper.GetSpecialtyProcedureGroup(user.SelectedLocation);
@@ -71,6 +72,7 @@ namespace OpFlow.Service.Controllers
                     ProposalPhases = proposalPhases,
                     CaseProfiles = caseProfiles,
                     ProcedureProfiles = procedureProfiles,
+                    TrayTypes = trayTypes,
                     Metrics = metrics
                 }
             });
@@ -241,7 +243,7 @@ namespace OpFlow.Service.Controllers
             var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, 
                 null, null, null, null, post.TrayId, null, "t", user.SelectedLocation);
             var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, 
-                null, post.TrayId, post.TrayType, null, null, null, user.SelectedLocation);
+                null, post.TrayId, post.TrayTypeId, post.VendorTray, null, null, null, user.SelectedLocation);
 
             var baseParameters = new[]
             {
@@ -416,7 +418,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error= true});
             }
 
-            var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, post.TrayType,
+            var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, post.TrayTypeID, post.VendorTray,
                 post.CardCategoryID, post.CardID, post.Instruments, post.ShowMax, post.Label, user.SelectedLocation);
 
             var summary = SummarizeConcordanceReport(analytics.Tables[0]);
@@ -711,7 +713,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
             
             var analytics = await sqlHelper.GetProcedureProfileSummaryReportData(post.ProcedureProfileID, 
-                post.SpecialtyID, post.ProcedureID, post.SurgeonID, post.MetricID, user.SelectedLocation);
+                post.SpecialtyID, post.ProcedureID, post.SurgeonID, post.MetricID, post.TrayTypeID, user.SelectedLocation);
 
             if (format == "CSV")
             {
@@ -1467,7 +1469,7 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.TrayType,
+            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.TrayTypeId, post.VendorTray,
                 post.CardCategoryId, post.CardId, post.MinSize, user.SelectedLocation);
 
             var rationalization = new DataView(analytics.Tables[0]);
@@ -1644,7 +1646,7 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.TrayType, post.CardCategoryId, post.CardId,
+            var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.TrayTypeId, post.VendorTray, post.CardCategoryId, post.CardId,
                 post.MinSize, user.SelectedLocation);
             /*
             switch (post.Order)

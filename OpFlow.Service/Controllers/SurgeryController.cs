@@ -457,14 +457,16 @@ namespace OpFlow.Service.Controllers
                         result.Trays.Add(new TrayUsage()
                         {
                             TrayID = countType.Key.TrayID ?? 0,
-                            TrayItems = countType.ToList()
+                            TrayItems = countType.ToList(),
+                            SetupAdded = countType.Sum(c => c.SetupAdded ?? 0) > 0
                         });
                         break;
                     case "PROPOSAL":
                         result.ProposedTrays.Add(new TrayUsage()
                         {
                             TrayID = countType.Key.TrayID ?? 0,
-                            TrayItems = countType.ToList()
+                            TrayItems = countType.ToList(),
+                            SetupAdded = countType.Sum(c => c.SetupAdded ?? 0) > 0
                         });
                         break;
                     default:
@@ -1058,6 +1060,21 @@ namespace OpFlow.Service.Controllers
                 LogHelper.LogException(ex);
                 throw;
             }
+        }
+
+        // POST api/values
+        [SwaggerOperation("RemoveCustomSurgeryItem")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpDelete]
+        [Route("customSurgeryItem", Name = "RemoveCustomSurgeryItem")]
+        public async Task<HttpResponseMessage> RemoveCustomSurgeryItem(int surgeryId, int itemId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.DeleteSurgeryCustomItem(surgeryId, itemId, user.SelectedLocation);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, surgeryId);
         }
 
         // POST api/values
