@@ -1018,6 +1018,7 @@ namespace OpFlow.Data
     }
     public class TrayCommunicationHistoryUpdatePost
     {
+        public string SentDate { get; set; }
         public string Comments { get; set; }
     }
     public class AddCaseAuditPost

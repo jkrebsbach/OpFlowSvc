@@ -1138,7 +1138,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var communication = await sqlHelper.UpdateProposedTrayCommunicationHistory(historyId, post.Comments,
+            var communication = await sqlHelper.UpdateProposedTrayCommunicationHistory(historyId, null, post.Comments, 
                 user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK);

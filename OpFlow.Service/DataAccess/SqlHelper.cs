@@ -1752,12 +1752,16 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProposedTrayCommunicationHistory(int historyId, string comments,
+        public async Task<int> UpdateProposedTrayCommunicationHistory(int historyId, string strSentDate, string comments,
             int locationId)
         {
+            DateTime? sentDate = null;
+            if (DateTime.TryParse(strSentDate, out var date)) sentDate = date;
+
             var parameters = new[]
             {
                 new SqlParameter("history_id", historyId),
+                new SqlParameter("sent_date", sentDate ?? (object)DBNull.Value),
                 new SqlParameter("comments", comments ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
@@ -3453,17 +3457,21 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<List<TrayRationalizationUsage>> GetTrayRationalizationUsage(int? trayPlanId, int? specialtyId, 
-            int? instrumentCategoryId, int? trayItemId, int? instrumentId, int? cardCategoryId,
+            int? instrumentCategoryId, List<int> trayItemId, List<int> instrumentId, List<int> cardCategoryId,
             int providerId, int locationId)
         {
+            var trayXml = GetIdentitySummary(trayItemId);
+            var instrumentXml = GetIdentitySummary(instrumentId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+
             var parameters = new[]
             {
                 new SqlParameter("tray_plan_id", trayPlanId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("instrument_category_id", instrumentCategoryId ?? (object)DBNull.Value),
-                new SqlParameter("tray_item_id", trayItemId ?? (object)DBNull.Value),
-                new SqlParameter("instrument_id", instrumentId ?? (object)DBNull.Value),
-                new SqlParameter("card_category_id", cardCategoryId ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("instrument_id", instrumentXml ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };

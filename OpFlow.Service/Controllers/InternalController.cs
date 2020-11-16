@@ -206,6 +206,24 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, roles);
         }
 
+        [SwaggerOperation("AddCommunicationComments")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("communicationComments")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> AddCommunicationComments(int locationId, int historyId, [FromBody] TrayCommunicationHistoryUpdatePost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var communication = await sqlHelper.UpdateProposedTrayCommunicationHistory(historyId, post.SentDate, post.Comments,
+                locationId);
+
+            return Request.CreateResponse(HttpStatusCode.OK);
+        }
+
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("CommunicationScreen", Name = "GetCommunicationScreen")]
         [HttpGet]

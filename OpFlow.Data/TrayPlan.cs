@@ -25,9 +25,9 @@ namespace OpFlow.Data
         public int? TrayPlanID { get; set; }
         public int? SpecialtyID { get; set; }
         public int? InstrumentCategoryID { get; set; }
-        public int? TrayID { get; set; }
-        public int? InstrumentID { get; set; }
-        public int? CardCategoryID { get; set; }
+        public List<int> TrayID { get; set; }
+        public List<int> InstrumentID { get; set; }
+        public List<int> CardCategoryID { get; set; }
     }
 
     public class TrayPlanInstrumentUsage
