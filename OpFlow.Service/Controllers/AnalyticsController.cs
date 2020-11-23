@@ -33,7 +33,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
             var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
             var surgeons = await sqlHelper.GetSurgeons(null, user.SelectedLocation);
-            var procedures = await sqlHelper.GetProcedures(null, user.ProviderID, user.LocationID);
+            var procedures = await sqlHelper.GetProcedures(null, user.SelectedLocation);
             var trays = await sqlHelper.GetItems("TRAY", null, null, user.SelectedLocation);
             var cardCategories = await sqlHelper.GetCardCategories();
             var lookups = await sqlHelper.GetTrayInstrumentLookups(user.SelectedLocation);

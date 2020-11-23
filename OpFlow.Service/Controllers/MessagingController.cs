@@ -30,7 +30,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.GetMessaging(userId ?? user.UserID, 
-                surgeryId, caseGroupId, recipientId, user.ProviderID, user.LocationID);
+                surgeryId, caseGroupId, recipientId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -47,7 +47,7 @@ namespace OpFlow.Service.Controllers
 
             var userObject = await sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
 
-            var groups = await sqlHelper.GetMessageGroups(userId ?? user.UserID, startDate, endDate, user.ProviderID, user.LocationID);
+            var groups = await sqlHelper.GetMessageGroups(userId ?? user.UserID, startDate, endDate, user.SelectedLocation);
 
             foreach (var group in groups.Where(g => g.PatientID.HasValue))
             {
@@ -76,7 +76,7 @@ namespace OpFlow.Service.Controllers
             if ((surgeryId == null && communicationUserId == null) || messagePost == null)
                 return Request.CreateResponse(HttpStatusCode.Ambiguous);
 
-            await sqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
+            await sqlHelper.SendMessage(user.UserID, user.SelectedLocation,
                 surgeryId, communicationUserId, messagePost.Message);
 
             NotificationOutcome notificationOutcome = null;
@@ -131,7 +131,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.AcknowledgeMessage(user.UserID, user.ProviderID, user.LocationID, messageId, hideMessages);
+            await sqlHelper.AcknowledgeMessage(user.UserID, user.SelectedLocation, messageId, hideMessages);
 
             return Request.CreateResponse(HttpStatusCode.OK, 200);
         }
@@ -146,7 +146,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.DeletePrivateConversation(communicationUserId, user.UserID, user.ProviderID, user.LocationID);
+            await sqlHelper.DeletePrivateConversation(communicationUserId, user.UserID, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, 200);
         }

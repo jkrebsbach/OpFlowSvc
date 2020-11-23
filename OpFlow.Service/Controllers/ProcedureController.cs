@@ -23,7 +23,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var procedures = await sqlHelper.GetProcedures(specialtyId, user.ProviderID, user.LocationID);
+            var procedures = await sqlHelper.GetProcedures(specialtyId, user.SelectedLocation);
 
             return procedures == null ?
                 Request.CreateResponse(HttpStatusCode.NotFound) :

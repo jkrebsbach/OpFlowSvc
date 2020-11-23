@@ -37,7 +37,7 @@ namespace OpFlow.Service.Controllers
             var specialties = await sqlHelper.GetSpecialtyMaster();
             var cardCategories = await sqlHelper.GetCardCategories();
             var surgeons = await sqlHelper.GetSurgeonsProcedureProfile();
-            var procedures = await sqlHelper.GetProcedures(null, 1, 1);
+            var procedures = await sqlHelper.GetProcedures(null, 1);
             var categories = await sqlHelper.GetProcedureProfileCategories();
 
             return Request.CreateResponse(HttpStatusCode.OK, new
@@ -78,8 +78,8 @@ namespace OpFlow.Service.Controllers
             var cards = await sqlHelper.GetCardsInternal(request.LocationFilter);
             var trays = await sqlHelper.GetTraysInternal(request.LocationFilter);
             var proposed = await sqlHelper.GetProposedTraysInternal(request.LocationFilter);
-            var itemCategories = await sqlHelper.GetItemCategories(user.ProviderID, user.LocationID);
-            var instrumentCategories = await sqlHelper.GetInstrumentCategories(user.ProviderID, user.LocationID);
+            var itemCategories = await sqlHelper.GetItemCategories(user.SelectedLocation);
+            var instrumentCategories = await sqlHelper.GetInstrumentCategories(user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {

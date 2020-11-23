@@ -24,7 +24,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var bundles = await sqlHelper.GetBundles(specialtyId, user.ProviderID, user.LocationID);
+            var bundles = await sqlHelper.GetBundles(specialtyId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, bundles);
         }
@@ -38,7 +38,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var procedures = await sqlHelper.GetBundleProcedures(bundleId, user.ProviderID, user.LocationID);
+            var procedures = await sqlHelper.GetBundleProcedures(bundleId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, procedures);
         }
@@ -51,7 +51,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.NewBundle(value.BundleDescription, value.SpecialtyID, value.Procedures, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.NewBundle(value.BundleDescription, value.SpecialtyID, value.Procedures, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -65,7 +65,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateBundle(id, value.BundleDescription, value.SpecialtyID, value.Procedures, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.UpdateBundle(id, value.BundleDescription, value.SpecialtyID, value.Procedures, user.SelectedLocation);
 
             return Ok();
         }

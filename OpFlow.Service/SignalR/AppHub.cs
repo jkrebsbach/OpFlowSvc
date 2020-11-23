@@ -27,8 +27,7 @@ namespace OpFlow.Service.SignalR
 
                 var insertTimestamp = DateTime.Now;
 
-                await sqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
-                    surgeryId, null, message);
+                await sqlHelper.SendMessage(user.UserID, user.SelectedLocation, surgeryId, null, message);
 
                 var recipients = await sqlHelper.GetSurgeryUsers(surgeryId, user.SelectedLocation);
                 var surgery = await sqlHelper.GetSurgery(surgeryId, user.SelectedLocation);
@@ -73,8 +72,7 @@ namespace OpFlow.Service.SignalR
 
             var insertTimestamp = DateTime.Now;
 
-            await sqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID,
-                null, communicationUserId, message);
+            await sqlHelper.SendMessage(user.UserID, user.SelectedLocation, null, communicationUserId, message);
 
             var recipientUser = 
                 await sqlHelper.GetUser(user.SelectedLocation,  communicationUserId);
@@ -173,7 +171,7 @@ namespace OpFlow.Service.SignalR
             };
             Clients.Groups(groups).broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), DateTime.Now, null, targetUserId, null);
             //Clients.All.broadcastMessage(message, (int)sender.RoleID, sender.UserID, sender.DeriveInitials(), DateTime.Now, null, targetUserId);
-            await sqlHelper.SendMessage(user.UserID, user.ProviderID, user.LocationID, null, targetUserId, message);
+            await sqlHelper.SendMessage(user.UserID, user.SelectedLocation, null, targetUserId, message);
 
         }
 

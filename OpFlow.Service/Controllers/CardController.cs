@@ -364,7 +364,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.AssignFlowToCard(flowId, cardId, user.ProviderID, user.LocationID);
+            await sqlHelper.AssignFlowToCard(flowId, cardId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, 418);
         }
@@ -378,7 +378,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.AssignRoomSetupToCard(roomSetupId, cardId, user.ProviderID, user.LocationID);
+            await sqlHelper.AssignRoomSetupToCard(roomSetupId, cardId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, 418);
         }
@@ -392,7 +392,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.AssignUserToCard(cardId, userId, user.ProviderID, user.LocationID);
+            await sqlHelper.AssignUserToCard(cardId, userId, user.SelectedLocation);
 
             return Ok();
         }
@@ -406,7 +406,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.RemoveUserFromCard(cardId, userId, user.ProviderID, user.LocationID);
+            await sqlHelper.RemoveUserFromCard(cardId, userId, user.SelectedLocation);
 
             return Ok();
         }

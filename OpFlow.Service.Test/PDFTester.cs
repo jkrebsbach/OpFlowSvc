@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpFlow.Service.DataAccess;
 using WebSupergoo.ABCpdf11;
+using WebSupergoo.ABCpdf11.Objects;
 
 namespace OpFlow.Service.Test
 {
@@ -17,6 +19,37 @@ namespace OpFlow.Service.Test
         public void Initialize()
         {
             WebSupergoo.ABCpdf11.XSettings.InstallLicense(Licensing.ABCPDF);
+        }
+
+
+        [TestMethod]
+        public async Task ReadPDF()
+        {
+            var path = @"F:\ColdStorage\Documents\OpFlow\Inova\TOR_Stryker_RemB_Power_Set.pdf";
+
+            var pdfText = string.Empty;
+
+            using (var doc = new Doc())
+            {
+                doc.Read(path);
+
+                int theCount = doc.PageCount;
+                for (int i = 1; i <= theCount; i++)
+                {
+                    doc.PageNumber = i;
+                    pdfText += doc.GetText(Page.TextType.Svg, true);
+                }
+            }
+
+            foreach (var itemLine in pdfText.Split('\n'))
+            {
+                var itemMatch = Regex.Match(itemLine, @"([A-Za-z\s]), ([A-Za-z]), ([A-Za-z#\s0-9])\s+[01]\s[01]\s[01]");
+
+                if (itemMatch.Success)
+                {
+                    var abc = itemMatch.Groups[1];
+                }
+            }
         }
 
         [TestMethod]

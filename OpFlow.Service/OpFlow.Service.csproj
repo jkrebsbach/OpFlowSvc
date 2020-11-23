@@ -45,6 +45,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ABCpdf, Version=11.2.0.6, Culture=neutral, PublicKeyToken=a7a0b3f5184f2169, processorArchitecture=MSIL">
+      <HintPath>..\packages\ABCpdf.11.2.06\lib\net40\ABCpdf.dll</HintPath>
+    </Reference>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
       <HintPath>..\packages\Portable.BouncyCastle.1.8.6\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
@@ -322,6 +325,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ABCpdfQuickStart.txt" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
@@ -451,6 +455,7 @@
     <Content Include="Resources\TrayReductionSummaryExport.rdlc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="ABCpdf.chm" />
     <None Include="Properties\PublishProfiles\Production Site.pubxml" />
     <None Include="Properties\PublishProfiles\Test Site.pubxml" />
     <None Include="Scripts\jquery-3.3.1.slim.min.map" />
@@ -588,4 +593,11 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <Import Project="..\packages\ABCpdf.11.2.06\build\ABCpdf.targets" Condition="Exists('..\packages\ABCpdf.11.2.06\build\ABCpdf.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\ABCpdf.11.2.06\build\ABCpdf.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ABCpdf.11.2.06\build\ABCpdf.targets'))" />
+  </Target>
 </Project>
