@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpFlow.Service.DataAccess;
 using WebSupergoo.ABCpdf11;
@@ -23,33 +24,142 @@ namespace OpFlow.Service.Test
 
 
         [TestMethod]
-        public async Task ReadPDF()
+        public async Task TestReadPDF()
         {
-            var path = @"F:\ColdStorage\Documents\OpFlow\Inova\TOR_Stryker_RemB_Power_Set.pdf";
+            var path = @"F:\ColdStorage\Documents\OpFlow\drive-download-20201123T200330Z-001\";
 
-            var pdfText = string.Empty;
+            var files = Directory.GetFiles(path);
+
+            var cardImport = new List<CardImport>();
+            foreach (var file in files)
+            {
+                var cardData = ProcessFile(file);
+                cardImport.AddRange(cardData);       
+            }
+
+            var outputData = "CardName,Manufacturer,Description,ProductNbr,Quantity\r\n";
+            foreach (var cardItem in cardImport)
+            {
+                // double quote issue, quick hack
+                if (cardItem.ProductNbr == string.Empty)
+                    cardItem.ProductNbr = " ";
+
+                if (cardItem.Quantity == "")
+                    continue;
+
+                outputData += $"\"{cardItem.CardName}\",\"{cardItem.Manufacturer} \",\"{cardItem.Description.Replace("\"","\"\"")}\",\"{cardItem.ProductNbr}\",{cardItem.Quantity}\r\n";
+            }
+
+            var outputFile = Path.Combine(path, "CardData.csv");
+            File.WriteAllText(outputFile, outputData);
+        }
+
+        private List<CardImport> ProcessFile(string filePath)
+        {
+            var cardName = Path.GetFileNameWithoutExtension(filePath);
+
+            var pdfPageText = new List<string>();
+            var cardImport = new List<CardImport>();
 
             using (var doc = new Doc())
             {
-                doc.Read(path);
+                doc.Read(filePath);
 
                 int theCount = doc.PageCount;
                 for (int i = 1; i <= theCount; i++)
                 {
                     doc.PageNumber = i;
-                    pdfText += doc.GetText(Page.TextType.Svg, true);
+                    pdfPageText.Add(doc.GetText(Page.TextType.Svg, false));
                 }
             }
 
-            foreach (var itemLine in pdfText.Split('\n'))
+            foreach (var pageText in pdfPageText)
             {
-                var itemMatch = Regex.Match(itemLine, @"([A-Za-z\s]), ([A-Za-z]), ([A-Za-z#\s0-9])\s+[01]\s[01]\s[01]");
+                var document = XDocument.Parse(pageText);
 
-                if (itemMatch.Success)
+                var cardNameDetail = cardName;
+                var manufacturer = string.Empty;
+                var productNbr = string.Empty;
+                var description = string.Empty;
+                var manufacturerDelim = string.Empty;
+                var productNbrDelim = string.Empty;
+                var descriptionDelim = string.Empty;
+                var quantity = string.Empty;
+
+
+                foreach (var element in document.Root.Elements())
                 {
-                    var abc = itemMatch.Groups[1];
+                    if (element.Name.LocalName == "g")
+                    {
+                        foreach (var graphic in element.Elements())
+                        {
+                            if (graphic.Name.LocalName == "text")
+                            {
+                                var xLoc = graphic.Attribute("x").Value;
+                                var yLoc = graphic.Attribute("y").Value;
+
+                                if (xLoc == "216.687" && yLoc == "47.87")
+                                {
+                                    cardNameDetail = graphic.Value;
+                                    var cardNameRegex = Regex.Match(cardNameDetail, @"([A-Za-z\s]+) - 000");
+                                    if (cardNameRegex.Success)
+                                        cardNameDetail = cardNameRegex.Groups[1].Value;
+                                }
+
+                                if (xLoc == "36.75")
+                                {
+                                    manufacturer += $"{manufacturerDelim}{graphic.Value}";
+                                    manufacturerDelim = " ";
+                                }
+
+                                if (xLoc == "135.435")
+                                {
+                                    description += $"{descriptionDelim}{graphic.Value}";
+                                    descriptionDelim = " ";
+                                }
+
+                                if (xLoc == "76.215")
+                                {
+                                    productNbr += $"{productNbrDelim}{graphic.Value}";
+                                    productNbrDelim = " ";
+                                }
+
+                                if (xLoc == "444.99")
+                                {
+                                    quantity = graphic.Value;
+
+                                    cardImport.Add(new CardImport()
+                                    {
+                                        CardName = cardNameDetail,
+                                        Manufacturer = manufacturer.Trim(),
+                                        Description = description.Trim(),
+                                        ProductNbr = productNbr.Trim(),
+                                        Quantity = quantity
+                                    });
+
+                                    manufacturer = string.Empty;
+                                    description = string.Empty;
+                                    productNbr = string.Empty;
+                                    manufacturerDelim = string.Empty;
+                                    productNbrDelim = string.Empty;
+                                    descriptionDelim = string.Empty;
+                                }
+                            }
+                        }
+                    }
                 }
             }
+
+            return cardImport;
+        }
+
+        private class CardImport
+        {
+            public string CardName { get; set; }
+            public string Manufacturer { get; set; }
+            public string Description { get; set; }
+            public string ProductNbr { get; set; }
+            public string Quantity { get; set; }
         }
 
         [TestMethod]

@@ -711,40 +711,56 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            
-            var analytics = await sqlHelper.GetProcedureProfileSummaryReportData(post.ProcedureProfileID, 
-                post.SpecialtyID, post.ProcedureID, post.SurgeonID, post.MetricID, post.TrayTypeID, user.SelectedLocation);
 
-            if (format == "CSV")
+            var procedureProfiles = await sqlHelper.GetProcedureProfiles();
+            var csvResponse = string.Empty;
+
+            var analyticsSummary = new List<OpFlowProcedureProfileSummary>();
+
+            foreach (var procedureProfileId in post.ProcedureProfileID)
             {
-                var result = "Internal Trays\r\n";
-                result += $"Tray,Instrument,OPPQty,OppUsage,LocationQty,LocationUsage,SurgeonQty,SurgeonUsage,Reduction\r\n";
+                var procedureProfile = procedureProfiles.First(p => p.ProcedureProfileID == procedureProfileId);
+
+                var analytics = await sqlHelper.GetProcedureProfileSummaryReportData(procedureProfileId,
+                    post.SpecialtyID, post.ProcedureID, post.SurgeonID, post.MetricID, post.TrayTypeID, user.SelectedLocation);
+
+                analytics.ProcedureProfileName = procedureProfile.ProcedureProfileName;
+                analyticsSummary.Add(analytics);
+
+                csvResponse = $"{analytics.ProcedureProfileName} Summary:\r\n";
+                csvResponse += "Internal Trays\r\n";
+                csvResponse += $"Tray,Instrument,OPPQty,OppUsage,LocationQty,LocationUsage,SurgeonQty,SurgeonUsage,Reduction\r\n";
                 foreach (var item in analytics.InternalTrays)
                 {
-                    result += $"{item.ContainerName},{item.ItemName},{item.OPPQty},{item.OppUsage},{item.LocationQty},{item.LocationUsage},{item.LocationQty},{item.SurgeonUsage},{item.Reduction}\r\n"; 
+                    csvResponse += $"{item.ContainerName},{item.ItemName},{item.OPPQty},{item.OppUsage},{item.LocationQty},{item.LocationUsage},{item.LocationQty},{item.SurgeonUsage},{item.Reduction}\r\n";
                 }
 
-                result += "\r\n\r\nVendor Trays\r\n";
-                result += $"Tray,Instrument,OPPQty,OppUsage,LocationQty,LocationUsage,SurgeonQty,SurgeonUsage,Reduction\r\n";
+                csvResponse += "\r\n\r\nVendor Trays\r\n";
+                csvResponse += $"Tray,Instrument,OPPQty,OppUsage,LocationQty,LocationUsage,SurgeonQty,SurgeonUsage,Reduction\r\n";
                 foreach (var item in analytics.VendorTrays)
                 {
-                    result += $"{item.ContainerName},{item.ItemName},{item.OPPQty},{item.OppUsage},{item.LocationQty},{item.LocationUsage},{item.LocationQty},{item.SurgeonUsage},{item.Reduction}\r\n";
+                    csvResponse += $"{item.ContainerName},{item.ItemName},{item.OPPQty},{item.OppUsage},{item.LocationQty},{item.LocationUsage},{item.LocationQty},{item.SurgeonUsage},{item.Reduction}\r\n";
                 }
 
-                result += "\r\n\r\nDisposables\r\n";
-                result += $"Card,Instrument,OPPQty,OppUsage,LocationQty,LocationUsage,SurgeonQty,SurgeonUsage,Reduction\r\n";
+                csvResponse += "\r\n\r\nDisposables\r\n";
+                csvResponse += $"Card,Instrument,OPPQty,OppUsage,LocationQty,LocationUsage,SurgeonQty,SurgeonUsage,Reduction\r\n";
                 foreach (var item in analytics.Items)
                 {
-                    result += $"{item.ContainerName},{item.ItemName},{item.OPPQty},{item.OppUsage},{item.LocationQty},{item.LocationUsage},{item.LocationQty},{item.SurgeonUsage},{item.Reduction}\r\n";
+                    csvResponse += $"{item.ContainerName},{item.ItemName},{item.OPPQty},{item.OppUsage},{item.LocationQty},{item.LocationUsage},{item.LocationQty},{item.SurgeonUsage},{item.Reduction}\r\n";
                 }
+                csvResponse += "\r\n";
 
-                return ResponseHelper.CsvResponse(result);
             }
+            if (format == "CSV")
+            {
 
+                return ResponseHelper.CsvResponse(csvResponse);
+            }
+            
             return Request.CreateResponse(HttpStatusCode.OK,
                 new
                 {
-                    Summary = analytics,                    
+                    Summary = analyticsSummary,                    
                 });
         }
 

@@ -67,6 +67,11 @@ namespace OpFlow.Data
         public int? LocationID { get; set; }
     }
 
+    public class InternalTrayCommunicationInsertPost : TrayCommunicationHistoryInsertPost
+    {
+        public int LocationID { get; set; }
+    }
+
     public class SpecialtyMasterPost
     {
         public string SpecialtyName { get; set; }

@@ -886,18 +886,22 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<OpFlowProcedureProfileSummary> GetProcedureProfileSummaryReportData(int procedureProfileId, 
-            int? specialtyId, List<int> procedureId, int? surgeonId, int? metricId, int? trayTypeId, int? locationId)
+            List<int> specialtyId, List<int> procedureId, List<int> surgeonId, List<int> metricId, List<int> trayTypeId, int? locationId)
         {
+            var specialtyXml = GetIdentitySummary(specialtyId);
             var procedureXml = GetIdentitySummary(procedureId);
+            var metricXml = GetIdentitySummary(metricId);
+            var trayTypeXml = GetIdentitySummary(trayTypeId);
+
+            surgeonId = surgeonId ?? new List<int>();
 
             var parameters = new[]
             {
                 new SqlParameter("procedure_profile_id", procedureProfileId),
-                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureXml ?? (object)DBNull.Value),
-                new SqlParameter("surgeon_id", surgeonId ?? (object)DBNull.Value),
-                new SqlParameter("metric_id", metricId ?? (object)DBNull.Value),
-                new SqlParameter("tray_type_id", trayTypeId ?? (object)DBNull.Value),
+                new SqlParameter("metric_id", metricXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_type_id", trayTypeXml ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId ?? (object)DBNull.Value)
             };
             var summaryData = await ExecuteCommandAsync("GetAnalyticsProcedureProfileSummary", parameters);
@@ -932,12 +936,12 @@ namespace OpFlow.Service.DataAccess
                 summary.OPPQty = item.Max(i => i.OPPQty);
                 summary.LocationQty = item.Max(i => i.LocationQty);
 
-                if (surgeonId.HasValue) summary.SurgeonQty = summary.LocationQty;
-                
                 var oppUsages = item;
                 var locationUsages = item.Where(i => i.LocationID == locationId);
-                var surgeonUsages = item.Where(i => i.SurgeonID == surgeonId);
+                var surgeonUsages = item.Where(i => surgeonId.Contains(i.SurgeonID));
 
+                summary.SurgeonQty = surgeonUsages.Any() ? surgeonUsages.Max(i => i.LocationQty) : 0;
+                
                 if (oppUsages.Sum(o => o.SurgeonCount) > 0)
                     summary.OppUsage = oppUsages.Sum(o => (decimal)o.SurgeonUsage) / oppUsages.Sum(o => (decimal)o.SurgeonCount);
                 if (locationUsages.Sum(o => o.SurgeonCount) > 0)
@@ -1690,29 +1694,6 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<InternalTrayProposalHistory>> UpdateInternalProposedTrayCommunicationHistory(
-            int? locationId, int? phaseId, List<int> trayProposalIds,
-            List<int> specialtyIds, List<int> userIds)
-        {
-            var trayProposals = GetIdentitySummary(trayProposalIds);
-            var specialties = GetIdentitySummary(specialtyIds);
-            var users = GetIdentitySummary(userIds);
-
-            var parameters = new[]
-            {
-                new SqlParameter("location_Id", locationId ?? (object)DBNull.Value),
-                new SqlParameter("phase_id", phaseId ?? (object)DBNull.Value),
-                new SqlParameter("tray_proposal_id", trayProposals ?? (object)DBNull.Value),
-                new SqlParameter("specialty_id", specialties ?? (object)DBNull.Value),
-                new SqlParameter("user_id", users ?? (object)DBNull.Value),
-            };
-            var dsSchedules = await ExecuteCommandAsync("UpdateProposedTrayCommunicationHistoryInternal", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<InternalTrayProposalHistory>();
-
-            return result;
-        }
-
         public async Task<List<TrayProposalHistory>> GetProposedTrayCommunicationHistory(int? phaseId, List<int> trayProposalIds, 
             List<int> specialtyIds, List<int> userIds, int locationId)
         {
@@ -1736,13 +1717,14 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<int> InsertProposedTrayCommunicationHistory(int phaseId, string activity, 
-            int trayProposalId, int audienceUserId, int? communicationMethodId, int locationId)
+            int trayProposalId, DateTime sentDate, int audienceUserId, int? communicationMethodId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("phase_id", phaseId),
                 new SqlParameter("activity", activity ?? (object)DBNull.Value),
                 new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("sent_date", sentDate),
                 new SqlParameter("audience_user_id", audienceUserId),
                 new SqlParameter("communication_method_id", communicationMethodId ?? (object) DBNull.Value),
                 new SqlParameter("location_id", locationId)
@@ -1752,12 +1734,9 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateProposedTrayCommunicationHistory(int historyId, string strSentDate, string comments,
+        public async Task<int> UpdateProposedTrayCommunicationHistory(int historyId, DateTime? sentDate, string comments,
             int locationId)
         {
-            DateTime? sentDate = null;
-            if (DateTime.TryParse(strSentDate, out var date)) sentDate = date;
-
             var parameters = new[]
             {
                 new SqlParameter("history_id", historyId),

@@ -218,7 +218,11 @@ namespace OpFlow.Service.Controllers
             if (user.RoleType != "Internal")
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
-            var communication = await sqlHelper.UpdateProposedTrayCommunicationHistory(historyId, post.SentDate, post.Comments,
+            var sentDate = DateTime.Today;
+            if (DateTime.TryParse(post.SentDate, out var tmpSentDate))
+                sentDate = tmpSentDate;
+
+            var communication = await sqlHelper.UpdateProposedTrayCommunicationHistory(historyId, sentDate, post.Comments,
                 locationId);
 
             return Request.CreateResponse(HttpStatusCode.OK);
@@ -281,11 +285,11 @@ namespace OpFlow.Service.Controllers
             });
         }
 
-        [SwaggerOperation("UpdateCommunicationHistory")]
+        [SwaggerOperation("InsertCommunicationHistory")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InternalTrayProposalHistory>))]
         [Route("communicationHistory")]
         [HttpPost]
-        public async Task<HttpResponseMessage> UpdateCommunicationHistory([FromBody] InternalTrayCommunicationHistoryPost post)
+        public async Task<HttpResponseMessage> InsertCommunicationHistory([FromBody] InternalTrayCommunicationInsertPost post)
         {
             var user = await CacheUtil.GetUserSecurity();
 
@@ -294,9 +298,12 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
 
-            var communication = await sqlHelper.UpdateInternalProposedTrayCommunicationHistory(
-                post.LocationID, post.PhaseID,
-                post.TrayProposalIds, post.SpecialtyIds, post.UserIds);
+            var sentDate = DateTime.Today;
+            if (DateTime.TryParse(post.SentDate, out var tmpSentDate))
+                sentDate = tmpSentDate;
+
+            var communication = await sqlHelper.InsertProposedTrayCommunicationHistory(
+                post.Phase, post.Activity, post.Tray, sentDate, post.Audience, post.Method, post.LocationID);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {

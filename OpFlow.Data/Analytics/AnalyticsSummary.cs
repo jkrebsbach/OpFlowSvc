@@ -149,6 +149,7 @@ namespace OpFlow.Data
 
     public class OpFlowProcedureProfileSummary
     {
+        public string ProcedureProfileName { get; set; }
         public int TotalSystems { get; set; }
         public int SurgeryCounts { get; set; }
         public int SurgeryAudits { get; set; }
@@ -191,11 +192,11 @@ namespace OpFlow.Data
         public string ItemName { get; set; }
         public int OPPQty { get; set; }
         public int LocationQty { get; set; }
-        public int? SurgeonQty { get; set; }
+        public int SurgeonQty { get; set; }
         public int SurgeonCount { get; set; }
-        public decimal? OppUsage { get; set; }
-        public decimal? LocationUsage { get; set; }
-        public decimal? SurgeonUsage { get; set; }
+        public decimal OppUsage { get; set; }
+        public decimal LocationUsage { get; set; }
+        public decimal SurgeonUsage { get; set; }
 
         public string Reduction => (LocationUsage > OppUsage) ? "Y" : "";
     }
@@ -239,12 +240,12 @@ namespace OpFlow.Data
 
     public class ProcedureProfileReportPost: ReportRequest
     {
-        public int? TrayTypeID { get; set; }
-        public int ProcedureProfileID { get; set; }
-        public int? SpecialtyID { get; set; }
+        public List<int> TrayTypeID { get; set; }
+        public List<int> ProcedureProfileID { get; set; }
+        public List<int> SpecialtyID { get; set; }
         public List<int> ProcedureID { get; set; }
-        public int? SurgeonID { get; set; }
-        public int? MetricID { get; set; }
+        public List<int> SurgeonID { get; set; }
+        public List<int> MetricID { get; set; }
         public string Order { get; set; }
     }
 

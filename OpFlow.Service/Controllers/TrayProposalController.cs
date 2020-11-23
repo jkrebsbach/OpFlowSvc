@@ -1123,8 +1123,12 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
+            var sentDate = DateTime.Today;
+            if (DateTime.TryParse(post.SentDate, out var tmpSentDate))
+                sentDate = tmpSentDate;
+
             var communication = await sqlHelper.InsertProposedTrayCommunicationHistory(post.Phase, post.Activity, 
-                post.Tray, post.Audience, post.Method, user.SelectedLocation);
+                post.Tray, sentDate, post.Audience, post.Method, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK);
         }

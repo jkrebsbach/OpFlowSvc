@@ -1004,6 +1004,7 @@ namespace OpFlow.Data
     public class TrayCommunicationHistoryPost
     {
         public int? PhaseID { get; set; }
+        public string SentDate { get; set; }
         public List<int> TrayProposalIds { get; set; }
         public List<int> SpecialtyIds { get; set; }
         public List<int> UserIds { get; set; }
@@ -1012,6 +1013,7 @@ namespace OpFlow.Data
     {
         public int Phase { get; set; }
         public int Tray { get; set; }
+        public string SentDate { get; set; }
         public string Activity { get; set; }
         public int Audience { get; set; }
         public int Method { get; set; }
