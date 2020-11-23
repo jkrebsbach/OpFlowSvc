@@ -344,12 +344,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("tray/{itemId}")]
         [HttpPost]
-        public async Task<HttpResponseMessage> PostTray(int itemId, string vendorId, string productNbr, int? trayTypeId)
+        public async Task<HttpResponseMessage> PostTray(int itemId, string vendorId, int trayInstances, string productNbr, int? trayTypeId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateTray(itemId, vendorId, productNbr, trayTypeId, user.SelectedLocation);
+            var result = await sqlHelper.UpdateTray(itemId, vendorId, trayInstances, productNbr, trayTypeId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

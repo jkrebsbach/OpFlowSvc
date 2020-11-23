@@ -3616,12 +3616,13 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateTray(int itemId, string vendorId, string productNbr, int? trayTypeId, int locationId)
+        public async Task<int> UpdateTray(int itemId, string vendorId, int trayInstances, string productNbr, int? trayTypeId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("item_id", itemId),
                 new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
+                new SqlParameter("tray_instances", trayInstances),
                 new SqlParameter("product_nbr", productNbr ?? (object)DBNull.Value),
                 new SqlParameter("tray_type_id", trayTypeId ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
