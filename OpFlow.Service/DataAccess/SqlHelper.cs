@@ -4061,6 +4061,39 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<CardCategoryDetail>> GetCardCategoryDetails(
+            List<int> cardCategoryId, List<int> specialtyId, List<int> cardId, List<int> surgeonId,
+            int locationId)
+        {
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var cardXml = GetIdentitySummary(cardId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId),
+            };
+
+            var dsSchedules = await ExecuteCommandAsync("GetCardCategoryDetails", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<CardCategoryDetail>();
+            var specialties = dsSchedules.Tables[1].DataTableToList<CardCategorySpecialty>();
+            var cards = dsSchedules.Tables[2].DataTableToList<CardCategoryCard>();
+
+            foreach (var cardCategory in result)
+            {
+                cardCategory.Specialties = specialties.Where(s => s.CardCategoryID == cardCategory.CardCategoryID).ToList();
+                cardCategory.Cards = cards.Where(s => s.CardCategoryID == cardCategory.CardCategoryID).ToList();
+            }
+
+            return result;
+        }
+
         public async Task<int> InsertProcedureProfileStep(int procedureProfileId, int stepId, int duration, int providerId, int locationId)
         {
             var parameters = new[]
@@ -4614,12 +4647,24 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> DeleteCardCategoryXRef(int cardCategoryXRefId, int providerId, int locationId)
+        public async Task<int> InsertCardCategoryXRef(int cardCategoryId, int cardId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("card_category_id", cardCategoryId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("InsertCardCategoryXRef", parameters);
+
+            return result;
+        }
+
+        public async Task<int> DeleteCardCategoryXRef(int cardCategoryXRefId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("card_category_xref_id", cardCategoryXRefId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
             var result = await ExecuteNonQueryAsync("DeleteCardCategoryXRef", parameters);

@@ -156,6 +156,21 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("InsertCardCategoryXRef")]
+        [Route("cardCategories")]
+        [HttpPost]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        public async Task<HttpResponseMessage> InsertCardCategoryXRef(int cardCategoryId, int cardId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.InsertCardCategoryXRef(cardCategoryId, cardId, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("DeleteCardCategoryXRef")]
         [Route("cardCategories/{cardCategoryXrefId}")]
         [HttpDelete]
@@ -165,7 +180,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.DeleteCardCategoryXRef(cardCategoryXrefId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.DeleteCardCategoryXRef(cardCategoryXrefId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

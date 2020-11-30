@@ -163,12 +163,52 @@ namespace OpFlow.Service.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
         public async Task<HttpResponseMessage> GetCardCategories()
         {
-            var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.GetCardCategories();
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetCardCategoryDetails")]
+        [Route("cardCategoryDetails")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategoryDetail>))]
+        public async Task<HttpResponseMessage> GetCardCategoryDetails()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var cardCategories = await sqlHelper.GetCardCategoryDetails(
+                null, null, null, null,
+                user.SelectedLocation);
+            var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
+            var cards = await sqlHelper.GetCards(user.SelectedLocation);
+            var surgeons = await sqlHelper.GetSurgeons(null, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new {
+                Specialties = specialties,
+                Cards = cards,
+                Surgeons = surgeons,
+                CardCategories = cardCategories
+            });
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("FilterCardCategoryDetails")]
+        [Route("cardCategoryDetails")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategoryDetail>))]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostCardCategoryDetails([FromBody] CardCategoryDetailPost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var cardCategories = await sqlHelper.GetCardCategoryDetails(
+                request.CardCategoryID, request.SpecialtyID, request.CardID, request.SurgeonID,
+                user.SelectedLocation);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, cardCategories);
         }
 
         // GET api/values/5

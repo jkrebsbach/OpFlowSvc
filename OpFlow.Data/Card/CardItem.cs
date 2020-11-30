@@ -161,6 +161,31 @@ namespace OpFlow.Data
         public string CategoryName { get; set; }
     }
 
+    public class CardCategoryDetail : CardCategory
+    {
+        public List<CardCategorySpecialty> Specialties { get; set; }
+        public List<CardCategoryCard> Cards { get; set; }
+    }
+
+    public class CardCategorySpecialty : Specialty
+    {
+        public int CardCategoryID { get; set; }
+    }
+
+    public class CardCategoryCard : Card
+    {
+        public int CardCategoryXRefID { get; set; }
+        public string SurgeonName { get; set; }
+    }
+
+    public class CardCategoryDetailPost
+    {
+        public List<int> CardCategoryID { get; set; }
+        public List<int> SpecialtyID { get; set; }
+        public List<int> CardID { get; set; }
+        public List<int> SurgeonID { get; set; }
+    }
+
     public class ProcedureProfile
     {
         public int ProcedureProfileID { get; set; }
