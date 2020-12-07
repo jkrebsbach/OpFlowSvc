@@ -13,18 +13,18 @@
     <DataSet Name="ProcedureMix">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>select 'ABC' ProcedureGroupName,
+        <CommandText>select 'ABC' ProcedureProfileName,
 23 CardCount
 
 UNION
 
-select 'XYZ' ProcedureGroupName,
+select 'XYZ' ProcedureProfileName,
 12 CardCount</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
-        <Field Name="ProcedureGroupName">
-          <DataField>ProcedureGroupName</DataField>
+        <Field Name="ProcedureProfileName">
+          <DataField>ProcedureProfileName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="CardCount">
@@ -44,15 +44,15 @@ select 'XYZ' ProcedureGroupName,
                 <ChartMember>
                   <Group Name="Chart1_CategoryGroup">
                     <GroupExpressions>
-                      <GroupExpression>=Fields!ProcedureGroupName.Value</GroupExpression>
+                      <GroupExpression>=Fields!ProcedureProfileName.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
                   <SortExpressions>
                     <SortExpression>
-                      <Value>=Fields!ProcedureGroupName.Value</Value>
+                      <Value>=Fields!ProcedureProfileName.Value</Value>
                     </SortExpression>
                   </SortExpressions>
-                  <Label>=Fields!ProcedureGroupName.Value</Label>
+                  <Label>=Fields!ProcedureProfileName.Value</Label>
                 </ChartMember>
               </ChartMembers>
             </ChartCategoryHierarchy>
@@ -73,6 +73,8 @@ select 'XYZ' ProcedureGroupName,
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
