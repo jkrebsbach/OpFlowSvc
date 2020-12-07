@@ -1843,6 +1843,46 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("ProcedureMixReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("procedureMix")]
+        [Route("procedureMix/{format}")]
+        public async Task<HttpResponseMessage> ProcedureMixReport([FromBody] CountSampleDispersionReportPost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+            var analytics = await sqlHelper.GetAnalyticsProcedureMix(post.SpecialtyId, post.SurgeonId, post.TrayId, post.ItemId,
+                post.CardCategoryId, user.SelectedLocation);
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["ProcedureMix"] = analytics.Tables[0]
+            };
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport($"ProcedureMix{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
+        }
+
+        // GET api/values/5
         [SwaggerOperation("SupplyCountReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
         [HttpPut]

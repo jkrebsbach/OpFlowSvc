@@ -458,6 +458,12 @@
     <Content Include="ABCpdf.chm" />
     <None Include="Properties\PublishProfiles\Production Site.pubxml" />
     <None Include="Properties\PublishProfiles\Test Site.pubxml" />
+    <Content Include="Resources\ProcedureMix.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ProcedureMixExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />

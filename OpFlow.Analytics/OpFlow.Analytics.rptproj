@@ -77,6 +77,8 @@
     <Report Include="logo.png">
       <MimeType>image/x-png</MimeType>
     </Report>
+    <Report Include="ProcedureMix.rdl" />
+    <Report Include="ProcedureMixExport.rdl" />
     <Report Include="ProcedureProfile.rdl" />
     <Report Include="ProfileAlignment.rdl" />
     <Report Include="SalesReport.rdl" />

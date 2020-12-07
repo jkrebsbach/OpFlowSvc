@@ -1165,6 +1165,28 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
+        public async Task<DataSet> GetAnalyticsProcedureMix(List<int> specialtyId, List<int> surgeonId, List<int> cardId, List<int> cardCategoryId,
+            string group, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+            var cardXml = GetIdentitySummary(cardId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("group", group ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsProcedureMix", parameters);
+
+            return dsSchedules;
+        }
+
         public async Task<DataSet> GetAnalyticsCountDistributionData(List<int> specialtyId, List<int> surgeonId, List<int> cardCategoryId, 
             List<int> itemCategoryId, List<int> itemId, int? minCost, int locationId)
         {
@@ -1238,6 +1260,29 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsCountSampleDispersion", parameters);
+
+            return dsSchedules;
+        }
+
+        public async Task<DataSet> GetAnalyticsProcedureMix(List<int> specialtyId, List<int> surgeonId, List<int> trayId, List<int> itemId,
+            List<int> cardCategoryId, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+            var trayXml = GetIdentitySummary(trayId);
+            var itemXml = GetIdentitySummary(itemId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("item_id", itemXml ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetAnalyticsProcedureMix", parameters);
 
             return dsSchedules;
         }
