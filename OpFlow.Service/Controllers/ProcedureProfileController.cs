@@ -239,6 +239,25 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("DeleteProcedureProfile")]
+        [Route("procedureProfile")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteProcedureProfile(int procedureProfileId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+        
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.DeleteProcedureProfile(procedureProfileId, user.ProviderID, user.LocationID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetProcedureProfileItemCsv")]
         [Route("csvItem/{procedureProfileId}")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]

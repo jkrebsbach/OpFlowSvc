@@ -171,6 +171,24 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("PostCardCategory")]
+        [Route("cardCategory")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostCardCategory(string cardCategoryName)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var result = await sqlHelper.ParseCardCategory(cardCategoryName, 1, 1);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetCardCategoryDetails")]
         [Route("cardCategoryDetails")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategoryDetail>))]

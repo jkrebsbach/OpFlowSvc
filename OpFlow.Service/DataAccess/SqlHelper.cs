@@ -4551,6 +4551,19 @@ namespace OpFlow.Service.DataAccess
             return results.First().Identifier;
         }
 
+        public async Task<int> DeleteProcedureProfile(int procedureProfileId, int providerId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("provider_id", providerId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("DeleteProcedureProfile", parameters);
+
+            return result;
+        }
+
         public async Task<int> UpdateProcedureProfileCategory(int procedureProfileId, string profileName, int? categoryId, int? ownerId,
             int providerId, int locationId)
         {

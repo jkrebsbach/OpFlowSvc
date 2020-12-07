@@ -200,7 +200,7 @@ namespace OpFlow.Service.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
-                ReadOnly = (user.Vendor && proposedTray?.VendorID != user.ProviderID),
+                ReadOnly = (user.Vendor && proposedTray?.VendorID != user.ProviderID && user.RoleType != "Internal"),
                 ProposedTray = proposedTray,
                 Instruments = instruments,
                 ApprovalDocuments = documents,
