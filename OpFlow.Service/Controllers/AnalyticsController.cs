@@ -46,7 +46,7 @@ namespace OpFlow.Service.Controllers
 
             var procedureProfiles = await sqlHelper.GetProcedureProfiles();
             var trayTypes = await sqlHelper.GetTrayTypes();
-            var metrics = await sqlHelper.GetProcedureProfileMetrics("VND", user.LocationID);
+            var metrics = await sqlHelper.GetProcedureProfileMetrics(null, user.LocationID);
 
             var cardCategoryXref = await sqlHelper.GetSpecialtyProcedureGroup(user.SelectedLocation);
 

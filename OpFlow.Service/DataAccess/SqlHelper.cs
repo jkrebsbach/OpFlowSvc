@@ -683,7 +683,7 @@ namespace OpFlow.Service.DataAccess
         {
             var parameters = new[]
             {
-                new SqlParameter("metric_type", metricType),
+                new SqlParameter("metric_type", metricType ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteCommandAsync("GetProcedureProfileMetrics", parameters);
