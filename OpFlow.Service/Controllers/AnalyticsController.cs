@@ -243,7 +243,7 @@ namespace OpFlow.Service.Controllers
             var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, 
                 null, null, null, null, post.TrayId, null, "t", user.SelectedLocation);
             var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, 
-                null, post.TrayId, post.TrayTypeId, post.VendorTray, null, null, null, user.SelectedLocation);
+                null, post.TrayId, post.TrayTypeId, post.VendorTray, null, null, null, null, user.SelectedLocation);
 
             var baseParameters = new[]
             {
@@ -419,7 +419,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, post.TrayTypeID, post.VendorTray,
-                post.CardCategoryID, post.CardID, post.Instruments, post.ShowMax, post.Label, user.SelectedLocation);
+                post.CardCategoryID, post.CardID, post.MetricID, post.Instruments, post.ShowMax, post.Label, user.SelectedLocation);
 
             var summary = SummarizeConcordanceReport(analytics.Tables[0]);
             
@@ -652,7 +652,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetVendorTrayConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID,
-                post.CardCategoryID, post.CardID, post.Instruments, post.CaseProfileId, post.QuestionId, post.AnswerId, user.SelectedLocation,
+                post.CardCategoryID, post.CardID, post.Instruments, post.CaseProfileId, post.QuestionId, post.AnswerId, post.MetricID, user.SelectedLocation,
                 post.Group);
 
             var concordance = analytics.Tables[0].DefaultView;
@@ -1486,7 +1486,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.TrayTypeId, post.VendorTray,
-                post.CardCategoryId, post.CardId, post.MinSize, user.SelectedLocation);
+                post.CardCategoryId, post.CardId, post.MetricId, post.MinSize, user.SelectedLocation);
 
             var rationalization = new DataView(analytics.Tables[0]);
             
@@ -1553,7 +1553,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsVendorTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.CardCategoryId,
-                post.MinSize, post.StartDate, post.EndDate, post.CaseProfileId, post.QuestionId, post.AnswerId, user.SelectedLocation);
+                post.MinSize, post.StartDate, post.EndDate, post.CaseProfileId, post.QuestionId, post.AnswerId, post.MetricId, user.SelectedLocation);
 
             var rationalization = new DataView(analytics.Tables[0]);
 
@@ -1663,7 +1663,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, post.SurgeonId, post.TrayId, post.TrayTypeId, post.VendorTray, post.CardCategoryId, post.CardId,
-                post.MinSize, user.SelectedLocation);
+                post.MetricId, post.MinSize, user.SelectedLocation);
             /*
             switch (post.Order)
             {

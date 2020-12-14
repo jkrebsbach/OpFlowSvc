@@ -362,6 +362,28 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
+        private string GetMetricFilterSummary(List<string> metricFilters)
+        {
+            if (metricFilters == null || !metricFilters.Any() || (metricFilters.Count == 1 && metricFilters[0] == string.Empty))
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var metricFilter in metricFilters.Distinct())
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                var questionAnswer = metricFilter.Split(':');
+
+                AddColumn(doc, row, questionAnswer[0]);
+                AddColumn(doc, row, questionAnswer[1]);
+            }
+
+            return table.OuterXml;
+        }
+
         public async Task<DataSet> GetAnalyticsSalesToolSummary(string systemName, string hospitalName, string city, string state,
             string contactName, string salesperson, int? caseCount, int? spdLaborRate, int? contractDuration, int? annualMaintenance,
             int? depreciation, int? trayCount, int? instrumentAvg,
@@ -461,13 +483,14 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetAnalyticsTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId, 
-            int? trayTypeId, string vendorTray, List<int> cardCategoryId, List<int> cardId, int? minSize, int locationId)
+            int? trayTypeId, string vendorTray, List<int> cardCategoryId, List<int> cardId, List<string> metricId, int? minSize, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
             var trayXml = GetIdentitySummary(trayId);
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
             var cardXml = GetIdentitySummary(cardId);
+            var metricXml = GetMetricFilterSummary(metricId);
 
             var parameters = new[]
             {
@@ -478,6 +501,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("vendor_tray", vendorTray ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("metric_id", metricXml ?? (object)DBNull.Value),
                 new SqlParameter("min_size", minSize ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
@@ -501,7 +525,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetAnalyticsVendorTrayRationalizationData(List<int> specialtyId, List<int> surgeonId, List<int> trayId, List<int> cardCategoryId,
-            int? minSize, DateTime? startDate, DateTime? endDate, int? caseProfileId, List<int> questionId, List<int> answerId, int locationId)
+            int? minSize, DateTime? startDate, DateTime? endDate, int? caseProfileId, List<int> questionId, List<int> answerId, List<string> metricId, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
@@ -509,6 +533,7 @@ namespace OpFlow.Service.DataAccess
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
             var questionXml = GetIdentitySummary(questionId);
             var answerXml = GetIdentitySummary(answerId);
+            var metricXml = GetMetricFilterSummary(metricId);
 
             var parameters = new[]
             {
@@ -522,6 +547,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("case_profile_id", caseProfileId ?? (object)DBNull.Value),
                 new SqlParameter("question_id", questionXml ?? (object)DBNull.Value),
                 new SqlParameter("answer_id", answerXml ?? (object)DBNull.Value),
+                new SqlParameter("metric_id", metricXml ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsVendorTrayRationalization", parameters);
@@ -596,7 +622,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
-            List<int> procedureId, List<int> trayId, int? trayTypeId, string vendorTray, List<int> cardCategoryId, List<int> cardId, 
+            List<int> procedureId, List<int> trayId, int? trayTypeId, string vendorTray, List<int> cardCategoryId, List<int> cardId, List<string> metricId,
             string instruments, bool showMax, string label,  int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
@@ -605,6 +631,7 @@ namespace OpFlow.Service.DataAccess
             var trayXml = GetIdentitySummary(trayId);
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
             var cardXml = GetIdentitySummary(cardId);
+            var metricXml = GetMetricFilterSummary(metricId);
 
             var parameters = new[]
             {
@@ -616,6 +643,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("vendor_tray", vendorTray ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("metric_id", metricXml ?? (object)DBNull.Value),
                 new SqlParameter("instruments", instruments),
                 new SqlParameter("show_max", showMax),
                 new SqlParameter("label", label),
@@ -782,7 +810,7 @@ namespace OpFlow.Service.DataAccess
 
         public async Task<DataSet> GetVendorTrayConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
             List<int> procedureId, List<int> trayId, List<int> cardCategoryId, List<int> cardId, string instruments, 
-            int? caseProfileId, List<int> questionId, List<int> answerId,
+            int? caseProfileId, List<int> questionId, List<int> answerId, List<string> metricId,
             int locationId, string group)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
@@ -791,6 +819,7 @@ namespace OpFlow.Service.DataAccess
             var trayXml = GetIdentitySummary(trayId);
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
             var cardXml = GetIdentitySummary(cardId);
+            var metricXml = GetMetricFilterSummary(metricId);
             var questionXml = GetIdentitySummary(questionId);
             var answerXml = GetIdentitySummary(answerId);
 
@@ -806,6 +835,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("case_profile_id", caseProfileId ?? (object)DBNull.Value),
                 new SqlParameter("question_id", questionXml ?? (object)DBNull.Value),
                 new SqlParameter("answer_id", answerXml ?? (object)DBNull.Value),
+                new SqlParameter("metric_id", metricXml ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("group", group ?? (object)DBNull.Value)
             };

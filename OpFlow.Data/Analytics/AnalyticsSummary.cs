@@ -262,6 +262,7 @@ namespace OpFlow.Data
         public List<int> ItemID { get; set; }
         public List<int> InstrumentID { get; set; }
         public List<int> TrayPhaseID { get; set; }
+        public List<string> MetricID { get; set; }
         public List<string> Cpt { get; set; }
         public List<string> TrayStatus { get; set; }
         public string Instruments { get; set; }
@@ -300,6 +301,7 @@ namespace OpFlow.Data
         public int? CaseProfileId { get; set; }
         public List<int> QuestionId { get; set; }
         public List<int> AnswerId { get; set; }
+        public List<string> MetricId { get; set; }
         public string VendorTray { get; set; }
         public int? TrayTypeId { get; set; }
         public string Order { get; set; }
