@@ -80,6 +80,8 @@
     <Report Include="ProcedureMix.rdl" />
     <Report Include="ProcedureMixExport.rdl" />
     <Report Include="ProcedureProfile.rdl" />
+    <Report Include="ProcedureRedundancy.rdl" />
+    <Report Include="ProcedureRedundancyExport.rdl" />
     <Report Include="ProfileAlignment.rdl" />
     <Report Include="SalesReport.rdl" />
     <Report Include="ServiceLineReview.rdl" />

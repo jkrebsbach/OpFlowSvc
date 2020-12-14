@@ -1017,6 +1017,29 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<DataSet> GetProcedureRedundancyReport(List<int> specialtyId, List<int> surgeonId, List<int> cardId, List<int> procedureId,
+            int? minQty, int? redundancy, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+            var cardXml = GetIdentitySummary(cardId);
+            var procedureXml = GetIdentitySummary(procedureId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("procedure_id", procedureXml ?? (object)DBNull.Value),
+                new SqlParameter("min_quantity", minQty ?? (object)DBNull.Value),
+                new SqlParameter("redundancy", redundancy ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("GetAnalyticsProcedureRedundancy", parameters);
+
+            return result;
+        }
+
         public async Task<DataSet> GetProcedureProfileReport(int procedureProfileId, int providerId, int locationId)
         {
             var parameters = new[]

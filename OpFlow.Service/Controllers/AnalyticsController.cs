@@ -1113,6 +1113,56 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("ProcedureRedundancyReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("procedureRedundancy")]
+        [Route("procedureRedundancy/{format}")]
+        public async Task<HttpResponseMessage> ProcedureRedundancyReport([FromBody] InstrumentUsagePost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+            if (post.SpecialtyID == null &&
+                post.SurgeonID == null &&
+                post.CardID == null &&
+                post.ProcedureID == null &&
+                post.ItemID == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
+            }
+
+            var analytics = await sqlHelper.GetProcedureRedundancyReport(post.SpecialtyID, post.SurgeonID, post.CardID, post.ProcedureID, post.MinQty, post.Redundancy, user.SelectedLocation);
+
+            var procedureRedundancy = analytics.Tables[0].DefaultView;
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["ProcedureRedundancy"] = procedureRedundancy.ToTable()
+            };
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport($"ProcedureRedundancy{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
+        }
+
+        // GET api/values/5
         [SwaggerOperation("ExcessInventoryReport")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
         [HttpPut]
