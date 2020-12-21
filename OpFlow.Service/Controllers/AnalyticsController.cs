@@ -1947,7 +1947,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsTrayProcedureMix(post.SpecialtyId, post.SurgeonId, post.TrayId, 
-                post.CardCategoryId, post.MinTray, post.TrayTypeID, post.VendorTray, user.SelectedLocation);
+                post.CardCategoryId, post.MetricId, post.MinTray, post.TrayTypeID, post.VendorTray, user.SelectedLocation);
 
             var datasets = new Dictionary<string, DataTable>
             {

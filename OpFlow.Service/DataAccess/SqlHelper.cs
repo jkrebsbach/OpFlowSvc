@@ -1341,12 +1341,13 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetAnalyticsTrayProcedureMix(List<int> specialtyId, List<int> surgeonId, List<int> trayId, 
-            List<int> cardCategoryId, int? minTray, int? trayTypeId, string vendorTray, int locationId)
+            List<int> cardCategoryId, List<int> metricId, int? minTray, int? trayTypeId, string vendorTray, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
             var trayXml = GetIdentitySummary(trayId);
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+            var metricXml = GetIdentitySummary(metricId);
 
             var parameters = new[]
             {
@@ -1354,6 +1355,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("metric_id", metricXml ?? (object)DBNull.Value),
                 new SqlParameter("min_tray", minTray ?? (object)DBNull.Value),
                 new SqlParameter("tray_type_id", trayTypeId ?? (object)DBNull.Value),
                 new SqlParameter("vendor_tray", vendorTray ?? (object)DBNull.Value),

@@ -358,6 +358,7 @@ namespace OpFlow.Data
         public List<int> TrayId { get; set; }
         public List<int> ItemId { get; set; }
         public List<int> CardCategoryId { get; set; }
+        public List<int> MetricId { get; set; }
         public int? MinTray { get; set; }
         public int? TrayTypeID { get; set; }
         public DateTime? StartDate { get; set; }
