@@ -1946,8 +1946,8 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            var analytics = await sqlHelper.GetAnalyticsTrayProcedureMix(post.SpecialtyId, post.SurgeonId, post.TrayId, post.ItemId,
-                post.CardCategoryId, user.SelectedLocation);
+            var analytics = await sqlHelper.GetAnalyticsTrayProcedureMix(post.SpecialtyId, post.SurgeonId, post.TrayId, 
+                post.CardCategoryId, post.MinTray, post.TrayTypeID, post.VendorTray, user.SelectedLocation);
 
             var datasets = new Dictionary<string, DataTable>
             {

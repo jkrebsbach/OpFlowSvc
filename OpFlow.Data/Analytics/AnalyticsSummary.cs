@@ -358,8 +358,11 @@ namespace OpFlow.Data
         public List<int> TrayId { get; set; }
         public List<int> ItemId { get; set; }
         public List<int> CardCategoryId { get; set; }
+        public int? MinTray { get; set; }
+        public int? TrayTypeID { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public string VendorTray { get; set; }
         public string Group { get; set; }
     }
     public class CountSampleDispersionReport

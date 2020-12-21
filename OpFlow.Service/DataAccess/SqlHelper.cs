@@ -1340,13 +1340,12 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
-        public async Task<DataSet> GetAnalyticsTrayProcedureMix(List<int> specialtyId, List<int> surgeonId, List<int> trayId, List<int> itemId,
-            List<int> cardCategoryId, int locationId)
+        public async Task<DataSet> GetAnalyticsTrayProcedureMix(List<int> specialtyId, List<int> surgeonId, List<int> trayId, 
+            List<int> cardCategoryId, int? minTray, int? trayTypeId, string vendorTray, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
             var trayXml = GetIdentitySummary(trayId);
-            var itemXml = GetIdentitySummary(itemId);
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
 
             var parameters = new[]
@@ -1354,8 +1353,10 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_id", trayXml ?? (object)DBNull.Value),
-                new SqlParameter("item_id", itemXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("min_tray", minTray ?? (object)DBNull.Value),
+                new SqlParameter("tray_type_id", trayTypeId ?? (object)DBNull.Value),
+                new SqlParameter("vendor_tray", vendorTray ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetAnalyticsTrayProcedureMix", parameters);
