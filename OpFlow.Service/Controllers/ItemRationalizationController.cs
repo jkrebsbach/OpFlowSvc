@@ -160,12 +160,12 @@ namespace OpFlow.Service.Controllers
         [Route("cardCategories")]
         [HttpPost]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
-        public async Task<HttpResponseMessage> InsertCardCategoryXRef(int cardCategoryId, int cardId)
+        public async Task<HttpResponseMessage> InsertCardCategoryXRef(int cardCategoryId, [FromBody] InsertCardCategoryCardPost request)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.InsertCardCategoryXRef(cardCategoryId, cardId, user.SelectedLocation);
+            var result = await sqlHelper.InsertCardCategoryXRef(cardCategoryId, request.CardId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }

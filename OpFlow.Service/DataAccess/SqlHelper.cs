@@ -4781,12 +4781,14 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> InsertCardCategoryXRef(int cardCategoryId, int cardId, int locationId)
+        public async Task<int> InsertCardCategoryXRef(int cardCategoryId, List<int> cardId, int locationId)
         {
+            var cardXml = GetIdentitySummary(cardId);
+
             var parameters = new[]
             {
                 new SqlParameter("card_category_id", cardCategoryId),
-                new SqlParameter("card_id", cardId),
+                new SqlParameter("card_id", cardXml),
                 new SqlParameter("location_id", locationId),
             };
             var result = await ExecuteNonQueryAsync("InsertCardCategoryXRef", parameters);

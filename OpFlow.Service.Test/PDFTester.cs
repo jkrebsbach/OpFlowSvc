@@ -26,32 +26,37 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestReadPDF()
         {
-            var path = @"F:\ColdStorage\Documents\OpFlow\drive-download-20201123T200330Z-001\";
+            var path = @"F:\ColdStorage\Downloads\drive-download-20201221T151800Z-001\";
 
-            var files = Directory.GetFiles(path);
-
-            var cardImport = new List<CardImport>();
-            foreach (var file in files)
+            var directories = Directory.GetDirectories(path);
+            foreach (var directory in directories)
             {
-                var cardData = ProcessFile(file);
-                cardImport.AddRange(cardData);       
+                var files = Directory.GetFiles(directory);
+
+                var cardImport = new List<CardImport>();
+                foreach (var file in files)
+                {
+                    var cardData = ProcessFile(file);
+                    cardImport.AddRange(cardData);
+                }
+
+                var outputData = "CardName,Manufacturer,Description,ProductNbr,Quantity\r\n";
+                foreach (var cardItem in cardImport)
+                {
+                    // double quote issue, quick hack
+                    if (cardItem.ProductNbr == string.Empty)
+                        cardItem.ProductNbr = " ";
+
+                    if (cardItem.Quantity == "")
+                        continue;
+
+                    outputData += $"\"{cardItem.CardName}\",\"{cardItem.Manufacturer} \",\"{cardItem.Description.Replace("\"", "\"\"")}\",\"{cardItem.ProductNbr}\",{cardItem.Quantity}\r\n";
+                }
+
+                var filename = $"{Path.GetFileName(directory)}_CardData.csv";
+                var outputFile = Path.Combine(path, filename);
+                File.WriteAllText(outputFile, outputData);
             }
-
-            var outputData = "CardName,Manufacturer,Description,ProductNbr,Quantity\r\n";
-            foreach (var cardItem in cardImport)
-            {
-                // double quote issue, quick hack
-                if (cardItem.ProductNbr == string.Empty)
-                    cardItem.ProductNbr = " ";
-
-                if (cardItem.Quantity == "")
-                    continue;
-
-                outputData += $"\"{cardItem.CardName}\",\"{cardItem.Manufacturer} \",\"{cardItem.Description.Replace("\"","\"\"")}\",\"{cardItem.ProductNbr}\",{cardItem.Quantity}\r\n";
-            }
-
-            var outputFile = Path.Combine(path, "CardData.csv");
-            File.WriteAllText(outputFile, outputData);
         }
 
         private List<CardImport> ProcessFile(string filePath)
@@ -98,7 +103,8 @@ namespace OpFlow.Service.Test
                                 var xLoc = graphic.Attribute("x").Value;
                                 var yLoc = graphic.Attribute("y").Value;
 
-                                if (xLoc == "216.687" && yLoc == "47.87")
+                                //if (xLoc == "208.436" && yLoc == "46.141")
+                                if (yLoc == "46.141")
                                 {
                                     cardNameDetail = graphic.Value;
                                     var cardNameRegex = Regex.Match(cardNameDetail, @"([A-Za-z\s]+) - 000");
@@ -106,25 +112,25 @@ namespace OpFlow.Service.Test
                                         cardNameDetail = cardNameRegex.Groups[1].Value;
                                 }
 
-                                if (xLoc == "36.75")
+                                if (xLoc == "36.915")
                                 {
                                     manufacturer += $"{manufacturerDelim}{graphic.Value}";
                                     manufacturerDelim = " ";
                                 }
 
-                                if (xLoc == "135.435")
+                                if (xLoc == "176.16")
                                 {
                                     description += $"{descriptionDelim}{graphic.Value}";
                                     descriptionDelim = " ";
                                 }
 
-                                if (xLoc == "76.215")
+                                if (xLoc == "74.19")
                                 {
                                     productNbr += $"{productNbrDelim}{graphic.Value}";
                                     productNbrDelim = " ";
                                 }
 
-                                if (xLoc == "444.99")
+                                if (xLoc == "481.83")
                                 {
                                     quantity = graphic.Value;
 

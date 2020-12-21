@@ -569,6 +569,11 @@ namespace OpFlow.Data
         public List<int> Cards { get; set; }
     }
 
+    public class InsertCardCategoryCardPost
+    {
+        public List<int> CardId { get; set; }
+    }
+
     public class CardSummary
     {
         public string ProcedureName { get; set; }
