@@ -126,6 +126,20 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetCardsPaged")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
+        [Route("cardsPaged")]
+        public async Task<HttpResponseMessage> GetCardsPaged(string term = null, int page = 1)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var instruments = await sqlHelper.GetCardsPaged(term, page, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, instruments);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("UsedCardList")]
         [Route("listUsed")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
@@ -201,12 +215,10 @@ namespace OpFlow.Service.Controllers
                 null, null, null, null,
                 user.SelectedLocation);
             var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
-            var cards = await sqlHelper.GetCards(user.SelectedLocation);
             var surgeons = await sqlHelper.GetSurgeons(null, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, new {
                 Specialties = specialties,
-                Cards = cards,
                 Surgeons = surgeons,
                 CardCategories = cardCategories
             });

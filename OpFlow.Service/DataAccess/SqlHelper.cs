@@ -4093,6 +4093,31 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<PaginationController> GetCardsPaged(string searchTerm, int page, int locationId)
+        {
+            var pageSize = 50;
+            var parameters = new[]
+            {
+                new SqlParameter("search_term", searchTerm ?? (object)DBNull.Value),
+                new SqlParameter("page", page),
+                new SqlParameter("page_size", pageSize),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetCardsPaged", parameters);
+
+            var cards = dsSchedules.Tables[0].DataTableToList<Card>();
+            var totalCount = dsSchedules.Tables[1].DataTableToList<RowCountEntity>().First().TotalCount;
+
+            var results = cards.Select(i => new KeyPair() { id = i.CardID, text = i.CardDescription }).ToList();
+            var skipped = (page - 1) * pageSize;
+
+            return new PaginationController()
+            {
+                pagination = new PaginationResult(cards.Count, skipped, totalCount),
+                results = results
+            };
+        }
+
         public async Task<List<CardCategoryXRef>> GetCardCategoryXRef(int cardId, int locationId)
         {
             var parameters = new[]
