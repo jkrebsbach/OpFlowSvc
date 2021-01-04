@@ -604,13 +604,19 @@ namespace OpFlow.Service.Controllers
                 {
                     var quantity = (decimal)trayQty;
                     var usageQty = (decimal)concordanceRow["TrayUsage"];
+                    var trayCases = concordanceRow["TrayCases"] == DBNull.Value ? 0 : (int)concordanceRow["TrayCases"];
+                    var trayPulled = concordanceRow["TrayPulled"] == DBNull.Value ? 0 : (int)concordanceRow["TrayPulled"];
+                    var trayOpened = concordanceRow["TrayOpened"] == DBNull.Value ? 0 : (int)concordanceRow["TrayOpened"];
 
                     var usage = result.TrayData.FirstOrDefault(r => r.TrayName == tray);
                     if (usage == null)
                     {
                         usage = new ConcordanceReportTrayData()
                         {
-                            TrayName = tray
+                            TrayName = tray,
+                            TrayCases = trayCases,
+                            TrayOpened = trayOpened,
+                            TrayPulled = trayPulled
                         };
                         result.TrayData.Add(usage);
                     }

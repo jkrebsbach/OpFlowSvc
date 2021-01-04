@@ -222,6 +222,12 @@ namespace OpFlow.Data
             }
         }
 
+        public decimal TrayPulledPcnt => TrayCases == 0 ? 0 : (decimal)TrayPulled * 100 / TrayCases;
+        public decimal TrayOpenedPcnt => TrayCases == 0 ? 0 : (decimal)TrayOpened * 100 / TrayCases;
+        public int TrayPulled { get; set; }
+        public int TrayOpened { get; set; }
+        public int TrayCases { get; set; }
+
         public decimal ItemQuantity => TrayItems.Sum(t => t.Quantity);
         public decimal ItemUsage => TrayItems.Sum(t => t.Usage);
 
