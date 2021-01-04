@@ -25,6 +25,7 @@ namespace OpFlow.Data
         public int? VendorID { get; set; }
         public int? TrayProposalPhaseID { get; set; }
         public int? SpecialtyID { get; set; }
+        public int? SpecialtyMasterID { get; set; }
         public int? TrayOwnerUserID { get; set; }
         public bool CustomizedTray { get; set; }
         public string Vendor { get; set; }
@@ -255,7 +256,6 @@ namespace OpFlow.Data
     {
         public int ComparableItemID { get; set; }
         public int RelatedItemID { get; set; }
-        public string ProductNbr { get; set; }
     }
 
     public class TrayRationalizationStatusLog

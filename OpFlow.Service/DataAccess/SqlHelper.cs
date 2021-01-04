@@ -364,7 +364,8 @@ namespace OpFlow.Service.DataAccess
 
         private string GetMetricFilterSummary(List<string> metricFilters)
         {
-            if (metricFilters == null || !metricFilters.Any() || (metricFilters.Count == 1 && metricFilters[0] == string.Empty))
+            if (metricFilters == null || !metricFilters.Any() || (metricFilters.Count == 1 && metricFilters[0] == string.Empty)
+                 || (metricFilters.Count == 1 && metricFilters[0] == null))
                 return null;
 
             var doc = new XmlDocument();
@@ -372,10 +373,11 @@ namespace OpFlow.Service.DataAccess
 
             foreach (var metricFilter in metricFilters.Distinct())
             {
+                var questionAnswer = (metricFilter ?? "").Split(':');
+                if (questionAnswer.Length < 2) continue;
+
                 var row = doc.CreateElement("row");
                 table.AppendChild(row);
-
-                var questionAnswer = metricFilter.Split(':');
 
                 AddColumn(doc, row, questionAnswer[0]);
                 AddColumn(doc, row, questionAnswer[1]);
