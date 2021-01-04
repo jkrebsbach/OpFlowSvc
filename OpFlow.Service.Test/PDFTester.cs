@@ -26,36 +26,37 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestReadPDF()
         {
-            var path = @"F:\ColdStorage\Downloads\drive-download-20201221T151800Z-001\";
+            var path = @"F:\ColdStorage\Documents\OpFlow\Imports\PDFs\";
 
             var directories = Directory.GetDirectories(path);
             foreach (var directory in directories)
             {
                 var files = Directory.GetFiles(directory);
 
-                var cardImport = new List<CardImport>();
                 foreach (var file in files)
                 {
+                    var cardImport = new List<CardImport>();
+                
                     var cardData = ProcessFile(file);
                     cardImport.AddRange(cardData);
+                
+                    var outputData = "CardName,Manufacturer,Description,ProductNbr,Quantity\r\n";
+                    foreach (var cardItem in cardImport)
+                    {
+                        // double quote issue, quick hack
+                        if (cardItem.ProductNbr == string.Empty)
+                            cardItem.ProductNbr = " ";
+
+                        //if (cardItem.Quantity == "")
+                        //    continue;
+
+                        outputData += $"\"{cardItem.CardName}\",\"{cardItem.Manufacturer} \",\"{cardItem.Description.Replace("\"", "\"\"")}\",\"{cardItem.ProductNbr}\",{cardItem.Quantity}\r\n";
+                    }
+
+                    var filename = $"{Path.GetFileName(file)}_CardData.csv";
+                    var outputFile = Path.Combine(path, filename);
+                    File.WriteAllText(outputFile, outputData);
                 }
-
-                var outputData = "CardName,Manufacturer,Description,ProductNbr,Quantity\r\n";
-                foreach (var cardItem in cardImport)
-                {
-                    // double quote issue, quick hack
-                    if (cardItem.ProductNbr == string.Empty)
-                        cardItem.ProductNbr = " ";
-
-                    if (cardItem.Quantity == "")
-                        continue;
-
-                    outputData += $"\"{cardItem.CardName}\",\"{cardItem.Manufacturer} \",\"{cardItem.Description.Replace("\"", "\"\"")}\",\"{cardItem.ProductNbr}\",{cardItem.Quantity}\r\n";
-                }
-
-                var filename = $"{Path.GetFileName(directory)}_CardData.csv";
-                var outputFile = Path.Combine(path, filename);
-                File.WriteAllText(outputFile, outputData);
             }
         }
 
@@ -64,7 +65,7 @@ namespace OpFlow.Service.Test
             var cardName = Path.GetFileNameWithoutExtension(filePath);
 
             var pdfPageText = new List<string>();
-            var cardImport = new List<CardImport>();
+            var fileImport = new List<CardImport>();
 
             using (var doc = new Doc())
             {
@@ -80,17 +81,22 @@ namespace OpFlow.Service.Test
 
             foreach (var pageText in pdfPageText)
             {
+                var cardImport = new List<CardImport>();
                 var document = XDocument.Parse(pageText);
 
-                var cardNameDetail = cardName;
+                var cardNameDetail = string.Empty;
                 var manufacturer = string.Empty;
                 var productNbr = string.Empty;
                 var description = string.Empty;
+                var quantity = string.Empty;
                 var manufacturerDelim = string.Empty;
                 var productNbrDelim = string.Empty;
                 var descriptionDelim = string.Empty;
-                var quantity = string.Empty;
+                var quantityDelim = string.Empty;
 
+                decimal? descriptionPosition = null;
+                decimal? manufacturerPosition = null;
+                decimal? quantityPosition = null;
 
                 foreach (var element in document.Root.Elements())
                 {
@@ -100,39 +106,53 @@ namespace OpFlow.Service.Test
                         {
                             if (graphic.Name.LocalName == "text")
                             {
-                                var xLoc = graphic.Attribute("x").Value;
-                                var yLoc = graphic.Attribute("y").Value;
+                                var xLoc = decimal.Parse(graphic.Attribute("x").Value);
+                                var yLoc = decimal.Parse(graphic.Attribute("y").Value);
+
+                                var fontSize = graphic.Attribute("font-size").Value;
+                                var fontFamily = graphic.Attribute("font-family").Value;
+
+                                var data = ParseToken(graphic);
 
                                 //if (xLoc == "208.436" && yLoc == "46.141")
-                                if (yLoc == "46.141")
+                                if (fontFamily == "CIDFont+F1" && cardNameDetail == string.Empty)
                                 {
-                                    cardNameDetail = graphic.Value;
-                                    var cardNameRegex = Regex.Match(cardNameDetail, @"([A-Za-z\s]+) - 000");
-                                    if (cardNameRegex.Success)
-                                        cardNameDetail = cardNameRegex.Groups[1].Value;
+                                    cardNameDetail = data;
                                 }
 
-                                if (xLoc == "36.915")
+                                if (descriptionPosition != null && xLoc == descriptionPosition)
                                 {
-                                    manufacturer += $"{manufacturerDelim}{graphic.Value}";
-                                    manufacturerDelim = " ";
-                                }
-
-                                if (xLoc == "176.16")
-                                {
-                                    description += $"{descriptionDelim}{graphic.Value}";
+                                    description += $"{descriptionDelim}{data}";
                                     descriptionDelim = " ";
                                 }
 
-                                if (xLoc == "74.19")
+                                if (data == "DESCRIPTION")
                                 {
-                                    productNbr += $"{productNbrDelim}{graphic.Value}";
+                                    descriptionPosition = xLoc;
+                                }
+
+                                if (manufacturerPosition != null && xLoc == manufacturerPosition)
+                                {
+                                    manufacturer += $"{manufacturerDelim}{data}";
+                                    manufacturerDelim = " ";
+                                }
+
+                                if (data == "CATALOG")
+                                {
+                                    manufacturerPosition = xLoc;
+                                }
+
+                                if (xLoc == 999999.99M)
+                                {
+                                    productNbr += $"{productNbrDelim}{data}";
                                     productNbrDelim = " ";
                                 }
 
-                                if (xLoc == "481.83")
+                                if (xLoc > quantityPosition && description != string.Empty) 
                                 {
-                                    quantity = graphic.Value;
+                                    if (data == "CNT1" || data == "CNT2") continue;
+
+                                    quantity = data;
 
                                     cardImport.Add(new CardImport()
                                     {
@@ -150,13 +170,49 @@ namespace OpFlow.Service.Test
                                     productNbrDelim = string.Empty;
                                     descriptionDelim = string.Empty;
                                 }
+
+                                if (data == "QTY")
+                                {
+                                    quantityPosition = xLoc;
+                                }
                             }
                         }
                     }
                 }
+
+                // Some pages are items and not trays
+                if (!cardImport.Any())
+                {
+                    if (cardNameDetail == string.Empty) throw new Exception("Unable to parse card" + filePath);
+
+                    cardImport.Add(new CardImport()
+                    {
+                        CardName = cardNameDetail,
+                        Manufacturer = manufacturer.Trim(),
+                        Description = description.Trim(),
+                        ProductNbr = productNbr.Trim(),
+                        Quantity = quantity
+                    });
+                }
+
+                fileImport.AddRange(cardImport);
             }
 
-            return cardImport;
+            return fileImport;
+        }
+
+        private string ParseToken(XElement root)
+        {
+            var result = string.Empty;
+
+            var elements = root.Elements();
+            if (elements.Count() == 0) return root.Value;
+
+            foreach (var element in elements)
+            {
+                result += element.Value;
+            }
+            return result;
         }
 
         private class CardImport

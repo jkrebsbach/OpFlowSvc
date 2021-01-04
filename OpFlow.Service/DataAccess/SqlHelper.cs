@@ -1319,6 +1319,28 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
+        public async Task<DataSet> GetAdministrationProcedureMix(List<int> specialtyId, List<int> locationId, List<int> trayId, List<int> itemId,
+            List<int> cardCategoryId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var locationXml = GetIdentitySummary(locationId);
+            var trayXml = GetIdentitySummary(trayId);
+            var itemXml = GetIdentitySummary(itemId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("item_id", itemXml ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetAdministrationProcedureMix", parameters);
+
+            return dsSchedules;
+        }
+
         public async Task<DataSet> GetAnalyticsProcedureMix(List<int> specialtyId, List<int> surgeonId, List<int> trayId, List<int> itemId,
             List<int> cardCategoryId, int locationId)
         {

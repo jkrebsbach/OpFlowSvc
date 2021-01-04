@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -7,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Microsoft.Reporting.WebForms;
 using Microsoft.ReportingServices.Diagnostics.Internal;
 using OpFlow.Data;
 using OpFlow.Data.Administration;
@@ -381,6 +383,122 @@ namespace OpFlow.Service.Controllers
                     await sqlHelper.InsertImportMessage(user.SelectedLocation, logId.Value, "ERROR", ex.Message, null, null);
 
                 throw;
+            }
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetReports")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsSummary>))]
+        [HttpGet]
+        [Route("reports")]
+        public async Task<HttpResponseMessage> GetReports()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal" && user.RoleType != "Admin")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper();
+            var locations = await sqlHelper.GetUserLocations(user.UserID, user.LocationID);
+            var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
+            var surgeons = await sqlHelper.GetSurgeons(null, user.SelectedLocation);
+            var procedures = await sqlHelper.GetProcedures(null, user.SelectedLocation);
+            var trays = await sqlHelper.GetItems("TRAY", null, null, user.SelectedLocation);
+            var cardCategories = await sqlHelper.GetCardCategories();
+            var lookups = await sqlHelper.GetTrayInstrumentLookups(user.SelectedLocation);
+            var items = await sqlHelper.GetItems(null, null, true, user.SelectedLocation);
+            var roomGroups = await sqlHelper.GetRoomGroups(user.SelectedLocation);
+            var cpts = await sqlHelper.GetKnownCPTCodes(user.ProviderID, user.LocationID);
+            var proposedTrays = await sqlHelper.GetProposedTrays(null, user.SelectedLocation);
+            var proposalPhases = await sqlHelper.GetTrayProposalPhases(user.SelectedLocation);
+            var caseProfiles = await sqlHelper.GetCaseProfiles(user.SelectedLocation);
+
+            var procedureProfiles = await sqlHelper.GetProcedureProfiles();
+            var trayTypes = await sqlHelper.GetTrayTypes();
+            var metrics = await sqlHelper.GetProcedureProfileMetrics(null, user.LocationID);
+
+            var cardCategoryXref = await sqlHelper.GetSpecialtyProcedureGroup(user.SelectedLocation);
+
+            foreach (var specialty in specialties)
+            {
+                specialty.CardCategories = cardCategoryXref.Where(c => c.SpecialtyID == specialty.SpecialtyID).ToList();
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                Parameters = new
+                {
+                    Locations = locations,
+                    Specialties = specialties,
+                    Surgeons = surgeons,
+                    Trays = trays,
+                    Procedures = procedures,
+                    RoomGroups = roomGroups,
+                    InstrumentCategories = lookups.Categories,
+                    Items = items.Where(i => i.ItemType != "INSTRUMENT"),
+                    CardCategories = cardCategories,
+                    CPTs = cpts,
+                    ProposedTrays = proposedTrays,
+                    ProposalPhases = proposalPhases,
+                    CaseProfiles = caseProfiles,
+                    ProcedureProfiles = procedureProfiles,
+                    TrayTypes = trayTypes,
+                    Metrics = metrics
+                }
+            });
+        }
+
+        private async Task<string> GetLocationName(UserSecurity user)
+        {
+            var sqlHelper = new SqlHelper();
+            var providers = await sqlHelper.GetOpFlowSetup();
+
+            var provider = providers.FirstOrDefault(p => p.ProviderID == user.ProviderID);
+            var location = provider?.Locations?.FirstOrDefault(l => l.LocationID == user.LocationID);
+
+            return location.LocationName ?? "Unknown Location";
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("ProcedureMixReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("procedureMix")]
+        [Route("procedureMix/{format}")]
+        public async Task<HttpResponseMessage> ProcedureMixReport([FromBody] CountSampleDispersionReportPost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal" && user.RoleType != "Admin")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+            var analytics = await sqlHelper.GetAnalyticsProcedureMix(post.SpecialtyId, post.SurgeonId, post.TrayId, post.ItemId,
+                post.CardCategoryId, user.SelectedLocation);
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["ProcedureMix"] = analytics.Tables[0]
+            };
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+            var result = ReportHelper.GetReport($"ProcedureMix{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.ImageResponse(Request, webImage);
             }
         }
     }
