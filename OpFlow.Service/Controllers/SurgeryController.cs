@@ -495,6 +495,7 @@ namespace OpFlow.Service.Controllers
                 {
                     tray.TrayOpened = trayOpen.TrayOpened;
                     tray.OffsiteTray = trayOpen.OffsiteTray;
+                    tray.MissingTray = trayOpen.MissingTray;
                     tray.Feedback = trayOpen.Feedback;
                 }
             }

@@ -280,6 +280,7 @@ namespace OpFlow.Data
     {
         public int TrayID { get; set; }
         public bool OffsiteTray { get; set; }
+        public bool MissingTray { get; set; }
         public int? RoleID { get; set; }
         public int? UsageType { get; set; }
     }

@@ -400,7 +400,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var locations = await sqlHelper.GetUserLocations(user.UserID, user.LocationID);
-            var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
+            var specialties = await sqlHelper.GetSpecialtyMaster();
             var surgeons = await sqlHelper.GetSurgeons(null, user.SelectedLocation);
             var procedures = await sqlHelper.GetProcedures(null, user.SelectedLocation);
             var trays = await sqlHelper.GetItems("TRAY", null, null, user.SelectedLocation);
@@ -466,7 +466,7 @@ namespace OpFlow.Service.Controllers
         [HttpPost]
         [Route("procedureMix")]
         [Route("procedureMix/{format}")]
-        public async Task<HttpResponseMessage> ProcedureMixReport([FromBody] CountSampleDispersionReportPost post, string format = null)
+        public async Task<HttpResponseMessage> ProcedureMixReport([FromBody] AdministrationReportPost post, string format = null)
         {
             var user = await CacheUtil.GetUserSecurity();
 
@@ -476,8 +476,8 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            var analytics = await sqlHelper.GetAnalyticsProcedureMix(post.SpecialtyId, post.SurgeonId, post.TrayId, post.ItemId,
-                post.CardCategoryId, user.SelectedLocation);
+            var analytics = await sqlHelper.GetAdministrationProcedureMix(post.SpecialtyId, post.TrayId, post.ItemId,
+                post.CardCategoryId, post.LocationId);
 
             var datasets = new Dictionary<string, DataTable>
             {

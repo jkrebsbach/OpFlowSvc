@@ -1319,8 +1319,8 @@ namespace OpFlow.Service.DataAccess
             return dsSchedules;
         }
 
-        public async Task<DataSet> GetAdministrationProcedureMix(List<int> specialtyId, List<int> locationId, List<int> trayId, List<int> itemId,
-            List<int> cardCategoryId)
+        public async Task<DataSet> GetAdministrationProcedureMix(List<int> specialtyId, List<int> trayId, List<int> itemId,
+            List<int> cardCategoryId, List<int> locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var locationXml = GetIdentitySummary(locationId);
@@ -6248,7 +6248,8 @@ namespace OpFlow.Service.DataAccess
                 AddColumn(doc, row, customItem.Setup);
                 AddColumn(doc, row, customItem.SetupAdded);
                 AddColumn(doc, row, customItem.Notes);
-                AddColumn(doc, row, (int)(customItem.OffsiteTray ? 1 : 0));
+                AddColumn(doc, row, (customItem.OffsiteTray ? 1 : 0));
+                AddColumn(doc, row, (customItem.MissingTray ? 1 : 0));
             }
 
             return table.OuterXml;

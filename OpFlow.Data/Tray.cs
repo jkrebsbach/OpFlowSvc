@@ -11,6 +11,7 @@ namespace OpFlow.Data
         public bool SetupAdded { get; set; }
         public bool TrayOpened { get; set; }
         public bool OffsiteTray { get; set; }
+        public bool MissingTray { get; set; }
         public string Feedback { get; set; }
         public List<CardItemCount> TrayItems { get; set; }
     }

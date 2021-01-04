@@ -124,6 +124,7 @@ namespace OpFlow.Data
         public int TrayID { get; set; }
         public bool TrayOpened { get; set; }
         public bool OffsiteTray { get; set; }
+        public bool MissingTray { get; set; }
         public string Feedback { get; set; }
     }
 
