@@ -623,6 +623,38 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<DataSet> GetAdministrationConcordanceReportData(List<int> specialtyId, 
+            List<int> procedureId, List<int> trayId, int? trayTypeId, string vendorTray, List<int> cardCategoryId, List<int> cardId, List<string> metricId,
+            string instruments, bool showMax, string label, List<int> locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var procedureXml = GetIdentitySummary(procedureId);
+            var trayXml = GetIdentitySummary(trayId);
+            var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+            var cardXml = GetIdentitySummary(cardId);
+            var metricXml = GetMetricFilterSummary(metricId);
+            var locationXml = GetIdentitySummary(locationId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("procedure_id", procedureXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_type_id", trayTypeId ?? (object)DBNull.Value),
+                new SqlParameter("vendor_tray", vendorTray ?? (object)DBNull.Value),
+                new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
+                new SqlParameter("metric_id", metricXml ?? (object)DBNull.Value),
+                new SqlParameter("instruments", instruments),
+                new SqlParameter("show_max", showMax),
+                new SqlParameter("label", label),
+                new SqlParameter("location_id", locationXml)
+            };
+            var result = await ExecuteCommandAsync("GetAdministrationConcordanceReport", parameters);
+
+            return result;
+        }
+
         public async Task<DataSet> GetConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
             List<int> procedureId, List<int> trayId, int? trayTypeId, string vendorTray, List<int> cardCategoryId, List<int> cardId, List<string> metricId,
             string instruments, bool showMax, string label,  int locationId)

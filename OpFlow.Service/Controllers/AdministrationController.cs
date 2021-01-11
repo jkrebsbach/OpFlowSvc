@@ -501,5 +501,154 @@ namespace OpFlow.Service.Controllers
                 return ResponseHelper.ImageResponse(Request, webImage);
             }
         }
+
+        // GET api/values/5
+        [SwaggerOperation("TrayConcordanceReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<AnalyticsCountSummary>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("trayConcordance")]
+        [Route("trayConcordance/{format}")]
+        public async Task<HttpResponseMessage> TrayConcordanceReport([FromBody] AdministrationUsageReportPost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal" && user.RoleType != "Admin")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+            if (post.SpecialtyID == null &&
+                post.ProcedureID == null &&
+                post.TrayID == null &&
+                post.TrayTypeID == null &&
+                post.CardCategoryID == null &&
+                post.MetricID == null &&
+                post.LocationId == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
+            }
+
+            var analytics = await sqlHelper.GetAdministrationConcordanceReportData(post.SpecialtyID, post.ProcedureID, post.TrayID, post.TrayTypeID, post.VendorTray,
+                post.CardCategoryID, null, post.MetricID, post.Instruments, post.ShowMax, post.Label, post.LocationId);
+
+            var summary = SummarizeConcordanceReport(analytics.Tables[0]);
+
+            var concordance = analytics.Tables[0].DefaultView;
+            switch (post.Order)
+            {
+                case "instrument_avg":
+                    concordance.Sort = "QtyOpen DESC";
+                    summary.Items = summary.Items.OrderByDescending(i => i.QtyOpen).ToList();
+                    break;
+                case "instrument_name":
+                default:
+                    concordance.Sort = "InstrumentName";
+                    summary.Items = summary.Items.OrderBy(i => i.InstrumentDescription).ToList();
+                    break;
+            }
+
+            // only send items when legend necessary
+            if (post.Label != "ID")
+                summary.Items = null;
+
+            if (format == "CSV")
+            {
+                return ResponseHelper.CsvResponse(concordance.ToTable());
+            }
+
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["ConcordanceReport"] = concordance.ToTable()
+            };
+            var result = ReportHelper.GetReport("ConcordanceReport", format, datasets, parameters);
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.CompositeImageResponse(Request, summary, webImage);
+            }
+        }
+
+        private ConcordanceReportSummary SummarizeConcordanceReport(DataTable concordanceData)
+        {
+            var result = new ConcordanceReportSummary()
+            {
+                TrayData = new List<ConcordanceReportTrayData>(),
+                Items = new List<ConcordanceReportItemData>()
+            };
+
+            foreach (DataRow concordanceRow in concordanceData.Rows)
+            {
+                var trayQty = concordanceRow["TrayQty"];
+                var trayUsage = concordanceRow["TrayUsage"];
+                var qtyOpen = concordanceRow["QtyOpen"];
+                var tray = concordanceRow["SurgeonName"].ToString();
+
+                var item = new ConcordanceReportItemData()
+                {
+                    ID = (string)concordanceRow["InstrumentName"],
+                    InstrumentDescription = (string)concordanceRow["InstrumentDescription"],
+                    QtyOpen = qtyOpen == DBNull.Value ? 0 : (decimal)qtyOpen,
+                    TrayUsage = trayUsage == DBNull.Value ? 0 : (decimal)trayUsage,
+                    TrayQty = trayQty == DBNull.Value ? 0 : (decimal)trayQty
+                };
+
+                var match = result.Items.FirstOrDefault(i => i.ID == item.ID);
+                if (match == null)
+                {
+                    result.Items.Add(item);
+                }
+                else
+                {
+                    match.QtyOpen = (item.QtyOpen > match.QtyOpen ? item.QtyOpen : match.QtyOpen);
+                    match.TrayUsage = (item.TrayUsage > match.TrayUsage ? item.TrayUsage : match.TrayUsage);
+                    match.TrayQty = (item.TrayQty > match.TrayQty ? item.TrayQty : match.TrayQty);
+                }
+
+                if (trayQty != DBNull.Value)
+                {
+                    var quantity = (decimal)trayQty;
+                    var usageQty = (decimal)concordanceRow["TrayUsage"];
+                    var trayCases = concordanceRow["TrayCases"] == DBNull.Value ? 0 : (int)concordanceRow["TrayCases"];
+                    var trayPulled = concordanceRow["TrayPulled"] == DBNull.Value ? 0 : (int)concordanceRow["TrayPulled"];
+                    var trayOpened = concordanceRow["TrayOpened"] == DBNull.Value ? 0 : (int)concordanceRow["TrayOpened"];
+
+                    var usage = result.TrayData.FirstOrDefault(r => r.TrayName == tray);
+                    if (usage == null)
+                    {
+                        usage = new ConcordanceReportTrayData()
+                        {
+                            TrayName = tray,
+                            TrayCases = trayCases,
+                            TrayOpened = trayOpened,
+                            TrayPulled = trayPulled
+                        };
+                        result.TrayData.Add(usage);
+                    }
+
+                    usage.TrayItems.Add(new ConcordanceItem()
+                    {
+                        Usage = usageQty,
+                        Quantity = quantity
+                    });
+                }
+            }
+
+            return result;
+        }
     }
 }

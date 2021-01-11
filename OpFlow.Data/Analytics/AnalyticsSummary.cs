@@ -356,6 +356,11 @@ namespace OpFlow.Data
         public decimal OverallocatedReduction => TotalCost == 0 ? 0 : (OverallocatedCost / TotalCost) * 100;
     }
 
+    public class AdministrationUsageReportPost : InstrumentUsagePost
+    {
+        public List<int> LocationId { get; set; }
+    }
+
     public class AdministrationReportPost : CountSampleDispersionReportPost
     {
         public List<int> LocationId { get; set; }
