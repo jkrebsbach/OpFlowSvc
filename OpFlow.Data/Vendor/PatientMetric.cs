@@ -54,12 +54,18 @@ namespace OpFlow.Data
         }
 
         public List<ProcedureProfileMetricAnswer> Answers { get; set; }
+        public List<ProcedureProfileMetricCardCategory> CardCategories { get; set; }
     }
     public class ProcedureProfileMetricAnswer
     {
         public int ProcedureProfileMetricAnswerID { get; set; }
         public int ProcedureProfileMetricID { get; set; }
         public string AnswerText { get; set; }
+    }
+    public class ProcedureProfileMetricCardCategory
+    {
+        public int ProcedureProfileMetricID { get; set; }
+        public int CardCategoryID { get; set; }
     }
 
     public class ProcedureProfileMetricPost

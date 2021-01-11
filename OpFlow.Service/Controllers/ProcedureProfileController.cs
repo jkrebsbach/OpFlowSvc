@@ -128,8 +128,8 @@ namespace OpFlow.Service.Controllers
 
             var variances = await sqlHelper.GetSurgeonUsagePreferenceVariants(procedureProfile.ProcedureProfileID);
 
-            var profileMetrics = await sqlHelper.GetProcedureProfileMetrics("PROC", user.LocationID);
-            var patientMetrics = await sqlHelper.GetProcedureProfileMetrics("PAT", user.LocationID);
+            var profileMetrics = await sqlHelper.GetProcedureProfileMetrics("PROC", user.SelectedLocation);
+            var patientMetrics = await sqlHelper.GetProcedureProfileMetrics("PAT", user.SelectedLocation);
 
             profileMetrics.AddRange(patientMetrics);
 
@@ -754,9 +754,11 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
+            var locationFilter = new List<int> { user.SelectedLocation };
+
             var profiles = await sqlHelper.GetProcedureProfiles();
-            var proposals = await sqlHelper.GetProposedTraysInternal(request.LocationFilter);
-            var trays = await sqlHelper.GetTraysInternal(request.LocationFilter);
+            var proposals = await sqlHelper.GetProposedTraysInternal(locationFilter);
+            var trays = await sqlHelper.GetTraysInternal(locationFilter);
 
             if (request.SpecialtyID.HasValue)
             {

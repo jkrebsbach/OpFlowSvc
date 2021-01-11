@@ -22,7 +22,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var metrics = await sqlHelper.GetProcedureProfileMetrics(metricType, user.LocationID);
+            var metrics = await sqlHelper.GetProcedureProfileMetrics(metricType, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, metrics);
         }
