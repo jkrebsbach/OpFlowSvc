@@ -692,7 +692,7 @@ namespace OpFlow.Service.DataAccess
 
             var metrics = result.Tables[0].DataTableToList<ProcedureProfileMetric>();
             var answers = result.Tables[1].DataTableToList<ProcedureProfileMetricAnswer>();
-            var cardCategories = result.Tables[1].DataTableToList<ProcedureProfileMetricCardCategory>();
+            var cardCategories = result.Tables[2].DataTableToList<ProcedureProfileMetricCardCategory>();
 
             foreach (var metric in metrics)
             {
