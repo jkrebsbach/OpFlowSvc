@@ -650,6 +650,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Delete")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("{userId}")]
         public async Task<IHttpActionResult> Delete(int userId)
         {
             if (!ModelState.IsValid)
@@ -671,7 +672,7 @@ namespace OpFlow.Service.Controllers
                 var authResult = await userManager.RemovePasswordAsync(authenticationUser.Id);
             }
 
-            var applicationDeletion = await sqlHelper.DeleteUser(userId, user.ProviderID, user.LocationID);
+            var applicationDeletion = await sqlHelper.DeleteUser(userId, user.SelectedLocation);
 
             return Ok();
         }

@@ -26,12 +26,14 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestReadPDF()
         {
-            var path = @"F:\ColdStorage\Documents\OpFlow\Imports\PDFs\";
+            var path = @"F:\ColdStorage\Documents\OpFlow\Imports\20210416\";
 
             var directories = Directory.GetDirectories(path);
             foreach (var directory in directories)
             {
-                var files = Directory.GetFiles(directory);
+                var files = Directory.GetFiles(directory, "*.pdf");
+
+                var outputData = "CardName,Manufacturer,Description,ProductNbr,Quantity\r\n";
 
                 foreach (var file in files)
                 {
@@ -40,7 +42,6 @@ namespace OpFlow.Service.Test
                     var cardData = ProcessFile(file);
                     cardImport.AddRange(cardData);
                 
-                    var outputData = "CardName,Manufacturer,Description,ProductNbr,Quantity\r\n";
                     foreach (var cardItem in cardImport)
                     {
                         // double quote issue, quick hack
@@ -52,11 +53,11 @@ namespace OpFlow.Service.Test
 
                         outputData += $"\"{cardItem.CardName}\",\"{cardItem.Manufacturer} \",\"{cardItem.Description.Replace("\"", "\"\"")}\",\"{cardItem.ProductNbr}\",{cardItem.Quantity}\r\n";
                     }
-
-                    var filename = $"{Path.GetFileName(file)}_CardData.csv";
-                    var outputFile = Path.Combine(path, filename);
-                    File.WriteAllText(outputFile, outputData);
                 }
+
+                var filename = $"{Path.GetFileName(directory)}_CardData.csv";
+                var outputFile = Path.Combine(path, filename);
+                File.WriteAllText(outputFile, outputData);
             }
         }
 
@@ -94,9 +95,19 @@ namespace OpFlow.Service.Test
                 var descriptionDelim = string.Empty;
                 var quantityDelim = string.Empty;
 
+                var tableHeader = 0.0M;
+
+                bool newRow = false;
+                decimal curPos = 0.0M;
+
+                decimal? preCountPosition = null;
                 decimal? descriptionPosition = null;
                 decimal? manufacturerPosition = null;
+                decimal? productNumPosition = null;
                 decimal? quantityPosition = null;
+
+                //  Multiple columns starting with "qty"
+                var qtyCandidates = new List<decimal>();
 
                 foreach (var element in document.Root.Elements())
                 {
@@ -115,44 +126,96 @@ namespace OpFlow.Service.Test
                                 var data = ParseToken(graphic);
 
                                 //if (xLoc == "208.436" && yLoc == "46.141")
-                                if (fontFamily == "CIDFont+F1" && cardNameDetail == string.Empty)
+                                if (fontFamily == "SegoeUI,Bold" && fontSize == "11" && cardNameDetail == string.Empty)
                                 {
-                                    cardNameDetail = data;
+                                    cardNameDetail = data.Replace(" - 000", "");
+                                    continue;
                                 }
 
-                                if (descriptionPosition != null && xLoc == descriptionPosition)
+                                if (CheckRange(xLoc, descriptionPosition) && yLoc > tableHeader)
                                 {
                                     description += $"{descriptionDelim}{data}";
                                     descriptionDelim = " ";
+
+                                    newRow = CheckRow(yLoc, curPos);
+                                    curPos = yLoc;
                                 }
 
-                                if (data == "DESCRIPTION")
-                                {
-                                    descriptionPosition = xLoc;
-                                }
-
-                                if (manufacturerPosition != null && xLoc == manufacturerPosition)
+                                if (CheckRange(xLoc, manufacturerPosition) && yLoc > tableHeader)
                                 {
                                     manufacturer += $"{manufacturerDelim}{data}";
                                     manufacturerDelim = " ";
+
+                                    newRow = CheckRow(yLoc, curPos);
+                                    curPos = yLoc;
                                 }
 
-                                if (data == "CATALOG")
-                                {
-                                    manufacturerPosition = xLoc;
-                                }
-
-                                if (xLoc == 999999.99M)
+                                if (CheckRange(xLoc, productNumPosition) && yLoc > tableHeader)
                                 {
                                     productNbr += $"{productNbrDelim}{data}";
                                     productNbrDelim = " ";
+
+                                    newRow = CheckRow(yLoc, curPos);
+                                    curPos = yLoc;
                                 }
 
-                                if (xLoc > quantityPosition && description != string.Empty) 
+                                if (CheckRange(xLoc, preCountPosition) && yLoc > tableHeader)
                                 {
-                                    if (data == "CNT1" || data == "CNT2") continue;
+                                    newRow = CheckRow(yLoc, curPos);
+                                    curPos = yLoc;
+                                }
 
+                                if (fontFamily != "SegoeUI,Bold" && CheckRange(xLoc, quantityPosition) && yLoc > tableHeader)
+                                {
                                     quantity = data;
+
+                                    newRow = CheckRow(yLoc, curPos);
+                                    curPos = yLoc;
+                                }
+
+                                // Crazy margin buffer issue?!  subtracting 2 to get in the right area...
+                                if (data == "Description")
+                                {
+                                    tableHeader = yLoc;
+
+                                    descriptionPosition = xLoc - 2;
+                                }
+
+                                if (data == "Manuf")
+                                {
+                                    manufacturerPosition = xLoc - 2;
+                                }
+
+                                if (data == "Prod #")
+                                {
+                                    productNumPosition = xLoc - 2;
+                                }
+
+                                if (data == "Pre")
+                                {
+                                    preCountPosition = xLoc - 2;
+                                }
+
+                                if (data == "Qty")
+                                {
+                                    qtyCandidates.Add(xLoc);
+                                }
+
+                                if (data == "Rqd" && qtyCandidates.Contains(xLoc))
+                                {
+                                    quantityPosition = xLoc - 2;
+                                }
+
+                                //if (xLoc > productNumPosition && yLoc > tableHeader && description != string.Empty) 
+                                if (newRow)
+                                {
+                                    if (description == string.Empty)
+                                    {
+                                        newRow = false;
+                                        continue;
+                                    }
+
+                                    if (data == "CNT1" || data == "CNT2") continue;
 
                                     cardImport.Add(new CardImport()
                                     {
@@ -169,22 +232,19 @@ namespace OpFlow.Service.Test
                                     manufacturerDelim = string.Empty;
                                     productNbrDelim = string.Empty;
                                     descriptionDelim = string.Empty;
-                                }
 
-                                if (data == "QTY")
-                                {
-                                    quantityPosition = xLoc;
+                                    newRow = false;
                                 }
                             }
                         }
                     }
                 }
 
-                // Some pages are items and not trays
-                if (!cardImport.Any())
-                {
-                    if (cardNameDetail == string.Empty) throw new Exception("Unable to parse card" + filePath);
+                if (cardNameDetail == string.Empty) throw new Exception("Unable to parse card" + filePath);
 
+                // add remaining data
+                if (description != string.Empty)
+                {
                     cardImport.Add(new CardImport()
                     {
                         CardName = cardNameDetail,
@@ -199,6 +259,17 @@ namespace OpFlow.Service.Test
             }
 
             return fileImport;
+        }
+
+        private bool CheckRange(decimal xLoc, decimal? target)
+        {
+            if (target == null) return false;
+            return xLoc > target - 1M && xLoc < target + 1M;
+        }
+
+        private bool CheckRow(decimal yLoc, decimal curRow)
+        {
+            return yLoc > curRow + 7M;
         }
 
         private string ParseToken(XElement root)

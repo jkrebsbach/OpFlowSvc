@@ -108,6 +108,20 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, schedules);
         }
 
+        // GET api/surgery?userId=5
+        [SwaggerOperation("caseNbr")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(Surgery))]
+        [Route("caseNbr/{caseNbr}")]
+        public async Task<HttpResponseMessage> GetCaseNbr(string caseNbr)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var surgeries = await sqlHelper.GetScheduledSurgeries(null, null, null, caseNbr, user.SelectedLocation);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, surgeries);
+        }
+
         [SwaggerOperation("GetSurgeryMetrics")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgeryMetricCategory>))]
         [Route("metrics")]
@@ -261,7 +275,7 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSchedule")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<SurgerySchedule>))]
         [Route("cases")]
-        public async Task<HttpResponseMessage> GetSurgerySchedule(DateTime? scheduleDate = null, int? roomId = null)
+        public async Task<HttpResponseMessage> GetSurgerySchedule(DateTime? scheduleDate = null, int? roomId = null, string caseNbr = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
@@ -270,7 +284,7 @@ namespace OpFlow.Service.Controllers
             if (roomId == null)
                 userId = user.UserID;
 
-            var surgeries = await sqlHelper.GetScheduledSurgeries(userId, scheduleDate, roomId, user.SelectedLocation);
+            var surgeries = await sqlHelper.GetScheduledSurgeries(userId, scheduleDate, roomId, caseNbr, user.SelectedLocation);
 
             foreach (var surgery in surgeries)
             {
@@ -1548,12 +1562,13 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("Delete")]
         [SwaggerResponse(HttpStatusCode.OK)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        public async Task<HttpResponseMessage> Delete(int id)
+        [Route("{surgeryId}")]
+        public async Task<HttpResponseMessage> Delete(int surgeryId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var success = await sqlHelper.DeleteSurgery(id, user.SelectedLocation);
+            var success = await sqlHelper.DeleteSurgery(surgeryId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, success);
         }

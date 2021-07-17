@@ -4122,7 +4122,8 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<CardListScreen>> GetCardList(int? userId, int? specialtyId, int? procedureId, int? bundleId, string cardName, bool defaultCardOnly, int locationId)
+        public async Task<List<CardListScreen>> GetCardList(int? userId, int? specialtyId, int? procedureId, int? bundleId, string cardName,
+            int? trayItemId, bool defaultCardOnly, int locationId)
         {
             var parameters = new[]
             {
@@ -4131,6 +4132,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("bundle_id", bundleId ?? (object)DBNull.Value),
                 new SqlParameter("card_name", cardName ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayItemId ?? (object)DBNull.Value),
                 new SqlParameter("default_flag", defaultCardOnly),
                 new SqlParameter("location_id", locationId)
             };
@@ -5411,11 +5413,10 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateUser", dsParameters);
         }
 
-        public async Task<int> DeleteUser(int userId, int providerId, int locationId)
+        public async Task<int> DeleteUser(int userId, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("user_id", userId)
             };
@@ -7516,7 +7517,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<SurgerySchedule>> GetScheduledSurgeries(int? userID, DateTime? scheduleDate, int? roomId, int locationId)
+        public async Task<List<SurgerySchedule>> GetScheduledSurgeries(int? userID, DateTime? scheduleDate, int? roomId, string caseNbr, int locationId)
         {
             if (roomId.HasValue)
                 userID = null;
@@ -7526,6 +7527,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("user_id", userID ?? (object)DBNull.Value),
                 new SqlParameter("SurgeryScheduleDate", scheduleDate ?? (object)DBNull.Value),
                 new SqlParameter("room_id", roomId ?? (object)DBNull.Value),
+                new SqlParameter("case_nbr", caseNbr ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetSurgeriesByUser", parameters);

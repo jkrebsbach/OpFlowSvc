@@ -16,6 +16,7 @@
         <CommandText>SELECT TrayName,
 	'Count' Status,
 	MAX(UniqueInstruments) InstrumentCount,
+	MAX(UsageQuantity) UsageQuantity,
 	MAX(InstrumentCount) OriginalQty,
 	-1 ProposedQty,
 	MAX(vw.TrayInstances) TrayInstances,
@@ -41,6 +42,10 @@ ORDER BY TrayName</CommandText>
         </Field>
         <Field Name="InstrumentCount">
           <DataField>InstrumentCount</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="UsageQuantity">
+          <DataField>UsageQuantity</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="OriginalQty">
@@ -94,7 +99,10 @@ ORDER BY TrayName</CommandText>
                   <Width>0.71875in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.8125in</Width>
+                  <Width>0.5625in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.25in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -371,6 +379,36 @@ ORDER BY TrayName</CommandText>
                         </Textbox>
                       </CellContents>
                     </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox7">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Avg Usage</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox7</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
@@ -464,7 +502,6 @@ ORDER BY TrayName</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -649,12 +686,46 @@ ORDER BY TrayName</CommandText>
                         </Textbox>
                       </CellContents>
                     </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox9">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=CDec(
+	Iif(Fields!InstrumentCount.Value = 0, 0, 
+		Fields!UsageQuantity.Value / Iif(Fields!InstrumentCount.Value = 0, 1, Fields!InstrumentCount.Value))).ToString("P")
+&amp; " (" &amp; Fields!UsageQuantity.Value &amp; "/" &amp; Fields!InstrumentCount.Value &amp; ")"</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox9</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
                   </TablixCells>
                 </TablixRow>
               </TablixRows>
             </TablixBody>
             <TablixColumnHierarchy>
               <TablixMembers>
+                <TablixMember />
                 <TablixMember />
                 <TablixMember />
                 <TablixMember />
@@ -679,7 +750,7 @@ ORDER BY TrayName</CommandText>
             <DataSetName>TrayReductionSummary</DataSetName>
             <Top>0.5925in</Top>
             <Height>0.73958in</Height>
-            <Width>7.4375in</Width>
+            <Width>8.4375in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -738,7 +809,7 @@ ORDER BY TrayName</CommandText>
         <Height>1.33208in</Height>
         <Style />
       </Body>
-      <Width>7.4375in</Width>
+      <Width>8.4375in</Width>
       <Page>
         <Style />
       </Page>
