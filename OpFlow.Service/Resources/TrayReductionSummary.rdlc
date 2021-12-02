@@ -697,8 +697,8 @@ ORDER BY TrayName</CommandText>
                                 <TextRun>
                                   <Value>=CDec(
 	Iif(Fields!InstrumentCount.Value = 0, 0, 
-		Fields!UsageQuantity.Value / Iif(Fields!InstrumentCount.Value = 0, 1, Fields!InstrumentCount.Value))).ToString("P")
-&amp; " (" &amp; Fields!UsageQuantity.Value &amp; "/" &amp; Fields!InstrumentCount.Value &amp; ")"</Value>
+		Fields!UsageQuantity.Value / Iif(Fields!OriginalQty.Value = 0, 1, Fields!OriginalQty.Value))).ToString("P")
+&amp; " (" &amp; Fields!UsageQuantity.Value &amp; "/" &amp; Fields!OriginalQty.Value &amp; ")"</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
