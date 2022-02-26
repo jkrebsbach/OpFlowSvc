@@ -437,6 +437,7 @@ namespace OpFlow.Data
         public DateTime? BegDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string CountStatus { get; set; }
+        public bool ShowDeleted { get; set; }
         public int? RoomID { get; set; }
         public int? UserID { get; set; }
         public int? surgeonUserId { get; set; }

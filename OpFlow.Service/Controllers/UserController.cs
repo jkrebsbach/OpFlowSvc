@@ -256,7 +256,7 @@ namespace OpFlow.Service.Controllers
 
             var beginDate = DateTime.Today;
             var endDate = DateTime.Today.AddDays(14);
-            var surgeries = await sqlHelper.SearchCases(null, null, null, null, cardId, null, null, beginDate, endDate, locationId);
+            var surgeries = await sqlHelper.SearchCases(null, null, null, null, cardId, null, null, false, beginDate, endDate, locationId);
 
             return Request.CreateResponse(HttpStatusCode.OK, surgeries);
         }

@@ -982,6 +982,7 @@ namespace OpFlow.Data
     {
         public string SurgeonName { get; set; }
         public int? AuditID { get; set; }
+        public int? CountID { get; set; }
 
         public List<SurgeryAuditTray> Trays { get; set; }
 

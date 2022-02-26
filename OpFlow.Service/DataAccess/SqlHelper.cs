@@ -7364,7 +7364,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<List<SurgerySearchResult>> SearchCases(int? userId, int? surgeonUserId, 
-            int? roomGroupId, int? roomId, int? cardId, int? procedureId, int? specialtyId, 
+            int? roomGroupId, int? roomId, int? cardId, int? procedureId, int? specialtyId, bool showDeleted,
             DateTime? begDate, DateTime? endDate, int locationId)
         {
             var parameters = new[]
@@ -7376,6 +7376,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("card_id", cardId ?? (object)DBNull.Value),
                 new SqlParameter("procedure_id", procedureId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("show_deleted", showDeleted),
                 new SqlParameter("beg_date", begDate ?? (object)DBNull.Value),
                 new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
@@ -7430,7 +7431,7 @@ namespace OpFlow.Service.DataAccess
 
         public async Task<List<SurgeryAuditSearchResult>> GetProposedTrayAuditSearch(int? trayProposalId,
             int? surgeonUserId,
-            int? specialtyId, int? trayId, int? cardId,
+            int? specialtyId, int? trayId, int? cardId, int? roomGroupId,
             DateTime? begDate, DateTime? endDate, string target, int locationId)
         {
             var parameters = new[]
@@ -7441,6 +7442,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("tray_id", trayId ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardId ?? (object)DBNull.Value),
+                new SqlParameter("room_group_id", roomGroupId ?? (object)DBNull.Value),
                 new SqlParameter("beg_date", begDate ?? (object)DBNull.Value),
                 new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)

@@ -50,8 +50,9 @@ namespace OpFlow.Service.Controllers
             var surgeonPreferences = await sqlHelper.GetSurgeonPreferences(user.SelectedLocation);
             var communicationMethods = await sqlHelper.GetTrayCommunicationMethods(user.SelectedLocation);
             var rules = await sqlHelper.GetProposedTrayScheduleRules(user.UserID, user.SelectedLocation);
+            var roomGroups = await sqlHelper.GetRoomGroups(user.SelectedLocation);
             var orgCharts = await sqlHelper.GetOrgChartAttachments(user.SelectedLocation);
-
+            
             var attachments = await sqlHelper.GetImplementationAttachments(user.SelectedLocation);
             var implementation = TrayImplementation.GetImplementationSteps(attachments);
 
@@ -97,6 +98,7 @@ namespace OpFlow.Service.Controllers
                 Rules = rules,
                 Implementation = implementation,
                 OrgCharts = orgCharts,
+                RoomGroups = roomGroups,
                 CommunicationMethods = communicationMethods
             };
 
@@ -290,7 +292,7 @@ namespace OpFlow.Service.Controllers
         [Route("searchCases")]
         [HttpGet]
         public async Task<HttpResponseMessage> SearchCases(string target,
-            int? trayProposalId = null, int? surgeonUserId = null, int? specialtyId = null, int? trayId = null, int? cardId = null, 
+            int? trayProposalId = null, int? surgeonUserId = null, int? specialtyId = null, int? trayId = null, int? cardId = null, int? roomGroupId = null,
             DateTime? beginDate = null, DateTime? endDate = null)
         {
             var user = await CacheUtil.GetUserSecurity();
@@ -298,7 +300,8 @@ namespace OpFlow.Service.Controllers
 
             beginDate = beginDate ?? (DateTime.Today.AddDays(-1));
 
-            var cases = await sqlHelper.GetProposedTrayAuditSearch(trayProposalId, surgeonUserId, specialtyId, trayId, cardId, beginDate, endDate, 
+            var cases = await sqlHelper.GetProposedTrayAuditSearch(trayProposalId, surgeonUserId, specialtyId, trayId, cardId, roomGroupId,
+                beginDate, endDate, 
                 target, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, cases);
