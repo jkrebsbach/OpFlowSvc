@@ -99,7 +99,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var roomSetup = await sqlHelper.GetRoomSetup(roomSetupId, user.ProviderID, user.LocationID);
+            var roomSetup = await sqlHelper.GetRoomSetup(roomSetupId, user.SelectedLocation);
 
             if (roomSetup == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);

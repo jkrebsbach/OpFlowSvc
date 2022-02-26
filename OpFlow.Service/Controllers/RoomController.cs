@@ -65,12 +65,12 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetSetups")]
         [Route("setups")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<RoomSetup>))]
-        public async Task<IEnumerable<RoomSetup>> GetSetups(int? roomSetupId = null, int? locationId = null)
+        public async Task<IEnumerable<RoomSetup>> GetSetups(int? roomSetupId = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var setups = await sqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.SelectedLocation);
+            var setups = await sqlHelper.GetRoomSetups(roomSetupId, user.SelectedLocation);
 
             if (roomSetupId != null)
                 setups = setups.Where(s => s.RoomSetupID == roomSetupId).ToList();
@@ -87,13 +87,13 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var setups = (await sqlHelper.GetRoomSetups(roomSetupId, user.ProviderID, user.SelectedLocation))
+            var setups = (await sqlHelper.GetRoomSetups(roomSetupId, user.SelectedLocation))
                 .Where(s => s.RoomSetupID == roomSetupId).ToList();
             
             var roomTypes = await sqlHelper.GetRoomTypes(user.SelectedLocation);
-            var patientPositions = await sqlHelper.GetPatientPositions(user.ProviderID, user.SelectedLocation);
+            var patientPositions = await sqlHelper.GetPatientPositions(user.SelectedLocation);
             var lateralities = await sqlHelper.GetLateralities(user.SelectedLocation);
-            var bedOrientations = await sqlHelper.GetBedOrientations(user.ProviderID, user.SelectedLocation);
+            var bedOrientations = await sqlHelper.GetBedOrientations(user.SelectedLocation);
 
             var equipment = await sqlHelper.GetItems("EQUIPMENT", null, null, user.SelectedLocation);
             var instruments = await sqlHelper.GetItems("INSTRUMENT", null, null, user.SelectedLocation);
@@ -121,7 +121,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            return await sqlHelper.GetPatientPositions(user.ProviderID, user.SelectedLocation);
+            return await sqlHelper.GetPatientPositions(user.SelectedLocation);
         }
 
         // GET api/values
@@ -145,7 +145,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            return await sqlHelper.GetBedOrientations(user.ProviderID, user.SelectedLocation);
+            return await sqlHelper.GetBedOrientations( user.SelectedLocation);
         }
 
         // PUT api/roomSetup/values/5
@@ -158,7 +158,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateRoom(roomId, room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.SelectedLocation);
+            await sqlHelper.UpdateRoom(roomId, room.Description, room.RoomTypeID, room.RoomGroupID, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomId);
         }
@@ -173,7 +173,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var roomId = await sqlHelper.InsertRoom(room.Description, room.RoomTypeID, room.RoomGroupID, user.ProviderID, user.LocationID);
+            var roomId = await sqlHelper.InsertRoom(room.Description, room.RoomTypeID, room.RoomGroupID, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomId);
         }
@@ -188,7 +188,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.DeleteRoom(roomId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteRoom(roomId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomId);
         }
@@ -203,7 +203,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var roomSetupId = await sqlHelper.CreateRoomSetup(roomSetup, user.ProviderID, user.LocationID);
+            var roomSetupId = await sqlHelper.CreateRoomSetup(roomSetup, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomSetupId);
         }
@@ -219,7 +219,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateRoomSetup(roomsetupId, user.ProviderID, user.LocationID, roomSetup);
+            await sqlHelper.UpdateRoomSetup(roomsetupId, user.SelectedLocation, roomSetup);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomsetupId);
         }
@@ -235,7 +235,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.DeleteRoomSetup(roomsetupId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteRoomSetup(roomsetupId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomsetupId);
         }
@@ -261,12 +261,12 @@ namespace OpFlow.Service.Controllers
             var fileContents = await provider.Contents[0].ReadAsByteArrayAsync();
 
             // Make sure there's actually a valid room setup to assign this image to...
-            var roomSetup = await sqlHelper.GetRoomSetup(roomSetupId, user.ProviderID, user.LocationID);
+            var roomSetup = await sqlHelper.GetRoomSetup(roomSetupId, user.SelectedLocation);
             if (roomSetup == null)
                 return Ok();
 
             var roomSetupImageId = await sqlHelper.NewRoomSetupImage(roomSetupId, label,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
             if (fileExtension == ".png" ||
                 fileExtension == ".jpg" ||
@@ -294,7 +294,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateRoomSetupImage(roomSetupImageId, flowImage.Comment, user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateRoomSetupImage(roomSetupImageId, flowImage.Comment, user.SelectedLocation);
 
             return Ok();
         }
@@ -332,7 +332,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.DeleteRoomSetupImage(roomSetupImageId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteRoomSetupImage(roomSetupImageId, user.SelectedLocation);
 
             var folder = BlobStorageHelper.Folder(BlobStorageHelper.ImageType.RoomSetupImages, roomSetupId);
 

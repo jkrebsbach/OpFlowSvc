@@ -6657,11 +6657,10 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public async Task<RoomSetup> GetRoomSetup(int roomSetupId, int providerId, int locationId)
+        public async Task<RoomSetup> GetRoomSetup(int roomSetupId, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("room_setup_id", roomSetupId),
             };
@@ -6672,11 +6671,10 @@ namespace OpFlow.Service.DataAccess
             return setups.FirstOrDefault(s => s.RoomSetupID == roomSetupId);
         }
 
-        public async Task<List<RoomSetup>> GetRoomSetups(int? roomSetupId, int providerId, int locationId)
+        public async Task<List<RoomSetup>> GetRoomSetups(int? roomSetupId, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("room_setup_id", roomSetupId ?? (object)DBNull.Value),
             };
@@ -6715,11 +6713,10 @@ namespace OpFlow.Service.DataAccess
             return setups;
         }
 
-        public async Task<List<PatientPosition>> GetPatientPositions(int providerId, int locationId)
+        public async Task<List<PatientPosition>> GetPatientPositions(int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
             var dsSchedules = await ExecuteCommandAsync("GetPatientPositions", dsParameters);
@@ -6729,11 +6726,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<BedOrientation>> GetBedOrientations(int providerId, int locationId)
+        public async Task<List<BedOrientation>> GetBedOrientations(int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
             var dsSchedules = await ExecuteCommandAsync("GetBedOrientations", dsParameters);
@@ -6953,11 +6949,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateRoom(int roomId, string description, int typeId, int groupId, int providerId, int locationId)
+        public async Task<int> UpdateRoom(int roomId, string description, int typeId, int groupId, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("room_id", roomId),
                 new SqlParameter("description", description),
@@ -6969,11 +6964,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> InsertRoom(string description, int typeId, int groupId, int providerId, int locationId)
+        public async Task<int> InsertRoom(string description, int typeId, int groupId, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("description", description),
                 new SqlParameter("room_type_id", typeId),
@@ -6986,11 +6980,10 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
-        public async Task<int> DeleteRoom(int roomId, int providerId, int locationId)
+        public async Task<int> DeleteRoom(int roomId, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("room_id", roomId)
             };
@@ -6999,12 +6992,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateRoomSetup(int roomSetupId, int providerId, int locationId, RoomSetup newRoomSetup)
+        public async Task<int> UpdateRoomSetup(int roomSetupId, int locationId, RoomSetup newRoomSetup)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("room_setup_id", roomSetupId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("setup_name", newRoomSetup.SetupName),
                 new SqlParameter("laterality_id", newRoomSetup.LateralityID),
@@ -7013,19 +7005,18 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("bed_orientation_id", newRoomSetup.BedOrientationID),
             };
             var update = await ExecuteNonQueryAsync("UpdateRoomSetup", dsParameters);
-            var currentRoomSetup = (await GetRoomSetups(roomSetupId, providerId, locationId)).FirstOrDefault();
+            var currentRoomSetup = (await GetRoomSetups(roomSetupId, locationId)).FirstOrDefault();
 
-            await SyncRoomSetupAttributes(roomSetupId, providerId, locationId, newRoomSetup, currentRoomSetup);
+            await SyncRoomSetupAttributes(roomSetupId, locationId, newRoomSetup, currentRoomSetup);
 
             return roomSetupId;
         }
 
-        public async Task<int> DeleteRoomSetup(int roomSetupId, int providerId, int locationId)
+        public async Task<int> DeleteRoomSetup(int roomSetupId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("room_setup_id", roomSetupId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var insert = await ExecuteNonQueryAsync("DeleteRoomSetup", dsParameters);
@@ -7033,11 +7024,10 @@ namespace OpFlow.Service.DataAccess
             return insert;
         }
 
-        public async Task<int> CreateRoomSetup(RoomSetup roomSetup, int providerId, int locationId)
+        public async Task<int> CreateRoomSetup(RoomSetup roomSetup, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("setup_name", roomSetup.SetupName),
                 new SqlParameter("laterality_id", roomSetup.LateralityID),
@@ -7051,12 +7041,12 @@ namespace OpFlow.Service.DataAccess
 
             var roomSetupId = result.FirstOrDefault()?.Identifier ?? -1;
 
-            await SyncRoomSetupAttributes(roomSetupId, providerId, locationId, roomSetup, null);
+            await SyncRoomSetupAttributes(roomSetupId, locationId, roomSetup, null);
 
             return roomSetupId;
         }
 
-        private async Task SyncRoomSetupAttributes(int roomSetupId, int providerId, int locationId, RoomSetup newRoomSetup, RoomSetup currentRoomSetup)
+        private async Task SyncRoomSetupAttributes(int roomSetupId, int locationId, RoomSetup newRoomSetup, RoomSetup currentRoomSetup)
         {
             foreach (var roomSetupEquipment in newRoomSetup.SetupEquipment)
             {
@@ -7064,11 +7054,11 @@ namespace OpFlow.Service.DataAccess
                     se.RoomSetupEquipmentID == roomSetupEquipment.RoomSetupEquipmentID);
 
                 if (currentEquipment != null)
-                    await UpdateRoomSetupEquipment(roomSetupEquipment, providerId, locationId);
+                    await UpdateRoomSetupEquipment(roomSetupEquipment, locationId);
                 else
                 {
                     roomSetupEquipment.RoomSetupEquipmentID =
-                        await InsertRoomSetupEquipment(roomSetupId, roomSetupEquipment, providerId, locationId);
+                        await InsertRoomSetupEquipment(roomSetupId, roomSetupEquipment, locationId);
                 }
             }
             foreach (var roomSetupItem in newRoomSetup.SetupItems)
@@ -7077,11 +7067,11 @@ namespace OpFlow.Service.DataAccess
                     se.RoomSetupItemID == roomSetupItem.RoomSetupItemID);
 
                 if (currentItem != null)
-                    await UpdateRoomSetupItem(roomSetupItem, providerId, locationId);
+                    await UpdateRoomSetupItem(roomSetupItem, locationId);
                 else
                 {
                     roomSetupItem.RoomSetupItemID =
-                        await InsertRoomSetupItem(roomSetupId, roomSetupItem, providerId, locationId);
+                        await InsertRoomSetupItem(roomSetupId, roomSetupItem, locationId);
                 }
             }
             foreach (var roomSetupStaffPosition in newRoomSetup.StaffPositions)
@@ -7090,10 +7080,10 @@ namespace OpFlow.Service.DataAccess
                     se.StaffPosition == roomSetupStaffPosition.StaffPosition);
 
                 if (currentStaffPosition != null)
-                    await UpdateRoomSetupStaffPosition(roomSetupStaffPosition, providerId, locationId);
+                    await UpdateRoomSetupStaffPosition(roomSetupStaffPosition, locationId);
                 else
                 {
-                    await InsertRoomSetupStaffPosition(roomSetupId, roomSetupStaffPosition, providerId, locationId);
+                    await InsertRoomSetupStaffPosition(roomSetupId, roomSetupStaffPosition, locationId);
                 }
             }
             foreach (var setupImage in newRoomSetup.SetupImages)
@@ -7103,7 +7093,7 @@ namespace OpFlow.Service.DataAccess
 
                 // can't create inline - must upload out of band
                 if (currentImage != null)
-                    await UpdateRoomSetupImage(currentImage.RoomSetupImageID, setupImage.Label, providerId, locationId);
+                    await UpdateRoomSetupImage(currentImage.RoomSetupImageID, setupImage.Label, locationId);
             }
 
             if (currentRoomSetup != null)
@@ -7114,7 +7104,7 @@ namespace OpFlow.Service.DataAccess
                         se.RoomSetupEquipmentID == currentSetupEquipment.RoomSetupEquipmentID);
 
                     if (sentEquipment == null)
-                        await DeleteRoomSetupEquipment(currentSetupEquipment.RoomSetupEquipmentID, providerId, locationId);
+                        await DeleteRoomSetupEquipment(currentSetupEquipment.RoomSetupEquipmentID, locationId);
                 }
 
                 foreach (var currentSetupEquipment in currentRoomSetup.SetupItems ?? new List<RoomSetupItem>())
@@ -7123,7 +7113,7 @@ namespace OpFlow.Service.DataAccess
                         se.RoomSetupItemID == currentSetupEquipment.RoomSetupItemID);
 
                     if (sentItem == null)
-                        await DeleteRoomSetupItem(currentSetupEquipment.RoomSetupItemID, providerId, locationId);
+                        await DeleteRoomSetupItem(currentSetupEquipment.RoomSetupItemID, locationId);
                 }
 
                 foreach (var currentStaffPosition in currentRoomSetup.StaffPositions ?? new List<RoomSetupStaffPosition>())
@@ -7132,7 +7122,7 @@ namespace OpFlow.Service.DataAccess
                         se.StaffPosition == currentStaffPosition.StaffPosition);
 
                     if (sentItem == null)
-                        await DeleteRoomSetupStaffPosition(currentStaffPosition, providerId, locationId);
+                        await DeleteRoomSetupStaffPosition(currentStaffPosition, locationId);
                 }
 
                 foreach (var currentImage in currentRoomSetup.SetupImages ?? new List<RoomSetupImage>())
@@ -7141,17 +7131,16 @@ namespace OpFlow.Service.DataAccess
                         img.RoomSetupImageID == currentImage.RoomSetupImageID);
 
                     if (sentImage == null)
-                        await DeleteRoomSetupImage(currentImage.RoomSetupImageID, providerId, locationId);
+                        await DeleteRoomSetupImage(currentImage.RoomSetupImageID, locationId);
                 }
             }
         }
 
-        public async Task<int> NewRoomSetupImage(int roomSetupId, string label, int providerId, int locationId)
+        public async Task<int> NewRoomSetupImage(int roomSetupId, string label, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("room_setup_id", roomSetupId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("label", label ?? (object)DBNull.Value)
             };
@@ -7161,11 +7150,10 @@ namespace OpFlow.Service.DataAccess
             return result.First().Identifier;
         }
 
-        public async Task<int> UpdateRoomSetupImage(int roomSetupImageId, string label, int providerId, int locationId)
+        public async Task<int> UpdateRoomSetupImage(int roomSetupImageId, string label, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("room_setup_image_id", roomSetupImageId),
                 new SqlParameter("label", label ?? (object)DBNull.Value)
@@ -7173,23 +7161,21 @@ namespace OpFlow.Service.DataAccess
             return await ExecuteNonQueryAsync("UpdateRoomSetupImage", dsParameters);
         }
 
-        public async Task<int> DeleteRoomSetupImage(int roomSetupImageId, int providerId, int locationId)
+        public async Task<int> DeleteRoomSetupImage(int roomSetupImageId, int locationId)
         {
             var dsParameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("room_setup_image_id", roomSetupImageId)
             };
             return await ExecuteNonQueryAsync("DeleteRoomSetupImage", dsParameters);
         }
 
-        public async Task<int> InsertRoomSetupEquipment(int roomSetupId, RoomSetupEquipment roomSetupEquipment, int providerId, int locationId)
+        public async Task<int> InsertRoomSetupEquipment(int roomSetupId, RoomSetupEquipment roomSetupEquipment, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("room_setup_id", roomSetupId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("item_id", roomSetupEquipment.ItemID),
                 new SqlParameter("equipment_position", roomSetupEquipment.EquipmentPosition)
@@ -7203,12 +7189,11 @@ namespace OpFlow.Service.DataAccess
             return roomSetupEquipmentId;
         }
 
-        public async Task<int> InsertRoomSetupItem(int roomSetupId, RoomSetupItem roomSetupItem, int providerId, int locationId)
+        public async Task<int> InsertRoomSetupItem(int roomSetupId, RoomSetupItem roomSetupItem, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("room_setup_id", roomSetupId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("item_id", roomSetupItem.ItemID),
                 new SqlParameter("quantity", roomSetupItem.ItemQuantity)
@@ -7222,12 +7207,11 @@ namespace OpFlow.Service.DataAccess
             return roomSetupItemId;
         }
 
-        public async Task<int> InsertRoomSetupStaffPosition(int roomSetupId, RoomSetupStaffPosition roomSetupStaffPosition, int providerId, int locationId)
+        public async Task<int> InsertRoomSetupStaffPosition(int roomSetupId, RoomSetupStaffPosition roomSetupStaffPosition, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("room_setup_id", roomSetupId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("staff_position", roomSetupStaffPosition.StaffPosition),
                 new SqlParameter("staff_role_id", roomSetupStaffPosition.StaffRoleID)
@@ -7236,12 +7220,11 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public async Task<int> UpdateRoomSetupEquipment(RoomSetupEquipment roomSetupEquipment, int providerId, int locationId)
+        public async Task<int> UpdateRoomSetupEquipment(RoomSetupEquipment roomSetupEquipment, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("room_setup_equipment_id", roomSetupEquipment.RoomSetupEquipmentID),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("item_id", roomSetupEquipment.ItemID),
                 new SqlParameter("equipment_position", roomSetupEquipment.EquipmentPosition)
@@ -7252,12 +7235,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateRoomSetupItem(RoomSetupItem roomSetupItem, int providerId, int locationId)
+        public async Task<int> UpdateRoomSetupItem(RoomSetupItem roomSetupItem, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("room_setup_item_id", roomSetupItem.RoomSetupItemID),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("item_id", roomSetupItem.ItemID),
                 new SqlParameter("quantity", roomSetupItem.ItemQuantity)
@@ -7267,12 +7249,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> UpdateRoomSetupStaffPosition(RoomSetupStaffPosition roomSetupStaffPosition, int providerId, int locationId)
+        public async Task<int> UpdateRoomSetupStaffPosition(RoomSetupStaffPosition roomSetupStaffPosition, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("room_setup_id", roomSetupStaffPosition.RoomSetupID),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("staff_position", roomSetupStaffPosition.StaffPosition),
                 new SqlParameter("staff_role_id", roomSetupStaffPosition.StaffRoleID)
@@ -7281,12 +7262,11 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public async Task<int> DeleteRoomSetupEquipment(int roomSetupEquipmentId, int providerId, int locationId)
+        public async Task<int> DeleteRoomSetupEquipment(int roomSetupEquipmentId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("room_setup_equipment_id", roomSetupEquipmentId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
             var result = await ExecuteNonQueryAsync("DeleteRoomSetupEquipment", dsParameters);
@@ -7294,12 +7274,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> DeleteRoomSetupItem(int roomSetupItemId, int providerId, int locationId)
+        public async Task<int> DeleteRoomSetupItem(int roomSetupItemId, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("room_setup_item_id", roomSetupItemId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
             };
             var result = await ExecuteNonQueryAsync("DeleteRoomSetupItem", dsParameters);
@@ -7307,12 +7286,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> DeleteRoomSetupStaffPosition(RoomSetupStaffPosition roomSetupStaffPosition, int providerId, int locationId)
+        public async Task<int> DeleteRoomSetupStaffPosition(RoomSetupStaffPosition roomSetupStaffPosition, int locationId)
         {
             var dsParameters = new[]
             {
                 new SqlParameter("room_setup_id", roomSetupStaffPosition.RoomSetupID),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId),
                 new SqlParameter("staff_position", roomSetupStaffPosition.StaffPosition)
             };
