@@ -215,6 +215,7 @@ namespace OpFlow.Data
         public int? CurrentInstrumentID { get; set; }
         public int InstrumentCount { get; set; }
         public decimal AvgPerCase { get; set; }
+        public int? MaxUsed { get; set; }
         public int SourceQty { get; set; }
         public int? TrayProposalCategoryID { get; set; }
         public int? EponymID { get; set; }
