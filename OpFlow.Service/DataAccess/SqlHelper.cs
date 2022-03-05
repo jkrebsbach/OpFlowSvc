@@ -656,7 +656,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetConcordanceReportData(List<int> specialtyId, List<int> surgeonId,
-            List<int> procedureId, List<int> trayId, int? trayTypeId, string vendorTray, List<int> cardCategoryId, List<int> cardId, List<string> metricId,
+            List<int> procedureId, List<int> trayId, int? trayTypeId, string vendorTray, List<int> cardCategoryId, List<int> cardId, List<string> metricId, List<int> roomGroupId,
             string instruments, bool showMax, string label,  int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
@@ -666,6 +666,7 @@ namespace OpFlow.Service.DataAccess
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
             var cardXml = GetIdentitySummary(cardId);
             var metricXml = GetMetricFilterSummary(metricId);
+            var roomGroupXml = GetIdentitySummary(roomGroupId);
 
             var parameters = new[]
             {
@@ -678,6 +679,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("metric_id", metricXml ?? (object)DBNull.Value),
+                new SqlParameter("room_group_id", roomGroupXml ?? (object)DBNull.Value),
                 new SqlParameter("instruments", instruments),
                 new SqlParameter("show_max", showMax),
                 new SqlParameter("label", label),
@@ -1301,13 +1303,14 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<DataSet> GetAnalyticsCountSummaryData(List<int> specialtyId, List<int> surgeonId, List<int> cardId, List<int> cardCategoryId,
-            List<int> roomGroupId, string group, int locationId)
+            List<int> roomGroupId, List<int> trayId, string group, int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var surgeonXml = GetIdentitySummary(surgeonId);
             var cardXml = GetIdentitySummary(cardId);
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
             var roomGroupXml = GetIdentitySummary(roomGroupId);
+            var trayXml = GetIdentitySummary(trayId);
 
             var parameters = new[]
             {
@@ -1316,6 +1319,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("card_id", cardXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("room_group_id", roomGroupXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("group", group ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };

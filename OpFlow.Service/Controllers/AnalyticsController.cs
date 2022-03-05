@@ -239,7 +239,7 @@ namespace OpFlow.Service.Controllers
                 post.TrayId = null;
 
             var countAnalytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, 
-                null, null, null, null, "tray", user.SelectedLocation);
+                null, null, null, null, null, "tray", user.SelectedLocation);
             var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, 
                 null, null, null, null, post.TrayId, null, "t", user.SelectedLocation);
             var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, 
@@ -419,7 +419,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, post.TrayTypeID, post.VendorTray,
-                post.CardCategoryID, post.CardID, post.MetricID, post.Instruments, post.ShowMax, post.Label, user.SelectedLocation);
+                post.CardCategoryID, post.CardID, post.MetricID, post.RoomGroupID, post.Instruments, post.ShowMax, post.Label, user.SelectedLocation);
 
             var summary = SummarizeConcordanceReport(analytics.Tables[0]);
             
@@ -452,11 +452,20 @@ namespace OpFlow.Service.Controllers
                 new ReportParameter("Timezone", post.Timezone.ToString())
             };
 
-            var datasets = new Dictionary<string, DataTable>
+            byte[] result = null;
+
+            try
             {
-                ["ConcordanceReport"] = concordance.ToTable()
-            };
-            var result = ReportHelper.GetReport("ConcordanceReport", format, datasets, parameters);
+                var datasets = new Dictionary<string, DataTable>
+                {
+                    ["ConcordanceReport"] = concordance.ToTable()
+                };
+                result = ReportHelper.GetReport("ConcordanceReport", format, datasets, parameters);
+            }
+            catch(Exception ex)
+            {
+                // ignore exceptions
+            }
             
             if (format?.ToUpper() == "PDF")
             {
@@ -1774,7 +1783,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
-                post.RoomGroupId, post.Group, user.SelectedLocation);
+                post.RoomGroupId, post.TrayId, post.Group, user.SelectedLocation);
 
             var parameters = new[]
             {

@@ -10,6 +10,8 @@ namespace OpFlow.Service.DataAccess
     {
         public static List<byte[]> CreateWebImage(byte[] tiffBytes)
         {
+            if (tiffBytes == null) return null;
+
             var result = new List<byte[]>();
 
             var tiffStream = new MemoryStream(tiffBytes);

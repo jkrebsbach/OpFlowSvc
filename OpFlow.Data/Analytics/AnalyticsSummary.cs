@@ -267,6 +267,7 @@ namespace OpFlow.Data
         public List<int> CardID { get; set; }
         public List<int> ItemID { get; set; }
         public List<int> InstrumentID { get; set; }
+        public List<int> RoomGroupID { get; set; }
         public List<int> TrayPhaseID { get; set; }
         public List<string> MetricID { get; set; }
         public List<string> Cpt { get; set; }
@@ -446,6 +447,7 @@ namespace OpFlow.Data
         public List<int> RoomGroupId { get; set; }
         public List<int> ItemCategoryId { get; set; }
         public List<int> ItemId { get; set; }
+        public List<int> TrayId { get; set; }
         public string Order { get; set; }
         public string Group { get; set; }
     }

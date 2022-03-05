@@ -447,7 +447,7 @@ namespace OpFlow.Service.Controllers
                 SutureCounts = await sqlHelper.GetSurgerySutureCounts(surgeryId, user.SelectedLocation)
             };
 
-            foreach (var countType in itemCounts)
+            foreach (var countType in itemCounts.OrderByDescending(ic => ic.Min(i => i.TrayName)))
             {
                 switch (countType.Key.ItemType)
                 {

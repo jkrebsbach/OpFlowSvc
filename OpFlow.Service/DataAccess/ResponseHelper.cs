@@ -158,7 +158,7 @@ namespace OpFlow.Service.DataAccess
                 new
                 {
                     Summary = summary,
-                    Images = pngResult.Select(img => new SecureImage()
+                    Images = pngResult?.Select(img => new SecureImage()
                     {
                         DocumentBytes = "data:image/png;base64, " + Convert.ToBase64String(img)
                     })
