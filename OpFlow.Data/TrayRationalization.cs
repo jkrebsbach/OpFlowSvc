@@ -290,6 +290,12 @@ namespace OpFlow.Data
         public string CptCode { get; set; }
     }
 
+    public class TrayProposalCsvExportPost
+    {
+        public List<int> TrayProposalId { get; set; }
+        public string Type { get; set; }
+    }
+
     public class CardListPost
     {
         public List<CardListTrayPost> Trays { get; set; }

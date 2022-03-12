@@ -1291,71 +1291,44 @@ namespace OpFlow.Service.Controllers
         }
 
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
-        [Route("proposedTray/csv/{trayProposalId}", Name = "GetTrayCsv")]
-        [HttpGet]
-        public async Task<HttpResponseMessage> GetTrayCsv(int trayProposalId, string type)
+        [Route("proposedTray/csv", Name = "GetTrayCsv")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutTrayCsv([FromBody] TrayProposalCsvExportPost post)
         {
-            if (type == "export")
+            if (post.Type == "export")
             {
-                return await TraySummaryCsv(trayProposalId);
+                return await TraySummaryCsv(post.TrayProposalId);
             }
 
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var export = await sqlHelper.GetProposedTrayInstrumentExport(trayProposalId, user.SelectedLocation);
-
-            var proposed = export.ProposedInstruments;
-            
-            foreach (var sourceInstrument in export.SourceInstruments)
+            var dataTables = new List<DataTable>();
+            foreach (var trayProposalId in post.TrayProposalId)
             {
-                if (export.ProposedInstruments.All(p => p.InstrumentID != sourceInstrument.InstrumentID))
+                var proposedTray = await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation);
+                var trayName = proposedTray.FirstOrDefault()?.TrayName ?? "UNKNOWN";
+
+                var export = await sqlHelper.GetProposedTrayInstrumentExport(trayProposalId, user.SelectedLocation);
+
+                var proposed = export.ProposedInstruments;
+
+                foreach (var sourceInstrument in export.SourceInstruments)
                 {
-                    proposed.Add(sourceInstrument);
+                    if (export.ProposedInstruments.All(p => p.InstrumentID != sourceInstrument.InstrumentID))
+                    {
+                        proposed.Add(sourceInstrument);
+                    }
                 }
+
+                var dtbl = post.Type == "surgical" ? GenerateSurgicalData(proposed) : GenerateSpecialistData(proposed);
+                dtbl.TableName = trayName;
+                dataTables.Add(dtbl);
             }
 
-            var required = new List<TrayRationalizationExport>();
-            var review = new List<TrayRationalizationExport>();
-            var removed = new List<TrayRationalizationExport>();
+            var extractBytes = ExcelHelper.GenerateWorkbook(dataTables);
 
-            foreach (var instrument in proposed)
-            {
-                if (instrument.AvgPerCase == 0)
-                {
-                    removed.Add(instrument);
-                    continue;
-                }
-                var radix = instrument.AvgPerCase - (int) instrument.AvgPerCase;
-                if (radix <= 0.10M)
-                {
-                    review.Add(instrument);
-                    continue;
-                }
-                
-                required.Add(instrument);
-            }
-
-            var categories = new string[] {"REQUIRED", "NEEDS REVIEW", "REMOVED"};
-            var lists = new List<List<TrayRationalizationExport>>() {required, review, removed};
-
-            var extract = string.Empty;
-            for (var index = 0; index < 3; index++)
-            {
-                extract += $"{categories[index]}\r\n";
-                extract += type == "surgical"
-                    ? "Instrument Name, Quantity, Reason for Adding\r\n"
-                    : "Instrument Name, Avg when used, Case Usage Pcnt, Original Quantity, Proposed Quantity, Reason for Adding\r\n";
-
-                foreach (var instrument in lists[index].OrderByDescending(r => r.SourceQuantity))
-                {
-                    extract += type == "surgical"
-                        ? $"\"{instrument.InstrumentName?.Trim().Replace("\"", "\"\"")}\",{instrument.ProposedQuantity},\r\n"
-                        : $"\"{instrument.InstrumentName?.Trim().Replace("\"", "\"\"")}\",{instrument.AvgUsed:#.00},{instrument.CaseUsagePcnt:#.00}%,{instrument.SourceQuantity},{instrument.ProposedQuantity},\r\n";
-                }
-            }
-
-            var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
+            //var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
             var memStream = new MemoryStream(extractBytes);
             var result = new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -1364,7 +1337,7 @@ namespace OpFlow.Service.Controllers
 
             result.Content.Headers.ContentDisposition =
                 new ContentDispositionHeaderValue("attachment")
-                    { FileName = "TrayRationalization.csv", };
+                    { FileName = "TrayRationalization.xls", };
 
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
             result.Content.Headers.ContentLength = memStream.Length;
@@ -1372,21 +1345,77 @@ namespace OpFlow.Service.Controllers
             return result;
         }
 
-        private async Task<HttpResponseMessage> TraySummaryCsv(int trayProposalId)
+        private static DataTable GenerateSpecialistData(List<TrayRationalizationExport> data)
+        {
+            DataTable result = new DataTable();
+            result.Columns.Add("Instrument Name");
+            result.Columns.Add("Avg when used", typeof(decimal));
+            result.Columns.Add("Case Usage Pcnt", typeof(decimal));
+            result.Columns.Add("Original Quantity", typeof(int));
+            result.Columns.Add("Proposed Quantity", typeof(int));
+            result.Columns.Add("Reason for Adding");
+
+            foreach (var instrument in data.OrderByDescending(r => r.SourceQuantity))
+            {
+                var drRow = result.NewRow();
+                drRow["Instrument Name"] = instrument.InstrumentName?.Trim();
+                drRow["Avg when used"] = instrument.AvgUsed;
+                drRow["Case Usage Pcnt"] = instrument.CaseUsagePcnt;
+                drRow["Original Quantity"] = instrument.SourceQuantity;
+                drRow["Proposed Quantity"] = instrument.ProposedQuantity;
+                drRow["Reason for Adding"] = string.Empty;
+
+                result.Rows.Add(drRow);
+            }
+
+            return result;
+        }
+
+        private static DataTable GenerateSurgicalData(List<TrayRationalizationExport> data)
+        {
+            DataTable result = new DataTable();
+            result.Columns.Add("Instrument Name");
+            result.Columns.Add("Quantity", typeof(int));
+            result.Columns.Add("Reason for Adding");
+
+            foreach (var instrument in data.OrderByDescending(r => r.SourceQuantity))
+            {
+                var drRow = result.NewRow();
+                drRow["Instrument Name"] = instrument.InstrumentName?.Trim();
+                drRow["Quantity"] = instrument.ProposedQuantity;
+                drRow["Reason for Adding"] = string.Empty;
+
+                result.Rows.Add(drRow);
+            }
+
+            return result;
+        }
+
+        private async Task<HttpResponseMessage> TraySummaryCsv(List<int> trayProposalIds)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation)).First();
-            var proposedInstruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, user.SelectedLocation);
-            var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.SelectedLocation);
-            var extract = "Tray Name, Source Tray, # Instruments, Service Line, Categories\r\n";
+            var extract = string.Empty;
+            var delim = string.Empty;
 
-            foreach (var sourceTray in sourceTrays)
+            foreach (var trayProposalId in trayProposalIds)
             {
-                extract += $"\"{proposedTray.TrayName?.Trim().Replace("\"", "\"\"")}\",{sourceTray.TrayName},{proposedInstruments.Sum(p => p.Quantity)},{proposedTray.Specialty},\"{sourceTray.CardCategories?.Trim().Replace("\"", "\"\"")}\"\r\n";
+                extract += delim;
+
+                var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation)).First();
+                var proposedInstruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, user.SelectedLocation);
+                var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.SelectedLocation);
+                extract = "Tray Name, Source Tray, # Instruments, Service Line, Categories\r\n";
+
+                foreach (var sourceTray in sourceTrays)
+                {
+                    extract += $"\"{proposedTray.TrayName?.Trim().Replace("\"", "\"\"")}\",{sourceTray.TrayName},{proposedInstruments.Sum(p => p.Quantity)},{proposedTray.Specialty},\"{sourceTray.CardCategories?.Trim().Replace("\"", "\"\"")}\"\r\n";
+                }
+
+                delim = "\r\n";
             }
-            
+
             var extractBytes = System.Text.Encoding.UTF8.GetBytes(extract);
             var memStream = new MemoryStream(extractBytes);
             var result = new HttpResponseMessage(HttpStatusCode.OK)
