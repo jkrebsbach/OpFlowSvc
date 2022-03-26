@@ -421,7 +421,7 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, post.TrayID, post.TrayTypeID, post.VendorTray,
                 post.CardCategoryID, post.CardID, post.MetricID, post.RoomGroupID, post.Instruments, post.ShowMax, post.Label, user.SelectedLocation);
 
-            var summary = SummarizeConcordanceReport(analytics.Tables[0]);
+            var summary = SummarizeConcordanceReport(analytics.Tables[0], analytics.Tables[1]);
             
             var concordance = analytics.Tables[0].DefaultView;
             switch (post.Order)
@@ -506,7 +506,7 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetSupplyConcordanceReportData(post.SpecialtyID, post.SurgeonID, post.ProcedureID, 
                 post.CardCategoryID, post.CardID, post.Instruments, post.Label, user.SelectedLocation);
 
-            var summary = SummarizeConcordanceReport(analytics.Tables[0]);
+            var summary = SummarizeConcordanceReport(analytics.Tables[0], null);
 
             var concordance = analytics.Tables[0].DefaultView;
             switch (post.Order)
@@ -573,12 +573,13 @@ namespace OpFlow.Service.Controllers
             }
         }
 
-        private ConcordanceReportSummary SummarizeConcordanceReport(DataTable concordanceData)
+        private ConcordanceReportSummary SummarizeConcordanceReport(DataTable concordanceData, DataTable distributionData)
         {
             var result = new ConcordanceReportSummary()
             {
                 TrayData = new List<ConcordanceReportTrayData>(),
-                Items = new List<ConcordanceReportItemData>()
+                Items = new List<ConcordanceReportItemData>(),
+                DistributionData = new List<ConcordianceDistributionData>()
             };
 
             foreach (DataRow concordanceRow in concordanceData.Rows)
@@ -638,6 +639,29 @@ namespace OpFlow.Service.Controllers
                 }
             }
 
+            if (distributionData == null) return result;
+
+            foreach (DataRow distributionRow in distributionData.Rows)
+            {
+                var distribution = new ConcordianceDistributionData()
+                {
+                    TrayNames = distributionRow["tray_csv"].ToString().Split(',').ToList(),
+                    CaseCount = (int)distributionRow["frequency"]
+                };
+
+                decimal netQty = (int)distributionRow["instrument_count"];
+                decimal usageQty = (int)distributionRow["instrument_usage"];
+
+                distribution.TrayQty = netQty / distribution.CaseCount;
+                distribution.TrayUsage = usageQty / distribution.CaseCount;
+
+                result.DistributionData.Add(distribution);
+            }
+            foreach(var distribution in result.DistributionData)
+            {
+                distribution.Frequency = 100 * (decimal)distribution.CaseCount / result.DistributionData.Sum(d => d.CaseCount);
+            }
+
             return result;
         }
 
@@ -682,7 +706,7 @@ namespace OpFlow.Service.Controllers
                     break;
             }
 
-            var summary = SummarizeConcordanceReport(analytics.Tables[0]);
+            var summary = SummarizeConcordanceReport(analytics.Tables[0], analytics.Tables[1]);
 
             if (format == "CSV")
             {

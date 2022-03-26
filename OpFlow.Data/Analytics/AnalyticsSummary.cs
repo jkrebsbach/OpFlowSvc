@@ -145,6 +145,7 @@ namespace OpFlow.Data
     { 
         public List<ConcordanceReportTrayData> TrayData { get; set; }
         public List<ConcordanceReportItemData> Items { get; set; }
+        public List<ConcordianceDistributionData> DistributionData { get; set; }
     }
 
     public class OpFlowProcedureProfileSummary
@@ -208,6 +209,16 @@ namespace OpFlow.Data
         public decimal QtyOpen { get; set; }
         public decimal TrayUsage { get; set; }
         public decimal TrayQty { get; set; }
+    }
+
+    public class ConcordianceDistributionData
+    {
+        public List<string> TrayNames { get; set; }
+        public int CaseCount { get; set; }
+        public decimal Frequency { get; set; }
+        public decimal TrayQty { get; set; }
+        public decimal TrayUsage { get; set; }
+        public decimal TrayUsagePcnt => TrayQty == 0 ? 0 : TrayUsage * 100 / TrayQty;
     }
 
     public class ConcordanceReportTrayData
