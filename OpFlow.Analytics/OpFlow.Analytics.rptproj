@@ -69,6 +69,7 @@
     <Report Include="InstrumentUsageCardExport.rdl" />
     <Report Include="InstrumentUsageCardTray.rdl" />
     <Report Include="InstrumentUsageCardTrayExport.rdl" />
+    <Report Include="InstrumentUsageDistribution.rdl" />
     <Report Include="InstrumentUsageExport.rdl" />
     <Report Include="InstrumentUsageSurgeonCard.rdl" />
     <Report Include="InstrumentUsageSurgeonCardExport.rdl" />

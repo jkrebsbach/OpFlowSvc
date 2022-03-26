@@ -162,6 +162,79 @@ namespace OpFlow.Service.Controllers
             }
         }
 
+        // GET api/values/5
+        [SwaggerOperation("InstrumentUsageDistributionReport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<InstrumentUsageSummaryResult>))]
+        [HttpPut]
+        [HttpPost]
+        [Route("instrumentUsageDistribution")]
+        [Route("instrumentUsageDistribution/{format}")]
+        public async Task<HttpResponseMessage> InstrumentUsageDistributionReport([FromBody] InstrumentUsagePost post, string format = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            format = format ?? "IMAGE";
+
+            var sqlHelper = new SqlHelper();
+            if (post.SpecialtyID == null &&
+                post.SurgeonID == null &&
+                post.CategoryID == null &&
+                post.ProcedureID == null &&
+                (post.Cpt == null || !post.Cpt.Any()) &&
+                post.TrayID == null &&
+                post.InstrumentID == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
+            }
+
+            var analytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyID, post.SurgeonID,
+                post.CategoryID, post.ProcedureID, post.Cpt, post.TrayID, post.InstrumentID, post.Group, user.SelectedLocation);
+
+            var usage = analytics.Tables[0].DefaultView;
+            switch (post.Order)
+            {
+                case "qty":
+                    usage.Sort = "QtyOpen DESC";
+                    break;
+                case "tray":
+                    usage.Sort = "TrayName DESC";
+                    break;
+                case "instrument":
+                default:
+                    usage.Sort = "Instrument DESC";
+                    break;
+            }
+
+            if (format == "CSV")
+            {
+                return ResponseHelper.CsvResponse(usage.ToTable());
+            }
+
+            var datasets = new Dictionary<string, DataTable>
+            {
+                ["InstrumentUsage"] = usage.ToTable()
+            };
+
+            var parameters = new[]
+            {
+                new ReportParameter("Target", format == "IMAGE" ? "" : await GetLocationName(user)),
+                new ReportParameter("Timezone", post.Timezone.ToString())
+            };
+
+            var result = ReportHelper.GetReport($"InstrumentUsageDistribution{(format == "IMAGE" ? "" : "Export")}", format, datasets, parameters);
+
+            if (format?.ToUpper() == "PDF")
+            {
+                return ResponseHelper.PdfResponse(result);
+            }
+            else
+            {
+                var webImage = ImageHelper.CreateWebImage(result);
+
+                return ResponseHelper.ImageResponse(Request, webImage);
+            }
+        }
+
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(string))]
         [Route("traySummary/{trayProposalId}", Name = "GetTraySummary")]
         [HttpGet]
