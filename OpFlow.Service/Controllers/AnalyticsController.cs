@@ -176,12 +176,7 @@ namespace OpFlow.Service.Controllers
             format = format ?? "IMAGE";
 
             var sqlHelper = new SqlHelper();
-            if (post.SpecialtyID == null &&
-                post.SurgeonID == null &&
-                post.CategoryID == null &&
-                post.ProcedureID == null &&
-                (post.Cpt == null || !post.Cpt.Any()) &&
-                post.TrayID == null &&
+            if (post.TrayID == null &&
                 post.InstrumentID == null)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });

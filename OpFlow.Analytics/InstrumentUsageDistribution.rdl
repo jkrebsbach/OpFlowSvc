@@ -69,7 +69,8 @@
                                 <TextRun>
                                   <Value>=Iif(Fields!TrayName.Value IS NOTHING, "", "Tray: " &amp; Fields!TrayName.Value &amp; VbCrLf) &amp;
 Iif(Fields!CardName.Value IS NOTHING, "", "Card: " &amp; Fields!CardName.Value &amp; VbCrLf) &amp;
-Iif(Fields!SurgeonName.Value IS NOTHING, "", "Surgeon: " &amp; Fields!SurgeonName.Value &amp; VbCrLf)</Value>
+Iif(Fields!SurgeonName.Value IS NOTHING, "", "Surgeon: " &amp; Fields!SurgeonName.Value &amp; VbCrLf) &amp;
+Iif(Fields!Instrument.Value IS NOTHING, "", "Instrument: " &amp; Fields!Instrument.Value &amp; VbCrLf)</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -295,7 +296,7 @@ Iif(Fields!SurgeonName.Value IS NOTHING, "", "Surgeon: " &amp; Fields!SurgeonNam
                                     <Color>#5c5c5c</Color>
                                   </Style>
                                   <ChartAxisTitle>
-                                    <Caption />
+                                    <Caption>Case Count</Caption>
                                     <Style>
                                       <FontSize>9pt</FontSize>
                                       <Color>#5c5c5c</Color>
