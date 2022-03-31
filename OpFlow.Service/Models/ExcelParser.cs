@@ -55,13 +55,15 @@ namespace OpFlow.Service.Models
                     var sheetRow = sheet.GetRow(rowIndex);
                     if (sheetRow != null)
                     {
-                        var columnA = sheetRow.GetCell(0).NumericCellValue;
+                        var columnA = sheetRow.GetCell(0)?.NumericCellValue;
                         var columnB = sheetRow.GetCell(1)?.StringCellValue;
-                        var columnC = sheetRow.GetCell(2).StringCellValue;
-                        var columnD = sheetRow.GetCell(3).StringCellValue;
-                        var columnE = sheetRow.GetCell(4).StringCellValue;
+                        var columnC = sheetRow.GetCell(2)?.StringCellValue;
+                        var columnD = sheetRow.GetCell(3)?.StringCellValue;
+                        var columnE = sheetRow.GetCell(4)?.StringCellValue;
                         var columnF = sheetRow.GetCell(5)?.StringCellValue ?? string.Empty;
                         var columnG = sheetRow.GetCell(6)?.StringCellValue ?? string.Empty;
+
+                        if (string.IsNullOrEmpty(columnC)) continue;
 
                         var surgeonMatch = Regex.Match(columnC, surgeonRegex);
                         if (surgeonMatch.Success) columnC = columnC.Replace(surgeonMatch.Groups[1].Value, "");

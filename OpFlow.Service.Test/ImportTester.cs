@@ -18,7 +18,7 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestImportFile()
         {
-            var fileName = @"F:\ColdStorage\Documents\OpFlow\Imports\2020 Log STERIS Jan_2019 Log STERIS Dec_062920_sent.xlsx";
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\Imports\Book3.xlsx";
             //var importTypeId = 1; // schedule 
             //var importTypeId = 2; // item master
             //var importTypeId = 7; // schedule without card
