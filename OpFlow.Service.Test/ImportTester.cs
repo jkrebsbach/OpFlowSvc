@@ -18,13 +18,13 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestImportFile()
         {
-            var fileName = @"F:\ColdStorage\Documents\OpFlow\Imports\Book3.xlsx";
+            var fileName = @"F:\ColdStorage\Documents\OpFlow\Imports\Gottlieb Tray Import.csv";
             //var importTypeId = 1; // schedule 
             //var importTypeId = 2; // item master
             //var importTypeId = 7; // schedule without card
             //var importTypeId = 5; // cards
-            //var importTypeId = 3; // trays
-            var importTypeId = 8; // loma linda cards
+            var importTypeId = 3; // trays
+            //var importTypeId = 8; // loma linda cards
 
 
             var sqlHelper = new SqlHelper();
@@ -34,7 +34,8 @@ namespace OpFlow.Service.Test
             //var user = await sqlHelper.GetSecureUser(null, 4); // UNC REX
             //var user = await sqlHelper.GetSecureUser(null, 459); // LMC
             //var user = await sqlHelper.GetSecureUser(null, 831); // UAB
-            var user = await sqlHelper.GetSecureUser(null, 1851); // UNC MAIN
+            //var user = await sqlHelper.GetSecureUser(null, 1851); // UNC MAIN
+            var user = await sqlHelper.GetSecureUser(null, 1914); // Jeff
 
             int? logId = null;
 

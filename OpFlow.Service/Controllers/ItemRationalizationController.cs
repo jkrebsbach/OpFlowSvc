@@ -157,7 +157,7 @@ namespace OpFlow.Service.Controllers
 
         // GET api/values/5
         [SwaggerOperation("InsertCardCategoryXRef")]
-        [Route("cardCategories")]
+        [Route("cardCategoryXref")]
         [HttpPost]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         public async Task<HttpResponseMessage> InsertCardCategoryXRef(int cardCategoryId, [FromBody] InsertCardCategoryCardPost request)

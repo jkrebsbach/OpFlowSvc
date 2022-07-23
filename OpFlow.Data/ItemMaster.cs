@@ -22,6 +22,8 @@ namespace OpFlow.Data
 
         public decimal? AvgUsed { get; set; }
         public int? TrayID { get; set; }
+        public int? TypeID { get; set; }
+        public int? CategoryID { get; set; }
         public string TrayName { get; set; }
         public int? TrayTypeID { get; set; }
         public int Quantity { get; set; }
@@ -50,6 +52,11 @@ namespace OpFlow.Data
         public bool Warning { get; set; }
     }
 
+    public class ItemMasterType
+    {
+        public int TypeID { get; set; }
+        public string TypeDescription { get; set; }
+    }
     public class ItemMasterCategory
     {
         public int CategoryID { get; set; }

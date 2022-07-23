@@ -46,17 +46,56 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("GetInstrumentsPaged")]
+        [SwaggerOperation("GetInstrumentDetailsPaged")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
-        [Route("instrumentsPaged")]
-        public async Task<HttpResponseMessage> GetInstrumentsPaged(string term = null, int page = 1)
+        [Route("instrumentDetailsPaged")]
+        public async Task<HttpResponseMessage> GetInstrumentDetailsPaged(string description = null, int? typeId = null, int? categoryId = null, int page = 1)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var instruments = await sqlHelper.GetInstrumentsPaged(term, page, user.SelectedLocation);
+            var dsInstruments = await sqlHelper.GetInstrumentsPaged(description, typeId, categoryId, page, user.SelectedLocation);
 
-            return Request.CreateResponse(HttpStatusCode.OK, instruments);
+            var instruments = dsInstruments.Tables[0].DataTableToList<ItemMaster>();
+            var totalCount = dsInstruments.Tables[1].DataTableToList<RowCountEntity>().First().TotalCount;
+
+            var pageSize = 50;
+            var skipped = (page - 1) * pageSize;
+
+            var result = new 
+            {
+                pagination = new PaginationResult(instruments.Count, skipped, totalCount),
+                results = instruments
+            };
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetInstrumentsPaged")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
+        [Route("instrumentsPaged")]
+        public async Task<HttpResponseMessage> GetInstrumentsPaged(string term = null, int? typeId = null, int? categoryId = null, int page = 1)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var dsInstruments = await sqlHelper.GetInstrumentsPaged(term, typeId, categoryId, page, user.SelectedLocation);
+
+            var instruments = dsInstruments.Tables[0].DataTableToList<ItemMaster>();
+            var totalCount = dsInstruments.Tables[1].DataTableToList<RowCountEntity>().First().TotalCount;
+
+            var pageSize = 50;
+            var results = instruments.Select(i => new KeyPair() { id = i.ItemID, text = i.ItemDescription }).ToList();
+            var skipped = (page - 1) * pageSize;
+
+            var result = new PaginationController()
+            {
+                pagination = new PaginationResult(instruments.Count, skipped, totalCount),
+                results = results
+            };
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // GET api/values/5
@@ -85,6 +124,34 @@ namespace OpFlow.Service.Controllers
             var instruments = await sqlHelper.GetSuppliesPaged(term, page, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, instruments);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetInstrumentTypes")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMasterType>))]
+        [Route("instrumentType")]
+        public async Task<HttpResponseMessage> GetInstrumentTypes()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var trays = await sqlHelper.GetInstrumentTypes(user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, trays);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("GetInstrumentCategories")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMasterCategory>))]
+        [Route("instrumentCategory")]
+        public async Task<HttpResponseMessage> GetInstrumentCategories()
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var trays = await sqlHelper.GetInstrumentCategories(user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, trays);
         }
 
         // GET api/values/5
@@ -272,6 +339,21 @@ namespace OpFlow.Service.Controllers
 
             var result = await sqlHelper.DeleteComparableInstrument(comparableInstrumentId, user.ProviderID, user.LocationID);
             
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("PutInstrument")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [Route("instrument/{instrumentId}")]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutInstrument(int instrumentId, [FromBody] NewInstrumentPost post)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.UpdateInstrument(instrumentId, post.Description, post.TypeID, post.CategoryID, user.SelectedLocation);
+
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 

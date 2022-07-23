@@ -1559,6 +1559,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<int> UpdateInstrument(int instrumentId, string description, int? typeId, int? categoryId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("instrument_id", instrumentId),
+                new SqlParameter("description", description),
+                new SqlParameter("type_id", typeId ?? (object)DBNull.Value),
+                new SqlParameter("category_id", categoryId ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteNonQueryAsync("UpdateInstrument", parameters);
+
+            return result;
+        }
+
         public async Task<int> UpdateProposedTray(int proposedTrayId,
             string trayName, string status, int statusUserId, int? vendorId, int? specialtyId, int? phaseId, bool customized,
             List<int> cardCategories, List<int> trayGroups, int locationId)
@@ -3382,6 +3397,17 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<ItemMasterType>> GetInstrumentTypes(int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId)
+            };
+            var dsItems = await ExecuteCommandAsync("GetInstrumentTypes", parameters);
+
+            return dsItems.Tables[0].DataTableToList<ItemMasterType>();
+        }
+
         public async Task<List<ItemMasterCategory>> GetInstrumentCategories(int locationId)
         {
             var parameters = new[]
@@ -3421,29 +3447,21 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<PaginationController> GetInstrumentsPaged(string searchTerm, int page, int locationId)
+        public async Task<DataSet> GetInstrumentsPaged(string searchTerm, int? typeId, int? categoryId, int page, int locationId)
         {
             var pageSize = 50;
             var parameters = new[]
             {
                 new SqlParameter("search_term", searchTerm ?? (object)DBNull.Value),
+                new SqlParameter("type_id", typeId ?? (object)DBNull.Value),
+                new SqlParameter("category_id", categoryId ?? (object)DBNull.Value),
                 new SqlParameter("page", page),
                 new SqlParameter("page_size", pageSize),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetInstrumentsPaged", parameters);
 
-            var instruments = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
-            var totalCount = dsSchedules.Tables[1].DataTableToList<RowCountEntity>().First().TotalCount;
-
-            var results = instruments.Select(i => new KeyPair() {id = i.ItemID, text = i.ItemDescription}).ToList();
-            var skipped = (page - 1) * pageSize;
-
-            return new PaginationController()
-            {
-                pagination = new PaginationResult(instruments.Count, skipped, totalCount),
-                results = results
-            };
+            return dsSchedules;
         }
 
         public async Task<List<ItemMaster>> GetInstrumentTrays(int instrumentId, int locationId)

@@ -75,4 +75,10 @@ namespace OpFlow.Data
         public string InstrumentNbr { get; set; }
         public int Quantity { get; set; }
     }
+    public class NewInstrumentPost
+    {
+        public string Description { get; set; }
+        public int? TypeID { get; set; }
+        public int? CategoryID { get; set; }
+    }
 }
