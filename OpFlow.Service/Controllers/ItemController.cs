@@ -46,6 +46,41 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetInstrumentExport")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
+        [Route("instrumentExport")]
+        public async Task<HttpResponseMessage> GetInstrumentExport(string description = null, int? typeId = null, int? categoryId = null)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            var instruments = await sqlHelper.GetInstrumentExport(description, typeId, categoryId, user.SelectedLocation);
+
+            var csvExport = "Description, Type, Category\r\n";
+            foreach (var instrument in instruments)
+            {
+                csvExport += $"\"{instrument.ItemDescription?.Replace("\"", "\"\"")}\",\"{instrument.ItemType?.Replace("\"", "\"\"")}\",\"{instrument.Category?.Replace("\"", "\"\"")}\"\r\n";
+            }
+
+            var exportBytes = System.Text.Encoding.UTF32.GetBytes(csvExport);
+            var memStream = new MemoryStream(exportBytes);
+
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(memStream)
+            };
+
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment")
+                { FileName = "InstrumentExport.csv", };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
+            result.Content.Headers.ContentLength = memStream.Length;
+
+            return result;
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetInstrumentDetailsPaged")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<ItemMaster>))]
         [Route("instrumentDetailsPaged")]

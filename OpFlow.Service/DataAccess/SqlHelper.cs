@@ -3447,6 +3447,23 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<List<ItemMaster>> GetInstrumentExport(string searchTerm, int? typeId, int? categoryId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("search_term", searchTerm ?? (object)DBNull.Value),
+                new SqlParameter("type_id", typeId ?? (object)DBNull.Value),
+                new SqlParameter("category_id", categoryId ?? (object)DBNull.Value),
+                new SqlParameter("page", 1),
+                new SqlParameter("page_size", 10000000),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetInstrumentsPaged", parameters);
+            var instruments = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
+
+            return instruments;
+        }
+
         public async Task<DataSet> GetInstrumentsPaged(string searchTerm, int? typeId, int? categoryId, int page, int locationId)
         {
             var pageSize = 50;
