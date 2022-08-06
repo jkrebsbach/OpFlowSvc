@@ -3668,13 +3668,9 @@ namespace OpFlow.Service.DataAccess
             var result = dsItems.Tables[0].DataTableToList<TrayRationalizationUsage>();
             var details = dsItems.Tables[1].DataTableToList<TrayRationalizationUsageDetail>();
 
-            foreach (var detail in details.GroupBy(d => d.InstrumentID))
+            foreach (var instrument in result.OrderBy(r => r.Type).ThenBy(r => r.Category).ThenBy(r => r.InstrumentName))
             {
-                var instrument = result.FirstOrDefault(r => r.InstrumentID == detail.Key);
-                if (instrument == null)
-                    continue;
-
-                instrument.Details = detail.ToList();
+                instrument.Details = details.Where(x => x.InstrumentID == instrument.InstrumentID).ToList();
             }
 
             return result;

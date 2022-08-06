@@ -1061,7 +1061,11 @@ namespace OpFlow.Data
         public string InstrumentName { get; set; }
         public string Type { get; set; }
         public string Category { get; set; }
+        public decimal AvgQuantity { get; set; }
         public decimal AvgUsed { get; set; }
+        public decimal AvgUsedReduced { get; set; }
+        public int CaseCount { get; set; }
+        public int UsedCases { get; set; }
         public List<TrayRationalizationUsageDetail> Details { get; set; }
     }
 
@@ -1071,7 +1075,11 @@ namespace OpFlow.Data
         public int TrayItemID { get; set; }
         public string TrayName { get; set; }
         public int TrayQuantity { get; set; }
+        public decimal AvgQuantity { get; set; }
         public decimal AvgUsed { get; set; }
+        public decimal AvgUsedReduced { get; set; }
+        public int CaseCount { get; set; }
+        public int UsedCases { get; set; }
         public bool Main { get; set; }
         public bool AddOn { get; set; }
         public bool Single { get; set; }
