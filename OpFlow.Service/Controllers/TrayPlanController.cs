@@ -23,7 +23,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var trayPlans = await sqlHelper.GetTrayPlans(user.ProviderID, user.LocationID);
+            var trayPlans = await sqlHelper.GetTrayPlans(user.SelectedLocation);
 
             if (trayPlanId == null && specialtyId == null)
             {
@@ -40,18 +40,17 @@ namespace OpFlow.Service.Controllers
 
             if (trayPlanId.HasValue)
             {
-                trayPlan = await sqlHelper.GetTrayPlanDetail(trayPlanId.Value, user.ProviderID, user.LocationID);
-                instruments = await sqlHelper.GetTrayPlanInstruments(trayPlanId.Value, user.ProviderID, user.LocationID);
-                excessTrays = await sqlHelper.GetTrayPlanExcessTrays(trayPlanId.Value, user.ProviderID, user.LocationID);
+                trayPlan = await sqlHelper.GetTrayPlanDetail(trayPlanId.Value, user.SelectedLocation);
+                instruments = await sqlHelper.GetTrayPlanInstruments(trayPlanId.Value, user.SelectedLocation);
+                excessTrays = await sqlHelper.GetTrayPlanExcessTrays(trayPlanId.Value, user.SelectedLocation);
 
                 // if no specialty id, assign it to the tray plan specialty id
                 specialtyId = (specialtyId ?? trayPlan.SpecialtyID);
             }
 
-            var reduction = await sqlHelper.GetTrayRationalizationReduction(user.ProviderID, user.LocationID);
+            var reduction = await sqlHelper.GetTrayRationalizationReduction(user.SelectedLocation);
             var usage = await sqlHelper.GetTrayRationalizationUsage(trayPlanId, specialtyId, 
-               null, null, null, null, 
-                user.ProviderID, user.LocationID);
+               null, null, null, null, user.SelectedLocation);
 
             var targetTrayNames = instruments.Where(t => t.TargetTrayName != null).GroupBy(t => t.TargetTrayName).Select(t => t.Key).ToList();
             var targetTrays = instruments.OrderBy(t => string.IsNullOrEmpty(t.TargetTrayName)).ThenBy(t => t.TargetTrayName)
@@ -95,7 +94,7 @@ namespace OpFlow.Service.Controllers
 
             var usage = await sqlHelper.GetTrayRationalizationUsage(post.TrayPlanID, post.SpecialtyID,
                 post.InstrumentCategoryID, post.TrayID, post.InstrumentID, post.CardCategoryID,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -112,14 +111,14 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.UpdateTrayPlan(trayPlanId, post.PlanName, post.SpecialtyID, post.Instruments, post.ExcessTrays,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
             if (!trayPlanId.HasValue) return Request.CreateResponse(HttpStatusCode.OK, result);
 
             foreach (var detail in post.Details)
             {
                 await sqlHelper.UpdateTrayPlanDetail(trayPlanId.Value, detail.Type, detail.Instruments, 
-                    user.ProviderID, user.LocationID);
+                    user.SelectedLocation);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, result);

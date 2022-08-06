@@ -3634,11 +3634,10 @@ namespace OpFlow.Service.DataAccess
             return phases;
         }
 
-        public async Task<List<TrayRationalizationReduction>> GetTrayRationalizationReduction(int providerId, int locationId)
+        public async Task<List<TrayRationalizationReduction>> GetTrayRationalizationReduction(int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsItems = await ExecuteCommandAsync("GetTrayRationalizationReduction", parameters);
@@ -3649,7 +3648,7 @@ namespace OpFlow.Service.DataAccess
 
         public async Task<List<TrayRationalizationUsage>> GetTrayRationalizationUsage(int? trayPlanId, int? specialtyId, 
             int? instrumentCategoryId, List<int> trayItemId, List<int> instrumentId, List<int> cardCategoryId,
-            int providerId, int locationId)
+            int locationId)
         {
             var trayXml = GetIdentitySummary(trayItemId);
             var instrumentXml = GetIdentitySummary(instrumentId);
@@ -3663,7 +3662,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("instrument_id", instrumentXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsItems = await ExecuteCommandAsync("GetTrayRationalizationUsage", parameters);
@@ -3682,11 +3680,10 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayPlan>> GetTrayPlans(int providerId, int locationId)
+        public async Task<List<TrayPlan>> GetTrayPlans(int locationId)
         {
             var parameters = new[]
             {
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsItems = await ExecuteCommandAsync("GetTrayPlans", parameters);
@@ -3695,12 +3692,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<TrayPlanDetail> GetTrayPlanDetail(int trayPlanId, int providerId, int locationId)
+        public async Task<TrayPlanDetail> GetTrayPlanDetail(int trayPlanId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_plan_id", trayPlanId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsItems = await ExecuteCommandAsync("GetTrayPlanDetail", parameters);
@@ -3709,12 +3705,11 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault();
         }
 
-        public async Task<List<TrayPlanInstrument>> GetTrayPlanInstruments(int trayPlanId, int providerId, int locationId)
+        public async Task<List<TrayPlanInstrument>> GetTrayPlanInstruments(int trayPlanId, int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_plan_id", trayPlanId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsItems = await ExecuteCommandAsync("GetTrayPlanInstruments", parameters);
@@ -3723,12 +3718,11 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayPlanExcessTray>> GetTrayPlanExcessTrays(int trayPlanId, int providerId, int locationId)
+        public async Task<List<TrayPlanExcessTray>> GetTrayPlanExcessTrays(int trayPlanId,int locationId)
         {
             var parameters = new[]
             {
                 new SqlParameter("tray_plan_id", trayPlanId),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
             var dsItems = await ExecuteCommandAsync("GetTrayPlanExcessTrays", parameters);
@@ -3738,8 +3732,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<int> UpdateTrayPlan(int? trayPlanId, string planName, int? specialtyId, List<TrayPlanInstrumentUsage> instruments,
-            List<int> excessTrays,
-            int providerId, int locationId)
+            List<int> excessTrays, int locationId)
         {
             var instrumentXml = SummarizePlanInstruments(instruments);
             var excessTrayXml = GetIdentitySummary(excessTrays);
@@ -3751,7 +3744,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
                 new SqlParameter("instruments", instrumentXml ?? (object)DBNull.Value),
                 new SqlParameter("excess_trays", excessTrayXml ?? (object)DBNull.Value),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
 
@@ -3762,8 +3754,7 @@ namespace OpFlow.Service.DataAccess
             return result.Identifier;
         }
         
-        public async Task<int> UpdateTrayPlanDetail(int trayPlanId, string planType, List<TrayPlanInstrumentDetail> instruments,
-            int providerId, int locationId)
+        public async Task<int> UpdateTrayPlanDetail(int trayPlanId, string planType, List<TrayPlanInstrumentDetail> instruments, int locationId)
         {
             var instrumentXml = SummarizePlanDetails(instruments);
 
@@ -3772,7 +3763,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("tray_plan_id", trayPlanId),
                 new SqlParameter("plan_type", planType),
                 new SqlParameter("instruments", instrumentXml),
-                new SqlParameter("provider_id", providerId),
                 new SqlParameter("location_id", locationId)
             };
 

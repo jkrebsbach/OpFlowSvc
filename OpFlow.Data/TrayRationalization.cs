@@ -575,7 +575,7 @@ namespace OpFlow.Data
     public class TrayInstrumentCategory
     {
         public int CategoryID { get; set; }
-        public int SpecialtyID { get; set; }
+        public int? SpecialtyID { get; set; }
         public string CategoryDescription { get; set; }
     }
 
@@ -1059,6 +1059,7 @@ namespace OpFlow.Data
     {
         public int InstrumentID { get; set; }
         public string InstrumentName { get; set; }
+        public string Type { get; set; }
         public string Category { get; set; }
         public decimal AvgUsed { get; set; }
         public List<TrayRationalizationUsageDetail> Details { get; set; }

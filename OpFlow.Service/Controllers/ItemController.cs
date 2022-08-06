@@ -56,10 +56,10 @@ namespace OpFlow.Service.Controllers
 
             var instruments = await sqlHelper.GetInstrumentExport(description, typeId, categoryId, user.SelectedLocation);
 
-            var csvExport = "Description, Type, Category\r\n";
+            var csvExport = "ID, Description, Type, Category\r\n";
             foreach (var instrument in instruments)
             {
-                csvExport += $"\"{instrument.ItemDescription?.Replace("\"", "\"\"")}\",\"{instrument.ItemType?.Replace("\"", "\"\"")}\",\"{instrument.Category?.Replace("\"", "\"\"")}\"\r\n";
+                csvExport += $"{instrument.ItemID},\"{instrument.ItemDescription?.Replace("\"", "\"\"")}\",\"{instrument.ItemType?.Replace("\"", "\"\"")}\",\"{instrument.Category?.Replace("\"", "\"\"")}\"\r\n";
             }
 
             var exportBytes = System.Text.Encoding.UTF32.GetBytes(csvExport);
