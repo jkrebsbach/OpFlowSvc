@@ -108,7 +108,7 @@ namespace OpFlow.Data
     }
 
     public class TrayProposalLog
-    { 
+    {
         public int TrayProposalLogID { get; set; }
         public string Requestor { get; set; }
         public string Audience { get; set; }
@@ -154,7 +154,7 @@ namespace OpFlow.Data
         public int Quantity { get; set; }
     }
     public class TrayProposalUserAssignment : User
-    { 
+    {
         public int TrayProposalID { get; set; }
         public string UserType { get; set; }
     }
@@ -571,7 +571,7 @@ namespace OpFlow.Data
         public List<TrayInstrumentEponym> Eponyms { get; set; }
         public List<TrayInstrumentType> Types { get; set; }
     }
-    
+
     public class TrayInstrumentCategory
     {
         public int CategoryID { get; set; }
@@ -639,7 +639,7 @@ namespace OpFlow.Data
 
                     Questions.Add(question);
                 }
-                
+
                 var answer = new CaseProfileAnswer()
                 {
                     AnswerID = validAnswer.AnswerID,
@@ -927,7 +927,7 @@ namespace OpFlow.Data
 
         public List<ProposalCardCategory> CardCategories { get; set; }
         public List<SurgeryUser> SurgeryUsers { get; set; }
-        
+
         public TrayProposalSchedule()
         {
             CardCategories = new List<ProposalCardCategory>();
@@ -942,7 +942,7 @@ namespace OpFlow.Data
         }
     }
 
-    public class ProposalCardCategory : CardCategory 
+    public class ProposalCardCategory : CardCategory
     {
         public int TrayProposalID { get; set; }
     }
@@ -954,7 +954,7 @@ namespace OpFlow.Data
         public DateTime? EndDate { get; set; }
     }
     public class TrayProposalHistory
-    { 
+    {
         public int HistoryID { get; set; }
         public int? CommunicationMethodID { get; set; }
         public string Phase { get; set; }
@@ -1053,6 +1053,18 @@ namespace OpFlow.Data
         public int TrayQuantity { get; set; }
         public decimal AvgUsage { get; set; }
         public decimal AvgUtilization => TrayQuantity == 0 ? 0 : AvgUsage / TrayQuantity;
+    }
+
+    public class TrayRationalizationType
+    {
+        public string TypeName { get; set; }
+        public List<TrayRationalizationCategory> Categories { get; set; }
+    }
+
+    public class TrayRationalizationCategory
+    {
+        public string CategoryName { get; set; }
+        public List<TrayRationalizationUsage> Instruments {get; set;}
     }
 
     public class TrayRationalizationUsage

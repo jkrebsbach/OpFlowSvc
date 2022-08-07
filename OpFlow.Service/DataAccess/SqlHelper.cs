@@ -3646,7 +3646,7 @@ namespace OpFlow.Service.DataAccess
             return phases;
         }
 
-        public async Task<List<TrayRationalizationUsage>> GetTrayRationalizationUsage(int? trayPlanId, int? specialtyId, 
+        public async Task<List<TrayRationalizationType>> GetTrayRationalizationUsage(int? trayPlanId, int? specialtyId, 
             int? instrumentCategoryId, List<int> trayItemId, List<int> instrumentId, List<int> cardCategoryId,
             int locationId)
         {
@@ -3668,12 +3668,25 @@ namespace OpFlow.Service.DataAccess
             var result = dsItems.Tables[0].DataTableToList<TrayRationalizationUsage>();
             var details = dsItems.Tables[1].DataTableToList<TrayRationalizationUsageDetail>();
 
-            foreach (var instrument in result.OrderBy(r => r.Type).ThenBy(r => r.Category).ThenBy(r => r.InstrumentName))
+            foreach (var instrument in result)
             {
                 instrument.Details = details.Where(x => x.InstrumentID == instrument.InstrumentID).ToList();
             }
 
-            return result;
+            var types = result.OrderBy(r => r.Type).ThenBy(r => r.Category).ThenBy(r => r.InstrumentName).GroupBy(r => r.Type).Select(x => 
+                new TrayRationalizationType()
+                {
+                    TypeName = x.Key,
+                    Categories = x.GroupBy(c => c.Category).Select(cat =>
+                        new TrayRationalizationCategory()
+                        {
+                            CategoryName = cat.Key,
+                            Instruments = cat.ToList()
+                        }).ToList()
+                }
+            ).ToList();
+
+            return types;
         }
 
         public async Task<List<TrayPlan>> GetTrayPlans(int locationId)
