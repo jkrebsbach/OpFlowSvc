@@ -18,14 +18,14 @@ namespace OpFlow.Service.Controllers
         [SwaggerOperation("GetTrayPlan")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [Route("trayPlan/{trayPlanId}")]
-        public async Task<HttpResponseMessage> GetTrayPlan(int? trayPlanId, int? specialtyId)
+        public async Task<HttpResponseMessage> GetTrayPlan(int? trayPlanId)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
             var trayPlans = await sqlHelper.GetTrayPlans(user.SelectedLocation);
 
-            if (trayPlanId == null && specialtyId == null)
+            if (trayPlanId == null)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, new
                 {
@@ -43,15 +43,10 @@ namespace OpFlow.Service.Controllers
                 trayPlan = await sqlHelper.GetTrayPlanDetail(trayPlanId.Value, user.SelectedLocation);
                 instruments = await sqlHelper.GetTrayPlanInstruments(trayPlanId.Value, user.SelectedLocation);
                 excessTrays = await sqlHelper.GetTrayPlanExcessTrays(trayPlanId.Value, user.SelectedLocation);
-
-                // if no specialty id, assign it to the tray plan specialty id
-                specialtyId = (specialtyId ?? trayPlan.SpecialtyID);
             }
 
             var reduction = await sqlHelper.GetTrayRationalizationReduction(user.SelectedLocation);
-            var usage = await sqlHelper.GetTrayRationalizationUsage(trayPlanId, specialtyId, 
-               null, null, null, null, user.SelectedLocation);
-
+            
             var targetTrayNames = instruments.Where(t => t.TargetTrayName != null).GroupBy(t => t.TargetTrayName).Select(t => t.Key).ToList();
             var targetTrays = instruments.OrderBy(t => string.IsNullOrEmpty(t.TargetTrayName)).ThenBy(t => t.TargetTrayName)
                 .GroupBy(t => t.TargetTrayName).Select(targetTrayGroup => new TargetTraySummary()
@@ -65,9 +60,7 @@ namespace OpFlow.Service.Controllers
 
             var result = new
             {
-                SpecialtyID = specialtyId,
                 Reduction = reduction,
-                Usage = usage,
                 TrayPlans = trayPlans,
                 TrayPlan = trayPlan,
                 TargetTrayNames = targetTrayNames,
@@ -93,7 +86,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var usage = await sqlHelper.GetTrayRationalizationUsage(post.TrayPlanID, post.SpecialtyID,
-                post.InstrumentCategoryID, post.TrayID, post.InstrumentID, post.CardCategoryID,
+                post.InstrumentCategoryID, post.InstrumentTypeID, post.TrayID, post.InstrumentID, post.CardCategoryID,
                 user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, new

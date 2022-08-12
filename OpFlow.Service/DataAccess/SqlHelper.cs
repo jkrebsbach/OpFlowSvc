@@ -3646,22 +3646,26 @@ namespace OpFlow.Service.DataAccess
             return phases;
         }
 
-        public async Task<List<TrayRationalizationType>> GetTrayRationalizationUsage(int? trayPlanId, int? specialtyId, 
-            int? instrumentCategoryId, List<int> trayItemId, List<int> instrumentId, List<int> cardCategoryId,
+        public async Task<List<TrayRationalizationType>> GetTrayRationalizationUsage(int? trayPlanId, List<int> specialtyId, 
+            List<int> instrumentCategoryId, List<int> instrumentTypeId, List<int> trayItemId, List<int> instrumentId, List<int> cardCategoryId,
             int locationId)
         {
-            var trayXml = GetIdentitySummary(trayItemId);
-            var instrumentXml = GetIdentitySummary(instrumentId);
+            var specialtyXml = GetIdentitySummary(specialtyId);
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+            var trayXml = GetIdentitySummary(trayItemId);
+            var instrumentCategoryXml = GetIdentitySummary(instrumentCategoryId);
+            var instrumentTypeXml = GetIdentitySummary(instrumentTypeId);
+            var instrumentXml = GetIdentitySummary(instrumentId);
 
             var parameters = new[]
             {
                 new SqlParameter("tray_plan_id", trayPlanId ?? (object)DBNull.Value),
-                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
-                new SqlParameter("instrument_category_id", instrumentCategoryId ?? (object)DBNull.Value),
-                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
-                new SqlParameter("instrument_id", instrumentXml ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("instrument_category_id", instrumentCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("instrument_type_id", instrumentTypeXml ?? (object)DBNull.Value),
+                new SqlParameter("instrument_id", instrumentXml ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
             var dsItems = await ExecuteCommandAsync("GetTrayRationalizationUsage", parameters);
@@ -3670,14 +3674,15 @@ namespace OpFlow.Service.DataAccess
 
             foreach (var instrument in result)
             {
-                instrument.Details = details.Where(x => x.InstrumentID == instrument.InstrumentID).ToList();
+                instrument.Details = details.Where(x => x.InstrumentTypeID == instrument.InstrumentTypeID &&
+                    x.InstrumentCategoryID == instrument.InstrumentCategoryID).ToList();
             }
 
-            var types = result.OrderBy(r => r.Type).ThenBy(r => r.Category).ThenBy(r => r.InstrumentName).GroupBy(r => r.Type).Select(x => 
+            var types = result.OrderBy(r => r.InstrumentType).ThenBy(r => r.InstrumentCategory).GroupBy(r => r.InstrumentType).Select(x => 
                 new TrayRationalizationType()
                 {
                     TypeName = x.Key,
-                    Categories = x.GroupBy(c => c.Category).Select(cat =>
+                    Categories = x.GroupBy(c => c.InstrumentCategory).Select(cat =>
                         new TrayRationalizationCategory()
                         {
                             CategoryName = cat.Key,

@@ -23,8 +23,9 @@ namespace OpFlow.Data
     public class TrayPlanFilterPost
     {
         public int? TrayPlanID { get; set; }
-        public int? SpecialtyID { get; set; }
-        public int? InstrumentCategoryID { get; set; }
+        public List<int> SpecialtyID { get; set; }
+        public List<int> InstrumentCategoryID { get; set; }
+        public List<int> InstrumentTypeID { get; set; }
         public List<int> TrayID { get; set; }
         public List<int> InstrumentID { get; set; }
         public List<int> CardCategoryID { get; set; }

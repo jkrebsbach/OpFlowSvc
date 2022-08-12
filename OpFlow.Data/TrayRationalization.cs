@@ -1069,32 +1069,37 @@ namespace OpFlow.Data
 
     public class TrayRationalizationUsage
     {
-        public int InstrumentID { get; set; }
-        public string InstrumentName { get; set; }
-        public string Type { get; set; }
-        public string Category { get; set; }
-        public decimal AvgQuantity { get; set; }
-        public decimal AvgUsed { get; set; }
-        public decimal AvgUsedReduced { get; set; }
+        public int InstrumentTypeID { get; set; }
+        public int InstrumentCategoryID { get; set; }
+        public string InstrumentType { get; set; }
+        public string InstrumentCategory { get; set; }
+        public decimal SumQuantity { get; set; }
         public int CaseCount { get; set; }
         public int UsedCases { get; set; }
+
+        public decimal AvgUsed => SumQuantity / CaseCount;
+        public decimal AvgUsedReduced => SumQuantity / UsedCases;
+
         public List<TrayRationalizationUsageDetail> Details { get; set; }
     }
 
     public class TrayRationalizationUsageDetail
     {
         public int InstrumentID { get; set; }
+        public int InstrumentTypeID { get; set; }
+        public int InstrumentCategoryID { get; set; }
         public int TrayItemID { get; set; }
         public string TrayName { get; set; }
-        public int TrayQuantity { get; set; }
-        public decimal AvgQuantity { get; set; }
-        public decimal AvgUsed { get; set; }
-        public decimal AvgUsedReduced { get; set; }
-        public int CaseCount { get; set; }
-        public int UsedCases { get; set; }
         public bool Main { get; set; }
         public bool AddOn { get; set; }
         public bool Single { get; set; }
         public bool Peel { get; set; }
+        public int TrayQuantity { get; set; }
+        public decimal SumQuantity { get; set; }
+        public int CaseCount { get; set; }
+        public int UsedCases { get; set; }
+
+        public decimal AvgUsed => SumQuantity / CaseCount;
+        public decimal AvgUsedReduced => SumQuantity / UsedCases;
     }
 }
