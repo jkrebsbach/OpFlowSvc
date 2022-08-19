@@ -13,7 +13,7 @@
     <DataSet Name="InstrumentUsage">
       <Query>
         <DataSourceName>OpFlow</DataSourceName>
-        <CommandText>exec [GetAnalyticsInstrumentUsage] '&lt;table&gt;&lt;row&gt;&lt;col&gt;1&lt;/col&gt;&lt;/row&gt;&lt;row&gt;&lt;col&gt;19&lt;/col&gt;&lt;/row&gt;&lt;/table&gt;', null, null, null, null, null,null, 't',1</CommandText>
+        <CommandText>exec [GetAnalyticsInstrumentUsageDistribution] '&lt;table&gt;&lt;row&gt;&lt;col&gt;1&lt;/col&gt;&lt;/row&gt;&lt;row&gt;&lt;col&gt;19&lt;/col&gt;&lt;/row&gt;&lt;/table&gt;', null, null, null, null, null,null, 't',1</CommandText>
       </Query>
       <Fields>
         <Field Name="TrayName">
@@ -34,10 +34,14 @@
         </Field>
         <Field Name="QtyOpen">
           <DataField>QtyOpen</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="TrayQty">
           <DataField>TrayQty</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="CaseCount">
+          <DataField>CaseCount</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
       </Fields>
@@ -120,7 +124,7 @@ Iif(Fields!Instrument.Value IS NOTHING, "", "Instrument: " &amp; Fields!Instrume
                           <ChartSeriesHierarchy>
                             <ChartMembers>
                               <ChartMember>
-                                <Label>Qty Open</Label>
+                                <Label>Case Count</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartSeriesHierarchy>
@@ -130,7 +134,7 @@ Iif(Fields!Instrument.Value IS NOTHING, "", "Instrument: " &amp; Fields!Instrume
                                 <ChartDataPoints>
                                   <ChartDataPoint>
                                     <ChartDataPointValues>
-                                      <Y>=Count(Fields!QtyOpen.Value)</Y>
+                                      <Y>=Sum(Fields!CaseCount.Value)</Y>
                                     </ChartDataPointValues>
                                     <ChartDataLabel>
                                       <Style>

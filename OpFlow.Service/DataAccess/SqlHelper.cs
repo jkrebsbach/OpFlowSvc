@@ -602,6 +602,34 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
+        public async Task<DataSet> GetInstrumentUsageDistributionReportData(List<int> specialtyId, List<int> surgeonId, List<int> categoryId,
+            List<int> procedureId, List<string> cptList, List<int> trayId, List<int> instrumentId, string group, int locationId)
+        {
+            var specialtyXml = GetIdentitySummary(specialtyId);
+            var surgeonXml = GetIdentitySummary(surgeonId);
+            var categoryXml = GetIdentitySummary(categoryId);
+            var procedureXml = GetIdentitySummary(procedureId);
+            var trayXml = GetIdentitySummary(trayId);
+            var instrumentXml = GetIdentitySummary(instrumentId);
+            var cptXml = GetStringSummary(cptList);
+
+            var parameters = new[]
+            {
+                new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
+                new SqlParameter("surgeon_id", surgeonXml ?? (object)DBNull.Value),
+                new SqlParameter("category_id", categoryXml ?? (object)DBNull.Value),
+                new SqlParameter("procedure_id", procedureXml ?? (object)DBNull.Value),
+                new SqlParameter("cpts", cptXml ?? (object)DBNull.Value),
+                new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
+                new SqlParameter("instrument_id", instrumentXml ?? (object)DBNull.Value),
+                new SqlParameter("group", group ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var result = await ExecuteCommandAsync("GetAnalyticsInstrumentUsage", parameters);
+
+            return result;
+        }
+
         public async Task<DataSet> GetDisposableUsageReportData(List<int> specialtyId, List<int> surgeonId, List<int> cardId,
             List<int> cardCategoryId, int locationId)
         {
@@ -3669,25 +3697,26 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var dsItems = await ExecuteCommandAsync("GetTrayRationalizationUsage", parameters);
-            var result = dsItems.Tables[0].DataTableToList<TrayRationalizationUsage>();
-            var details = dsItems.Tables[1].DataTableToList<TrayRationalizationUsageDetail>();
+            var categories = dsItems.Tables[0].DataTableToList<TrayRationalizationUsage>();
+            var instruments = dsItems.Tables[1].DataTableToList<TrayRationalizationUsageDetail>();
 
-            foreach (var instrument in result)
+            foreach (var category in categories)
             {
-                instrument.Details = details.Where(x => x.InstrumentTypeID == instrument.InstrumentTypeID &&
-                    x.InstrumentCategoryID == instrument.InstrumentCategoryID).ToList();
+                category.Instruments = instruments.Where(x => x.InstrumentTypeID == category.InstrumentTypeID &&
+                    x.InstrumentCategoryID == category.InstrumentCategoryID)
+                    .GroupBy(i => i.InstrumentName)
+                    .Select(i => new TrayRationalizationDetailSummary()
+                    {
+                        InstrumentName = i.Key,
+                        Details = i.ToList()
+                    }).ToList();
             }
 
-            var types = result.OrderBy(r => r.InstrumentType).ThenBy(r => r.InstrumentCategory).GroupBy(r => r.InstrumentType).Select(x => 
+            var types = categories.OrderBy(r => r.InstrumentType).ThenBy(r => r.InstrumentCategory).GroupBy(r => r.InstrumentType).Select(x => 
                 new TrayRationalizationType()
                 {
-                    TypeName = x.Key,
-                    Categories = x.GroupBy(c => c.InstrumentCategory).Select(cat =>
-                        new TrayRationalizationCategory()
-                        {
-                            CategoryName = cat.Key,
-                            Instruments = cat.ToList()
-                        }).ToList()
+                    InstrumentType = x.Key,
+                    Categories = x.ToList()
                 }
             ).ToList();
 

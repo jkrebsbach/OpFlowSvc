@@ -182,7 +182,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { Error = true });
             }
 
-            var analytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyID, post.SurgeonID,
+            var analytics = await sqlHelper.GetInstrumentUsageDistributionReportData(post.SpecialtyID, post.SurgeonID,
                 post.CategoryID, post.ProcedureID, post.Cpt, post.TrayID, post.InstrumentID, post.Group, user.SelectedLocation);
 
             var usage = analytics.Tables[0].DefaultView;
