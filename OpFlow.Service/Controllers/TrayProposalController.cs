@@ -52,7 +52,8 @@ namespace OpFlow.Service.Controllers
             var rules = await sqlHelper.GetProposedTrayScheduleRules(user.UserID, user.SelectedLocation);
             var roomGroups = await sqlHelper.GetRoomGroups(user.SelectedLocation);
             var orgCharts = await sqlHelper.GetOrgChartAttachments(user.SelectedLocation);
-            
+            var cptCodes = await sqlHelper.GetCptCodes();
+
             var attachments = await sqlHelper.GetImplementationAttachments(user.SelectedLocation);
             var implementation = TrayImplementation.GetImplementationSteps(attachments);
 
@@ -99,7 +100,8 @@ namespace OpFlow.Service.Controllers
                 Implementation = implementation,
                 OrgCharts = orgCharts,
                 RoomGroups = roomGroups,
-                CommunicationMethods = communicationMethods
+                CommunicationMethods = communicationMethods,
+                CptCodes = cptCodes
             };
 
 

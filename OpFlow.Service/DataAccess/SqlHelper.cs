@@ -625,7 +625,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("group", group ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
-            var result = await ExecuteCommandAsync("GetAnalyticsInstrumentUsage", parameters);
+            var result = await ExecuteCommandAsync("GetAnalyticsInstrumentUsageDistribution", parameters);
 
             return result;
         }
