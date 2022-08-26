@@ -77,7 +77,7 @@ namespace OpFlow.Service.Controllers
         }
 
         [SwaggerOperation("FilterTrayPlan")]
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<TrayRationalizationType>))]
         [Route("filter")]
         [HttpPost]
         public async Task<HttpResponseMessage> FilterTrayPlan([FromBody] TrayPlanFilterPost post)

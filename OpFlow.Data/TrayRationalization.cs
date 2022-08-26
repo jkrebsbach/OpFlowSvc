@@ -1086,8 +1086,8 @@ namespace OpFlow.Data
 
         public int MaxUsed { get; set; }
         public decimal AvgQuantity => CaseCount == 0 ? 0 : TrayQuantity / CaseCount;
-        public decimal AvgUsed => CaseCount == 0 ? 0 : TrayQuantity / CaseCount;
-        public decimal AvgUsedReduced => UsedCases == 0 ? 0 : TrayQuantity / UsedCases;
+        public decimal AvgUsed => CaseCount == 0 ? 0 : UsedQuantity / CaseCount;
+        public decimal AvgUsedReduced => UsedCases == 0 ? 0 : UsedQuantity / UsedCases;
         public decimal CaseUsagePercent => UsedCases == 0 ? 0 : 100 * (decimal)UsedCases / CaseCount;
 
         public List<TrayRationalizationDetailSummary> Instruments { get; set; }
