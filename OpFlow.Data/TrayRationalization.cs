@@ -1057,15 +1057,16 @@ namespace OpFlow.Data
 
     public class TrayRationalizationType
     {
+        public int? InstrumentTypeID { get; set; }
         public string InstrumentType { get; set; }
         public List<TrayRationalizationUsage> Categories { get; set; }
 
-        public decimal TrayQuantity => Categories.Sum(i => i.TrayQuantity);
-        public decimal UsedQuantity => Categories.Sum(i => i.UsedQuantity);
-        public int CaseCount => Categories.Sum(i => i.CaseCount);
-        public int UsedCases => Categories.Sum(i => i.UsedCases);
-
-        public int MaxUsed => Categories.Max(i => i.MaxUsed);
+        public decimal TrayQuantity { get; set; }
+        public decimal UsedQuantity { get; set; }
+        public int CaseCount { get; set; }
+        public int UsedCases { get; set; }
+        public int OpenCases { get; set; }
+        public int MaxUsed { get; set; }
         public decimal AvgQuantity => CaseCount == 0 ? 0 : TrayQuantity / CaseCount;
         public decimal AvgUsed => CaseCount == 0 ? 0 : UsedQuantity / CaseCount;
         public decimal AvgUsedReduced => UsedCases == 0 ? 0 : UsedQuantity / UsedCases;
@@ -1074,8 +1075,9 @@ namespace OpFlow.Data
 
     public class TrayRationalizationUsage
     {
-        public int InstrumentTypeID { get; set; }
-        public int InstrumentCategoryID { get; set; }
+        public int? InstrumentTypeID { get; set; }
+        public int? InstrumentCategoryID { get; set; }
+        public string FilterLevel { get; set; }
         public string InstrumentType { get; set; }
         public string InstrumentCategory { get; set; }
         public decimal TrayQuantity { get; set; }
@@ -1083,12 +1085,11 @@ namespace OpFlow.Data
         public int CaseCount { get; set; }
         public int UsedCases { get; set; }
         public int OpenCases { get; set; }
-
         public int MaxUsed { get; set; }
         public decimal AvgQuantity => CaseCount == 0 ? 0 : TrayQuantity / CaseCount;
         public decimal AvgUsed => CaseCount == 0 ? 0 : UsedQuantity / CaseCount;
         public decimal AvgUsedReduced => UsedCases == 0 ? 0 : UsedQuantity / UsedCases;
-        public decimal CaseUsagePercent => UsedCases == 0 ? 0 : 100 * (decimal)UsedCases / CaseCount;
+        public decimal CaseUsagePercent => CaseCount == 0 ? 0 : 100 * (decimal)UsedCases / CaseCount;
 
         public List<TrayRationalizationDetailSummary> Instruments { get; set; }
     }
@@ -1098,12 +1099,12 @@ namespace OpFlow.Data
         public string InstrumentName { get; set; }
         public List<TrayRationalizationUsageDetail> Details { get; set; }
 
-        public decimal TrayQuantity => Details.Sum(i => i.TrayQuantity);
-        public decimal UsedQuantity => Details.Sum(i => i.UsedQuantity);
-        public int CaseCount => Details.Sum(i => i.CaseCount);
-        public int UsedCases => Details.Sum(i => i.UsedCases);
+        public decimal TrayQuantity { get; set; }
+        public decimal UsedQuantity { get; set; }
+        public int CaseCount { get; set; }
+        public int UsedCases { get; set; }
 
-        public int MaxUsed => Details.Max(i => i.MaxUsed);
+        public int MaxUsed { get; set; }
         public decimal AvgQuantity => CaseCount == 0 ? 0 : TrayQuantity / CaseCount;
         public decimal AvgUsed => CaseCount == 0 ? 0 : UsedQuantity / CaseCount;
         public decimal AvgUsedReduced => UsedCases == 0 ? 0 : UsedQuantity / UsedCases;

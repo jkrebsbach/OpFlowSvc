@@ -3708,17 +3708,37 @@ namespace OpFlow.Service.DataAccess
                     .Select(i => new TrayRationalizationDetailSummary()
                     {
                         InstrumentName = i.Key,
+                        TrayQuantity = i.Sum(x => x.CaseCount) == 0 ? 0 : i.Sum(x => (decimal)x.TrayQuantity) / i.Sum(x => x.CaseCount),
+                        UsedQuantity = i.Sum(x => x.CaseCount) == 0 ? 0 : i.Sum(x => (decimal)x.UsedQuantity) / i.Sum(x => x.CaseCount),
+                        UsedCases = i.Sum(x => x.UsedCases),
+                        CaseCount = i.Sum(x => x.CaseCount),
+                        MaxUsed = i.Max(x => x.MaxUsed),
                         Details = i.ToList()
                     }).ToList();
             }
 
-            var types = categories.OrderBy(r => r.InstrumentType).ThenBy(r => r.InstrumentCategory).GroupBy(r => r.InstrumentType).Select(x => 
-                new TrayRationalizationType()
+            var types = categories
+                .Where(c => c.FilterLevel == "T")
+                .OrderBy(c => c.InstrumentType)
+                .Select(c => new TrayRationalizationType()
                 {
-                    InstrumentType = x.Key,
-                    Categories = x.ToList()
-                }
-            ).ToList();
+                    InstrumentTypeID = c.InstrumentTypeID,
+                    InstrumentType = c.InstrumentType,
+                    CaseCount = c.CaseCount,
+                    TrayQuantity = c.TrayQuantity,
+                    UsedQuantity = c.UsedQuantity,
+                    MaxUsed = c.MaxUsed,
+                    OpenCases = c.OpenCases,
+                    UsedCases = c.UsedCases
+                }).ToList();
+
+            foreach (var type in types)
+            {
+                type.Categories = categories
+                    .Where(c => c.FilterLevel == "C")
+                    .OrderBy(c => c.InstrumentCategory)
+                    .ToList();
+            }
 
             return types;
         }
