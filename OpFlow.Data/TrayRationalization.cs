@@ -1114,8 +1114,8 @@ namespace OpFlow.Data
     public class TrayRationalizationUsageDetail
     {
         public int InstrumentID { get; set; }
-        public int InstrumentTypeID { get; set; }
-        public int InstrumentCategoryID { get; set; }
+        public int? InstrumentTypeID { get; set; }
+        public int? InstrumentCategoryID { get; set; }
         public int TrayItemID { get; set; }
         public string InstrumentName { get; set; }
         public string TrayName { get; set; }

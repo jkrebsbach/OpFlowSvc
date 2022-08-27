@@ -3708,8 +3708,8 @@ namespace OpFlow.Service.DataAccess
                     .Select(i => new TrayRationalizationDetailSummary()
                     {
                         InstrumentName = i.Key,
-                        TrayQuantity = i.Sum(x => x.CaseCount) == 0 ? 0 : i.Sum(x => (decimal)x.TrayQuantity) / i.Sum(x => x.CaseCount),
-                        UsedQuantity = i.Sum(x => x.CaseCount) == 0 ? 0 : i.Sum(x => (decimal)x.UsedQuantity) / i.Sum(x => x.CaseCount),
+                        TrayQuantity = i.Sum(x => x.TrayQuantity * x.CaseCount) / i.Sum(x => x.CaseCount),
+                        UsedQuantity = i.Sum(x => x.UsedQuantity),
                         UsedCases = i.Sum(x => x.UsedCases),
                         CaseCount = i.Sum(x => x.CaseCount),
                         MaxUsed = i.Max(x => x.MaxUsed),
