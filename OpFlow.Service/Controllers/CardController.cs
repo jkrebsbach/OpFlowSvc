@@ -204,6 +204,24 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("DeleteCardCategory")]
+        [Route("cardCategory")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteCardCategory(int cardCategoryId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var result = await sqlHelper.DeleteCardCategory(cardCategoryId);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("GetCardCategoryDetails")]
         [Route("cardCategoryDetails")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategoryDetail>))]

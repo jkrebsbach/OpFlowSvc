@@ -5966,6 +5966,18 @@ namespace OpFlow.Service.DataAccess
             return result.First().Identifier;
         }
 
+        public async Task<int> DeleteCardCategory(int cardCategoryId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("card_category_id", cardCategoryId)
+            };
+
+            var result = await ExecuteNonQueryAsync("DeleteCardCategory", dsParameters);
+            
+            return result;
+        }
+
         public async Task<int> InsertCardItemFromStage(int cardId, int providerId, int locationId, string procedure, string surgeon)
         {
             var dsParameters = new[]
