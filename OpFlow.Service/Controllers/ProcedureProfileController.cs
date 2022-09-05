@@ -174,7 +174,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var cards = await sqlHelper.GetCardCategoryXRef(null, specialtyId, null, null, null, 1, 1);
+            var cards = await sqlHelper.GetCardCategoryXRef(null, specialtyId, null, null, null, 1);
             var cardCategories = cards.SelectMany(c => c.CardCategories ?? new List<CardCategoryXRef>()).GroupBy(c => new { c.CardCategoryID, c.CardCategory })
                 .Select(c => new CardCategory()
                 {

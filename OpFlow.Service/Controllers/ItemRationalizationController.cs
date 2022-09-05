@@ -27,9 +27,9 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
-            var surgeons = await sqlHelper.GetSurgeons(null, user.LocationID);
-            var audits = await sqlHelper.GetDisposableAudits(user.ProviderID, user.LocationID);
-            var counts = await sqlHelper.GetDisposableCounts(user.ProviderID, user.LocationID);
+            var surgeons = await sqlHelper.GetSurgeons(null, user.SelectedLocation);
+            var audits = await sqlHelper.GetDisposableAudits(user.SelectedLocation);
+            var counts = await sqlHelper.GetDisposableCounts(user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
@@ -52,7 +52,7 @@ namespace OpFlow.Service.Controllers
 
             var cardCategories = await sqlHelper.GetCardCategories();
             var result = await sqlHelper.GetCardCategoryXRef(surgeonId, specialtyId, cardName, hierarchyLevel, cardCategoryId,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
             if (cardSortDir == null)
                 cardSortDir = "asc";
@@ -93,7 +93,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var items = await sqlHelper.GetItemRationalization(specialtyId, surgeonId, minCost, maxCost, user.ProviderID, user.LocationID);
+            var items = await sqlHelper.GetItemRationalization(specialtyId, surgeonId, minCost, maxCost, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, items);
         }
@@ -108,7 +108,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var items = await sqlHelper.SearchItems(itemName, minCost, maxCost, user.ProviderID, user.LocationID);
+            var items = await sqlHelper.SearchItems(itemName, minCost, maxCost, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, items);
         }
@@ -123,7 +123,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var items = await sqlHelper.GetItemAuditCases(specialtyId, itemName, surgeonId, cardId, beginDate, endDate, user.ProviderID, user.LocationID);
+            var items = await sqlHelper.GetItemAuditCases(specialtyId, itemName, surgeonId, cardId, beginDate, endDate, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, items);
         }
@@ -143,14 +143,14 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.Ambiguous);
             }
 
-            var cardCategoryId = await sqlHelper.ParseCardCategory(post.CardCategory, user.ProviderID, user.LocationID);
+            var cardCategoryId = await sqlHelper.ParseCardCategory(post.CardCategory, user.SelectedLocation);
 
             if (cardCategoryId == null)
             {
                 return Request.CreateResponse(HttpStatusCode.Ambiguous);
             }
 
-            var result = await sqlHelper.UpdateCardCategories(post.HierarchyLevel, cardCategoryId.Value, post.Cards, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.UpdateCardCategories(post.HierarchyLevel, cardCategoryId.Value, post.Cards, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -195,7 +195,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateDisposableAuditComplete(surgeryId, target, user.UserID, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.UpdateDisposableAuditComplete(surgeryId, target, user.UserID, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -210,13 +210,13 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.InsertDisposableAudit(post.Surgeries, post.Target, user.ProviderID, user.LocationID);
+            await sqlHelper.InsertDisposableAudit(post.Surgeries, post.Target, user.SelectedLocation);
 
             List<TraySurgeryAudit> result;
             if (post.Target == "A")
-                result = await sqlHelper.GetDisposableAudits(user.ProviderID, user.LocationID);
+                result = await sqlHelper.GetDisposableAudits(user.SelectedLocation);
             else
-                result = await sqlHelper.GetDisposableCounts(user.ProviderID, user.LocationID);
+                result = await sqlHelper.GetDisposableCounts(user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -231,7 +231,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateDisposableAudit(post.Audits, post.Target, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.UpdateDisposableAudit(post.Audits, post.Target, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -246,7 +246,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.DeleteDisposableAudit(surgeryId, target, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.DeleteDisposableAudit(surgeryId, target, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -260,7 +260,7 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateItemCountNeeded(itemId, countNeeded, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.UpdateItemCountNeeded(itemId, countNeeded, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -276,11 +276,11 @@ namespace OpFlow.Service.Controllers
             List<TraySurgeryAudit> audits;
             if (target == "A")
             {
-                audits = await sqlHelper.GetDisposableAudits(user.ProviderID, user.LocationID);
+                audits = await sqlHelper.GetDisposableAudits(user.SelectedLocation);
             }
             else
             {
-                audits = await sqlHelper.GetDisposableCounts(user.ProviderID, user.LocationID);
+                audits = await sqlHelper.GetDisposableCounts(user.SelectedLocation);
             }
 
             var extract = "Surgeon, Card, Specialty, Old Tray, New Tray, Intrument, Proposed\r\n";
