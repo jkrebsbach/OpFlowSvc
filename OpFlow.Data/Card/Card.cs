@@ -52,6 +52,7 @@ namespace OpFlow.Data
 
     public class CardListScreen : Card
     {
+        public string AdditionalData { get; set; }
         public int TrayCount { get; set; }
         public int PeelPackCount { get; set; }
     }

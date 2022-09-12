@@ -4204,7 +4204,7 @@ namespace OpFlow.Service.DataAccess
         }
 
         public async Task<List<CardListScreen>> GetCardList(int? userId, int? specialtyId, int? procedureId, int? bundleId, string cardName,
-            int? trayItemId, bool defaultCardOnly, int locationId)
+            int? trayItemId, bool defaultCardOnly, string additionalData, int locationId)
         {
             var parameters = new[]
             {
@@ -4215,6 +4215,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("card_name", cardName ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayItemId ?? (object)DBNull.Value),
                 new SqlParameter("default_flag", defaultCardOnly),
+                new SqlParameter("additional_data", additionalData ?? (object)DBNull.Value),
                 new SqlParameter("location_id", locationId)
             };
             var dsSchedules = await ExecuteCommandAsync("GetCardListbyProcedure", parameters);
@@ -4234,11 +4235,12 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<PaginationController> GetCardsPaged(string searchTerm, int page, int locationId)
+        public async Task<PaginationController> GetCardsPaged(string additionalData, string searchTerm, int page, int locationId)
         {
             var pageSize = 50;
             var parameters = new[]
             {
+                new SqlParameter("additional_data", additionalData ?? (object)DBNull.Value),
                 new SqlParameter("search_term", searchTerm ?? (object)DBNull.Value),
                 new SqlParameter("page", page),
                 new SqlParameter("page_size", pageSize),
