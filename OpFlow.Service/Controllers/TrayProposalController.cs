@@ -43,6 +43,7 @@ namespace OpFlow.Service.Controllers
             var questions = await sqlHelper.GetTrayQuestions(null, user.SelectedLocation);
             var phases = await sqlHelper.GetTrayProposalPhases(user.SelectedLocation);
             var cardCategories = await sqlHelper.GetCardCategories();
+            var procedureProfiles = await sqlHelper.GetProcedureProfiles();
             var trayGroups = await sqlHelper.GetTrayGroups(user.SelectedLocation);
             var proposalCardCategories = await sqlHelper.GetProposedTrayCardCategories(user.SelectedLocation);
             var instruments = await sqlHelper.GetItems("instrument", null, true, user.SelectedLocation);
@@ -84,6 +85,8 @@ namespace OpFlow.Service.Controllers
                 Eponyms = instrumentLookups.Eponyms,
                 Types = instrumentLookups.Types,
                 CardCategories = cardCategories,
+                ProcedureProfiles = procedureProfiles,
+                CptCodes = cptCodes,
                 TrayGroups = trayGroups,
                 Trays = trays,
                 Schedules = schedules,
@@ -100,8 +103,7 @@ namespace OpFlow.Service.Controllers
                 Implementation = implementation,
                 OrgCharts = orgCharts,
                 RoomGroups = roomGroups,
-                CommunicationMethods = communicationMethods,
-                CptCodes = cptCodes
+                CommunicationMethods = communicationMethods
             };
 
 

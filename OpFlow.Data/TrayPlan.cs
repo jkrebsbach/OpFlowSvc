@@ -24,11 +24,13 @@ namespace OpFlow.Data
     {
         public int? TrayPlanID { get; set; }
         public List<int> SpecialtyID { get; set; }
+        public List<int> CardCategoryID { get; set; }
+        public List<int> ProcProfileID { get; set; }
+        public List<int> CptID { get; set; }
+        public List<int> TrayID { get; set; }
         public List<int> InstrumentCategoryID { get; set; }
         public List<int> InstrumentTypeID { get; set; }
-        public List<int> TrayID { get; set; }
         public List<int> InstrumentID { get; set; }
-        public List<int> CardCategoryID { get; set; }
     }
 
     public class TrayPlanInstrumentUsage

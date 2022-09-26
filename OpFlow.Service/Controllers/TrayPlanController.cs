@@ -86,7 +86,8 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var usage = await sqlHelper.GetTrayRationalizationUsage(post.TrayPlanID, post.SpecialtyID,
-                post.InstrumentCategoryID, post.InstrumentTypeID, post.TrayID, post.InstrumentID, post.CardCategoryID,
+                post.CardCategoryID, post.ProcProfileID, post.CptID,
+                post.TrayID, post.InstrumentCategoryID, post.InstrumentTypeID, post.InstrumentID, 
                 user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, new

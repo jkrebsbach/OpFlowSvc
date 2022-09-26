@@ -666,7 +666,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("instruments", instruments),
                 new SqlParameter("show_max", showMax),
                 new SqlParameter("label", label),
-                new SqlParameter("location_id", locationXml)
+                new SqlParameter("location_id", locationXml ?? (object)DBNull.Value)
             };
             var result = await ExecuteCommandAsync("GetAdministrationConcordanceReport", parameters);
 
@@ -3664,12 +3664,15 @@ namespace OpFlow.Service.DataAccess
             return phases;
         }
 
-        public async Task<List<TrayRationalizationType>> GetTrayRationalizationUsage(int? trayPlanId, List<int> specialtyId, 
-            List<int> instrumentCategoryId, List<int> instrumentTypeId, List<int> trayItemId, List<int> instrumentId, List<int> cardCategoryId,
+        public async Task<List<TrayRationalizationType>> GetTrayRationalizationUsage(int? trayPlanId, List<int> specialtyId,
+            List<int> cardCategoryId, List<int> procProfileId, List<int> cptId,
+            List<int> trayItemId, List<int> instrumentCategoryId, List<int> instrumentTypeId, List<int> instrumentId, 
             int locationId)
         {
             var specialtyXml = GetIdentitySummary(specialtyId);
             var cardCategoryXml = GetIdentitySummary(cardCategoryId);
+            var procProfileXml = GetIdentitySummary(procProfileId);
+            var cptXml = GetIdentitySummary(cptId);
             var trayXml = GetIdentitySummary(trayItemId);
             var instrumentCategoryXml = GetIdentitySummary(instrumentCategoryId);
             var instrumentTypeXml = GetIdentitySummary(instrumentTypeId);
@@ -3680,6 +3683,8 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("tray_plan_id", trayPlanId ?? (object)DBNull.Value),
                 new SqlParameter("specialty_id", specialtyXml ?? (object)DBNull.Value),
                 new SqlParameter("card_category_id", cardCategoryXml ?? (object)DBNull.Value),
+                new SqlParameter("procedure_profile_id", procProfileXml ?? (object)DBNull.Value),
+                new SqlParameter("cpt_id", cptXml ?? (object)DBNull.Value),
                 new SqlParameter("tray_item_id", trayXml ?? (object)DBNull.Value),
                 new SqlParameter("instrument_category_id", instrumentCategoryXml ?? (object)DBNull.Value),
                 new SqlParameter("instrument_type_id", instrumentTypeXml ?? (object)DBNull.Value),
