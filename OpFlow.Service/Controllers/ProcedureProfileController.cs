@@ -75,7 +75,6 @@ namespace OpFlow.Service.Controllers
                 profile = await sqlHelper.GetProcedureProfile(procedureProfileId.Value, request.LocationFilter);
             }
 
-            var cards = await sqlHelper.GetCardsInternal(request.LocationFilter);
             var trays = await sqlHelper.GetTraysInternal(request.LocationFilter);
             var proposed = await sqlHelper.GetProposedTraysInternal(request.LocationFilter);
             var itemCategories = await sqlHelper.GetItemCategories(user.SelectedLocation);
@@ -84,7 +83,6 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 ProcedureProfile = profile,
-                Cards = cards,
                 Trays = trays,
                 Proposed = proposed,
                 ItemCategories = itemCategories,

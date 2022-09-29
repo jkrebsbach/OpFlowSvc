@@ -340,8 +340,6 @@ namespace OpFlow.Data
         public int NbrInstances { get; set; }
         public int NbrInstruments { get; set; }
         public int MaxUsed { get; set; }
-
-        public string CategoryID { get; set; }
         public string Reason { get; set; }
         public int ProfileCount { get; set; }
         public int CountChange => ProfileCount - NbrInstruments;

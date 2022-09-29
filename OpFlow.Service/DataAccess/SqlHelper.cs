@@ -4240,7 +4240,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<PaginationController> GetCardsPaged(string additionalData, string searchTerm, int page, int locationId)
+        public async Task<PaginationController> GetCardsPaged(string additionalData, string searchTerm, int page, int? locationId)
         {
             var pageSize = 50;
             var parameters = new[]
@@ -4249,7 +4249,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("search_term", searchTerm ?? (object)DBNull.Value),
                 new SqlParameter("page", page),
                 new SqlParameter("page_size", pageSize),
-                new SqlParameter("location_id", locationId)
+                new SqlParameter("location_id", locationId ?? (object)DBNull.Value)
             };
             var dsSchedules = await ExecuteCommandAsync("GetCardsPaged", parameters);
 

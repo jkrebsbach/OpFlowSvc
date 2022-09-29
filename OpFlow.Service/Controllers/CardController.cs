@@ -142,6 +142,23 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("GetCardsPagedInternal")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(PaginationController))]
+        [Route("cardsPagedInternal")]
+        public async Task<HttpResponseMessage> GetCardsPagedInternal(string additionalData = null, string term = null, int page = 1)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            var sqlHelper = new SqlHelper();
+
+            var instruments = await sqlHelper.GetCardsPaged(additionalData, term, page, null);
+
+            return Request.CreateResponse(HttpStatusCode.OK, instruments);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("UsedCardList")]
         [Route("listUsed")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Card>))]
