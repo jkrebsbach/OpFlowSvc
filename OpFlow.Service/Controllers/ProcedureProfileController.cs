@@ -75,7 +75,6 @@ namespace OpFlow.Service.Controllers
                 profile = await sqlHelper.GetProcedureProfile(procedureProfileId.Value, request.LocationFilter);
             }
 
-            var trays = await sqlHelper.GetTraysInternal(request.LocationFilter);
             var proposed = await sqlHelper.GetProposedTraysInternal(request.LocationFilter);
             var itemCategories = await sqlHelper.GetItemCategories(user.SelectedLocation);
             var instrumentCategories = await sqlHelper.GetInstrumentCategories(user.SelectedLocation);
@@ -83,7 +82,6 @@ namespace OpFlow.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, new
             {
                 ProcedureProfile = profile,
-                Trays = trays,
                 Proposed = proposed,
                 ItemCategories = itemCategories,
                 InstrumentCategories = instrumentCategories
@@ -952,11 +950,11 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [SwaggerOperation("PutProcedureProfileDashboard")]
+        [SwaggerOperation("PostProcedureProfileDashboard")]
         [Route("procedureProfileDashboard")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
         [HttpPost]
-        public async Task<HttpResponseMessage> PutProcedureProfileDashboard(int procedureProfileId, [FromBody] ProcedureProfileDashboardPost request)
+        public async Task<HttpResponseMessage> PostProcedureProfileDashboard(int procedureProfileId, [FromBody] ProcedureProfileDashboardPost request)
         {
             var user = await CacheUtil.GetUserSecurity();
 

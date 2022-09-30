@@ -4266,6 +4266,32 @@ namespace OpFlow.Service.DataAccess
             };
         }
 
+        public async Task<PaginationController> GetTraysPaged(string additionalData, string searchTerm, int page, int? locationId)
+        {
+            var pageSize = 50;
+            var parameters = new[]
+            {
+                new SqlParameter("additional_data", additionalData ?? (object)DBNull.Value),
+                new SqlParameter("search_term", searchTerm ?? (object)DBNull.Value),
+                new SqlParameter("page", page),
+                new SqlParameter("page_size", pageSize),
+                new SqlParameter("location_id", locationId ?? (object)DBNull.Value)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetTraysPaged", parameters);
+
+            var trays = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
+            var totalCount = dsSchedules.Tables[1].DataTableToList<RowCountEntity>().First().TotalCount;
+
+            var results = trays.Select(i => new KeyPair() { id = i.ItemID, text = i.ItemDescription }).ToList();
+            var skipped = (page - 1) * pageSize;
+
+            return new PaginationController()
+            {
+                pagination = new PaginationResult(trays.Count, skipped, totalCount),
+                results = results
+            };
+        }
+
         public async Task<List<CardCategoryXRef>> GetCardCategoryXRef(int cardId, int locationId)
         {
             var parameters = new[]
