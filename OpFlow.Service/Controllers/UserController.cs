@@ -536,8 +536,9 @@ namespace OpFlow.Service.Controllers
             var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
             var secureUser = await sqlHelper.GetSecureUser(null, userId);
-            
-            if (secureUser?.SelectedLocation == user.SelectedLocation)
+
+            if ((user.RoleType == "Internal" && user.RoleType == "Admin") ||
+                (secureUser?.SelectedLocation == user.SelectedLocation))
             {
                 var code = await userManager.GeneratePasswordResetTokenAsync(secureUser.UserAuthID.ToString());
 

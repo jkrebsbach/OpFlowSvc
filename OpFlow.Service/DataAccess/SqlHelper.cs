@@ -3730,7 +3730,7 @@ namespace OpFlow.Service.DataAccess
             foreach (var type in types)
             {
                 type.Categories = categories
-                    .Where(c => c.FilterLevel == "C")
+                    .Where(c => c.FilterLevel == "C" && c.InstrumentTypeID == type.InstrumentTypeID)
                     .OrderBy(c => c.InstrumentCategory)
                     .ToList();
             }

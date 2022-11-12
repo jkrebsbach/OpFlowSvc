@@ -280,7 +280,6 @@ namespace OpFlow.Data
     public class ProfileCard : Card
     {
         public int ProcedureProfileID { get; set; }
-        public int LocationID { get; set; }
         public int NbrInstruments { get; set; }
 
         public int ProfileCount { get; set; }

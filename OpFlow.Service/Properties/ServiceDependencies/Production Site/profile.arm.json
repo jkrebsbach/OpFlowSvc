@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_dependencyType": "appService.windows"
+    "_dependencyType": "compute.appService.windows"
   },
   "parameters": {
     "resourceGroupName": {
@@ -21,7 +21,7 @@
     },
     "resourceName": {
       "type": "string",
-      "defaultValue": "opflowsvc",
+      "defaultValue": "opflowservice",
       "metadata": {
         "description": "Name of the main resource to be created by this template."
       }
