@@ -228,8 +228,8 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateProcedureProfile(procedureProfileId, request.ProfileName, request.LocationFilter, request.CardCategoryID, request.SpecialtyID,
-                user.ProviderID, user.LocationID);
+            var result = await sqlHelper.UpdateProcedureProfile(procedureProfileId, request.ProfileName, request.LocationFilter, 
+                request.CardCategoryID, request.SpecialtyID, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -248,7 +248,7 @@ namespace OpFlow.Service.Controllers
         
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.DeleteProcedureProfile(procedureProfileId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.DeleteProcedureProfile(procedureProfileId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -367,7 +367,7 @@ namespace OpFlow.Service.Controllers
 
             format = format ?? "IMAGE";
 
-            var analytics = await sqlHelper.GetProcedureProfileReport(procedureProfileId, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetProcedureProfileReport(procedureProfileId, user.SelectedLocation);
 
             var profile = analytics.Tables[0].DefaultView;
             var datasets = new Dictionary<string, DataTable>
@@ -408,7 +408,7 @@ namespace OpFlow.Service.Controllers
 
             format = format ?? "IMAGE";
 
-            var analytics = await sqlHelper.GetProcedureProfileTrayAlignment(procedureProfileId, post.CardId, post.TrayId, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetProcedureProfileTrayAlignment(procedureProfileId, post.CardId, post.TrayId, user.SelectedLocation);
 
             var profile = analytics.Tables[0].DefaultView;
             switch (post.OrderBy)
@@ -467,7 +467,7 @@ namespace OpFlow.Service.Controllers
 
             format = format ?? "IMAGE";
 
-            var analytics = await sqlHelper.GetProcedureProfileSupplyAlignment(procedureProfileId, post.CardId, post.TrayId, user.ProviderID, user.LocationID);
+            var analytics = await sqlHelper.GetProcedureProfileSupplyAlignment(procedureProfileId, post.CardId, post.TrayId, user.SelectedLocation);
 
             var profile = analytics.Tables[0].DefaultView;
             switch (post.OrderBy)
@@ -944,7 +944,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.UpdateProcedureProfileCategory(procedureProfileId, request.Name, request.CategoryID, request.OwnerID,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -963,7 +963,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var result = await sqlHelper.UpdateProcedureProfileDashboard(procedureProfileId, request.LocationFilter, request.Cards, request.Trays, request.Proposals,
-                user.ProviderID, user.LocationID);
+                user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -981,13 +981,28 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.InsertProcedureProfileStep(procedureProfileId, stepId, duration, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.InsertProcedureProfileStep(procedureProfileId, stepId, duration, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
         // GET api/values/5
-        [SwaggerOperation("PutProcedureProfileCpt")]
+        [SwaggerOperation("PutProcedureProfileCardCategory")]
+        [Route("procedureProfileCardCategory")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
+        [HttpPut]
+        public async Task<HttpResponseMessage> PutProcedureProfileCardCategory(int procedureProfileId, int cardCategoryId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var sqlHelper = new SqlHelper();
+            var result = await sqlHelper.InsertProcedureProfileCardCategory(procedureProfileId, cardCategoryId, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("DeleteProcedureProfileStep")]
         [Route("procedureProfileStep")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
         [HttpDelete]
@@ -999,7 +1014,23 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.DeleteProcedureProfileStep(procedureProfileId, stepId, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.DeleteProcedureProfileStep(procedureProfileId, stepId, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("DeleteProcedureProfileCardCategory")]
+        [Route("procedureProfileCardCategory")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteProcedureProfileCardCategory(int procedureProfileId, int cardCategoryId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.DeleteProcedureProfileCardCategory(procedureProfileId, cardCategoryId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -1017,7 +1048,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.UpdateProcedureProfileSteps(procedureProfileId, request.Steps, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.UpdateProcedureProfileSteps(procedureProfileId, request.Steps, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -1035,7 +1066,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.InsertProcedureProfileCpt(procedureProfileId, cptCode, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.InsertProcedureProfileCpt(procedureProfileId, cptCode, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -1098,7 +1129,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.UpdateProcedureProfileCard(procedureProfileId, cardId, user.ProviderID, user.LocationID);
+            await sqlHelper.UpdateProcedureProfileCard(procedureProfileId, cardId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, cardId);
         }
@@ -1119,9 +1150,9 @@ namespace OpFlow.Service.Controllers
             foreach (var item in post.Items)
             {
                 if (item.ItemType == "I") // Instrument
-                    await sqlHelper.UpdateProcedureProfileItem(procedureProfileId, null, item.ItemID, item.Category, item.Quantity, user.ProviderID, user.LocationID);
+                    await sqlHelper.UpdateProcedureProfileItem(procedureProfileId, null, item.ItemID, item.Category, item.Quantity, user.SelectedLocation);
                 else // Supply
-                    await sqlHelper.UpdateProcedureProfileItem(procedureProfileId, item.ItemID, null, item.Category, item.Quantity, user.ProviderID, user.LocationID);
+                    await sqlHelper.UpdateProcedureProfileItem(procedureProfileId, item.ItemID, null, item.Category, item.Quantity, user.SelectedLocation);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, 200);
@@ -1143,7 +1174,7 @@ namespace OpFlow.Service.Controllers
             foreach (var item in post.Items)
             {
                 await sqlHelper.UpdateProcedureProfileTrayInstrument(procedureProfileId, item.ItemID, item.TrayItemID, 
-                    item.CategoryID, item.Quantity, item.Reason, user.ProviderID, user.LocationID);
+                    item.CategoryID, item.Quantity, item.Reason, user.SelectedLocation);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, 200);
@@ -1162,7 +1193,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            var result = await sqlHelper.DeleteProcedureProfileCpt(procedureProfileId, cptCode, user.ProviderID, user.LocationID);
+            var result = await sqlHelper.DeleteProcedureProfileCpt(procedureProfileId, cptCode, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
@@ -1181,9 +1212,9 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             if (itemType == "I") // Instrument
-                await sqlHelper.DeleteProcedureProfileItem(procedureProfileId, null, itemId, user.ProviderID, user.LocationID);
+                await sqlHelper.DeleteProcedureProfileItem(procedureProfileId, null, itemId, user.SelectedLocation);
             else // Supply
-                await sqlHelper.DeleteProcedureProfileItem(procedureProfileId, itemId, null, user.ProviderID, user.LocationID);
+                await sqlHelper.DeleteProcedureProfileItem(procedureProfileId, itemId, null, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, itemId);
         }
@@ -1219,7 +1250,7 @@ namespace OpFlow.Service.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             var sqlHelper = new SqlHelper();
 
-            await sqlHelper.DeleteProcedureProfileTrayInstrument(procedureProfileId, itemId, trayItemId, user.ProviderID, user.LocationID);
+            await sqlHelper.DeleteProcedureProfileTrayInstrument(procedureProfileId, itemId, trayItemId, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, itemId);
         }

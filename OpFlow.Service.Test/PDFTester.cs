@@ -26,7 +26,7 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestReadPDF()
         {
-            var path = @"F:\ColdStorage\Documents\OpFlow\Imports\20210416\";
+            var path = @"D:\ColdStorage\Documents\OpFlow\Imports\20221216\";
 
             var directories = Directory.GetDirectories(path);
             foreach (var directory in directories)

@@ -249,15 +249,17 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var cardCategories = await sqlHelper.GetCardCategoryDetails(
-                null, null, null, null,
+                null, null, null, null, null,
                 user.SelectedLocation);
             var specialties = await sqlHelper.GetSpecialties(user.SelectedLocation);
             var surgeons = await sqlHelper.GetSurgeons(null, user.SelectedLocation);
+            var procedureProfiles = await sqlHelper.GetProcedureProfiles();
 
             return Request.CreateResponse(HttpStatusCode.OK, new {
                 Specialties = specialties,
                 Surgeons = surgeons,
-                CardCategories = cardCategories
+                CardCategories = cardCategories,
+                ProcedureProfiles = procedureProfiles
             });
         }
 
@@ -272,7 +274,7 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             var cardCategories = await sqlHelper.GetCardCategoryDetails(
-                request.CardCategoryID, request.SpecialtyID, request.CardID, request.SurgeonID,
+                request.CardCategoryID, request.SpecialtyID, request.CardID, request.ProcedureProfileID, request.SurgeonID,
                 user.SelectedLocation);
             
             return Request.CreateResponse(HttpStatusCode.OK, cardCategories);
