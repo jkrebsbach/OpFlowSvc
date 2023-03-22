@@ -1135,6 +1135,40 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [SwaggerOperation("PostProcedureProfileCardList")]
+        [Route("procedureProfileCardList")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostProcedureProfileCardList(int procedureProfileId, [FromBody] InsertCardCategoryCardPost request)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            if (user.RoleType != "Internal")
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.UpdateProcedureProfileCardList(procedureProfileId, request.CardId, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, procedureProfileId);
+        }
+
+        // GET api/values/5
+        [SwaggerOperation("DeleteProcedureProfileCard")]
+        [Route("procedureProfileCard")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(int))]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteProcedureProfileCard(int procedureProfileId, int cardId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.DeleteProcedureProfileCard(procedureProfileId, cardId, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
+        // GET api/values/5
         [SwaggerOperation("PutProcedureProfileItem")]
         [Route("procedureProfileItem")]
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<CardCategory>))]

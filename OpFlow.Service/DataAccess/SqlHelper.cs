@@ -4406,12 +4406,18 @@ namespace OpFlow.Service.DataAccess
             var specialties = dsSchedules.Tables[1].DataTableToList<CardCategorySpecialty>();
             var cards = dsSchedules.Tables[2].DataTableToList<CardCategoryCard>();
             var procedureProfileCardCategories = dsSchedules.Tables[3].DataTableToList<ProfileCardCategory>();
+            var ppCards = dsSchedules.Tables[4].DataTableToList<ProfileCardCategoryCard>();
 
             foreach (var cardCategory in result)
             {
                 cardCategory.Specialties = specialties.Where(s => s.CardCategoryID == cardCategory.CardCategoryID).ToList();
                 cardCategory.Cards = cards.Where(s => s.CardCategoryID == cardCategory.CardCategoryID).ToList();
                 cardCategory.ProcedureProfiles = procedureProfileCardCategories.Where(s => s.CardCategoryID == cardCategory.CardCategoryID).ToList();
+
+                foreach (var pp in cardCategory.ProcedureProfiles)
+                {
+                    pp.Cards = ppCards.Where(p => p.ProcedureProfileID == pp.ProcedureProfileID && p.CardCategoryID == cardCategory.CardCategoryID).ToList();
+                }
             }
 
             return result;
@@ -4440,6 +4446,19 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
             };
             var result = await ExecuteNonQueryAsync("DeleteProcedureProfileStep", parameters);
+
+            return result;
+        }
+
+        public async Task<int> DeleteProcedureProfileCard(int procedureProfileId, int cardId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("DeleteProcedureProfileCard", parameters);
 
             return result;
         }
@@ -4574,6 +4593,21 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId),
             };
             var result = await ExecuteNonQueryAsync("UpdateProcedureProfileCard", parameters);
+
+            return result;
+        }
+
+        public async Task<int> UpdateProcedureProfileCardList(int procedureProfileId, List<int> cardId, int locationId)
+        {
+            var cardXml = GetIdentitySummary(cardId);
+
+            var parameters = new[]
+            {
+                new SqlParameter("procedure_profile_id", procedureProfileId),
+                new SqlParameter("card_id", cardXml),
+                new SqlParameter("location_id", locationId),
+            };
+            var result = await ExecuteNonQueryAsync("UpdateProcedureProfileCardList", parameters);
 
             return result;
         }

@@ -278,6 +278,17 @@ namespace OpFlow.Data
     {
         public int ProcedureProfileID { get; set; }
         public string ProcedureProfileName { get; set; }
+
+        public List<ProfileCardCategoryCard> Cards { get; set; }
+    }
+
+    public class ProfileCardCategoryCard
+    {
+        public int ProcedureProfileID { get; set; }
+        public int CardCategoryID { get; set; }
+        public int CardID { get; set; }
+        public string CardDescription { get; set; }
+        public string SurgeonName { get; set; }
     }
 
     public class ProfileCard : Card
