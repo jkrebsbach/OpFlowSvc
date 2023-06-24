@@ -26,7 +26,7 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestReadPDF()
         {
-            var path = @"D:\ColdStorage\Documents\OpFlow\Imports\20221216\";
+            var path = @"D:\ColdStorage\Documents\OpFlow\Imports\20230506\";
 
             var directories = Directory.GetDirectories(path);
             foreach (var directory in directories)
@@ -126,6 +126,12 @@ namespace OpFlow.Service.Test
                                 var data = ParseToken(graphic);
 
                                 //if (xLoc == "208.436" && yLoc == "46.141")
+                                if (fontFamily == "SegoeUI,Bold" && fontSize == "10")
+                                {
+                                    // instrument type grouping - skip row
+                                    continue;
+                                }
+
                                 if (fontFamily == "SegoeUI,Bold" && fontSize == "11" && cardNameDetail == string.Empty)
                                 {
                                     cardNameDetail = data.Replace(" - 000", "");
@@ -264,7 +270,7 @@ namespace OpFlow.Service.Test
         private bool CheckRange(decimal xLoc, decimal? target)
         {
             if (target == null) return false;
-            return xLoc > target - 1M && xLoc < target + 1M;
+            return xLoc > target - 4M && xLoc < target + 1M;
         }
 
         private bool CheckRow(decimal yLoc, decimal curRow)

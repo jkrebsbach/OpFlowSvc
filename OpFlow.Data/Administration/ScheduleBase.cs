@@ -193,8 +193,15 @@ namespace OpFlow.Data.Administration
 
             if (surgeonString.Split(' ').Length > 0)
             {
-                result.FirstName = surgeonString.Split(' ')[0];
-                result.LastName = surgeonString.Split(' ')[1];
+                try
+                {
+                    result.FirstName = surgeonString.Split(' ')[0];
+                    result.LastName = surgeonString.Split(' ')[1];
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
 
                 return result;
             }

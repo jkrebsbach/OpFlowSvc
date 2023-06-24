@@ -55,13 +55,13 @@ namespace OpFlow.Service.Models
                     var sheetRow = sheet.GetRow(rowIndex);
                     if (sheetRow != null)
                     {
-                        var columnA = sheetRow.GetCell(0)?.NumericCellValue;
-                        var columnB = sheetRow.GetCell(1)?.StringCellValue;
-                        var columnC = sheetRow.GetCell(2)?.StringCellValue;
-                        var columnD = sheetRow.GetCell(3)?.StringCellValue;
-                        var columnE = sheetRow.GetCell(4)?.StringCellValue;
-                        var columnF = sheetRow.GetCell(5)?.StringCellValue ?? string.Empty;
-                        var columnG = sheetRow.GetCell(6)?.StringCellValue ?? string.Empty;
+                        var columnA = CellValue(sheetRow.GetCell(0));
+                        var columnB = CellValue(sheetRow.GetCell(1));
+                        var columnC = CellValue(sheetRow.GetCell(2));
+                        var columnD = CellValue(sheetRow.GetCell(3));
+                        var columnE = CellValue(sheetRow.GetCell(4));
+                        var columnF = CellValue(sheetRow.GetCell(5));
+                        var columnG = CellValue(sheetRow.GetCell(6));
 
                         if (string.IsNullOrEmpty(columnC)) continue;
 
@@ -104,6 +104,17 @@ namespace OpFlow.Service.Models
                 }
             }
             return result;
+        }
+
+        private string CellValue(NPOI.SS.UserModel.ICell cell)
+        {
+            if (cell == null) return string.Empty;
+
+            if (cell.CellType == NPOI.SS.UserModel.CellType.String)
+                return cell.StringCellValue;
+
+            else
+                return cell.NumericCellValue.ToString();
         }
 
         private List<IImportData> ParseSchedule()
