@@ -666,7 +666,10 @@ namespace OpFlow.Service.Controllers
 
             var applicationUser = await sqlHelper.GetUser(user.SelectedLocation,  userId);
 
-            var authenticationUser = await userManager.FindByEmailAsync(applicationUser.Email);
+            ApplicationUser authenticationUser = null;
+            
+            if (!string.IsNullOrEmpty(applicationUser?.Email))
+                authenticationUser = await userManager.FindByEmailAsync(applicationUser.Email);
 
             if (authenticationUser != null)
             {

@@ -23,8 +23,8 @@ namespace OpFlow.Service.Test
             //var importTypeId = 2; // item master
             //var importTypeId = 7; // schedule without card
             //var importTypeId = 5; // cards
-            //var importTypeId = 3; // trays
-            var importTypeId = 8; // loma linda cards
+            var importTypeId = 3; // trays
+            //var importTypeId = 8; // loma linda cards
 
 
             var sqlHelper = new SqlHelper();

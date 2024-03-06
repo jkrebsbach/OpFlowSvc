@@ -248,7 +248,8 @@ namespace OpFlow.Service.Test
                     }
                 }
 
-                if (cardNameDetail == string.Empty) throw new Exception("Unable to parse card" + filePath);
+                if (cardNameDetail == string.Empty) 
+                    throw new Exception("Unable to parse card" + filePath);
 
                 // add remaining data
                 if (description != string.Empty)
@@ -273,7 +274,7 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestReadCMCPDF()
         {
-            var path = @"D:\ColdStorage\Documents\OpFlow\Imports\20230701\";
+            var path = @"D:\ColdStorage\Documents\OpFlow\Imports\20230718\";
 
             var directories = Directory.GetDirectories(path);
             foreach (var directory in directories)
