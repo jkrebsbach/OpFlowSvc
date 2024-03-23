@@ -454,11 +454,11 @@ namespace OpFlow.Service.Controllers
             foreach (var editRequest in cardQuantity.EditData)
             {
                 if (cardQuantity.Target == "C")
-                    await sqlHelper.UpdateCardQuantityRequest(cardId, editRequest, user.SelectedLocation);
+                    await sqlHelper.UpdateCardQuantityRequest(cardId, editRequest, user.SelectedLocation, user.UserID);
                 else if (editRequest.TrayID.HasValue)
-                    await sqlHelper.AddCustomSurgeryTrayItem(surgeryId, editRequest.TrayID.Value, editRequest.ItemID, editRequest.OpenQty ?? 0, user.SelectedLocation);
+                    await sqlHelper.AddCustomSurgeryTrayItem(surgeryId, editRequest.TrayID.Value, editRequest.ItemID, editRequest.OpenQty ?? 0, user.SelectedLocation, user.UserID);
                 else
-                    await sqlHelper.UpdateSurgeryItemQuantity(surgeryId, editRequest, user.SelectedLocation);
+                    await sqlHelper.UpdateSurgeryItemQuantity(surgeryId, editRequest, user.SelectedLocation, user.UserID);
             }
 
             return Ok();

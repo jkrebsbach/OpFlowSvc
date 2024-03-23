@@ -264,7 +264,7 @@ namespace OpFlow.Service.Controllers
                 var trayGroup = trayGroups.FirstOrDefault(tg => tg.TrayGroupID == trayGroupId);
                 foreach (var tray in trayGroup.Trays)
                 {
-                    await sqlHelper.AddCustomSurgeryItem(surgeryId, tray.TrayItemID, 1, user.SelectedLocation);
+                    await sqlHelper.AddCustomSurgeryItem(surgeryId, tray.TrayItemID, 1, user.SelectedLocation, user.UserID);
                 }
             }
 
@@ -1058,7 +1058,7 @@ namespace OpFlow.Service.Controllers
                     {
                         foreach (var tray in trayGroup.Trays)
                         {
-                            await sqlHelper.AddCustomSurgeryItem(surgeryId, tray.TrayItemID, 1, secureUser.SelectedLocation);
+                            await sqlHelper.AddCustomSurgeryItem(surgeryId, tray.TrayItemID, 1, secureUser.SelectedLocation, user.UserID);
                         }
                     }
                 }
@@ -1106,11 +1106,11 @@ namespace OpFlow.Service.Controllers
             {
                 if (customItem.TrayID.HasValue)
                 {
-                    await sqlHelper.AddCustomSurgeryTrayItem(surgeryId, customItem.TrayID ?? 0, customItem.ItemID, customItem.Quantity, user.SelectedLocation);
+                    await sqlHelper.AddCustomSurgeryTrayItem(surgeryId, customItem.TrayID ?? 0, customItem.ItemID, customItem.Quantity, user.SelectedLocation, user.UserID);
                 }
                 else
                 {
-                    await sqlHelper.AddCustomSurgeryItem(surgeryId, customItem.ItemID, customItem.Quantity, user.SelectedLocation);
+                    await sqlHelper.AddCustomSurgeryItem(surgeryId, customItem.ItemID, customItem.Quantity, user.SelectedLocation, user.UserID);
                 }
             }
         
@@ -1448,11 +1448,11 @@ namespace OpFlow.Service.Controllers
 
             try
             {
-                await sqlHelper.UpdateSurgeryCount(surgeryId, post.ItemCounts, post.CountComments, post.SurgeryType, user.SelectedLocation);
-                await sqlHelper.UpdateSurgeryInstrumentCount(surgeryId, post.InstrumentCounts, user.SelectedLocation);
-                await sqlHelper.UpdateSurgeryProposedCount(surgeryId, post.ProposedCounts, user.SelectedLocation);
-                await sqlHelper.UpdateSurgerySutureCount(surgeryId, post.SutureCounts, post.DeletedSutures, user.SelectedLocation);
-                await sqlHelper.UpdateSurgeryMetricAnswers(surgeryId, post.MetricAnswers, user.SelectedLocation);
+                await sqlHelper.UpdateSurgeryCount(surgeryId, post.ItemCounts, post.CountComments, post.SurgeryType, user.SelectedLocation, user.UserID);
+                await sqlHelper.UpdateSurgeryInstrumentCount(surgeryId, post.InstrumentCounts, user.SelectedLocation, user.UserID);
+                await sqlHelper.UpdateSurgeryProposedCount(surgeryId, post.ProposedCounts, user.SelectedLocation, user.UserID);
+                await sqlHelper.UpdateSurgerySutureCount(surgeryId, post.SutureCounts, post.DeletedSutures, user.SelectedLocation, user.UserID);
+                await sqlHelper.UpdateSurgeryMetricAnswers(surgeryId, post.MetricAnswers, user.SelectedLocation, user.UserID);
 
                 if (post?.Answers.Any() == true)
                 {
