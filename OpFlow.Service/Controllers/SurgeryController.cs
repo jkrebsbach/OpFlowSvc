@@ -444,7 +444,8 @@ namespace OpFlow.Service.Controllers
                 FlowSteps = await sqlHelper.GetSurgeryFlowList(surgeryId, user.SelectedLocation),
                 Sutures = await sqlHelper.GetItemSutures(user.SelectedLocation),
                 CptCodes = await sqlHelper.GetSurgeryCPTCodes(surgeryId, user.SelectedLocation),
-                SutureCounts = await sqlHelper.GetSurgerySutureCounts(surgeryId, user.SelectedLocation)
+                SutureCounts = await sqlHelper.GetSurgerySutureCounts(surgeryId, user.SelectedLocation),
+                SupplementalCards = cardItemCounts.SupplementalCards
             };
 
             foreach (var countType in itemCounts.OrderByDescending(ic => ic.Min(i => i.TrayName)))
@@ -1325,6 +1326,36 @@ namespace OpFlow.Service.Controllers
             var sqlHelper = new SqlHelper();
 
             await sqlHelper.DeleteSurgeryProcedure(surgeryId, cptCode, user.SelectedLocation);
+
+            return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
+        // POST api/values
+        [SwaggerOperation("AddSurgeryCard")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpPost]
+        [Route("surgeryCard", Name = "AddSurgeryCard")]
+        public async Task<HttpResponseMessage> AddSurgeryCard(int surgeryId, int cardId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.AddSurgeryCard(surgeryId, cardId, user.SelectedLocation, user.UserID);
+
+            return Request.CreateResponse(HttpStatusCode.OK, 0);
+        }
+
+        // POST api/values
+        [SwaggerOperation("DeleteSurgeryCard")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        [HttpDelete]
+        [Route("surgeryCard", Name = "DeleteSurgeryCard")]
+        public async Task<HttpResponseMessage> DeleteSurgeryCard(int surgeryId, int cardId)
+        {
+            var user = await CacheUtil.GetUserSecurity();
+            var sqlHelper = new SqlHelper();
+
+            await sqlHelper.DeleteSurgeryCard(surgeryId, cardId, user.SelectedLocation, user.UserID);
 
             return Request.CreateResponse(HttpStatusCode.OK, 0);
         }

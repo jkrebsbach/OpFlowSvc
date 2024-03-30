@@ -28,6 +28,7 @@ namespace OpFlow.Data
         public List<CardItemCount> CardItemCounts { get; set; }
         public List<CollectionItemCount> TrayCollectionCounts { get; set; }
         public List<TrayQuestion> TrayQuestions { get; set; }
+        public List<SurgeryCard> SupplementalCards { get; set; }
     }
 
     public class SurgerySutureCount
@@ -142,6 +143,7 @@ namespace OpFlow.Data
         public List<SurgeryCPTCode> CptCodes { get; set; }
         public List<TrayUsage> ProposedTrays { get; set; }
         public List<SurgeryFlow> FlowSteps { get; set; }
+        public List<SurgeryCard> SupplementalCards { get; set; }
 
         public CardItemCountResult()
         {

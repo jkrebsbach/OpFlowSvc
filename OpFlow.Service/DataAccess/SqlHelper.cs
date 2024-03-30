@@ -4119,7 +4119,8 @@ namespace OpFlow.Service.DataAccess
             {
                 CardItemCounts = dsSchedules.Tables[0].DataTableToList<CardItemCount>(),
                 TrayCollectionCounts = dsSchedules.Tables[1].DataTableToList<CollectionItemCount>(),
-                TrayQuestions = dsSchedules.Tables[2].DataTableToList<TrayQuestion>()
+                TrayQuestions = dsSchedules.Tables[2].DataTableToList<TrayQuestion>(),
+                SupplementalCards = dsSchedules.Tables[3].DataTableToList<SurgeryCard>()
             };
 
             return result;
@@ -6267,6 +6268,30 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("cpt_code", cptCode)
             };
             return await ExecuteNonQueryAsync("DeleteSurgeryProcedure", dsParameters);
+        }
+
+        public async Task<int> AddSurgeryCard(int surgeryId, int cardId, int locationId, int userId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("user_id", userId)
+            };
+            return await ExecuteNonQueryAsync("InsertSurgeryCard", dsParameters);
+        }
+
+        public async Task<int> DeleteSurgeryCard(int surgeryId, int cardId, int locationId, int userId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("user_id", userId)
+            };
+            return await ExecuteNonQueryAsync("DeleteSurgeryCard", dsParameters);
         }
 
         public async Task<int> UpdateSurgeryHeaderCounts(int surgeryId, int sharpCount, int needleCount, int lapCount, int specimenCount, int locationId)
@@ -8604,7 +8629,8 @@ namespace OpFlow.Service.DataAccess
                     new SqlParameter("quantity", tray.Quantity),
                     new SqlParameter("category", tray.Category),
                     new SqlParameter("vendor_tray", tray.VendorTray),
-                    new SqlParameter("instrument_number", tray.InstrumentNumber ?? (object)DBNull.Value)
+                    new SqlParameter("instrument_number", tray.InstrumentNumber ?? (object)DBNull.Value),
+                    new SqlParameter("sequence", tray.Sequence)
                 };
 
                 result.Identity = await ExecuteNonQueryAsync(@"UpdateTrayImport", parameters);

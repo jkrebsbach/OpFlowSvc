@@ -94,7 +94,8 @@ namespace OpFlow.Service.Models
                                 Quantity = string.IsNullOrEmpty(_csv.GetField(5)) ? 1 : int.Parse(_csv.GetField(5)),
                                 Category = _csv.GetField(6),
                                 VendorTray = _csv.GetField(7) == "Y",
-                                InstrumentNumber = _csv.GetField(8)
+                                InstrumentNumber = _csv.GetField(8),
+                                Sequence = string.IsNullOrEmpty(_csv.GetField(9)) ? 1 : int.Parse(_csv.GetField(9)),
                             });
                             break;
                         case ImportType.User:

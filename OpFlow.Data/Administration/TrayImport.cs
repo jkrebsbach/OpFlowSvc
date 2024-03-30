@@ -16,5 +16,6 @@ namespace OpFlow.Data.Administration
         public string Category { get; set; }
         public bool VendorTray { get; set; }
         public string InstrumentNumber { get; set; }
+        public int Sequence { get; set; }
     }
 }
