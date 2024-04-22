@@ -6171,6 +6171,24 @@ namespace OpFlow.Service.DataAccess
             return result.FirstOrDefault()?.Identifier ?? -1;
         }
 
+        public async Task<int> InsertSurgerySupplementalCard(
+            int caseId, int cardId, string cardDestinguisher, int userId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("location_id", locationId),                
+                new SqlParameter("case_id", caseId),
+                new SqlParameter("card_destinguisher", cardDestinguisher),
+                new SqlParameter("card_id", cardId),
+                new SqlParameter("user_id", userId),
+            };
+            var insert = await ExecuteCommandAsync("InsertSurgerySupplementalCard", dsParameters);
+
+            var result = insert.Tables[0].DataTableToList<InsertionResult>();
+
+            return result.FirstOrDefault()?.Identifier ?? -1;
+        }
+
         public async Task<int> AddCustomSurgeryItem(int surgeryId, int itemId, int quantity, int locationId, int userId)
         {
             var dsParameters = new[]
@@ -8584,7 +8602,7 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<ImportResult> InsertStagingData(int locationId, int? secureId, IImportData sourceData, FileParserRelations relations)
+        public async Task<ImportResult> InsertStagingData(int locationId, int? secureId, IImportData sourceData, FileParserRelations relations, int authenticatedUserID)
         {
             var result = new ImportResult();
 
@@ -8713,6 +8731,7 @@ namespace OpFlow.Service.DataAccess
                 }
 
                 CardFlowRoom cardFlowRoom = null;
+                string cardDestinguisher = null;
                 if (scheduleBase is CardlessScheduleImport cardlessSchedule)
                 {
                     cardFlowRoom = await GetCardFromTrays(surgery.SurgeonUserID.Value, cardlessSchedule.Trays, locationId);
@@ -8724,6 +8743,7 @@ namespace OpFlow.Service.DataAccess
                 } 
                 else if (scheduleBase is ScheduleImport schedule)
                 {
+                    cardDestinguisher = schedule.CardDestinguisher;
                     var procedureCards = await DetermineCards(surgery, schedule, relations, locationId);
 
                     if (procedureCards.Any())
@@ -8744,9 +8764,16 @@ namespace OpFlow.Service.DataAccess
                 var caseId = await CreateCase(secureId ?? -1, surgery.SurgeonUserID, surgery.SpecialtyID, 
                     locationId, surgery.CaseNbr);
 
-                result.Identity = await CreateSurgery(surgery, secureId ?? -1, caseId,
-                    cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID,
-                    locationId);
+                if ((cardDestinguisher ?? "P") == "P")
+                {
+                    result.Identity = await CreateSurgery(surgery, secureId ?? -1, caseId,
+                        cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID,
+                        locationId);
+                }
+                else if (cardFlowRoom?.CardID != null)
+                {
+                    result.Identity = await InsertSurgerySupplementalCard(caseId, cardFlowRoom.CardID, cardDestinguisher, authenticatedUserID, locationId);
+                }
 
                 foreach (var secondarySurgeon in scheduleBase.SecondarySurgeons)
                 {

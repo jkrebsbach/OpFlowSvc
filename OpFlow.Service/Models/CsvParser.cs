@@ -46,28 +46,19 @@ namespace OpFlow.Service.Models
                     switch (importType)
                     {
                         case ImportType.Schedule:
-                            DateTime dob;
-                            dob = DateTime.TryParse(_csv.GetField(3), out dob) ? dob : new DateTime(1900, 1, 1);
-
                             result.Add(new ScheduleImport
                             {
                                 MRN = _csv.GetField(0),
                                 CaseNbr = _csv.GetField(1),
-                                PatientName = _csv.GetField(2),
-                                DateOfBirth = dob,
-                                Gender = _csv.GetField(4),
-                                BMIText = _csv.GetField(5),
-                                Medications = _csv.GetField(6),
-                                Allergies = _csv.GetField(7),
-                                ScheduleDate = DateTime.Parse(_csv.GetField(8)),
-                                ScheduleTime = _csv.GetField(9),
-                                Location = _csv.GetField(10),
-                                Room = _csv.GetField(11),
-                                Procedure = _csv.GetField(12),
-                                Laterality = _csv.GetField(13),
-                                Surgeon = _csv.GetField(14),
-                                ProcedurePreferenceCards = _csv.GetField(15),
-                                Notes = _csv.GetField(16)
+                                ScheduleDate = DateTime.Parse(_csv.GetField(2)),
+                                ScheduleTime = _csv.GetField(3),
+                                Location = _csv.GetField(4),
+                                Room = _csv.GetField(5),
+                                Procedure = _csv.GetField(6),
+                                Laterality = _csv.GetField(7),
+                                Surgeon = _csv.GetField(8),
+                                ProcedurePreferenceCards = _csv.GetField(9),
+                                CardDestinguisher = _csv.GetField(10)
                             });
                             break;
                         case ImportType.Item:

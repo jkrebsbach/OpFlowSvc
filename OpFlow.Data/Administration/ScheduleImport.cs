@@ -10,92 +10,12 @@ namespace OpFlow.Data.Administration
     public class ScheduleImport : ScheduleBase
     {
         public string MRN { get; set; }
-        public string PatientName { get; set; }
-        public DateTime? DateOfBirth { get; set; }
-        public string Gender { get; set; }
-        public string BMIText { get; set; }
         public string Location { get; set; }
         public string Laterality { get; set; }
         public string ProcedurePreferenceCards { get; set; }
         public string MedicalHistory { get; set; }
         public string RiskFactors { get; set; }
-        public string Medications { get; set; }
-        public string Allergies { get; set; }
-        public string Notes { get; set; }
-
-
-        public string PatientLastName
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(PatientName))
-                    return null;
-
-                var lnameRegex = @"([A-Za-z\'-\.\s]+), ([A-Za-z]+)";
-                var match = Regex.Match(PatientName, lnameRegex);
-
-                if (match.Groups.Count > 2)
-                    return match.Groups[1].Value;
-
-                return null;
-            }
-        }
-
-        public string PatientFirstName
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(PatientName))
-                    return null;
-
-                var lnameRegex = @"([A-Za-z\'-\.\s]+), ([A-Za-z]+)";
-                var match = Regex.Match(PatientName, lnameRegex);
-
-                if (match.Groups.Count > 1)
-                    return match.Groups[2].Value;
-
-                return null;
-            }
-        }
-
-        public string PatientMInit
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(PatientName))
-                    return null;
-
-                var lnameRegex = @"([A-Za-z\'-\.\s]+), ([A-Za-z]+) ([A-Za-z])";
-                var match = Regex.Match(PatientName, lnameRegex);
-
-                if (match.Groups.Count > 3)
-                    return match.Groups[3].Value;
-
-                return null;
-            }
-        }
-
-        public decimal? BMI
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(BMIText))
-                    return null;
-
-                var bmiRegex = @"([0-9\.]+)";
-                var match = Regex.Match(BMIText, bmiRegex);
-
-                if (match.Groups.Count > 1)
-                {
-                    var strBmi = match.Groups[1].Value;
-
-                    decimal.TryParse(strBmi, out var bmi);
-                    return bmi;
-                }
-
-                return null;
-            }
-        }
+        public string CardDestinguisher { get; set; }
 
         public List<ImportCard> ProcedureCards
         {

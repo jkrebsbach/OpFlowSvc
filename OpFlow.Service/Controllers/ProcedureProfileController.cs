@@ -1325,7 +1325,7 @@ namespace OpFlow.Service.Controllers
 
                 foreach (var record in fileParser.Records)
                 {
-                    var result = await sqlHelper.InsertStagingData(user.SelectedLocation, null, record, fileParser.Relations);
+                    var result = await sqlHelper.InsertStagingData(user.SelectedLocation, null, record, fileParser.Relations, user.UserID);
                     foreach (var message in result.Messages)
                     {
                         await sqlHelper.InsertImportMessage(user.SelectedLocation, logId.Value, "WARN", message,
