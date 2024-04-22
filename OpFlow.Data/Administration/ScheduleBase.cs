@@ -191,7 +191,7 @@ namespace OpFlow.Data.Administration
                 return result;
             }
 
-            if (surgeonString.Split(' ').Length > 0)
+            if (surgeonString.Split(' ').Length > 1)
             {
                 try
                 {
