@@ -8764,7 +8764,10 @@ namespace OpFlow.Service.DataAccess
                 var caseId = await CreateCase(secureId ?? -1, surgery.SurgeonUserID, surgery.SpecialtyID, 
                     locationId, surgery.CaseNbr);
 
-                if ((cardDestinguisher ?? "P") == "P")
+                if (string.IsNullOrEmpty(cardDestinguisher))
+                    cardDestinguisher = "P";
+
+                if (cardDestinguisher == "P")
                 {
                     result.Identity = await CreateSurgery(surgery, secureId ?? -1, caseId,
                         cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID,
