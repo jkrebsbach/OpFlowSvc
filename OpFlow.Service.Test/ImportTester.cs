@@ -18,7 +18,7 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestImportFile()
         {
-            var fileName = @"D:\ColdStorage\Documents\OpFlow\Imports\HSS 4-15.csv";
+            var fileName = @"D:\ColdStorage\Documents\OpFlow\Imports\Iowa 4-29.csv";
             var importTypeId = 1; // schedule 
             //var importTypeId = 2; // item master
             //var importTypeId = 7; // schedule without card

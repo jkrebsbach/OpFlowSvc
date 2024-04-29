@@ -46,14 +46,12 @@ namespace OpFlow.Service.Controllers
             var procedureProfiles = await sqlHelper.GetProcedureProfiles();
             var trayGroups = await sqlHelper.GetTrayGroups(user.SelectedLocation);
             var proposalCardCategories = await sqlHelper.GetProposedTrayCardCategories(user.SelectedLocation);
-            var instruments = await sqlHelper.GetItems("instrument", null, true, user.SelectedLocation);
             var caseProfiles = await sqlHelper.GetCaseProfiles(user.SelectedLocation);
             var surgeonPreferences = await sqlHelper.GetSurgeonPreferences(user.SelectedLocation);
             var communicationMethods = await sqlHelper.GetTrayCommunicationMethods(user.SelectedLocation);
             var rules = await sqlHelper.GetProposedTrayScheduleRules(user.UserID, user.SelectedLocation);
             var roomGroups = await sqlHelper.GetRoomGroups(user.SelectedLocation);
             var orgCharts = await sqlHelper.GetOrgChartAttachments(user.SelectedLocation);
-            var cptCodes = await sqlHelper.GetCptCodes();
 
             var attachments = await sqlHelper.GetImplementationAttachments(user.SelectedLocation);
             var implementation = TrayImplementation.GetImplementationSteps(attachments);
@@ -86,7 +84,6 @@ namespace OpFlow.Service.Controllers
                 Types = instrumentLookups.Types,
                 CardCategories = cardCategories,
                 ProcedureProfiles = procedureProfiles,
-                CptCodes = cptCodes,
                 TrayGroups = trayGroups,
                 Trays = trays,
                 Schedules = schedules,
@@ -96,7 +93,6 @@ namespace OpFlow.Service.Controllers
                 BaselineTrays = baselineTrays,
                 Questions = questions,
                 Phases = phases,
-                Instruments = instruments,
                 CaseProfiles = caseProfiles,
                 SurgeonPreferences = surgeonPreferences,
                 Rules = rules,

@@ -27,10 +27,15 @@ namespace OpFlow.Service.Controllers
 
             if (trayPlanId == null)
             {
+                var locationInstruments = await sqlHelper.GetItems("instrument", null, true, user.SelectedLocation);
+                var cptCodes = await sqlHelper.GetCptCodes();
+
                 return Request.CreateResponse(HttpStatusCode.OK, new
                 {
                     SpecialtyID = (int?)null,
-                    TrayPlans = trayPlans
+                    TrayPlans = trayPlans,
+                    CptCodes = cptCodes,
+                    Instruments = locationInstruments
                 });
             }
 
