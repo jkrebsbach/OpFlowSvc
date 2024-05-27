@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NPOI.XWPF.UserModel;
+using OpFlow.Data;
 using OpFlow.Data.Administration;
 using OpFlow.Service.DataAccess;
 using WebSupergoo.ABCpdf11;
@@ -272,9 +273,486 @@ namespace OpFlow.Service.Test
 
 
         [TestMethod]
+        public async Task TestReadCensitracPDF()
+        {
+            var path = @"D:\ColdStorage\Documents\OpFlow\Imports\20240516\";
+
+            var directories = Directory.GetDirectories(path);
+            foreach (var directory in directories)
+            {
+                var files = Directory.GetFiles(directory, "*.pdf");
+
+                var outputData = "CardName,Description,Catalog,Qty,Cnt1,Cnt2\r\n";
+
+                foreach (var file in files)
+                {
+                    var cardImport = ProcessCensitracFile(file);
+
+                    foreach (var cardItem in cardImport)
+                    {
+                        // double quote issue, quick hack
+                        if (cardItem.ProductNbr == string.Empty)
+                            cardItem.ProductNbr = " ";
+
+                        //if (cardItem.Quantity == "")
+                        //    continue;
+
+                        outputData += $"\"{cardItem.CardName.Replace("\"", "\"\"")}\",\"{cardItem.Description.Replace("\"", "\"\"")}\",\"{cardItem.ProductNbr}\",{cardItem.Quantity},{cardItem.Open},{cardItem.Prn}\r\n";
+                    }
+                }
+
+                var filename = $"{Path.GetFileName(directory)}_CardData.csv";
+                var outputFile = Path.Combine(path, filename);
+                File.WriteAllText(outputFile, outputData);
+            }
+        }
+        private List<CardImport> ProcessCensitracFile(string filePath)
+        {
+            var pdfPageText = new List<string>();
+
+            using (var doc = new Doc())
+            {
+                doc.Read(filePath);
+
+                int theCount = doc.PageCount;
+                for (int i = 1; i <= theCount; i++)
+                {
+                    doc.PageNumber = i;
+                    pdfPageText.Add(doc.GetText(Page.TextType.Svg, false));
+                }
+            }
+
+            var cardImport = new List<CardImport>();
+            string cardName = string.Empty;
+
+
+            foreach (var pageText in pdfPageText)
+            {
+                var document = XDocument.Parse(pageText);
+
+                var rootElements = document.Root.Elements().ToList();
+                var textElements = rootElements.SelectMany(re => re.Elements().ToList()).Where(el => el.Name.LocalName == "text").ToList();
+
+                cardName = string.Empty;
+                decimal headerRow = 0;
+                decimal procedureX = 0;
+                decimal catalogX = 0;
+                decimal qtyX = 0;
+                decimal cnt1 = 0;
+                decimal cnt2 = 0;
+
+                foreach (var graphic in textElements)
+                {
+                    var data = ParseToken(graphic);
+
+                    if (data == "") continue;
+
+                    var fontSize = graphic.Attribute("font-size").Value;
+                    var fontFamily = graphic.Attribute("font-family").Value;
+                    var yPos = decimal.Parse(graphic.Attribute("y").Value);
+
+                    if (fontSize == "9" && (cardName == string.Empty || yPos == headerRow))
+                    {
+                        cardName += data;
+                        headerRow = yPos;
+                    }
+
+                    if (data.Trim() == "DESCRIPTION")
+                    {
+                        procedureX = decimal.Parse(graphic.Attribute("x").Value);
+                    }
+                    if (data.Trim() == "CA")
+                    {
+                        catalogX = decimal.Parse(graphic.Attribute("x").Value);
+                    }
+
+                    if (data == "QTY")
+                        qtyX = decimal.Parse(graphic.Attribute("x").Value);
+
+                    if (data == "CNT1")
+                        cnt1 = decimal.Parse(graphic.Attribute("x").Value);
+
+                    if (data == "CNT2")
+                    {
+                        cnt2 = decimal.Parse(graphic.Attribute("x").Value);
+                        cardImport.AddRange(ParseCensitracTable(textElements, cardName, procedureX, catalogX, qtyX, cnt1, cnt2, yPos + 0.05M));
+                    }
+                }
+
+            }
+
+            if (cardName == string.Empty) throw new Exception("Unable to parse card" + filePath);
+
+            return cardImport;
+        }
+
+        private List<CardImport> ParseCensitracTable(List<XElement> textElements, string cardName, decimal procedureX, decimal catalogX, decimal qtyX, decimal cnt1, decimal cnt2, decimal yPos)
+        {
+            var cardImport = new List<CardImport>();
+
+            var description = string.Empty;
+            var catalog = string.Empty;
+            var quantity = string.Empty;
+            var openValue = string.Empty;
+            var prnValue = string.Empty;
+
+            foreach (var graphic in textElements)
+            {
+                var fontSize = graphic.Attribute("font-size").Value;
+                var fontFamily = graphic.Attribute("font-family").Value;
+
+                var xLoc = decimal.Parse(graphic.Attribute("x").Value);
+                var yLoc = decimal.Parse(graphic.Attribute("y").Value);
+
+                if (yLoc < yPos)
+                {
+                    continue;
+                }
+                else if (yLoc > yPos && xLoc != procedureX)
+                {
+                    // this will be footer data, not a new row
+                    continue;
+                }
+
+                if (yLoc > yPos)
+                {
+                    if (description != string.Empty)
+                    {
+                        cardImport.Add(new CardImport()
+                        {
+                            CardName = cardName.Trim(),
+                            Description = description.Trim(),
+                            ProductNbr = catalog.Trim(),
+                            Quantity = quantity,
+                            Open = openValue,
+                            Prn = prnValue
+                        });
+                    }
+
+                    description = string.Empty;
+                    catalog = string.Empty;
+                    quantity = string.Empty;
+                    openValue = string.Empty;
+                    prnValue = string.Empty;
+
+                    yPos = yLoc;
+                }   
+
+                var data = ParseToken(graphic);
+
+                if (xLoc < catalogX)
+                {
+                    description += data;
+                    continue;
+                }
+
+                if (xLoc < qtyX)
+                {
+                    catalog += data;
+                    continue;
+                }
+
+                if (xLoc < cnt1)
+                {
+                    quantity += data;
+                    continue;
+                }
+
+                if (xLoc < cnt2)
+                {
+                    openValue += data;
+                    continue;
+                }
+
+                prnValue += data;
+            }
+
+            // add remaining data
+            if (description != string.Empty)
+            {
+                cardImport.Add(new CardImport()
+                {
+                    CardName = cardName.Trim(),
+                    Description = description.Trim(),
+                    ProductNbr = catalog.Trim(),
+                    Quantity = quantity,
+                    Open = openValue,
+                    Prn = prnValue
+                });
+            }
+
+            return cardImport;
+        }
+
+
+        [TestMethod]
+        public async Task TestReadSaintLukesPDF()
+        {
+            var path = @"D:\ColdStorage\Documents\OpFlow\Imports\20240516\";
+
+            var directories = Directory.GetDirectories(path);
+            foreach (var directory in directories)
+            {
+                var files = Directory.GetFiles(directory, "*.pdf");
+
+                var outputData = "CardName,Description,Manuf,Prod,Comment,QtyRqd,QtyMi,SpdCnt\r\n";
+
+                foreach (var file in files)
+                {
+                    var cardImport = ProcessSaintLukesFile(file);
+
+                    foreach (var cardItem in cardImport)
+                    {
+                        // double quote issue, quick hack
+                        if (cardItem.ProductNbr == string.Empty)
+                            cardItem.ProductNbr = " ";
+
+                        //if (cardItem.Quantity == "")
+                        //    continue;
+
+                        outputData += $"\"{cardItem.CardName.Replace("\"", "\"\"")}\",\"{cardItem.Description.Replace("\"", "\"\"")}\",\"{cardItem.Manufacturer}\",\"{cardItem.ProductNbr}\",\"{cardItem.Comment.Replace("\"", "\"\"")}\",{cardItem.Quantity},{cardItem.Open},{cardItem.Prn}\r\n";
+                    }
+                }
+
+                var filename = $"{Path.GetFileName(directory)}_CardData.csv";
+                var outputFile = Path.Combine(path, filename);
+                File.WriteAllText(outputFile, outputData);
+            }
+        }
+        private List<CardImport> ProcessSaintLukesFile(string filePath)
+        {
+            try
+            {
+                var pdfPageText = new List<string>();
+
+                using (var doc = new Doc())
+                {
+                    doc.Read(filePath);
+
+                    int theCount = doc.PageCount;
+                    for (int i = 1; i <= theCount; i++)
+                    {
+                        doc.PageNumber = i;
+                        pdfPageText.Add(doc.GetText(Page.TextType.Svg, false));
+                    }
+                }
+
+                var cardImport = new List<CardImport>();
+                string cardName = string.Empty;
+
+
+                foreach (var pageText in pdfPageText)
+                {
+                    var document = XDocument.Parse(pageText);
+
+                    var rootElements = document.Root.Elements().ToList();
+                    var textElements = rootElements.SelectMany(re => re.Elements().ToList()).Where(el => el.Name.LocalName == "text").ToList();
+
+                    cardName = string.Empty;
+                    decimal titleRow = 0;
+                    decimal headerRow = 0;
+                    decimal preCnt = 0;
+                    decimal qty1 = 0;
+                    decimal qty2 = 0;
+                    decimal spd = 0;
+                    decimal description = 0;
+                    decimal manufacturer = 0;
+                    decimal prodNbr = 0;
+                    decimal comment = 0;
+
+                    foreach (var graphic in textElements)
+                    {
+                        var data = ParseToken(graphic);
+
+                        if (data == "") continue;
+
+                        var fontSize = graphic.Attribute("font-size").Value;
+                        var fontFamily = graphic.Attribute("font-family").Value;
+                        var yPos = decimal.Parse(graphic.Attribute("y").Value);
+
+                        if (fontSize == "11" && (cardName == string.Empty || yPos == titleRow))
+                        {
+                            cardName += data;
+                            headerRow = yPos;
+                        }
+
+                        if (data.Trim() == "Pre")
+                        {
+                            preCnt = decimal.Parse(graphic.Attribute("x").Value);
+                        }
+                        if (data.Trim() == "Qty" && qty1 == 0)
+                        {
+                            qty1 = decimal.Parse(graphic.Attribute("x").Value);
+                        }
+                        else if (data == "Qty" && qty1 != 0)
+                            qty2 = decimal.Parse(graphic.Attribute("x").Value);
+
+                        if (data == "SPD")
+                            spd = decimal.Parse(graphic.Attribute("x").Value);
+                        if (data == "Description")
+                            description = decimal.Parse(graphic.Attribute("x").Value);
+                        if (data == "Manuf")
+                            manufacturer = decimal.Parse(graphic.Attribute("x").Value);
+                        if (data == "Prod #")
+                            prodNbr = decimal.Parse(graphic.Attribute("x").Value);
+                        if (data == "Comment")
+                        {
+                            titleRow = yPos;
+                            comment = decimal.Parse(graphic.Attribute("x").Value);
+                        }
+                    }
+
+                    if (comment != 0 && description != 0)
+                        cardImport.AddRange(ParseSaintLukesTable(textElements, cardName, preCnt, qty1, qty2, spd, description, manufacturer, prodNbr, comment, titleRow + 15.0M));
+
+                }
+
+                if (cardName == string.Empty) throw new Exception("Unable to parse card" + filePath);
+
+                return cardImport;
+            }
+            catch(Exception ex)
+            {
+                var tmpInt = 0;
+            }
+
+            return null;
+        }
+
+        private List<CardImport> ParseSaintLukesTable(List<XElement> textElements, string cardName, decimal preCntX, decimal qty1X, decimal qty2X, decimal spdX, decimal descriptionX, decimal manufacturerX, decimal prodNbrX, decimal commentX, decimal yPos)
+        {
+            var cardImport = new List<CardImport>();
+
+            var preCnt = string.Empty;
+            var qty1 = string.Empty;
+            var qty2 = string.Empty;
+            var spdCnt = string.Empty;
+            var description = string.Empty;
+            var manufacturer = string.Empty;
+            var prodNbr = string.Empty;
+            var comment = string.Empty;
+
+            foreach (var graphic in textElements)
+            {
+                var fontSize = graphic.Attribute("font-size").Value;
+                var fontFamily = graphic.Attribute("font-family").Value;
+
+                var xLoc = decimal.Parse(graphic.Attribute("x").Value);
+                var yLoc = decimal.Parse(graphic.Attribute("y").Value);
+
+                // ignore summary rows
+                if (fontFamily == "SegoeUI,Bold")
+                    continue;
+
+                if (yLoc < yPos)
+                {
+                    continue;
+                }
+                
+                if (yLoc > yPos + 12)
+                {
+                    if (description != string.Empty)
+                    {
+                        cardImport.Add(new CardImport()
+                        {
+                            CardName = cardName.Trim(),
+                            Description = description.Trim(),
+                            Manufacturer = manufacturer.Trim(),
+                            Comment = comment.Trim(),
+                            ProductNbr = prodNbr.Trim(),
+                            Quantity = qty1,
+                            Open = qty2,
+                            Prn = spdCnt
+                        });
+                    }
+
+                    preCnt = string.Empty;
+                    qty1 = string.Empty;
+                    qty2 = string.Empty;
+                    spdCnt = string.Empty;
+                    description = string.Empty;
+                    manufacturer = string.Empty;
+                    prodNbr = string.Empty;
+                    comment = string.Empty;
+
+                    yPos = yLoc;
+                }
+
+                var data = ParseToken(graphic);
+
+                if (xLoc < preCntX && xLoc > preCntX - 5)
+                {
+                    preCnt += data;
+                    continue;
+                }
+
+                if (xLoc < qty1X && xLoc > qty1X - 5)
+                {
+                    qty1 += data;
+                    continue;
+                }
+
+                if (xLoc < qty2X && xLoc > qty2X - 5)
+                {
+                    qty2 += data;
+                    continue;
+                }
+
+                if (xLoc < spdX && xLoc > spdX - 5)
+                {
+                    spdCnt += data;
+                    continue;
+                }
+
+                if (xLoc < descriptionX && xLoc > descriptionX - 5)
+                {
+                    description += data;
+                    continue;
+                }
+
+                if (xLoc < manufacturerX && xLoc > manufacturerX - 5)
+                {
+                    manufacturer += data;
+                    continue;
+                }
+
+                if (xLoc < prodNbrX && xLoc > prodNbrX - 5)
+                {
+                    prodNbr += data;
+                    continue;
+                }
+
+                if (xLoc < commentX && xLoc > commentX - 5)
+                {
+                    comment += data;
+                }
+            }
+
+            // add remaining data
+            if (description != string.Empty)
+            {
+                cardImport.Add(new CardImport()
+                {
+                    CardName = cardName.Trim(),
+                    Description = description.Trim(),
+                    Manufacturer = manufacturer.Trim(),
+                    Comment = comment.Trim(),
+                    ProductNbr = prodNbr.Trim(),
+                    Quantity = qty1,
+                    Open = qty2,
+                    Prn = spdCnt
+                });
+            }
+
+            return cardImport;
+        }
+
+
+
+        [TestMethod]
         public async Task TestReadCMCPDF()
         {
-            var path = @"D:\ColdStorage\Documents\OpFlow\Imports\20230718\";
+            var path = @"D:\ColdStorage\Documents\OpFlow\Imports\20240516\";
 
             var directories = Directory.GetDirectories(path);
             foreach (var directory in directories)
@@ -686,6 +1164,7 @@ namespace OpFlow.Service.Test
             public string SurgeonName { get; set; }
             public string Manufacturer { get; set; }
             public string Description { get; set; }
+            public string Comment { get; set; }
             public string ProductNbr { get; set; }
             public string Quantity { get; set; }
             public string Open { get; set; }

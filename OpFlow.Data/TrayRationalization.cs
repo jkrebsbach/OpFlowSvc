@@ -55,10 +55,13 @@ namespace OpFlow.Data
         public int ProposedCount { get; set; }
         public int SourceCount { get; set; }
         public int? Level1Target { get; set; }
+        public string Level1TargetName { get; set; }
         public int? Level1Instances { get; set; }
         public int? Level2Target { get; set; }
+        public string Level2TargetName { get; set; }
         public int? Level2Instances { get; set; }
         public int? Level3Target { get; set; }
+        public string Level3TargetName { get; set; }
         public int? Level3Instances { get; set; }
         public int CountChange => SourceCount - ProposedCount;
         public int ProjectRemoval => CountChange * Instances;
