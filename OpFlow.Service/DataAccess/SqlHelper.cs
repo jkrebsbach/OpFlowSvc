@@ -22,6 +22,10 @@ namespace OpFlow.Service.DataAccess
         {
         }
 
+        public SqlHelper(string sourceConnection) : base(sourceConnection)
+        {
+        }
+
         public async Task<int> CreateLocation(int? providerId, string providerName, string locationName)
         {
             var parameters = new[]
@@ -310,28 +314,6 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-
-        public async Task<TrayRationalizationDetailResult> GetTrayRationalizationDetail(int trayProposalId,
-            string type, int? itemId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("tray_proposal_id", trayProposalId),
-                new SqlParameter("type", type ?? (object)DBNull.Value),
-                new SqlParameter("item_id", itemId ?? (object)DBNull.Value),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetTrayRationalizationDetail", parameters);
-
-            var result = new TrayRationalizationDetailResult();
-            var trayNameTable = dsSchedules.Tables[0].DataTableToList<TrayRationalizationDetail>();
-
-            result.TrayName = trayNameTable.First().TrayName;
-            result.Quantity = trayNameTable.First().QtyOpen;
-            result.Instruments = dsSchedules.Tables[1].DataTableToList<TrayRationalizationDetail>();
-
-            return result;
-        }
 
         private string GetIdentitySummary(List<int> identities)
         {
@@ -1714,26 +1696,6 @@ namespace OpFlow.Service.DataAccess
             return table.OuterXml;
         }
 
-        public async Task<List<TrayRationalization>> GetProposedTrays(int? proposedTrayId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("tray_proposal_id", proposedTrayId ?? (object)DBNull.Value),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetProposedTrays", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
-            var userAssignments = dsSchedules.Tables[1].DataTableToList<TrayProposalUserAssignment>();
-
-            foreach (var tray in result)
-            {
-                tray.UserAssignments = userAssignments.Where(t => t.TrayProposalID == tray.TrayProposalID).ToList();
-            }
-
-            return result;
-        }
-
         public async Task<List<User>> GetSurgeonsProcedureProfile()
         {
             var parameters = new SqlParameter[0];
@@ -1840,39 +1802,6 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayProposalLog>> GetProposedTrayLog(int proposedTrayId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("tray_proposal_id", proposedTrayId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayLog", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<TrayProposalLog>();
-            var instrumentLog = dsSchedules.Tables[1].DataTableToList<TrayProposalInstrumentLog>();
-
-            foreach (var log in result)
-            {
-                log.Instruments = instrumentLog.Where(t => t.TrayProposalLogID == log.TrayProposalLogID).ToList();
-            }
-
-            return result;
-        }
-
-        public async Task<List<TrayRationalization>> GetBaselineTrays(int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetBaselineTrays", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
-
-            return result;
-        }
-
         public async Task<List<TrayRationalizationStatusLog>> GetProposedTrayStatusLog(int proposedTrayId, int locationId)
         {
             var parameters = new[]
@@ -1961,32 +1890,6 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("location_id", locationId)
             };
             var result = await ExecuteNonQueryAsync("UpdateProposedTrayCommunicationHistory", parameters);
-
-            return result;
-        }
-
-        public async Task<List<TrayRationalizationItem>> GetProposedTrayInstruments(int trayProposalId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("proposed_tray_id", trayProposalId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayInstruments", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationItem>();
-            var comparables = dsSchedules.Tables[1].DataTableToList<ComparableInstrument>();
-
-            var sequence = 0;
-            foreach (var item in result.Where(r => r.HistoryType == null))
-            {
-                if (item.Sequence == null)
-                    item.Sequence = (++sequence);
-
-                sequence = item.Sequence ?? 0;
-
-                item.ComparableInstruments = comparables.Where(c => c.InstrumentID == item.InstrumentID).ToList();
-            }
 
             return result;
         }
@@ -2089,20 +1992,6 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayApproval>> GetProposedTrayApprovalDocuments(int trayProposalId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("tray_proposal_id", trayProposalId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayApprovalDocuments", parameters);
-
-            var documents = dsSchedules.Tables[0].DataTableToList<TrayApproval>();
-
-            return documents;
-        }
-
         public async Task<List<TrayCardOverlap>> GetProposedTrayCardOverlap(int trayProposalId, int locationId)
         {
             var parameters = new[]
@@ -2138,119 +2027,7 @@ namespace OpFlow.Service.DataAccess
             }
 
             return result;
-        }
-
-        public async Task<InstrumentLookup> GetTrayInstrumentLookups(int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetInstrumentLookups", parameters);
-
-            var result = new InstrumentLookup()
-            {
-                Categories = dsSchedules.Tables[0].DataTableToList<TrayInstrumentCategory>(),
-                Eponyms = dsSchedules.Tables[1].DataTableToList<TrayInstrumentEponym>(),
-                Types = dsSchedules.Tables[2].DataTableToList<TrayInstrumentType>()
-            };
-
-            return result;
-        }
-
-        public async Task<List<TraySurgeryAudit>> GetProposedTrayAudits(int? trayProposalId, DateTime? startDate, DateTime? endDate, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("proposed_tray_id", trayProposalId ?? (object)DBNull.Value),
-                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
-                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayAudits", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<TraySurgeryAudit>();
-            var scrubTechs = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
-            var cptCodes = dsSchedules.Tables[2].DataTableToList<SurgeryCPTCode>();
-
-            foreach (var audit in result)
-            {
-                audit.SurgeonAuditCount = result.Count(r => r.SurgeonName == audit.SurgeonName);
-            }
-
-            foreach (var scrubTech in scrubTechs)
-            {
-                var surgery = result.FirstOrDefault(r => r.SurgeryID == scrubTech.SurgeryID);
-                surgery?.ScrubTechs.Add(scrubTech);
-            }
-
-            foreach (var cptCode in cptCodes)
-            {
-                var surgery = result.FirstOrDefault(r => r.SurgeryID == cptCode.SurgeryID);
-                surgery?.CptCodes.Add(cptCode);
-            }
-
-            return result;
-        }
-
-        public async Task<List<TraySurgeryAudit>> GetProposedTrayCounts(int? trayProposalId, DateTime? startDate, DateTime? endDate, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("proposed_tray_id", trayProposalId ?? (object)DBNull.Value),
-                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
-                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCounts", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<TraySurgeryAudit>();
-            var scrubTechs = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
-            var cptCodes = dsSchedules.Tables[2].DataTableToList<SurgeryCPTCode>();
-
-            foreach (var audit in result)
-            {
-                audit.SurgeonAuditCount = result.Count(r => r.SurgeonName == audit.SurgeonName);
-            }
-
-            foreach (var scrubTech in scrubTechs)
-            {
-                var surgery = result.FirstOrDefault(r => r.SurgeryID == scrubTech.SurgeryID);
-                surgery?.ScrubTechs.Add(scrubTech);
-            }
-
-            foreach (var cptCode in cptCodes)
-            {
-                var surgery = result.FirstOrDefault(r => r.SurgeryID == cptCode.SurgeryID);
-                surgery?.CptCodes.Add(cptCode);
-            }
-
-            return result;
-        }        
-
-        public async Task<List<TrayProposalSchedule>> GetProposedTraySchedule(int? trayProposalId, int? vendorId, int userId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
-                new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
-                new SqlParameter("user_id", userId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetProposedTraySchedule", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<TrayProposalSchedule>();
-            var surgeryUsers = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
-            var cardCategories = dsSchedules.Tables[2].DataTableToList<ProposalCardCategory>();
-
-            foreach (var surgery in result)
-            {
-                surgery.SurgeryUsers = surgeryUsers.Where(su => su.SurgeryID == surgery.SurgeryID).ToList();
-                surgery.CardCategories = cardCategories.Where(cc => cc.TrayProposalID == surgery.TrayProposalID).ToList();
-            }
-
-            return result;
-        }
+        }      
 
         public async Task<List<TrayProposalDashboard>> GetProposedTrayDashboard(int locationId)
         {
@@ -2262,20 +2039,6 @@ namespace OpFlow.Service.DataAccess
 
             var result = dsSchedules.Tables[0].DataTableToList<TrayProposalDashboard>();
             
-            return result;
-        }
-
-        public async Task<TrayProposalScheduleRule> GetProposedTrayScheduleRules(int userId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("user_id", userId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayScheduleRules", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<TrayProposalScheduleRule>().FirstOrDefault() ?? new TrayProposalScheduleRule();
-
             return result;
         }
 
@@ -2291,53 +2054,6 @@ namespace OpFlow.Service.DataAccess
             {
                 proposal.ProposalUsers = reps.Where(r => r.TrayProposalID == proposal.TrayProposalID).ToList();
             }
-
-            return result;
-        }
-
-        public async Task<List<TrayCountSummary>> GetTrayCountSummary(int trayProposalId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("proposed_tray_id", trayProposalId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetTrayCountSummary", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<TrayCountSummary>();
-            
-            return result;
-        }
-
-        public async Task<List<SourceTraySummary>> GetSourceTraySummary(int trayProposalId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("tray_proposal_id", trayProposalId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetProposedTraySummary", parameters);
-            var result = dsSchedules.Tables[0].DataTableToList<SourceTraySummary>();
-            var instruments = dsSchedules.Tables[1].DataTableToList<ItemTrayOverlap>();
-
-            foreach (var tray in result)
-            {
-                tray.Instruments = instruments.Where(i => i.TrayItemID == tray.TrayItemID).ToList();
-            }
-
-            return result;
-        }
-
-        public async Task<List<TrayRationalizationCardCategory>> GetProposedTrayCardCategories(int trayProposalId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("tray_proposal_id", trayProposalId),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCardCategories", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationCardCategory>();
 
             return result;
         }
@@ -2422,56 +2138,6 @@ namespace OpFlow.Service.DataAccess
             caseProfile.ParseResults(questions, null);
 
             return caseProfile;
-        }
-
-        public async Task<List<CaseProfile>> GetCaseProfiles(int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("case_profile_id", DBNull.Value),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetCaseProfile", parameters);
-
-            var caseProfiles = dsSchedules.Tables[0].DataTableToList<CaseProfile>();
-            var questions = dsSchedules.Tables[1].DataTableToList<CaseProfileQuestionResult>();
-
-            foreach (var caseProfile in caseProfiles)
-            {
-                caseProfile.ParseResults(questions.Where(q => q.CaseProfileID == caseProfile.CaseProfileID), null);
-            }
-
-            return caseProfiles;
-        }
-
-        public async Task<List<TrayCommunicationMethod>> GetTrayCommunicationMethods(int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetTrayCommunicationMethods", parameters);
-
-            var methods = dsSchedules.Tables[0].DataTableToList<TrayCommunicationMethod>();
-            
-            return methods;
-        }
-
-        public async Task<List<SurgeonPreference>> GetSurgeonPreferences(int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetSurgeonPreferences", parameters);
-
-            var surgeonPreferences = dsSchedules.Tables[0].DataTableToList<SurgeonPreference>();
-            foreach (var surgeonPreference in surgeonPreferences.Where(sp => sp.TrayGroup != null))
-            {
-                surgeonPreference.TrayGroupID = JsonConvert.DeserializeObject<List<int>>(surgeonPreference.TrayGroup);
-            }
-
-            return surgeonPreferences;
         }
 
         public async Task<SurgeonUsagePreferenceSummary> GetSurgeonUsagePreferences(int procedureProfileId, int userId, List<int> answerId, int locationId)
@@ -2694,18 +2360,6 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-        public async Task<List<ProposedTrayOrgChart>> GetOrgChartAttachments(int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("location_id", locationId)
-            };
-            var dsAttachments = await ExecuteCommandAsync("GetProposedTrayOrgChartAttachments", parameters);
-
-            var result = dsAttachments.Tables[0].DataTableToList<ProposedTrayOrgChart>();
-
-            return result;
-        }
         public async Task<int> DeleteProposedTrayOrgChart(int? orgChartId, int? trayProposalId, int locationId)
         {
             var parameters = new[]
@@ -2732,19 +2386,6 @@ namespace OpFlow.Service.DataAccess
             var result = dsAttachments.Tables[0].DataTableToList<InsertionResult>().First();
 
             return result.Identifier;
-        }
-
-        public async Task<List<ImplementationAttachment>> GetImplementationAttachments(int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetImplementationAttachments", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<ImplementationAttachment>();
-
-            return result;
         }
 
         public async Task<int> DeleteImplementationAttachment(int attachmentId, int locationId)
@@ -3383,22 +3024,6 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<ItemMaster>> GetItems(string itemType, int? trayId, bool? countNeeded, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("item_type", itemType ?? (object)DBNull.Value),
-                new SqlParameter("tray_id", trayId ?? (object)DBNull.Value),
-                new SqlParameter("count_needed", countNeeded ?? (object)DBNull.Value),
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetItems", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
-
-            return result;
-        }
-
         public async Task<List<ItemMasterCategory>> GetItemCategories( int locationId)
         {
             var parameters = new[]
@@ -3612,41 +3237,6 @@ namespace OpFlow.Service.DataAccess
 
                 return dsItems.Tables[0].DataTableToList<ItemTrayOverlap>();
             }
-        }
-
-        public async Task<List<TrayQuestionSummary>> GetTrayQuestions(int? itemId, int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("location_id", locationId),
-                new SqlParameter("item_id", itemId ?? (object)DBNull.Value)
-            };
-            var dsItems = await ExecuteCommandAsync("GetTrayQuestions", parameters);
-            var answers = dsItems.Tables[0].DataTableToList<TrayQuestion>();
-
-            var summary = answers.GroupBy(r => r.QuestionID);
-
-            var questions = summary.Select(questionAnswers => new TrayQuestionSummary
-                {
-                    QuestionID = questionAnswers.Key,
-                    Question = questionAnswers.First().Question,
-                    Answers = questionAnswers.ToList()
-                })
-                .ToList();
-
-            return questions;
-        }
-
-        public async Task<List<TrayProposalPhase>> GetTrayProposalPhases(int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("location_id", locationId)
-            };
-            var dsItems = await ExecuteCommandAsync("GetTrayProposalPhases", parameters);
-            var phases = dsItems.Tables[0].DataTableToList<TrayProposalPhase>();
-
-            return phases;
         }
 
         public async Task<List<TrayRationalizationReduction>> GetTrayRationalizationReduction(int locationId)
@@ -4371,16 +3961,6 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<CardCategory>> GetCardCategories()
-        {
-            var parameters = new SqlParameter[0];
-            var dsSchedules = await ExecuteCommandAsync("GetCardCategories", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<CardCategory>();
-
-            return result;
-        }
-
         public async Task<List<CardCategoryDetail>> GetCardCategoryDetails(
             List<int> cardCategoryId, List<int> specialtyId, List<int> cardId, List<int> procedureProfileId, List<int> surgeonId,
             int locationId)
@@ -4685,28 +4265,6 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<ProcedureProfile>> GetProcedureProfiles()
-        {
-            var parameters = new SqlParameter[]
-            {
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetProcedureProfiles", parameters);
-
-            var results = dsSchedules.Tables[0].DataTableToList<ProcedureProfile>();
-            var procedures = dsSchedules.Tables[1].DataTableToList<ProfileProcedure>();
-            var specialties = dsSchedules.Tables[2].DataTableToList<ProfileSpecialty>();
-            var cardCategories = dsSchedules.Tables[3].DataTableToList<ProfileCardCategory>();
-
-            foreach (var result in results)
-            {
-                result.Procedures = procedures.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-                result.Specialties = specialties.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-                result.CardCategories = cardCategories.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
-            }
-
-            return results;
-        }
-
         public async Task<List<ProcedureProfileCategory>> GetProcedureProfileCategories()
         {
             var parameters = new SqlParameter[]
@@ -4972,45 +4530,6 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<TrayGroup>> GetTrayGroups(int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("location_id", locationId),
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetTrayGroups", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<TrayGroup>();
-            var trays = dsSchedules.Tables[1].DataTableToList<TrayGroupTray>();
-
-            foreach (var trayGroup in result)
-            {
-                trayGroup.Trays = trays.Where(t => t.TrayGroupID == trayGroup.TrayGroupID).ToList();
-            }
-
-            return result;
-        }
-
-        public async Task<List<TrayRationalizationCardCategory>> GetProposedTrayCardCategories(int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("tray_proposal_id", DBNull.Value),
-                new SqlParameter("location_id", locationId),
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCardCategories", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationCardCategory>();
-            var surgeons = dsSchedules.Tables[1].DataTableToList<SurgeonCardCategory>();
-
-            foreach (var trayGroup in result)
-            {
-                trayGroup.Surgeons = surgeons.Where(t => t.CardCategoryID == trayGroup.CardCategoryID).ToList();
-            }
-
-            return result;
-        }
-
         public async Task<int> UpdateCardCategories(string hierarchyLevel, int cardCategoryId, List<int> cards, int locationId)
         {
             var cardData = GetIdentitySummary(cards);
@@ -5214,22 +4733,6 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<User>> SearchUsers(string searchString, int? roleId, int? specialtyId, int locationId)
-        {
-            var dsParameters = new[]
-            {
-                new SqlParameter("location_id", locationId),
-                new SqlParameter("role_id", roleId ?? (object)DBNull.Value),
-                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
-                new SqlParameter("search", searchString ?? (object)DBNull.Value),
-            };
-            var dsSchedules = await ExecuteCommandAsync("SearchUsers", dsParameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<User>();
-
-            return result;
-        }
-
         public async Task<List<User>> GetSurgeryUsers(int locationId)
         {
             var dsParameters = new[]
@@ -5283,18 +4786,6 @@ namespace OpFlow.Service.DataAccess
             var dsSchedules = await ExecuteCommandAsync("GetInternalRoles", dsParameters);
 
             var result = dsSchedules.Tables[0].DataTableToList<Role>();
-
-            return result;
-        }
-        public async Task<List<Vendor>> GetVendors(int locationId)
-        {
-            var dsParameters = new[]
-            {
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetVendors", dsParameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<Vendor>();
 
             return result;
         }
@@ -6841,19 +6332,6 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
-
-        public async Task<List<RoomGroup>> GetRoomGroups(int locationId)
-        {
-            var dsParameters = new[]
-            {
-                new SqlParameter("location_id", locationId),
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetRoomGroups", dsParameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<RoomGroup>();
-
-            return result;
-        }
         public async Task<RoomSetup> GetRoomSetup(int roomSetupId, int locationId)
         {
             var dsParameters = new[]
@@ -8029,19 +7507,6 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<List<Specialty>> GetSpecialties(int locationId)
-        {
-            var parameters = new[]
-            {
-                new SqlParameter("location_id", locationId)
-            };
-            var dsSchedules = await ExecuteCommandAsync("GetSpecialties", parameters);
-
-            var result = dsSchedules.Tables[0].DataTableToList<Specialty>();
-
-            return result;
-        }
-
         public async Task<List<MasterSpecialty>> GetSpecialtyMaster()
         {
             var parameters = new SqlParameter[0];
@@ -9013,6 +8478,544 @@ namespace OpFlow.Service.DataAccess
             };
 
             await ExecuteNonQueryAsync("InsertImportMessage", parameters);
+        }
+        public async Task<List<Specialty>> GetSpecialties(int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSpecialties", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Specialty>();
+
+            return result;
+        }
+
+        public async Task<List<User>> SearchUsers(string searchString, int? roleId, int? specialtyId, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("role_id", roleId ?? (object)DBNull.Value),
+                new SqlParameter("specialty_id", specialtyId ?? (object)DBNull.Value),
+                new SqlParameter("search", searchString ?? (object)DBNull.Value),
+            };
+            var dsSchedules = await ExecuteCommandAsync("SearchUsers", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<User>();
+
+            return result;
+        }
+
+        public async Task<InstrumentLookup> GetTrayInstrumentLookups(int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetInstrumentLookups", parameters);
+
+            var result = new InstrumentLookup()
+            {
+                Categories = dsSchedules.Tables[0].DataTableToList<TrayInstrumentCategory>(),
+                Eponyms = dsSchedules.Tables[1].DataTableToList<TrayInstrumentEponym>(),
+                Types = dsSchedules.Tables[2].DataTableToList<TrayInstrumentType>()
+            };
+
+            return result;
+        }
+
+        public async Task<List<ItemMaster>> GetItems(string itemType, int? trayId, bool? countNeeded, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("item_type", itemType ?? (object)DBNull.Value),
+                new SqlParameter("tray_id", trayId ?? (object)DBNull.Value),
+                new SqlParameter("count_needed", countNeeded ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetItems", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ItemMaster>();
+
+            return result;
+        }
+
+        public async Task<List<TrayRationalization>> GetProposedTrays(int? proposedTrayId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", proposedTrayId ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrays", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
+            var userAssignments = dsSchedules.Tables[1].DataTableToList<TrayProposalUserAssignment>();
+
+            foreach (var tray in result)
+            {
+                tray.UserAssignments = userAssignments.Where(t => t.TrayProposalID == tray.TrayProposalID).ToList();
+            }
+
+            return result;
+        }
+
+        public async Task<List<TrayProposalSchedule>> GetProposedTraySchedule(int? trayProposalId, int? vendorId, int userId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId ?? (object)DBNull.Value),
+                new SqlParameter("vendor_id", vendorId ?? (object)DBNull.Value),
+                new SqlParameter("user_id", userId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTraySchedule", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayProposalSchedule>();
+            var surgeryUsers = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
+            var cardCategories = dsSchedules.Tables[2].DataTableToList<ProposalCardCategory>();
+
+            foreach (var surgery in result)
+            {
+                surgery.SurgeryUsers = surgeryUsers.Where(su => su.SurgeryID == surgery.SurgeryID).ToList();
+                surgery.CardCategories = cardCategories.Where(cc => cc.TrayProposalID == surgery.TrayProposalID).ToList();
+            }
+
+            return result;
+        }
+
+        public async Task<List<TrayRationalization>> GetBaselineTrays(int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetBaselineTrays", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalization>();
+
+            return result;
+        }
+        public async Task<List<Vendor>> GetVendors(int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetVendors", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<Vendor>();
+
+            return result;
+        }
+
+        public async Task<List<TrayQuestionSummary>> GetTrayQuestions(int? itemId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("item_id", itemId ?? (object)DBNull.Value)
+            };
+            var dsItems = await ExecuteCommandAsync("GetTrayQuestions", parameters);
+            var answers = dsItems.Tables[0].DataTableToList<TrayQuestion>();
+
+            var summary = answers.GroupBy(r => r.QuestionID);
+
+            var questions = summary.Select(questionAnswers => new TrayQuestionSummary
+            {
+                QuestionID = questionAnswers.Key,
+                Question = questionAnswers.First().Question,
+                Answers = questionAnswers.ToList()
+            })
+                .ToList();
+
+            return questions;
+        }
+
+        public async Task<List<TrayProposalPhase>> GetTrayProposalPhases(int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId)
+            };
+            var dsItems = await ExecuteCommandAsync("GetTrayProposalPhases", parameters);
+            var phases = dsItems.Tables[0].DataTableToList<TrayProposalPhase>();
+
+            return phases;
+        }
+
+        public async Task<List<CardCategory>> GetCardCategories()
+        {
+            var parameters = new SqlParameter[0];
+            var dsSchedules = await ExecuteCommandAsync("GetCardCategories", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<CardCategory>();
+
+            return result;
+        }
+
+        public async Task<List<ProcedureProfile>> GetProcedureProfiles()
+        {
+            var parameters = new SqlParameter[]
+            {
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProcedureProfiles", parameters);
+
+            var results = dsSchedules.Tables[0].DataTableToList<ProcedureProfile>();
+            var procedures = dsSchedules.Tables[1].DataTableToList<ProfileProcedure>();
+            var specialties = dsSchedules.Tables[2].DataTableToList<ProfileSpecialty>();
+            var cardCategories = dsSchedules.Tables[3].DataTableToList<ProfileCardCategory>();
+
+            foreach (var result in results)
+            {
+                result.Procedures = procedures.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+                result.Specialties = specialties.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+                result.CardCategories = cardCategories.Where(p => p.ProcedureProfileID == result.ProcedureProfileID).ToList();
+            }
+
+            return results;
+        }
+
+        public async Task<List<TrayGroup>> GetTrayGroups(int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetTrayGroups", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayGroup>();
+            var trays = dsSchedules.Tables[1].DataTableToList<TrayGroupTray>();
+
+            foreach (var trayGroup in result)
+            {
+                trayGroup.Trays = trays.Where(t => t.TrayGroupID == trayGroup.TrayGroupID).ToList();
+            }
+
+            return result;
+        }
+
+        public async Task<List<TrayRationalizationCardCategory>> GetProposedTrayCardCategories(int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", DBNull.Value),
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCardCategories", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationCardCategory>();
+            var surgeons = dsSchedules.Tables[1].DataTableToList<SurgeonCardCategory>();
+
+            foreach (var trayGroup in result)
+            {
+                trayGroup.Surgeons = surgeons.Where(t => t.CardCategoryID == trayGroup.CardCategoryID).ToList();
+            }
+
+            return result;
+        }
+
+        public async Task<List<CaseProfile>> GetCaseProfiles(int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("case_profile_id", DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetCaseProfile", parameters);
+
+            var caseProfiles = dsSchedules.Tables[0].DataTableToList<CaseProfile>();
+            var questions = dsSchedules.Tables[1].DataTableToList<CaseProfileQuestionResult>();
+
+            foreach (var caseProfile in caseProfiles)
+            {
+                caseProfile.ParseResults(questions.Where(q => q.CaseProfileID == caseProfile.CaseProfileID), null);
+            }
+
+            return caseProfiles;
+        }
+
+        public async Task<List<SurgeonPreference>> GetSurgeonPreferences(int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetSurgeonPreferences", parameters);
+
+            var surgeonPreferences = dsSchedules.Tables[0].DataTableToList<SurgeonPreference>();
+            foreach (var surgeonPreference in surgeonPreferences.Where(sp => sp.TrayGroup != null))
+            {
+                surgeonPreference.TrayGroupID = JsonConvert.DeserializeObject<List<int>>(surgeonPreference.TrayGroup);
+            }
+
+            return surgeonPreferences;
+        }
+
+        public async Task<List<TrayCommunicationMethod>> GetTrayCommunicationMethods(int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetTrayCommunicationMethods", parameters);
+
+            var methods = dsSchedules.Tables[0].DataTableToList<TrayCommunicationMethod>();
+
+            return methods;
+        }
+
+        public async Task<TrayProposalScheduleRule> GetProposedTrayScheduleRules(int userId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("user_id", userId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayScheduleRules", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayProposalScheduleRule>().FirstOrDefault() ?? new TrayProposalScheduleRule();
+
+            return result;
+        }
+
+        public async Task<List<RoomGroup>> GetRoomGroups(int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("location_id", locationId),
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetRoomGroups", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<RoomGroup>();
+
+            return result;
+        }
+        public async Task<List<ProposedTrayOrgChart>> GetOrgChartAttachments(int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId)
+            };
+            var dsAttachments = await ExecuteCommandAsync("GetProposedTrayOrgChartAttachments", parameters);
+
+            var result = dsAttachments.Tables[0].DataTableToList<ProposedTrayOrgChart>();
+
+            return result;
+        }
+
+        public async Task<List<ImplementationAttachment>> GetImplementationAttachments(int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetImplementationAttachments", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ImplementationAttachment>();
+
+            return result;
+        }
+
+        public async Task<List<TrayRationalizationItem>> GetProposedTrayInstruments(int trayProposalId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("proposed_tray_id", trayProposalId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayInstruments", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationItem>();
+            var comparables = dsSchedules.Tables[1].DataTableToList<ComparableInstrument>();
+
+            var sequence = 0;
+            foreach (var item in result.Where(r => r.HistoryType == null))
+            {
+                if (item.Sequence == null)
+                    item.Sequence = (++sequence);
+
+                sequence = item.Sequence ?? 0;
+
+                item.ComparableInstruments = comparables.Where(c => c.InstrumentID == item.InstrumentID).ToList();
+            }
+
+            return result;
+        }
+
+        public async Task<List<TrayApproval>> GetProposedTrayApprovalDocuments(int trayProposalId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayApprovalDocuments", parameters);
+
+            var documents = dsSchedules.Tables[0].DataTableToList<TrayApproval>();
+
+            return documents;
+        }
+
+        public async Task<List<TraySurgeryAudit>> GetProposedTrayAudits(int? trayProposalId, DateTime? startDate, DateTime? endDate, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("proposed_tray_id", trayProposalId ?? (object)DBNull.Value),
+                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayAudits", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TraySurgeryAudit>();
+            var scrubTechs = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
+            var cptCodes = dsSchedules.Tables[2].DataTableToList<SurgeryCPTCode>();
+
+            foreach (var audit in result)
+            {
+                audit.SurgeonAuditCount = result.Count(r => r.SurgeonName == audit.SurgeonName);
+            }
+
+            foreach (var scrubTech in scrubTechs)
+            {
+                var surgery = result.FirstOrDefault(r => r.SurgeryID == scrubTech.SurgeryID);
+                surgery?.ScrubTechs.Add(scrubTech);
+            }
+
+            foreach (var cptCode in cptCodes)
+            {
+                var surgery = result.FirstOrDefault(r => r.SurgeryID == cptCode.SurgeryID);
+                surgery?.CptCodes.Add(cptCode);
+            }
+
+            return result;
+        }
+
+        public async Task<List<TraySurgeryAudit>> GetProposedTrayCounts(int? trayProposalId, DateTime? startDate, DateTime? endDate, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("proposed_tray_id", trayProposalId ?? (object)DBNull.Value),
+                new SqlParameter("start_date", startDate ?? (object)DBNull.Value),
+                new SqlParameter("end_date", endDate ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCounts", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TraySurgeryAudit>();
+            var scrubTechs = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
+            var cptCodes = dsSchedules.Tables[2].DataTableToList<SurgeryCPTCode>();
+
+            foreach (var audit in result)
+            {
+                audit.SurgeonAuditCount = result.Count(r => r.SurgeonName == audit.SurgeonName);
+            }
+
+            foreach (var scrubTech in scrubTechs)
+            {
+                var surgery = result.FirstOrDefault(r => r.SurgeryID == scrubTech.SurgeryID);
+                surgery?.ScrubTechs.Add(scrubTech);
+            }
+
+            foreach (var cptCode in cptCodes)
+            {
+                var surgery = result.FirstOrDefault(r => r.SurgeryID == cptCode.SurgeryID);
+                surgery?.CptCodes.Add(cptCode);
+            }
+
+            return result;
+        }
+
+        public async Task<List<TrayCountSummary>> GetTrayCountSummary(int trayProposalId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("proposed_tray_id", trayProposalId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetTrayCountSummary", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayCountSummary>();
+
+            return result;
+        }
+
+        public async Task<List<SourceTraySummary>> GetSourceTraySummary(int trayProposalId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTraySummary", parameters);
+            var result = dsSchedules.Tables[0].DataTableToList<SourceTraySummary>();
+            var instruments = dsSchedules.Tables[1].DataTableToList<ItemTrayOverlap>();
+
+            foreach (var tray in result)
+            {
+                tray.Instruments = instruments.Where(i => i.TrayItemID == tray.TrayItemID).ToList();
+            }
+
+            return result;
+        }
+
+        public async Task<List<TrayRationalizationCardCategory>> GetProposedTrayCardCategories(int trayProposalId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayCardCategories", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayRationalizationCardCategory>();
+
+            return result;
+        }
+
+        public async Task<List<TrayProposalLog>> GetProposedTrayLog(int proposedTrayId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", proposedTrayId),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetProposedTrayLog", parameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<TrayProposalLog>();
+            var instrumentLog = dsSchedules.Tables[1].DataTableToList<TrayProposalInstrumentLog>();
+
+            foreach (var log in result)
+            {
+                log.Instruments = instrumentLog.Where(t => t.TrayProposalLogID == log.TrayProposalLogID).ToList();
+            }
+
+            return result;
+        }
+
+        public async Task<TrayRationalizationDetailResult> GetTrayRationalizationDetail(int trayProposalId,
+            string type, int? itemId, int locationId)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("tray_proposal_id", trayProposalId),
+                new SqlParameter("type", type ?? (object)DBNull.Value),
+                new SqlParameter("item_id", itemId ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetTrayRationalizationDetail", parameters);
+
+            var result = new TrayRationalizationDetailResult();
+            var trayNameTable = dsSchedules.Tables[0].DataTableToList<TrayRationalizationDetail>();
+
+            result.TrayName = trayNameTable.First().TrayName;
+            result.Quantity = trayNameTable.First().QtyOpen;
+            result.Instruments = dsSchedules.Tables[1].DataTableToList<TrayRationalizationDetail>();
+
+            return result;
         }
     }
 }

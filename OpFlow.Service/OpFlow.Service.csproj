@@ -523,6 +523,7 @@
     <Compile Include="DataAccess\ExcelHelper.cs" />
     <Compile Include="DataAccess\ImageHelper.cs" />
     <Compile Include="DataAccess\KeyVaultHelper.cs" />
+    <Compile Include="DataAccess\ReadOnlySqlHelper.cs" />
     <Compile Include="DataAccess\ReportHelper.cs" />
     <Compile Include="DataAccess\ResponseHelper.cs" />
     <Compile Include="DataAccess\SamlHelper.cs" />

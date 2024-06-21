@@ -18,12 +18,12 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestImportFile()
         {
-            var fileName = @"D:\ColdStorage\Documents\OpFlow\Imports\Iowa 4-29.csv";
-            var importTypeId = 1; // schedule 
+            var fileName = @"D:\ColdStorage\Documents\OpFlow\Imports\Wolfson Trays.csv";
+            //var importTypeId = 1; // schedule 
             //var importTypeId = 2; // item master
             //var importTypeId = 7; // schedule without card
             //var importTypeId = 5; // cards
-            //var importTypeId = 3; // trays
+            var importTypeId = 3; // trays
             //var importTypeId = 8; // loma linda cards
 
 
@@ -80,13 +80,21 @@ namespace OpFlow.Service.Test
 
                     foreach (var record in fileParser.Records)
                     {
-                        var secureId = await secureSqlHelper.InsertStagingData(record, user.UserID, "TEST", "TEST", 1);
-
-                        var result = await sqlHelper.InsertStagingData(user.SelectedLocation, secureId, record, fileParser.Relations, user.UserID);
-                        foreach (var message in result.Messages)
+                        try
                         {
-                            await sqlHelper.InsertImportMessage(user.SelectedLocation, logId.Value, "WARN", message,
-                                (record as ScheduleImport)?.MRN, (record as ScheduleImport)?.ScheduleDate);
+                            var secureId = await secureSqlHelper.InsertStagingData(record, user.UserID, "TEST", "TEST", 1);
+
+                            var result = await sqlHelper.InsertStagingData(user.SelectedLocation, secureId, record, fileParser.Relations, user.UserID);
+                            foreach (var message in result.Messages)
+                            {
+                                await sqlHelper.InsertImportMessage(user.SelectedLocation, logId.Value, "WARN", message,
+                                    (record as ScheduleImport)?.MRN, (record as ScheduleImport)?.ScheduleDate);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            //throw;
                         }
                     }
                 }

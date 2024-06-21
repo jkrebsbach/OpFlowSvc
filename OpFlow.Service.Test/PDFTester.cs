@@ -275,7 +275,7 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestReadCensitracPDF()
         {
-            var path = @"D:\ColdStorage\Documents\OpFlow\Imports\20240516\";
+            var path = @"D:\ColdStorage\Documents\OpFlow\Imports\20240605\";
 
             var directories = Directory.GetDirectories(path);
             foreach (var directory in directories)
@@ -488,7 +488,7 @@ namespace OpFlow.Service.Test
         [TestMethod]
         public async Task TestReadSaintLukesPDF()
         {
-            var path = @"D:\ColdStorage\Documents\OpFlow\Imports\20240516\";
+            var path = @"D:\ColdStorage\Documents\OpFlow\Imports\20240605\";
 
             var directories = Directory.GetDirectories(path);
             foreach (var directory in directories)
@@ -614,6 +614,7 @@ namespace OpFlow.Service.Test
             catch(Exception ex)
             {
                 var tmpInt = 0;
+                return new List<CardImport>();
             }
 
             return null;
