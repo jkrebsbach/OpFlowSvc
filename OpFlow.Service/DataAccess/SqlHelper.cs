@@ -8044,11 +8044,21 @@ namespace OpFlow.Service.DataAccess
                         cardItem.ItemType = cardItem.ItemType.Substring(0, 30);
                     if (cardItem.ProductNbr?.Length > 30)
                         cardItem.ProductNbr = cardItem.ProductNbr.Substring(0, 30);
-                    
+
+                    // procedure group / card_category
+                    if (cardItem.ProcedureGroup?.Length > 250)
+                        cardItem.ProcedureGroup = cardItem.ProcedureGroup.Substring(0, 250);
+
+                    // procedure profile / procedure_profile
+                    if (cardItem.ProcedureProfile?.Length > 50)
+                        cardItem.ProcedureProfile = cardItem.ProcedureProfile.Substring(0, 50);
+
                     AddColumn(doc, row, cardItem.ItemName ?? "");
                     AddColumn(doc, row, cardItem.ItemType ?? "");
                     AddColumn(doc, row, cardItem.ProductNbr ?? "");
                     AddColumn(doc, row, cardItem.Quantity);
+                    AddColumn(doc, row, cardItem.ProcedureGroup ?? "");
+                    AddColumn(doc, row, cardItem.ProcedureProfile ?? "");
                 }
 
                 var itemData = table.OuterXml;

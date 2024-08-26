@@ -99,6 +99,8 @@ namespace OpFlow.Service.Models
                             break;
                         case ImportType.Card:
                             _csv.TryGetField(typeof(int?), 5, out var qty);
+                            _csv.TryGetField(typeof(string), 6, out var procedureGroup);
+                            _csv.TryGetField(typeof(string), 7, out var procedureProfile);
 
                             result.Add(new CardImport
                             {
@@ -107,7 +109,9 @@ namespace OpFlow.Service.Models
                                 ItemName = _csv.GetField(2),
                                 ProductNbr = _csv.GetField(3),
                                 ItemType = _csv.GetField(4),
-                                Quantity = (int?)qty
+                                Quantity = (int?)qty,
+                                ProcedureGroup = (string)procedureGroup,
+                                ProcedureProfile = (string)procedureProfile,
                             });
                             break;
                         case ImportType.CardlessSchedule:
