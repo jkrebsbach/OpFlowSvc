@@ -6699,6 +6699,22 @@ namespace OpFlow.Service.DataAccess
             return insert;
         }
 
+        public async Task<int> CreateRoomGroup(RoomGroup roomGroup, int locationId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("location_id", locationId),
+                new SqlParameter("description", roomGroup.RoomGroupDescription),
+            };
+            var insert = await ExecuteCommandAsync("InsertRoomGroup", dsParameters);
+
+            var result = insert.Tables[0].DataTableToList<InsertionResult>();
+
+            var roomGroupId = result.FirstOrDefault()?.Identifier ?? -1;
+
+            return roomGroupId;
+        }
+
         public async Task<int> CreateRoomSetup(RoomSetup roomSetup, int locationId)
         {
             var dsParameters = new[]
