@@ -198,12 +198,12 @@ namespace OpFlow.Service.Controllers
         [Route("roomGroup")]
         [SwaggerResponse(HttpStatusCode.Created)]
         [HttpPost]
-        public async Task<HttpResponseMessage> PostRoomGroup([FromBody] RoomSetup roomSetup)
+        public async Task<HttpResponseMessage> PostRoomGroup([FromBody] RoomGroup roomGroup)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var roomSetupId = await sqlHelper.CreateRoomGroup(roomSetup, user.SelectedLocation);
+            var roomSetupId = await sqlHelper.CreateRoomGroup(roomGroup, user.SelectedLocation);
 
             return Request.CreateResponse(HttpStatusCode.OK, roomSetupId);
         }
