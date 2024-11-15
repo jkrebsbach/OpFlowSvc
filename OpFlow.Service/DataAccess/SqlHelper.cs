@@ -7122,7 +7122,7 @@ namespace OpFlow.Service.DataAccess
 
         public async Task<List<SurgeryAuditSearchResult>> GetProposedTrayAuditSearch(int? trayProposalId,
             int? surgeonUserId,
-            int? specialtyId, int? trayId, int? cardId, int? roomGroupId,
+            int? specialtyId, int? trayId, int? cardId, string priority, int? roomGroupId,
             DateTime? begDate, DateTime? endDate, string target, int locationId)
         {
             var parameters = new[]
@@ -7143,6 +7143,9 @@ namespace OpFlow.Service.DataAccess
 
             var surgeries = dsSchedules.Tables[0].DataTableToList<SurgeryAuditSearchResult>();
             var auditTrays = dsSchedules.Tables[1].DataTableToList<SurgeryAuditTray>();
+
+            if (priority != null)
+                surgeries = surgeries.Where(s => s.AuditStatus == priority).ToList();
 
             foreach (var auditTray in auditTrays)
             {

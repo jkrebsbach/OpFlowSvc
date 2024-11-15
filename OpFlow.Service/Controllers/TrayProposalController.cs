@@ -293,14 +293,14 @@ namespace OpFlow.Service.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> SearchCases(string target,
             int? trayProposalId = null, int? surgeonUserId = null, int? specialtyId = null, int? trayId = null, int? cardId = null, int? roomGroupId = null,
-            DateTime? beginDate = null, DateTime? endDate = null)
+            string priority = null, DateTime? beginDate = null, DateTime? endDate = null)
         {
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
             beginDate = beginDate ?? (DateTime.Today.AddDays(-1));
 
-            var cases = await sqlHelper.GetProposedTrayAuditSearch(trayProposalId, surgeonUserId, specialtyId, trayId, cardId, roomGroupId,
+            var cases = await sqlHelper.GetProposedTrayAuditSearch(trayProposalId, surgeonUserId, specialtyId, trayId, cardId, priority, roomGroupId,
                 beginDate, endDate, 
                 target, user.SelectedLocation);
 
