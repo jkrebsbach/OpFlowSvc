@@ -1380,7 +1380,7 @@ namespace OpFlow.Service.Controllers
                 var drRow = result.NewRow();
                 drRow["Instrument Name"] = instrument.InstrumentName?.Trim();
                 drRow["Avg when used"] = instrument.AvgUsed;
-                drRow["Case Usage Pcnt"] = instrument.CaseUsagePcnt;
+                drRow["Case Usage Pcnt"] = instrument.CaseUsagePcnt == 0.0M ? 0.0M : instrument.CaseUsagePcnt / 100.0M;
                 drRow["Original Quantity"] = instrument.SourceQuantity;
                 drRow["Proposed Quantity"] = instrument.ProposedQuantity;
                 drRow["Reason for Adding"] = string.Empty;
