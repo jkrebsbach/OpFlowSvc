@@ -511,6 +511,10 @@ namespace OpFlow.Service.Controllers
 
             if (format == "CSV")
             {
+                var dtblConcordance = concordance.ToTable();
+                if (dtblConcordance.Columns.IndexOf("InstrumentDescription") > -1)
+                    dtblConcordance.Columns.Remove("InstrumentDescription");
+
                 return ResponseHelper.CsvResponse(concordance.ToTable());
             }
             
