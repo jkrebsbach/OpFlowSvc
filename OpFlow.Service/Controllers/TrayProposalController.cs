@@ -1369,6 +1369,7 @@ namespace OpFlow.Service.Controllers
         {
             DataTable result = new DataTable();
             result.Columns.Add("Instrument Name");
+            result.Columns.Add("Instrument Nbr");
             result.Columns.Add("Avg when used", typeof(decimal));
             result.Columns.Add("Case Usage Pcnt", typeof(decimal));
             result.Columns.Add("Original Quantity", typeof(int));
@@ -1379,6 +1380,7 @@ namespace OpFlow.Service.Controllers
             {
                 var drRow = result.NewRow();
                 drRow["Instrument Name"] = instrument.InstrumentName?.Trim();
+                drRow["Instrument Nbr"] = instrument.InstrumentNbr?.Trim();
                 drRow["Avg when used"] = instrument.AvgUsed;
                 drRow["Case Usage Pcnt"] = instrument.CaseUsagePcnt == 0.0M ? 0.0M : instrument.CaseUsagePcnt / 100.0M;
                 drRow["Original Quantity"] = instrument.SourceQuantity;

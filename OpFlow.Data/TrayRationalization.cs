@@ -970,6 +970,7 @@ namespace OpFlow.Data
     }
     public class TrayRationalizationExport : TrayRationalizationItem
     {
+        public string InstrumentNbr { get; set; }
         public int ProposedQuantity { get; set; }
         public int SourceQuantity { get; set; }
     }
