@@ -307,7 +307,7 @@ namespace OpFlow.Service.Controllers
                 post.TrayId = null;
 
             var countAnalytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, 
-                null, null, null, null, null, "tray", user.SelectedLocation);
+                null, null, null, null, null, null, "tray", user.SelectedLocation);
             var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, 
                 null, null, null, null, post.TrayId, null, "t", user.SelectedLocation);
             var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, 
@@ -1879,7 +1879,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
-                post.RoomGroupId, post.TrayId, post.Group, user.SelectedLocation);
+                post.RoomGroupId, post.TrayId, post.CardType, post.Group, user.SelectedLocation);
 
             var parameters = new[]
             {
