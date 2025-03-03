@@ -1295,13 +1295,25 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetExcessInventoryReport(post.SpecialtyID, post.ProposedTrayID, post.TrayStatus, post.TrayPhaseID,                 
                 post.Group, user.SelectedLocation);
 
-            var excessInventory = analytics.Tables[0].DefaultView;
 
             if (format == "CSV")
             {
-                return ResponseHelper.CsvResponse(excessInventory.ToTable());
+                // adjust CSV export to remove formatting needed on RDL
+                foreach (DataRow dataRow in analytics.Tables[0].Rows)
+                {
+                    var category = dataRow["InstrumentCategory"].ToString();
+                    if (string.IsNullOrEmpty(category))
+                        category = "No Category";
+
+                    var instrumentName = dataRow["InstrumentName"].ToString();
+                    instrumentName = instrumentName.Replace($"{category} - ", "");
+                    dataRow["InstrumentName"] = instrumentName;
+                }
+
+                return ResponseHelper.CsvResponse(analytics.Tables[0]);
             }
 
+            var excessInventory = analytics.Tables[0].DefaultView;
             var datasets = new Dictionary<string, DataTable>
             {
                 ["ExcessInventory"] = excessInventory.ToTable()
