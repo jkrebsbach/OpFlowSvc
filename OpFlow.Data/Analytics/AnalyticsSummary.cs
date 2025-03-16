@@ -459,6 +459,7 @@ namespace OpFlow.Data
         public List<int> ItemCategoryId { get; set; }
         public List<int> ItemId { get; set; }
         public List<int> TrayId { get; set; }
+        public string CardType { get; set; }
         public string Order { get; set; }
         public string Group { get; set; }
     }

@@ -307,7 +307,7 @@ namespace OpFlow.Service.Controllers
                 post.TrayId = null;
 
             var countAnalytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, 
-                null, null, null, null, null, "tray", user.SelectedLocation);
+                null, null, null, null, null, null, "tray", user.SelectedLocation);
             var instrumentAnalytics = await sqlHelper.GetInstrumentUsageReportData(post.SpecialtyId, 
                 null, null, null, null, post.TrayId, null, "t", user.SelectedLocation);
             var trayAnalytics = await sqlHelper.GetAnalyticsTrayRationalizationData(post.SpecialtyId, 
@@ -1295,13 +1295,25 @@ namespace OpFlow.Service.Controllers
             var analytics = await sqlHelper.GetExcessInventoryReport(post.SpecialtyID, post.ProposedTrayID, post.TrayStatus, post.TrayPhaseID,                 
                 post.Group, user.SelectedLocation);
 
-            var excessInventory = analytics.Tables[0].DefaultView;
 
             if (format == "CSV")
             {
-                return ResponseHelper.CsvResponse(excessInventory.ToTable());
+                // adjust CSV export to remove formatting needed on RDL
+                foreach (DataRow dataRow in analytics.Tables[0].Rows)
+                {
+                    var category = dataRow["InstrumentCategory"].ToString();
+                    if (string.IsNullOrEmpty(category))
+                        category = "No Category";
+
+                    var instrumentName = dataRow["InstrumentName"].ToString();
+                    instrumentName = instrumentName.Replace($"{category} - ", "");
+                    dataRow["InstrumentName"] = instrumentName;
+                }
+
+                return ResponseHelper.CsvResponse(analytics.Tables[0]);
             }
 
+            var excessInventory = analytics.Tables[0].DefaultView;
             var datasets = new Dictionary<string, DataTable>
             {
                 ["ExcessInventory"] = excessInventory.ToTable()
@@ -1879,7 +1891,7 @@ namespace OpFlow.Service.Controllers
 
             var sqlHelper = new SqlHelper();
             var analytics = await sqlHelper.GetAnalyticsCountSummaryData(post.SpecialtyId, post.SurgeonId, post.CardId, post.CardCategoryId,
-                post.RoomGroupId, post.TrayId, post.Group, user.SelectedLocation);
+                post.RoomGroupId, post.TrayId, post.CardType, post.Group, user.SelectedLocation);
 
             var parameters = new[]
             {
