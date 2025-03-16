@@ -515,7 +515,7 @@ namespace OpFlow.Service.Controllers
                 if (dtblConcordance.Columns.IndexOf("InstrumentDescription") > -1)
                     dtblConcordance.Columns.Remove("InstrumentDescription");
 
-                return ResponseHelper.CsvResponse(concordance.ToTable());
+                return ResponseHelper.CsvResponse(dtblConcordance);
             }
             
             var parameters = new[]
