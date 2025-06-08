@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Report MustUnderstand="df" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:df="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition/defaultfontfamily">
+<Report MustUnderstand="df" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:df="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition/defaultfontfamily" xmlns:am="http://schemas.microsoft.com/sqlserver/reporting/authoringmetadata">
+  <am:AuthoringMetadata>
+    <am:CreatedBy>
+      <am:Name>SSDTRS</am:Name>
+      <am:Version>17.14.36127.28</am:Version>
+    </am:CreatedBy>
+    <am:UpdatedBy>
+      <am:Name>SSDTRS</am:Name>
+      <am:Version>17.14.36127.28</am:Version>
+    </am:UpdatedBy>
+    <am:LastModifiedTimestamp>2025-05-30T20:32:42.7352773Z</am:LastModifiedTimestamp>
+  </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
@@ -32,6 +43,10 @@
           <DataField>Instrument</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="InstrumentNbr">
+          <DataField>InstrumentNbr</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="QtyOpen">
           <DataField>QtyOpen</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
@@ -39,6 +54,9 @@
         <Field Name="TrayQty">
           <DataField>TrayQty</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="InstrumentName">
+          <Value>=Fields!Instrument.Value + "/" + Fields!InstrumentNbr.Value</Value>
         </Field>
       </Fields>
     </DataSet>
@@ -104,15 +122,15 @@ Iif(Fields!SurgeonName.Value IS NOTHING, "", "Surgeon: " &amp; Fields!SurgeonNam
                               <ChartMember>
                                 <Group Name="Chart1_CategoryGroup">
                                   <GroupExpressions>
-                                    <GroupExpression>=Fields!Instrument.Value</GroupExpression>
+                                    <GroupExpression>=Fields!InstrumentName.Value</GroupExpression>
                                   </GroupExpressions>
                                 </Group>
                                 <SortExpressions>
                                   <SortExpression>
-                                    <Value>=Fields!Instrument.Value</Value>
+                                    <Value>=Fields!InstrumentName.Value</Value>
                                   </SortExpression>
                                 </SortExpressions>
-                                <Label>=Fields!Instrument.Value</Label>
+                                <Label>=Fields!InstrumentName.Value</Label>
                               </ChartMember>
                             </ChartMembers>
                           </ChartCategoryHierarchy>
