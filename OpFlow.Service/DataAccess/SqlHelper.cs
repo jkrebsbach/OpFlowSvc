@@ -4828,6 +4828,43 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+        public async Task<ApiKey> GetApiKey(Guid userAuthId)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("user_auth_id", userAuthId)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetApiKey", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ApiKey>();
+
+            return result.FirstOrDefault();
+        }
+        public async Task<ApiKey> GetApiKey(string apiKey)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("provider_key", apiKey)
+            };
+            var dsSchedules = await ExecuteCommandAsync("GetApiKey", dsParameters);
+
+            var result = dsSchedules.Tables[0].DataTableToList<ApiKey>();
+
+            return result.FirstOrDefault();
+        }
+        public async Task<int> InsertApiKey(ApiKey apiKey)
+        {
+            var dsParameters = new[]
+            {
+                new SqlParameter("user_auth_id", apiKey.UserAuthID),
+                new SqlParameter("provider_key", apiKey.ProviderKey),
+                new SqlParameter("login_provider", apiKey.LoginProvider),
+                new SqlParameter("expiration_date", apiKey.ExpirationDate ?? (object)DBNull.Value)
+            };
+            var result = await ExecuteNonQueryAsync("InsertApiKey", dsParameters);
+
+            return result;
+        }
         public async Task<int> UpdateVendorCardName(int cardId, string cardName, int providerId)
         {
             var dsParameters = new[]

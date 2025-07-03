@@ -1,5 +1,18 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.DataHandler;
+using Microsoft.Owin.Security.OAuth;
+using OpFlow.Service.App_Start;
+using OpFlow.Service.DataAccess;
+using OpFlow.Service.Models;
+using OpFlow.Service.Providers;
+using OpFlow.Service.Results;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
@@ -8,16 +21,7 @@ using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.Cookies;
-using Microsoft.Owin.Security.OAuth;
-using OpFlow.Service.App_Start;
-using OpFlow.Service.Models;
-using OpFlow.Service.Providers;
-using OpFlow.Service.Results;
+using System.Web.Security;
 
 // https://github.com/MikeWasson/LocalAccountsApp
 namespace OpFlow.Service.Controllers
@@ -220,6 +224,40 @@ namespace OpFlow.Service.Controllers
             }
 
             return Ok();
+        }
+
+        // GET api/Account/ApiKey
+        [OverrideAuthentication]
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalCookie)]
+        [AllowAnonymous]
+        [Route("ApiKey", Name = "ApiKeyLogin")]
+        [HttpPost]
+        public async Task<IHttpActionResult> ApiKeyLogin([FromBody] ApiKeyRequest request)
+        {
+            if (request?.ApiKey == null) return Unauthorized();
+
+            var sqlHelper = new SqlHelper();
+            var apiKey = await sqlHelper.GetApiKey(request.ApiKey);
+
+            var authentication = await ApplicationOAuthProvider.GenerateApiAuth(apiKey);
+
+            if (authentication == null) return Unauthorized();
+
+            var result = new AuthToken()
+            {
+                AccessToken = authentication,
+                TokenType = "bearer",
+                ExpiresIn = 43199,
+                Issued = DateTime.Now.ToString("o", CultureInfo.InvariantCulture),
+                Expires = DateTime.Now.AddHours(12).ToString("o", CultureInfo.InvariantCulture)
+            };
+
+            return Ok(result);
+        }
+
+        public class ApiKeyRequest
+        {
+            public string ApiKey { get; set; }
         }
 
         // GET api/Account/ExternalLogin

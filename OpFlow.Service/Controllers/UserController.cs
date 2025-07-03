@@ -175,6 +175,32 @@ namespace OpFlow.Service.Controllers
         }
 
         /// <summary>
+        /// Retrieve API key for user
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(User))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("apiKey", Name = "ApiKey")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetApiKey()
+        {
+            var userAuthId = await CacheUtil.GetUserAuthID();
+            var sqlHelper = new SqlHelper();
+
+            var result = await sqlHelper.GetApiKey(userAuthId);
+            if (result == null || result?.ExpirationDate > DateTime.Now)
+            {
+                result = ApiKey.Generate(userAuthId);
+                await sqlHelper.InsertApiKey(result);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                ApiKey = result.ProviderKey
+            });
+        }
+
+        /// <summary>
         /// User location assignment
         /// </summary>
         /// <returns></returns>

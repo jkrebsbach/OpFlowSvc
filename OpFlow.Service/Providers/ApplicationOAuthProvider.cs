@@ -1,19 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Security;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.DataHandler;
 using Microsoft.Owin.Security.DataProtection;
 using Microsoft.Owin.Security.OAuth;
+using Newtonsoft.Json;
+using OpFlow.Data;
 using OpFlow.Service.App_Start;
 using OpFlow.Service.DataAccess;
 using OpFlow.Service.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Security;
 
 namespace OpFlow.Service.Providers
 {
@@ -138,6 +142,28 @@ namespace OpFlow.Service.Providers
             }
         }
 
+        public static async Task<string> GenerateApiAuth(ApiKey apiKey)
+        {
+            if (apiKey == null || apiKey.ExpirationDate < DateTime.Now)
+                return null;
+
+            var context = HttpContext.Current.GetOwinContext();
+            var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
+
+            var user = await userManager.FindByIdAsync(apiKey.UserAuthID.ToString());
+
+            var oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
+               OAuthDefaults.AuthenticationType);
+            var cookiesIdentity = await user.GenerateUserIdentityAsync(userManager,
+                CookieAuthenticationDefaults.AuthenticationType);
+
+            var properties = ApplicationOAuthProvider.CreateProperties(user.UserName);
+            var ticket = new AuthenticationTicket(oAuthIdentity, properties);
+
+            var secureDataFormat = new TicketDataFormat(new ApplicationOAuthProvider.MachineKeyProtector());
+            return secureDataFormat.Protect(ticket);
+        }
+
         private class MachineKeyProtector : IDataProtector
         {
             private readonly string[] _purpose =
@@ -202,5 +228,27 @@ namespace OpFlow.Service.Providers
             };
             return new AuthenticationProperties(data);
         }
+    }
+
+    public class AuthToken
+    {
+        [JsonProperty("access_token")]
+        public string AccessToken { get; set; }
+        [JsonProperty("token_type")]
+        public string TokenType { get; set; }
+        [JsonProperty("expires_in")]
+        public int ExpiresIn { get; set; }
+        [JsonProperty("userName")]
+        public string UserName { get; set; }
+        [JsonProperty(".issued")]
+        public string Issued { get; set; }
+        [JsonProperty(".expires")]
+        public string Expires { get; set; }
+
+        [JsonIgnore]
+        public DateTime IssuedDate => Issued == null ? DateTime.MinValue : DateTime.Parse(Issued);
+
+        [JsonIgnore]
+        public DateTime ExpiresDate => Expires == null ? DateTime.MinValue : DateTime.Parse(Expires);
     }
 }

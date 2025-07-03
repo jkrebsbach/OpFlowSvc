@@ -37,6 +37,15 @@ namespace OpFlow.Service
             return secureUser;
         }
 
+        public static async Task<Guid> GetUserAuthID()
+        {
+            var userAuthId = HttpContext.Current.User.Identity.GetUserId();
+
+            var userAuthGuid = Guid.Parse(userAuthId);
+
+            return userAuthGuid;
+        }
+
         public static void RefreshUserCache()
         {
             var userAuthId = HttpContext.Current.User.Identity.GetUserId();
