@@ -486,7 +486,6 @@
     </Content>
     <Content Include="ABCpdf.chm" />
     <None Include="Properties\PublishProfiles\Production Site.pubxml" />
-    <None Include="Properties\PublishProfiles\Test Site.pubxml" />
     <Content Include="Resources\ProcedureMix.rdlc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -498,6 +497,7 @@
     <Content Include="Resources\TrayProcedureMix.rdlc" />
     <Content Include="Resources\TrayProcedureMixExport.rdlc" />
     <Content Include="Resources\InstrumentUsageDistribution.rdlc" />
+    <None Include="Properties\PublishProfiles\Test Site.pubxml" />
     <None Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
