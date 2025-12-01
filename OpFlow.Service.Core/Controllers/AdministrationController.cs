@@ -15,7 +15,6 @@ using Microsoft.Reporting.NETCore;
 using OpFlow.Data;
 using OpFlow.Data.Administration;
 using OpFlow.Data.Analytics;
-using OpFlow.Service.Core.Controllers;
 using OpFlow.Service.DataAccess;
 using OpFlow.Service.Models;
 
@@ -25,11 +24,8 @@ namespace OpFlow.Service.Controllers
     [Route("api/administration")]
     public class AdministrationController : OpFlowController
     {
-        SqlHelper _sqlHelper;
-
-        public AdministrationController(HttpContextAccessor httpContext, MemoryCache memoryCache, SqlHelper sqlHelper) : base(httpContext, memoryCache, sqlHelper)
+        public AdministrationController(IHttpContextAccessor httpContext, IMemoryCache memoryCache, SqlHelper sqlHelper) : base(httpContext, memoryCache, sqlHelper)
         {
-            _sqlHelper = sqlHelper;
         }
 
         // GET api/values/5

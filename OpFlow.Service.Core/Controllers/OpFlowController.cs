@@ -3,26 +3,27 @@ using Microsoft.Extensions.Caching.Memory;
 using OpFlow.Data;
 using OpFlow.Service.DataAccess;
 using System.Data;
+using System.IdentityModel.Claims;
 
-namespace OpFlow.Service.Core.Controllers
+namespace OpFlow.Service.Controllers
 {
     public class OpFlowController : ControllerBase
     {
-        private HttpContext _httpContext;
-        private readonly MemoryCache _memoryCache;
-        private SqlHelper _sqlHelper;
+        protected HttpContext _httpContext;
+        protected IMemoryCache _memoryCache;
+        protected SqlHelper _sqlHelper;
 
         public OpFlowController(IHttpContextAccessor httpContextAccessor, IMemoryCache memoryCache, SqlHelper sqlHelper)
         {
             _httpContext = httpContextAccessor.HttpContext;
-            _memoryCache = (MemoryCache)memoryCache;
+            _memoryCache = memoryCache;
             _sqlHelper = sqlHelper;
         }
 
         public async Task<UserSecurity> GetUserSecurity(string userAuthId = null)
         {
             if (userAuthId == null)
-                userAuthId = _httpContext.User.Identity.Name;
+                userAuthId = _httpContext.User.FindFirst("uid")?.Value;
 
             _memoryCache.TryGetValue<UserSecurity>(userAuthId, out var userSecurity);
 
@@ -41,7 +42,7 @@ namespace OpFlow.Service.Core.Controllers
 
         public async Task<Guid> GetUserAuthID()
         {
-            var userAuthId = _httpContext.User.Identity.Name;
+            var userAuthId = _httpContext.User.FindFirst("uid")?.Value;
 
             var userAuthGuid = Guid.Parse(userAuthId);
 
@@ -50,7 +51,7 @@ namespace OpFlow.Service.Core.Controllers
 
         public void RefreshUserCache()
         {
-            var userAuthId = _httpContext.User.Identity.Name;
+            var userAuthId = _httpContext.User.FindFirst("uid")?.Value;
 
             _memoryCache.Remove(userAuthId);
         }

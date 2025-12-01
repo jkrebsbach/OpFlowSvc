@@ -5,6 +5,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
 using OpFlow.Service;
+using OpFlow.Service.DataAccess;
+using Microsoft.AspNetCore.Identity;
+using Azure.Storage.Blobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,12 +17,24 @@ var connectionString = builder.Configuration.GetConnectionString("AuthConnection
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>() // Replace ApplicationUser and IdentityRole with your actual classes
+               .AddEntityFrameworkStores<ApplicationDbContext>()
+               .AddDefaultTokenProviders();
+
+builder.Services.AddMemoryCache();
+
 builder.Services.AddControllers();
+builder.Services.AddSingleton(x => new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlobStorage")));
 
 SetupJwt(builder);
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<SqlHelper, SqlHelper>();
+builder.Services.AddScoped<EmailHelper, EmailHelper>();
+builder.Services.AddScoped<BlobStorageHelper, BlobStorageHelper>();
 
 var app = builder.Build();
 

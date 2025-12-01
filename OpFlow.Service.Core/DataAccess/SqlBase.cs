@@ -19,14 +19,16 @@ namespace OpFlow.Service.DataAccess
 
         public SqlBase(IConfiguration configuration, string sqlDatabase)
         {
-            if (configuration[sqlDatabase] == null)
+            var connString = configuration.GetValue<string>($"ConnectionStrings:{sqlDatabase}");
+
+            if (connString == null)
             {
                 _valid = false;
             }
             else
             {
                 _valid = true;
-                _connString = configuration[sqlDatabase];
+                _connString = connString;
             }
         }
 

@@ -20,7 +20,7 @@ using System.Web;
 // https://github.com/MikeWasson/LocalAccountsApp
 namespace OpFlow.Service.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AccountController : ControllerBase
     {
         private const string LocalLoginProvider = "Local";
@@ -35,6 +35,36 @@ namespace OpFlow.Service.Controllers
         }
 
         public UserManager<ApplicationUser> UserManager => _userManager;
+
+        // GET api/Account/UserInfo
+        [AllowAnonymous]
+        [Route("token")]
+        [HttpPost()]
+        public async Task<ActionResult> Login([FromBody] RegisterBindingModel authModel)
+        {
+            if (authModel.Email == null || authModel.Password == null) return Unauthorized();
+
+            var user = await _userManager.FindByEmailAsync(authModel.Email);
+            if (user == null) return Unauthorized();
+
+            var passwordValid = await _userManager.CheckPasswordAsync(user, authModel.Password);
+            if (!passwordValid) return Unauthorized();
+
+            var authentication = JsonWebToken.GenerateToken(user);
+
+            if (authentication == null) return Unauthorized();
+
+            var result = new AuthToken()
+            {
+                AccessToken = authentication,
+                TokenType = "bearer",
+                ExpiresIn = 43199,
+                Issued = DateTime.Now.ToString("o", CultureInfo.InvariantCulture),
+                Expires = DateTime.Now.AddHours(12).ToString("o", CultureInfo.InvariantCulture)
+            };
+
+            return Ok(result);
+        }
 
         // GET api/Account/UserInfo
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
