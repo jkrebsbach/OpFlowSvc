@@ -51,7 +51,7 @@ namespace OpFlow.Service
             string issuer = "Issuer";
             string audience = "Audience";
             DateTime? notBefore = DateTime.Now;
-            DateTime? expires = DateTime.Now.AddMinutes(120);
+            DateTime? expires = DateTime.Now.AddMinutes(12 * 60);
 #if DEBUG
             expires = DateTime.Now.AddMinutes(480);
 #endif

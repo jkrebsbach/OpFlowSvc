@@ -32,6 +32,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [HttpPost]
         public async Task<ActionResult> Post([FromBody] ProcedureProfileMetricPost request)
         {
             var user = await GetUserSecurity();
@@ -44,6 +45,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [HttpPut]
         public async Task<ActionResult> Put(int metricId, [FromBody] ProcedureProfileMetricPost request)
         {
             var user = await GetUserSecurity();
@@ -56,6 +58,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [HttpDelete]
         public async Task<ActionResult> Delete(int metricId)
         {
             var user = await GetUserSecurity();

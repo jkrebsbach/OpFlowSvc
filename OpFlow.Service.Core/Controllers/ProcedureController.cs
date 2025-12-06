@@ -15,6 +15,7 @@ using Microsoft.Extensions.Caching.Memory;
 namespace OpFlow.Service.Controllers
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/procedure")]
     public class ProcedureController : OpFlowController
     {
         public ProcedureController(IHttpContextAccessor httpContext, IMemoryCache memoryCache, SqlHelper sqlHelper) : base(httpContext, memoryCache, sqlHelper)
@@ -22,7 +23,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        public async Task<ActionResult> GetProcedures(int? specialtyId = null)
+        public async Task<ActionResult> Get(int? specialtyId = null)
         {
             var user = await GetUserSecurity();
             

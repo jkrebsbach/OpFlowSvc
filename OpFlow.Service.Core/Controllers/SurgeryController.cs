@@ -932,6 +932,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [HttpPost]
         public async Task<ActionResult> Post([FromBody]SurgeryPost surgery)
         {
             try
@@ -1448,6 +1449,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // PUT api/values/5
+        [HttpPut]
         public void Put(int id, [FromBody]string value)
         {
         }
