@@ -20,7 +20,7 @@ namespace OpFlow.Service.Controllers
             _sqlHelper = sqlHelper;
         }
 
-        public async Task<UserSecurity> GetUserSecurity(string userAuthId = null)
+        internal async Task<UserSecurity> GetUserSecurity(string userAuthId = null)
         {
             if (userAuthId == null)
                 userAuthId = _httpContext.User.FindFirst("uid")?.Value;
@@ -40,7 +40,7 @@ namespace OpFlow.Service.Controllers
             return secureUser;
         }
 
-        public async Task<Guid> GetUserAuthID()
+        internal async Task<Guid> GetUserAuthID()
         {
             var userAuthId = _httpContext.User.FindFirst("uid")?.Value;
 
@@ -49,14 +49,14 @@ namespace OpFlow.Service.Controllers
             return userAuthGuid;
         }
 
-        public void RefreshUserCache()
+        internal void RefreshUserCache()
         {
             var userAuthId = _httpContext.User.FindFirst("uid")?.Value;
 
             _memoryCache.Remove(userAuthId);
         }
 
-        public ActionResult CsvResponse(DataTable sourceTable)
+        internal ActionResult CsvResponse(DataTable sourceTable)
         {
             var extract = string.Empty;
             var strDelim = string.Empty;
@@ -81,7 +81,7 @@ namespace OpFlow.Service.Controllers
 
             return CsvResponse(extract);
         }
-        public ActionResult CsvResponse(string csvData)
+        internal ActionResult CsvResponse(string csvData)
         {
             var extractBytes = System.Text.Encoding.Unicode.GetBytes(csvData);
             return File(extractBytes, "application/octet-steam");

@@ -153,22 +153,7 @@ namespace OpFlow.Service.Controllers
             }
             sample += "\r\n";
 
-
-            var extractBytes = System.Text.Encoding.UTF8.GetBytes(sample);
-            var memStream = new MemoryStream(extractBytes);
-            var result = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StreamContent(memStream)
-            };
-
-            result.Content.Headers.ContentDisposition =
-                new ContentDispositionHeaderValue("attachment")
-                { FileName = "TrayRationalization.csv", };
-
-            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-steam");
-            result.Content.Headers.ContentLength = memStream.Length;
-
-            return Ok(result);
+            return CsvResponse(sample);
         }
         // GET api/values/5
         [Route("exportData")]

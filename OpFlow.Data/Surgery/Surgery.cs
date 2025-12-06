@@ -441,13 +441,11 @@ namespace OpFlow.Data
         public bool ShowDeleted { get; set; }
         public int? RoomID { get; set; }
         public int? UserID { get; set; }
-        public int? surgeonUserId { get; set; }
-        public int? userId { get; set; }
-        public int? roomGroupId { get; set; }
-        public int? roomId { get; set; }
-        public int? bundleId { get; set; }
-        public int? procedureId { get; set; }
-        public int? specialtyId  { get; set; }
+        public int? SurgeonUserId { get; set; }
+        public int? RoomGroupId { get; set; }
+        public int? BundleId { get; set; }
+        public int? ProcedureId { get; set; }
+        public int? SpecialtyId  { get; set; }
     }
 
     public class SurgeryUtilizationCount
