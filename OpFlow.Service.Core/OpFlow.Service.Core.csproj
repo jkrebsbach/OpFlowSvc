@@ -7,6 +7,232 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\CardRedundancy.rdlc" />
+    <None Remove="Resources\CardRedundancyExport.rdlc" />
+    <None Remove="Resources\ConcordanceReport.rdlc" />
+    <None Remove="Resources\CountDistribution.rdlc" />
+    <None Remove="Resources\CountDistributionExport.rdlc" />
+    <None Remove="Resources\CountSampleDispersion.rdlc" />
+    <None Remove="Resources\CountSummary.rdlc" />
+    <None Remove="Resources\CountSummaryExport.rdlc" />
+    <None Remove="Resources\DisposableUsage.rdlc" />
+    <None Remove="Resources\DisposableUsageExport.rdlc" />
+    <None Remove="Resources\ExcessInventory.rdlc" />
+    <None Remove="Resources\ExcessInventoryExport.rdlc" />
+    <None Remove="Resources\InstrumentUsage.rdlc" />
+    <None Remove="Resources\InstrumentUsageCard.rdlc" />
+    <None Remove="Resources\InstrumentUsageCardExport.rdlc" />
+    <None Remove="Resources\InstrumentUsageCardTray.rdlc" />
+    <None Remove="Resources\InstrumentUsageCardTrayExport.rdlc" />
+    <None Remove="Resources\InstrumentUsageDistribution.rdlc" />
+    <None Remove="Resources\InstrumentUsageExport.rdlc" />
+    <None Remove="Resources\InstrumentUsageSurgeonCard.rdlc" />
+    <None Remove="Resources\InstrumentUsageSurgeonCardExport.rdlc" />
+    <None Remove="Resources\InstrumentUsageTrayCard.rdlc" />
+    <None Remove="Resources\InstrumentUsageTrayCardExport.rdlc" />
+    <None Remove="Resources\opflow_logo.png" />
+    <None Remove="Resources\ProcedureMix.rdlc" />
+    <None Remove="Resources\ProcedureMixExport.rdlc" />
+    <None Remove="Resources\ProcedureProfile.rdlc" />
+    <None Remove="Resources\ProcedureRedundancy.rdlc" />
+    <None Remove="Resources\ProcedureRedundancyExport.rdlc" />
+    <None Remove="Resources\ProfileAlignment.rdlc" />
+    <None Remove="Resources\SalesReport.rdlc" />
+    <None Remove="Resources\ServiceLineReview.rdlc" />
+    <None Remove="Resources\ServiceLineReviewExport.rdlc" />
+    <None Remove="Resources\SupplyCost.rdlc" />
+    <None Remove="Resources\SupplyCostExport.rdlc" />
+    <None Remove="Resources\SupplyCount.rdlc" />
+    <None Remove="Resources\SupplyCountExport.rdlc" />
+    <None Remove="Resources\SupplyOpen.rdlc" />
+    <None Remove="Resources\SupplyOpenExport.rdlc" />
+    <None Remove="Resources\SupplySavingsEstimator.rdlc" />
+    <None Remove="Resources\SupplySavingsEstimatorExport.rdlc" />
+    <None Remove="Resources\SupplyUsageVariance.rdlc" />
+    <None Remove="Resources\SupplyUsageVarianceExport.rdlc" />
+    <None Remove="Resources\SupplyWaste.rdlc" />
+    <None Remove="Resources\SupplyWasteExport.rdlc" />
+    <None Remove="Resources\TrayApproval.rdlc" />
+    <None Remove="Resources\TrayConsolidation.rdlc" />
+    <None Remove="Resources\TrayProcedureMix.rdlc" />
+    <None Remove="Resources\TrayProcedureMixExport.rdlc" />
+    <None Remove="Resources\TrayRationalization.rdlc" />
+    <None Remove="Resources\TrayRationalizationExport.rdlc" />
+    <None Remove="Resources\TrayReductionSummary.rdlc" />
+    <None Remove="Resources\TrayReductionSummaryExport.rdlc" />
+    <None Remove="Resources\TrayScope.rdlc" />
+    <None Remove="Resources\TrayScopeExport.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\CardRedundancy.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\CardRedundancyExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ConcordanceReport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\CountDistribution.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\CountDistributionExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\CountSampleDispersion.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\CountSummary.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\CountSummaryExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DisposableUsage.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DisposableUsageExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ExcessInventory.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ExcessInventoryExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\InstrumentUsage.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\InstrumentUsageCard.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\InstrumentUsageCardExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\InstrumentUsageCardTray.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\InstrumentUsageCardTrayExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\InstrumentUsageDistribution.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\InstrumentUsageExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\InstrumentUsageSurgeonCard.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\InstrumentUsageSurgeonCardExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\InstrumentUsageTrayCard.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\InstrumentUsageTrayCardExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\opflow_logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ProcedureMix.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ProcedureMixExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ProcedureProfile.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ProcedureRedundancy.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ProcedureRedundancyExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ProfileAlignment.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SalesReport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ServiceLineReview.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ServiceLineReviewExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SupplyCost.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SupplyCostExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SupplyCount.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SupplyCountExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SupplyOpen.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SupplyOpenExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SupplySavingsEstimator.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SupplySavingsEstimatorExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SupplyUsageVariance.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SupplyUsageVarianceExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SupplyWaste.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SupplyWasteExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TrayApproval.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TrayConsolidation.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TrayProcedureMix.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TrayProcedureMixExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TrayRationalization.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TrayRationalizationExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TrayReductionSummary.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TrayReductionSummaryExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TrayScope.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TrayScopeExport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.26.0" />
     <PackageReference Include="CsvHelper" Version="7.1.1" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
