@@ -17,6 +17,7 @@ using Microsoft.Extensions.Caching.Memory;
 namespace OpFlow.Service.Controllers
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/message")]
     public class MessagingController : OpFlowController
     {
         public MessagingController(
@@ -25,7 +26,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/message/list")]
+        [Route("list")]
         public async Task<ActionResult> GetCaseMessaging(int? userId = null,
             int? surgeryId = null, int? caseGroupId = null, int? recipientId = null)
         {
@@ -38,84 +39,85 @@ namespace OpFlow.Service.Controllers
             return Ok(result);
         }
 
-        //// GET api/values/5
-        //[Route("api/message/groups")]
-        //public async Task<ActionResult> GetCaseMessageGroups(int? userId = null, DateTime? startDate = null, DateTime? endDate = null)
-        //{
-        //    var user = await GetUserSecurity();
+        // GET api/values/5
+        [Route("groups")]
+        public async Task<ActionResult> GetCaseMessageGroups(int? userId = null, DateTime? startDate = null, DateTime? endDate = null)
+        {
+            var user = await GetUserSecurity();
             
-        //    var userObject = await _sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
+            var userObject = await _sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
 
-        //    var groups = await _sqlHelper.GetMessageGroups(userId ?? user.UserID, startDate, endDate, user.SelectedLocation);
+            var groups = await _sqlHelper.GetMessageGroups(userId ?? user.UserID, startDate, endDate, user.SelectedLocation);
 
-        //    foreach (var group in groups.Where(g => g.PatientID.HasValue))
-        //    {
-        //        var patient = await secureSqlHelper.GetPatient(group.PatientID.Value, 
-        //            user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
+            //foreach (var group in groups.Where(g => g.PatientID.HasValue))
+            //{
+            //    var patient = await secureSqlHelper.GetPatient(group.PatientID.Value, 
+            //        user.UserID, userObject.FirstName, userObject.LastName, (int)userObject.RoleID);
 
-        //        group.CommunicationTargetName = $"{patient?.LastName} {group.CommunicationTargetName}";
-        //    }
+            //    group.CommunicationTargetName = $"{patient?.LastName} {group.CommunicationTargetName}";
+            //}
 
-        //    groups = groups.OrderByDescending(g => g.SurgeryID.HasValue).ToList();
+            //    groups = groups.OrderByDescending(g => g.SurgeryID.HasValue).ToList();
 
-        //    return Ok(groups);
-        //}
+            //    return Ok(groups);
+            //}
 
-        //// GET api/values/5
-        //[Route("api/message")]
-        //public async Task<ActionResult> Put([FromBody]MessagePost messagePost, int? surgeryId = null, int? communicationUserId = null)
-        //{
-        //    var user = await GetUserSecurity();
-            
-        //    if ((surgeryId == null && communicationUserId == null) || messagePost == null)
-        //        return Request.CreateResponse(HttpStatusCode.Ambiguous);
+            //// GET api/values/5
+            //[Route("api/message")]
+            //public async Task<ActionResult> Put([FromBody]MessagePost messagePost, int? surgeryId = null, int? communicationUserId = null)
+            //{
+            //    var user = await GetUserSecurity();
 
-        //    await _sqlHelper.SendMessage(user.UserID, user.SelectedLocation,
-        //        surgeryId, communicationUserId, messagePost.Message);
+            //    if ((surgeryId == null && communicationUserId == null) || messagePost == null)
+            //        return Request.CreateResponse(HttpStatusCode.Ambiguous);
 
-        //    NotificationOutcome notificationOutcome = null;
+            //    await _sqlHelper.SendMessage(user.UserID, user.SelectedLocation,
+            //        surgeryId, communicationUserId, messagePost.Message);
 
-        //    if (surgeryId != null)
-        //    {
-        //        var recipients = await _sqlHelper.GetSurgeryUsers(surgeryId.Value, user.SelectedLocation);
+            //    NotificationOutcome notificationOutcome = null;
 
-        //        var sender = await _sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
+            //    if (surgeryId != null)
+            //    {
+            //        var recipients = await _sqlHelper.GetSurgeryUsers(surgeryId.Value, user.SelectedLocation);
 
-        //        foreach (var recipient in recipients)
-        //        {
-        //            // don't send message to yourself
-        //            if (recipient.Email == sender.Email)
-        //                continue;
+            //        var sender = await _sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
 
-        //            var surgery = await _sqlHelper.GetSurgery(surgeryId ?? -1, user.SelectedLocation);
-        //            var userObject = await _sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
-        //            var patient = await secureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
-        //                userObject.LastName, (int)userObject.RoleID);
+            //        foreach (var recipient in recipients)
+            //        {
+            //            // don't send message to yourself
+            //            if (recipient.Email == sender.Email)
+            //                continue;
 
-        //            // Prepend surgery descriptor to message
-        //            var surgeryText =
-        //                $"MRN: {surgery.CaseNumber} Room: {surgery.RoomDescription} Patient: {patient.Initials} Gender: {patient.Gender} Age: {patient.PatientAge} Message: ";
+            //            var surgery = await _sqlHelper.GetSurgery(surgeryId ?? -1, user.SelectedLocation);
+            //            var userObject = await _sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
+            //            var patient = await secureSqlHelper.GetPatient(surgery.PatientID, user.UserID, userObject.FirstName,
+            //                userObject.LastName, (int)userObject.RoleID);
 
-        //            messagePost.Message = surgeryText + messagePost.Message;
-        //            var senderName = $"{sender.LastName}, {sender.FirstName}";
-        //            notificationOutcome = await PushNotification.PostNotification(sender.Email, senderName, recipient.Email, messagePost.Message);
-        //        }
-        //    }
-        //    else if (communicationUserId != null)
-        //    {
-        //        var recipientUser = await _sqlHelper.GetUser(user.SelectedLocation,  communicationUserId ?? -1);
+            //            // Prepend surgery descriptor to message
+            //            var surgeryText =
+            //                $"MRN: {surgery.CaseNumber} Room: {surgery.RoomDescription} Patient: {patient.Initials} Gender: {patient.Gender} Age: {patient.PatientAge} Message: ";
 
-        //        var sender = await _sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
+            //            messagePost.Message = surgeryText + messagePost.Message;
+            //            var senderName = $"{sender.LastName}, {sender.FirstName}";
+            //            notificationOutcome = await PushNotification.PostNotification(sender.Email, senderName, recipient.Email, messagePost.Message);
+            //        }
+            //    }
+            //    else if (communicationUserId != null)
+            //    {
+            //        var recipientUser = await _sqlHelper.GetUser(user.SelectedLocation,  communicationUserId ?? -1);
 
-        //        var senderName = $"{sender.LastName}, {sender.FirstName}";
-        //        notificationOutcome = await PushNotification.PostNotification(sender.Email, senderName, recipientUser.Email, messagePost.Message);
-        //    }
+            //        var sender = await _sqlHelper.GetUser(user.SelectedLocation,  user.UserID);
 
-        //    return Ok(notificationOutcome);
-        //}
+            //        var senderName = $"{sender.LastName}, {sender.FirstName}";
+            //        notificationOutcome = await PushNotification.PostNotification(sender.Email, senderName, recipientUser.Email, messagePost.Message);
+            //    }
+
+            //    return Ok(notificationOutcome);
+            return Ok();
+        }
 
         // GET api/values/5
-        [Route("api/message/acknowledgeMessage")]
+        [Route("acknowledgeMessage")]
         [HttpPut]
         public async Task<ActionResult> AcknowledgeMessage(int messageId, bool hideMessages = false)
         {
@@ -128,7 +130,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/message/privateConversation")]
+        [Route("privateConversation")]
         [HttpDelete]
         public async Task<ActionResult> DeletePrivateConversation(int communicationUserId)
         {

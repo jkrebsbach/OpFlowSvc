@@ -27,6 +27,7 @@ builder.Services.AddControllers()
 .AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new OpFlow.Service.Core.Models.DateTimeConverter());
+    options.JsonSerializerOptions.Converters.Add(new OpFlow.Service.Core.Models.IntConverter());
 });
 builder.Services.AddSingleton(x => new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlobStorage")));
 

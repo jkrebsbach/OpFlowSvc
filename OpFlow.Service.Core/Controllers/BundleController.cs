@@ -15,6 +15,7 @@ using OpFlow.Service.DataAccess;
 namespace OpFlow.Service.Controllers
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/bundle")]
     public class BundleController : OpFlowController
     {
         public BundleController(IHttpContextAccessor httpContext, IMemoryCache memoryCache, SqlHelper sqlHelper) : base(httpContext, memoryCache, sqlHelper)
@@ -44,6 +45,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [HttpPost]
         public async Task<ActionResult> Post([FromBody]BundlePost value)
         {
             var user = await GetUserSecurity();
@@ -54,6 +56,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // PUT api/values/5
+        [HttpPut]
         public async Task<ActionResult> Put(int id, [FromBody]BundlePost value)
         {
             var user = await GetUserSecurity();
@@ -64,6 +67,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // DELETE api/values/5
+        [HttpDelete]
         public async Task<ActionResult> Delete(int id)
         {
             var user = await GetUserSecurity();

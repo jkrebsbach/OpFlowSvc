@@ -19,6 +19,7 @@ using OpFlow.Service.DataAccess;
 namespace OpFlow.Service.Controllers
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/flow")]
     public class FlowController : OpFlowController
     {
         private BlobStorageHelper _blobStorageHelper;
@@ -44,7 +45,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/flowPhrase", Name = "AddFlowPhrase")]
+        [Route("flowPhrase", Name = "AddFlowPhrase")]
         [HttpPost]
         public async Task<ActionResult> AddFlowPhrase(int flowId, int smartPhraseId, int? stepId = null)
         {
@@ -70,7 +71,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/flowPhraseBatch", Name = "BulkAddFlowPhrase")]
+        [Route("flowPhraseBatch", Name = "BulkAddFlowPhrase")]
         [HttpPost]
         public async Task<ActionResult> AddFlowPhraseBatch(int flowId, int stepId, [FromBody]BatchEditModel batch)
         {
@@ -99,7 +100,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/copyImage", Name = "CopyFlowImage")]
+        [Route("copyImage", Name = "CopyFlowImage")]
         [HttpPost]
         public async Task<ActionResult> CopyFlowImage(int flowImageId, int flowId,int stepId)
         {
@@ -117,7 +118,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/copyImageBatch", Name = "BulkCopyFlowImage")]
+        [Route("copyImageBatch", Name = "BulkCopyFlowImage")]
         [HttpPost]
         public async Task<ActionResult> CopyFlowImageBatch(int flowId, int stepId, [FromBody]BatchEditModel batch)
         {
@@ -154,7 +155,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/flowPhrase", Name = "UpdateFlowPhrase")]
+        [Route("flowPhrase", Name = "UpdateFlowPhrase")]
         [HttpPut]
         public async Task<ActionResult> UpdateFlowPhrase(int flowId, int smartPhraseId, [FromBody]PhraseUpdatePost debriefUpdate)
         {
@@ -168,7 +169,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/flowPhrase", Name = "DeleteFlowPhrase")]
+        [Route("flowPhrase", Name = "DeleteFlowPhrase")]
         [HttpDelete]
         public async Task<ActionResult> DeleteFlowPhrase(int flowId, int smartPhraseId)
         {
@@ -181,7 +182,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/smartPhrase", Name = "NewSmartPhrase")]
+        [Route("smartPhrase", Name = "NewSmartPhrase")]
         [HttpPost]
         public async Task<ActionResult> NewSmartPhrase([FromBody]NewSmartPhrasePost smartPhrase)
         {
@@ -204,7 +205,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/smartPhrase", Name = "EditSmartPhrase")]
+        [Route("smartPhrase", Name = "EditSmartPhrase")]
         [HttpPut]
         public async Task<ActionResult> EditSmartPhrase(int smartPhraseId, [FromBody]SmartPhrasePost smartPhrase)
         {
@@ -217,7 +218,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/smartPhrase", Name = "DeleteSmartPhrase")]
+        [Route("smartPhrase", Name = "DeleteSmartPhrase")]
         [HttpDelete]
         public async Task<ActionResult> DeleteSmartPhrase(int smartPhraseId)
         {
@@ -230,7 +231,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/flowImage", Name = "NewFlowImage")]
+        [Route("flowImage", Name = "NewFlowImage")]
         [HttpPut]
         public async Task<ActionResult> NewFlowImage(IFormFile file, int flowId, int stepId, int roleId, string comment = null)
         {
@@ -271,7 +272,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/flowImage", Name = "UpdateFlowImage")]
+        [Route("flowImage", Name = "UpdateFlowImage")]
         [HttpPost]
         public async Task<ActionResult> UpdateFlowImage(int flowImageId, [FromBody]FlowImagePost flowImage)
         {
@@ -284,7 +285,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/rotateFlowImage", Name = "RotateFlowImage")]
+        [Route("rotateFlowImage", Name = "RotateFlowImage")]
         [HttpPut]
         public async Task<ActionResult> RotateFlowImage(int flowImageId, int flowId, int direction)
         {
@@ -305,7 +306,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/flowImage", Name = "DeleteFlowImage")]
+        [Route("flowImage", Name = "DeleteFlowImage")]
         [HttpDelete]
         public async Task<ActionResult> DeleteFlowImage(int flowImageId, int flowId)
         {
@@ -324,7 +325,7 @@ namespace OpFlow.Service.Controllers
 
 
         // POST api/values
-        [Route("api/flow/flowFeedback", Name = "AddFlowFeedback")]
+        [Route("flowFeedback", Name = "AddFlowFeedback")]
         [HttpPost]
         public async Task<ActionResult> AddFlowFeedback(int flowId, [FromBody]FlowFeedbackPost flowFeedback)
         {
@@ -338,7 +339,7 @@ namespace OpFlow.Service.Controllers
 
 
         // POST api/values
-        [Route("api/flow/flowFeedback", Name = "DeleteFlowFeedback")]
+        [Route("flowFeedback", Name = "DeleteFlowFeedback")]
         [HttpDelete]
         public async Task<ActionResult> DeleteFlowFeedback(int flowFeedbackId)
         {
@@ -351,6 +352,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
+        [Route("cardFlowList", Name = "GetCardFlowList")]
         public async Task<ActionResult> GetCardFlowList(int cardId)
         {
             var user = await GetUserSecurity();
@@ -373,7 +375,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/flow/images")]
+        [Route("images")]
         public async Task<ActionResult> GetFlowImages(int flowId, int? surgeryId = null)
         {
             var user = await GetUserSecurity();
@@ -393,7 +395,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/flow/timings")]
+        [Route("timings")]
         public async Task<ActionResult> GetFlowTimings(int flowId)
         {
             var user = await GetUserSecurity();
@@ -405,7 +407,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/flow/surgerytimings")]
+        [Route("surgerytimings")]
         public async Task<ActionResult> GetFlowSurgeryTimings(int surgeryId, int? flowId = null)
         {
             var user = await GetUserSecurity();
@@ -417,7 +419,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/flow/comments")]
+        [Route("comments")]
         public async Task<ActionResult> GetFlowComments(int flowId, int surgeryId)
         {
             var user = await GetUserSecurity();
@@ -429,7 +431,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/flow/messaging")]
+        [Route("messaging")]
         public async Task<ActionResult> GetFlowMessaging(int flowId, int stepId)
         {
             var user = await GetUserSecurity();
@@ -441,7 +443,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/flow/details")]
+        [Route("details")]
         public async Task<ActionResult> GetFlowDetails(int flowId, int? surgeryId = null)
         {
             var user = await GetUserSecurity();
@@ -488,7 +490,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/flow/smartPhraseAdmin")]
+        [Route("smartPhraseAdmin")]
         public async Task<ActionResult> GetSmartPhraseAdmin()
         {
             var user = await GetUserSecurity();
@@ -505,7 +507,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/flow/smartPhrases")]
+        [Route("smartPhrases")]
         public async Task<ActionResult> GetSmartPhrases(int? categoryId = null, int? specialtyId = null, int? userId = null)
         {
             var user = await GetUserSecurity();
@@ -520,7 +522,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/flow/content")]
+        [Route("content")]
         public async Task<ActionResult> GetFlowContent(int flowId, int surgeryId)
         {
             var user = await GetUserSecurity();
@@ -532,7 +534,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/flow/notifications")]
+        [Route("notifications")]
         public async Task<ActionResult> GetFlowNotifications(int flowId, int stepId)
         {
             var user = await GetUserSecurity();
@@ -544,7 +546,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/flow/steps")]
+        [Route("steps")]
         public async Task<ActionResult> GetSteps()
         {
             var user = await GetUserSecurity();
@@ -556,7 +558,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // GET api/values/5
-        [Route("api/flow/feedback")]
+        [Route("feedback")]
         public async Task<ActionResult> GetFlowFeedback(int flowId)
         {
             var user = await GetUserSecurity();
@@ -568,7 +570,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // PUT api/values/5
-        [Route("api/flow/steps")]
+        [Route("steps")]
         [HttpPut]
         public async Task<ActionResult> UpdateFlowSteps(int flowId, [FromBody]FlowStepPost flowStepDetail)
         {
@@ -588,7 +590,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // PUT api/values/5
-        [Route("api/flow/surgerySteps")]
+        [Route("surgerySteps")]
         [HttpPut]
         public async Task<ActionResult> UpdateSurgerySteps(int stepId, [FromBody]StepPost flowStepDetail)
         {
@@ -602,7 +604,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // PUT api/values/5
-        [Route("api/flow/surgerySteps")]
+        [Route("surgerySteps")]
         [HttpPost]
         public async Task<ActionResult> AddSurgerySteps([FromBody]StepPost flowStepDetail)
         {
@@ -616,7 +618,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // PUT api/values/5
-        [Route("api/flow/surgerySteps")]
+        [Route("surgerySteps")]
         [HttpDelete]
         public async Task<ActionResult> DeleteSurgerySteps(int stepId)
         {
@@ -629,7 +631,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/notification")]
+        [Route("notification")]
         [HttpPost]
         public async Task<ActionResult> CreateFlowNotification(int flowId, [FromBody]FlowNotificationPost value)
         {
@@ -643,7 +645,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/notification")]
+        [Route("notification")]
         [HttpPut]
         public async Task<ActionResult> EditFlowNotification(int flowNotificationId, [FromBody]FlowNotificationPost value)
         {
@@ -657,7 +659,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
-        [Route("api/flow/notification")]
+        [Route("notification")]
         [HttpDelete]
         public async Task<ActionResult> DeleteFlowNotification(int flowNotificationId)
         {

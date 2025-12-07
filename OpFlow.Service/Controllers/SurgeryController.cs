@@ -156,8 +156,8 @@ namespace OpFlow.Service.Controllers
             var user = await CacheUtil.GetUserSecurity();
             var sqlHelper = new SqlHelper();
 
-            var schedules = await sqlHelper.SearchCases(post.UserID, post.surgeonUserId, post.roomGroupId, post.roomId,
-                null, post.procedureId, post.specialtyId, post.ShowDeleted,
+            var schedules = await sqlHelper.SearchCases(post.UserID, post.SurgeonUserId, post.RoomGroupId, post.RoomID,
+                null, post.ProcedureId, post.SpecialtyId, post.ShowDeleted,
                 post.BegDate, post.EndDate, user.SelectedLocation);
 
             await sqlHelper.LoadProposalCounts(schedules, user.SelectedLocation);

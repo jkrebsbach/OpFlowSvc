@@ -1815,7 +1815,7 @@ namespace OpFlow.Service.Controllers
             });
         }
 
-        [Route("proposedTrayDashboard")]
+        [Route("proposedTrayDashboard/{trayProposalId}")]
         [HttpPut]
         public async Task<ActionResult> UpdateProposedTrayDashboard(int trayProposalId, [FromBody] ProposedTrayDashboardPost post)
         {
