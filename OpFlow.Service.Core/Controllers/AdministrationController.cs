@@ -252,8 +252,7 @@ namespace OpFlow.Service.Controllers
             return Ok(result);
         }
         
-        [HttpPut]
-        [Route("importFile")]
+        [HttpPut("importFile")]
         public async Task<ActionResult> PutImportFile(IFormFile file, int importTypeId)
         {
             var user = await GetUserSecurity();

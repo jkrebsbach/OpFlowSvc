@@ -52,6 +52,8 @@ builder.Services.AddScoped<BlobStorageHelper, BlobStorageHelper>();
 
 var app = builder.Build();
 
+app.UseCors("CorsPolicy");
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -61,10 +63,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCors("CorsPolicy");
 
 app.Run();
 
