@@ -536,6 +536,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [HttpPost]
         public async Task<ActionResult> Post([FromBody]CardPost value)
         {
             try
@@ -565,6 +566,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // PUT api/values/5
+        [HttpPut]
         public async Task<ActionResult> Put(int id, [FromBody]CardPost value)
         {
             try
@@ -616,6 +618,7 @@ namespace OpFlow.Service.Controllers
         }
 
         // DELETE api/values/5
+        [HttpDelete]
         public async Task<ActionResult> Delete(int id)
         {
             try
