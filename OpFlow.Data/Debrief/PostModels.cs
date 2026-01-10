@@ -47,6 +47,11 @@ namespace OpFlow.Data.Debrief
         public int RoleID { get; set; }
     }
 
+    public class ChangeCptPost
+    {
+        public List<string> CptId { get; set; }
+    }
+
     public class BatchEditModel
     {
         public List<int> IDList { get; set; }

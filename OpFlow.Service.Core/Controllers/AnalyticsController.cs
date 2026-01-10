@@ -43,7 +43,7 @@ namespace OpFlow.Service.Controllers
             var lookups = await _sqlHelper.GetTrayInstrumentLookups(user.SelectedLocation);
             var items = await _sqlHelper.GetItems(null, null, true, user.SelectedLocation);
             var roomGroups = await _sqlHelper.GetRoomGroups(user.SelectedLocation);
-            var cpts = await _sqlHelper.GetKnownCPTCodes(user.ProviderID, user.LocationID);
+            var cpts = await _sqlHelper.GetCptCodes();
             var proposedTrays = await _sqlHelper.GetProposedTrays(null, user.SelectedLocation);
             var proposalPhases = await _sqlHelper.GetTrayProposalPhases(user.SelectedLocation);
             var caseProfiles = await _sqlHelper.GetCaseProfiles(user.SelectedLocation);
@@ -71,7 +71,7 @@ namespace OpFlow.Service.Controllers
                     InstrumentCategories = lookups.Categories,
                     Items = items.Where(i => i.ItemType != "INSTRUMENT"),
                     CardCategories = cardCategories,
-                    CPTs = cpts,
+                    cpts = cpts,
                     ProposedTrays = proposedTrays,
                     ProposalPhases = proposalPhases,
                     CaseProfiles = caseProfiles,

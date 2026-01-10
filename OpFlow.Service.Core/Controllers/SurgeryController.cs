@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -56,6 +52,7 @@ namespace OpFlow.Service.Controllers
 
             var rooms = await _sqlHelper.GetRooms(user.SelectedLocation);
             var specialties = await _sqlHelper.GetSpecialties(user.SelectedLocation);
+            var cpts = await _sqlHelper.GetCptCodes();
             var lateralities = await _sqlHelper.GetLateralities(user.SelectedLocation);
             var surgeons = await _sqlHelper.GetSurgeryUsers(user.SelectedLocation);
             var proposals = await _sqlHelper.GetProposedTrays(null, user.SelectedLocation);
@@ -66,6 +63,7 @@ namespace OpFlow.Service.Controllers
             {
                 Rooms = rooms,
                 Specialties = specialties,
+                Cpts = cpts,
                 Lateralities = lateralities,
                 Surgeons = surgeons,
                 Profiles = profiles,
@@ -908,6 +906,18 @@ namespace OpFlow.Service.Controllers
         }
 
         // POST api/values
+        [Route("assignCpt/{surgeryId}", Name = "AssignCpt")]
+        public async Task<ActionResult> AssignCpt(int surgeryId, [FromBody] ChangeCptPost post)
+        {
+            var user = await GetUserSecurity();
+
+
+            await _sqlHelper.AssignCptToCase(surgeryId, post.CptId, user.SelectedLocation);
+
+            return Ok();
+        }
+
+        // POST api/values
         [Route("assignRoomSetup", Name = "AssignRoomSetupCase")]
         public async Task<ActionResult> AssignRoomSetupToCase(int surgeryId, int roomSetupId)
         {
@@ -952,12 +962,12 @@ namespace OpFlow.Service.Controllers
                 var caseId = await _sqlHelper.CreateCase(patientId, secureUser.UserID, surgery.SpecialtyID,
                     secureUser.SelectedLocation, surgery.CaseNbr);
 
-                var cardFlowRoom = (surgery.BundleID.HasValue && surgery.SurgeonUserID.HasValue) ?
-                    await _sqlHelper.GetBundleDefaultCardFlowRoom(surgery.BundleID.Value, surgery.SurgeonUserID.Value, secureUser.SelectedLocation) :
-                    (await _sqlHelper.GetProcedureDefaultCardFlowRoom(surgery.CptCode, secureUser.SelectedLocation)).FirstOrDefault();
+                //var cardFlowRoom = (surgery.BundleID.HasValue && surgery.SurgeonUserID.HasValue) ?
+                //    await _sqlHelper.GetBundleDefaultCardFlowRoom(surgery.BundleID.Value, surgery.SurgeonUserID.Value, secureUser.SelectedLocation) :
+                //    (await _sqlHelper.GetProcedureDefaultCardFlowRoom(surgery.CptCode, secureUser.SelectedLocation)).FirstOrDefault();
 
                 var surgeryId = await _sqlHelper.CreateSurgery(surgery, patientId, caseId,
-                    surgery.CardID ?? cardFlowRoom?.CardID, cardFlowRoom?.TemplateFlowID, cardFlowRoom?.TemplateRoomSetupID,
+                    surgery.CardID, null, null,
                     secureUser.SelectedLocation);
 
                 if (surgery.SecondarySurgeons != null && surgery.SecondarySurgeons.Any())
@@ -978,6 +988,14 @@ namespace OpFlow.Service.Controllers
                         {
                             await _sqlHelper.AddCustomSurgeryItem(surgeryId, tray.TrayItemID, 1, secureUser.SelectedLocation, user.UserID);
                         }
+                    }
+                }
+
+                if (surgery.CptCode?.Any() == true)
+                {
+                    foreach (var cptCode in surgery.CptCode)
+                    {
+                        await _sqlHelper.InsertSurgeryCPTCode(surgeryId, cptCode, secureUser.SelectedLocation);
                     }
                 }
 

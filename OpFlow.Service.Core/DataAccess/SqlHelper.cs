@@ -313,10 +313,28 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-
         private string GetIdentitySummary(List<int> identities)
         {
             if (identities == null || !identities.Any() || (identities.Count == 1 && identities[0] == 0))
+                return null;
+
+            var doc = new XmlDocument();
+            var table = doc.CreateElement("table");
+
+            foreach (var identity in identities.Distinct())
+            {
+                var row = doc.CreateElement("row");
+                table.AppendChild(row);
+
+                AddColumn(doc, row, identity);
+            }
+
+            return table.OuterXml;
+        }
+
+        private string GetIdentitySummary(List<string> identities)
+        {
+            if (identities == null || !identities.Any() || (identities.Count == 1 && string.IsNullOrEmpty(identities[0])))
                 return null;
 
             var doc = new XmlDocument();
@@ -5397,6 +5415,18 @@ namespace OpFlow.Service.DataAccess
             };
             return await ExecuteNonQueryAsync("AssignCardToCase", dsParameters);
         }
+        public async Task<int> AssignCptToCase(int surgeryId, List<string> cptId, int locationId)
+        {
+            var cptXml = GetIdentitySummary(cptId);
+
+            var dsParameters = new[]
+            {
+                new SqlParameter("surgery_id", surgeryId),
+                new SqlParameter("cpt_id", cptXml ?? (object)DBNull.Value),
+                new SqlParameter("location_id", locationId),
+            };
+            return await ExecuteNonQueryAsync("InsertSurgeryCpt", dsParameters);
+        }
 
         public async Task<int> AssignFlowToCase(int flowId, int surgeryId, int locationId)
         {
@@ -5687,7 +5717,7 @@ namespace OpFlow.Service.DataAccess
                 new SqlParameter("default_card_id", defaultCardId ?? (object)DBNull.Value),
                 new SqlParameter("default_flow_id", defaultFlowId ?? (object)DBNull.Value),
                 new SqlParameter("default_room_id", defaultRoomId ?? (object)DBNull.Value),
-                new SqlParameter("cpt_codes", surgery.CptCode ?? (object)DBNull.Value),
+                new SqlParameter("cpt_codes", (object)DBNull.Value),
                 new SqlParameter("laterality_id", surgery.LateralityID ?? (object)DBNull.Value),
                 new SqlParameter("case_profile_id", surgery.CaseProfileID ?? (object)DBNull.Value),
                 new SqlParameter("metrics_required", surgery.MetricsRequired)
@@ -7114,11 +7144,17 @@ namespace OpFlow.Service.DataAccess
 
             var surgeries = dsSchedules.Tables[0].DataTableToList<SurgerySearchResult>();
             var surgeryUsers = dsSchedules.Tables[1].DataTableToList<SurgeryUser>();
+            var surgeryCpts = dsSchedules.Tables[2].DataTableToList<SurgeryCPTCode>();
 
             foreach (var surgeryUser in surgeryUsers)
             {
                 var surgery = surgeries.FirstOrDefault(s => s.SurgeryID == surgeryUser.SurgeryID);
                 surgery?.SurgeryUsers?.Add(surgeryUser);
+            }
+            foreach (var surgeryCpt in surgeryCpts)
+            {
+                var surgery = surgeries.FirstOrDefault(s => s.SurgeryID == surgeryCpt.SurgeryID);
+                surgery?.Cpts?.Add(surgeryCpt);
             }
 
             return surgeries;

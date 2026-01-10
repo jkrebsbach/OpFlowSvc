@@ -59,22 +59,28 @@ namespace OpFlow.Data.Administration
             }
         }
 
-        public string CptCode
+        public List<string> CptCode
         {
             get
             {
                 if (string.IsNullOrEmpty(Procedure))
                     return null;
 
-                var cptRegex = @"\[([0-9]+)";
-                var match = Regex.Match(Procedure, cptRegex);
+                var cptCodes = new List<string>();
 
-                if (match.Groups.Count > 1)
+                foreach (var tokens in Procedure.Split(','))
                 {
-                    return match.Groups[1].Value;
+                    var cptRegex = @"\[([0-9]+)";
+                    var match = Regex.Match(Procedure, cptRegex);
+
+                    if (match.Success)
+                    {
+                        cptCodes.Add(match.Groups[1].Value);
+                    }
                 }
 
-                return null;
+
+                return cptCodes;
             }
         }
 
