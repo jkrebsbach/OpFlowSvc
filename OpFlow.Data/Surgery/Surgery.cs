@@ -233,6 +233,7 @@ namespace OpFlow.Data
     {
         public int SurgeryID { get; set; }
         public string CptCode { get; set; }
+        public string ProcedureDescription { get; set; }
     }
 
     public class SurgeryCustomItemPost
