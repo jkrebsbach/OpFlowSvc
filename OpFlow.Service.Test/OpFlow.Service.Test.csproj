@@ -227,10 +227,6 @@
       <Project>{4ea94324-00f6-4ea2-b6e0-1908a5a385f0}</Project>
       <Name>OpFlow.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpFlow.Service\OpFlow.Service.csproj">
-      <Project>{4c473b90-38d7-4212-9f07-2cf0000a29a4}</Project>
-      <Name>OpFlow.Service</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ABCGeckoQuickStart.txt" />
