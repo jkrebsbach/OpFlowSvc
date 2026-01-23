@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace OpFlow.Service.Core.DataAccess
 {
@@ -52,7 +53,7 @@ namespace OpFlow.Service.Core.DataAccess
             }
         }
 
-        public async Task<byte[]> GetCPT()
+        public async Task<List<ReleaseFile>> GetReleases()
         {
             if (string.IsNullOrEmpty(_jwtToken))
                 await GetAMAToken();
@@ -63,7 +64,46 @@ namespace OpFlow.Service.Core.DataAccess
 
             try
             {
-                var response = await httpClient.GetAsync("https://api-platform.ama-assn.org/cpt-zip/1.0.0/files");
+                var response = await httpClient.GetAsync($"https://api-platform.ama-assn.org/cpt-zip/1.0.0/releases");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var releases = JsonSerializer.Deserialize<List<ReleaseFile>>(content);
+
+                    if (releases == null) throw new Exception("Failed to parse response: " + content);
+                    return releases;
+                }
+                else
+                {
+                    var stringResponse = await response.Content.ReadAsStringAsync();
+                    throw new Exception(stringResponse);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                var error = ex.Message;
+                throw;
+            }
+        }
+
+        public async Task<byte[]> GetCPT()
+        {
+            if (string.IsNullOrEmpty(_jwtToken))
+                await GetAMAToken();
+
+            var httpClient = new HttpClient();
+
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_jwtToken}");
+            httpClient.DefaultRequestHeaders.Add("accept", $"application/zip");
+
+            try
+            {
+                var releases = await GetReleases();
+                var release = releases.OrderByDescending(r => r.DateValue).First().Id;
+
+                var response = await httpClient.GetAsync($"https://api-platform.ama-assn.org/cpt-zip/1.0.0/files?release={release}");
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -83,6 +123,17 @@ namespace OpFlow.Service.Core.DataAccess
                 var error = ex.Message;
                 throw;
             }
+        }
+
+        public class ReleaseFile
+        {
+            [JsonPropertyName("id")]
+            public string Id { get; set; }
+            [JsonPropertyName("date")]
+            public string Date { get; set; }
+
+            [JsonIgnore]
+            public DateTime DateValue => DateTime.Parse(Date);
         }
     }
 }

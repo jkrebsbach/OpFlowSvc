@@ -25,7 +25,7 @@ namespace CoreTests
             {
                 var bytes = await _amaHelper.GetCPT();
                 
-                File.WriteAllBytes("cpt.zip", bytes);
+                File.WriteAllBytes(@"C:\temp\cpt.zip", bytes);
             }
             catch (Exception ex)
             {
