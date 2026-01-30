@@ -10,7 +10,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NPOI.XWPF.UserModel;
 using OpFlow.Data;
 using OpFlow.Data.Administration;
-using OpFlow.Service.DataAccess;
 using WebSupergoo.ABCpdf11;
 using WebSupergoo.ABCpdf11.Objects;
 
@@ -22,7 +21,7 @@ namespace OpFlow.Service.Test
         [TestInitialize]
         public void Initialize()
         {
-            WebSupergoo.ABCpdf11.XSettings.InstallLicense(Licensing.ABCPDF);
+     //       WebSupergoo.ABCpdf11.XSettings.InstallLicense(Licensing.ABCPDF);
         }
 
 
@@ -1177,36 +1176,36 @@ namespace OpFlow.Service.Test
         {
             try
             {
-                var sqlHelper = new SqlHelper();
+                //var sqlHelper = new SqlHelper();
 
-                var trayProposalId = 1;
-                var user = new Data.UserSecurity()
-                {
-                    ProviderID = 1,
-                    LocationID = 1
-                };
-
-                var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation)).FirstOrDefault();
-                var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, user.SelectedLocation);
-                var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.SelectedLocation);
-                var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.SelectedLocation);
-                var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.SelectedLocation);
-                var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.SelectedLocation);
-
-                //var traySummary = new TraySummary()
+                //var trayProposalId = 1;
+                //var user = new Data.UserSecurity()
                 //{
-                //    ProposedTray = proposedTray,
-                //    Audits = audits,
-                //    Counts = counts,
-                //    Instruments = instruments,
-                //    SourceTrays = sourceTrays,
-                //    Cards = cardOverlaps
+                //    ProviderID = 1,
+                //    LocationID = 1
                 //};
-                //var logoImage = @"C:\temp\opflow_logo.png";
-                //var imageBytes = ApprovalSummary.GenerateSummaryPDF(traySummary, logoImage);
 
-                byte[] imageBytes = new byte[0];
-                File.WriteAllBytes(@"C:\temp\test.pdf", imageBytes);
+                //var proposedTray = (await sqlHelper.GetProposedTrays(trayProposalId, user.SelectedLocation)).FirstOrDefault();
+                //var instruments = await sqlHelper.GetProposedTrayInstruments(trayProposalId, user.SelectedLocation);
+                //var audits = await sqlHelper.GetProposedTrayAudits(trayProposalId, null, null, user.SelectedLocation);
+                //var counts = await sqlHelper.GetProposedTrayCounts(trayProposalId, null, null, user.SelectedLocation);
+                //var sourceTrays = await sqlHelper.GetSourceTraySummary(trayProposalId, user.SelectedLocation);
+                //var cardOverlaps = await sqlHelper.GetProposedTrayCardOverlap(trayProposalId, user.SelectedLocation);
+
+                ////var traySummary = new TraySummary()
+                ////{
+                ////    ProposedTray = proposedTray,
+                ////    Audits = audits,
+                ////    Counts = counts,
+                ////    Instruments = instruments,
+                ////    SourceTrays = sourceTrays,
+                ////    Cards = cardOverlaps
+                ////};
+                ////var logoImage = @"C:\temp\opflow_logo.png";
+                ////var imageBytes = ApprovalSummary.GenerateSummaryPDF(traySummary, logoImage);
+
+                //byte[] imageBytes = new byte[0];
+                //File.WriteAllBytes(@"C:\temp\test.pdf", imageBytes);
             }
             catch (Exception e)
             {

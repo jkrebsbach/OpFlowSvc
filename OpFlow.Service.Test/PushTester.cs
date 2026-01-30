@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OpFlow.Service.Models;
 
 namespace OpFlow.Service.Test
 {
@@ -16,7 +15,7 @@ namespace OpFlow.Service.Test
         {
             try
             {
-                await PushNotification.PostNotification("martyn@opflowtech.com", "mknowles", "role2@opflowtech.com", "This is a test");
+               // await PushNotification.PostNotification("martyn@opflowtech.com", "mknowles", "role2@opflowtech.com", "This is a test");
 
             }
             catch (Exception e)

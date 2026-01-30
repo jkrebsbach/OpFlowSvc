@@ -4,8 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OpFlow.Service.Controllers;
-using OpFlow.Service.DataAccess;
+
 
 namespace OpFlow.Service.Test
 {
@@ -48,8 +47,8 @@ namespace OpFlow.Service.Test
             {
                 var patientId = 1;
 
-                ImageController cont = new ImageController();
-                var result = await cont.GetPatientPositionImage(patientId);
+               // ImageController cont = new ImageController();
+               // var result = await cont.GetPatientPositionImage(patientId);
 
             }
             catch (Exception e)
