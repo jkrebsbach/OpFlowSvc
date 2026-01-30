@@ -315,7 +315,7 @@ namespace OpFlow.Data
         public int? VendorID { get; set; }
         public int? PhaseID { get; set; }
         public int? SpecialtyID { get; set; }
-        public bool Customized { get; set; }
+        public bool? Customized { get; set; }
         public string TrayName { get; set; }
         public string Status { get; set; }
         public List<ProposedTrayInstrumentPost> Instruments { get; set; }

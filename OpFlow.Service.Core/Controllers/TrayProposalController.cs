@@ -1771,7 +1771,7 @@ namespace OpFlow.Service.Controllers
             var user = await GetUserSecurity();
             
 
-            var trayId = await _sqlHelper.InsertProposedTray(trayProposalId, post.SpecialtyID, post.Customized, post.TrayName, post.Instruments, user.SelectedLocation);
+            var trayId = await _sqlHelper.InsertProposedTray(trayProposalId, post.SpecialtyID, post.Customized ?? false, post.TrayName, post.Instruments, user.SelectedLocation);
             await _sqlHelper.InsertProposedTrayInstrumentLog(trayId, user.SelectedLocation);
 
             return Ok(trayId);
@@ -1792,7 +1792,7 @@ namespace OpFlow.Service.Controllers
             }
 
             var trayId = await _sqlHelper.UpdateProposedTray(trayProposalId, post.TrayName, post.Status, user.UserID, post.VendorID, 
-                post.SpecialtyID, post.PhaseID, post.Customized, post.CardCategories, trayGroups, user.SelectedLocation);
+                post.SpecialtyID, post.PhaseID, post.Customized ?? false, post.CardCategories, trayGroups, user.SelectedLocation);
 
             return Ok(trayId);
         }
