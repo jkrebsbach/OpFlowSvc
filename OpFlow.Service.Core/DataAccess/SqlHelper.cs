@@ -12,6 +12,8 @@ using OpFlow.Data.Administration;
 using OpFlow.Data.Analytics;
 using OpFlow.Data.Debrief;
 using System.Text.Json;
+using OpFlow.Data.Core;
+using OpFlow.Service.Core.Builders;
 
 namespace OpFlow.Service.DataAccess
 {
@@ -9119,5 +9121,29 @@ namespace OpFlow.Service.DataAccess
 
             return result;
         }
+
+        public async Task<int> InsertCptCodesBulk(IEnumerable<CPTCodeModel> rows)
+        {
+            var tvp = CptUploadTableBuilder.Build(rows);
+
+            var parameters = new[]
+            {
+        new SqlParameter("@rows", SqlDbType.Structured)
+        {
+            TypeName = "dbo.CptUploadTvp",
+            Value = tvp
+        }
+    };
+
+            var ds = await ExecuteCommandAsync("InsertCptCodesBulk", parameters);
+
+            var result = ds.Tables[0]
+                           .DataTableToList<InsertionResult>()
+                           .First()
+                           .Identifier;
+
+            return result;
+        }
+
     }
 }

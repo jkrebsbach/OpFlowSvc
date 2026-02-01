@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace OpFlow.Data
+{
+    public class MessagingGroup
+    {
+        public int? SurgeryID { get; set; }
+        public int? PatientID { get; set; }
+        public int? CaseGroupID { get; set; }
+        public int? CommunicationUserID { get; set; }
+        public string CommunicationTargetName { get; set; }
+        public int? RoomID { get; set; }
+        public string RoomName { get; set; }
+        public int SenderUserID { get; set; }
+        public string LatestMessage { get; set; }
+        public DateTimeOffset LatestInsertTimestamp { get; set; }
+    }
+}
