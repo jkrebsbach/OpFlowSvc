@@ -250,7 +250,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OpFlow.Data\OpFlow.Data.csproj" />
+    <ProjectReference Include="..\OpFlow.Data.Core\OpFlow.Data.Core.csproj" />
   </ItemGroup>
 
 </Project>

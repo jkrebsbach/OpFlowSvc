@@ -25,7 +25,29 @@ namespace OpFlow.Service.DataAccess
         public SqlHelper(string sourceConnection) : base(sourceConnection)
         {
         }
+        public Task InsertCountsEvent(
+            Guid processId,
+            int statusCode,
+            string statusName,
+            DateTime occurredAtUtc,
+            DateTime? clientOccurredAtUtc,
+            string sourceSystem,
+            string correlationId,
+            string details,
+            string errorMessage,
+            string errorCode,
+            string errorStackTrace,
+            int locationId)
+        {
+            // TODO: Insert into dbo.CountsProcessEvent (or your existing table)
+            return Task.CompletedTask;
+        }
 
+        public Task<List<object>> GetCountsEvents(Guid processId, int locationId)
+        {
+            // TODO: Query events by processId
+            return Task.FromResult(new List<object>());
+        }
         public async Task<int> CreateLocation(int? providerId, string providerName, string locationName)
         {
             var parameters = new[]
