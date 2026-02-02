@@ -223,12 +223,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpFlow.Data\OpFlow.Data.csproj">
-      <Project>{4ea94324-00f6-4ea2-b6e0-1908a5a385f0}</Project>
-      <Name>OpFlow.Data</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="ABCGeckoQuickStart.txt" />
     <Content Include="ABCpdfQuickStart.txt" />
     <Content Include="SqlServerTypes\readme.htm" />
