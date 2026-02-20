@@ -49,7 +49,6 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<SqlHelper, SqlHelper>();
 builder.Services.AddScoped<EmailHelper, EmailHelper>();
 builder.Services.AddScoped<BlobStorageHelper, BlobStorageHelper>();
-builder.Services.AddScoped<ICptUploadService, CptUploadService>();
 
 var app = builder.Build();
 

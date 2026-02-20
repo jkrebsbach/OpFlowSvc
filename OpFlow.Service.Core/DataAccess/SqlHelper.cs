@@ -12,8 +12,6 @@ using OpFlow.Data.Administration;
 using OpFlow.Data.Analytics;
 using OpFlow.Data.Debrief;
 using System.Text.Json;
-using OpFlow.Data.Core;
-using OpFlow.Service.Core.Builders;
 
 namespace OpFlow.Service.DataAccess
 {
@@ -9122,27 +9120,19 @@ namespace OpFlow.Service.DataAccess
             return result;
         }
 
-        public async Task<int> InsertCptCodesBulk(IEnumerable<CPTCodeModel> rows)
+        public async Task UpdateCptCode(string cptId, string longDescriptor,
+            string mediumDescriptor, string ShortDescriptor, string consumerDescriptor)
         {
-            var tvp = CptUploadTableBuilder.Build(rows);
-
             var parameters = new[]
             {
-        new SqlParameter("@rows", SqlDbType.Structured)
-        {
-            TypeName = "dbo.CptUploadTvp",
-            Value = tvp
-        }
-    };
+                new SqlParameter("cpt_id", cptId.PadLeft(5)),
+                new SqlParameter("long_desc", longDescriptor),
+                new SqlParameter("medium_desc", mediumDescriptor),
+                new SqlParameter("short_desc", ShortDescriptor),
+                new SqlParameter("description", consumerDescriptor)
+            };
 
-            var ds = await ExecuteCommandAsync("InsertCptCodesBulk", parameters);
-
-            var result = ds.Tables[0]
-                           .DataTableToList<InsertionResult>()
-                           .First()
-                           .Identifier;
-
-            return result;
+            var result = await ExecuteNonQueryAsync("UpdateCptCode", parameters);
         }
 
     }
